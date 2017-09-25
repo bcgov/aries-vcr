@@ -1,0 +1,1770 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: REST API Documentation for TheOrgBook
+  description: TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+  termsOfService: N/A
+basePath: /api/v1
+paths:
+  /verifiedOrgs:
+    get:
+      tags:
+        - VerifiedOrg
+      summary: Lists available VerifiedOrg objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VerifiedOrg"
+    post:
+      tags:
+        - VerifiedOrg
+      x-codegen-operation: create
+      summary: Creates a new VerifiedOrg object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VerifiedOrg"
+      responses:
+        201:
+          description: VerifiedOrg created
+          headers:
+            Location:
+              description: A link to the VerifiedOrg
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/VerifiedOrg"  
+  /verifiedOrgs/bulk:
+    post:
+      tags:
+        - VerifiedOrg
+      summary: Bulk create / update a number of VerifiedOrg object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VerifiedOrg"
+      responses:
+        201:
+          description: VerifiedOrg created
+  /verifiedOrgs/{id}:
+    get:
+      tags:
+        - VerifiedOrg
+      summary: Gets a specific VerifiedOrg object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VerifiedOrg"
+        404:
+          description: VerifiedOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VerifiedOrg to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - VerifiedOrg
+      x-codegen-operation: update
+      summary: Updates a specific VerifiedOrg object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VerifiedOrg"
+        404:
+          description: VerifiedOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VerifiedOrg to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VerifiedOrg"
+  /verifiedOrgs/{id}/delete:
+    post:
+      tags:
+        - VerifiedOrg
+      x-codegen-operation: destroy
+      summary: Deletes a specific VerifiedOrg object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: VerifiedOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VerifiedOrg to delete
+          required: true
+          type: integer
+  /voOrgTypes:
+    get:
+      tags:
+        - VOType
+      summary: Lists available VOType objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOType"
+    post:
+      tags:
+        - VOType
+      x-codegen-operation: create
+      summary: Creates a new VOType object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOType"
+      responses:
+        201:
+          description: VOType created
+          headers:
+            Location:
+              description: A link to the VOType
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/VOType"  
+  /voOrgTypes/bulk:
+    post:
+      tags:
+        - VOType
+      summary: Bulk create / update a number of VOType object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOType"
+      responses:
+        201:
+          description: VOType created
+  /voOrgTypes/{id}:
+    get:
+      tags:
+        - VOType
+      summary: Gets a specific VOType object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOType"
+        404:
+          description: VOType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOType to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - VOType
+      x-codegen-operation: update
+      summary: Updates a specific VOType object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOType"
+        404:
+          description: VOType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOType to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOType"
+  /voOrgTypes/{id}/delete:
+    post:
+      tags:
+        - VOType
+      x-codegen-operation: destroy
+      summary: Deletes a specific VOType object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: VOType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOType to delete
+          required: true
+          type: integer
+  /voLocations:
+    get:
+      tags:
+        - VOLocation
+      summary: Lists available VOLocation objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOLocation"
+    post:
+      tags:
+        - VOLocation
+      x-codegen-operation: create
+      summary: Creates a new VOLocation object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOLocation"
+      responses:
+        201:
+          description: VOLocation created
+          headers:
+            Location:
+              description: A link to the VOLocation
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/VOLocation"  
+  /voLocations/bulk:
+    post:
+      tags:
+        - VOLocation
+      summary: Bulk create / update a number of VOLocation object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOLocation"
+      responses:
+        201:
+          description: VOLocation created
+  /voLocations/{id}:
+    get:
+      tags:
+        - VOLocation
+      summary: Gets a specific VOLocation object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOLocation"
+        404:
+          description: VOLocation not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOLocation to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - VOLocation
+      x-codegen-operation: update
+      summary: Updates a specific VOLocation object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOLocation"
+        404:
+          description: VOLocation not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOLocation to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOLocation"
+  /voLocations/{id}/delete:
+    post:
+      tags:
+        - VOLocation
+      x-codegen-operation: destroy
+      summary: Deletes a specific VOLocation object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: VOLocation not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOLocation to delete
+          required: true
+          type: integer
+  /voLocationTypes:
+    get:
+      tags:
+        - VOLocationType
+      summary: Lists available VOLocationType objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOLocationType"
+    post:
+      tags:
+        - VOLocationType
+      x-codegen-operation: create
+      summary: Creates a new VOLocationType object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOLocationType"
+      responses:
+        201:
+          description: VOLocationType created
+          headers:
+            Location:
+              description: A link to the VOLocationType
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/VOLocationType"  
+  /voLocationTypes/bulk:
+    post:
+      tags:
+        - VOLocationType
+      summary: Bulk create / update a number of VOLocationType object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOLocationType"
+      responses:
+        201:
+          description: VOLocationType created
+  /voLocationTypes/{id}:
+    get:
+      tags:
+        - VOLocationType
+      summary: Gets a specific VOLocationType object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOLocationType"
+        404:
+          description: VOLocationType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOLocationType to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - VOLocationType
+      x-codegen-operation: update
+      summary: Updates a specific VOLocationType object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOLocationType"
+        404:
+          description: VOLocationType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOLocationType to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOLocationType"
+  /voLocationTypes/{id}/delete:
+    post:
+      tags:
+        - VOLocationType
+      x-codegen-operation: destroy
+      summary: Deletes a specific VOLocationType object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: VOLocationType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOLocationType to delete
+          required: true
+          type: integer
+  /voDoingBusinessAs:
+    get:
+      tags:
+        - VODoingBusinessAs
+      summary: Lists available VODoingBusinessAs objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VODoingBusinessAs"
+    post:
+      tags:
+        - VODoingBusinessAs
+      x-codegen-operation: create
+      summary: Creates a new VODoingBusinessAs object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VODoingBusinessAs"
+      responses:
+        201:
+          description: VODoingBusinessAs created
+          headers:
+            Location:
+              description: A link to the VODoingBusinessAs
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/VODoingBusinessAs"  
+  /voDoingBusinessAs/bulk:
+    post:
+      tags:
+        - VODoingBusinessAs
+      summary: Bulk create / update a number of VODoingBusinessAs object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VODoingBusinessAs"
+      responses:
+        201:
+          description: VODoingBusinessAs created
+  /voDoingBusinessAs/{id}:
+    get:
+      tags:
+        - VODoingBusinessAs
+      summary: Gets a specific VODoingBusinessAs object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VODoingBusinessAs"
+        404:
+          description: VODoingBusinessAs not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VODoingBusinessAs to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - VODoingBusinessAs
+      x-codegen-operation: update
+      summary: Updates a specific VODoingBusinessAs object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VODoingBusinessAs"
+        404:
+          description: VODoingBusinessAs not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VODoingBusinessAs to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VODoingBusinessAs"
+  /voDoingBusinessAs/{id}/delete:
+    post:
+      tags:
+        - VODoingBusinessAs
+      x-codegen-operation: destroy
+      summary: Deletes a specific VODoingBusinessAs object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: VODoingBusinessAs not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VODoingBusinessAs to delete
+          required: true
+          type: integer
+  /voClaims:
+    get:
+      tags:
+        - VOClaim
+      summary: Lists available VOClaim objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOClaim"
+    post:
+      tags:
+        - VOClaim
+      x-codegen-operation: create
+      summary: Creates a new VOClaim object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOClaim"
+      responses:
+        201:
+          description: VOClaim created
+          headers:
+            Location:
+              description: A link to the VOClaim
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/VOClaim"  
+  /voClaims/bulk:
+    post:
+      tags:
+        - VOClaim
+      summary: Bulk create / update a number of VOClaim object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOClaim"
+      responses:
+        201:
+          description: VOClaim created
+  /voClaims/{id}:
+    get:
+      tags:
+        - VOClaim
+      summary: Gets a specific VOClaim object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOClaim"
+        404:
+          description: VOClaim not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOClaim to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - VOClaim
+      x-codegen-operation: update
+      summary: Updates a specific VOClaim object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOClaim"
+        404:
+          description: VOClaim not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOClaim to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOClaim"
+  /voClaims/{id}/delete:
+    post:
+      tags:
+        - VOClaim
+      x-codegen-operation: destroy
+      summary: Deletes a specific VOClaim object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: VOClaim not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOClaim to delete
+          required: true
+          type: integer
+  /voClaimTypes:
+    get:
+      tags:
+        - VOClaimType
+      summary: Lists available VOClaimType objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOClaimType"
+    post:
+      tags:
+        - VOClaimType
+      x-codegen-operation: create
+      summary: Creates a new VOClaimType object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOClaimType"
+      responses:
+        201:
+          description: VOClaimType created
+          headers:
+            Location:
+              description: A link to the VOClaimType
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/VOClaimType"  
+  /voClaimTypes/bulk:
+    post:
+      tags:
+        - VOClaimType
+      summary: Bulk create / update a number of VOClaimType object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOClaimType"
+      responses:
+        201:
+          description: VOClaimType created
+  /voClaimTypes/{id}:
+    get:
+      tags:
+        - VOClaimType
+      summary: Gets a specific VOClaimType object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOClaimType"
+        404:
+          description: VOClaimType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOClaimType to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - VOClaimType
+      x-codegen-operation: update
+      summary: Updates a specific VOClaimType object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VOClaimType"
+        404:
+          description: VOClaimType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOClaimType to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/VOClaimType"
+  /voClaimTypes/{id}/delete:
+    post:
+      tags:
+        - VOClaimType
+      x-codegen-operation: destroy
+      summary: Deletes a specific VOClaimType object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: VOClaimType not found
+      parameters:
+        - name: id
+          in: path
+          description: id of VOClaimType to delete
+          required: true
+          type: integer
+  /inactiveClaimReasons:
+    get:
+      tags:
+        - InactiveClaimReason
+      summary: Lists available InactiveClaimReason objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/InactiveClaimReason"
+    post:
+      tags:
+        - InactiveClaimReason
+      x-codegen-operation: create
+      summary: Creates a new InactiveClaimReason object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/InactiveClaimReason"
+      responses:
+        201:
+          description: InactiveClaimReason created
+          headers:
+            Location:
+              description: A link to the InactiveClaimReason
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/InactiveClaimReason"  
+  /inactiveClaimReasons/bulk:
+    post:
+      tags:
+        - InactiveClaimReason
+      summary: Bulk create / update a number of InactiveClaimReason object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/InactiveClaimReason"
+      responses:
+        201:
+          description: InactiveClaimReason created
+  /inactiveClaimReasons/{id}:
+    get:
+      tags:
+        - InactiveClaimReason
+      summary: Gets a specific InactiveClaimReason object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/InactiveClaimReason"
+        404:
+          description: InactiveClaimReason not found
+      parameters:
+        - name: id
+          in: path
+          description: id of InactiveClaimReason to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - InactiveClaimReason
+      x-codegen-operation: update
+      summary: Updates a specific InactiveClaimReason object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/InactiveClaimReason"
+        404:
+          description: InactiveClaimReason not found
+      parameters:
+        - name: id
+          in: path
+          description: id of InactiveClaimReason to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/InactiveClaimReason"
+  /inactiveClaimReasons/{id}/delete:
+    post:
+      tags:
+        - InactiveClaimReason
+      x-codegen-operation: destroy
+      summary: Deletes a specific InactiveClaimReason object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: InactiveClaimReason not found
+      parameters:
+        - name: id
+          in: path
+          description: id of InactiveClaimReason to delete
+          required: true
+          type: integer
+  /issuerOrgs:
+    get:
+      tags:
+        - IssuerOrg
+      summary: Lists available IssuerOrg objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/IssuerOrg"
+    post:
+      tags:
+        - IssuerOrg
+      x-codegen-operation: create
+      summary: Creates a new IssuerOrg object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/IssuerOrg"
+      responses:
+        201:
+          description: IssuerOrg created
+          headers:
+            Location:
+              description: A link to the IssuerOrg
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/IssuerOrg"  
+  /issuerOrgs/bulk:
+    post:
+      tags:
+        - IssuerOrg
+      summary: Bulk create / update a number of IssuerOrg object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/IssuerOrg"
+      responses:
+        201:
+          description: IssuerOrg created
+  /issuerOrgs/{id}:
+    get:
+      tags:
+        - IssuerOrg
+      summary: Gets a specific IssuerOrg object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/IssuerOrg"
+        404:
+          description: IssuerOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of IssuerOrg to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - IssuerOrg
+      x-codegen-operation: update
+      summary: Updates a specific IssuerOrg object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/IssuerOrg"
+        404:
+          description: IssuerOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of IssuerOrg to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/IssuerOrg"
+  /issuerOrgs/{id}/delete:
+    post:
+      tags:
+        - IssuerOrg
+      x-codegen-operation: destroy
+      summary: Deletes a specific IssuerOrg object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: IssuerOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of IssuerOrg to delete
+          required: true
+          type: integer
+  /jurisdictions:
+    get:
+      tags:
+        - Jurisdiction
+      summary: Lists available Jurisdiction objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Jurisdiction"
+    post:
+      tags:
+        - Jurisdiction
+      x-codegen-operation: create
+      summary: Creates a new Jurisdiction object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Jurisdiction"
+      responses:
+        201:
+          description: Jurisdiction created
+          headers:
+            Location:
+              description: A link to the Jurisdiction
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/Jurisdiction"  
+  /jurisdictions/bulk:
+    post:
+      tags:
+        - Jurisdiction
+      summary: Bulk create / update a number of Jurisdiction object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Jurisdiction"
+      responses:
+        201:
+          description: Jurisdiction created
+  /jurisdictions/{id}:
+    get:
+      tags:
+        - Jurisdiction
+      summary: Gets a specific Jurisdiction object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Jurisdiction"
+        404:
+          description: Jurisdiction not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Jurisdiction to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - Jurisdiction
+      x-codegen-operation: update
+      summary: Updates a specific Jurisdiction object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Jurisdiction"
+        404:
+          description: Jurisdiction not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Jurisdiction to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Jurisdiction"
+  /jurisdictions/{id}/delete:
+    post:
+      tags:
+        - Jurisdiction
+      x-codegen-operation: destroy
+      summary: Deletes a specific Jurisdiction object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: Jurisdiction not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Jurisdiction to delete
+          required: true
+          type: integer
+definitions:
+  VerifiedOrg:
+    type: object
+    description: Information about a verified organization in the database.
+    required:
+      - id
+      - busId
+      - orgType
+      - jurisdictionId
+      - LegalName
+      - effectiveDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Verified Organization.
+      busId:
+        type: string
+        uniqueItems: true
+        description: The primary business key for the Verified Organization. This is a value that is likely published to and known by the business and entites providing services to the business.
+      orgType:
+        $ref: '#/definitions/VOType'
+        description: A foreign key reference to the VOType table.
+      jurisdictionId:
+        $ref: '#/definitions/Jurisdiction'
+        description: A foreign key reference into the Jurisdiction table.
+      LegalName:
+        type: string
+        description: The Legal Name of the Verified Organization
+      primaryLocation:
+        $ref: '#/definitions/VOLocation'
+        description: The primary location of the Verified Organization from the list of addresses associated with the VO.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The date&#x2F;time the record became active.
+      endDate:
+        type: string
+        format: date-time
+        description: The date&#x2F;time the record became inactive. A null in the field indicates the record is active.
+  VOType:
+    type: object
+    description: A list of the possible types of a Verified Organization, as defined by 
+    required:
+      - id
+      - effectiveDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Verified Organization Type.
+      theType:
+        type: string
+        description: The name of the type of Verified Organization, such as partnership, corporation, etc.
+      description:
+        type: string
+        description: End user help-text information about the Verified Organization type.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The datetime upon which the Verified Organization type was activated for use.
+      expirationDate:
+        type: string
+        format: date-time
+        description: The data after which the Verified Organization type will no longer be used.
+      displayOrder:
+        format: int32
+        type: integer
+        description: The order of display of the Verified Organization type. In general, the order will be listed in the order of expected frequency.
+  VOLocation:
+    type: object
+    description: A location (name, address and geolocation) of 
+    required:
+      - id
+      - voLocationTypeId
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Credit Trade Zero Reason.
+      voLocationTypeId:
+        $ref: '#/definitions/VOLocationType'
+        description: A foreign key reference to the VO Location Type table.
+      Addressee:
+        type: string
+        description: The Addressee Line of an official address.
+      AddlDeliveryInfo:
+        type: string
+        description: The Additional Delivery Info of an address
+      unitNumber:
+        type: string
+        description: The unit number of the address.
+      streetAddress:
+        type: string
+        description: The Street Address of the location.
+      municipality:
+        type: string
+        description: The Municipality (city, town, etc.) of the address of the location.
+      province:
+        type: string
+        description: The province of the location.
+      postalCode:
+        type: string
+        description: The postal code of the location.
+      latLong:
+        type: string
+        description: The latitude and longitude of the location, if known.
+  VOLocationType:
+    type: object
+    description: A list of the possible types of a Verified Organization, as defined by Foundational Claims Issuer for TheOrgBook
+    required:
+      - id
+      - theType
+      - description
+      - effectiveDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Verified Organization Location Type.
+      theType:
+        type: string
+        description: The name of the type of Verified Organization Location, such as partnership, corporation, etc.
+      description:
+        type: string
+        description: End user help-text information about the Verified Organization Location type.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The datetime upon which the Verified Organization Location type was activated for use.
+      expirationDate:
+        type: string
+        format: date-time
+        description: The data after which the Verified Organization Location type will no longer be used.
+      displayOrder:
+        format: int32
+        type: integer
+        description: The order of display of the Verified Organization Location type. In general, the order will be listed in the order of expected frequency.
+  VODoingBusinessAs:
+    type: object
+    description: Names under which a Verified Organization is Doing Business.
+    required:
+      - id
+      - DBA
+      - effectiveDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Verified Organization Location Type.
+      DBA:
+        type: string
+        description: The doing business as name of the business.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The datetime upon which the Verified Organization DBA record was activated for use.
+      endDate:
+        type: string
+        format: date-time
+        description: The datetime upon which the Verified Organization DBA record will no longer be used.
+  VOClaim:
+    type: object
+    description: A claim of a given type, issued by a known entite
+    required:
+      - id
+      - verifiedOrgId
+      - voClaimType
+      - claimJSON
+      - effectiveDate
+      - endDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Verified Organization Claim.
+      verifiedOrgId:
+        $ref: '#/definitions/VerifiedOrg'
+        description: A foreign key reference into the VerfiedOrg table.
+      voClaimType:
+        $ref: '#/definitions/VOClaimType'
+        uniqueItems: true
+        description: A foreign key reference into the VOClaimType table.
+      claimJSON:
+        type: string
+        description: The JSON for the claim as delivered from the 
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The datetime the claim was received.
+      endDate:
+        type: string
+        format: date-time
+        description: The datetime the claim was marked as no longer valid, either because it was replaced or revoked.
+      inactiveClaimReasonId:
+        $ref: '#/definitions/InactiveClaimReason'
+        description: A foreign key reference into the IncactiveClaimReason table.
+  VOClaimType:
+    type: object
+    description: A list of the possible types of a Verified Organization, as defined by 
+    required:
+      - id
+      - theType
+      - issuerOrgId
+      - issuerURL
+      - claimSchemaDefinition
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Verified Organization Location Type.
+      theType:
+        type: string
+        description: A user friendly name for the claim type.
+      base64Logo:
+        type: string
+        description: A base64-encoded logo to display as a representation of the claim.
+      issuerOrgId:
+        $ref: '#/definitions/IssuerOrg'
+        description: The name of the organization that issued the claim.
+      issuerURL:
+        type: string
+        description: The URL of the claim issuer organization.
+      claimSchemaDefinition:
+        type: string
+        description: A pointer to the on Ledger Schema Definition for this Claim Type.
+  InactiveClaimReason:
+    type: object
+    description: A list of the possible reasons why a Claim might be inactive. 
+    required:
+      - id
+      - effectiveDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for an Inactive Claim Reason.
+      shortReason:
+        type: string
+        description: A short word&#x2F;phrase for why a Claim is inactive.
+      reason:
+        type: string
+        description: A full description for why a Claim is inactive.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The datetime upon which the Inactive Claim reason was activated for use.
+      expirationDate:
+        type: string
+        format: date-time
+        description: The date after which the Inactive Claim reason will no longer be used.
+      displayOrder:
+        format: int32
+        type: integer
+        description: The order of display Inactive Claim reason. In general, the order will be alpha.
+  IssuerOrg:
+    type: object
+    description: The list of Organizations that have issued claims to Verified Organizations that are stored in this repository.
+    required:
+      - id
+      - name
+      - issuerOrgTLA
+      - DID
+      - jurisdictionId
+      - effectiveDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Issuer Org Type.
+      name:
+        type: string
+        description: The name of the organization that issues claim.
+      issuerOrgTLA:
+        type: string
+        description: An appreviation (aka Three Letter Acronym or TLA) of the organization that can be displayed where useful in a User Interface.
+      issuerOrgURL:
+        type: string
+        description: A URL to the web presence of the claim issuing Organization.
+      DID:
+        type: string
+        description: The DID of the claim issuing organization so that the organization can be accessed using the Self-Sovereign Identity network.
+      jurisdictionId:
+        $ref: '#/definitions/Jurisdiction'
+        description: A foreign key reference into the Jurisdiction table.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The datetime upon which the IssuerOrg was activated for use.
+      expirationDate:
+        type: string
+        format: date-time
+        description: The data after which the IssuerOrg will no longer be used. The value is NULL if still active.
+  Jurisdiction:
+    type: object
+    description: A list of the possible Jurisdiction of an Organization.
+    required:
+      - id
+      - jurisdictionAbbrv
+      - jurisdictionName
+      - effectiveDate
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Jurisdiction
+      jurisdictionAbbrv:
+        type: string
+        maxLength: 25
+        uniqueItems: true
+        description: An abbreviation for this Jurisdiction, eg. BC.
+      jurisdictionName:
+        type: string
+        maxLength: 1000
+        uniqueItems: true
+        description: The full name of the jurisdication, eg. British Columbia
+      displayOrder:
+        format: int32
+        type: integer
+        description: The order of display of the Jurisdictions. In general, the order will be alpha, with the isOnCommonList is True entries grouped first.
+      isOnCommonList:
+        type: boolean
+        description: An indicator that a User Interface could use to display two versions of the list - a core list (e.g. Canadian entries only) that have this value as True, and an expanded list that includes all entries, regardless of the value of this field.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The datetime upon which the Jurisdiction was activated for use.
+      expirationDate:
+        type: string
+        format: date-time
+        description: The data after which the Jurisdiction will no longer be used. Null if the Jurisdiction is in active use.
+securityDefinitions: {}

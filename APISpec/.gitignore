@@ -1,0 +1,10 @@
+.DS_Store
+node_modules
+dist
+*.bk
+*.bck
+api
+model
+api.yaml
+model.yaml
+in/*.csv
