@@ -1,0 +1,43 @@
+.business-title {
+  font-size: 3rem;
+  margin-top: 0;
+}
+.cert-title {
+  font-size: 2.5rem;
+  color: #c66;
+  margin-top: 0;
+}
+.title-back-link {
+  display: block;
+  font-size: 110%;
+  text-decoration: none;
+}
+
+.cert-info {
+	font-size: 1.7rem;
+}
+
+.cert-badge img {
+	margin-bottom: 1rem;
+}
+
+.btn-verify {
+  font-size: 1.7rem;
+  line-height: 1.5;
+  padding: .5rem 1.3rem .4rem 1.3rem;
+  vertical-align: baseline;
+}
+.verify-help {
+  font-size: 1.5rem;
+}
+
+.cert-verify {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  .verify-pfx {
+    display: inline-block;
+    font-weight: bold;
+    min-width: 10em;
+    white-space: nowrap;
+  }
+}

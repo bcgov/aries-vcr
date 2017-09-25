@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~mygovbc-bootstrap-theme/dist/mygovbc-bootstrap-theme.min.css";
+
+
+.color-red {
+	filter: sepia() hue-rotate(300deg) saturate(180%)
+}
+.color-blue {
+	filter: sepia() hue-rotate(155deg) saturate(160%);
+}
+.color-green {
+	filter: sepia() hue-rotate(50deg) saturate(160%);
+}
+.color-purple {
+	filter: sepia() hue-rotate(200deg) saturate(160%);
+}
+.color-orange {
+	filter: sepia() hue-rotate(330deg) saturate(160%);
+}
+
+.mrgn-tp-sm {
+  margin-top: 8px;
+}
+.mrgn-tp-md {
+  margin-top: 1.5rem;
+}
+.mrgn-tp-lg {
+  margin-top: 3rem;
+}
+
+.mrgn-bttm-sm {
+  margin-bottom: 8px;
+}
+.mrgn-bttm-md {
+  margin-bottom: 1.5rem;
+}
+.mrgn-bttm-lg {
+  margin-bottom: 3rem;
+}

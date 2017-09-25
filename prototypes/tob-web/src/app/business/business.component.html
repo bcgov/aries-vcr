@@ -1,0 +1,73 @@
+<section id="business">
+  <div class="row">
+    <div class="col-md-8 col-sm-7">
+      <h1 class="business-title">Sprockets & Widgets Inc.</h1>
+
+      <a [routerLink]="'/'" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Search</a>
+
+      <div class="row">
+        <div class="col-md-6 business-info">
+          <div class="form-group">
+            <label class="control-label">Mailing Address</label>
+            <div class="form-field">
+              130 Future Rd<br>
+              Vernon, BC&nbsp; V0A 0A0<br>
+              Canada
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 business-info">
+          <div class="form-group">
+            <label class="control-label"><span class="field-name">Supply Profile</span> <span class="fa fa-question-circle text-muted"></span></label>
+            <div class="form-field">
+              1298592&nbsp; Sprockets<br>
+              2958295&nbsp; Widgets
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-5 hidden-xs">
+      <div class="business-badge">
+        <img src="/assets/ribbon.svg" alt="Verified">
+      </div>
+    </div>
+  </div>
+  <div class="row mrgn-tp-md mrgn-bttm-lg business-certs">
+    <div class="col-sm-12">
+      <label class="control-label"><span class="field-name">Permits and Licenses</span> <span class="fa fa-question-circle text-muted"></span></label>
+      <div class="certs-outer">
+        <a class="cert" [routerLink]="'/cert'">
+          <div class="cert-image">
+            <img src="/assets/cert.svg" class="color-green" alt="">
+          </div>
+          <label>Restaurant License</label>
+        </a>
+        <a class="cert" [routerLink]="'/cert'">
+          <div class="cert-image">
+            <img src="/assets/cert.svg" class="color-orange" alt="">
+          </div>
+          <label>Food Handling Certificate</label>
+        </a>
+        <a class="cert" [routerLink]="'/cert'">
+          <div class="cert-image">
+            <img src="/assets/cert.svg" class="color-blue" alt="">
+          </div>
+          <label>Cthulhu Wrangling</label>
+        </a>
+        <a class="cert" [routerLink]="'/cert'">
+          <div class="cert-image">
+            <img src="/assets/cert.svg" class="color-purple" alt="">
+          </div>
+          <label>Licensing Sublicense</label>
+        </a>
+        <a class="cert" [routerLink]="'/cert'">
+          <div class="cert-image">
+            <img src="/assets/cert.svg" class="color-green" alt="">
+          </div>
+          <label>Copyright Violation</label>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
