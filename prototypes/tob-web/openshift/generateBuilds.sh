@@ -26,8 +26,10 @@ GIT_REF="${2}"
 GIT_URI="${3}"
 # -----------------------------------------------------------------------------------
 if [ -z "$PROJECT_NAME" ]; then
-	PROJECT_NAME="devex-von-tools"
-	echo "Defaulting 'PROJECT_NAME' to ${PROJECT_NAME} ..."
+	echo "You must supply PROJECT_NAME."
+	echo -n "Please enter the name of the tools project; for example 'devex-von-tools': "
+	read PROJECT_NAME
+	PROJECT_NAME="$(echo "${PROJECT_NAME}" | tr '[:upper:]' '[:lower:]')"
 	echo
 fi
 

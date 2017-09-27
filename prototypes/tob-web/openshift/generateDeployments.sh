@@ -26,8 +26,10 @@ DEPLOYMENT_ENV_NAME="${2}"
 BUILD_ENV_NAME="${3}"
 # -----------------------------------------------------------------------------------
 if [ -z "$PROJECT_NAMESPACE" ]; then
-	PROJECT_NAMESPACE="devex-von"
-	echo "Defaulting 'PROJECT_NAMESPACE' to ${PROJECT_NAMESPACE} ..."
+	echo "You must supply PROJECT_NAMESPACE."
+	echo -n "Please enter the root namespace of the project; for example 'devex-von': "
+	read PROJECT_NAMESPACE
+	PROJECT_NAMESPACE="$(echo "${PROJECT_NAMESPACE}" | tr '[:upper:]' '[:lower:]')"
 	echo
 fi
 
