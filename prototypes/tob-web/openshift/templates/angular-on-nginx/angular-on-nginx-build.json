@@ -34,8 +34,10 @@
         "source": {
           "type": "Git",
           "git": {
-            "uri": "${GIT_SOURCE_URL}"
-          }
+            "ref": "${GIT_REF}",
+            "uri": "${GIT_REPO_URL}"
+          },
+          "contextDir": "${SOURCE_CONTEXT_DIR}"		  
         },
         "strategy": {
           "type": "Source",
@@ -57,7 +59,7 @@
         "output": {
           "to": {
             "kind": "ImageStreamTag",
-            "name": "${NAME}:latest"
+            "name": "${NAME}:${OUTPUT_IMAGE_TAG}"
           }
         },
         "resources": {
@@ -85,11 +87,32 @@
       "value": "angular-scaffold"
     },
     {
-      "name": "GIT_SOURCE_URL",
+      "name": "GIT_REPO_URL",
       "displayName": "GIT Source Repo URL",
       "description": "A GIT URL to your source code.",
       "required": true,
       "value": "https://github.com/bcgov/angular-scaffold"
-    }
+    },
+    {
+      "name": "GIT_REF",
+      "displayName": "Git Reference",
+      "description": "The git reference or branch.",
+      "required": true,
+      "value": "master"
+    },
+    {
+      "name": "SOURCE_CONTEXT_DIR",
+      "displayName": "Source Context Directory",
+      "description": "The source context directory.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "OUTPUT_IMAGE_TAG",
+      "displayName": "Output Image Tag",
+      "description": "The tag given to the built image.",
+      "required": true,
+      "value": "latest"
+    }		
   ]
 }

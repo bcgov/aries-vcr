@@ -6,40 +6,40 @@ SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
 TEMPLATE_DIR="${SCRIPT_DIR}/templates"
 
 # ==============================================================================
-# Script for setting up the build environment in OpenShift
+# Script for setting up the deployment environment in OpenShift
 #
 # * Requires the OpenShift Origin CLI
 # ------------------------------------------------------------------------------
 # Usage on Windows:
-#  MSYS_NO_PATHCONV=1 ./generateBuilds.sh [project_name] [git_ref] [git_uri]
+#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh [project_namenamespace] [deployment_env_name] [build_env_name] 
 # 
 # Example:
-#  MSYS_NO_PATHCONV=1 ./generateBuilds.sh devex-von-tools master https://github.com/bcgov/TheOrgBook.git
+#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh devex-von dev tools
 # ------------------------------------------------------------------------------
 # ToDo:
 # * Add support for create or update.
 # -----------------------------------------------------------------------------------
 #DEBUG_MESSAGES=1
 # -----------------------------------------------------------------------------------
-PROJECT_NAME="${1}"
-GIT_REF="${2}"
-GIT_URI="${3}"
+PROJECT_NAMESPACE="${1}"
+DEPLOYMENT_ENV_NAME="${2}"
+BUILD_ENV_NAME="${3}"
 # -----------------------------------------------------------------------------------
-if [ -z "$PROJECT_NAME" ]; then
-	PROJECT_NAME="devex-von-tools"
-	echo "Defaulting 'PROJECT_NAME' to ${PROJECT_NAME} ..."
+if [ -z "$PROJECT_NAMESPACE" ]; then
+	PROJECT_NAMESPACE="devex-von"
+	echo "Defaulting 'PROJECT_NAMESPACE' to ${PROJECT_NAMESPACE} ..."
 	echo
 fi
 
-if [ -z "$GIT_REF" ]; then
-	GIT_REF="master"
-	echo "Defaulting 'GIT_REF' to ${GIT_REF} ..."
+if [ -z "$DEPLOYMENT_ENV_NAME" ]; then
+	DEPLOYMENT_ENV_NAME="dev"
+	echo "Defaulting 'DEPLOYMENT_ENV_NAME' to ${DEPLOYMENT_ENV_NAME} ..."
 	echo
 fi
 
-if [ -z "$GIT_URI" ]; then
-	GIT_URI="https://github.com/bcgov/TheOrgBook.git"
-	echo "Defaulting 'GIT_URI' to ${GIT_URI} ..."
+if [ -z "$BUILD_ENV_NAME" ]; then
+	BUILD_ENV_NAME="tools"
+	echo "Defaulting 'BUILD_ENV_NAME' to ${BUILD_ENV_NAME} ..."
 	echo
 fi
 
@@ -47,33 +47,32 @@ if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
 	echo "One or more parameters are missing!"
 	echo "--------------------------------------------"	
-	echo "PROJECT_NAME[{1}]: ${1}"
-	echo "GIT_REF[{2}]: ${2}"
-	echo "GIT_URI[{3}]: ${3}"
+	echo "PROJECT_NAMESPACE[{1}]: ${1}"
+	echo "DEPLOYMENT_ENV_NAME[{2}]: ${2}"
+	echo "BUILD_ENV_NAME[{3}]: ${3}"
 	echo "============================================"
 	echo
 	exit 1
 fi
 # -------------------------------------------------------------------------------------
-BuildConfigPostfix="_BuildConfig.json"
-CONTEXT_DIR_ROOT="prototypes/tob-web"
-TEMPLATE_CONTEXT_DIR_ROOT="${CONTEXT_DIR_ROOT}/openshift/templates"
-ANGULAR_BUILDER_NAME="angular-builder"
-NGINX_RUNTIME_NAME="nginx-runtime"
+DeploymentConfigPostfix="_DeploymentConfig.json"
 ANGULAR_ON_NGINX_NAME="angular-on-nginx"
+
+DEPLOYMENT_PROJECT_NAME="${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME}"
+BUILD_PROJECT_NAME="${PROJECT_NAMESPACE}-${BUILD_ENV_NAME}"
 # ==============================================================================
 
 echo "============================================================================="
-echo "Switching to project ${PROJECT_NAME} ..."
+echo "Switching to project ${DEPLOYMENT_PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
-oc project ${PROJECT_NAME}
+oc project ${DEPLOYMENT_PROJECT_NAME}
 echo "============================================================================"
 echo 
 
 echo "============================================================================="
-echo "Deleting previous build configuration files ..."
+echo "Deleting previous deployment configuration files ..."
 echo "-----------------------------------------------------------------------------"
-for file in *${BuildConfigPostfix}; do 
+for file in *${DeploymentConfigPostfix}; do
 	echo "Deleting ${file} ..."
 	rm -rf ${file};
 done
@@ -81,54 +80,32 @@ echo "==========================================================================
 echo
 
 echo "============================================================================="
-echo "Generating build configuration for ${ANGULAR_BUILDER_NAME} ..."
+echo "Generating deployment configuration for ${ANGULAR_ON_NGINX_NAME} ..."
 echo "-----------------------------------------------------------------------------"
-${SCRIPTS_DIR}/configureBuild.sh \
-	${GIT_URI} \
-	${GIT_REF} \
-	"${TEMPLATE_CONTEXT_DIR_ROOT}/${ANGULAR_BUILDER_NAME}/" \
-	"${ANGULAR_BUILDER_NAME}" \
-	"${TEMPLATE_DIR}/${ANGULAR_BUILDER_NAME}/${ANGULAR_BUILDER_NAME}.json"
-
+${SCRIPTS_DIR}/configureDeployment.sh \
+	"angular-on-nginx" \
+	${DEPLOYMENT_ENV_NAME} \
+	${BUILD_PROJECT_NAME} \
+	"${DEPLOYMENT_PROJECT_NAME}.pathfinder.gov.bc.ca" \
+	"${TEMPLATE_DIR}/${ANGULAR_ON_NGINX_NAME}/${ANGULAR_ON_NGINX_NAME}-deploy.json"
 echo "============================================================================="
 echo
 
 echo "============================================================================="
-echo "Generating build configuration for ${NGINX_RUNTIME_NAME} ..."
+echo "Cleaning out all existing OpenShift resources ..."
 echo "-----------------------------------------------------------------------------"
-${SCRIPTS_DIR}/configureBuild.sh \
-	${GIT_URI} \
-	${GIT_REF} \
-	"${TEMPLATE_CONTEXT_DIR_ROOT}/${NGINX_RUNTIME_NAME}/" \
-	"${NGINX_RUNTIME_NAME}" \
-	"${TEMPLATE_DIR}/${NGINX_RUNTIME_NAME}/${NGINX_RUNTIME_NAME}.json"
+oc delete routes,services,dc,imagestreams,horizontalpodautoscalers --all
 echo "============================================================================="
 echo
 
 echo "============================================================================="
-echo "Generating build configuration for ${ANGULAR_ON_NGINX_NAME} ..."
+echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
-${SCRIPTS_DIR}/configureBuild.sh \
-	${GIT_URI} \
-	${GIT_REF} \
-	"${CONTEXT_DIR_ROOT}/" \
-	"${ANGULAR_ON_NGINX_NAME}" \
-	"${TEMPLATE_DIR}/${ANGULAR_ON_NGINX_NAME}/${ANGULAR_ON_NGINX_NAME}-build.json"
-echo "============================================================================="
-echo
-
-echo "============================================================================="
-echo "Cleaning out existing OpenShift resources ..."
-echo "============================================================================"
-oc delete imagestreams,bc --all
-echo
-
-echo "============================================================================="
-echo "Creating build configurations in OpenShift project; ${PROJECT_NAME} ..."
-echo "============================================================================="
-for file in *${BuildConfigPostfix}; do 
+for file in *${DeploymentConfigPostfix}; do 
 	echo "Loading ${file} ...";
 	oc create -f ${file};
 	echo;
 done
+echo "============================================================================="
 echo
+

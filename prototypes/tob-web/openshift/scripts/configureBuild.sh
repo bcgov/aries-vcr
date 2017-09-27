@@ -3,18 +3,18 @@
 USER_ID="$(id -u)"
 SCRIPT_DIR=$(dirname $0)
 OUTPUT_DIR="${SCRIPT_DIR}/../"
-TEMPLATE_DIR="${SCRIPT_DIR}/../templates/"
 
 # ===========================================================================
-# Generate Build Configuration
+# Configure Build
 # ===========================================================================
 GIT_URI=${1}
 GIT_REF=${2}
-BUILD_NAME=${3}
-OUTPUT_IMAGE_TAG=${4}
+SOURCE_CONTEXT_DIR=${3}
+BUILD_NAME=${4}
 BUILD_CONFIG_TEMPLATE=${5}
-BUILD_CONFIG_POST_FIX=${6}
-SOURCE_CONTEXT_DIR=${7}
+
+OUTPUT_IMAGE_TAG=${6}
+BUILD_CONFIG_POST_FIX=${7}
 # -----------------------------------------------------------------------------------
 #DEBUG_MESSAGES=1
 # -----------------------------------------------------------------------------------
@@ -28,21 +28,24 @@ if [ -z "$GIT_REF" ]; then
 	MissingParam=1
 fi
 
-if [ -z "$BUILD_NAME" ]; then
-	BUILD_NAME="angular-builder"
-	echo "Defaulting 'BUILD_NAME' to ${BUILD_NAME} ..."
+if [ -z "$SOURCE_CONTEXT_DIR" ]; then
+	echo "Warning - SOURCE_CONTEXT_DIR is blank."
 	echo
+fi
+
+if [ -z "$BUILD_NAME" ]; then
+	echo "You must supply BUILD_NAME."
+	MissingParam=1
+fi
+
+if [ -z "$BUILD_CONFIG_TEMPLATE" ]; then
+	echo "You must supply BUILD_CONFIG_TEMPLATE."
+	MissingParam=1
 fi
 
 if [ -z "$OUTPUT_IMAGE_TAG" ]; then
 	OUTPUT_IMAGE_TAG="latest"
 	echo "Defaulting 'OUTPUT_IMAGE_TAG' to ${OUTPUT_IMAGE_TAG} ..."
-	echo
-fi
-
-if [ -z "$BUILD_CONFIG_TEMPLATE" ]; then
-	BUILD_CONFIG_TEMPLATE="${TEMPLATE_DIR}angular-builder/angular-builder.json"
-	echo "Defaulting 'BUILD_CONFIG_TEMPLATE' to ${BUILD_CONFIG_TEMPLATE} ..."
 	echo
 fi
 
@@ -52,23 +55,17 @@ if [ -z "$BUILD_CONFIG_POST_FIX" ]; then
 	echo
 fi
 
-if [ -z "$SOURCE_CONTEXT_DIR" ]; then
-	SOURCE_CONTEXT_DIR="prototypes/tob-web/openshift/templates/angular-builder"
-	echo "Defaulting 'SOURCE_CONTEXT_DIR' to ${SOURCE_CONTEXT_DIR} ..."
-	echo
-fi
-
 if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
 	echo "One or more parameters are missing!"
 	echo "--------------------------------------------"	
 	echo "GIT_URI[{1}]: ${1}"
 	echo "GIT_REF[{2}]: ${2}"
-	echo "BUILD_NAME[{3}]: ${3}"
-	echo "OUTPUT_IMAGE_TAG[{4}]: ${4}"
+	echo "SOURCE_CONTEXT_DIR[{3}]: ${3}"
+	echo "BUILD_NAME[{4}]: ${4}"
 	echo "BUILD_CONFIG_TEMPLATE[{5}]: ${5}"
-	echo "BUILD_CONFIG_POST_FIX[{6}]: ${6}"
-	echo "SOURCE_CONTEXT_DIR[{7}]: ${7}"
+	echo "OUTPUT_IMAGE_TAG[{6}]: ${6}"
+	echo "BUILD_CONFIG_POST_FIX[{7}]: ${7}"
     echo "============================================"
 	echo
 	exit 1

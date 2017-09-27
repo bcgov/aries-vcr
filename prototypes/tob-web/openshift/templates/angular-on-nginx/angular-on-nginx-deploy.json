@@ -11,16 +11,6 @@
   "objects": [
     {
       "apiVersion": "v1",
-      "kind": "ImageStream",
-      "metadata": {
-        "annotations": {
-          "description": "runtime images stream"
-        },
-        "name": "${NAME}"
-      }
-    },
-    {
-      "apiVersion": "v1",
       "kind": "DeploymentConfig",
       "metadata": {
         "creationTimestamp": null,
@@ -283,13 +273,13 @@
     {
       "description": "For very simple HTTP Basic authentication, the username of the ONE user",
       "displayName": "HTTP Basic Username",
-      "name": "HTTP_USERNAME",
+      "name": "HTTP_BASIC_USERNAME",
       "value": ""
     },
     {
       "description": "For very simple HTTP Basic authentication, the password of the ONE user",
       "displayName": "HTTP Basic Password",
-      "name": "HTTP_PASSWORD",
+      "name": "HTTP_BASIC_PASSWORD",
       "value": ""
     }
 
