@@ -42,7 +42,70 @@ Jenkins is responsible for:
   - Tagging images to instruct OpenShift to deploy
 - Build notifications, repo tagging and other CI/CD goodies
 
-## Setup Angular-Builder
+## Quick Start
+
+A set of automation scripts have been wrapped around the project templates (described below) to make it quick and simple to deploy the OpenShift resources into an OpenShift environment such as the **`pathfinder.gov.bc.ca`** environment.
+
+The scripts and templates have been configured to allow you to specify the GIT Repo, branch, and context directory for the builds.  This allows you to quickly redirect the build configurations to a different repository, branch, and folder structure.
+
+_A word of caution… When deploying this application into a local cluster you will need to adjust the rules for the Nginx server, as they are preconfigured to only allow IP ranges that correspond to those in the `pathfinder.gov.bc.ca` environment._
+
+### initializeProjects.sh
+
+Use this script to initialize your project environments; assuming you are working with a standard `pathfinder.gov.bc.ca` OpenShift project set.
+
+This script grants your deployment projects with access to pull images from your `tools` project.
+
+Use:
+```
+./initializeProjects.sh <project-namespace> [tools-project-name:tools] [dev-project-name:dev] [test-project-name:test] [prod-project-name:prod]
+```
+
+Examples:
+
+_Short Version:_
+```
+./initializeProjects.sh devex-von
+```
+
+_Full Version:_
+```
+./initializeProjects.sh devex-von tools dev test prod
+```
+
+#### generateBuilds.sh
+
+Use this script to generate the build configurations for the project.
+
+Use:
+```
+./generateBuilds.sh [project_name] [git_ref] [git_uri]
+```
+
+Example:
+```
+./generateBuilds.sh devex-von-tools master https://github.com/bcgov/TheOrgBook.git
+```
+
+### generateDeployments.sh
+
+Use this script to generate the deployment configurations for the project.  You will need to run this script once for each of your deployment environments; dev, test, prod for example.
+
+Use:
+```
+./generateDeployments.sh [project_namespace] [deployment_env_name] [build_env_name]
+```
+
+Example:
+```
+./generateDeployments.sh devex-von dev tools
+```
+
+## Template/Component Descriptions
+
+This section provides additional details about the templates and their associated components.  It also provides instructions on how you would manually setup and configure the builds and deployments using the templates.  If you have used the scripts from the Quick Start section then you can ignore the manual setup and configuration instructions.
+
+### Setup Angular-Builder
 
 This is your builder image that compiles the angular source code.
 
@@ -61,7 +124,7 @@ What happens in OpenShift:
 1. Executes Dockerfile build strategy
 1. Pushes new `angular-builder` image into your project's Image Streams
 
-## Setup Nginx-runtime
+### Setup Nginx-runtime
 
 This is your runtime image that is deployed with output of the `angular-builder`.
 
@@ -79,7 +142,7 @@ What happens in OpenShift:
 1. Executes Dockerfile build strategy
 1. Pushes new `nginx-runtime` image into your project's Image Streams
 
-## Setup Angular-on-Nginx Builder
+### Setup Angular-on-Nginx Builder
 
 This is the s2i builder image to glue the `angular-builder` output with the `nginx-runtime` image.  The result is a
 new image based on `nginx-runtime` but with the output of `angular-builder`.
@@ -96,7 +159,7 @@ What happens in OpenShift:
 1. Copies output, i.e., `/opt/app-root/src/dist/` to `nginx-runtime` directory `tmp/app`
 1. Create to image, `<your app name>-build` to Image Stream
 
-## Setup "Your App" Deployment
+### Setup "Your App" Deployment
 
 Once we've got an image out of the `angular-on-nginx` builder, e.g., `<your app name>`, we
 need to setup the deployment.  We've provide a deployment template that is based on real load testing:

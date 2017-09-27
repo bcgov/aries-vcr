@@ -11,7 +11,7 @@ TEMPLATE_DIR="${SCRIPT_DIR}/templates"
 # * Requires the OpenShift Origin CLI
 # ------------------------------------------------------------------------------
 # Usage on Windows:
-#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh [project_namenamespace] [deployment_env_name] [build_env_name] 
+#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh [project_namespace] [deployment_env_name] [build_env_name] 
 # 
 # Example:
 #  MSYS_NO_PATHCONV=1 ./generateDeployments.sh devex-von dev tools
