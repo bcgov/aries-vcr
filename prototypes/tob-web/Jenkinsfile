@@ -1,5 +1,5 @@
 // Edit your app's name below
-def APP_NAME = 'angular-scaffold'
+def APP_NAME = 'angular-on-nginx'
 
 // Edit your environment TAG names below
 def TAG_NAMES = ['dev', 'test', 'prod']
@@ -21,6 +21,7 @@ node {
     openshiftBuild bldCfg: BUILD_CONFIG, showBuildLogs: 'true'
     openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: '$BUILD_ID', srcStream: IMAGESTREAM_NAME, srcTag: 'latest'
   }
+  
   stage('deploy-' + TAG_NAMES[0]) {
     openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: '$BUILD_ID'
   }

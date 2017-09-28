@@ -60,7 +60,7 @@ PROD_PROJECT="${PROJECT_NAMESPACE}-${PROD_PROJECT_NAME}"
 # ===================================================================================
 
 echo "============================================================================="
-echo "Initializing projects ..."
+echo "Initializing project permissions ..."
 echo "-----------------------------------------------------------------------------"
 ${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
 	${DEV_PROJECT} \
@@ -73,6 +73,24 @@ ${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
 ${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
 	${PROD_PROJECT} \
 	${TOOLS_PROJECT}
+	
+echo "============================================================================"
+echo
+
+echo "============================================================================="
+echo "Initializing project Glusterfs Services ..."
+echo "-----------------------------------------------------------------------------"
+${SCRIPTS_DIR}/createGlusterfsClusterApp.sh \
+	${TOOLS_PROJECT}
+
+${SCRIPTS_DIR}/createGlusterfsClusterApp.sh \
+	${DEV_PROJECT}
+
+${SCRIPTS_DIR}/createGlusterfsClusterApp.sh \
+	${TEST_PROJECT}
+
+${SCRIPTS_DIR}/createGlusterfsClusterApp.sh \
+	${PROD_PROJECT}
 	
 echo "============================================================================"
 echo

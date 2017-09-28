@@ -63,6 +63,7 @@ TEMPLATE_CONTEXT_DIR_ROOT="${CONTEXT_DIR_ROOT}/openshift/templates"
 ANGULAR_BUILDER_NAME="angular-builder"
 NGINX_RUNTIME_NAME="nginx-runtime"
 ANGULAR_ON_NGINX_NAME="angular-on-nginx"
+JENKINS_PIPELINE_NAME="angular"
 # ==============================================================================
 
 echo "============================================================================="
@@ -116,6 +117,17 @@ ${SCRIPTS_DIR}/configureBuild.sh \
 	"${CONTEXT_DIR_ROOT}/" \
 	"${ANGULAR_ON_NGINX_NAME}" \
 	"${TEMPLATE_DIR}/${ANGULAR_ON_NGINX_NAME}/${ANGULAR_ON_NGINX_NAME}-build.json"
+echo "============================================================================="
+echo
+
+echo "============================================================================="
+echo "Generating build configuration for the ${JENKINS_PIPELINE_NAME} pipeline ..."
+echo "-----------------------------------------------------------------------------"
+${SCRIPTS_DIR}/configureJenkinsPipelineBuild.sh \
+	${JENKINS_PIPELINE_NAME} \
+	${GIT_URI} \
+	${GIT_REF} \
+	"${CONTEXT_DIR_ROOT}/"
 echo "============================================================================="
 echo
 
