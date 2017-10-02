@@ -3,7 +3,6 @@
 USER_ID="$(id -u)"
 SCRIPT_DIR=$(dirname $0)
 SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
-TEMPLATE_DIR="${SCRIPT_DIR}/templates"
 
 # ===================================================================================
 # Script for initializing an OpenShift project environment.
