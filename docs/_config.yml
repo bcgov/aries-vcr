@@ -1,1 +1,49 @@
+markdown: kramdown
 theme: jekyll-theme-slate
+highlighter: rouge
+sass:
+  style: compressed
+
+repository: https://github.com/bcgov/TheOrgBook/docs
+
+defaults:
+  -
+    scope:
+      path: "_docs"
+      type: "docs"
+    values:
+      layout: "docs"
+  -
+    scope:
+      path: "_posts"
+      type: "posts"
+    values:
+      layout: "news_item"
+
+collections:
+  docs:
+    permalink: /:collection/:path/
+    output: true
+  posts:
+    permalink: /news/:year/:month/:day/:title/
+    output: true
+  tutorials:
+    output: true
+
+name: TheOrgBook • Bootstrapping Verified Organizations on the Internet
+description: Building a network of self-sovereign identies for Verified Organizations to drive the digital economy
+url: https://bcgov.github.io/TheOrgBook
+
+logo: /img/logo-2x.png
+
+plugins:
+  - jekyll-avatar
+  - jekyll-feed
+  - jekyll-mentions
+  - jekyll-redirect-from
+  - jekyll-sitemap
+  - jemoji
+
+exclude:
+  - .gitignore
+  - README.md
