@@ -1,49 +1,41 @@
-markdown: kramdown
-theme: jekyll-theme-cayman
-highlighter: rouge
-sass:
-  style: compressed
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
 
-repository: https://github.com/bcgov/TheOrgBook/docs
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+title: Test GH Site
+email: swcurran@cloudcompass.ca
+description: > # this means to ignore newlines until "baseurl:"
+  Write an awesome description for your new site here. You can edit this
+  line in _config.yml. It will appear in your document head meta (for
+  Google search results) and in your feed.xml site description.
+# repository: https://github.com/swcurran/testgh.git
+# twitter_username:
+github_username:  swcurran
 
-defaults:
-  -
-    scope:
-      path: "_docs"
-      type: "docs"
-    values:
-      layout: "docs"
-  -
-    scope:
-      path: "_posts"
-      type: "posts"
-    values:
-      layout: "news_item"
+# Build settings
+theme: jekyll-theme-slate
+# plugins:
+#   - jekyll-feed
 
-collections:
-  docs:
-    permalink: /:collection/:path/
-    output: true
-  posts:
-    permalink: /news/:year/:month/:day/:title/
-    output: true
-  tutorials:
-    output: true
-
-name: TheOrgBook • Bootstrapping Verified Organizations on the Internet
-description: Building a network of self-sovereign identies for Verified Organizations to drive the digital economy
-url: https://bcgov.github.io/TheOrgBook
-
-logo: /img/logo-2x.png
-
-plugins:
-  - jekyll-avatar
-  - jekyll-feed
-  - jekyll-mentions
-  - jekyll-redirect-from
-  - jekyll-sitemap
-  - jemoji
-
-exclude:
-  - .gitignore
-  - README.md
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
