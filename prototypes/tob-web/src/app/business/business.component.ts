@@ -1,15 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { GeneralDataService } from 'app/general-data.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-business',
   templateUrl: './business.component.html',
   styleUrls: ['./business.component.scss']
 })
-export class BusinessComponent implements OnInit {
+export class BusinessComponent implements OnInit, OnDestroy {
+  id: number;
+  loaded: boolean;
+  record: any;
+  error: string;
+  sub: any;
 
-  constructor() { }
+  constructor(
+    private dataService: GeneralDataService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+       this.id = +params['recordId'];
+        this.dataService.loadVerifiedOrg(this.id).subscribe(record => {
+          this.record = record;
+          console.log('verified org:', record);
+          this.loaded = !!record;
+          if(! record) this.error = 'Record not found';
+        }, err => {
+          this.error = err;
+        });
+    });
   }
 
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 }

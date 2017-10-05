@@ -18,7 +18,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'business',
+    path: 'business/:recordId',
     component: BusinessComponent,
     data: {
       breadcrumb: 'Organization Info'

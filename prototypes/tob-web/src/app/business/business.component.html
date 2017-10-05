@@ -1,7 +1,13 @@
 <section id="business">
-  <div class="row">
+  <div class="row" *ngIf="error">
+    <div class="col-sm-12">
+      {{error}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="loaded">
     <div class="col-md-8 col-sm-7">
-      <h1 class="business-title">Sprockets & Widgets Inc.</h1>
+      <h1 class="business-title">{{record.LegalName}}</h1>
 
       <a [routerLink]="'/'" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Search</a>
 
@@ -10,8 +16,8 @@
           <div class="form-group">
             <label class="control-label">Mailing Address</label>
             <div class="form-field">
-              130 Future Rd<br>
-              Vernon, BC&nbsp; V0A 0A0<br>
+              {{record.primaryLocation.streetAddress}}<br>
+              {{record.primaryLocation.municipality}}, {{record.primaryLocation.province}}&nbsp; {{record.primaryLocation.postalCode}}<br>
               Canada
             </div>
           </div>
@@ -33,7 +39,7 @@
       </div>
     </div>
   </div>
-  <div class="row mrgn-tp-md mrgn-bttm-lg business-certs">
+  <div class="row mrgn-tp-md mrgn-bttm-lg business-certs" *ngIf="loaded">
     <div class="col-sm-12">
       <label class="control-label"><span class="field-name">Permits and Licences</span> <span class="fa fa-question-circle text-muted"></span></label>
       <div class="certs-outer">
