@@ -6,7 +6,7 @@ info:
   termsOfService: N/A
 basePath: /api/v1
 paths:
-  /verifiedOrgs:
+  /verifiedorgs:
     get:
       tags:
         - VerifiedOrg
@@ -51,7 +51,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/VerifiedOrg"  
-  /verifiedOrgs/bulk:
+  /verifiedorgs/bulk:
     post:
       tags:
         - VerifiedOrg
@@ -74,7 +74,7 @@ paths:
       responses:
         201:
           description: VerifiedOrg created
-  /verifiedOrgs/{id}:
+  /verifiedorgs/{id}:
     get:
       tags:
         - VerifiedOrg
@@ -127,7 +127,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/VerifiedOrg"
-  /verifiedOrgs/{id}/delete:
+  /verifiedorgs/{id}/delete:
     post:
       tags:
         - VerifiedOrg
@@ -149,7 +149,7 @@ paths:
           description: id of VerifiedOrg to delete
           required: true
           type: integer
-  /voOrgTypes:
+  /voorgtypes:
     get:
       tags:
         - VOType
@@ -194,7 +194,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/VOType"  
-  /voOrgTypes/bulk:
+  /voorgtypes/bulk:
     post:
       tags:
         - VOType
@@ -217,7 +217,7 @@ paths:
       responses:
         201:
           description: VOType created
-  /voOrgTypes/{id}:
+  /voorgtypes/{id}:
     get:
       tags:
         - VOType
@@ -270,7 +270,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/VOType"
-  /voOrgTypes/{id}/delete:
+  /voorgtypes/{id}/delete:
     post:
       tags:
         - VOType
@@ -292,7 +292,7 @@ paths:
           description: id of VOType to delete
           required: true
           type: integer
-  /voLocations:
+  /volocations:
     get:
       tags:
         - VOLocation
@@ -337,7 +337,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/VOLocation"  
-  /voLocations/bulk:
+  /volocations/bulk:
     post:
       tags:
         - VOLocation
@@ -360,7 +360,7 @@ paths:
       responses:
         201:
           description: VOLocation created
-  /voLocations/{id}:
+  /volocations/{id}:
     get:
       tags:
         - VOLocation
@@ -413,7 +413,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/VOLocation"
-  /voLocations/{id}/delete:
+  /volocations/{id}/delete:
     post:
       tags:
         - VOLocation
@@ -435,7 +435,7 @@ paths:
           description: id of VOLocation to delete
           required: true
           type: integer
-  /voLocationTypes:
+  /volocationtypes:
     get:
       tags:
         - VOLocationType
@@ -480,7 +480,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/VOLocationType"  
-  /voLocationTypes/bulk:
+  /volocationtypes/bulk:
     post:
       tags:
         - VOLocationType
@@ -503,7 +503,7 @@ paths:
       responses:
         201:
           description: VOLocationType created
-  /voLocationTypes/{id}:
+  /volocationtypes/{id}:
     get:
       tags:
         - VOLocationType
@@ -556,7 +556,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/VOLocationType"
-  /voLocationTypes/{id}/delete:
+  /volocationtypes/{id}/delete:
     post:
       tags:
         - VOLocationType
@@ -578,7 +578,7 @@ paths:
           description: id of VOLocationType to delete
           required: true
           type: integer
-  /voDoingBusinessAs:
+  /vodoingbusinessas:
     get:
       tags:
         - VODoingBusinessAs
@@ -623,7 +623,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/VODoingBusinessAs"  
-  /voDoingBusinessAs/bulk:
+  /vodoingbusinessas/bulk:
     post:
       tags:
         - VODoingBusinessAs
@@ -646,7 +646,7 @@ paths:
       responses:
         201:
           description: VODoingBusinessAs created
-  /voDoingBusinessAs/{id}:
+  /vodoingbusinessas/{id}:
     get:
       tags:
         - VODoingBusinessAs
@@ -699,7 +699,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/VODoingBusinessAs"
-  /voDoingBusinessAs/{id}/delete:
+  /vodoingbusinessas/{id}/delete:
     post:
       tags:
         - VODoingBusinessAs
@@ -721,7 +721,7 @@ paths:
           description: id of VODoingBusinessAs to delete
           required: true
           type: integer
-  /voClaims:
+  /voclaims:
     get:
       tags:
         - VOClaim
@@ -766,7 +766,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/VOClaim"  
-  /voClaims/bulk:
+  /voclaims/bulk:
     post:
       tags:
         - VOClaim
@@ -789,7 +789,7 @@ paths:
       responses:
         201:
           description: VOClaim created
-  /voClaims/{id}:
+  /voclaims/{id}:
     get:
       tags:
         - VOClaim
@@ -842,7 +842,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/VOClaim"
-  /voClaims/{id}/delete:
+  /voclaims/{id}/delete:
     post:
       tags:
         - VOClaim
@@ -864,7 +864,7 @@ paths:
           description: id of VOClaim to delete
           required: true
           type: integer
-  /voClaimTypes:
+  /voclaimtypes:
     get:
       tags:
         - VOClaimType
@@ -909,7 +909,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/VOClaimType"  
-  /voClaimTypes/bulk:
+  /voclaimtypes/bulk:
     post:
       tags:
         - VOClaimType
@@ -932,7 +932,7 @@ paths:
       responses:
         201:
           description: VOClaimType created
-  /voClaimTypes/{id}:
+  /voclaimtypes/{id}:
     get:
       tags:
         - VOClaimType
@@ -985,7 +985,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/VOClaimType"
-  /voClaimTypes/{id}/delete:
+  /voclaimtypes/{id}/delete:
     post:
       tags:
         - VOClaimType
@@ -1007,7 +1007,7 @@ paths:
           description: id of VOClaimType to delete
           required: true
           type: integer
-  /inactiveClaimReasons:
+  /inactiveclaimreasons:
     get:
       tags:
         - InactiveClaimReason
@@ -1052,7 +1052,7 @@ paths:
               format: url
           schema:
             $ref: "#/definitions/InactiveClaimReason"  
-  /inactiveClaimReasons/bulk:
+  /inactiveclaimreasons/bulk:
     post:
       tags:
         - InactiveClaimReason
@@ -1075,7 +1075,7 @@ paths:
       responses:
         201:
           description: InactiveClaimReason created
-  /inactiveClaimReasons/{id}:
+  /inactiveclaimreasons/{id}:
     get:
       tags:
         - InactiveClaimReason
@@ -1128,7 +1128,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/InactiveClaimReason"
-  /inactiveClaimReasons/{id}/delete:
+  /inactiveclaimreasons/{id}/delete:
     post:
       tags:
         - InactiveClaimReason
@@ -1150,11 +1150,11 @@ paths:
           description: id of InactiveClaimReason to delete
           required: true
           type: integer
-  /issuerOrgs:
+  /issuerservices:
     get:
       tags:
-        - IssuerOrg
-      summary: Lists available IssuerOrg objects
+        - IssuerService
+      summary: Lists available IssuerService objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -1167,12 +1167,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/IssuerOrg"
+              $ref: "#/definitions/IssuerService"
     post:
       tags:
-        - IssuerOrg
+        - IssuerService
       x-codegen-operation: create
-      summary: Creates a new IssuerOrg object            
+      summary: Creates a new IssuerService object            
       consumes:
         - application/json
       produces:
@@ -1184,22 +1184,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/IssuerOrg"
+            $ref: "#/definitions/IssuerService"
       responses:
         201:
-          description: IssuerOrg created
+          description: IssuerService created
           headers:
             Location:
-              description: A link to the IssuerOrg
+              description: A link to the IssuerService
               type: string
               format: url
           schema:
-            $ref: "#/definitions/IssuerOrg"  
-  /issuerOrgs/bulk:
+            $ref: "#/definitions/IssuerService"  
+  /issuerservices/bulk:
     post:
       tags:
-        - IssuerOrg
-      summary: Bulk create / update a number of IssuerOrg object      
+        - IssuerService
+      summary: Bulk create / update a number of IssuerService object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -1214,15 +1214,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/IssuerOrg"
+              $ref: "#/definitions/IssuerService"
       responses:
         201:
-          description: IssuerOrg created
-  /issuerOrgs/{id}:
+          description: IssuerService created
+  /issuerservices/{id}:
     get:
       tags:
-        - IssuerOrg
-      summary: Gets a specific IssuerOrg object      
+        - IssuerService
+      summary: Gets a specific IssuerService object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -1233,20 +1233,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/IssuerOrg"
+            $ref: "#/definitions/IssuerService"
         404:
-          description: IssuerOrg not found
+          description: IssuerService not found
       parameters:
         - name: id
           in: path
-          description: id of IssuerOrg to fetch
+          description: id of IssuerService to fetch
           required: true
           type: integer
     put:
       tags:
-        - IssuerOrg
+        - IssuerService
       x-codegen-operation: update
-      summary: Updates a specific IssuerOrg object      
+      summary: Updates a specific IssuerService object      
       consumes:
         - application/json
       produces:
@@ -1257,26 +1257,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/IssuerOrg"
+            $ref: "#/definitions/IssuerService"
         404:
-          description: IssuerOrg not found
+          description: IssuerService not found
       parameters:
         - name: id
           in: path
-          description: id of IssuerOrg to fetch
+          description: id of IssuerService to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/IssuerOrg"
-  /issuerOrgs/{id}/delete:
+            $ref: "#/definitions/IssuerService"
+  /issuerservices/{id}/delete:
     post:
       tags:
-        - IssuerOrg
+        - IssuerService
       x-codegen-operation: destroy
-      summary: Deletes a specific IssuerOrg object      
+      summary: Deletes a specific IssuerService object      
       consumes: []
       produces:
         - text/plain
@@ -1286,11 +1286,11 @@ paths:
         200:
           description: OK
         404:
-          description: IssuerOrg not found
+          description: IssuerService not found
       parameters:
         - name: id
           in: path
-          description: id of IssuerOrg to delete
+          description: id of IssuerService to delete
           required: true
           type: integer
   /jurisdictions:
@@ -1436,6 +1436,1053 @@ paths:
           description: id of Jurisdiction to delete
           required: true
           type: integer
+  /users:
+    get:
+      tags:
+        - User
+      summary: Lists available User objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/User"
+    post:
+      tags:
+        - User
+      x-codegen-operation: create
+      summary: Creates a new User object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: User created
+          headers:
+            Location:
+              description: A link to the User
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/User"  
+  /users/bulk:
+    post:
+      tags:
+        - User
+      summary: Bulk create / update a number of User object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/User"
+      responses:
+        201:
+          description: User created
+  /users/{id}:
+    get:
+      tags:
+        - User
+      summary: Gets a specific User object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: User not found
+      parameters:
+        - name: id
+          in: path
+          description: id of User to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - User
+      x-codegen-operation: update
+      summary: Updates a specific User object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: User not found
+      parameters:
+        - name: id
+          in: path
+          description: id of User to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+  /users/{id}/delete:
+    post:
+      tags:
+        - User
+      x-codegen-operation: destroy
+      summary: Deletes a specific User object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: User not found
+      parameters:
+        - name: id
+          in: path
+          description: id of User to delete
+          required: true
+          type: integer
+  /roles:
+    get:
+      tags:
+        - Role
+      summary: Lists available Role objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Role"
+    post:
+      tags:
+        - Role
+      x-codegen-operation: create
+      summary: Creates a new Role object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Role"
+      responses:
+        201:
+          description: Role created
+          headers:
+            Location:
+              description: A link to the Role
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/Role"  
+  /roles/bulk:
+    post:
+      tags:
+        - Role
+      summary: Bulk create / update a number of Role object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Role"
+      responses:
+        201:
+          description: Role created
+  /roles/{id}:
+    get:
+      tags:
+        - Role
+      summary: Gets a specific Role object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Role"
+        404:
+          description: Role not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - Role
+      x-codegen-operation: update
+      summary: Updates a specific Role object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Role"
+        404:
+          description: Role not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Role"
+  /roles/{id}/delete:
+    post:
+      tags:
+        - Role
+      x-codegen-operation: destroy
+      summary: Deletes a specific Role object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: Role not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to delete
+          required: true
+          type: integer
+  /userroles:
+    get:
+      tags:
+        - UserRole
+      summary: Lists available UserRole objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRole"
+    post:
+      tags:
+        - UserRole
+      x-codegen-operation: create
+      summary: Creates a new UserRole object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UserRole"
+      responses:
+        201:
+          description: UserRole created
+          headers:
+            Location:
+              description: A link to the UserRole
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/UserRole"  
+  /userroles/bulk:
+    post:
+      tags:
+        - UserRole
+      summary: Bulk create / update a number of UserRole object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRole"
+      responses:
+        201:
+          description: UserRole created
+  /userroles/{id}:
+    get:
+      tags:
+        - UserRole
+      summary: Gets a specific UserRole object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/UserRole"
+        404:
+          description: UserRole not found
+      parameters:
+        - name: id
+          in: path
+          description: id of UserRole to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - UserRole
+      x-codegen-operation: update
+      summary: Updates a specific UserRole object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/UserRole"
+        404:
+          description: UserRole not found
+      parameters:
+        - name: id
+          in: path
+          description: id of UserRole to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UserRole"
+  /userroles/{id}/delete:
+    post:
+      tags:
+        - UserRole
+      x-codegen-operation: destroy
+      summary: Deletes a specific UserRole object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: UserRole not found
+      parameters:
+        - name: id
+          in: path
+          description: id of UserRole to delete
+          required: true
+          type: integer
+  /permissions:
+    get:
+      tags:
+        - Permission
+      summary: Lists available Permission objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Permission"
+    post:
+      tags:
+        - Permission
+      x-codegen-operation: create
+      summary: Creates a new Permission object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Permission"
+      responses:
+        201:
+          description: Permission created
+          headers:
+            Location:
+              description: A link to the Permission
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/Permission"  
+  /permissions/bulk:
+    post:
+      tags:
+        - Permission
+      summary: Bulk create / update a number of Permission object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Permission"
+      responses:
+        201:
+          description: Permission created
+  /permissions/{id}:
+    get:
+      tags:
+        - Permission
+      summary: Gets a specific Permission object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Permission"
+        404:
+          description: Permission not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Permission to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - Permission
+      x-codegen-operation: update
+      summary: Updates a specific Permission object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Permission"
+        404:
+          description: Permission not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Permission to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Permission"
+  /permissions/{id}/delete:
+    post:
+      tags:
+        - Permission
+      x-codegen-operation: destroy
+      summary: Deletes a specific Permission object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: Permission not found
+      parameters:
+        - name: id
+          in: path
+          description: id of Permission to delete
+          required: true
+          type: integer
+  /rolepermissions:
+    get:
+      tags:
+        - RolePermission
+      summary: Lists available RolePermission objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RolePermission"
+    post:
+      tags:
+        - RolePermission
+      x-codegen-operation: create
+      summary: Creates a new RolePermission object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/RolePermission"
+      responses:
+        201:
+          description: RolePermission created
+          headers:
+            Location:
+              description: A link to the RolePermission
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/RolePermission"  
+  /rolepermissions/bulk:
+    post:
+      tags:
+        - RolePermission
+      summary: Bulk create / update a number of RolePermission object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RolePermission"
+      responses:
+        201:
+          description: RolePermission created
+  /rolepermissions/{id}:
+    get:
+      tags:
+        - RolePermission
+      summary: Gets a specific RolePermission object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/RolePermission"
+        404:
+          description: RolePermission not found
+      parameters:
+        - name: id
+          in: path
+          description: id of RolePermission to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - RolePermission
+      x-codegen-operation: update
+      summary: Updates a specific RolePermission object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/RolePermission"
+        404:
+          description: RolePermission not found
+      parameters:
+        - name: id
+          in: path
+          description: id of RolePermission to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/RolePermission"
+  /rolepermissions/{id}/delete:
+    post:
+      tags:
+        - RolePermission
+      x-codegen-operation: destroy
+      summary: Deletes a specific RolePermission object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: RolePermission not found
+      parameters:
+        - name: id
+          in: path
+          description: id of RolePermission to delete
+          required: true
+          type: integer
+  /verifiedorgs/{id}/voclaims:
+    get:
+      summary: Returns the VO Claims for a Verified Organization
+      tags:
+        - VerifiedOrg
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of VerifiedOrg for which to fetch VOClaims
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VOClaim"
+        404:
+           description: User not found
+  /roles/{id}/permissions:
+    get:
+      summary: Get all the permissions for a role
+      tags:
+        - Role
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to fetch
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/PermissionViewModel"
+    put:
+      summary: Updates the permissions for a role
+      x-operation-ignore: YES
+      tags:
+        - Role
+      x-codegen-permission: ADMIN
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to update
+          required: true
+          type: integer
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/PermissionViewModel"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/PermissionViewModel"
+        404:
+          description: Role not found
+    post:
+      summary: Adds a permissions to a role
+      x-operation-ignore: YES
+      tags:
+        - Role
+      x-codegen-permission: ADMIN
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to update
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/PermissionViewModel"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/PermissionViewModel"
+        404:
+          description: Role not found
+  /roles/{id}/users:
+    get:
+      summary: Gets all the users for a role
+      tags:
+        - Role
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to fetch
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRoleViewModel"
+    put:
+      summary: Updates the users for a role
+      x-operation-ignore: YES
+      tags:
+        - Role
+      x-codegen-permission: ADMIN
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of Role to update
+          required: true
+          type: integer
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRoleViewModel"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRoleViewModel"
+        404:
+          description: Role not found
+  /users/current:
+    get:
+      summary: Get the currently logged in user
+      tags:
+        - CurrentUser
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/CurrentUserViewModel"
+  /users/search:
+    get:
+      summary: Searches Users
+      description:
+        Used for the search users.
+      tags:
+        - User
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: fuelSuppliers
+          in: query
+          description: FuelSupplier (array of id numbers)
+          collectionFormat: multi
+          type: array
+          items:
+            type: integer
+        - name: surname
+          in: query
+          type: string
+        - name: includeInactive
+          in: query
+          description: True if Inactive users will be returned
+          type: boolean
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserViewModel"
+  /users/{id}/roles:
+    get:
+      summary: Returns the roles for a user
+      tags:
+        - User
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of User to fetch
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRoleViewModel"
+        404:
+           description: User not found
+    post:
+      summary: Adds a role to a user
+      x-operation-ignore: YES
+      tags:
+        - User
+      x-codegen-permission: ADMIN
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of User to update
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UserRoleViewModel"
+      responses:
+        201:
+          description: Role created for user
+          headers:
+            Location:
+              description: A link to the User Role
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/UserRoleViewModel"
+    put:
+      summary: Updates the roles for a user
+      x-operation-ignore: YES
+      tags:
+        - User
+      x-codegen-permission: ADMIN
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of User to update
+          required: true
+          type: integer
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRoleViewModel"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRoleViewModel"
+        404:
+          description: User not found
+  /users/{id}/permissions:
+    get:
+      summary: Returns the set of permissions for a user
+      tags:
+        - User
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: id
+          in: path
+          description: id of User to fetch
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/PermissionViewModel"
+        404:
+           description: User not found
 definitions:
   VerifiedOrg:
     type: object
@@ -1654,7 +2701,7 @@ definitions:
         type: string
         description: A base64-encoded logo to display as a representation of the claim.
       issuerOrgId:
-        $ref: '#/definitions/IssuerOrg'
+        $ref: '#/definitions/IssuerService'
         description: The name of the organization that issued the claim.
       issuerURL:
         type: string
@@ -1691,7 +2738,7 @@ definitions:
         format: int32
         type: integer
         description: The order of display Inactive Claim reason. In general, the order will be alpha.
-  IssuerOrg:
+  IssuerService:
     type: object
     description: The list of Organizations that have issued claims to Verified Organizations that are stored in this repository.
     required:
@@ -1767,4 +2814,261 @@ definitions:
         type: string
         format: date-time
         description: The data after which the Jurisdiction will no longer be used. Null if the Jurisdiction is in active use.
+  User:
+    type: object
+    description: Information about the users of the system.
+    required:
+      - id
+      - givenName
+      - surname
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a User.
+      givenName:
+        type: string
+        maxLength: 100
+        description: Given name of the user.
+      surname:
+        type: string
+        maxLength: 100
+        description: Surname of the user.
+      email:
+        type: string
+        maxLength: 150
+        description: The email address of the user in the system.
+      userId:
+        type: string
+        maxLength: 500
+        description: The text user ID of the user in the given Authorization Directory.
+      guid:
+        type: string
+        maxLength: 100
+        description: The GUID unique to the user as provided by the authentication system. In this case, authentication is done by Siteminder and the GUID uniquely identifies the user within the user directories managed by Siteminder - e.g. IDIR and BCeID. The GUID is equivalent to the IDIR Id, but is guaranteed unique to a person, while the IDIR ID is not - IDIR IDs can be recycled.
+      authorizationDirectory:
+        type: string
+        maxLength: 100
+        description: The name of the Authorization Directory from with which the user Id is recorded.
+  Role:
+    type: object
+    description: A table managed in the application by authorized users to create named Roles that can be assigned to Users as needed. Roles can be created as needed to support the users of the system and the roles they perform within the organization.
+    required:
+      - id
+      - name
+      - description
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Role.
+      name:
+        type: string
+        maxLength: 200
+        description: The name of the Role, as established by the user creating the role.
+      description:
+        type: string
+        maxLength: 1000
+        description: A description of the role as set by the user creating&#x2F;updating the role.
+  UserRole:
+    type: object
+    description: A link defining the Roles associated with each User.
+    required:
+      - id
+      - userId
+      - roleId
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a UserRole.
+      userId:
+        $ref: '#/definitions/User'
+        description: A foreign key reference to a User.
+      roleId:
+        $ref: '#/definitions/Role'
+        description: A foreign key reference to a Role.
+  Permission:
+    type: object
+    description: The set of permissions defined in the application. Each permission is given a name and triggers some behavior defined in the application. For example, a permission might allow users to see data or to have access to functionality restricted to users without that permission. Permissions are created as needed to the application and are added to the permissions table by data migrations executed at the time the software that uses the permission is deployed.
+    required:
+      - id
+      - code
+      - name
+      - description
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Permission.
+      code:
+        type: string
+        maxLength: 100
+        description: The name of the permission referenced in the software of the application.
+      name:
+        type: string
+        maxLength: 100
+        description: The &#39;user friendly&#39; name of the permission exposed to the user selecting the permissions to be included in a Role.
+      description:
+        type: string
+        maxLength: 1000
+        description: A description of the purpose of the permission and exposed to the user selecting the permissions to be included in a Role.
+  RolePermission:
+    type: object
+    description: The collection of permissions included in a role.
+    required:
+      - id
+      - roleId
+      - permissionId
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Role Permission.
+      roleId:
+        $ref: '#/definitions/Role'
+        description: A foreign key reference to a Role.
+      permissionId:
+        $ref: '#/definitions/Permission'
+        description: A foreign key reference to a Permission.
+  UserViewModel:
+    type: object
+    x-codegen-viewmodel: true
+    required:
+      - id
+      - active
+    properties:
+      id:
+        format: int32
+        type: integer
+      givenName:
+        type: string
+      surname:
+        type: string
+      email:
+        type: string
+      active:
+        type: boolean
+      smUserId:
+        type: string
+      userRoles:
+        type: array
+        items:
+          $ref: '#/definitions/UserRole'
+  CurrentUserViewModel:
+    type: object
+    x-codegen-viewmodel: true
+    properties:
+      id:
+        format: int32
+        type: integer
+      givenName:
+        type: string
+      surname:
+        type: string
+      email:
+        type: string
+      active:
+        type: boolean
+      userRoles:
+        type: array
+        items:
+          $ref: '#/definitions/UserRole'
+      smUserId:
+        type: string
+      smAuthorizationDirectory:
+        type: string
+  UserDetailsViewModel:
+    type: object
+    x-codegen-viewmodel: true
+    required:
+      - id
+      - active
+    properties:
+      id:
+        format: int32
+        type: integer
+      givenName:
+        type: string
+      surname:
+        type: string
+      email:
+        type: string
+      active:
+        type: boolean
+      permissions:
+        type: array
+        items:
+          $ref: '#/definitions/PermissionViewModel'
+  UserRoleViewModel:
+    type: object
+    x-codegen-viewmodel: true
+    required:
+      - effectiveDate
+      - userId
+      - roleId
+    properties:
+      id:
+        format: int32
+        type: integer
+      effectiveDate:
+        type: string
+        format: date-time
+      expiryDate:
+        type: string
+        format: date-time
+      roleId:
+        format: int32
+        type: integer
+      userId:
+        format: int32
+        type: integer
+  RoleViewModel:
+    type: object
+    x-codegen-viewmodel: true
+    required:
+      - id
+      - name
+      - description
+    properties:
+      id:
+        format: int32
+        type: integer
+      name:
+        type: string
+      description:
+        type: string
+  RolePermissionViewModel:
+    type: object
+    x-codegen-viewmodel: true
+    required:
+      - roleId
+      - permissionId
+    properties:
+      id:
+        format: int32
+        type: integer
+      roleId:
+        format: int32
+        type: integer
+      permissionId:
+        format: int32
+        type: integer
+  PermissionViewModel:
+    type: object
+    x-codegen-viewmodel: true
+    required:
+      - code
+      - name
+      - description
+    properties:
+      id:
+        format: int32
+        type: integer
+      code:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
 securityDefinitions: {}
