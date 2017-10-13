@@ -1,9 +1,24 @@
 #$/bin/bash
 
-if [ -z "$1" ]; then
+# ==============================================================================
+# Script for loading test data into the TheOrgBook database
+#
+# * Requires curl
+# ------------------------------------------------------------------------------
+# Usage on Windows (using Git Bash):
+#  MSYS_NO_PATHCONV=1 ./load-all.sh <server URL>
+#
+# Example:
+#  MSYS_NO_PATHCONV=1 ./load-all.sh dev
+# ------------------------------------------------------------------------------
+API_PREFIX=api/v1
+BULK_PATH=bulk
+# ==============================================================================
+
+if [ -z "${1}" ]; then
   echo Incorrect syntax
-  echo USAGE $0 "<server URL>"
-  echo Example: $0 dev
+  echo USAGE ${0} "<server URL>"
+  echo Example: ${0} dev
   echo "Where <server URL> is one of dev, test, prod or a full URL"
   exit
 fi
@@ -14,22 +29,25 @@ if [ -e cookie ]; then
   rm cookie
 fi
 
+# ==============================================================================================
 # The order of the loading is important - need to add independent files before dependent ones
-./load.sh CreditTradeStatus/CreditTradeStatus_TCS.json api/credittradestatuses/bulk $1
-./load.sh CreditTradeType/CreditTradeType_CTType.json api/credittradetypes/bulk $1
-./load.sh FuelSupplierActionsType/FuelSupplierActionsType_FSActionType.json api/fuelsupplieractionstypes/bulk $1
-./load.sh FuelSupplierStatus/FuelSupplierStatus_FSStatus.json api/fuelsupplierstatuses/bulk $1
-./load.sh FuelSupplierType/FuelSupplierType_FSType.json api/fuelsuppliertypes/bulk $1
-./load.sh NotificationType/NotificationType_NotType.json api/notificationtypes/bulk $1
-./load.sh OpportunityStatus/OpportunityStatus_OppStatus.json api/opportunitystatuses/bulk $1
+# ==============================================================================================
 
-./load.sh permissions/permissions_Perms.json api/permissions/bulk $1
-./load.sh roles/roles_Role.json api/roles/bulk $1
-./load.sh rolepermission/rolepermission_RP.json api/rolepermissions/bulk $1
+# Users, Roles, and Permissions ...
+./load.sh ./users/users_user.json ${API_PREFIX}/users/${BULK_PATH} "$@"
+./load.sh ./roles/roles_Role.json ${API_PREFIX}/roles/${BULK_PATH} "$@"
+./load.sh ./permissions/permissions_Perms.json ${API_PREFIX}/permissions/${BULK_PATH} "$@"
+./load.sh ./userRole/userRole_userRole.json ${API_PREFIX}/userroles/${BULK_PATH} "$@"
+./load.sh ./rolepermission/rolepermission_RP.json ${API_PREFIX}/rolepermissions/${BULK_PATH} "$@"
 
-./load.sh FuelSupplier/FuelSupplier_FS.json api/fuelsuppliers/bulk $1
-# ./load.sh FuelSupplierCCData/FuelSupplierCCData_FSCCD.json api/fuelsupplierccdata/bulk $1
-./load.sh users/users_user.json api/users/bulk $1
-./load.sh userRole/userRole_userRole.json api/userroles/bulk $1
-./load.sh FuelSupplierContactRole/FuelSupplierContactRole_FSContactRole.json api/fuelsuppliercontactroles/bulk $1
-./load.sh FuelSupplierContact/FuelSupplierContact_FSContact.json api/fuelsuppliercontacts/bulk $1
+# Everything else ...
+./load.sh ./InactiveClaimReason/InactiveClaimReason_DEAC.json ${API_PREFIX}/inactiveclaimreasons/${BULK_PATH} "$@"
+./load.sh ./Jurisdiction/Jurisdiction_JUR.json ${API_PREFIX}/jurisdictions/${BULK_PATH} "$@"
+./load.sh ./VOType/VOType_VOType.json ${API_PREFIX}/voorgtypes/${BULK_PATH} "$@"
+./load.sh ./VOLocationType/VOLocationType_VLT.json ${API_PREFIX}/volocationtypes/${BULK_PATH} "$@"
+./load.sh ./IssuerService/IssuerService_ISVC.json ${API_PREFIX}/issuerservices/${BULK_PATH} "$@"
+./load.sh ./VOClaimType/VOClaimType_CT.json ${API_PREFIX}/voclaimtypes/${BULK_PATH} "$@"
+./load.sh ./VerifiedOrg/VerifiedOrg_VO.json ${API_PREFIX}/verifiedorgs/${BULK_PATH} "$@"
+./load.sh ./VOClaim/VOClaim_VOC.json ${API_PREFIX}/voclaims/${BULK_PATH} "$@"
+./load.sh ./VODoingBusinessAs/VODoingBusinessAs_VODBA.json ${API_PREFIX}/vodoingbusinessas/${BULK_PATH} "$@"
+./load.sh ./VOLocation/VOLocation_VOL.json ${API_PREFIX}/volocations/${BULK_PATH} "$@"
