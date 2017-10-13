@@ -15,7 +15,7 @@
             "id": "1"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -50,10 +50,10 @@
         "streetAddress": "2310 Mesa Vista Drive",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "1"
+            "id": "2"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -88,7 +88,7 @@
         "streetAddress": "3746 Noble Rd",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "2"
+            "id": "3"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -107,7 +107,7 @@
         "streetAddress": "3617 Essendene Avenue",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "2"
+            "id": "3"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -126,10 +126,10 @@
         "streetAddress": "2426 Cordova Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "2"
+            "id": "3"
         },
         "voLocationTypeId": {
-            "id": "2"
+            "id": "1"
         }
     },
     {
@@ -148,7 +148,7 @@
             "id": "3"
         },
         "voLocationTypeId": {
-            "id": "2"
+            "id": "1"
         }
     },
     {
@@ -164,7 +164,7 @@
         "streetAddress": "1004 Robson St",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "3"
+            "id": "4"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -243,7 +243,7 @@
             "id": "4"
         },
         "voLocationTypeId": {
-            "id": "2"
+            "id": "1"
         }
     },
     {
@@ -259,7 +259,7 @@
         "streetAddress": "3356 Wallace Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "4"
+            "id": "5"
         },
         "voLocationTypeId": {
             "id": "2"
@@ -278,7 +278,7 @@
         "streetAddress": "4173 James Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "4"
+            "id": "6"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -297,7 +297,7 @@
         "streetAddress": "2553 Holdom Avenue",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "4"
+            "id": "7"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -316,7 +316,7 @@
         "streetAddress": "3924 Roger Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "5"
+            "id": "7"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -335,10 +335,10 @@
         "streetAddress": "616 Scotts Lane",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "5"
+            "id": "7"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -354,7 +354,7 @@
         "streetAddress": "3690 Findlay Creek Road",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "5"
+            "id": "8"
         },
         "voLocationTypeId": {
             "id": "2"
@@ -373,10 +373,10 @@
         "streetAddress": "1065 Sixth Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "6"
+            "id": "8"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -392,10 +392,10 @@
         "streetAddress": "2261 Blanshard",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "6"
+            "id": "9"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -411,10 +411,10 @@
         "streetAddress": "4761 King George Hwy",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "7"
+            "id": "9"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -430,10 +430,10 @@
         "streetAddress": "4136 Glover Road",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "7"
+            "id": "10"
         },
         "voLocationTypeId": {
-            "id": "2"
+            "id": "1"
         }
     },
     {
@@ -449,10 +449,10 @@
         "streetAddress": "735 Wallace Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "8"
+            "id": "10"
         },
         "voLocationTypeId": {
-            "id": "2"
+            "id": "1"
         }
     },
     {
@@ -468,7 +468,7 @@
         "streetAddress": "4359 Yoho Valley Road",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "9"
+            "id": "10"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -506,7 +506,7 @@
         "streetAddress": "1323 Cordova Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "10"
+            "id": "11"
         },
         "voLocationTypeId": {
             "id": "1"
@@ -528,7 +528,7 @@
             "id": "11"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -547,7 +547,7 @@
             "id": "11"
         },
         "voLocationTypeId": {
-            "id": "2"
+            "id": "1"
         }
     },
     {
@@ -566,7 +566,7 @@
             "id": "11"
         },
         "voLocationTypeId": {
-            "id": "1"
+            "id": "2"
         }
     },
     {
@@ -582,10 +582,10 @@
         "streetAddress": "4528 Nootka Street",
         "unitNumber": null,
         "verifiedOrgID": {
-            "id": "12"
+            "id": "11"
         },
         "voLocationTypeId": {
-            "id": "2"
+            "id": "1"
         }
     },
     {

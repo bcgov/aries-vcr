@@ -1,9 +1,7 @@
 [
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "12886823",
+        "LegalName": "The Original House of Pies",
+        "busId": "21368793",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "1",
@@ -18,10 +16,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "15400793",
+        "LegalName": "Price Savers",
+        "busId": "33958398",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "2",
@@ -36,10 +32,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "2"
-        },
-        "busId": "22067237",
+        "LegalName": "McDuff",
+        "busId": "13128340",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "3",
@@ -54,10 +48,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "51272075",
+        "LegalName": "Henry's Hamburgers",
+        "busId": "97625569",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "4",
@@ -72,10 +64,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "89917776",
+        "LegalName": "Harold's",
+        "busId": "54753939",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "5",
@@ -90,10 +80,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "32592324",
+        "LegalName": "Record World",
+        "busId": "46117659",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "6",
@@ -108,10 +96,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "90129012",
+        "LegalName": "The Fox and Hound ",
+        "busId": "60343736",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "7",
@@ -126,10 +112,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "2"
-        },
-        "busId": "25354082",
+        "LegalName": "Pantry Food Stores",
+        "busId": "46787486",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "8",
@@ -144,10 +128,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "48959755",
+        "LegalName": "Pantry Pride",
+        "busId": "69299326",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "9",
@@ -162,10 +144,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "11365099",
+        "LegalName": "Earthworks Garden Kare",
+        "busId": "11254132",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "10",
@@ -180,10 +160,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "1"
-        },
-        "busId": "28263030",
+        "LegalName": "Service Merchandise",
+        "busId": "84575151",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "11",
@@ -198,10 +176,8 @@
         }
     },
     {
-        "LegalName": {
-            "id": "2"
-        },
-        "busId": "67875310",
+        "LegalName": "Happy Family",
+        "busId": "63631199",
         "effectiveDate": "10/10/2010",
         "endDate": null,
         "id": "12",

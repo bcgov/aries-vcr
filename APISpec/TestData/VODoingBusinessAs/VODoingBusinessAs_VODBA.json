@@ -9,19 +9,10 @@
         }
     },
     {
-        "DBA": "Price Savers",
+        "DBA": "Best Products",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "3",
-        "verifiedOrgId": {
-            "id": "1"
-        }
-    },
-    {
-        "DBA": "McDuff",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "5",
+        "id": "4",
         "verifiedOrgId": {
             "id": "2"
         }
@@ -32,7 +23,7 @@
         "endDate": null,
         "id": "6",
         "verifiedOrgId": {
-            "id": "2"
+            "id": "3"
         }
     },
     {
@@ -41,16 +32,25 @@
         "endDate": null,
         "id": "7",
         "verifiedOrgId": {
-            "id": "2"
+            "id": "3"
         }
     },
     {
-        "DBA": "Henry's Hamburgers",
+        "DBA": "Museum Company",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "9",
+        "id": "8",
         "verifiedOrgId": {
             "id": "3"
+        }
+    },
+    {
+        "DBA": "Body Toning",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "10",
+        "verifiedOrgId": {
+            "id": "4"
         }
     },
     {
@@ -81,30 +81,12 @@
         }
     },
     {
-        "DBA": "Harold's",
+        "DBA": "Edwards",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "14",
+        "id": "17",
         "verifiedOrgId": {
-            "id": "4"
-        }
-    },
-    {
-        "DBA": "Record World",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "15",
-        "verifiedOrgId": {
-            "id": "4"
-        }
-    },
-    {
-        "DBA": "The Fox and Hound ",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "16",
-        "verifiedOrgId": {
-            "id": "4"
+            "id": "7"
         }
     },
     {
@@ -113,43 +95,61 @@
         "endDate": null,
         "id": "18",
         "verifiedOrgId": {
-            "id": "5"
-        }
-    },
-    {
-        "DBA": "Pantry Food Stores",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "19",
-        "verifiedOrgId": {
-            "id": "5"
-        }
-    },
-    {
-        "DBA": "Pantry Pride",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "21",
-        "verifiedOrgId": {
-            "id": "6"
-        }
-    },
-    {
-        "DBA": "Earthworks Garden Kare",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "23",
-        "verifiedOrgId": {
             "id": "7"
         }
     },
     {
-        "DBA": "Service Merchandise",
+        "DBA": "Magik Grey",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "27",
+        "id": "20",
+        "verifiedOrgId": {
+            "id": "8"
+        }
+    },
+    {
+        "DBA": "Sandy's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "22",
+        "verifiedOrgId": {
+            "id": "9"
+        }
+    },
+    {
+        "DBA": "Gamma Gas",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "24",
         "verifiedOrgId": {
             "id": "10"
+        }
+    },
+    {
+        "DBA": "Universo Realtors",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "25",
+        "verifiedOrgId": {
+            "id": "10"
+        }
+    },
+    {
+        "DBA": "Gas Depot",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "26",
+        "verifiedOrgId": {
+            "id": "10"
+        }
+    },
+    {
+        "DBA": "Lionel Playworld",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "28",
+        "verifiedOrgId": {
+            "id": "11"
         }
     },
     {
@@ -171,12 +171,12 @@
         }
     },
     {
-        "DBA": "Happy Family",
+        "DBA": "J. Brannam",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "32",
+        "id": "31",
         "verifiedOrgId": {
-            "id": "12"
+            "id": "11"
         }
     }
 ]
