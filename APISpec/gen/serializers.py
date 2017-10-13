@@ -152,5 +152,5 @@ class VOTypeSerializer(serializers.ModelSerializer):
 class VerifiedOrgSerializer(serializers.ModelSerializer):
   class Meta:
     model = VerifiedOrg
-    fields = ('id','busId','orgTypeId','jurisdictionId','LegalName','primaryLocation','effectiveDate','endDate')
+    fields = ('id','busId','orgTypeId','jurisdictionId','LegalName','effectiveDate','endDate')
 

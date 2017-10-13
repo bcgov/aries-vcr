@@ -25,7 +25,6 @@ from django.db import models
 from django.utils import timezone
 from .VOType import VOType
 from .Jurisdiction import Jurisdiction
-from .VOLocation import VOLocation
 
 from auditable.models import Auditable
 
@@ -34,7 +33,6 @@ class VerifiedOrg(Auditable):
     orgTypeId = models.ForeignKey('VOType', related_name='VerifiedOrgorgTypeId')   
     jurisdictionId = models.ForeignKey('Jurisdiction', related_name='VerifiedOrgjurisdictionId')   
     LegalName = models.CharField(max_length=255)   
-    primaryLocation = models.ForeignKey('VOLocation', related_name='VerifiedOrgprimaryLocation', blank=True, null=True)   
     effectiveDate = models.DateField()   
     endDate = models.DateField(blank=True, null=True)   
     class Meta:

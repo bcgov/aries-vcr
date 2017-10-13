@@ -1,18 +1,9 @@
 [
     {
-        "DBA": "Asian Junction",
+        "DBA": "Price Savers",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "2",
-        "verifiedOrgId": {
-            "id": "1"
-        }
-    },
-    {
-        "DBA": "Best Products",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "4",
+        "id": "3",
         "verifiedOrgId": {
             "id": "2"
         }
@@ -23,42 +14,6 @@
         "endDate": null,
         "id": "6",
         "verifiedOrgId": {
-            "id": "3"
-        }
-    },
-    {
-        "DBA": "Jeans Unlimited",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "7",
-        "verifiedOrgId": {
-            "id": "3"
-        }
-    },
-    {
-        "DBA": "Museum Company",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "8",
-        "verifiedOrgId": {
-            "id": "3"
-        }
-    },
-    {
-        "DBA": "Body Toning",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "10",
-        "verifiedOrgId": {
-            "id": "4"
-        }
-    },
-    {
-        "DBA": "Wells & Wade",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "11",
-        "verifiedOrgId": {
             "id": "4"
         }
     },
@@ -68,7 +23,7 @@
         "endDate": null,
         "id": "12",
         "verifiedOrgId": {
-            "id": "4"
+            "id": "9"
         }
     },
     {
@@ -77,7 +32,25 @@
         "endDate": null,
         "id": "13",
         "verifiedOrgId": {
-            "id": "4"
+            "id": "9"
+        }
+    },
+    {
+        "DBA": "Record World",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "15",
+        "verifiedOrgId": {
+            "id": "10"
+        }
+    },
+    {
+        "DBA": "The Fox and Hound ",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "16",
+        "verifiedOrgId": {
+            "id": "10"
         }
     },
     {
@@ -86,16 +59,16 @@
         "endDate": null,
         "id": "17",
         "verifiedOrgId": {
-            "id": "7"
+            "id": "10"
         }
     },
     {
-        "DBA": "Grass Roots Yard Services",
+        "DBA": "Pantry Food Stores",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "18",
+        "id": "19",
         "verifiedOrgId": {
-            "id": "7"
+            "id": "11"
         }
     },
     {
@@ -104,25 +77,25 @@
         "endDate": null,
         "id": "20",
         "verifiedOrgId": {
-            "id": "8"
+            "id": "11"
         }
     },
     {
-        "DBA": "Sandy's",
+        "DBA": "Pantry Pride",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "22",
+        "id": "21",
         "verifiedOrgId": {
-            "id": "9"
+            "id": "11"
         }
     },
     {
-        "DBA": "Gamma Gas",
+        "DBA": "Earthworks Garden Kare",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "24",
+        "id": "23",
         "verifiedOrgId": {
-            "id": "10"
+            "id": "12"
         }
     },
     {
@@ -131,7 +104,7 @@
         "endDate": null,
         "id": "25",
         "verifiedOrgId": {
-            "id": "10"
+            "id": "13"
         }
     },
     {
@@ -140,7 +113,16 @@
         "endDate": null,
         "id": "26",
         "verifiedOrgId": {
-            "id": "10"
+            "id": "13"
+        }
+    },
+    {
+        "DBA": "Service Merchandise",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "27",
+        "verifiedOrgId": {
+            "id": "13"
         }
     },
     {
@@ -149,34 +131,16 @@
         "endDate": null,
         "id": "28",
         "verifiedOrgId": {
-            "id": "11"
+            "id": "13"
         }
     },
     {
-        "DBA": "Success Is Yours",
+        "DBA": "Happy Family",
         "effectiveDate": "10/10/2010",
         "endDate": null,
-        "id": "29",
+        "id": "32",
         "verifiedOrgId": {
-            "id": "11"
-        }
-    },
-    {
-        "DBA": "Stratacard",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "30",
-        "verifiedOrgId": {
-            "id": "11"
-        }
-    },
-    {
-        "DBA": "J. Brannam",
-        "effectiveDate": "10/10/2010",
-        "endDate": null,
-        "id": "31",
-        "verifiedOrgId": {
-            "id": "11"
+            "id": "16"
         }
     }
 ]

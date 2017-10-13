@@ -1,6 +1,6 @@
 [
     {
-        "DID": "did:sovrin:C544B6D31F2F53B2E50D653",
+        "DID": "did:sovrin:15E0594025AB528029EB7997",
         "endDate": "10/10/2010",
         "expirationDate": null,
         "id": "1",
@@ -12,7 +12,7 @@
         "name": "BC Registry"
     },
     {
-        "DID": "did:sovrin:2B8FDE292771A65017109FF2",
+        "DID": "did:sovrin:247BDDF11340F11728500E31",
         "endDate": "10/10/2010",
         "expirationDate": null,
         "id": "2",
@@ -24,7 +24,7 @@
         "name": "Business License"
     },
     {
-        "DID": "did:sovrin:11537CF716C005C5156A1E5A",
+        "DID": "did:sovrin:25EBB2A021469CDB156797B4",
         "endDate": "10/10/2010",
         "expirationDate": null,
         "id": "3",
@@ -36,7 +36,7 @@
         "name": "FoodSafe BC"
     },
     {
-        "DID": "did:sovrin:1E7A1B3833B41552278CC022",
+        "DID": "did:sovrin:1F55101B2A894403103018CF",
         "endDate": "10/10/2010",
         "expirationDate": null,
         "id": "4",

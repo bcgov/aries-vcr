@@ -2512,9 +2512,6 @@ definitions:
       LegalName:
         type: string
         description: The Legal Name of the Verified Organization
-      primaryLocation:
-        $ref: '#/definitions/VOLocation'
-        description: The primary location of the Verified Organization from the list of addresses associated with the VO.
       effectiveDate:
         type: string
         format: date-time
