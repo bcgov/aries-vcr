@@ -2,7 +2,7 @@
     {
         "description": "A Registered Corporation",
         "displayOrder": "1",
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
         "theType": "Corporation"
@@ -10,7 +10,7 @@
     {
         "description": "A Sole Proprietorship",
         "displayOrder": "2",
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
         "theType": "Sole Proprietorship"
@@ -18,7 +18,7 @@
     {
         "description": "A Partnership",
         "displayOrder": "3",
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
         "theType": "Partnership"
@@ -26,7 +26,7 @@
     {
         "description": "A Limited Liability Partnership",
         "displayOrder": "4",
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
         "theType": "Limited Liability Partnership"

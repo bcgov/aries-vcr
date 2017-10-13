@@ -1,7 +1,7 @@
 [
     {
-        "DID": "did:sovrin:15E0594025AB528029EB7997",
-        "endDate": "10/10/2010",
+        "DID": "did:sovrin:38F218691BDD0F9930A746B9",
+        "endDate": "2010-10-10",
         "expirationDate": null,
         "id": "1",
         "issuerOrgTLA": "BCReg",
@@ -12,8 +12,8 @@
         "name": "BC Registry"
     },
     {
-        "DID": "did:sovrin:247BDDF11340F11728500E31",
-        "endDate": "10/10/2010",
+        "DID": "did:sovrin:F6540B43A136E0A1538CF34",
+        "endDate": "2010-10-10",
         "expirationDate": null,
         "id": "2",
         "issuerOrgTLA": "BIZLic",
@@ -24,8 +24,8 @@
         "name": "Business License"
     },
     {
-        "DID": "did:sovrin:25EBB2A021469CDB156797B4",
-        "endDate": "10/10/2010",
+        "DID": "did:sovrin:2041D049274214E319208CC0",
+        "endDate": "2010-10-10",
         "expirationDate": null,
         "id": "3",
         "issuerOrgTLA": "BCFS",
@@ -36,8 +36,8 @@
         "name": "FoodSafe BC"
     },
     {
-        "DID": "did:sovrin:1F55101B2A894403103018CF",
-        "endDate": "10/10/2010",
+        "DID": "did:sovrin:23F1B1976BECBEEFA9CD26",
+        "endDate": "2010-10-10",
         "expirationDate": null,
         "id": "4",
         "issuerOrgTLA": "LLBC",

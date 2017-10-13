@@ -2,7 +2,7 @@
     {
         "base64Logo": null,
         "claimSchemaDefinition": null,
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
         "issuerOrgId": {
@@ -14,7 +14,7 @@
     {
         "base64Logo": null,
         "claimSchemaDefinition": null,
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
         "issuerOrgId": {
@@ -26,7 +26,7 @@
     {
         "base64Logo": null,
         "claimSchemaDefinition": null,
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
         "issuerOrgId": {
@@ -38,7 +38,7 @@
     {
         "base64Logo": null,
         "claimSchemaDefinition": null,
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
         "issuerOrgId": {
@@ -50,7 +50,7 @@
     {
         "base64Logo": null,
         "claimSchemaDefinition": null,
-        "effectiveDate": "10/10/2010",
+        "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "5",
         "issuerOrgId": {
