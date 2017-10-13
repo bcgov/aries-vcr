@@ -1,0 +1,26 @@
+[
+    {
+        "code": "LOGIN",
+        "description": "A minimum permission needed for an authenticated user to access the system.",
+        "id": "1",
+        "name": "Login"
+    },
+    {
+        "code": "ADMIN",
+        "description": "Gives the user System Administration power in the system. Assignment of this permission should go to a very limited set of users an an as needed/backup basis.",
+        "id": "2",
+        "name": "System Administrator"
+    },
+    {
+        "code": "USER_MANAGEMENT",
+        "description": "Gives the user access to the User Management screens",
+        "id": "3",
+        "name": "Login"
+    },
+    {
+        "code": "ROLES_AND_PERMISSIONS",
+        "description": "Gives the user access to the Roles and Permissions screens",
+        "id": "4",
+        "name": "Roles and Permissions"
+    }
+]

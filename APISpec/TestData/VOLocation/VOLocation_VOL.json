@@ -1,0 +1,610 @@
+[
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "The Original House of Pies",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "1",
+        "latLong": "48.343285, -123.398304",
+        "municipality": "Victoria",
+        "postalCode": "V8Z 2J8",
+        "province": "BC",
+        "streetAddress": "2262 Burdett Avenue",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "1"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Asian Junction",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "2",
+        "latLong": "50.186096, -122.906844",
+        "municipality": "Whistler",
+        "postalCode": "V0N 1B0",
+        "province": "BC",
+        "streetAddress": "223 Brew Creek Rd",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "1"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Price Savers",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "3",
+        "latLong": "49.832747, -121.430223",
+        "municipality": "Boston Bar",
+        "postalCode": "V0K 1C0",
+        "province": "BC",
+        "streetAddress": "2310 Mesa Vista Drive",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "1"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Best Products",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "4",
+        "latLong": "48.349908, -123.43914",
+        "municipality": "Victoria",
+        "postalCode": "V8Y 1Y7",
+        "province": "BC",
+        "streetAddress": "3795 Burdett Avenue",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "2"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "McDuff",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "5",
+        "latLong": "50.158668, -124.861885",
+        "municipality": "Cortes Island",
+        "postalCode": "V0P 1T0",
+        "province": "BC",
+        "streetAddress": "3746 Noble Rd",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "2"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Muirhead's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "6",
+        "latLong": "49.149808, -122.388766",
+        "municipality": "Abbotsford",
+        "postalCode": "V2S 2H7",
+        "province": "BC",
+        "streetAddress": "3617 Essendene Avenue",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "2"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Jeans Unlimited",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "7",
+        "latLong": "49.225717, -123.096645",
+        "municipality": "Vancouver",
+        "postalCode": "V6B 1E1",
+        "province": "BC",
+        "streetAddress": "2426 Cordova Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "2"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Museum Company",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "8",
+        "latLong": "49.918469, -119.464391",
+        "municipality": "Kelowna",
+        "postalCode": "V1Y 8H2",
+        "province": "BC",
+        "streetAddress": "1019 Hardy Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "3"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Henry's Hamburgers",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "9",
+        "latLong": "49.276168, -123.141111",
+        "municipality": "Vancouver",
+        "postalCode": "V6B 3K9",
+        "province": "BC",
+        "streetAddress": "1004 Robson St",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "3"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Body Toning",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "10",
+        "latLong": "49.084206, -121.928704",
+        "municipality": "Chilliwack",
+        "postalCode": "V2P 2M1",
+        "province": "BC",
+        "streetAddress": "3561 Wellington Ave",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "4"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Wells & Wade",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "11",
+        "latLong": "49.389221, -121.384717",
+        "municipality": "Hope",
+        "postalCode": "V0X 1L0",
+        "province": "BC",
+        "streetAddress": "365 Old Spallumcheen Rd",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "4"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Brendle's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "12",
+        "latLong": "50.251697, -125.976403",
+        "municipality": "Sayward",
+        "postalCode": "V0P 1R0",
+        "province": "BC",
+        "streetAddress": "47 Noble Rd",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "4"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Britling Cafeterias",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "13",
+        "latLong": "49.165132, -122.902407",
+        "municipality": "Richmond",
+        "postalCode": "V7E 2E4",
+        "province": "BC",
+        "streetAddress": "4764 Jade St",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "4"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Harold's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "14",
+        "latLong": "49.159899, -123.901311",
+        "municipality": "Nanaimo",
+        "postalCode": "V9R 3A8",
+        "province": "BC",
+        "streetAddress": "3356 Wallace Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "4"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Record World",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "15",
+        "latLong": "49.318073, -123.015039",
+        "municipality": "Burnaby",
+        "postalCode": "V5G 4W7",
+        "province": "BC",
+        "streetAddress": "4173 James Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "4"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "The Fox and Hound ",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "16",
+        "latLong": "49.207543, -122.793095",
+        "municipality": "Surrey",
+        "postalCode": "V3T 4Y5",
+        "province": "BC",
+        "streetAddress": "2553 Holdom Avenue",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "4"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Edwards",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "17",
+        "latLong": "48.70221, -123.759646",
+        "municipality": "Duncan",
+        "postalCode": "V9L 1P1",
+        "province": "BC",
+        "streetAddress": "3924 Roger Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "5"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Grass Roots Yard Services",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "18",
+        "latLong": "49.724281, -119.424868",
+        "municipality": "Okanagan Mission",
+        "postalCode": "V0R 1S0",
+        "province": "BC",
+        "streetAddress": "616 Scotts Lane",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "5"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Pantry Food Stores",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "19",
+        "latLong": "50.251889, -115.911884",
+        "municipality": "Fairmont Hot Springs",
+        "postalCode": "V0B 1L0",
+        "province": "BC",
+        "streetAddress": "3690 Findlay Creek Road",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "5"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Magik Grey",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "20",
+        "latLong": "49.26517, -122.894774",
+        "municipality": "New Westminster",
+        "postalCode": "V3L 3C1",
+        "province": "BC",
+        "streetAddress": "1065 Sixth Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "6"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Pantry Pride",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "21",
+        "latLong": "48.521663, -123.310254",
+        "municipality": "Victoria",
+        "postalCode": "V8W 2H9",
+        "province": "BC",
+        "streetAddress": "2261 Blanshard",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "6"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Sandy's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "22",
+        "latLong": "49.11967, -122.916235",
+        "municipality": "Surrey",
+        "postalCode": "V3W 4E3",
+        "province": "BC",
+        "streetAddress": "4761 King George Hwy",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "7"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Earthworks Garden Kare",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "23",
+        "latLong": "49.155092, -122.682652",
+        "municipality": "Langley",
+        "postalCode": "V3A 4P6",
+        "province": "BC",
+        "streetAddress": "4136 Glover Road",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "7"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Gamma Gas",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "24",
+        "latLong": "49.108632, -123.871502",
+        "municipality": "Nanaimo",
+        "postalCode": "V9R 3A8",
+        "province": "BC",
+        "streetAddress": "735 Wallace Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "8"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Universo Realtors",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "25",
+        "latLong": "50.921767, -116.344166",
+        "municipality": "Spillimacheen",
+        "postalCode": "V0A 1P0",
+        "province": "BC",
+        "streetAddress": "4359 Yoho Valley Road",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "9"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Gas Depot",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "26",
+        "latLong": "48.415871, -123.392253",
+        "municipality": "Victoria",
+        "postalCode": "V8Y 1Y7",
+        "province": "BC",
+        "streetAddress": "2890 Burdett Avenue",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "10"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Service Merchandise",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "27",
+        "latLong": "49.203986, -123.160493",
+        "municipality": "Vancouver",
+        "postalCode": "V6B 1E1",
+        "province": "BC",
+        "streetAddress": "1323 Cordova Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "10"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Lionel Playworld",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "28",
+        "latLong": "49.062115, -122.619842",
+        "municipality": "Langley",
+        "postalCode": "V3A 4P6",
+        "province": "BC",
+        "streetAddress": "727 Glover Road",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "11"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Success Is Yours",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "29",
+        "latLong": "48.976957, -124.127457",
+        "municipality": "Youbou",
+        "postalCode": "V0R 3E0",
+        "province": "BC",
+        "streetAddress": "2814 Scotts Lane",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "11"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Stratacard",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "30",
+        "latLong": "49.271195, -123.209605",
+        "municipality": "Vancouver",
+        "postalCode": "V5M 3M5",
+        "province": "BC",
+        "streetAddress": "907 Nootka Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "11"
+        },
+        "voLocationTypeId": {
+            "id": "1"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "J. Brannam",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "31",
+        "latLong": "49.232858, -123.104597",
+        "municipality": "Vancouver",
+        "postalCode": "V5M 3M5",
+        "province": "BC",
+        "streetAddress": "4528 Nootka Street",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "12"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    },
+    {
+        "AddlDeliveryInfo": null,
+        "Addressee": "Happy Family",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "32",
+        "latLong": "53.867328, -122.760912",
+        "municipality": "Prince George",
+        "postalCode": "V2N 2S6",
+        "province": "BC",
+        "streetAddress": "2183 Kinchant St",
+        "unitNumber": null,
+        "verifiedOrgID": {
+            "id": "12"
+        },
+        "voLocationTypeId": {
+            "id": "2"
+        }
+    }
+]

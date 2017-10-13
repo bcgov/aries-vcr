@@ -1,0 +1,50 @@
+[
+    {
+        "DID": "did:sovrin:124735D5B677B0F3048F03E",
+        "endDate": "10/10/2010",
+        "expirationDate": null,
+        "id": "1",
+        "issuerOrgTLA": "BCReg",
+        "issuerOrgURL": "https://bcregistries.gov.bc.ca",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "name": "BC Registry"
+    },
+    {
+        "DID": "did:sovrin:35598E5079B953626EBC8C3",
+        "endDate": "10/10/2010",
+        "expirationDate": null,
+        "id": "2",
+        "issuerOrgTLA": "BIZLic",
+        "issuerOrgURL": "https://bizlic.gov.bc.ca",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "name": "Business License"
+    },
+    {
+        "DID": "did:sovrin:29CBCC14DEFAA541A733437",
+        "endDate": "10/10/2010",
+        "expirationDate": null,
+        "id": "3",
+        "issuerOrgTLA": "BCFS",
+        "issuerOrgURL": "https://foodsafebc.gov.bc.ca",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "name": "FoodSafe BC"
+    },
+    {
+        "DID": "did:sovrin:2C6CDF63149760612483472D",
+        "endDate": "10/10/2010",
+        "expirationDate": null,
+        "id": "4",
+        "issuerOrgTLA": "LLBC",
+        "issuerOrgURL": "https://LLBC.gov.bc.ca",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "name": "Liquor Licensing Board"
+    }
+]

@@ -1,0 +1,182 @@
+[
+    {
+        "DBA": "Asian Junction",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "2",
+        "verifiedOrgId": {
+            "id": "1"
+        }
+    },
+    {
+        "DBA": "Price Savers",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "3",
+        "verifiedOrgId": {
+            "id": "1"
+        }
+    },
+    {
+        "DBA": "McDuff",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "5",
+        "verifiedOrgId": {
+            "id": "2"
+        }
+    },
+    {
+        "DBA": "Muirhead's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "6",
+        "verifiedOrgId": {
+            "id": "2"
+        }
+    },
+    {
+        "DBA": "Jeans Unlimited",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "7",
+        "verifiedOrgId": {
+            "id": "2"
+        }
+    },
+    {
+        "DBA": "Henry's Hamburgers",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "9",
+        "verifiedOrgId": {
+            "id": "3"
+        }
+    },
+    {
+        "DBA": "Wells & Wade",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "11",
+        "verifiedOrgId": {
+            "id": "4"
+        }
+    },
+    {
+        "DBA": "Brendle's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "12",
+        "verifiedOrgId": {
+            "id": "4"
+        }
+    },
+    {
+        "DBA": "Britling Cafeterias",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "13",
+        "verifiedOrgId": {
+            "id": "4"
+        }
+    },
+    {
+        "DBA": "Harold's",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "14",
+        "verifiedOrgId": {
+            "id": "4"
+        }
+    },
+    {
+        "DBA": "Record World",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "15",
+        "verifiedOrgId": {
+            "id": "4"
+        }
+    },
+    {
+        "DBA": "The Fox and Hound ",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "16",
+        "verifiedOrgId": {
+            "id": "4"
+        }
+    },
+    {
+        "DBA": "Grass Roots Yard Services",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "18",
+        "verifiedOrgId": {
+            "id": "5"
+        }
+    },
+    {
+        "DBA": "Pantry Food Stores",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "19",
+        "verifiedOrgId": {
+            "id": "5"
+        }
+    },
+    {
+        "DBA": "Pantry Pride",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "21",
+        "verifiedOrgId": {
+            "id": "6"
+        }
+    },
+    {
+        "DBA": "Earthworks Garden Kare",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "23",
+        "verifiedOrgId": {
+            "id": "7"
+        }
+    },
+    {
+        "DBA": "Service Merchandise",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "27",
+        "verifiedOrgId": {
+            "id": "10"
+        }
+    },
+    {
+        "DBA": "Success Is Yours",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "29",
+        "verifiedOrgId": {
+            "id": "11"
+        }
+    },
+    {
+        "DBA": "Stratacard",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "30",
+        "verifiedOrgId": {
+            "id": "11"
+        }
+    },
+    {
+        "DBA": "Happy Family",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "32",
+        "verifiedOrgId": {
+            "id": "12"
+        }
+    }
+]

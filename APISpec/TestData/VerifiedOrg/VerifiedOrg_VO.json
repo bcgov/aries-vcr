@@ -1,0 +1,218 @@
+[
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "12886823",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "1",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "15400793",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "2",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "2"
+        },
+        "busId": "22067237",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "3",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "51272075",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "4",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "89917776",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "5",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "32592324",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "6",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "90129012",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "7",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "2"
+        },
+        "busId": "25354082",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "8",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "48959755",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "9",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "11365099",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "10",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "1"
+        },
+        "busId": "28263030",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "11",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    },
+    {
+        "LegalName": {
+            "id": "2"
+        },
+        "busId": "67875310",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "12",
+        "jurisdictionId": {
+            "id": "1"
+        },
+        "orgTypeId": {
+            "id": "1"
+        },
+        "primaryLocation": {
+            "id": "rg:None"
+        }
+    }
+]

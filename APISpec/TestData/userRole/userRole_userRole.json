@@ -1,0 +1,431 @@
+[
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "1",
+        "role": {
+            "id": "2"
+        },
+        "user": {
+            "id": "1"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "2",
+        "role": {
+            "id": "2"
+        },
+        "user": {
+            "id": "2"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "3",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "3"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "4",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "4"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "5",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "5"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "6",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "6"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "7",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "7"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "8",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "8"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "9",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "9"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "10",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "10"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "11",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "11"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "12",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "12"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "13",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "13"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "14",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "14"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "15",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "15"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "16",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "16"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "17",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "17"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "18",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "18"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "19",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "19"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "20",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "20"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "21",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "21"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "22",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "22"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "23",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "23"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "24",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "24"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "25",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "25"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "26",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "26"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "27",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "27"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "28",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "28"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "29",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "29"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "30",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "30"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "31",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "31"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "32",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "32"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "33",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "33"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "34",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "34"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "35",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "35"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "36",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "36"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "37",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "37"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "38",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "38"
+        }
+    },
+    {
+        "effectiveDate": "1/1/2017",
+        "expiryDate": null,
+        "id": "39",
+        "role": {
+            "id": "1"
+        },
+        "user": {
+            "id": "39"
+        }
+    }
+]

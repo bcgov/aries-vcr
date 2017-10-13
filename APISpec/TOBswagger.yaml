@@ -2490,7 +2490,7 @@ definitions:
     required:
       - id
       - busId
-      - orgType
+      - orgTypeId
       - jurisdictionId
       - LegalName
       - effectiveDate
@@ -2503,7 +2503,7 @@ definitions:
         type: string
         uniqueItems: true
         description: The primary business key for the Verified Organization. This is a value that is likely published to and known by the business and entites providing services to the business.
-      orgType:
+      orgTypeId:
         $ref: '#/definitions/VOType'
         description: A foreign key reference to the VOType table.
       jurisdictionId:
@@ -2522,7 +2522,7 @@ definitions:
       endDate:
         type: string
         format: date-time
-        description: The date&#x2F;time the record became inactive. A null in the field indicates the record is active.
+        description: The date the record became inactive. A null in the field indicates the record is active.
   VOType:
     type: object
     description: A list of the possible types of a Verified Organization, as defined by 
@@ -2543,29 +2543,34 @@ definitions:
       effectiveDate:
         type: string
         format: date-time
-        description: The datetime upon which the Verified Organization type was activated for use.
-      expirationDate:
+        description: The date upon which the Verified Organization type was activated for use.
+      endDate:
         type: string
         format: date-time
-        description: The data after which the Verified Organization type will no longer be used.
+        description: The date after which the Verified Organization type will no longer be used.
       displayOrder:
         format: int32
         type: integer
         description: The order of display of the Verified Organization type. In general, the order will be listed in the order of expected frequency.
   VOLocation:
     type: object
-    description: A location (name, address and geolocation) of 
+    description: A location (name, address and geolocation) of a Verified Organization.
     required:
       - id
+      - verifiedOrgId
       - voLocationTypeId
+      - effectiveDate
     properties:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Credit Trade Zero Reason.
+        description: A system-generated unique identifier for a Verified Org location.
+      verifiedOrgId:
+        $ref: '#/definitions/VerifiedOrg'
+        description: A foreign key reference to the Verified Organization table.
       voLocationTypeId:
         $ref: '#/definitions/VOLocationType'
-        description: A foreign key reference to the VO Location Type table.
+        description: A foreign key reference to the Verified Organization Location Type table.
       Addressee:
         type: string
         description: The Addressee Line of an official address.
@@ -2590,9 +2595,17 @@ definitions:
       latLong:
         type: string
         description: The latitude and longitude of the location, if known.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The date upon which the Verified Organization location was active
+      endDate:
+        type: string
+        format: date-time
+        description: The date after which the Verified Organization location is no longer active.
   VOLocationType:
     type: object
-    description: A list of the possible types of a Verified Organization, as defined by Foundational Claims Issuer for TheOrgBook
+    description: A list of the possible types of a Verified Organization location
     required:
       - id
       - theType
@@ -2605,18 +2618,18 @@ definitions:
         description: A system-generated unique identifier for a Verified Organization Location Type.
       theType:
         type: string
-        description: The name of the type of Verified Organization Location, such as partnership, corporation, etc.
+        description: The name of the type of Verified Organization Location, such as headquarters, regional office, etc.
       description:
         type: string
         description: End user help-text information about the Verified Organization Location type.
       effectiveDate:
         type: string
         format: date-time
-        description: The datetime upon which the Verified Organization Location type was activated for use.
-      expirationDate:
+        description: The date upon which the Verified Organization Location type was activated for use.
+      endDate:
         type: string
         format: date-time
-        description: The data after which the Verified Organization Location type will no longer be used.
+        description: The date after which the Verified Organization Location type will no longer be used.
       displayOrder:
         format: int32
         type: integer
@@ -2633,17 +2646,20 @@ definitions:
         format: int32
         type: integer
         description: A system-generated unique identifier for a Verified Organization Location Type.
+      verifiedOrgId:
+        $ref: '#/definitions/VerifiedOrg'
+        description: A foreign key reference into the VerfiedOrg table.
       DBA:
         type: string
         description: The doing business as name of the business.
       effectiveDate:
         type: string
         format: date-time
-        description: The datetime upon which the Verified Organization DBA record was activated for use.
+        description: The date upon which the Verified Organization DBA record was activated for use.
       endDate:
         type: string
         format: date-time
-        description: The datetime upon which the Verified Organization DBA record will no longer be used.
+        description: The date after which the Verified Organization DBA record will no longer be used.
   VOClaim:
     type: object
     description: A claim of a given type, issued by a known entite
@@ -2653,7 +2669,6 @@ definitions:
       - voClaimType
       - claimJSON
       - effectiveDate
-      - endDate
     properties:
       id:
         format: int32
@@ -2672,11 +2687,11 @@ definitions:
       effectiveDate:
         type: string
         format: date-time
-        description: The datetime the claim was received.
+        description: The date the claim was received.
       endDate:
         type: string
         format: date-time
-        description: The datetime the claim was marked as no longer valid, either because it was replaced or revoked.
+        description: The date the claim was marked as no longer valid, either because it was replaced or revoked.
       inactiveClaimReasonId:
         $ref: '#/definitions/InactiveClaimReason'
         description: A foreign key reference into the IncactiveClaimReason table.
@@ -2689,6 +2704,7 @@ definitions:
       - issuerOrgId
       - issuerURL
       - claimSchemaDefinition
+      - effectiveDate
     properties:
       id:
         format: int32
@@ -2709,6 +2725,14 @@ definitions:
       claimSchemaDefinition:
         type: string
         description: A pointer to the on Ledger Schema Definition for this Claim Type.
+      effectiveDate:
+        type: string
+        format: date-time
+        description: The date upon which the Verified Organization Claim type was activated for use.
+      endDate:
+        type: string
+        format: date-time
+        description: The date after which the Verified Organization Claim type will no longer be used.
   InactiveClaimReason:
     type: object
     description: A list of the possible reasons why a Claim might be inactive. 
@@ -2729,8 +2753,8 @@ definitions:
       effectiveDate:
         type: string
         format: date-time
-        description: The datetime upon which the Inactive Claim reason was activated for use.
-      expirationDate:
+        description: The date upon which the Inactive Claim reason was activated for use.
+      endDate:
         type: string
         format: date-time
         description: The date after which the Inactive Claim reason will no longer be used.
@@ -2771,11 +2795,11 @@ definitions:
       effectiveDate:
         type: string
         format: date-time
-        description: The datetime upon which the IssuerOrg was activated for use.
-      expirationDate:
+        description: The date upon which the IssuerOrg was activated for use.
+      endDate:
         type: string
         format: date-time
-        description: The data after which the IssuerOrg will no longer be used. The value is NULL if still active.
+        description: The date after which the IssuerOrg will no longer be used. The value is NULL if still active.
   Jurisdiction:
     type: object
     description: A list of the possible Jurisdiction of an Organization.
@@ -2809,11 +2833,11 @@ definitions:
       effectiveDate:
         type: string
         format: date-time
-        description: The datetime upon which the Jurisdiction was activated for use.
-      expirationDate:
+        description: The date upon which the Jurisdiction was activated for use.
+      endDate:
         type: string
         format: date-time
-        description: The data after which the Jurisdiction will no longer be used. Null if the Jurisdiction is in active use.
+        description: The date after which the Jurisdiction will no longer be used. Null if the Jurisdiction is in active use.
   User:
     type: object
     description: Information about the users of the system.

@@ -1,0 +1,47 @@
+[
+    {
+        "id": "1",
+        "permission": {
+            "id": "1"
+        },
+        "role": {
+            "id": "1"
+        }
+    },
+    {
+        "id": "2",
+        "permission": {
+            "id": "1"
+        },
+        "role": {
+            "id": "2"
+        }
+    },
+    {
+        "id": "3",
+        "permission": {
+            "id": "2"
+        },
+        "role": {
+            "id": "2"
+        }
+    },
+    {
+        "id": "4",
+        "permission": {
+            "id": "3"
+        },
+        "role": {
+            "id": "2"
+        }
+    },
+    {
+        "id": "5",
+        "permission": {
+            "id": "4"
+        },
+        "role": {
+            "id": "2"
+        }
+    }
+]

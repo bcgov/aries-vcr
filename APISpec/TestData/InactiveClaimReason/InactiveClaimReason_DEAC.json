@@ -1,0 +1,18 @@
+[
+    {
+        "displayOrder": "1",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "1",
+        "reason": "Claim has Expired",
+        "shortReason": "Expired"
+    },
+    {
+        "displayOrder": "2",
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "2",
+        "reason": "Claim Revoked",
+        "shortReason": "Revoked"
+    }
+]

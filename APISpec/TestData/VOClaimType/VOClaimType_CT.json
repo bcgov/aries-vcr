@@ -1,0 +1,62 @@
+[
+    {
+        "base64Logo": null,
+        "claimSchemaDefinition": null,
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "1",
+        "issuerOrgId": {
+            "id": "1"
+        },
+        "issuerURL": "https://registries.bc.gov.ca/verifiedOrganization",
+        "theType": "Verified Organization"
+    },
+    {
+        "base64Logo": null,
+        "claimSchemaDefinition": null,
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "2",
+        "issuerOrgId": {
+            "id": "2"
+        },
+        "issuerURL": "https://bizlic.bc.gov.ca/BusinessLicense",
+        "theType": "Business License"
+    },
+    {
+        "base64Logo": null,
+        "claimSchemaDefinition": null,
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "3",
+        "issuerOrgId": {
+            "id": "3"
+        },
+        "issuerURL": "https://foodsafe.bc.gov.ca/RestaurantLicense",
+        "theType": "Restaurant License"
+    },
+    {
+        "base64Logo": null,
+        "claimSchemaDefinition": null,
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "4",
+        "issuerOrgId": {
+            "id": "3"
+        },
+        "issuerURL": "https://foodsafebc.bc.gov.ca/FoodSafetyLicense",
+        "theType": "Food Safety License"
+    },
+    {
+        "base64Logo": null,
+        "claimSchemaDefinition": null,
+        "effectiveDate": "10/10/2010",
+        "endDate": null,
+        "id": "5",
+        "issuerOrgId": {
+            "id": "4"
+        },
+        "issuerURL": "https://llbc.bc.gov.ca/LiquorLicense",
+        "theType": "Liquor Licence"
+    }
+]
