@@ -23,15 +23,13 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from .PermissionViewModel import PermissionViewModel
 
-from auditable.models import Auditable
-
-class InactiveClaimReason(Auditable):	    
-    shortReason = models.CharField(max_length=255, blank=True, null=True)   
-    reason = models.CharField(max_length=255, blank=True, null=True)   
-    effectiveDate = models.DateField()   
-    endDate = models.DateField(blank=True, null=True)   
-    displayOrder = models.IntegerField()   
+class UserDetailsViewModel(models.Model):	    
+    givenName = models.CharField(max_length=255, blank=True, null=True)   
+    surname = models.CharField(max_length=255, blank=True, null=True)   
+    email = models.CharField(max_length=255, blank=True, null=True)   
+    active = models.BooleanField()   
+    permissions = models.ManyToManyField('PermissionViewModel', related_name='UserDetailsViewModelpermissions', blank=True)   
     class Meta:
-        db_table = 'INACTIVE_CLAIM_REASON'
-
+      abstract = True

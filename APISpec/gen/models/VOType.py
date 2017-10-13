@@ -30,7 +30,7 @@ class VOType(Auditable):
     theType = models.CharField(max_length=255, blank=True, null=True)   
     description = models.CharField(max_length=255, blank=True, null=True)   
     effectiveDate = models.DateField()   
-    expirationDate = models.DateField(blank=True, null=True)   
+    endDate = models.DateField(blank=True, null=True)   
     displayOrder = models.IntegerField()   
     class Meta:
         db_table = 'V_O_TYPE'

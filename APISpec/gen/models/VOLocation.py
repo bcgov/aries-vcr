@@ -23,11 +23,13 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from .VerifiedOrg import VerifiedOrg
 from .VOLocationType import VOLocationType
 
 from auditable.models import Auditable
 
 class VOLocation(Auditable):	    
+    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VOLocationverifiedOrgId')   
     voLocationTypeId = models.ForeignKey('VOLocationType', related_name='VOLocationvoLocationTypeId')   
     Addressee = models.CharField(max_length=255, blank=True, null=True)   
     AddlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   
@@ -37,6 +39,8 @@ class VOLocation(Auditable):
     province = models.CharField(max_length=255, blank=True, null=True)   
     postalCode = models.CharField(max_length=255, blank=True, null=True)   
     latLong = models.CharField(max_length=255, blank=True, null=True)   
+    effectiveDate = models.DateField()   
+    endDate = models.DateField(blank=True, null=True)   
     class Meta:
         db_table = 'V_O_LOCATION'
 

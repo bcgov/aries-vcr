@@ -23,15 +23,15 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from .UserRole import UserRole
 
-from auditable.models import Auditable
-
-class InactiveClaimReason(Auditable):	    
-    shortReason = models.CharField(max_length=255, blank=True, null=True)   
-    reason = models.CharField(max_length=255, blank=True, null=True)   
-    effectiveDate = models.DateField()   
-    endDate = models.DateField(blank=True, null=True)   
-    displayOrder = models.IntegerField()   
+class CurrentUserViewModel(models.Model):	    
+    givenName = models.CharField(max_length=255, blank=True, null=True)   
+    surname = models.CharField(max_length=255, blank=True, null=True)   
+    email = models.CharField(max_length=255, blank=True, null=True)   
+    active = models.BooleanField()   
+    userRoles = models.ManyToManyField('UserRole', related_name='CurrentUserViewModeluserRoles', blank=True)   
+    smUserId = models.CharField(max_length=255, blank=True, null=True)   
+    smAuthorizationDirectory = models.CharField(max_length=255, blank=True, null=True)   
     class Meta:
-        db_table = 'INACTIVE_CLAIM_REASON'
-
+      abstract = True

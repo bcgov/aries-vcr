@@ -32,7 +32,7 @@ class Jurisdiction(Auditable):
     displayOrder = models.IntegerField()   
     isOnCommonList = models.BooleanField()   
     effectiveDate = models.DateField()   
-    expirationDate = models.DateField(blank=True, null=True)   
+    endDate = models.DateField(blank=True, null=True)   
     class Meta:
         db_table = 'JURISDICTION'
 

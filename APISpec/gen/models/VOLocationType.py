@@ -30,7 +30,7 @@ class VOLocationType(Auditable):
     theType = models.CharField(max_length=255)   
     description = models.CharField(max_length=255)   
     effectiveDate = models.DateField()   
-    expirationDate = models.DateField(blank=True, null=True)   
+    endDate = models.DateField(blank=True, null=True)   
     displayOrder = models.IntegerField()   
     class Meta:
         db_table = 'V_O_LOCATION_TYPE'

@@ -21,9 +21,21 @@
 
 from rest_framework import serializers
 
+from .models.CurrentUserViewModel import CurrentUserViewModel
 from .models.InactiveClaimReason import InactiveClaimReason
-from .models.IssuerOrg import IssuerOrg
+from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Permission import Permission
+from .models.PermissionViewModel import PermissionViewModel
+from .models.Role import Role
+from .models.RolePermission import RolePermission
+from .models.RolePermissionViewModel import RolePermissionViewModel
+from .models.RoleViewModel import RoleViewModel
+from .models.User import User
+from .models.UserDetailsViewModel import UserDetailsViewModel
+from .models.UserRole import UserRole
+from .models.UserRoleViewModel import UserRoleViewModel
+from .models.UserViewModel import UserViewModel
 from .models.VOClaim import VOClaim
 from .models.VOClaimType import VOClaimType
 from .models.VODoingBusinessAs import VODoingBusinessAs
@@ -32,20 +44,80 @@ from .models.VOLocationType import VOLocationType
 from .models.VOType import VOType
 from .models.VerifiedOrg import VerifiedOrg
 
+class CurrentUserViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CurrentUserViewModel
+    fields = ('id','givenName','surname','email','active','userRoles','smUserId','smAuthorizationDirectory')
+
 class InactiveClaimReasonSerializer(serializers.ModelSerializer):
   class Meta:
     model = InactiveClaimReason
-    fields = ('id','shortReason','reason','effectiveDate','expirationDate','displayOrder')
+    fields = ('id','shortReason','reason','effectiveDate','endDate','displayOrder')
 
-class IssuerOrgSerializer(serializers.ModelSerializer):
+class IssuerServiceSerializer(serializers.ModelSerializer):
   class Meta:
-    model = IssuerOrg
-    fields = ('id','name','issuerOrgTLA','issuerOrgURL','DID','jurisdictionId','effectiveDate','expirationDate')
+    model = IssuerService
+    fields = ('id','name','issuerOrgTLA','issuerOrgURL','DID','jurisdictionId','effectiveDate','endDate')
 
 class JurisdictionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Jurisdiction
-    fields = ('id','jurisdictionAbbrv','jurisdictionName','displayOrder','isOnCommonList','effectiveDate','expirationDate')
+    fields = ('id','jurisdictionAbbrv','jurisdictionName','displayOrder','isOnCommonList','effectiveDate','endDate')
+
+class PermissionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Permission
+    fields = ('id','code','name','description')
+
+class PermissionViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = PermissionViewModel
+    fields = ('id','code','name','description')
+
+class RoleSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Role
+    fields = ('id','name','description')
+
+class RolePermissionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = RolePermission
+    fields = ('id','roleId','permissionId')
+
+class RolePermissionViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = RolePermissionViewModel
+    fields = ('id','roleId','permissionId')
+
+class RoleViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = RoleViewModel
+    fields = ('id','name','description')
+
+class UserSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ('id','givenName','surname','email','userId','guid','authorizationDirectory')
+
+class UserDetailsViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = UserDetailsViewModel
+    fields = ('id','givenName','surname','email','active','permissions')
+
+class UserRoleSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = UserRole
+    fields = ('id','userId','roleId')
+
+class UserRoleViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = UserRoleViewModel
+    fields = ('id','effectiveDate','expiryDate','roleId','userId')
+
+class UserViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = UserViewModel
+    fields = ('id','givenName','surname','email','active','smUserId','userRoles')
 
 class VOClaimSerializer(serializers.ModelSerializer):
   class Meta:
@@ -55,30 +127,30 @@ class VOClaimSerializer(serializers.ModelSerializer):
 class VOClaimTypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = VOClaimType
-    fields = ('id','theType','base64Logo','issuerOrgId','issuerURL','claimSchemaDefinition')
+    fields = ('id','theType','base64Logo','issuerOrgId','issuerURL','claimSchemaDefinition','effectiveDate','endDate')
 
 class VODoingBusinessAsSerializer(serializers.ModelSerializer):
   class Meta:
     model = VODoingBusinessAs
-    fields = ('id','DBA','effectiveDate','endDate')
+    fields = ('id','verifiedOrgId','DBA','effectiveDate','endDate')
 
 class VOLocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = VOLocation
-    fields = ('id','voLocationTypeId','Addressee','AddlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong')
+    fields = ('id','verifiedOrgId','voLocationTypeId','Addressee','AddlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
 
 class VOLocationTypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = VOLocationType
-    fields = ('id','theType','description','effectiveDate','expirationDate','displayOrder')
+    fields = ('id','theType','description','effectiveDate','endDate','displayOrder')
 
 class VOTypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = VOType
-    fields = ('id','theType','description','effectiveDate','expirationDate','displayOrder')
+    fields = ('id','theType','description','effectiveDate','endDate','displayOrder')
 
 class VerifiedOrgSerializer(serializers.ModelSerializer):
   class Meta:
     model = VerifiedOrg
-    fields = ('id','busId','orgType','jurisdictionId','LegalName','primaryLocation','effectiveDate','endDate')
+    fields = ('id','busId','orgTypeId','jurisdictionId','LegalName','primaryLocation','effectiveDate','endDate')
 

@@ -25,17 +25,65 @@
 
 # import models into model package
 #try:
+#     from . import CurrentUserViewModel  
+#except:
+#     import CurrentUserViewModel
+#try:
 #     from . import InactiveClaimReason  
 #except:
 #     import InactiveClaimReason
 #try:
-#     from . import IssuerOrg  
+#     from . import IssuerService  
 #except:
-#     import IssuerOrg
+#     import IssuerService
 #try:
 #     from . import Jurisdiction  
 #except:
 #     import Jurisdiction
+#try:
+#     from . import Permission  
+#except:
+#     import Permission
+#try:
+#     from . import PermissionViewModel  
+#except:
+#     import PermissionViewModel
+#try:
+#     from . import Role  
+#except:
+#     import Role
+#try:
+#     from . import RolePermission  
+#except:
+#     import RolePermission
+#try:
+#     from . import RolePermissionViewModel  
+#except:
+#     import RolePermissionViewModel
+#try:
+#     from . import RoleViewModel  
+#except:
+#     import RoleViewModel
+#try:
+#     from . import User  
+#except:
+#     import User
+#try:
+#     from . import UserDetailsViewModel  
+#except:
+#     import UserDetailsViewModel
+#try:
+#     from . import UserRole  
+#except:
+#     import UserRole
+#try:
+#     from . import UserRoleViewModel  
+#except:
+#     import UserRoleViewModel
+#try:
+#     from . import UserViewModel  
+#except:
+#     import UserViewModel
 #try:
 #     from . import VOClaim  
 #except:

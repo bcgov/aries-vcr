@@ -31,7 +31,7 @@ from auditable.models import Auditable
 
 class VerifiedOrg(Auditable):	    
     busId = models.CharField(max_length=255)   
-    orgType = models.ForeignKey('VOType', related_name='VerifiedOrgorgType')   
+    orgTypeId = models.ForeignKey('VOType', related_name='VerifiedOrgorgTypeId')   
     jurisdictionId = models.ForeignKey('Jurisdiction', related_name='VerifiedOrgjurisdictionId')   
     LegalName = models.CharField(max_length=255)   
     primaryLocation = models.ForeignKey('VOLocation', related_name='VerifiedOrgprimaryLocation', blank=True, null=True)   

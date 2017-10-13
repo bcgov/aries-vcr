@@ -20,9 +20,21 @@
 """
 
 from django.contrib import admin
+
 from .models.InactiveClaimReason import InactiveClaimReason
-from .models.IssuerOrg import IssuerOrg
+from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Permission import Permission
+
+from .models.Role import Role
+from .models.RolePermission import RolePermission
+
+
+from .models.User import User
+
+from .models.UserRole import UserRole
+
+
 from .models.VOClaim import VOClaim
 from .models.VOClaimType import VOClaimType
 from .models.VODoingBusinessAs import VODoingBusinessAs
@@ -34,8 +46,13 @@ from .models.VerifiedOrg import VerifiedOrg
 
 
 admin.site.register(InactiveClaimReason)
-admin.site.register(IssuerOrg)
+admin.site.register(IssuerService)
 admin.site.register(Jurisdiction)
+admin.site.register(Permission)
+admin.site.register(Role)
+admin.site.register(RolePermission)
+admin.site.register(User)
+admin.site.register(UserRole)
 admin.site.register(VOClaim)
 admin.site.register(VOClaimType)
 admin.site.register(VODoingBusinessAs)

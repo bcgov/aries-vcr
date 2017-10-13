@@ -22,6 +22,27 @@
 # edit this file with appropriate test data.
 
 
+def CurrentUserViewModelTestDataCreate():
+  return {
+    'givenName':'Initial',
+    'surname':'Initial',
+    'email':'Initial',
+    'active':True,
+    'smUserId':'Initial',
+    'smAuthorizationDirectory':'Initial',
+  }
+
+def CurrentUserViewModelTestDataUpdate():
+  return {
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'active':False,
+    'smUserId':'Changed',
+    'smAuthorizationDirectory':'Changed',
+  }
+
+
 def InactiveClaimReasonTestDataCreate():
   return {
     'shortReason':'Initial',
@@ -37,7 +58,7 @@ def InactiveClaimReasonTestDataUpdate():
   }
 
 
-def IssuerOrgTestDataCreate():
+def IssuerServiceTestDataCreate():
   return {
     'name':'Initial',
     'issuerOrgTLA':'Initial',
@@ -45,7 +66,7 @@ def IssuerOrgTestDataCreate():
     'DID':'Initial',
   }
 
-def IssuerOrgTestDataUpdate():
+def IssuerServiceTestDataUpdate():
   return {
     'name':'Changed',
     'issuerOrgTLA':'Changed',
@@ -68,6 +89,163 @@ def JurisdictionTestDataUpdate():
     'jurisdictionName':'Changed',
     'displayOrder':0,
     'isOnCommonList':False,
+  }
+
+
+def PermissionTestDataCreate():
+  return {
+    'code':'Initial',
+    'name':'Initial',
+    'description':'Initial',
+  }
+
+def PermissionTestDataUpdate():
+  return {
+    'code':'Changed',
+    'name':'Changed',
+    'description':'Changed',
+  }
+
+
+def PermissionViewModelTestDataCreate():
+  return {
+    'code':'Initial',
+    'name':'Initial',
+    'description':'Initial',
+  }
+
+def PermissionViewModelTestDataUpdate():
+  return {
+    'code':'Changed',
+    'name':'Changed',
+    'description':'Changed',
+  }
+
+
+def RoleTestDataCreate():
+  return {
+    'name':'Initial',
+    'description':'Initial',
+  }
+
+def RoleTestDataUpdate():
+  return {
+    'name':'Changed',
+    'description':'Changed',
+  }
+
+
+def RolePermissionTestDataCreate():
+  return {
+  }
+
+def RolePermissionTestDataUpdate():
+  return {
+  }
+
+
+def RolePermissionViewModelTestDataCreate():
+  return {
+    'roleId':1,
+    'permissionId':1,
+  }
+
+def RolePermissionViewModelTestDataUpdate():
+  return {
+    'roleId':0,
+    'permissionId':0,
+  }
+
+
+def RoleViewModelTestDataCreate():
+  return {
+    'name':'Initial',
+    'description':'Initial',
+  }
+
+def RoleViewModelTestDataUpdate():
+  return {
+    'name':'Changed',
+    'description':'Changed',
+  }
+
+
+def UserTestDataCreate():
+  return {
+    'givenName':'Initial',
+    'surname':'Initial',
+    'email':'Initial',
+    'userId':'Initial',
+    'guid':'Initial',
+    'authorizationDirectory':'Initial',
+  }
+
+def UserTestDataUpdate():
+  return {
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'userId':'Changed',
+    'guid':'Changed',
+    'authorizationDirectory':'Changed',
+  }
+
+
+def UserDetailsViewModelTestDataCreate():
+  return {
+    'givenName':'Initial',
+    'surname':'Initial',
+    'email':'Initial',
+    'active':True,
+  }
+
+def UserDetailsViewModelTestDataUpdate():
+  return {
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'active':False,
+  }
+
+
+def UserRoleTestDataCreate():
+  return {
+  }
+
+def UserRoleTestDataUpdate():
+  return {
+  }
+
+
+def UserRoleViewModelTestDataCreate():
+  return {
+    'roleId':1,
+    'userId':1,
+  }
+
+def UserRoleViewModelTestDataUpdate():
+  return {
+    'roleId':0,
+    'userId':0,
+  }
+
+
+def UserViewModelTestDataCreate():
+  return {
+    'givenName':'Initial',
+    'surname':'Initial',
+    'email':'Initial',
+    'active':True,
+    'smUserId':'Initial',
+  }
+
+def UserViewModelTestDataUpdate():
+  return {
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'active':False,
+    'smUserId':'Changed',
   }
 
 

@@ -34,7 +34,7 @@ class VOClaim(Auditable):
     voClaimType = models.ForeignKey('VOClaimType', related_name='VOClaimvoClaimType')   
     claimJSON = models.CharField(max_length=255)   
     effectiveDate = models.DateField()   
-    endDate = models.DateField()   
+    endDate = models.DateField(blank=True, null=True)   
     inactiveClaimReasonId = models.ForeignKey('InactiveClaimReason', related_name='VOClaiminactiveClaimReasonId', blank=True, null=True)   
     class Meta:
         db_table = 'V_O_CLAIM'

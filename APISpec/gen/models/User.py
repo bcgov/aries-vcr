@@ -26,12 +26,13 @@ from django.utils import timezone
 
 from auditable.models import Auditable
 
-class InactiveClaimReason(Auditable):	    
-    shortReason = models.CharField(max_length=255, blank=True, null=True)   
-    reason = models.CharField(max_length=255, blank=True, null=True)   
-    effectiveDate = models.DateField()   
-    endDate = models.DateField(blank=True, null=True)   
-    displayOrder = models.IntegerField()   
+class User(Auditable):	    
+    givenName = models.CharField(max_length=100)   
+    surname = models.CharField(max_length=100)   
+    email = models.CharField(max_length=150, blank=True, null=True)   
+    userId = models.CharField(max_length=500, blank=True, null=True)   
+    guid = models.CharField(max_length=100, blank=True, null=True)   
+    authorizationDirectory = models.CharField(max_length=100, blank=True, null=True)   
     class Meta:
-        db_table = 'INACTIVE_CLAIM_REASON'
+        db_table = 'USER'
 

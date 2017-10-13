@@ -23,18 +23,14 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from .Jurisdiction import Jurisdiction
+from .Role import Role
+from .Permission import Permission
 
 from auditable.models import Auditable
 
-class IssuerOrg(Auditable):	    
-    name = models.CharField(max_length=255)   
-    issuerOrgTLA = models.CharField(max_length=255)   
-    issuerOrgURL = models.CharField(max_length=255, blank=True, null=True)   
-    DID = models.CharField(max_length=255)   
-    jurisdictionId = models.ForeignKey('Jurisdiction', related_name='IssuerOrgjurisdictionId')   
-    effectiveDate = models.DateField()   
-    expirationDate = models.DateField(blank=True, null=True)   
+class RolePermission(Auditable):	    
+    roleId = models.ForeignKey('Role', related_name='RolePermissionroleId')   
+    permissionId = models.ForeignKey('Permission', related_name='RolePermissionpermissionId')   
     class Meta:
-        db_table = 'ISSUER_ORG'
+        db_table = 'ROLE_PERMISSION'
 

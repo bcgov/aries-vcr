@@ -23,16 +23,18 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from .IssuerOrg import IssuerOrg
+from .IssuerService import IssuerService
 
 from auditable.models import Auditable
 
 class VOClaimType(Auditable):	    
     theType = models.CharField(max_length=255)   
     base64Logo = models.CharField(max_length=255, blank=True, null=True)   
-    issuerOrgId = models.ForeignKey('IssuerOrg', related_name='VOClaimTypeissuerOrgId')   
+    issuerOrgId = models.ForeignKey('IssuerService', related_name='VOClaimTypeissuerOrgId')   
     issuerURL = models.CharField(max_length=255)   
     claimSchemaDefinition = models.CharField(max_length=255)   
+    effectiveDate = models.DateField()   
+    endDate = models.DateField(blank=True, null=True)   
     class Meta:
         db_table = 'V_O_CLAIM_TYPE'
 

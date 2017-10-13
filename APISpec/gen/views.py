@@ -28,9 +28,21 @@ from rest_framework import generics
 from rest_framework_bulk import BulkCreateModelMixin
 from . import serializers
 from auditable.views import AuditableMixin
+from .models.CurrentUserViewModel import CurrentUserViewModel
 from .models.InactiveClaimReason import InactiveClaimReason
-from .models.IssuerOrg import IssuerOrg
+from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Permission import Permission
+from .models.PermissionViewModel import PermissionViewModel
+from .models.Role import Role
+from .models.RolePermission import RolePermission
+from .models.RolePermissionViewModel import RolePermissionViewModel
+from .models.RoleViewModel import RoleViewModel
+from .models.User import User
+from .models.UserDetailsViewModel import UserDetailsViewModel
+from .models.UserRole import UserRole
+from .models.UserRoleViewModel import UserRoleViewModel
+from .models.UserViewModel import UserViewModel
 from .models.VOClaim import VOClaim
 from .models.VOClaimType import VOClaimType
 from .models.VODoingBusinessAs import VODoingBusinessAs
@@ -40,7 +52,7 @@ from .models.VOType import VOType
 from .models.VerifiedOrg import VerifiedOrg
 
 
-class inactiveClaimReasonsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class inactiveclaimreasonsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of InactiveClaimReason object  
   """
@@ -54,7 +66,7 @@ class inactiveClaimReasonsBulkPost(AuditableMixin,BulkCreateModelMixin, generics
     """
     return self.create(request, *args, **kwargs)
 
-class inactiveClaimReasonsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class inactiveclaimreasonsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available InactiveClaimReason objects  
   """
@@ -73,7 +85,7 @@ class inactiveClaimReasonsGet(AuditableMixin,mixins.ListModelMixin, mixins.Creat
     """
     return self.create(request, *args, **kwargs)
 
-class inactiveClaimReasonsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class inactiveclaimreasonsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific InactiveClaimReason object  
   """
@@ -88,7 +100,7 @@ class inactiveClaimReasonsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, 
     return self.destroy(request, *args, **kwargs)
 
 
-class inactiveClaimReasonsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class inactiveclaimreasonsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific InactiveClaimReason object  
   """
@@ -107,70 +119,70 @@ class inactiveClaimReasonsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins
     """
     return self.update(request, *args, **kwargs)
 
-class issuerOrgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class issuerservicesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
-  Bulk create / update a number of IssuerOrg object  
+  Bulk create / update a number of IssuerService object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = IssuerOrg.objects.all()  
-  serializer_class = serializers.IssuerOrgSerializer
+  queryset = IssuerService.objects.all()  
+  serializer_class = serializers.IssuerServiceSerializer
   def post(self, request, *args, **kwargs):
     """
-    Creates a number of new IssuerOrg objects
+    Creates a number of new IssuerService objects
     """
     return self.create(request, *args, **kwargs)
 
-class issuerOrgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class issuerservicesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
-  Lists available IssuerOrg objects  
+  Lists available IssuerService objects  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = IssuerOrg.objects.all()  
-  serializer_class = serializers.IssuerOrgSerializer
+  queryset = IssuerService.objects.all()  
+  serializer_class = serializers.IssuerServiceSerializer
   def get(self, request, *args, **kwargs):
     """
-    Lists available IssuerOrg objects
+    Lists available IssuerService objects
     """
     return self.list(request, *args, **kwargs)
   def post(self, request, *args, **kwargs):
     """
-    Creates a new IssuerOrg object
+    Creates a new IssuerService object
     """
     return self.create(request, *args, **kwargs)
 
-class issuerOrgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class issuerservicesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
-  Deletes a specific IssuerOrg object  
+  Deletes a specific IssuerService object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = IssuerOrg.objects.all()  
-  serializer_class = serializers.IssuerOrgSerializer
+  queryset = IssuerService.objects.all()  
+  serializer_class = serializers.IssuerServiceSerializer
   def post(self, request, *args, **kwargs):
     """
-    Destroys the specified IssuerOrg object
+    Destroys the specified IssuerService object
     """
     return self.destroy(request, *args, **kwargs)
 
 
-class issuerOrgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class issuerservicesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
-  Gets a specific IssuerOrg object  
+  Gets a specific IssuerService object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = IssuerOrg.objects.all()  
-  serializer_class = serializers.IssuerOrgSerializer
+  queryset = IssuerService.objects.all()  
+  serializer_class = serializers.IssuerServiceSerializer
   def get(self, request, *args, **kwargs):
     """
-    Retrieves the specified IssuerOrg object
+    Retrieves the specified IssuerService object
     """
     return self.retrieve(request, *args, **kwargs)
   def put(self, request, *args, **kwargs):
     """
-    Updates the specified IssuerOrg object
+    Updates the specified IssuerService object
     """
     return self.update(request, *args, **kwargs)
 
@@ -241,7 +253,342 @@ class jurisdictionsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Update
     """
     return self.update(request, *args, **kwargs)
 
-class voClaimsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class permissionsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of Permission object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Permission.objects.all()  
+  serializer_class = serializers.PermissionSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new Permission objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class permissionsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available Permission objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Permission.objects.all()  
+  serializer_class = serializers.PermissionSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available Permission objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new Permission object
+    """
+    return self.create(request, *args, **kwargs)
+
+class permissionsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific Permission object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Permission.objects.all()  
+  serializer_class = serializers.PermissionSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified Permission object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class permissionsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific Permission object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Permission.objects.all()  
+  serializer_class = serializers.PermissionSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified Permission object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified Permission object
+    """
+    return self.update(request, *args, **kwargs)
+
+class rolesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of Role object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Role.objects.all()  
+  serializer_class = serializers.RoleSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new Role objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class rolesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available Role objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Role.objects.all()  
+  serializer_class = serializers.RoleSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available Role objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new Role object
+    """
+    return self.create(request, *args, **kwargs)
+
+class rolesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific Role object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Role.objects.all()  
+  serializer_class = serializers.RoleSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified Role object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class rolesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific Role object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Role.objects.all()  
+  serializer_class = serializers.RoleSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified Role object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified Role object
+    """
+    return self.update(request, *args, **kwargs)
+
+class rolepermissionsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of RolePermission object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = RolePermission.objects.all()  
+  serializer_class = serializers.RolePermissionSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new RolePermission objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class rolepermissionsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available RolePermission objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = RolePermission.objects.all()  
+  serializer_class = serializers.RolePermissionSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available RolePermission objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new RolePermission object
+    """
+    return self.create(request, *args, **kwargs)
+
+class rolepermissionsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific RolePermission object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = RolePermission.objects.all()  
+  serializer_class = serializers.RolePermissionSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified RolePermission object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class rolepermissionsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific RolePermission object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = RolePermission.objects.all()  
+  serializer_class = serializers.RolePermissionSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified RolePermission object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified RolePermission object
+    """
+    return self.update(request, *args, **kwargs)
+
+class usersBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of User object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = User.objects.all()  
+  serializer_class = serializers.UserSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new User objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class usersGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available User objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = User.objects.all()  
+  serializer_class = serializers.UserSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available User objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new User object
+    """
+    return self.create(request, *args, **kwargs)
+
+class usersIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific User object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = User.objects.all()  
+  serializer_class = serializers.UserSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified User object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class usersIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific User object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = User.objects.all()  
+  serializer_class = serializers.UserSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified User object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified User object
+    """
+    return self.update(request, *args, **kwargs)
+
+class userrolesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of UserRole object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = UserRole.objects.all()  
+  serializer_class = serializers.UserRoleSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new UserRole objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class userrolesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available UserRole objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = UserRole.objects.all()  
+  serializer_class = serializers.UserRoleSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available UserRole objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new UserRole object
+    """
+    return self.create(request, *args, **kwargs)
+
+class userrolesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific UserRole object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = UserRole.objects.all()  
+  serializer_class = serializers.UserRoleSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified UserRole object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class userrolesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific UserRole object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = UserRole.objects.all()  
+  serializer_class = serializers.UserRoleSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified UserRole object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified UserRole object
+    """
+    return self.update(request, *args, **kwargs)
+
+class voclaimsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of VOClaim object  
   """
@@ -255,7 +602,7 @@ class voClaimsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIV
     """
     return self.create(request, *args, **kwargs)
 
-class voClaimsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class voclaimsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VOClaim objects  
   """
@@ -274,7 +621,7 @@ class voClaimsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin,
     """
     return self.create(request, *args, **kwargs)
 
-class voClaimsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class voclaimsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific VOClaim object  
   """
@@ -289,7 +636,7 @@ class voClaimsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.Gen
     return self.destroy(request, *args, **kwargs)
 
 
-class voClaimsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class voclaimsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific VOClaim object  
   """
@@ -308,7 +655,7 @@ class voClaimsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModel
     """
     return self.update(request, *args, **kwargs)
 
-class voClaimTypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class voclaimtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of VOClaimType object  
   """
@@ -322,7 +669,7 @@ class voClaimTypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Generic
     """
     return self.create(request, *args, **kwargs)
 
-class voClaimTypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class voclaimtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VOClaimType objects  
   """
@@ -341,7 +688,7 @@ class voClaimTypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMi
     """
     return self.create(request, *args, **kwargs)
 
-class voClaimTypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class voclaimtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific VOClaimType object  
   """
@@ -356,7 +703,7 @@ class voClaimTypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics
     return self.destroy(request, *args, **kwargs)
 
 
-class voClaimTypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class voclaimtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific VOClaimType object  
   """
@@ -375,7 +722,7 @@ class voClaimTypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateM
     """
     return self.update(request, *args, **kwargs)
 
-class voDoingBusinessAsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class vodoingbusinessasBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of VODoingBusinessAs object  
   """
@@ -389,7 +736,7 @@ class voDoingBusinessAsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Ge
     """
     return self.create(request, *args, **kwargs)
 
-class voDoingBusinessAsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class vodoingbusinessasGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VODoingBusinessAs objects  
   """
@@ -408,7 +755,7 @@ class voDoingBusinessAsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateMo
     """
     return self.create(request, *args, **kwargs)
 
-class voDoingBusinessAsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class vodoingbusinessasIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific VODoingBusinessAs object  
   """
@@ -423,7 +770,7 @@ class voDoingBusinessAsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, gen
     return self.destroy(request, *args, **kwargs)
 
 
-class voDoingBusinessAsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class vodoingbusinessasIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific VODoingBusinessAs object  
   """
@@ -442,7 +789,7 @@ class voDoingBusinessAsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Up
     """
     return self.update(request, *args, **kwargs)
 
-class voLocationsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class volocationsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of VOLocation object  
   """
@@ -456,7 +803,7 @@ class voLocationsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericA
     """
     return self.create(request, *args, **kwargs)
 
-class voLocationsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class volocationsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VOLocation objects  
   """
@@ -475,7 +822,7 @@ class voLocationsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMix
     """
     return self.create(request, *args, **kwargs)
 
-class voLocationsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class volocationsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific VOLocation object  
   """
@@ -490,7 +837,7 @@ class voLocationsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.
     return self.destroy(request, *args, **kwargs)
 
 
-class voLocationsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class volocationsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific VOLocation object  
   """
@@ -509,7 +856,7 @@ class voLocationsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateMo
     """
     return self.update(request, *args, **kwargs)
 
-class voLocationTypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class volocationtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of VOLocationType object  
   """
@@ -523,7 +870,7 @@ class voLocationTypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Gene
     """
     return self.create(request, *args, **kwargs)
 
-class voLocationTypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class volocationtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VOLocationType objects  
   """
@@ -542,7 +889,7 @@ class voLocationTypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateMode
     """
     return self.create(request, *args, **kwargs)
 
-class voLocationTypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class volocationtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific VOLocationType object  
   """
@@ -557,7 +904,7 @@ class voLocationTypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, gener
     return self.destroy(request, *args, **kwargs)
 
 
-class voLocationTypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class volocationtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific VOLocationType object  
   """
@@ -576,7 +923,7 @@ class voLocationTypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Upda
     """
     return self.update(request, *args, **kwargs)
 
-class voOrgTypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class voorgtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of VOType object  
   """
@@ -590,7 +937,7 @@ class voOrgTypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAP
     """
     return self.create(request, *args, **kwargs)
 
-class voOrgTypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class voorgtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VOType objects  
   """
@@ -609,7 +956,7 @@ class voOrgTypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixi
     """
     return self.create(request, *args, **kwargs)
 
-class voOrgTypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class voorgtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific VOType object  
   """
@@ -624,7 +971,7 @@ class voOrgTypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.G
     return self.destroy(request, *args, **kwargs)
 
 
-class voOrgTypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class voorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific VOType object  
   """
@@ -643,7 +990,7 @@ class voOrgTypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateMod
     """
     return self.update(request, *args, **kwargs)
 
-class verifiedOrgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class verifiedorgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of VerifiedOrg object  
   """
@@ -657,7 +1004,7 @@ class verifiedOrgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Generic
     """
     return self.create(request, *args, **kwargs)
 
-class verifiedOrgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class verifiedorgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VerifiedOrg objects  
   """
@@ -676,7 +1023,7 @@ class verifiedOrgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMi
     """
     return self.create(request, *args, **kwargs)
 
-class verifiedOrgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class verifiedorgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
   Deletes a specific VerifiedOrg object  
   """
@@ -691,7 +1038,7 @@ class verifiedOrgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics
     return self.destroy(request, *args, **kwargs)
 
 
-class verifiedOrgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class verifiedorgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
   Gets a specific VerifiedOrg object  
   """

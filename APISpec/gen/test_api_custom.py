@@ -29,12 +29,36 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 
 from . import fakedata
+from .models.CurrentUserViewModel import CurrentUserViewModel
+from .serializers import CurrentUserViewModelSerializer
 from .models.InactiveClaimReason import InactiveClaimReason
 from .serializers import InactiveClaimReasonSerializer
-from .models.IssuerOrg import IssuerOrg
-from .serializers import IssuerOrgSerializer
+from .models.IssuerService import IssuerService
+from .serializers import IssuerServiceSerializer
 from .models.Jurisdiction import Jurisdiction
 from .serializers import JurisdictionSerializer
+from .models.Permission import Permission
+from .serializers import PermissionSerializer
+from .models.PermissionViewModel import PermissionViewModel
+from .serializers import PermissionViewModelSerializer
+from .models.Role import Role
+from .serializers import RoleSerializer
+from .models.RolePermission import RolePermission
+from .serializers import RolePermissionSerializer
+from .models.RolePermissionViewModel import RolePermissionViewModel
+from .serializers import RolePermissionViewModelSerializer
+from .models.RoleViewModel import RoleViewModel
+from .serializers import RoleViewModelSerializer
+from .models.User import User
+from .serializers import UserSerializer
+from .models.UserDetailsViewModel import UserDetailsViewModel
+from .serializers import UserDetailsViewModelSerializer
+from .models.UserRole import UserRole
+from .serializers import UserRoleSerializer
+from .models.UserRoleViewModel import UserRoleViewModel
+from .serializers import UserRoleViewModelSerializer
+from .models.UserViewModel import UserViewModel
+from .serializers import UserViewModelSerializer
 from .models.VOClaim import VOClaim
 from .serializers import VOClaimSerializer
 from .models.VOClaimType import VOClaimType
@@ -63,6 +87,27 @@ class Test_Api_Custom(TestCase):
         # needed to setup django
         django.setup()
 
+
+    def test_usersCurrentGet(self):
+        self.fail("Not implemented")        
+
+    def test_rolesIdPermissionsGet(self):
+        self.fail("Not implemented")        
+
+    def test_rolesIdUsersGet(self):
+        self.fail("Not implemented")        
+
+    def test_usersIdPermissionsGet(self):
+        self.fail("Not implemented")        
+
+    def test_usersIdRolesGet(self):
+        self.fail("Not implemented")        
+
+    def test_usersSearchGet(self):
+        self.fail("Not implemented")        
+
+    def test_verifiedorgsIdVoclaimsGet(self):
+        self.fail("Not implemented")        
 
 if __name__ == '__main__':
     unittest.main()

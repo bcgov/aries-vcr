@@ -23,15 +23,18 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from .Jurisdiction import Jurisdiction
 
 from auditable.models import Auditable
 
-class InactiveClaimReason(Auditable):	    
-    shortReason = models.CharField(max_length=255, blank=True, null=True)   
-    reason = models.CharField(max_length=255, blank=True, null=True)   
+class IssuerService(Auditable):	    
+    name = models.CharField(max_length=255)   
+    issuerOrgTLA = models.CharField(max_length=255)   
+    issuerOrgURL = models.CharField(max_length=255, blank=True, null=True)   
+    DID = models.CharField(max_length=255)   
+    jurisdictionId = models.ForeignKey('Jurisdiction', related_name='IssuerServicejurisdictionId')   
     effectiveDate = models.DateField()   
     endDate = models.DateField(blank=True, null=True)   
-    displayOrder = models.IntegerField()   
     class Meta:
-        db_table = 'INACTIVE_CLAIM_REASON'
+        db_table = 'ISSUER_SERVICE'
 
