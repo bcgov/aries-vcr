@@ -15,10 +15,10 @@
 # in the templates via {{ site.myvariable }}.
 title: TheOrgBook
 email: swcurran@cloudcompass.ca
-description: > # this means to ignore newlines until "baseurl:"
+description: > # this means to ignore newlines until next non-indented line
   Bootstrapping the world of Verified Organization's with Self-Sovereign Identities
   Locally created, globally connected
-# repository: https://github.com/swcurran/testgh.git
+repository: https://bcgov.github.io/TheOrgBook.git
 # twitter_username:
 github_username:  swcurran
 
