@@ -18,13 +18,13 @@ email: swcurran@cloudcompass.ca
 description: > # this means to ignore newlines until next non-indented line
   Bootstrapping the world of Verified Organization's with Self-Sovereign Identities
   Locally created, globally connected
-repository: https://github.com/bcgov/TheOrgBook
+repository: 'bcgov/TheOrgBook'
 # twitter_username:
 github_username:  swcurran
 
 # Build settings
-# theme: jekyll-theme-slate
-theme: minima
+theme: jekyll-theme-slate
+# theme: minima
 # plugins:
 #   - jekyll-feed
 
