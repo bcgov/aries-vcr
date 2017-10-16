@@ -57,55 +57,66 @@ class usersCurrentGet(APIView):
   """  
   Get the currently logged in user  
   """
-  # enter code for this routine here.        
-  
   def get(self, request, ):
-    return Response()
+    currentUser = User.objects.all()[0] # replace with current user
+    serializer = serializers.UserSerializer(currentUser)
+    return Response(serializer.data)
 
 class rolesIdPermissionsGet(APIView):
-  """  
-  Get all the permissions for a role  
-  """
-  # enter code for this routine here.        
-  
   def get(self, request, id):
-    return Response()
+    """  
+    Get all the permissions for a role  
+    """
+    role = Role.objects.get(id=id)
+    rolePermissions = RolePermission.objects.filter(roleId=role)
+    serializer = serializers.RolePermissionSerializer(rolePermissions, many=True)
+    return Response(serializer.data)
 
 class rolesIdUsersGet(APIView):
-  """  
-  Gets all the users for a role  
-  """
-  # enter code for this routine here.        
-  
   def get(self, request, id):
-    return Response()
+    """  
+    Gets all the users for a role  
+    """
+    role = Role.objects.get(id=id)
+    userRoles = UserRole.objects.filter(roleId=role)
+    serializer = serializers.UserRoleSerializer(userRoles, many=True)
+    return Response(serializer.data)
 
 class usersIdPermissionsGet(APIView):
-  """  
-  Returns the set of permissions for a user  
-    """
-  # enter code for this routine here.        
-  
   def get(self, request, id):
-    return Response()
+    """
+    Returns the set of permissions for a user
+    """
+    user = User.objects.get(id=id)
+    userRoles = UserRole.objects.filter(userId=user)
+    result = []
+    for userRole in userRoles:
+        rolePermissions = RolePermission.objects.filter(roleId=userRole.roleId)
+        for rolePermission in rolePermissions:
+            result.append (rolePermission.permissionId)
+    serializer = serializers.PermissionSerializer(result, many=True)
+    return Response(serializer.data)
 
 class usersIdRolesGet(APIView):
-  """  
-  Returns the roles for a user  
-  """
-  # enter code for this routine here.        
-  
   def get(self, request, id):
-    return Response()
+    """
+    Returns all roles that a user is a member of
+    """
+    result = UserRole.objects.filter(userId=id)
+    serializer = serializers.UserRoleSerializer(result, many=True)
+    return Response(serializer.data)
 
 class usersSearchGet(APIView):
-  """  
-  Searches Users  
-  """
-  # enter code for this routine here.        
-  
   def get(self, request, fuelSuppliers = None, surname = None, includeInactive = None):
-    return Response()
+    """
+    Searches Users
+    """
+    result = User.objects.all()
+    if surname != None:
+       result = result.filter(surname__icontains = surname)
+
+    serializer = serializers.UserSerializer(result, many=True)
+    return Response(serializer.data)
 
 class verifiedorgsIdVoclaimsGet(APIView):
   def get(self, request, id):
@@ -114,9 +125,5 @@ class verifiedorgsIdVoclaimsGet(APIView):
     """
     org = VerifiedOrg.objects.get(id=id)
     claims = VOClaim.objects.filter(verifiedOrgId=org)
-    result = []
-    for claim in claims:
-      result.append(claim)
-
-    serializer = serializers.VOClaimSerializer(result, many=True)
+    serializer = serializers.VOClaimSerializer(claims, many=True)
     return Response(serializer.data)
