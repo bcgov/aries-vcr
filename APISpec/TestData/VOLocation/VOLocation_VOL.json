@@ -1,7 +1,7 @@
 [
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "The Original House of Pies",
+        "addlDeliveryInfo": null,
+        "addressee": "The Original House of Pies",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
@@ -11,16 +11,12 @@
         "province": "BC",
         "streetAddress": "2262 Burdett Avenue",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "1"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "1",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Asian Junction",
+        "addlDeliveryInfo": null,
+        "addressee": "Asian Junction",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
@@ -30,16 +26,12 @@
         "province": "BC",
         "streetAddress": "223 Brew Creek Rd",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "2"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "2",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Price Savers",
+        "addlDeliveryInfo": null,
+        "addressee": "Price Savers",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
@@ -49,16 +41,12 @@
         "province": "BC",
         "streetAddress": "2310 Mesa Vista Drive",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "3"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "2",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Best Products",
+        "addlDeliveryInfo": null,
+        "addressee": "Best Products",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
@@ -68,16 +56,12 @@
         "province": "BC",
         "streetAddress": "3795 Burdett Avenue",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "3"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "3",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "McDuff",
+        "addlDeliveryInfo": null,
+        "addressee": "McDuff",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "5",
@@ -87,16 +71,12 @@
         "province": "BC",
         "streetAddress": "3746 Noble Rd",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "3"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "4",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Muirhead's",
+        "addlDeliveryInfo": null,
+        "addressee": "Muirhead's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "6",
@@ -106,16 +86,12 @@
         "province": "BC",
         "streetAddress": "3617 Essendene Avenue",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "3"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "4",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Jeans Unlimited",
+        "addlDeliveryInfo": null,
+        "addressee": "Jeans Unlimited",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "7",
@@ -125,16 +101,12 @@
         "province": "BC",
         "streetAddress": "2426 Cordova Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "3"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "5",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Museum Company",
+        "addlDeliveryInfo": null,
+        "addressee": "Museum Company",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "8",
@@ -144,16 +116,12 @@
         "province": "BC",
         "streetAddress": "1019 Hardy Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "3"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "6",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Henry's Hamburgers",
+        "addlDeliveryInfo": null,
+        "addressee": "Henry's Hamburgers",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "9",
@@ -163,16 +131,12 @@
         "province": "BC",
         "streetAddress": "1004 Robson St",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "4"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "6",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Body Toning",
+        "addlDeliveryInfo": null,
+        "addressee": "Body Toning",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "10",
@@ -182,16 +146,12 @@
         "province": "BC",
         "streetAddress": "3561 Wellington Ave",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "4"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "6",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Wells & Wade",
+        "addlDeliveryInfo": null,
+        "addressee": "Wells & Wade",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "11",
@@ -201,16 +161,12 @@
         "province": "BC",
         "streetAddress": "365 Old Spallumcheen Rd",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "5"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "7",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Brendle's",
+        "addlDeliveryInfo": null,
+        "addressee": "Brendle's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "12",
@@ -220,16 +176,12 @@
         "province": "BC",
         "streetAddress": "47 Noble Rd",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "5"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Britling Cafeterias",
+        "addlDeliveryInfo": null,
+        "addressee": "Britling Cafeterias",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "13",
@@ -239,16 +191,12 @@
         "province": "BC",
         "streetAddress": "4764 Jade St",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "5"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Harold's",
+        "addlDeliveryInfo": null,
+        "addressee": "Harold's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "14",
@@ -258,16 +206,12 @@
         "province": "BC",
         "streetAddress": "3356 Wallace Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "5"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Record World",
+        "addlDeliveryInfo": null,
+        "addressee": "Record World",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "15",
@@ -277,16 +221,12 @@
         "province": "BC",
         "streetAddress": "4173 James Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "6"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "The Fox and Hound ",
+        "addlDeliveryInfo": null,
+        "addressee": "The Fox and Hound ",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "16",
@@ -296,16 +236,12 @@
         "province": "BC",
         "streetAddress": "2553 Holdom Avenue",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "6"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Edwards",
+        "addlDeliveryInfo": null,
+        "addressee": "Edwards",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "17",
@@ -315,16 +251,12 @@
         "province": "BC",
         "streetAddress": "3924 Roger Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "7"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Grass Roots Yard Services",
+        "addlDeliveryInfo": null,
+        "addressee": "Grass Roots Yard Services",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "18",
@@ -334,16 +266,12 @@
         "province": "BC",
         "streetAddress": "616 Scotts Lane",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "8"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Pantry Food Stores",
+        "addlDeliveryInfo": null,
+        "addressee": "Pantry Food Stores",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "19",
@@ -353,16 +281,12 @@
         "province": "BC",
         "streetAddress": "3690 Findlay Creek Road",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "9"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Magik Grey",
+        "addlDeliveryInfo": null,
+        "addressee": "Magik Grey",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "20",
@@ -372,16 +296,12 @@
         "province": "BC",
         "streetAddress": "1065 Sixth Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "9"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Pantry Pride",
+        "addlDeliveryInfo": null,
+        "addressee": "Pantry Pride",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "21",
@@ -391,16 +311,12 @@
         "province": "BC",
         "streetAddress": "2261 Blanshard",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "9"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Sandy's",
+        "addlDeliveryInfo": null,
+        "addressee": "Sandy's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "22",
@@ -410,16 +326,12 @@
         "province": "BC",
         "streetAddress": "4761 King George Hwy",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "10"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Earthworks Garden Kare",
+        "addlDeliveryInfo": null,
+        "addressee": "Earthworks Garden Kare",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "23",
@@ -429,16 +341,12 @@
         "province": "BC",
         "streetAddress": "4136 Glover Road",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "10"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "8",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Gamma Gas",
+        "addlDeliveryInfo": null,
+        "addressee": "Gamma Gas",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "24",
@@ -448,16 +356,12 @@
         "province": "BC",
         "streetAddress": "735 Wallace Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "10"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "9",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Universo Realtors",
+        "addlDeliveryInfo": null,
+        "addressee": "Universo Realtors",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "25",
@@ -467,16 +371,12 @@
         "province": "BC",
         "streetAddress": "4359 Yoho Valley Road",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "11"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "9",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Gas Depot",
+        "addlDeliveryInfo": null,
+        "addressee": "Gas Depot",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "26",
@@ -486,16 +386,12 @@
         "province": "BC",
         "streetAddress": "2890 Burdett Avenue",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "12"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "9",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Service Merchandise",
+        "addlDeliveryInfo": null,
+        "addressee": "Service Merchandise",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "27",
@@ -505,16 +401,12 @@
         "province": "BC",
         "streetAddress": "1323 Cordova Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "12"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "10",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Lionel Playworld",
+        "addlDeliveryInfo": null,
+        "addressee": "Lionel Playworld",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "28",
@@ -524,16 +416,12 @@
         "province": "BC",
         "streetAddress": "727 Glover Road",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "13"
-        },
-        "voLocationTypeId": {
-            "id": "1"
-        }
+        "verifiedOrgId": "10",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Success Is Yours",
+        "addlDeliveryInfo": null,
+        "addressee": "Success Is Yours",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "29",
@@ -543,16 +431,12 @@
         "province": "BC",
         "streetAddress": "2814 Scotts Lane",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "14"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "11",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Stratacard",
+        "addlDeliveryInfo": null,
+        "addressee": "Stratacard",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "30",
@@ -562,16 +446,12 @@
         "province": "BC",
         "streetAddress": "907 Nootka Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "14"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "12",
+        "voLocationTypeId": "1"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "J. Brannam",
+        "addlDeliveryInfo": null,
+        "addressee": "J. Brannam",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "31",
@@ -581,16 +461,12 @@
         "province": "BC",
         "streetAddress": "4528 Nootka Street",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "14"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "13",
+        "voLocationTypeId": "2"
     },
     {
-        "AddlDeliveryInfo": null,
-        "Addressee": "Happy Family",
+        "addlDeliveryInfo": null,
+        "addressee": "Happy Family",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "32",
@@ -600,11 +476,7 @@
         "province": "BC",
         "streetAddress": "2183 Kinchant St",
         "unitNumber": null,
-        "verifiedOrgID": {
-            "id": "14"
-        },
-        "voLocationTypeId": {
-            "id": "2"
-        }
+        "verifiedOrgId": "14",
+        "voLocationTypeId": "1"
     }
 ]
