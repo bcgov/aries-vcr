@@ -33,6 +33,8 @@ class User(Auditable):
     userId = models.CharField(max_length=500, blank=True, null=True)   
     guid = models.CharField(max_length=100, blank=True, null=True)   
     authorizationDirectory = models.CharField(max_length=100, blank=True, null=True)   
+    effectiveDate = models.DateField(default=timezone.now)   
+    endDate = models.DateField(blank=True, null=True)   
     class Meta:
         db_table = 'USER'
 

@@ -27,8 +27,8 @@ from django.utils import timezone
 from auditable.models import Auditable
 
 class Jurisdiction(Auditable):	    
-    jurisdictionAbbrv = models.CharField(max_length=25)   
-    jurisdictionName = models.CharField(max_length=1000)   
+    abbrv = models.CharField(max_length=25)   
+    name = models.CharField(max_length=1000)   
     displayOrder = models.IntegerField()   
     isOnCommonList = models.BooleanField()   
     effectiveDate = models.DateField(default=timezone.now)   

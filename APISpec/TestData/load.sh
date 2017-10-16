@@ -29,10 +29,25 @@ fi
 #   curl -c cookie ${server}/api/authentication/dev/token?userId=scurran
 # fi
 
-echo Loading File ${1} using endpoint ${server}/${2}
-if [ -z "${4}" ]; then
-	curl -v -H "Content-Type: application/json" -X POST --data-binary "@${1}" ${server}/${2}
-elif [ ${4} = "--test" ]; then
-	echo "curl -b cookie -v -H \"Content-Type: application/json\" -X POST --data-binary \"@${1}\" ${server}/${2}"
-fi
+echo "----------------------------------------------------------------------------------------------------------------------------"
+echo "Posting data to endpoint ..."
 echo
+echo "Source File: ${1}"
+echo "Endpoint: ${server}/${2}"
+echo
+if [ -z "${4}" ]; then
+	curl --silent --show-error --fail -w "\n\nResponse Code: %{http_code}\t" -H "Content-Type: application/json" -X POST --data-binary "@${1}" ${server}/${2}
+	rtnCd=$?
+	if [ ${rtnCd} = 0 ]; then
+		echo
+	fi
+elif [ ${4} = "--test" ]; then
+	echo "Resolved curl call:"
+	echo "curl --silent --show-error --fail -H "Content-Type: application/json" -X POST --data-binary "@${1}" ${server}/${2}"
+fi
+echo "----------------------------------------------------------------------------------------------------------------------------"
+echo
+
+if [ ${rtnCd} -ne 0 ]; then
+	exit ${rtnCd}
+fi

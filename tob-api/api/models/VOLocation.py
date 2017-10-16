@@ -31,8 +31,8 @@ from auditable.models import Auditable
 class VOLocation(Auditable):	    
     verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VOLocationverifiedOrgId', default=0)   
     voLocationTypeId = models.ForeignKey('VOLocationType', related_name='VOLocationvoLocationTypeId')   
-    Addressee = models.CharField(max_length=255, blank=True, null=True)   
-    AddlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   
+    addressee = models.CharField(max_length=255, blank=True, null=True)   
+    addlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   
     unitNumber = models.CharField(max_length=255, blank=True, null=True)   
     streetAddress = models.CharField(max_length=255, blank=True, null=True)   
     municipality = models.CharField(max_length=255, blank=True, null=True)   

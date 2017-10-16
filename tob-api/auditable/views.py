@@ -20,7 +20,7 @@ class AuditableMixin(object,):
             for data in request.data:
                 objs.append(self.serialize_object(request, data))
         else:
-            objs.append(self.serialize_object(request))
+            objs.append(self.serialize_object(request, request.data))
 
         response = objs[0] if len(objs) == 1 else objs
         headers = self.get_success_headers(response)

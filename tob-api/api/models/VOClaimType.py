@@ -32,7 +32,6 @@ class VOClaimType(Auditable):
     base64Logo = models.CharField(max_length=255, blank=True, null=True)   
     issuerOrgId = models.ForeignKey('IssuerService', related_name='VOClaimTypeissuerOrgId')   
     issuerURL = models.CharField(max_length=255)   
-    claimSchemaDefinition = models.CharField(max_length=255)   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   
     class Meta:

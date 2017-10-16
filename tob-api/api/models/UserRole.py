@@ -31,6 +31,8 @@ from auditable.models import Auditable
 class UserRole(Auditable):	    
     userId = models.ForeignKey('User', related_name='UserRoleuserId')   
     roleId = models.ForeignKey('Role', related_name='UserRoleroleId')   
+    effectiveDate = models.DateField(default=timezone.now)   
+    endDate = models.DateField(blank=True, null=True)   
     class Meta:
         db_table = 'USER_ROLE'
 

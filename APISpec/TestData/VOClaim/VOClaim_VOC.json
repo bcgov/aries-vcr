@@ -1,6 +1,6 @@
 [
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
@@ -14,7 +14,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
@@ -28,7 +28,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
@@ -42,7 +42,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "{}",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
@@ -56,7 +56,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "5",
@@ -70,7 +70,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "6",
@@ -84,7 +84,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "7",
@@ -98,7 +98,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "8",
@@ -112,7 +112,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "9",
@@ -126,7 +126,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "10",
@@ -140,7 +140,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "11",
@@ -154,7 +154,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "12",
@@ -168,7 +168,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "13",
@@ -182,7 +182,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "14",
@@ -196,7 +196,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "15",
@@ -210,7 +210,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "16",
@@ -224,7 +224,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "17",
@@ -238,7 +238,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "18",
@@ -252,7 +252,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "19",
@@ -266,7 +266,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "20",
@@ -280,7 +280,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "21",
@@ -294,7 +294,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "22",
@@ -308,7 +308,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "23",
@@ -322,7 +322,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "24",
@@ -336,7 +336,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "25",
@@ -350,7 +350,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "26",
@@ -364,7 +364,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "27",
@@ -378,7 +378,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "28",
@@ -392,7 +392,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "29",
@@ -406,7 +406,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "30",
@@ -420,7 +420,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "31",
@@ -434,7 +434,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "32",
@@ -448,7 +448,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "33",
@@ -462,7 +462,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "34",
@@ -476,7 +476,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "35",
@@ -490,7 +490,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "36",
@@ -504,7 +504,7 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "37",
@@ -518,10 +518,20 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "38",
+        "inactiveClaimReasonId": "1",
+        "inactiveReason": "1",
+        "verifiedOrgId": "11",
+        "voClaimType": "5"
+    },
+    {
+        "claimJSON": "e30=",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "39",
         "inactiveClaimReasonId": null,
         "inactiveReason": "N/A",
         "verifiedOrgId": {
@@ -532,17 +542,63 @@
         }
     },
     {
-        "claimJSON": null,
+        "claimJSON": "e30=",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "39",
+        "id": "40",
+        "inactiveClaimReasonId": "2",
+        "inactiveReason": "2",
+        "verifiedOrgId": "12",
+        "voClaimType": "2"
+    },
+    {
+        "claimJSON": "e30=",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "41",
         "inactiveClaimReasonId": null,
         "inactiveReason": "N/A",
-        "verifiedOrgId": {
-            "id": "14"
-        },
-        "voClaimType": {
-            "id": "1"
-        }
+        "verifiedOrgId": "13",
+        "voClaimType": "1"
+    },
+    {
+        "claimJSON": "e30=",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "42",
+        "inactiveClaimReasonId": null,
+        "inactiveReason": "N/A",
+        "verifiedOrgId": "13",
+        "voClaimType": "2"
+    },
+    {
+        "claimJSON": "e30=",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "43",
+        "inactiveClaimReasonId": null,
+        "inactiveReason": "N/A",
+        "verifiedOrgId": "13",
+        "voClaimType": "3"
+    },
+    {
+        "claimJSON": "e30=",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "44",
+        "inactiveClaimReasonId": null,
+        "inactiveReason": "N/A",
+        "verifiedOrgId": "14",
+        "voClaimType": "1"
+    },
+    {
+        "claimJSON": "e30=",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "45",
+        "inactiveClaimReasonId": null,
+        "inactiveReason": "N/A",
+        "verifiedOrgId": "14",
+        "voClaimType": "2"
     }
 ]

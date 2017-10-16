@@ -62,7 +62,7 @@ class IssuerServiceSerializer(serializers.ModelSerializer):
 class JurisdictionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Jurisdiction
-    fields = ('id','jurisdictionAbbrv','jurisdictionName','displayOrder','isOnCommonList','effectiveDate','endDate')
+    fields = ('id','abbrv','name','displayOrder','isOnCommonList','effectiveDate','endDate')
 
 class PermissionSerializer(serializers.ModelSerializer):
   class Meta:
@@ -97,7 +97,7 @@ class RoleViewModelSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ('id','givenName','surname','email','userId','guid','authorizationDirectory')
+    fields = ('id','givenName','surname','email','userId','guid','authorizationDirectory','effectiveDate','endDate')
 
 class UserDetailsViewModelSerializer(serializers.ModelSerializer):
   class Meta:
@@ -107,7 +107,7 @@ class UserDetailsViewModelSerializer(serializers.ModelSerializer):
 class UserRoleSerializer(serializers.ModelSerializer):
   class Meta:
     model = UserRole
-    fields = ('id','userId','roleId')
+    fields = ('id','userId','roleId','effectiveDate','endDate')
 
 class UserRoleViewModelSerializer(serializers.ModelSerializer):
   class Meta:
@@ -127,7 +127,7 @@ class VOClaimSerializer(serializers.ModelSerializer):
 class VOClaimTypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = VOClaimType
-    fields = ('id','theType','base64Logo','issuerOrgId','issuerURL','claimSchemaDefinition','effectiveDate','endDate')
+    fields = ('id','theType','base64Logo','issuerOrgId','issuerURL','effectiveDate','endDate')
 
 class VODoingBusinessAsSerializer(serializers.ModelSerializer):
   class Meta:
@@ -137,7 +137,7 @@ class VODoingBusinessAsSerializer(serializers.ModelSerializer):
 class VOLocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = VOLocation
-    fields = ('id','verifiedOrgId','voLocationTypeId','Addressee','AddlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
+    fields = ('id','verifiedOrgId','voLocationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
 
 class VOLocationTypeSerializer(serializers.ModelSerializer):
   class Meta:

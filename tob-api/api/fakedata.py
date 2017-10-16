@@ -77,16 +77,16 @@ def IssuerServiceTestDataUpdate():
 
 def JurisdictionTestDataCreate():
   return {
-    'jurisdictionAbbrv':'Initial',
-    'jurisdictionName':'Initial',
+    'abbrv':'Initial',
+    'name':'Initial',
     'displayOrder':1,
     'isOnCommonList':True,
   }
 
 def JurisdictionTestDataUpdate():
   return {
-    'jurisdictionAbbrv':'Changed',
-    'jurisdictionName':'Changed',
+    'abbrv':'Changed',
+    'name':'Changed',
     'displayOrder':0,
     'isOnCommonList':False,
   }
@@ -265,7 +265,6 @@ def VOClaimTypeTestDataCreate():
     'theType':'Initial',
     'base64Logo':'Initial',
     'issuerURL':'Initial',
-    'claimSchemaDefinition':'Initial',
   }
 
 def VOClaimTypeTestDataUpdate():
@@ -273,7 +272,6 @@ def VOClaimTypeTestDataUpdate():
     'theType':'Changed',
     'base64Logo':'Changed',
     'issuerURL':'Changed',
-    'claimSchemaDefinition':'Changed',
   }
 
 
@@ -290,8 +288,8 @@ def VODoingBusinessAsTestDataUpdate():
 
 def VOLocationTestDataCreate():
   return {
-    'Addressee':'Initial',
-    'AddlDeliveryInfo':'Initial',
+    'addressee':'Initial',
+    'addlDeliveryInfo':'Initial',
     'unitNumber':'Initial',
     'streetAddress':'Initial',
     'municipality':'Initial',
@@ -302,8 +300,8 @@ def VOLocationTestDataCreate():
 
 def VOLocationTestDataUpdate():
   return {
-    'Addressee':'Changed',
-    'AddlDeliveryInfo':'Changed',
+    'addressee':'Changed',
+    'addlDeliveryInfo':'Changed',
     'unitNumber':'Changed',
     'streetAddress':'Changed',
     'municipality':'Changed',
