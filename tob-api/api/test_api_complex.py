@@ -23,6 +23,7 @@ import json
 from django.test import TestCase
 from django.test import Client
 import django
+django.setup()
 
 from rest_framework.test import APIRequestFactory
 from rest_framework.parsers import JSONParser
@@ -82,6 +83,11 @@ from .serializers import VerifiedOrgSerializer
 # This file will have to be edited by hand.
 class Test_Api_Complex(TestCase):
 
+    # Django requires an explicit setup() when running tests in PTVS
+    @classmethod
+    def setUpClass(cls):
+        django.setup()
+
     def setUp(self):
         # Every test needs a client.
         self.client = Client()
@@ -92,10 +98,10 @@ class Test_Api_Complex(TestCase):
     def test_issuerservicesBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.IssuerServiceTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/issuerservices/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_issuerservicesGet(self):
@@ -107,7 +113,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -115,12 +121,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_issuerservicesIdDeletePost(self):
@@ -132,7 +138,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -140,7 +146,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_issuerservicesIdGet(self):
@@ -152,7 +158,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -163,21 +169,21 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_rolepermissionsBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.RolePermissionTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/rolepermissions/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_rolepermissionsGet(self):
@@ -189,7 +195,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -197,12 +203,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_rolepermissionsIdDeletePost(self):
@@ -214,7 +220,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -222,7 +228,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_rolepermissionsIdGet(self):
@@ -234,7 +240,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -245,21 +251,21 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_userrolesBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.UserRoleTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/userroles/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_userrolesGet(self):
@@ -271,7 +277,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -279,12 +285,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_userrolesIdDeletePost(self):
@@ -296,7 +302,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -304,7 +310,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_userrolesIdGet(self):
@@ -316,7 +322,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -327,21 +333,21 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_voclaimsBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.VOClaimTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/voclaims/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_voclaimsGet(self):
@@ -353,7 +359,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -361,12 +367,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_voclaimsIdDeletePost(self):
@@ -378,7 +384,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -386,7 +392,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_voclaimsIdGet(self):
@@ -398,7 +404,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -409,21 +415,21 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_voclaimtypesBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.VOClaimTypeTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/voclaimtypes/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_voclaimtypesGet(self):
@@ -435,7 +441,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -443,12 +449,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_voclaimtypesIdDeletePost(self):
@@ -460,7 +466,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -468,7 +474,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_voclaimtypesIdGet(self):
@@ -480,7 +486,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -491,21 +497,21 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_vodoingbusinessasBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.VODoingBusinessAsTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/vodoingbusinessas/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_vodoingbusinessasGet(self):
@@ -517,7 +523,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -525,12 +531,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_vodoingbusinessasIdDeletePost(self):
@@ -542,7 +548,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -550,7 +556,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_vodoingbusinessasIdGet(self):
@@ -562,7 +568,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -573,21 +579,21 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_volocationsBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.VOLocationTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/volocations/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_volocationsGet(self):
@@ -599,7 +605,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -607,12 +613,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_volocationsIdDeletePost(self):
@@ -624,7 +630,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -632,7 +638,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_volocationsIdGet(self):
@@ -644,7 +650,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -655,21 +661,21 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_verifiedorgsBulkPost(self):
         # Test Bulk Load.
         payload = fakedata.VerifiedOrgTestDataCreate()
-        jsonString = "[]"
+        jsonString = "[" + json.dumps(payload) + "]"
         response = self.client.post('/api/v1/verifiedorgs/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
     def test_verifiedorgsGet(self):
@@ -681,7 +687,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -689,12 +695,12 @@ class Test_Api_Complex(TestCase):
         # List:
         response = self.client.get(testUrl)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = testUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_verifiedorgsIdDeletePost(self):
@@ -706,7 +712,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -714,7 +720,7 @@ class Test_Api_Complex(TestCase):
         deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
     def test_verifiedorgsIdGet(self):
@@ -726,7 +732,7 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
-        assert status.HTTP_201_CREATED == response.status_code
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         # parse the response.
         jsonString = response.content.decode("utf-8")
         data = json.loads(jsonString)
@@ -737,12 +743,12 @@ class Test_Api_Complex(TestCase):
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
-        assert status.HTTP_200_OK == response.status_code
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         # Cleanup:
         deleteUrl = createUrl + "/" + str(createdId) + "/delete"
         response = self.client.post(deleteUrl)
         # Check that the response is OK.
-        assert status.HTTP_204_NO_CONTENT == response.status_code
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
 if __name__ == '__main__':
