@@ -83,7 +83,7 @@ class rolesIdUsersGet(APIView):
 class usersIdPermissionsGet(APIView):
   """  
   Returns the set of permissions for a user  
-  """
+    """
   # enter code for this routine here.        
   
   def get(self, request, id):
@@ -108,12 +108,15 @@ class usersSearchGet(APIView):
     return Response()
 
 class verifiedorgsIdVoclaimsGet(APIView):
-  """  
-  Returns the VO Claims for a Verified Organization  
-  """
-  # enter code for this routine here.        
-  
   def get(self, request, id):
-    return Response()
+    """  
+    Returns the Claims for a Verified Organization  
+    """
+    org = VerifiedOrg.objects.get(id=id)
+    claims = VOClaim.objects.filter(verifiedOrgId=org)
+    result = []
+    for claim in claims:
+      result.append(claim)
 
-
+    serializer = serializers.VOClaimSerializer(result, many=True)
+    return Response(serializer.data)
