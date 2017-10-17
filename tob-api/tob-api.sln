@@ -15,12 +15,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{02EF
 	ProjectSection(SolutionItems) = preProject
 		openshift\scripts\configureBuild.sh = openshift\scripts\configureBuild.sh
 		openshift\scripts\configureDeployment.sh = openshift\scripts\configureDeployment.sh
+		openshift\scripts\configureJenkinsPipelineBuild.sh = openshift\scripts\configureJenkinsPipelineBuild.sh
+		openshift\scripts\configureSchemaSpyBuild.sh = openshift\scripts\configureSchemaSpyBuild.sh
+		openshift\scripts\configureSchemaSpyDeployment.sh = openshift\scripts\configureSchemaSpyDeployment.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{BB3B5ACC-D3D4-464D-9F4C-B38279180294}"
 	ProjectSection(SolutionItems) = preProject
 		openshift\templates\django-build.json = openshift\templates\django-build.json
 		openshift\templates\django-deploy.json = openshift\templates\django-deploy.json
+		openshift\templates\schema-spy-build.json = openshift\templates\schema-spy-build.json
+		openshift\templates\schema-spy-deploy.json = openshift\templates\schema-spy-deploy.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jenkins", "jenkins", "{0C360F57-D16B-4BE4-AAA6-9CC9678CB663}"
