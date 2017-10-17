@@ -85,7 +85,7 @@
     <Compile Include="tob_api\__init__.py" />
     <Compile Include="tob_api\settings.py" />
     <Compile Include="tob_api\urls.py" />
-    <Compile Include="tob_api\wsgi.py" />
+    <Compile Include="wsgi.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="api\LICENSE" />

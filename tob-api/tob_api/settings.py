@@ -88,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tob_api.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
