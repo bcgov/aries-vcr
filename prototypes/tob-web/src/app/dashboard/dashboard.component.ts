@@ -16,9 +16,9 @@ export class DashboardComponent implements OnInit {
     this.dataService.preloadData();
   }
 
-  private query : string;
+  public query : string;
+  public results = [];
   private searchTimer;
-  private results = [];
 
   updateSearch(evt) {
     this.query = evt.target.value;
