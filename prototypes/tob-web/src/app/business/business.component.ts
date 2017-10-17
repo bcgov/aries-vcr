@@ -26,6 +26,13 @@ export class BusinessComponent implements OnInit, OnDestroy {
           console.log('verified org:', record);
           this.loaded = !!record;
           if(! record) this.error = 'Record not found';
+          else {
+            this.dataService.loadRecord('voorgtypes', record.orgTypeId)
+              .subscribe((res: any) => {
+                this.record.typeName = res.theType;
+                console.log(res);
+              });
+          }
         }, err => {
           this.error = err;
         });

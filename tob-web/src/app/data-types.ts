@@ -19,15 +19,15 @@ export interface VOLocationType {
 
 export interface VOLocation {
   id: number;
-  voLocationTypeId: VOLocation;
-  Addressee: string;
-  AddlDeliveryInfo: string;
-  unitNumber: string;
-  streetAddress: string;
-  municipality: string;
-  province: string;
-  postalCode: string;
-  latLong: string;
+  voLocationTypeId: VOLocationType;
+  addressee?: string;
+  addlDeliveryInfo?: string;
+  unitNumber?: string;
+  streetAddress?: string;
+  municipality?: string;
+  province?: string;
+  postalCode?: string;
+  latLong?: string;
 }
 
 export interface Jurisdiction {

@@ -29,8 +29,8 @@ mockOrgs[1] = {
       "expirationDate": "2017-10-05",
       "displayOrder": 0
     },
-    "Addressee": "",
-    "AddlDeliveryInfo": "",
+    "addressee": "",
+    "addlDeliveryInfo": "",
     "unitNumber": "",
     "streetAddress": "130 Future Rd",
     "municipality": "Vernon",
@@ -72,8 +72,8 @@ mockOrgs[2] = {
       "expirationDate": "2017-10-05",
       "displayOrder": 0
     },
-    "Addressee": "",
-    "AddlDeliveryInfo": "",
+    "addressee": "",
+    "addlDeliveryInfo": "",
     "unitNumber": "",
     "streetAddress": "1428 Elm St",
     "municipality": "100 Mile House",
@@ -89,7 +89,7 @@ mockOrgs[2] = {
 export class MockData {
   fetchRecord (moduleId, recordId) {
     let src = null;
-    if(moduleId === 'verifiedOrgs')
+    if(moduleId === 'verifiedorgs')
       src = mockOrgs;
     if(src)
       return src[recordId];

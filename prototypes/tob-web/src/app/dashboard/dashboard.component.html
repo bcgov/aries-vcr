@@ -12,26 +12,19 @@
         </ul>
         <div class="large-search">
           <span class="fa fa-search"></span>
-          <input type="text" name="query" size="40" placeholder="search">
+          <input type="text" name="query" size="40" placeholder="search" (input)="updateSearch($event, this)">
         </div>
       </div>
 
-      <div class="results mrgn-tp-lg">
+      <div class="results mrgn-tp-lg" *ngIf="results.length">
         <label class="control-label">Search Results</label>
-        <div class="row">
+        <div class="row" *ngFor="let record of results">
           <div class="col-sm-6">
-            <a href="" [routerLink]="['/business', 1]">Sprockets and Widgets Inc.</a>
+            <a href="" [routerLink]="['/business', record.id]">{{record.LegalName}}</a><br>
+            <small>{{record.type.theType}}</small>
           </div>
           <div class="col-sm-6">
-            Vernon, BC
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            <a href="" [routerLink]="['/business', 2]">Alternative Data Intl.</a>
-          </div>
-          <div class="col-sm-6">
-            100 Mile House, BC
+            {{record.primaryLocation.municipality}}, {{record.primaryLocation.province}}
           </div>
         </div>
       </div>
