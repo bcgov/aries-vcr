@@ -32,7 +32,7 @@ from auditable.models import Auditable
 class VOClaim(Auditable):	    
     verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VOClaimverifiedOrgId')   
     voClaimType = models.ForeignKey('VOClaimType', related_name='VOClaimvoClaimType')   
-    claimJSON = models.CharField(max_length=255)   
+    claimJSON = models.CharField(max_length=255, blank=True, null=True)   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   
     inactiveClaimReasonId = models.ForeignKey('InactiveClaimReason', related_name='VOClaiminactiveClaimReasonId', blank=True, null=True)   

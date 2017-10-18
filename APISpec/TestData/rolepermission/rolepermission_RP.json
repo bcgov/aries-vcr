@@ -1,27 +1,27 @@
 [
     {
         "id": "1",
-        "permissionid": "1",
-        "roleid": "1"
+        "permissionId": "1",
+        "roleId": "1"
     },
     {
         "id": "2",
-        "permissionid": "1",
-        "roleid": "2"
+        "permissionId": "1",
+        "roleId": "2"
     },
     {
         "id": "3",
-        "permissionid": "2",
-        "roleid": "2"
+        "permissionId": "2",
+        "roleId": "2"
     },
     {
         "id": "4",
-        "permissionid": "3",
-        "roleid": "2"
+        "permissionId": "3",
+        "roleId": "2"
     },
     {
         "id": "5",
-        "permissionid": "4",
-        "roleid": "2"
+        "permissionId": "4",
+        "roleId": "2"
     }
 ]
