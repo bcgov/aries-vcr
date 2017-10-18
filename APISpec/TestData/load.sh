@@ -1,8 +1,8 @@
 #$/bin/bash
 
-dev=http://devex-von-dev-django.pathfinder.gov.bc.ca
-test=http://devex-von-test-django.pathfinder.gov.bc.ca
-prod=http://devex-von-prod-django.pathfinder.gov.bc.ca
+dev=https://devex-von-dev-django.pathfinder.gov.bc.ca
+test=https://devex-von-test-django.pathfinder.gov.bc.ca
+prod=https://devex-von-prod-django.pathfinder.gov.bc.ca
 
 if [ -z "${3}" ]; then
   echo Incorrect syntax
