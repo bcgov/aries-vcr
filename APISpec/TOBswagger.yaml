@@ -2664,7 +2664,6 @@ definitions:
       - id
       - verifiedOrgId
       - voClaimType
-      - claimJSON
       - effectiveDate
     properties:
       id:
