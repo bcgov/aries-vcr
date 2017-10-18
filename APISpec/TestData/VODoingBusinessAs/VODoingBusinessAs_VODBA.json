@@ -1,164 +1,149 @@
 [
     {
+        "DBA": "Asian Junction",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "2",
+        "verifiedOrgId": "1"
+    },
+    {
+        "DBA": "Price Savers",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "3",
+        "verifiedOrgId": "1"
+    },
+    {
         "DBA": "Best Products",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
-        "verifiedOrgId": {
-            "id": "3"
-        }
+        "verifiedOrgId": "1"
     },
     {
         "DBA": "McDuff",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "5",
-        "verifiedOrgId": {
-            "id": "3"
-        }
+        "verifiedOrgId": "1"
     },
     {
         "DBA": "Muirhead's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "6",
-        "verifiedOrgId": {
-            "id": "3"
-        }
+        "verifiedOrgId": "1"
     },
     {
         "DBA": "Jeans Unlimited",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "7",
-        "verifiedOrgId": {
-            "id": "3"
-        }
+        "verifiedOrgId": "1"
     },
     {
-        "DBA": "Museum Company",
+        "DBA": "Henry's Hamburgers",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "8",
-        "verifiedOrgId": {
-            "id": "3"
-        }
+        "id": "9",
+        "verifiedOrgId": "2"
     },
     {
-        "DBA": "Body Toning",
+        "DBA": "Jeans Unlimited",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "10",
-        "verifiedOrgId": {
-            "id": "4"
-        }
+        "verifiedOrgId": "2"
     },
     {
-        "DBA": "Brendle's",
+        "DBA": "Wells & Wade",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "12",
-        "verifiedOrgId": {
-            "id": "5"
-        }
+        "id": "11",
+        "verifiedOrgId": "2"
     },
     {
         "DBA": "Britling Cafeterias",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "13",
-        "verifiedOrgId": {
-            "id": "5"
-        }
-    },
-    {
-        "DBA": "Harold's",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "14",
-        "verifiedOrgId": {
-            "id": "5"
-        }
+        "verifiedOrgId": "3"
     },
     {
         "DBA": "The Fox and Hound ",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "16",
-        "verifiedOrgId": {
-            "id": "6"
-        }
+        "verifiedOrgId": "5"
+    },
+    {
+        "DBA": "Harold's",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "17",
+        "verifiedOrgId": "5"
+    },
+    {
+        "DBA": "The Fox and Hound ",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "18",
+        "verifiedOrgId": "5"
     },
     {
         "DBA": "Magik Grey",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "20",
-        "verifiedOrgId": {
-            "id": "9"
-        }
+        "verifiedOrgId": "6"
     },
     {
-        "DBA": "Pantry Pride",
+        "DBA": "Sandy's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "21",
-        "verifiedOrgId": {
-            "id": "9"
-        }
-    },
-    {
-        "DBA": "Earthworks Garden Kare",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "23",
-        "verifiedOrgId": {
-            "id": "10"
-        }
+        "id": "22",
+        "verifiedOrgId": "7"
     },
     {
         "DBA": "Gamma Gas",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "24",
-        "verifiedOrgId": {
-            "id": "10"
-        }
+        "id": "23",
+        "verifiedOrgId": "7"
+    },
+    {
+        "DBA": "Service Merchandise",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "25",
+        "verifiedOrgId": "8"
+    },
+    {
+        "DBA": "Stratacard",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "26",
+        "verifiedOrgId": "8"
     },
     {
         "DBA": "Service Merchandise",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "27",
-        "verifiedOrgId": {
-            "id": "12"
-        }
+        "verifiedOrgId": "8"
+    },
+    {
+        "DBA": "Lionel Playworld",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "28",
+        "verifiedOrgId": "8"
     },
     {
         "DBA": "Stratacard",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "30",
-        "verifiedOrgId": {
-            "id": "14"
-        }
-    },
-    {
-        "DBA": "J. Brannam",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "31",
-        "verifiedOrgId": {
-            "id": "14"
-        }
-    },
-    {
-        "DBA": "Happy Family",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "32",
-        "verifiedOrgId": {
-            "id": "14"
-        }
+        "verifiedOrgId": "9"
     }
 ]

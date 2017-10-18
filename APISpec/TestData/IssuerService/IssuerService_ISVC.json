@@ -1,8 +1,8 @@
 [
     {
-        "DID": "did:sovrin:38F218691BDD0F9930A746B9",
-        "endDate": "2010-10-10",
-        "expirationDate": null,
+        "DID": "did:sovrin:36C996322C62A8FBEB616DA",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
         "id": "1",
         "issuerOrgTLA": "BCReg",
         "issuerOrgURL": "https://bcregistries.gov.bc.ca",
@@ -12,9 +12,9 @@
         "name": "BC Registry"
     },
     {
-        "DID": "did:sovrin:F6540B43A136E0A1538CF34",
-        "endDate": "2010-10-10",
-        "expirationDate": null,
+        "DID": "did:sovrin:3604EF3EFE91A1110EAF380",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
         "id": "2",
         "issuerOrgTLA": "BIZLic",
         "issuerOrgURL": "https://bizlic.gov.bc.ca",
@@ -24,9 +24,9 @@
         "name": "Business License"
     },
     {
-        "DID": "did:sovrin:2041D049274214E319208CC0",
-        "endDate": "2010-10-10",
-        "expirationDate": null,
+        "DID": "did:sovrin:2B56C3002CB3DF253114E9D9",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
         "id": "3",
         "issuerOrgTLA": "BCFS",
         "issuerOrgURL": "https://foodsafebc.gov.bc.ca",
@@ -36,9 +36,9 @@
         "name": "FoodSafe BC"
     },
     {
-        "DID": "did:sovrin:23F1B1976BECBEEFA9CD26",
-        "endDate": "2010-10-10",
-        "expirationDate": null,
+        "DID": "did:sovrin:AF140B829A3F0F3C8AF8FA",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
         "id": "4",
         "issuerOrgTLA": "LLBC",
         "issuerOrgURL": "https://LLBC.gov.bc.ca",
