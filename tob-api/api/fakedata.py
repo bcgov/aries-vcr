@@ -20,7 +20,67 @@
 """
 
 # edit this file with appropriate test data.
+testDataFolder = '../APISpec/TestData/'  
 
+def BulkInactiveClaimReasonTestDataCreate():
+  dataPath = testDataFolder + 'InactiveClaimReason/InactiveClaimReason_DEAC.json'
+  return open(dataPath).read()
+
+def BulkIssuerServiceTestDataCreate():
+  dataPath = testDataFolder + 'IssuerService/IssuerService_ISVC.json'
+  return open(dataPath).read()
+
+def BulkJurisdictionTestDataCreate():
+  dataPath = testDataFolder + 'Jurisdiction/Jurisdiction_JUR.json'
+  return open(dataPath).read()
+
+def BulkPermissionsTestDataCreate():
+  dataPath = testDataFolder + 'permissions/permissions_Perms.json'
+  return open(dataPath).read()
+
+def BulkRolePermissionTestDataCreate():
+  dataPath = testDataFolder + 'rolepermission/rolepermission_RP.json'
+  return open(dataPath).read()
+
+def BulkRolesTestDataCreate():
+  dataPath = testDataFolder + 'roles/roles_Role.json'
+  return open(dataPath).read()
+
+def BulkUserRoleTestDataCreate():
+  dataPath = testDataFolder + 'userRole/userRole_userRole.json'
+  return open(dataPath).read()
+
+def BulkUserTestDataCreate():
+  dataPath = testDataFolder + 'users/users_user.json'
+  return open(dataPath).read()
+
+def BulkVerifiedOrgTestDataCreate():
+  dataPath = testDataFolder + 'VerifiedOrg/VerifiedOrg_VO.json'
+  return open(dataPath).read()
+
+def BulkVOClaimTestDataCreate():
+  dataPath = testDataFolder + 'VOClaim/VOClaim_VOC.json'
+  return open(dataPath).read()
+
+def BulkVOClaimTypeTestDataCreate():
+  dataPath = testDataFolder + 'VOClaimType/VOClaimType_CT.json'
+  return open(dataPath).read()
+
+def BulkVODoingBusinessAsTestDataCreate():
+  dataPath = testDataFolder + 'VODoingBusinessAs/VODoingBusinessAs_VODBA.json'
+  return open(dataPath).read()
+
+def BulkVOLocationTestDataCreate():
+  dataPath = testDataFolder + 'VOLocation/VOLocation_VOL.json'
+  return open(dataPath).read()
+
+def BulkVOLocationTypeTestDataCreate():
+  dataPath = testDataFolder + 'VOLocationType/VOLocationType_VLT.json'
+  return open(dataPath).read()
+
+def BulkVOTypeTestDataCreate():
+  dataPath = testDataFolder + 'VOType/VOType_VOType.json'
+  return open(dataPath).read()
 
 def CurrentUserViewModelTestDataCreate():
   return {

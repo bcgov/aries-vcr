@@ -131,18 +131,18 @@ ${SCRIPTS_DIR}/configureJenkinsPipelineBuild.sh \
 echo "============================================================================="
 echo
 
-echo "============================================================================="
-echo "Cleaning out existing OpenShift resources ..."
-echo "============================================================================"
-oc delete imagestreams,bc --all
-echo
+# echo "============================================================================="
+# echo "Cleaning out existing OpenShift resources ..."
+# echo "============================================================================"
+# oc delete imagestreams,bc --all
+# echo
 
-echo "============================================================================="
-echo "Creating build configurations in OpenShift project; ${PROJECT_NAME} ..."
-echo "============================================================================="
-for file in *${BuildConfigPostfix}; do 
-	echo "Loading ${file} ...";
-	oc create -f ${file};
-	echo;
-done
-echo
+# echo "============================================================================="
+# echo "Creating build configurations in OpenShift project; ${PROJECT_NAME} ..."
+# echo "============================================================================="
+# for file in *${BuildConfigPostfix}; do 
+	# echo "Loading ${file} ...";
+	# oc create -f ${file};
+	# echo;
+# done
+# echo

@@ -85,6 +85,7 @@ class Test_Api_Custom(TestCase):
     # Django requires an explicit setup() when running tests in PTVS
     @classmethod
     def setUpClass(cls):
+        super(Test_Api_Custom, cls).setUpClass()
         django.setup()
 
     def setUp(self):

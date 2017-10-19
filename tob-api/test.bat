@@ -1,0 +1,1 @@
+.\env\Scripts\python manage.py test

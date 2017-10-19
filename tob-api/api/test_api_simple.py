@@ -18,7 +18,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 """
-
+import os
 import json
 from django.test import TestCase
 from django.test import Client
@@ -75,7 +75,6 @@ from .serializers import VOTypeSerializer
 from .models.VerifiedOrg import VerifiedOrg
 from .serializers import VerifiedOrgSerializer
 
-
 # Simple API test cases. 
 # If an API operation contains generated code and requires a simple model object
 # (one that is not complex, containing child items) then it is tested in this 
@@ -84,10 +83,11 @@ from .serializers import VerifiedOrgSerializer
 # See the file test_api_complex.py for other test cases, which must be hand 
 # written.
 class Test_Api_Simple(TestCase):
-    
+   
     # Django requires an explicit setup() when running tests in PTVS
     @classmethod
     def setUpClass(cls):
+        super(Test_Api_Simple, cls).setUpClass()
         django.setup()
 
     def setUp(self):
@@ -99,8 +99,7 @@ class Test_Api_Simple(TestCase):
 
     def test_inactiveclaimreasonsBulkPost(self):
         # Test Bulk Load.
-        payload = fakedata.InactiveClaimReasonTestDataCreate()
-        jsonString = "[" + json.dumps(payload) + "]"
+        jsonString = fakedata.BulkInactiveClaimReasonTestDataCreate()
         response = self.client.post('/api/v1/inactiveclaimreasons/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -181,8 +180,7 @@ class Test_Api_Simple(TestCase):
 
     def test_jurisdictionsBulkPost(self):
         # Test Bulk Load.
-        payload = fakedata.JurisdictionTestDataCreate()
-        jsonString = "[" + json.dumps(payload) + "]"
+        jsonString = fakedata.BulkJurisdictionTestDataCreate()
         response = self.client.post('/api/v1/jurisdictions/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -263,8 +261,7 @@ class Test_Api_Simple(TestCase):
 
     def test_permissionsBulkPost(self):
         # Test Bulk Load.
-        payload = fakedata.PermissionTestDataCreate()
-        jsonString = "[" + json.dumps(payload) + "]"
+        jsonString = fakedata.BulkPermissionsTestDataCreate()
         response = self.client.post('/api/v1/permissions/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -345,8 +342,7 @@ class Test_Api_Simple(TestCase):
 
     def test_rolesBulkPost(self):
         # Test Bulk Load.
-        payload = fakedata.RoleTestDataCreate()
-        jsonString = "[" + json.dumps(payload) + "]"
+        jsonString = fakedata.BulkRolesTestDataCreate()
         response = self.client.post('/api/v1/roles/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -427,8 +423,7 @@ class Test_Api_Simple(TestCase):
 
     def test_usersBulkPost(self):
         # Test Bulk Load.
-        payload = fakedata.UserTestDataCreate()
-        jsonString = "[" + json.dumps(payload) + "]"
+        jsonString = fakedata.BulkUserTestDataCreate()
         response = self.client.post('/api/v1/users/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -509,8 +504,7 @@ class Test_Api_Simple(TestCase):
 
     def test_volocationtypesBulkPost(self):
         # Test Bulk Load.
-        payload = fakedata.VOLocationTypeTestDataCreate()
-        jsonString = "[" + json.dumps(payload) + "]"
+        jsonString = fakedata.BulkVOLocationTypeTestDataCreate()
         response = self.client.post('/api/v1/volocationtypes/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -591,8 +585,7 @@ class Test_Api_Simple(TestCase):
 
     def test_voorgtypesBulkPost(self):
         # Test Bulk Load.
-        payload = fakedata.VOTypeTestDataCreate()
-        jsonString = "[" + json.dumps(payload) + "]"
+        jsonString = fakedata.BulkVOTypeTestDataCreate()
         response = self.client.post('/api/v1/voorgtypes/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
