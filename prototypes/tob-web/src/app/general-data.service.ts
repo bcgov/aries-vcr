@@ -25,8 +25,8 @@ export class GeneralDataService {
     }
   }
 
-  loadRecord(moduleId: string, recordId: string): Observable<Object> {
-    let url = this.getRequestUrl(moduleId + '/' + recordId);
+  loadFromApi(path: string): Observable<Object> {
+    let url = this.getRequestUrl(path);
     if(url) {
       return this.http.get(url)
         .map((res: Response) => res.json())
@@ -35,18 +35,36 @@ export class GeneralDataService {
             return Observable.throw(error);
         });
     }
-    return Observable.create((obs) => {
-      let data = new MockData();
-      obs.next(data.fetchRecord(moduleId, recordId));
-      obs.complete();
-    });
+  }
+
+  loadRecord(moduleId: string, recordId: string): Observable<Object> {
+    let ret = this.loadFromApi(moduleId + '/' + recordId);
+    if(! ret) {
+      ret = Observable.create((obs) => {
+        let data = new MockData();
+        obs.next(data.fetchRecord(moduleId, recordId));
+        obs.complete();
+      });
+    }
+    return ret;
   }
 
   loadVerifiedOrg(recordId): Observable<any> { // Observable<VerifiedOrg> {
     return this.loadRecord('verifiedorgs', recordId)
       .map((res: Object) => {
         let row : {[key:string]: any} = res; // <VerifiedOrg>res;
-        row.primaryLocation = (new MockData()).fetchRecord('verifiedorgs', 1).primaryLocation;
+        let locs = this.getOrgData('volocations');
+        if(locs) {
+          console.log('locs', locs);
+          for (let j = 0; j < locs.length; j++) {
+            if (locs[j].verifiedOrgId === row.id && locs[j].voLocationTypeId === 1) {
+              row.primaryLocation = locs[j];
+            }
+          }
+        }
+        if(! row.primaryLocation) {
+          row.primaryLocation = (new MockData()).fetchRecord('verifiedorgs', 1).primaryLocation;
+        }
         row.type = {};
         return row;
       });
@@ -56,24 +74,32 @@ export class GeneralDataService {
 
   private orgData : {[key: string]: any} = {};
 
-  preloadData() {
-    let baseurl = this.getRequestUrl('');
-    console.log('base url: ' + baseurl);
-    if(! baseurl) return;
-    let types = ['verifiedorgs', 'voorgtypes', 'jurisdictions', 'volocations'];
-    for (let i = 0; i < types.length; i++) {
-      let type = types[i];
-      let req = this.http.get(baseurl + type)
-        .map((res: Response) => res.json())
-        .catch(error => {
-          console.error(error);
-          return Observable.throw(error);
+  preloadData(reqTypes?) {
+    return new Promise(resolve => {
+      let baseurl = this.getRequestUrl('');
+      console.log('base url: ' + baseurl);
+      if(! baseurl) return;
+      let types = reqTypes || ['verifiedorgs', 'voorgtypes', 'jurisdictions', 'volocations'];
+      let wait = 0;
+      for (let i = 0; i < types.length; i++) {
+        let type = types[i];
+        if(this.orgData[type]) continue;
+        wait ++;
+        let req = this.http.get(baseurl + type)
+          .map((res: Response) => res.json())
+          .catch(error => {
+            console.error(error);
+            if(! --wait) resolve(1);
+            return Observable.throw(error);
+          });
+        req.subscribe(data => {
+          console.log(type, data);
+          this.orgData[type] = data;
+          if(! --wait) resolve(1);
         });
-      req.subscribe(data => {
-        console.log(type, data);
-        this.orgData[type] = data;
-      });
-    }
+      }
+      if(! wait) resolve(0);
+    });
   }
 
   findOrgData (type, id) {
@@ -84,6 +110,10 @@ export class GeneralDataService {
         }
       }
     }
+  }
+
+  getOrgData (type) {
+    return this.orgData[type];
   }
 
   matchQuery (org, query) {

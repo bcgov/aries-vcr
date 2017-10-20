@@ -55,35 +55,11 @@
     <div class="col-sm-12">
       <label class="control-label"><span class="field-name">Permits and Licences</span> <span class="fa fa-question-circle text-muted"></span></label>
       <div class="certs-outer">
-        <a class="cert" [routerLink]="'/cert'">
+        <a *ngFor="let cert of certs" class="cert" [routerLink]="'/cert/' + cert.id">
           <div class="cert-image">
-            <img src="/assets/cert.svg" class="color-green" alt="">
+            <img src="/assets/cert.svg" [class]="'color-' + cert.color" alt="">
           </div>
-          <label>Restaurant Licence</label>
-        </a>
-        <a class="cert" [routerLink]="'/cert'">
-          <div class="cert-image">
-            <img src="/assets/cert.svg" class="color-orange" alt="">
-          </div>
-          <label>Food Handling Certificate</label>
-        </a>
-        <a class="cert" [routerLink]="'/cert'">
-          <div class="cert-image">
-            <img src="/assets/cert.svg" class="color-blue" alt="">
-          </div>
-          <label>Fire Sprinkler Permit</label>
-        </a>
-        <a class="cert" [routerLink]="'/cert'">
-          <div class="cert-image">
-            <img src="/assets/cert.svg" class="color-purple" alt="">
-          </div>
-          <label>Liquor Licence</label>
-        </a>
-        <a class="cert" [routerLink]="'/cert'">
-          <div class="cert-image">
-            <img src="/assets/cert.svg" class="color-green" alt="">
-          </div>
-          <label>Copyright Violation</label>
+          <label>{{cert.type.theType}}</label>
         </a>
       </div>
     </div>

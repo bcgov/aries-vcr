@@ -11,6 +11,8 @@ export class BusinessComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
   record: any;
+  loc: any;
+  certs: any[];
   error: string;
   sub: any;
 
@@ -19,8 +21,10 @@ export class BusinessComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
+    let loaded = this.dataService.preloadData(['voclaimtypes', 'volocations']);
     this.sub = this.route.params.subscribe(params => {
-       this.id = +params['recordId'];
+      this.id = +params['recordId'];
+      loaded.then(status => {
         this.dataService.loadVerifiedOrg(this.id).subscribe(record => {
           this.record = record;
           console.log('verified org:', record);
@@ -32,10 +36,27 @@ export class BusinessComponent implements OnInit, OnDestroy {
                 this.record.typeName = res.theType;
                 console.log(res);
               });
+            this.dataService.loadFromApi('verifiedorgs/' + this.id + '/voclaims')
+              .subscribe((res: any) => {
+                let certs = [];
+                let seen = {};
+                for(var i = 0; i < res.length; i++) {
+                  let cert = res[i];
+                  if(! seen[cert.voClaimType]) {
+                    cert.type = this.dataService.findOrgData('voclaimtypes', cert.voClaimType);
+                    cert.color = ['green', 'orange', 'blue', 'purple'][cert.voClaimType % 4];
+                    certs.push(cert);
+                    seen[cert.voClaimType] = 1;
+                  }
+                }
+                this.certs = certs;
+                console.log('claims', res);
+              });
           }
         }, err => {
           this.error = err;
         });
+      });
     });
   }
 
