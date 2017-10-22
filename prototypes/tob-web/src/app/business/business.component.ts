@@ -21,7 +21,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    let loaded = this.dataService.preloadData(['voclaimtypes', 'volocations']);
+    let loaded = this.dataService.preloadData(['voclaimtypes', 'voorgtypes', 'volocations']);
     this.sub = this.route.params.subscribe(params => {
       this.id = +params['recordId'];
       loaded.then(status => {
@@ -31,11 +31,9 @@ export class BusinessComponent implements OnInit, OnDestroy {
           this.loaded = !!record;
           if(! record) this.error = 'Record not found';
           else {
-            this.dataService.loadRecord('voorgtypes', record.orgTypeId)
-              .subscribe((res: any) => {
-                this.record.typeName = res.theType;
-                console.log(res);
-              });
+            let orgType = this.dataService.findOrgData('voorgtypes', record.orgTypeId);
+            this.record.type = orgType || {};
+            this.record.typeName = orgType && orgType.theType;
             this.dataService.loadFromApi('verifiedorgs/' + this.id + '/voclaims')
               .subscribe((res: any) => {
                 let certs = [];

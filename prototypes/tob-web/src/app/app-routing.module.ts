@@ -25,7 +25,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'cert',
+    path: 'cert/:recordId',
     component: CertComponent,
     data: {
       breadcrumb: 'Permit and License Info'

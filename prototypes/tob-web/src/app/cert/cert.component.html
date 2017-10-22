@@ -1,30 +1,38 @@
 <section id="cert">
-  <div class="row">
+  <div class="row" *ngIf="error">
+    <div class="col-sm-12">
+      {{error}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="loaded">
     <div class="col-md-8 col-sm-7">
-      <h1 class="business-title">Sprockets & Widgets Inc.</h1>
+      <h1 class="business-title">{{record.org.LegalName}}</h1>
 
-      <a [routerLink]="'/business'" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Organization Info</a>
+      <a [routerLink]="'/business/' + record.verifiedOrgId" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Organization Info</a>
 
-      <h2 class="cert-title">Restaurant Licence</h2>
+      <h2 class="cert-title">{{record.type.theType}}</h2>
 
       <div class="row">
         <div class="col-md-12 cert-info">
           <div class="row form-group">
             <label class="col-sm-4 control-label">Issuer</label>
             <div class="col-sm-8 form-field">
-              Vernon Intergalactic Health Authority
+              <a *ngIf="record.type.issuerURL" [href]="record.type.issuerURL" rel="external">
+                {{record.issuer.name}}
+              </a>
             </div>
           </div>
           <div class="row form-group">
-            <label class="col-sm-4 control-label">Issue Date</label>
+            <label class="col-sm-4 control-label">Effective Date</label>
             <div class="col-sm-8 form-field">
-              Feb 29, 2017
+              {{record.effectiveDate}}
             </div>
           </div>
           <div class="row form-group">
             <label class="col-sm-4 control-label">Expiry Date</label>
             <div class="col-sm-8 form-field">
-              Feb 30, 2018
+              {{record.endDate || '-'}}
             </div>
           </div>
           <div class="row form-group mrgn-tp-lg">
@@ -40,7 +48,7 @@
     </div>
     <div class="col-md-4 col-sm-5 hidden-xs">
       <div class="cert-badge">
-        <img src="/assets/cert.svg" class="color-green" alt="">
+        <img src="/assets/cert.svg" [class]="'color-' + record.color" alt="">
       </div>
     </div>
   </div>
@@ -52,7 +60,7 @@
       <div class="verify-line">Computing SHA256 digest of local certificate [DONE 1/5]</div>
       <div class="verify-line">Fetching hash in OP_RETURN field [DONE 2/5]</div>
       <div class="verify-line">Comparing local and blockchain hashes [PASS 3/5]</div>
-      <div class="verify-line">Checking Verified Organzation signature [PASS 4/5]</div>
+      <div class="verify-line">Checking Verified Organization signature [PASS 4/5]</div>
       <div class="verify-line">Checking not revoked by issuer [PASS 5/5]</div>
       <div class="verify-line"><span class="verify-pfx">Success!</span> The certificate has been verified.</div>
       <div class="verify-line"><span class="verify-pfx">Public Key:</span> 1GuqT4EpnhmA6GQvA3Fz5JWPjcZyXSQpFw</div>

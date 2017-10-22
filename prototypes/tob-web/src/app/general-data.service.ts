@@ -37,7 +37,7 @@ export class GeneralDataService {
     }
   }
 
-  loadRecord(moduleId: string, recordId: string): Observable<Object> {
+  loadRecord(moduleId: string, recordId: string): Observable<any> {
     let ret = this.loadFromApi(moduleId + '/' + recordId);
     if(! ret) {
       ret = Observable.create((obs) => {
