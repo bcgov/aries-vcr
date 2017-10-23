@@ -16,7 +16,7 @@
 title: TheOrgBook
 email: swcurran@cloudcompass.ca
 description: > # this means to ignore newlines until next non-indented line
-  Bootstrapping the world of Verified Organizations with Self-Sovereign Identities
+  Bootstrapping the world of Verifiable Organizations with Self-Sovereign Identities
   - Locally created, globally connected
 repository: 'bcgov/TheOrgBook'
 # twitter_username:
