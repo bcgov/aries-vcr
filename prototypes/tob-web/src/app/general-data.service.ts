@@ -79,7 +79,7 @@ export class GeneralDataService {
       let baseurl = this.getRequestUrl('');
       console.log('base url: ' + baseurl);
       if(! baseurl) return;
-      let types = reqTypes || ['verifiedorgs', 'voorgtypes', 'jurisdictions', 'volocations'];
+      let types = reqTypes || ['voorgtypes', 'jurisdictions', 'volocations'];
       let wait = 0;
       for (let i = 0; i < types.length; i++) {
         let type = types[i];
@@ -116,53 +116,39 @@ export class GeneralDataService {
     return this.orgData[type];
   }
 
-  matchQuery (org, query) {
-    let qp = ('' + query).toLowerCase().trim().split(/\s+/);
-    let nm = org.LegalName.toLowerCase();
-    if (!qp[0].length) {
-      return 0;
-    }
-    if (nm.indexOf(qp.join(' ')) === 0) {
-      return 2;
-    }
-    for (let i = 0; i < qp.length; i++) {
-      if (nm.indexOf(qp) < 0) {
-        return 0;
-      }
-    }
-    return 1;
-  }
-
   searchOrgs (query: string) {
-    let fst = [];
-    let lst = [];
-    if (this.orgData.verifiedorgs) {
-      let orgs = this.orgData.verifiedorgs;
-      let locs = this.orgData.volocations;
-      console.log(this.orgData);
-      for (let i = 0; i < orgs.length; i++) {
-        let org = Object.assign({}, orgs[i]);
-        let m = this.matchQuery(org, query);
-        if (m) {
-          org.jurisdiction = this.findOrgData('jurisdictions', org.jurisdictionId) || {};
-          org.type = this.findOrgData('voorgtypes', org.orgTypeId) || {};
-          org.primaryLocation = {};
-          if (locs) {
-            for (let j = 0; j < locs.length; j++) {
-              if (locs[j].verifiedOrgId === org.id && locs[j].voLocationTypeId === 1) {
-                org.primaryLocation = locs[j];
+    return new Promise(resolve => {
+      let baseurl = this.getRequestUrl('verifiedorgs/search');
+      let req = this.http.get(baseurl, {params: {LegalName: query}})
+        .map((res: Response) => res.json())
+        .catch(error => {
+          console.error(error);
+          resolve(null);
+          return Observable.throw(error);
+        });
+      req.subscribe(data => {
+        console.log('search results', data);
+        let locs = this.orgData.volocations;
+        let orgs = [];
+        if(Array.isArray(data)) {
+          for(let i = 0; i < data.length; i++) {
+            let org = Object.assign({}, data[i]);
+            org.jurisdiction = this.findOrgData('jurisdictions', org.jurisdictionId) || {};
+            org.type = this.findOrgData('voorgtypes', org.orgTypeId) || {};
+            org.primaryLocation = {};
+            if (locs) {
+              for (let j = 0; j < locs.length; j++) {
+                if (locs[j].verifiedOrgId === org.id && locs[j].voLocationTypeId === 1) {
+                  org.primaryLocation = locs[j];
+                }
               }
             }
-          }
-          if (m === 2) {
-            fst.push(org);
-          } else {
-            lst.push(org);
+            orgs.push(org);
           }
         }
-      }
-    }
-    return fst.concat(lst);
+        resolve(orgs);
+      });
+    });
   }
 
 }

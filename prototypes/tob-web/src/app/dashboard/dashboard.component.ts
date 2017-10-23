@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   public query : string;
   public results = [];
   private searchTimer;
+  private sub;
 
   updateSearch(evt) {
     this.query = evt.target.value;
@@ -27,8 +28,12 @@ export class DashboardComponent implements OnInit {
   }
 
   search() {
-    this.results = this.dataService.searchOrgs(this.query);
-    console.log(this.results);
+    this.sub = this.dataService.searchOrgs(this.query);
+    this.sub.then(data => this.returnSearch(data));
+  }
+
+  returnSearch(data) {
+    this.results = data;
   }
 
 }
