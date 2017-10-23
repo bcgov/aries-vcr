@@ -27,10 +27,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private searchTimer;
   private sub;
   private page = 0;
-  private more = false;
-  private less = false;
-  private none = false;
-  private loading = false;
+  public more = false;
+  public less = false;
+  public none = false;
+  public loading = false;
 
   updateSearch(evt) {
     this.query = evt.target.value;
