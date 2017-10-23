@@ -5,6 +5,12 @@
     </div>
   </div>
 
+  <div class="row" *ngIf="!loaded && !error">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
   <div class="row" *ngIf="loaded">
     <div class="col-md-8 col-sm-7">
       <h1 class="business-title">{{record.LegalName}}</h1>
