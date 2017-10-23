@@ -1,0 +1,7 @@
+{{ object.addressee }}
+{{ object.municipality }}
+{{ object.postalCode }}
+{{ object.province }}
+{{ object.streetAddress }}
+Created: {{ object.CREATE_TIMESTAMP }}
+Last modified: {{ object.updated }}

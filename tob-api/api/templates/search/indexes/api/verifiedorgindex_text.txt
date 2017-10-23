@@ -1,0 +1,4 @@
+{{ object.busId }}
+{{ object.LegalName }}
+Created: {{ object.CREATE_TIMESTAMP }}
+Last modified: {{ object.updated }}

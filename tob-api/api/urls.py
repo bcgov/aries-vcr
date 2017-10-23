@@ -30,6 +30,8 @@ from rest_framework_swagger import renderers
 from . import views
 # custom views
 from . import views_custom
+# search views
+from . import search_views
 
 class SwaggerSchemaView(APIView):
     permission_classes = [AllowAny]
@@ -50,14 +52,17 @@ urlpatterns = [
     url(r'^users/current$', views_custom.usersCurrentGet.as_view()),
     url(r'^inactiveclaimreasons/bulk$', views.inactiveclaimreasonsBulkPost.as_view()),
     url(r'^inactiveclaimreasons$', views.inactiveclaimreasonsGet.as_view()),
+    url(r'^inactiveclaimreasons/search$', search_views.InactiveClaimReasonSearchView.as_view()),
     url(r'^inactiveclaimreasons/(?P<id>[0-9]+)/delete$', views.inactiveclaimreasonsIdDeletePost.as_view()),
     url(r'^inactiveclaimreasons/(?P<id>[0-9]+)$', views.inactiveclaimreasonsIdGet.as_view()),
     url(r'^issuerservices/bulk$', views.issuerservicesBulkPost.as_view()),
     url(r'^issuerservices$', views.issuerservicesGet.as_view()),
+    url(r'^issuerservices/search$', search_views.IssuerServiceSearchView.as_view()),
     url(r'^issuerservices/(?P<id>[0-9]+)/delete$', views.issuerservicesIdDeletePost.as_view()),
     url(r'^issuerservices/(?P<id>[0-9]+)$', views.issuerservicesIdGet.as_view()),
     url(r'^jurisdictions/bulk$', views.jurisdictionsBulkPost.as_view()),
     url(r'^jurisdictions$', views.jurisdictionsGet.as_view()),
+    url(r'^jurisdictions/search$', search_views.JurisdictionSearchView.as_view()),
     url(r'^jurisdictions/(?P<id>[0-9]+)/delete$', views.jurisdictionsIdDeletePost.as_view()),
     url(r'^jurisdictions/(?P<id>[0-9]+)$', views.jurisdictionsIdGet.as_view()),
     url(r'^permissions/bulk$', views.permissionsBulkPost.as_view()),
@@ -91,26 +96,32 @@ urlpatterns = [
     url(r'^voclaims/(?P<id>[0-9]+)$', views.voclaimsIdGet.as_view()),
     url(r'^voclaimtypes/bulk$', views.voclaimtypesBulkPost.as_view()),
     url(r'^voclaimtypes$', views.voclaimtypesGet.as_view()),
+    url(r'^voclaimtypes/search$', search_views.VOClaimTypeSearchView.as_view()),
     url(r'^voclaimtypes/(?P<id>[0-9]+)/delete$', views.voclaimtypesIdDeletePost.as_view()),
     url(r'^voclaimtypes/(?P<id>[0-9]+)$', views.voclaimtypesIdGet.as_view()),
     url(r'^vodoingbusinessas/bulk$', views.vodoingbusinessasBulkPost.as_view()),
     url(r'^vodoingbusinessas$', views.vodoingbusinessasGet.as_view()),
+    url(r'^vodoingbusinessas/search$', search_views.VODoingBusinessAsSearchView.as_view()),
     url(r'^vodoingbusinessas/(?P<id>[0-9]+)/delete$', views.vodoingbusinessasIdDeletePost.as_view()),
     url(r'^vodoingbusinessas/(?P<id>[0-9]+)$', views.vodoingbusinessasIdGet.as_view()),
     url(r'^volocations/bulk$', views.volocationsBulkPost.as_view()),
     url(r'^volocations$', views.volocationsGet.as_view()),
+    url(r'^volocations/search$', search_views.LocationSearchView.as_view()),
     url(r'^volocations/(?P<id>[0-9]+)/delete$', views.volocationsIdDeletePost.as_view()),
     url(r'^volocations/(?P<id>[0-9]+)$', views.volocationsIdGet.as_view()),
     url(r'^volocationtypes/bulk$', views.volocationtypesBulkPost.as_view()),
     url(r'^volocationtypes$', views.volocationtypesGet.as_view()),
+    url(r'^volocationtypes/search$', search_views.VOLocationTypeSearchView.as_view()),
     url(r'^volocationtypes/(?P<id>[0-9]+)/delete$', views.volocationtypesIdDeletePost.as_view()),
     url(r'^volocationtypes/(?P<id>[0-9]+)$', views.volocationtypesIdGet.as_view()),
     url(r'^voorgtypes/bulk$', views.voorgtypesBulkPost.as_view()),
     url(r'^voorgtypes$', views.voorgtypesGet.as_view()),
+    url(r'^voorgtypes/search$', search_views.VOTypeSearchView.as_view()),
     url(r'^voorgtypes/(?P<id>[0-9]+)/delete$', views.voorgtypesIdDeletePost.as_view()),
     url(r'^voorgtypes/(?P<id>[0-9]+)$', views.voorgtypesIdGet.as_view()),
     url(r'^verifiedorgs/bulk$', views.verifiedorgsBulkPost.as_view()),
     url(r'^verifiedorgs$', views.verifiedorgsGet.as_view()),
+    url(r'^verifiedorgs/search$', search_views.VerifiedOrgSearchView.as_view()),
     url(r'^verifiedorgs/(?P<id>[0-9]+)/delete$', views.verifiedorgsIdDeletePost.as_view()),
     url(r'^verifiedorgs/(?P<id>[0-9]+)$', views.verifiedorgsIdGet.as_view()),
     url(r'^verifiedorgs/(?P<id>[0-9]+)/voclaims$', views_custom.verifiedorgsIdVoclaimsGet.as_view())

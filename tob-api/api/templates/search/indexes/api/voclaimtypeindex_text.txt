@@ -1,0 +1,3 @@
+{{ object.theType }}
+Created: {{ object.CREATE_TIMESTAMP }}
+Last modified: {{ object.updated }}

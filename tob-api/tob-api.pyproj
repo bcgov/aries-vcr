@@ -62,6 +62,15 @@
     <Compile Include="api\models\VOLocationType.py" />
     <Compile Include="api\models\VOType.py" />
     <Compile Include="api\models\__init__.py" />
+    <Compile Include="api\search_indexes.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="api\search_serializers.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="api\search_views.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="api\serializers.py" />
     <Compile Include="api\tests.py" />
     <Compile Include="api\test_api_complex.py" />
@@ -90,12 +99,25 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="api\LICENSE" />
+    <Content Include="api\templates\search\indexes\api\inactiveclaimreasonindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\issuerserviceindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\jurisdictionindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\locationindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\verifiedorgindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\voclaimtypeindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\vodoingbusinessasindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\volocationtypeindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\votypeindex_text.txt" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
     <Folder Include="api\migrations\" />
     <Folder Include="api\models\" />
+    <Folder Include="api\templates\" />
+    <Folder Include="api\templates\search\" />
+    <Folder Include="api\templates\search\indexes\" />
+    <Folder Include="api\templates\search\indexes\api\" />
     <Folder Include="auditable\" />
     <Folder Include="auditable\migrations\" />
     <Folder Include="tob_api\" />
