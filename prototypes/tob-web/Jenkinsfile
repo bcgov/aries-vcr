@@ -14,7 +14,7 @@ node {
   stage('build nginx runtime') {
     echo "Building: " + NGINX_BUILD_CONFIG
     openshiftBuild bldCfg: NGINX_BUILD_CONFIG, showBuildLogs: 'true'
-	sleep 10
+    openshiftTag destStream: NGINX_BUILD_CONFIG, verbose: 'true', destTag: '$BUILD_ID', srcStream: NGINX_BUILD_CONFIG, srcTag: 'latest'
   }
   
   stage('build ' + BUILD_CONFIG) {
