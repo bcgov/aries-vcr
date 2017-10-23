@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { GeneralDataService } from 'app/general-data.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { GeneralDataService } from 'app/general-data.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
 
   constructor(
     private dataService: GeneralDataService
@@ -14,12 +14,23 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.preloadData();
+
+  }
+
+  ngAfterViewInit() {
+    (<HTMLInputElement>document.getElementById('searchInput')).select();
   }
 
   public query : string;
+  public allResults;
   public results = [];
   private searchTimer;
   private sub;
+  private page = 0;
+  private more = false;
+  private less = false;
+  private none = false;
+  private loading = false;
 
   updateSearch(evt) {
     this.query = evt.target.value;
@@ -28,12 +39,35 @@ export class DashboardComponent implements OnInit {
   }
 
   search() {
-    this.sub = this.dataService.searchOrgs(this.query);
-    this.sub.then(data => this.returnSearch(data));
+    let srch = this.sub = this.dataService.searchOrgs(this.query);
+    this.loading = true;
+    this.sub.then(data => this.returnSearch(data, srch));
   }
 
-  returnSearch(data) {
-    this.results = data;
+  returnSearch(data, from) {
+    if(from !== this.sub) return;
+    this.page = 0;
+    this.allResults = data;
+    this.paginate();
+    this.loading = false;
+  }
+
+  paginate() {
+    let rows = this.allResults || [];
+    this.results = rows.slice(this.page * 10, (this.page + 1) * 10);
+    this.more = (rows.length > (this.page + 1) * 10);
+    this.less = (this.page > 0);
+    this.none = (rows.length == 0);
+  }
+
+  prev() {
+    this.page --;
+    this.paginate();
+  }
+
+  next() {
+    this.page ++;
+    this.paginate();
   }
 
 }

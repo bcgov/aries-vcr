@@ -135,11 +135,13 @@ export class GeneralDataService {
             let org = Object.assign({}, data[i]);
             org.jurisdiction = this.findOrgData('jurisdictions', org.jurisdictionId) || {};
             org.type = this.findOrgData('voorgtypes', org.orgTypeId) || {};
-            org.primaryLocation = {};
+            org.primaryLocation = {summary: ''};
             if (locs) {
               for (let j = 0; j < locs.length; j++) {
                 if (locs[j].verifiedOrgId === org.id && locs[j].voLocationTypeId === 1) {
-                  org.primaryLocation = locs[j];
+                  let loc = Object.assign({}, locs[j]);
+                  loc.summary = '' + loc.municipality + ', ' + loc.province;
+                  org.primaryLocation = loc;
                 }
               }
             }

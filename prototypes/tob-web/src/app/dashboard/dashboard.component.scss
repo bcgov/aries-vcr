@@ -3,6 +3,7 @@ $input-border: rgba(200, 220, 230, 0.9);
 .dashboard-title { margin-top: 0; }
 
 .large-search {
+  align-items: center;
   border: 2px solid $input-border;
   border-radius: 25px;
   display: inline-flex;
@@ -10,7 +11,8 @@ $input-border: rgba(200, 220, 230, 0.9);
   overflow: hidden;
   .fa {
     color: darken($input-border, 10%);
-    display: inline-block;
+  }
+  .fa, .load {
     flex: 0 0 46px;
     font-size: 32px;
     line-height: 40px;
@@ -61,6 +63,17 @@ $input-border: rgba(200, 220, 230, 0.9);
   a {
     text-decoration: none;
   }
+}
+
+.results-nav {
+  font-size: 1.6rem;
+  padding: 1rem;
+}
+
+.results-none {
+  font-size: 1.8rem;
+  font-style: italic;
+  padding: 1rem 0;
 }
 
 .map {

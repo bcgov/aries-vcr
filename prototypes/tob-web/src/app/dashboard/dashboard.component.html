@@ -11,12 +11,13 @@
           <li class="stat"><span class="numbers">1,497,854</span> permits and licences</li>
         </ul>
         <div class="large-search">
-          <span class="fa fa-search"></span>
-          <input type="text" name="query" size="40" placeholder="search" (input)="updateSearch($event)">
+          <span class="fa fa-search" *ngIf="!loading"></span>
+          <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
+          <input type="text" id="searchInput" name="query" size="40" placeholder="search" (input)="updateSearch($event)">
         </div>
       </div>
 
-      <div class="results mrgn-tp-lg" *ngIf="results.length">
+      <div class="results mrgn-tp-lg" *ngIf="results.length || none">
         <label class="control-label">Search Results</label>
         <div class="row" *ngFor="let record of results">
           <div class="col-sm-6">
@@ -24,8 +25,25 @@
             <small>{{record.type.theType}}</small>
           </div>
           <div class="col-sm-6">
-            {{record.primaryLocation.municipality}}, {{record.primaryLocation.province}}
+            {{record.primaryLocation.summary}}
           </div>
+        </div>
+        <div class="row" *ngIf="none">
+          <div class="col-sm-6 text-muted">
+            <em>No results</em>
+          </div>
+        </div>
+      </div>
+      <div class="row results-nav" *ngIf="more || less">
+        <div class="col-sm-12 text-right">
+          <ul class="pager">
+            <li *ngIf="less">
+              <a href="#" (click)="prev(); $event.preventDefault();">&lt;&lt; Previous</a>
+            </li>
+            <li *ngIf="more">
+              <a href="#" (click)="next(); $event.preventDefault();">Next &gt;&gt;</a>
+            </li>
+          </ul>
         </div>
       </div>
 

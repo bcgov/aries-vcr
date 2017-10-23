@@ -54,7 +54,7 @@
   </div>
 
   <!-- http://certificates-bootcamp.mit.edu/57b5085663e25800096f99b4 -->
-  <div class="row cert-verify">
+  <div class="row cert-verify" *ngIf="loaded">
     <div class="col-sm-12">
       <div class="verify-line"><span class="verify-pfx">Verify certificate:</span> Verified</div>
       <div class="verify-line">Computing SHA256 digest of local certificate [DONE 1/5]</div>

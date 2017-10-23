@@ -41,3 +41,39 @@
 .title {
   letter-spacing: 0.05em;
 }
+
+@keyframes spin {
+	from {
+		transform: rotate(0);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+$indicator-color: #666;
+$indicator-size: 1em;
+$indicator-thickness: 0.2em;
+.loading-indicator {
+	&, &:after {
+		border-radius: 50%;
+		width: $indicator-size;
+		height: $indicator-size;
+	}
+	animation: spin 1.1s infinite linear;
+	border: $indicator-thickness solid transparent;
+	border-top-color: $indicator-color;
+	line-height: 1;
+	margin: 0 auto;
+	position: relative;
+	text-indent: -9999em;
+	transform: translateZ(0);
+	&:after {
+		position: absolute;
+		top: (- $indicator-thickness);
+		left: (- $indicator-thickness);
+		border: $indicator-thickness solid transparentize($indicator-color, 0.8);
+		content: ' ';
+	}
+}
+
