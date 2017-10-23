@@ -31,58 +31,125 @@ class InactiveClaimReasonSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [InactiveClaimReason]
     serializer_class = InactiveClaimReasonSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - reason
+        - shortReason
+        """
         return self.list(request, *args, **kwargs)
 
 class IssuerServiceSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [IssuerService]
     serializer_class = IssuerServiceSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - name
+        - issuerOrgTLA
+        """
         return self.list(request, *args, **kwargs)
 
 class JurisdictionSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [Jurisdiction]
     serializer_class = JurisdictionSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - name
+        - abbrv
+        """
         return self.list(request, *args, **kwargs)
 
 class VerifiedOrgSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [VerifiedOrg]
     serializer_class = VerifiedOrgSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - busId
+        - LegalName
+        """
         return self.list(request, *args, **kwargs)
 
 class VOClaimTypeSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [VOClaimType]
     serializer_class = VOClaimTypeSearchSerializer
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
 
-class VOClaimTypeSearchView(ListModelMixin, HaystackGenericAPIView):
-    index_models = [VOClaimType]
-    serializer_class = VOClaimTypeSearchSerializer
-    def get(self, request, *args, **kwargs):
+        Searchable fields:
+        - theType
+        """
         return self.list(request, *args, **kwargs)
 
 class VODoingBusinessAsSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [VODoingBusinessAs]
     serializer_class = VODoingBusinessAsSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - DBA
+        """
         return self.list(request, *args, **kwargs)
 
 class LocationSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [VOLocation]
     serializer_class = LocationSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - addressee
+        - municipality
+        - postalCode
+        - province
+        - streetAddress
+        """
         return self.list(request, *args, **kwargs)
 
 class VOLocationTypeSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [VOLocationType]
     serializer_class = VOLocationTypeSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - theType
+        - description
+        """
         return self.list(request, *args, **kwargs)
 
 class VOTypeSearchView(ListModelMixin, HaystackGenericAPIView):
     index_models = [VOType]
     serializer_class = VOTypeSearchSerializer
     def get(self, request, *args, **kwargs):
+        """
+        Provides basic search capabilities.
+        For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
+
+        Searchable fields:
+        - theType
+        - description
+        """
         return self.list(request, *args, **kwargs)
