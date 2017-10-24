@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 
 USER_ID="$(id -u)"
 SCRIPT_DIR=$(dirname $0)
@@ -11,15 +11,15 @@ TEMPLATE_DIR="${SCRIPT_DIR}/templates"
 # * Requires the OpenShift Origin CLI
 # ------------------------------------------------------------------------------
 # Usage on Windows:
-#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh [project_namespace] [deployment_env_name] [build_env_name] 
-# 
+#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh [project_namespace] [deployment_env_name] [build_env_name]
+#
 # Example:
 #  MSYS_NO_PATHCONV=1 ./generateDeployments.sh devex-von dev tools
 # ------------------------------------------------------------------------------
 # ToDo:
 # * Add support for create or update.
 # -----------------------------------------------------------------------------------
-#DEBUG_MESSAGES=1
+# DEBUG_MESSAGES=1
 # -----------------------------------------------------------------------------------
 PROJECT_NAMESPACE="${1}"
 DEPLOYMENT_ENV_NAME="${2}"
@@ -48,7 +48,7 @@ fi
 if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
 	echo "One or more parameters are missing!"
-	echo "--------------------------------------------"	
+	echo "--------------------------------------------"
 	echo "PROJECT_NAMESPACE[{1}]: ${1}"
 	echo "DEPLOYMENT_ENV_NAME[{2}]: ${2}"
 	echo "BUILD_ENV_NAME[{3}]: ${3}"
@@ -69,7 +69,7 @@ echo "Switching to project ${DEPLOYMENT_PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
 oc project ${DEPLOYMENT_PROJECT_NAME}
 echo "============================================================================"
-echo 
+echo
 
 echo "============================================================================="
 echo "Deleting previous deployment configuration files ..."
@@ -93,21 +93,20 @@ ${SCRIPTS_DIR}/configureDeployment.sh \
 echo "============================================================================="
 echo
 
-echo "============================================================================="
-echo "Cleaning out all existing OpenShift resources ..."
-echo "-----------------------------------------------------------------------------"
-oc delete routes,services,dc,imagestreams,horizontalpodautoscalers --all
-echo "============================================================================="
-echo
+# echo "============================================================================="
+# echo "Cleaning out all existing OpenShift resources ..."
+# echo "-----------------------------------------------------------------------------"
+# oc delete routes,services,dc,imagestreams,horizontalpodautoscalers --all
+# echo "============================================================================="
+# echo
 
 echo "============================================================================="
 echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
-for file in *${DeploymentConfigPostfix}; do 
+for file in *${DeploymentConfigPostfix}; do
 	echo "Loading ${file} ...";
 	oc create -f ${file};
 	echo;
 done
 echo "============================================================================="
 echo
-

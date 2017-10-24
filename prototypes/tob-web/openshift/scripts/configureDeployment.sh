@@ -12,10 +12,11 @@ TAG_NAME=${2}
 IMAGE_NAMESPACE=${3}
 APPLICATION_DOMAIN=${4}
 DEPLOYMENT_CONFIG_TEMPLATE=${5}
-
 DEPLOYMENT_CONFIG_POST_FIX=${6}
+TOB_API_URL=${7}
+
 # -----------------------------------------------------------------------------------
-#DEBUG_MESSAGES=1
+# DEBUG_MESSAGES=1
 # -----------------------------------------------------------------------------------
 if [ -z "$BUILD_NAME" ]; then
 	echo "You must supply BUILD_NAME."
@@ -43,21 +44,28 @@ if [ -z "$DEPLOYMENT_CONFIG_TEMPLATE" ]; then
 fi
 
 if [ -z "$DEPLOYMENT_CONFIG_POST_FIX" ]; then
-	DEPLOYMENT_CONFIG_POST_FIX="_DeploymentConfig.json"
-	echo "Defaulting 'DEPLOYMENT_CONFIG_POST_FIX' to ${DEPLOYMENT_CONFIG_POST_FIX} ..."
+   DEPLOYMENT_CONFIG_POST_FIX="_DeploymentConfig.json"
+   echo "Defaulting 'DEPLOYMENT_CONFIG_POST_FIX' to ${DEPLOYMENT_CONFIG_POST_FIX} ..."
+fi
+
+if [ -z "$TOB_API_URL" ]; then
+	TOB_API_URL="https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
+	echo "Defaulting 'TOB_API_URL' to ${TOB_API_URL} ..."
 	echo
 fi
+
 
 if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
 	echo "One or more parameters are missing!"
-	echo "--------------------------------------------"	
+	echo "--------------------------------------------"
 	echo "BUILD_NAME[{1}]: ${1}"
 	echo "TAG_NAME[{2}]: ${2}"
 	echo "IMAGE_NAMESPACE[{3}]: ${3}"
 	echo "APPLICATION_DOMAIN[{4}]: ${4}"
 	echo "DEPLOYMENT_CONFIG_TEMPLATE[{5}]: ${5}"
 	echo "DEPLOYMENT_CONFIG_POST_FIX[{6}]: ${6}"
+	echo "TOB_API_URL[{7}]: ${7}"
     echo "============================================"
 	echo
 	exit 1
@@ -78,7 +86,8 @@ if [ ! -z "$DEBUG_MESSAGES" ]; then
 	echo "TAG_NAME=${TAG_NAME}"
 	echo "IMAGE_NAMESPACE=${IMAGE_NAMESPACE}"
 	echo "APPLICATION_DOMAIN=${APPLICATION_DOMAIN}"
-	echo "Output File=${DEPLOYMENT_CONFIG}"	
+	echo "TOB_API_URL=${TOB_API_URL}"
+	echo "Output File=${DEPLOYMENT_CONFIG}"
 	echo "------------------------------------------------------------------------"
 	echo
 fi
@@ -89,6 +98,7 @@ oc process \
 -p TAG_NAME=${TAG_NAME} \
 -p IMAGE_NAMESPACE=${IMAGE_NAMESPACE} \
 -p APPLICATION_DOMAIN=${APPLICATION_DOMAIN} \
+-p TOB_API_URL=${TOB_API_URL} \
 > ${DEPLOYMENT_CONFIG}
 echo "Generated ${DEPLOYMENT_CONFIG} ..."
 echo

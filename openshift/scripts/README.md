@@ -2,6 +2,10 @@
 
 A set of helper scripts to help maintain the project.
 
+## initializeProjects.sh
+
+A script to set the permissions and create (possibly needed) Glusterfs Services (does nothing on a local OpenShift instance - but that's OK).
+
 ## getPodByName.sh
 
 A utility script that returns the full name of a running instance of a pod, given the pod's name and optionally the pod index.

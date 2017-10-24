@@ -46,7 +46,7 @@ fi
 
 if [ -z "$POSTGRESQL_PASSWORD" ]; then
 	echo "POSTGRESQL_PASSWORD will be auto generated ..."
-	POSTGRESQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9_~!@#$%^*()-=,.?;:|' | fold -w 16 | head -n 1)
+	POSTGRESQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9_@#=;:|' | fold -w 16 | head -n 1)
 fi
 
 if [ -z "$DEPLOYMENT_CONFIG_TEMPLATE" ]; then
@@ -63,7 +63,7 @@ fi
 if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
 	echo "One or more parameters are missing!"
-	echo "--------------------------------------------"	
+	echo "--------------------------------------------"
 	echo "NAME[{1}]: ${1}"
 	echo "MEMORY_LIMIT[{2}]: ${2}"
 	echo "PERSISTENT_VOLUME_SIZE[{3}]: ${3}"
@@ -94,7 +94,7 @@ if [ ! -z "$DEBUG_MESSAGES" ]; then
 	echo "POSTGRESQL_DATABASE_NAME=${POSTGRESQL_DATABASE_NAME}"
 	echo "POSTGRESQL_USER=${POSTGRESQL_USER}"
 	echo "POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}"
-	echo "Output File=${DEPLOYMENT_CONFIG}"	
+	echo "Output File=${DEPLOYMENT_CONFIG}"
 	echo "------------------------------------------------------------------------"
 	echo
 fi

@@ -57,6 +57,10 @@
                 ],
                 "env": [
                   {
+                    "name": "TOB_API_URL",
+                    "value": "${TOB_API_URL}"
+                  },
+                  {
                     "name": "RealIpFrom",
                     "value": "${REAL_IP_FROM}"
                   },
@@ -240,6 +244,13 @@
       "name": "REAL_IP_FROM",
       "required": true,
       "value": "172.51.0.0/16"
+    },
+    {
+      "description": "URL used by the Web component for the TheOrgBook API",
+      "displayName": "TheOrgBook API URL",
+      "name": "TOB_API_URL",
+      "required": true,
+      "value": "https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
     },
     {
       "description": "Additional known and trusted reverse proxy ips conforming to nginx set_real_ip_from directive syntax. Multiple directives are allowed, separated by semicolon.",

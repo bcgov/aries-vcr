@@ -12,7 +12,7 @@ TEMPLATE_DIR="${SCRIPT_DIR}/templates"
 # ------------------------------------------------------------------------------
 # Usage on Windows:
 #  MSYS_NO_PATHCONV=1 ./generateBuilds.sh [project_name] [git_ref] [git_uri]
-# 
+#
 # Example:
 #  MSYS_NO_PATHCONV=1 ./generateBuilds.sh devex-von-tools master https://github.com/bcgov/TheOrgBook.git
 # ------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ fi
 if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
 	echo "One or more parameters are missing!"
-	echo "--------------------------------------------"	
+	echo "--------------------------------------------"
 	echo "PROJECT_NAME[{1}]: ${1}"
 	echo "GIT_REF[{2}]: ${2}"
 	echo "GIT_URI[{3}]: ${3}"
@@ -71,12 +71,12 @@ echo "Switching to project ${PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
 oc project ${PROJECT_NAME}
 echo "============================================================================"
-echo 
+echo
 
 echo "============================================================================="
 echo "Deleting previous build configuration files ..."
 echo "-----------------------------------------------------------------------------"
-for file in *${BuildConfigPostfix}; do 
+for file in *${BuildConfigPostfix}; do
 	echo "Deleting ${file} ..."
 	rm -rf ${file};
 done
@@ -131,16 +131,16 @@ ${SCRIPTS_DIR}/configureJenkinsPipelineBuild.sh \
 echo "============================================================================="
 echo
 
-echo "============================================================================="
-echo "Cleaning out existing OpenShift resources ..."
-echo "============================================================================"
-oc delete imagestreams,bc --all
-echo
+# echo "============================================================================="
+# echo "Cleaning out existing OpenShift resources ..."
+# echo "============================================================================"
+# oc delete imagestreams,bc --all
+# echo
 
 echo "============================================================================="
 echo "Creating build configurations in OpenShift project; ${PROJECT_NAME} ..."
 echo "============================================================================="
-for file in *${BuildConfigPostfix}; do 
+for file in *${BuildConfigPostfix}; do
 	echo "Loading ${file} ...";
 	oc create -f ${file};
 	echo;

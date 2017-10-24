@@ -1,0 +1,219 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "angular-on-nginx"
+                },
+                "name": "angular-on-nginx"
+            },
+            "spec": {
+                "replicas": 2,
+                "selector": {
+                    "app": "angular-on-nginx",
+                    "deploymentconfig": "angular-on-nginx"
+                },
+                "strategy": {
+                    "rollingParams": {
+                        "intervalSeconds": 1,
+                        "maxSurge": "25%",
+                        "maxUnavailable": "25%",
+                        "timeoutSeconds": 600,
+                        "updatePeriodSeconds": 1
+                    },
+                    "type": "Rolling"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "angular-on-nginx",
+                            "deploymentconfig": "angular-on-nginx"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "TOB_API_URL",
+                                        "value": "https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
+                                    },
+                                    {
+                                        "name": "RealIpFrom",
+                                        "value": "172.51.0.0/16"
+                                    },
+                                    {
+                                        "name": "AdditionalRealIpFromRules",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "IpFilterRules",
+                                        "value": "#allow all; deny all;"
+                                    },
+                                    {
+                                        "name": "HTTP_BASIC",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "HTTP_BASIC_USERNAME",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "HTTP_BASIC_PASSWORD",
+                                        "value": ""
+                                    }
+                                ],
+                                "image": "angular-on-nginx",
+                                "imagePullPolicy": "Always",
+                                "livenessProbe": {
+                                    "failureThreshold": 3,
+                                    "httpGet": {
+                                        "path": "/nginx_status",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 30,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 60
+                                },
+                                "name": "angular-on-nginx",
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "failureThreshold": 3,
+                                    "httpGet": {
+                                        "path": "/nginx_status",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 10,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 60
+                                },
+                                "resources": {
+                                    "limits": {
+                                        "cpu": "500m",
+                                        "memory": "1Gi"
+                                    },
+                                    "requests": {
+                                        "cpu": "10m",
+                                        "memory": "100Mi"
+                                    }
+                                }
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "securityContext": {},
+                        "terminationGracePeriodSeconds": 30
+                    }
+                },
+                "test": false,
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "angular-on-nginx"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "angular-on-nginx:dev",
+                                "namespace": "devex-von-tools"
+                            }
+                        },
+                        "type": "ImageChange"
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "angular-on-nginx"
+                },
+                "name": "angular-on-nginx"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "8080-tcp",
+                        "port": 8080,
+                        "protocol": "TCP",
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "app": "angular-on-nginx",
+                    "deploymentconfig": "angular-on-nginx"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Route",
+            "metadata": {
+                "labels": {
+                    "app": "angular-on-nginx"
+                },
+                "name": "angular-on-nginx"
+            },
+            "spec": {
+                "host": "devex-von-dev.pathfinder.gov.bc.ca",
+                "port": {
+                    "targetPort": "8080-tcp"
+                },
+                "tls": {
+                    "insecureEdgeTerminationPolicy": "Redirect",
+                    "termination": "edge"
+                },
+                "to": {
+                    "kind": "Service",
+                    "name": "angular-on-nginx",
+                    "weight": 100
+                }
+            }
+        },
+        {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "HorizontalPodAutoscaler",
+            "metadata": {
+                "labels": {
+                    "app": "angular-on-nginx"
+                },
+                "name": "angular-on-nginx"
+            },
+            "spec": {
+                "maxReplicas": 6,
+                "minReplicas": 2,
+                "scaleRef": {
+                    "apiVersion": "extensions/v1beta1",
+                    "kind": "DeploymentConfig",
+                    "name": "angular-on-nginx",
+                    "subresource": "scale"
+                }
+            }
+        }
+    ]
+}

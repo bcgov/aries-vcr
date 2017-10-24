@@ -11,8 +11,8 @@ TEMPLATE_DIR="${SCRIPT_DIR}/templates"
 # * Requires the OpenShift Origin CLI
 # ------------------------------------------------------------------------------
 # Usage on Windows:
-#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh [project_namespace] [deployment_env_name] [build_env_name] 
-# 
+#  MSYS_NO_PATHCONV=1 ./generateDeployments.sh [project_namespace] [deployment_env_name] [build_env_name]
+#
 # Example:
 #  MSYS_NO_PATHCONV=1 ./generateDeployments.sh devex-von dev tools
 # ------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ fi
 if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
 	echo "One or more parameters are missing!"
-	echo "--------------------------------------------"	
+	echo "--------------------------------------------"
 	echo "PROJECT_NAMESPACE[{1}]: ${1}"
 	echo "DEPLOYMENT_ENV_NAME[{2}]: ${2}"
 	echo "BUILD_ENV_NAME[{3}]: ${3}"
@@ -86,7 +86,7 @@ echo "Switching to project ${DEPLOYMENT_PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
 oc project ${DEPLOYMENT_PROJECT_NAME}
 echo "============================================================================"
-echo 
+echo
 
 echo "============================================================================="
 echo "Deleting previous deployment configuration files ..."
@@ -115,7 +115,7 @@ ${SCRIPTS_DIR}/configureDeployment.sh \
 	${DJANGO_DEBUG} \
 	${DATABASE_SERVICES_NAME} \
 	"${TEMPLATE_DIR}/${DJANGO_DEPLOYMENT_NAME}-deploy.json"
-	
+
 echo "============================================================================="
 echo
 
@@ -132,7 +132,7 @@ ${SCRIPTS_DIR}/configureSchemaSpyDeployment.sh \
 	${DATABASE_NAME} \
 	${DATABASE_SERVICES_NAME} \
 	"${TEMPLATE_DIR}/${SCHEMA_SPY_DEPLOYMENT_NAME}-deploy.json"
-	
+
 echo "============================================================================="
 echo
 
@@ -143,14 +143,13 @@ echo
 # echo "============================================================================="
 # echo
 
-# echo "============================================================================="
-# echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
-# echo "-----------------------------------------------------------------------------"
-# for file in *${DeploymentConfigPostfix}; do 
-	# echo "Loading ${file} ...";
-	# oc create -f ${file};
-	# echo;
-# done
-# echo "============================================================================="
-# echo
-
+echo "============================================================================="
+echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
+echo "-----------------------------------------------------------------------------"
+for file in *${DeploymentConfigPostfix}; do
+	echo "Loading ${file} ...";
+	oc create -f ${file};
+	echo;
+done
+echo "============================================================================="
+echo

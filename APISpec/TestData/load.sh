@@ -1,5 +1,6 @@
 #$/bin/bash
 
+local=https://django-devex-von-dev.10.0.75.2.nip.io
 dev=https://devex-von-dev-django.pathfinder.gov.bc.ca
 test=https://devex-von-test-django.pathfinder.gov.bc.ca
 prod=https://devex-von-prod-django.pathfinder.gov.bc.ca
@@ -23,6 +24,8 @@ elif [ ${3} = "test" ]; then
    server=$test
 elif [ ${3} = "prod" ]; then
    server=$prod
+elif [ ${3} = "local" ]; then
+  server=$local
 fi
 
 # if [ ! -f cookie ]; then
@@ -36,7 +39,7 @@ echo "Source File: ${1}"
 echo "Endpoint: ${server}/${2}"
 echo
 if [ -z "${4}" ]; then
-	curl --silent --show-error --fail -w "\n\nResponse Code: %{http_code}\t" -H "Content-Type: application/json" -X POST --data-binary "@${1}" ${server}/${2}
+	curl --silent  --insecure --show-error --fail -w "\n\nResponse Code: %{http_code}\t" -H "Content-Type: application/json" -X POST --data-binary "@${1}" ${server}/${2}
 	rtnCd=$?
 	if [ ${rtnCd} = 0 ]; then
 		echo
