@@ -1,4 +1,5 @@
 from drf_haystack.serializers import HaystackSerializerMixin, HaystackSerializer
+from api.search_indexes import LocationIndex
 from api.search_indexes import VODoingBusinessAsIndex
 from api.search_indexes import VerifiedOrgIndex
 from api.serializers import VODoingBusinessAsSerializer
@@ -39,4 +40,15 @@ class NameSearchSerializer(HaystackSerializer):
     serializers = {
       VerifiedOrgIndex: VerifiedOrgSearchSerializer,
       VODoingBusinessAsIndex: VODoingBusinessAsSearchSerializer
+    }
+
+class OrganizationSearchSerializer(HaystackSerializer):
+  class Meta:
+    search_fields = ("text", )
+    field_aliases = {}
+    exclude = tuple()
+    serializers = {
+      VerifiedOrgIndex: VerifiedOrgSearchSerializer,
+      VODoingBusinessAsIndex: VODoingBusinessAsSearchSerializer,
+      LocationIndex: LocationSearchSerializer
     }

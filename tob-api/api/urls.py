@@ -137,6 +137,7 @@ urlpatterns = [
     url(r'^verifiedorgs/(?P<id>[0-9]+)/volocations$', views_custom.verifiedorgsIdVoLocationsGet.as_view()),
 
     url(r'^name/search$', search_views.NameSearchView.as_view()),
+    url(r'^organization/search$', search_views.OrganizationSearchView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
