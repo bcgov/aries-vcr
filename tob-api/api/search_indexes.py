@@ -1,82 +1,9 @@
 import datetime
-from api.models.VOType import VOType
-from api.models.VOLocationType import VOLocationType
 from api.models.VODoingBusinessAs import VODoingBusinessAs
-from api.models.VOClaimType import VOClaimType
-from api.models.VOClaim import VOClaim
-from api.models.Jurisdiction import Jurisdiction
-from api.models.InactiveClaimReason import InactiveClaimReason
-from api.models.IssuerService import IssuerService
 from api.models.VerifiedOrg import VerifiedOrg
 from api.models.VOLocation import VOLocation
 from haystack import indexes
 from django.utils import timezone
-
-class InactiveClaimReasonIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    reason = indexes.CharField(model_attr="reason")
-    shortReason = indexes.CharField(model_attr="shortReason")
-
-    autocomplete = indexes.EdgeNgramField()
-
-    @staticmethod
-    def prepare_autocomplete(obj):
-        return " ".join((
-            obj.reason,
-            obj.shortReason,
-        ))
-
-    def get_model(self):
-        return InactiveClaimReason
-
-    def index_queryset(self, using=None):
-        return self.get_model().objects.filter(
-            CREATE_TIMESTAMP__lte=timezone.now()
-        )
-
-class IssuerServiceIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    name = indexes.CharField(model_attr="name")
-    issuerOrgTLA = indexes.CharField(model_attr="issuerOrgTLA")
-
-    autocomplete = indexes.EdgeNgramField()
-
-    @staticmethod
-    def prepare_autocomplete(obj):
-        return " ".join((
-            obj.name,
-            obj.issuerOrgTLA,
-        ))
-
-    def get_model(self):
-        return IssuerService
-
-    def index_queryset(self, using=None):
-        return self.get_model().objects.filter(
-            CREATE_TIMESTAMP__lte=timezone.now()
-        )
-
-class JurisdictionIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    name = indexes.CharField(model_attr="name")
-    abbrv = indexes.CharField(model_attr="abbrv")
-
-    autocomplete = indexes.EdgeNgramField()
-
-    @staticmethod
-    def prepare_autocomplete(obj):
-        return " ".join((
-            obj.name,
-            obj.abbrv,
-        ))
-
-    def get_model(self):
-        return Jurisdiction
-
-    def index_queryset(self, using=None):
-        return self.get_model().objects.filter(
-            CREATE_TIMESTAMP__lte=timezone.now()
-        )
 
 class VerifiedOrgIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
@@ -94,26 +21,6 @@ class VerifiedOrgIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return VerifiedOrg
-
-    def index_queryset(self, using=None):
-        return self.get_model().objects.filter(
-            CREATE_TIMESTAMP__lte=timezone.now()
-        )
-
-class VOClaimTypeIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    theType = indexes.CharField(model_attr="busId")
-
-    autocomplete = indexes.EdgeNgramField()
-
-    @staticmethod
-    def prepare_autocomplete(obj):
-        return " ".join((
-            obj.theType,
-        ))
-
-    def get_model(self):
-        return VOClaimType
 
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(
@@ -162,50 +69,6 @@ class LocationIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return VOLocation
-
-    def index_queryset(self, using=None):
-        return self.get_model().objects.filter(
-            CREATE_TIMESTAMP__lte=timezone.now()
-        )
-
-class VOLocationTypeIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    theType = indexes.CharField(model_attr="theType")
-    description = indexes.CharField(model_attr="description")
-
-    autocomplete = indexes.EdgeNgramField()
-
-    @staticmethod
-    def prepare_autocomplete(obj):
-        return " ".join((
-            obj.theType,
-            obj.description,
-        ))
-
-    def get_model(self):
-        return VOLocationType
-
-    def index_queryset(self, using=None):
-        return self.get_model().objects.filter(
-            CREATE_TIMESTAMP__lte=timezone.now()
-        )
-
-class VOTypeIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    theType = indexes.CharField(model_attr="theType")
-    description = indexes.CharField(model_attr="description")
-
-    autocomplete = indexes.EdgeNgramField()
-
-    @staticmethod
-    def prepare_autocomplete(obj):
-        return " ".join((
-            obj.theType,
-            obj.description,
-        ))
-
-    def get_model(self):
-        return VOType
 
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(
