@@ -9,7 +9,8 @@ class VerifiedOrgIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     busId = indexes.CharField(model_attr="busId")
     LegalName = indexes.CharField(model_attr="LegalName")
-
+    name = indexes.CharField(model_attr="LegalName")
+    
     autocomplete = indexes.EdgeNgramField()
 
     @staticmethod
@@ -30,6 +31,7 @@ class VerifiedOrgIndex(indexes.SearchIndex, indexes.Indexable):
 class VODoingBusinessAsIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     DBA = indexes.CharField(model_attr="DBA")
+    name = indexes.CharField(model_attr="DBA")
 
     autocomplete = indexes.EdgeNgramField()
 

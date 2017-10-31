@@ -1,4 +1,5 @@
 from rest_framework.mixins import ListModelMixin
+from api.search_serializers import NameSearchSerializer
 from api.search_serializers import VODoingBusinessAsSearchSerializer
 from api.models.VODoingBusinessAs import VODoingBusinessAs
 from drf_haystack.generics import HaystackGenericAPIView
@@ -56,5 +57,47 @@ class LocationSearchView(ListModelMixin, HaystackGenericAPIView):
         - postalCode
         - province
         - streetAddress
+        """
+        return self.list(request, *args, **kwargs)
+
+class NameSearchView(ListModelMixin, HaystackGenericAPIView):
+    index_models = [VerifiedOrg, VODoingBusinessAs]
+    serializer_class = NameSearchSerializer
+    def get(self, request, *args, **kwargs):
+        """
+        Searches across the 'name' fields of Verified Organization and 
+        Doing Business As records.
+        
+        Returns any records that match the search criteria.
+
+        Search field:
+        - name
+
+        Example:
+        ```
+        .../api/v1/name/search?name=gas
+        ```
+
+        Returns:
+        ```
+        [
+            {
+                "id": 8,
+                "busId": "74905418",
+                "orgTypeId": 1,
+                "jurisdictionId": 1,
+                "LegalName": "Gamma Gas",
+                "effectiveDate": "2010-10-10",
+                "endDate": null
+            },
+            {
+                "id": 18,
+                "verifiedOrgId": 8,
+                "DBA": "Gas Depot",
+                "effectiveDate": "2010-10-10",
+                "endDate": null
+            }
+        ]
+        ```
         """
         return self.list(request, *args, **kwargs)
