@@ -127,3 +127,23 @@ class verifiedorgsIdVoclaimsGet(APIView):
     claims = VOClaim.objects.filter(verifiedOrgId=org)
     serializer = serializers.VOClaimSerializer(claims, many=True)
     return Response(serializer.data)
+
+class verifiedorgsIdVoDoingBusinessAsGet(APIView):
+  def get(self, request, id):
+    """  
+    Returns the Doing Business As information for a Verified Organization  
+    """
+    org = VerifiedOrg.objects.get(id=id)
+    dbas = VODoingBusinessAs.objects.filter(verifiedOrgId=org)
+    serializer = serializers.VODoingBusinessAsSerializer(dbas, many=True)
+    return Response(serializer.data)
+
+class verifiedorgsIdVoLocationsGet(APIView):
+  def get(self, request, id):
+    """  
+    Returns the locations for a Verified Organization  
+    """
+    org = VerifiedOrg.objects.get(id=id)
+    locations = VOLocation.objects.filter(verifiedOrgId=org)
+    serializer = serializers.VOLocationSerializer(locations, many=True)
+    return Response(serializer.data)
