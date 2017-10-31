@@ -30,12 +30,12 @@ from .InactiveClaimReason import InactiveClaimReason
 from auditable.models import Auditable
 
 class VOClaim(Auditable):	    
-    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VOClaimverifiedOrgId')   
-    voClaimType = models.ForeignKey('VOClaimType', related_name='VOClaimvoClaimType')   
+    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='claims')   
+    voClaimType = models.ForeignKey('VOClaimType', related_name='claimTypes')   
     claimJSON = models.CharField(max_length=255, blank=True, null=True)   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   
-    inactiveClaimReasonId = models.ForeignKey('InactiveClaimReason', related_name='VOClaiminactiveClaimReasonId', blank=True, null=True)   
+    inactiveClaimReasonId = models.ForeignKey('InactiveClaimReason', related_name='inactiveClaimReasons', blank=True, null=True)   
     class Meta:
         db_table = 'V_O_CLAIM'
 

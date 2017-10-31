@@ -1045,7 +1045,7 @@ class verifiedorgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateM
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
   queryset = VerifiedOrg.objects.all()  
-  serializer_class = serializers.VerifiedOrgSerializer
+  serializer_class = serializers.VerifiedOrgDetailSerializer
   def get(self, request, *args, **kwargs):
     """
     Retrieves the specified VerifiedOrg object

@@ -32,7 +32,7 @@ class IssuerService(Auditable):
     issuerOrgTLA = models.CharField(max_length=255)   
     issuerOrgURL = models.CharField(max_length=255, blank=True, null=True)   
     DID = models.CharField(max_length=255)   
-    jurisdictionId = models.ForeignKey('Jurisdiction', related_name='IssuerServicejurisdictionId')   
+    jurisdictionId = models.ForeignKey('Jurisdiction', related_name='issuerServiceJurisdictions')   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   
     class Meta:

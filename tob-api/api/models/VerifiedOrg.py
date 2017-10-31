@@ -30,8 +30,8 @@ from auditable.models import Auditable
 
 class VerifiedOrg(Auditable):	    
     busId = models.CharField(max_length=255)   
-    orgTypeId = models.ForeignKey('VOType', related_name='VerifiedOrgorgTypeId', default=1)   
-    jurisdictionId = models.ForeignKey('Jurisdiction', related_name='VerifiedOrgjurisdictionId')   
+    orgTypeId = models.ForeignKey('VOType', related_name='verifiedOrgTypes', default=1)   
+    jurisdictionId = models.ForeignKey('Jurisdiction', related_name='verifiedOrgJurisdictions')   
     LegalName = models.CharField(max_length=255)   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   

@@ -30,7 +30,7 @@ class CurrentUserViewModel(models.Model):
     surname = models.CharField(max_length=255, blank=True, null=True)   
     email = models.CharField(max_length=255, blank=True, null=True)   
     active = models.BooleanField()   
-    userRoles = models.ManyToManyField('UserRole', related_name='CurrentUserViewModeluserRoles', blank=True)   
+    userRoles = models.ManyToManyField('UserRole', related_name='userRoles', blank=True)   
     smUserId = models.CharField(max_length=255, blank=True, null=True)   
     smAuthorizationDirectory = models.CharField(max_length=255, blank=True, null=True)   
     class Meta:

@@ -28,7 +28,7 @@ from .VerifiedOrg import VerifiedOrg
 from auditable.models import Auditable
 
 class VODoingBusinessAs(Auditable):	    
-    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VODoingBusinessAsverifiedOrgId', blank=True, null=True)   
+    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='doingBusinessAs', blank=True, null=True)   
     DBA = models.CharField(max_length=255)   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   

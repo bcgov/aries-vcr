@@ -31,6 +31,6 @@ class UserViewModel(models.Model):
     email = models.CharField(max_length=255, blank=True, null=True)   
     active = models.BooleanField()   
     smUserId = models.CharField(max_length=255, blank=True, null=True)   
-    userRoles = models.ManyToManyField('UserRole', related_name='UserViewModeluserRoles', blank=True)   
+    userRoles = models.ManyToManyField('UserRole', related_name='userRoles', blank=True)   
     class Meta:
       abstract = True

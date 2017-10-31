@@ -154,3 +154,11 @@ class VerifiedOrgSerializer(serializers.ModelSerializer):
     model = VerifiedOrg
     fields = ('id','busId','orgTypeId','jurisdictionId','LegalName','effectiveDate','endDate')
 
+class VerifiedOrgDetailSerializer(serializers.ModelSerializer):
+  locations = VOLocationSerializer(many=True, read_only=True)
+  claims = VOClaimSerializer(many=True, read_only=True)
+  doingBusinessAs = VODoingBusinessAsSerializer(many=True, read_only=True)
+  
+  class Meta:
+    model = VerifiedOrg
+    fields = ('id','busId','orgTypeId','jurisdictionId','LegalName','effectiveDate','endDate','claims','doingBusinessAs','locations')

@@ -30,6 +30,6 @@ class UserDetailsViewModel(models.Model):
     surname = models.CharField(max_length=255, blank=True, null=True)   
     email = models.CharField(max_length=255, blank=True, null=True)   
     active = models.BooleanField()   
-    permissions = models.ManyToManyField('PermissionViewModel', related_name='UserDetailsViewModelpermissions', blank=True)   
+    permissions = models.ManyToManyField('PermissionViewModel', related_name='permissions', blank=True)   
     class Meta:
       abstract = True

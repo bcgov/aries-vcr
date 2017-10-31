@@ -30,7 +30,7 @@ from auditable.models import Auditable
 class VOClaimType(Auditable):	    
     theType = models.CharField(max_length=255)   
     base64Logo = models.CharField(max_length=255, blank=True, null=True)   
-    issuerOrgId = models.ForeignKey('IssuerService', related_name='VOClaimTypeissuerOrgId')   
+    issuerOrgId = models.ForeignKey('IssuerService', related_name='issuerServices')   
     issuerURL = models.CharField(max_length=255)   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   
