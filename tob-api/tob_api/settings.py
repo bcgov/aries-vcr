@@ -16,7 +16,12 @@ import posixpath
 try:
      from . import database  
 except:
-     import database 
+     import database
+
+try:
+     from . import haystack  
+except:
+     import haystack 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -58,9 +63,7 @@ INSTALLED_APPS = [
 ]
 
 HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-    },
+    'default': haystack.config()
 }
 
 MIDDLEWARE_CLASSES = [

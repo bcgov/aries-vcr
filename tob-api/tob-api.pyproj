@@ -90,6 +90,9 @@
     <Compile Include="auditable\__init__.py" />
     <Compile Include="manage.py" />
     <Compile Include="tob_api\database.py" />
+    <Compile Include="tob_api\haystack.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tob_api\views.py">
       <SubType>Code</SubType>
     </Compile>
@@ -100,15 +103,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="api\LICENSE" />
-    <Content Include="api\templates\search\indexes\api\inactiveclaimreasonindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\issuerserviceindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\jurisdictionindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\locationindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\verifiedorgindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\voclaimtypeindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\vodoingbusinessasindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\volocationtypeindex_text.txt" />
-    <Content Include="api\templates\search\indexes\api\votypeindex_text.txt" />
+    <Content Include="api\templates\search\indexes\api\inactiveclaimreason_text.txt" />
+    <Content Include="api\templates\search\indexes\api\issuerservice_text.txt" />
+    <Content Include="api\templates\search\indexes\api\jurisdiction_text.txt" />
+    <Content Include="api\templates\search\indexes\api\volocation_text.txt" />
+    <Content Include="api\templates\search\indexes\api\verifiedorg_text.txt" />
+    <Content Include="api\templates\search\indexes\api\voclaimtype_text.txt" />
+    <Content Include="api\templates\search\indexes\api\vodoingbusinessas_text.txt" />
+    <Content Include="api\templates\search\indexes\api\volocationtype_text.txt" />
+    <Content Include="api\templates\search\indexes\api\votype_text.txt" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>

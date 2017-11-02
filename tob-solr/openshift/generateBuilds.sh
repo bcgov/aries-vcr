@@ -41,7 +41,7 @@ if [ -z "$GIT_REF" ]; then
 fi
 
 if [ -z "$GIT_URI" ]; then
-	GIT_URI="https://github.com/bcgov/TheOrgBook.git"
+	GIT_URI="https://github.com/bcgov/openshift-solr.git"
 	echo "Defaulting 'GIT_URI' to ${GIT_URI} ..."
 	echo
 fi
@@ -59,20 +59,19 @@ if [ ! -z "$MissingParam" ]; then
 fi
 # -------------------------------------------------------------------------------------
 BuildConfigPostfix="_BuildConfig.json"
-CONTEXT_DIR_ROOT="tob-api"
 
-DJANGO_BUILDER_NAME="django"
-DJANGO_SOURCE_IMAGE_NAME="python"
-DJANGO_SOURCE_IMAGE_TAG="3.5"
-DJANGO_SOURCE_IMAGE_NAMESPACE="openshift"
-PIP_INDEX_URL=""
+SOLR_BASE_BUILD_NAME="solr-base"
+SOLR_BASE_GIT_URI="https://github.com/bcgov/openshift-solr.git"
+SOLR_BASE_GIT_REF="master"
+SOLR_BASE_CONTEXT_DIR_ROOT=""
 
-SCHEMA_SPY_BUILD_NAME="schema-spy"
-SCHEMA_SPY_GIT_URI="https://github.com/bcgov/SchemaSpy.git"
-SCHEMA_SPY_GIT_REF="master"
-SCHEMA_SPY_CONTEXT_DIR=""
-
-JENKINS_PIPELINE_NAME="django"
+SOLR_BUILD_NAME="solr"
+SOLR_GIT_URI=${GIT_URI}
+SOLR_GIT_REF=${GIT_REF}
+SOLR_CONTEXT_DIR_ROOT="tob-solr/cores"
+SOLR_SOURCE_IMAGE_NAME="${SOLR_BASE_BUILD_NAME}"
+SOLR_SOURCE_IMAGE_TAG="latest"
+SOLR_SOURCE_IMAGE_NAMESPACE="${PROJECT_NAME}"
 # ==============================================================================
 
 echo "============================================================================="
@@ -93,50 +92,31 @@ echo "==========================================================================
 echo
 
 echo "============================================================================="
-echo "Generating build configuration for ${DJANGO_BUILDER_NAME} ..."
+echo "Generating build configuration for ${SOLR_BASE_BUILD_NAME} ..."
 echo "-----------------------------------------------------------------------------"
-${SCRIPTS_DIR}/configureBuild.sh \
-	${GIT_URI} \
-	${GIT_REF} \
-	${CONTEXT_DIR_ROOT} \
-	${DJANGO_BUILDER_NAME} \
-	"${TEMPLATE_DIR}/${DJANGO_BUILDER_NAME}-build.json" \
-	${DJANGO_SOURCE_IMAGE_NAME} \
-	${DJANGO_SOURCE_IMAGE_TAG} \
-	${DJANGO_SOURCE_IMAGE_NAMESPACE} \
-	${PIP_INDEX_URL}
+${SCRIPTS_DIR}/configureBaseBuild.sh \
+	"${SOLR_BASE_GIT_URI}" \
+	"${SOLR_BASE_GIT_REF}" \
+	"${SOLR_BASE_CONTEXT_DIR_ROOT}" \
+	${SOLR_BASE_BUILD_NAME} \
+	"${TEMPLATE_DIR}/${SOLR_BASE_BUILD_NAME}-build.json"
 echo "============================================================================="
 echo
 
 echo "============================================================================="
-echo "Generating build configuration for ${SCHEMA_SPY_BUILD_NAME} ..."
+echo "Generating build configuration for ${SOLR_BUILD_NAME} ..."
 echo "-----------------------------------------------------------------------------"
-${SCRIPTS_DIR}/configureSchemaSpyBuild.sh \
-	${SCHEMA_SPY_GIT_URI} \
-	${SCHEMA_SPY_GIT_REF} \
-	"${SCHEMA_SPY_CONTEXT_DIR}" \
-	${SCHEMA_SPY_BUILD_NAME} \
-	"${TEMPLATE_DIR}/${SCHEMA_SPY_BUILD_NAME}-build.json" \
-
+${SCRIPTS_DIR}/configureSolrBuild.sh \
+	${SOLR_GIT_URI} \
+	${SOLR_GIT_REF} \
+	${SOLR_CONTEXT_DIR_ROOT} \
+	${SOLR_BUILD_NAME} \
+	"${TEMPLATE_DIR}/${SOLR_BUILD_NAME}-build.json" \
+	${SOLR_SOURCE_IMAGE_NAME} \
+	${SOLR_SOURCE_IMAGE_TAG} \
+	${SOLR_SOURCE_IMAGE_NAMESPACE}
 echo "============================================================================="
 echo
-
-echo "============================================================================="
-echo "Generating build configuration for the ${JENKINS_PIPELINE_NAME} pipeline ..."
-echo "-----------------------------------------------------------------------------"
-${SCRIPTS_DIR}/configureJenkinsPipelineBuild.sh \
-	${JENKINS_PIPELINE_NAME} \
-	${GIT_URI} \
-	${GIT_REF} \
-	"${CONTEXT_DIR_ROOT}/"
-echo "============================================================================="
-echo
-
-# echo "============================================================================="
-# echo "Cleaning out existing OpenShift resources ..."
-# echo "============================================================================"
-# oc delete imagestreams,bc --all
-# echo
 
 echo "============================================================================="
 echo "Creating build configurations in OpenShift project; ${PROJECT_NAME} ..."

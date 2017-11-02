@@ -1,1 +1,0 @@
-.\env\Scripts\python manage.py rebuild_index

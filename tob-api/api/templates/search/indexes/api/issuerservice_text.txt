@@ -1,4 +1,4 @@
 {{ object.name }}
 {{ object.issuerOrgTLA }}
 Created: {{ object.CREATE_TIMESTAMP }}
-Last modified: {{ object.updated }}
+Last modified: {{ object.UPDATE_TIMESTAMP }}
