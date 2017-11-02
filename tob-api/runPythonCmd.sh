@@ -1,5 +1,8 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname $0)
+ENV_DIR=${SCRIPT_DIR}/env
+
+
 PYTHON_EXE=${SCRIPT_DIR}/env/Scripts/python
 
 # ==============================================================================================================================
@@ -22,6 +25,12 @@ usage () {
 
 if [ -z "${1}" ]; then
   usage
+fi
+
+if [[ ! -d ${ENV_DIR} ]]; then
+  PYTHON_EXE=python
+else
+  PYTHON_EXE=${ENV_DIR}/Scripts/python
 fi
 # ==============================================================================================================================
 
