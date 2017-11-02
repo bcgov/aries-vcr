@@ -46,6 +46,11 @@
       "spec":
       {
         "host": "${APPLICATION_DOMAIN}",
+        "tls":
+        {
+          "insecureEdgeTerminationPolicy": "Redirect",
+          "termination": "edge"
+        },
         "to":
         {
           "kind": "Service",
@@ -176,6 +181,12 @@
                     "mountPath": "${MOUNT_PATH}"
                   }
                 ],
+                "env": [
+                  {
+                    "name": "CORE_NAME",
+                    "value": "${CORE_NAME}"
+                  }
+                ],
                 "terminationMessagePath": "/dev/termination-log",
                 "terminationMessagePolicy": "File",
                 "imagePullPolicy": "Always"
@@ -232,6 +243,13 @@
       "description": "The path to mount the persistent volume.",
       "required": true,
       "value": "/opt/solr/server/solr/mycores"
+    },
+    {
+      "name": "CORE_NAME",
+      "displayName": "Core Name",
+      "description": "The name of the Solr core configuration to load.",
+      "required": true,
+      "value": "the_org_book"
     }
   ]
 }
