@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -23,16 +23,16 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from .VerifiedOrg import VerifiedOrg
-from .VOLocationType import VOLocationType
+from .VerifiableOrg import VerifiableOrg
+from .LocationType import LocationType
 
 from auditable.models import Auditable
 
 class VOLocation(Auditable):	    
     verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VOLocationverifiedOrgId')   
     voLocationTypeId = models.ForeignKey('VOLocationType', related_name='VOLocationvoLocationTypeId')   
-    Addressee = models.CharField(max_length=255, blank=True, null=True)   
-    AddlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   
+    addressee = models.CharField(max_length=255, blank=True, null=True)   
+    addlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   
     unitNumber = models.CharField(max_length=255, blank=True, null=True)   
     streetAddress = models.CharField(max_length=255, blank=True, null=True)   
     municipality = models.CharField(max_length=255, blank=True, null=True)   
@@ -42,5 +42,11 @@ class VOLocation(Auditable):
     effectiveDate = models.DateField()   
     endDate = models.DateField(blank=True, null=True)   
     class Meta:
-        db_table = 'V_O_LOCATION'
+        db_table = 'LOCATION'
 
+
+class Location(Auditable):	    
+    verifiableOrgId = models.ForeignKey('VerifiableOrg', related_name='LocationverifiableOrgId')   
+    locationTypeId = models.ForeignKey('LocationType', related_name='LocationlocationTypeId')   
+    addressee = models.CharField(max_length=255, blank=True, null=True)   
+    addlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   

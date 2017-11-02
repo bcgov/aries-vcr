@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -29,9 +29,13 @@ from rest_framework_bulk import BulkCreateModelMixin
 from . import serializers
 from auditable.views import AuditableMixin
 from .models.CurrentUserViewModel import CurrentUserViewModel
+from .models.DoingBusinessAs import DoingBusinessAs
 from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Location import Location
+from .models.LocationOrg import LocationOrg
+from .models.LocationType import LocationType
 from .models.Permission import Permission
 from .models.PermissionViewModel import PermissionViewModel
 from .models.Role import Role
@@ -43,14 +47,78 @@ from .models.UserDetailsViewModel import UserDetailsViewModel
 from .models.UserRole import UserRole
 from .models.UserRoleViewModel import UserRoleViewModel
 from .models.UserViewModel import UserViewModel
-from .models.VOClaim import VOClaim
-from .models.VOClaimType import VOClaimType
-from .models.VODoingBusinessAs import VODoingBusinessAs
-from .models.VOLocation import VOLocation
-from .models.VOLocationType import VOLocationType
-from .models.VOType import VOType
-from .models.VerifiedOrg import VerifiedOrg
+from .models.VerifiableClaim import VerifiableClaim
+from .models.VerifiableClaimType import VerifiableClaimType
+from .models.VerifiableOrg import VerifiableOrg
+from .models.VerifiableOrgType import VerifiableOrgType
 
+
+class doingbusinessasBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of DoingBusinessAs object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = DoingBusinessAs.objects.all()  
+  serializer_class = serializers.DoingBusinessAsSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new DoingBusinessAs objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class doingbusinessasGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available DoingBusinessAs objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = DoingBusinessAs.objects.all()  
+  serializer_class = serializers.DoingBusinessAsSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available DoingBusinessAs objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new DoingBusinessAs object
+    """
+    return self.create(request, *args, **kwargs)
+
+class doingbusinessasIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific DoingBusinessAs object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = DoingBusinessAs.objects.all()  
+  serializer_class = serializers.DoingBusinessAsSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified DoingBusinessAs object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class doingbusinessasIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific DoingBusinessAs object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = DoingBusinessAs.objects.all()  
+  serializer_class = serializers.DoingBusinessAsSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified DoingBusinessAs object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified DoingBusinessAs object
+    """
+    return self.update(request, *args, **kwargs)
 
 class inactiveclaimreasonsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
@@ -250,6 +318,140 @@ class jurisdictionsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Update
   def put(self, request, *args, **kwargs):
     """
     Updates the specified Jurisdiction object
+    """
+    return self.update(request, *args, **kwargs)
+
+class locationsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of Location object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Location.objects.all()  
+  serializer_class = serializers.LocationSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new Location objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class locationsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available Location objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Location.objects.all()  
+  serializer_class = serializers.LocationSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available Location objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new Location object
+    """
+    return self.create(request, *args, **kwargs)
+
+class locationsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific Location object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Location.objects.all()  
+  serializer_class = serializers.LocationSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified Location object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class locationsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific Location object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = Location.objects.all()  
+  serializer_class = serializers.LocationSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified Location object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified Location object
+    """
+    return self.update(request, *args, **kwargs)
+
+class locationtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+  """  
+  Bulk create / update a number of LocationType object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = LocationType.objects.all()  
+  serializer_class = serializers.LocationTypeSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a number of new LocationType objects
+    """
+    return self.create(request, *args, **kwargs)
+
+class locationtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  """  
+  Lists available LocationType objects  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = LocationType.objects.all()  
+  serializer_class = serializers.LocationTypeSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Lists available LocationType objects
+    """
+    return self.list(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    """
+    Creates a new LocationType object
+    """
+    return self.create(request, *args, **kwargs)
+
+class locationtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+  """  
+  Deletes a specific LocationType object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = LocationType.objects.all()  
+  serializer_class = serializers.LocationTypeSerializer
+  def post(self, request, *args, **kwargs):
+    """
+    Destroys the specified LocationType object
+    """
+    return self.destroy(request, *args, **kwargs)
+
+
+class locationtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+  """  
+  Gets a specific LocationType object  
+  """
+  lookup_field = 'id'
+  permission_classes = (permissions.AllowAny,)  
+  queryset = LocationType.objects.all()  
+  serializer_class = serializers.LocationTypeSerializer
+  def get(self, request, *args, **kwargs):
+    """
+    Retrieves the specified LocationType object
+    """
+    return self.retrieve(request, *args, **kwargs)
+  def put(self, request, *args, **kwargs):
+    """
+    Updates the specified LocationType object
     """
     return self.update(request, *args, **kwargs)
 
@@ -588,472 +790,271 @@ class userrolesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateMode
     """
     return self.update(request, *args, **kwargs)
 
-class voclaimsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class verifiableclaimsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
-  Bulk create / update a number of VOClaim object  
+  Bulk create / update a number of VerifiableClaim object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaim.objects.all()  
-  serializer_class = serializers.VOClaimSerializer
+  queryset = VerifiableClaim.objects.all()  
+  serializer_class = serializers.VerifiableClaimSerializer
   def post(self, request, *args, **kwargs):
     """
-    Creates a number of new VOClaim objects
+    Creates a number of new VerifiableClaim objects
     """
     return self.create(request, *args, **kwargs)
 
-class voclaimsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class verifiableclaimsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
-  Lists available VOClaim objects  
+  Lists available VerifiableClaim objects  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaim.objects.all()  
-  serializer_class = serializers.VOClaimSerializer
+  queryset = VerifiableClaim.objects.all()  
+  serializer_class = serializers.VerifiableClaimSerializer
   def get(self, request, *args, **kwargs):
     """
-    Lists available VOClaim objects
+    Lists available VerifiableClaim objects
     """
     return self.list(request, *args, **kwargs)
   def post(self, request, *args, **kwargs):
     """
-    Creates a new VOClaim object
+    Creates a new VerifiableClaim object
     """
     return self.create(request, *args, **kwargs)
 
-class voclaimsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class verifiableclaimsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
-  Deletes a specific VOClaim object  
+  Deletes a specific VerifiableClaim object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaim.objects.all()  
-  serializer_class = serializers.VOClaimSerializer
+  queryset = VerifiableClaim.objects.all()  
+  serializer_class = serializers.VerifiableClaimSerializer
   def post(self, request, *args, **kwargs):
     """
-    Destroys the specified VOClaim object
+    Destroys the specified VerifiableClaim object
     """
     return self.destroy(request, *args, **kwargs)
 
 
-class voclaimsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class verifiableclaimsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
-  Gets a specific VOClaim object  
+  Gets a specific VerifiableClaim object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaim.objects.all()  
-  serializer_class = serializers.VOClaimSerializer
+  queryset = VerifiableClaim.objects.all()  
+  serializer_class = serializers.VerifiableClaimSerializer
   def get(self, request, *args, **kwargs):
     """
-    Retrieves the specified VOClaim object
+    Retrieves the specified VerifiableClaim object
     """
     return self.retrieve(request, *args, **kwargs)
   def put(self, request, *args, **kwargs):
     """
-    Updates the specified VOClaim object
+    Updates the specified VerifiableClaim object
     """
     return self.update(request, *args, **kwargs)
 
-class voclaimtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class verifiableclaimtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
-  Bulk create / update a number of VOClaimType object  
+  Bulk create / update a number of VerifiableClaimType object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaimType.objects.all()  
-  serializer_class = serializers.VOClaimTypeSerializer
+  queryset = VerifiableClaimType.objects.all()  
+  serializer_class = serializers.VerifiableClaimTypeSerializer
   def post(self, request, *args, **kwargs):
     """
-    Creates a number of new VOClaimType objects
+    Creates a number of new VerifiableClaimType objects
     """
     return self.create(request, *args, **kwargs)
 
-class voclaimtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class verifiableclaimtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
-  Lists available VOClaimType objects  
+  Lists available VerifiableClaimType objects  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaimType.objects.all()  
-  serializer_class = serializers.VOClaimTypeSerializer
+  queryset = VerifiableClaimType.objects.all()  
+  serializer_class = serializers.VerifiableClaimTypeSerializer
   def get(self, request, *args, **kwargs):
     """
-    Lists available VOClaimType objects
+    Lists available VerifiableClaimType objects
     """
     return self.list(request, *args, **kwargs)
   def post(self, request, *args, **kwargs):
     """
-    Creates a new VOClaimType object
+    Creates a new VerifiableClaimType object
     """
     return self.create(request, *args, **kwargs)
 
-class voclaimtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class verifiableclaimtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
-  Deletes a specific VOClaimType object  
+  Deletes a specific VerifiableClaimType object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaimType.objects.all()  
-  serializer_class = serializers.VOClaimTypeSerializer
+  queryset = VerifiableClaimType.objects.all()  
+  serializer_class = serializers.VerifiableClaimTypeSerializer
   def post(self, request, *args, **kwargs):
     """
-    Destroys the specified VOClaimType object
+    Destroys the specified VerifiableClaimType object
     """
     return self.destroy(request, *args, **kwargs)
 
 
-class voclaimtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class verifiableclaimtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
-  Gets a specific VOClaimType object  
+  Gets a specific VerifiableClaimType object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOClaimType.objects.all()  
-  serializer_class = serializers.VOClaimTypeSerializer
+  queryset = VerifiableClaimType.objects.all()  
+  serializer_class = serializers.VerifiableClaimTypeSerializer
   def get(self, request, *args, **kwargs):
     """
-    Retrieves the specified VOClaimType object
+    Retrieves the specified VerifiableClaimType object
     """
     return self.retrieve(request, *args, **kwargs)
   def put(self, request, *args, **kwargs):
     """
-    Updates the specified VOClaimType object
+    Updates the specified VerifiableClaimType object
     """
     return self.update(request, *args, **kwargs)
 
-class vodoingbusinessasBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class verifiableorgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
-  Bulk create / update a number of VODoingBusinessAs object  
+  Bulk create / update a number of VerifiableOrg object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VODoingBusinessAs.objects.all()  
-  serializer_class = serializers.VODoingBusinessAsSerializer
+  queryset = VerifiableOrg.objects.all()  
+  serializer_class = serializers.VerifiableOrgSerializer
   def post(self, request, *args, **kwargs):
     """
-    Creates a number of new VODoingBusinessAs objects
+    Creates a number of new VerifiableOrg objects
     """
     return self.create(request, *args, **kwargs)
 
-class vodoingbusinessasGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class verifiableorgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
-  Lists available VODoingBusinessAs objects  
+  Lists available VerifiableOrg objects  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VODoingBusinessAs.objects.all()  
-  serializer_class = serializers.VODoingBusinessAsSerializer
+  queryset = VerifiableOrg.objects.all()  
+  serializer_class = serializers.VerifiableOrgSerializer
   def get(self, request, *args, **kwargs):
     """
-    Lists available VODoingBusinessAs objects
+    Lists available VerifiableOrg objects
     """
     return self.list(request, *args, **kwargs)
   def post(self, request, *args, **kwargs):
     """
-    Creates a new VODoingBusinessAs object
+    Creates a new VerifiableOrg object
     """
     return self.create(request, *args, **kwargs)
 
-class vodoingbusinessasIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class verifiableorgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
-  Deletes a specific VODoingBusinessAs object  
+  Deletes a specific VerifiableOrg object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VODoingBusinessAs.objects.all()  
-  serializer_class = serializers.VODoingBusinessAsSerializer
+  queryset = VerifiableOrg.objects.all()  
+  serializer_class = serializers.VerifiableOrgSerializer
   def post(self, request, *args, **kwargs):
     """
-    Destroys the specified VODoingBusinessAs object
+    Destroys the specified VerifiableOrg object
     """
     return self.destroy(request, *args, **kwargs)
 
 
-class vodoingbusinessasIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class verifiableorgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
-  Gets a specific VODoingBusinessAs object  
+  Gets a specific VerifiableOrg object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VODoingBusinessAs.objects.all()  
-  serializer_class = serializers.VODoingBusinessAsSerializer
+  queryset = VerifiableOrg.objects.all()  
+  serializer_class = serializers.VerifiableOrgSerializer
   def get(self, request, *args, **kwargs):
     """
-    Retrieves the specified VODoingBusinessAs object
+    Retrieves the specified VerifiableOrg object
     """
     return self.retrieve(request, *args, **kwargs)
   def put(self, request, *args, **kwargs):
     """
-    Updates the specified VODoingBusinessAs object
+    Updates the specified VerifiableOrg object
     """
     return self.update(request, *args, **kwargs)
 
-class volocationsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
+class verifiableorgtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
-  Bulk create / update a number of VOLocation object  
+  Bulk create / update a number of VerifiableOrgType object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocation.objects.all()  
-  serializer_class = serializers.VOLocationSerializer
+  queryset = VerifiableOrgType.objects.all()  
+  serializer_class = serializers.VerifiableOrgTypeSerializer
   def post(self, request, *args, **kwargs):
     """
-    Creates a number of new VOLocation objects
+    Creates a number of new VerifiableOrgType objects
     """
     return self.create(request, *args, **kwargs)
 
-class volocationsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class verifiableorgtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
-  Lists available VOLocation objects  
+  Lists available VerifiableOrgType objects  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocation.objects.all()  
-  serializer_class = serializers.VOLocationSerializer
+  queryset = VerifiableOrgType.objects.all()  
+  serializer_class = serializers.VerifiableOrgTypeSerializer
   def get(self, request, *args, **kwargs):
     """
-    Lists available VOLocation objects
+    Lists available VerifiableOrgType objects
     """
     return self.list(request, *args, **kwargs)
   def post(self, request, *args, **kwargs):
     """
-    Creates a new VOLocation object
+    Creates a new VerifiableOrgType object
     """
     return self.create(request, *args, **kwargs)
 
-class volocationsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+class verifiableorgtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
   """  
-  Deletes a specific VOLocation object  
+  Deletes a specific VerifiableOrgType object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocation.objects.all()  
-  serializer_class = serializers.VOLocationSerializer
+  queryset = VerifiableOrgType.objects.all()  
+  serializer_class = serializers.VerifiableOrgTypeSerializer
   def post(self, request, *args, **kwargs):
     """
-    Destroys the specified VOLocation object
+    Destroys the specified VerifiableOrgType object
     """
     return self.destroy(request, *args, **kwargs)
 
 
-class volocationsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
+class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
   """  
-  Gets a specific VOLocation object  
+  Gets a specific VerifiableOrgType object  
   """
   lookup_field = 'id'
   permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocation.objects.all()  
-  serializer_class = serializers.VOLocationSerializer
+  queryset = VerifiableOrgType.objects.all()  
+  serializer_class = serializers.VerifiableOrgTypeSerializer
   def get(self, request, *args, **kwargs):
     """
-    Retrieves the specified VOLocation object
+    Retrieves the specified VerifiableOrgType object
     """
     return self.retrieve(request, *args, **kwargs)
   def put(self, request, *args, **kwargs):
     """
-    Updates the specified VOLocation object
-    """
-    return self.update(request, *args, **kwargs)
-
-class volocationtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of VOLocationType object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocationType.objects.all()  
-  serializer_class = serializers.VOLocationTypeSerializer
-  def post(self, request, *args, **kwargs):
-    """
-    Creates a number of new VOLocationType objects
-    """
-    return self.create(request, *args, **kwargs)
-
-class volocationtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available VOLocationType objects  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocationType.objects.all()  
-  serializer_class = serializers.VOLocationTypeSerializer
-  def get(self, request, *args, **kwargs):
-    """
-    Lists available VOLocationType objects
-    """
-    return self.list(request, *args, **kwargs)
-  def post(self, request, *args, **kwargs):
-    """
-    Creates a new VOLocationType object
-    """
-    return self.create(request, *args, **kwargs)
-
-class volocationtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific VOLocationType object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocationType.objects.all()  
-  serializer_class = serializers.VOLocationTypeSerializer
-  def post(self, request, *args, **kwargs):
-    """
-    Destroys the specified VOLocationType object
-    """
-    return self.destroy(request, *args, **kwargs)
-
-
-class volocationtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific VOLocationType object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOLocationType.objects.all()  
-  serializer_class = serializers.VOLocationTypeSerializer
-  def get(self, request, *args, **kwargs):
-    """
-    Retrieves the specified VOLocationType object
-    """
-    return self.retrieve(request, *args, **kwargs)
-  def put(self, request, *args, **kwargs):
-    """
-    Updates the specified VOLocationType object
-    """
-    return self.update(request, *args, **kwargs)
-
-class voorgtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of VOType object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOType.objects.all()  
-  serializer_class = serializers.VOTypeSerializer
-  def post(self, request, *args, **kwargs):
-    """
-    Creates a number of new VOType objects
-    """
-    return self.create(request, *args, **kwargs)
-
-class voorgtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available VOType objects  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOType.objects.all()  
-  serializer_class = serializers.VOTypeSerializer
-  def get(self, request, *args, **kwargs):
-    """
-    Lists available VOType objects
-    """
-    return self.list(request, *args, **kwargs)
-  def post(self, request, *args, **kwargs):
-    """
-    Creates a new VOType object
-    """
-    return self.create(request, *args, **kwargs)
-
-class voorgtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific VOType object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOType.objects.all()  
-  serializer_class = serializers.VOTypeSerializer
-  def post(self, request, *args, **kwargs):
-    """
-    Destroys the specified VOType object
-    """
-    return self.destroy(request, *args, **kwargs)
-
-
-class voorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific VOType object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VOType.objects.all()  
-  serializer_class = serializers.VOTypeSerializer
-  def get(self, request, *args, **kwargs):
-    """
-    Retrieves the specified VOType object
-    """
-    return self.retrieve(request, *args, **kwargs)
-  def put(self, request, *args, **kwargs):
-    """
-    Updates the specified VOType object
-    """
-    return self.update(request, *args, **kwargs)
-
-class verifiedorgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of VerifiedOrg object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VerifiedOrg.objects.all()  
-  serializer_class = serializers.VerifiedOrgSerializer
-  def post(self, request, *args, **kwargs):
-    """
-    Creates a number of new VerifiedOrg objects
-    """
-    return self.create(request, *args, **kwargs)
-
-class verifiedorgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available VerifiedOrg objects  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VerifiedOrg.objects.all()  
-  serializer_class = serializers.VerifiedOrgSerializer
-  def get(self, request, *args, **kwargs):
-    """
-    Lists available VerifiedOrg objects
-    """
-    return self.list(request, *args, **kwargs)
-  def post(self, request, *args, **kwargs):
-    """
-    Creates a new VerifiedOrg object
-    """
-    return self.create(request, *args, **kwargs)
-
-class verifiedorgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific VerifiedOrg object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VerifiedOrg.objects.all()  
-  serializer_class = serializers.VerifiedOrgSerializer
-  def post(self, request, *args, **kwargs):
-    """
-    Destroys the specified VerifiedOrg object
-    """
-    return self.destroy(request, *args, **kwargs)
-
-
-class verifiedorgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific VerifiedOrg object  
-  """
-  lookup_field = 'id'
-  permission_classes = (permissions.AllowAny,)  
-  queryset = VerifiedOrg.objects.all()  
-  serializer_class = serializers.VerifiedOrgSerializer
-  def get(self, request, *args, **kwargs):
-    """
-    Retrieves the specified VerifiedOrg object
-    """
-    return self.retrieve(request, *args, **kwargs)
-  def put(self, request, *args, **kwargs):
-    """
-    Updates the specified VerifiedOrg object
+    Updates the specified VerifiableOrgType object
     """
     return self.update(request, *args, **kwargs)
 

@@ -1,0 +1,135 @@
+[
+    {
+        "dbaName": "Asian Junction",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "2",
+        "verifiableOrgId": "1"
+    },
+    {
+        "dbaName": "McDuff",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "5",
+        "verifiableOrgId": "3"
+    },
+    {
+        "dbaName": "Museum Company",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "8",
+        "verifiableOrgId": "5"
+    },
+    {
+        "dbaName": "Body Toning",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "10",
+        "verifiableOrgId": "6"
+    },
+    {
+        "dbaName": "Wells & Wade",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "11",
+        "verifiableOrgId": "6"
+    },
+    {
+        "dbaName": "Brendle's",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "12",
+        "verifiableOrgId": "6"
+    },
+    {
+        "dbaName": "Britling Cafeterias",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "13",
+        "verifiableOrgId": "6"
+    },
+    {
+        "dbaName": "Record World",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "15",
+        "verifiableOrgId": "7"
+    },
+    {
+        "dbaName": "The Fox and Hound ",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "16",
+        "verifiableOrgId": "7"
+    },
+    {
+        "dbaName": "Grass Roots Yard Services",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "18",
+        "verifiableOrgId": "8"
+    },
+    {
+        "dbaName": "Pantry Food Stores",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "19",
+        "verifiableOrgId": "8"
+    },
+    {
+        "dbaName": "Magik Grey",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "20",
+        "verifiableOrgId": "8"
+    },
+    {
+        "dbaName": "Sandy's",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "22",
+        "verifiableOrgId": "9"
+    },
+    {
+        "dbaName": "Gamma Gas",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "24",
+        "verifiableOrgId": "10"
+    },
+    {
+        "dbaName": "Gas Depot",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "26",
+        "verifiableOrgId": "11"
+    },
+    {
+        "dbaName": "Service Merchandise",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "27",
+        "verifiableOrgId": "11"
+    },
+    {
+        "dbaName": "Lionel Playworld",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "28",
+        "verifiableOrgId": "11"
+    },
+    {
+        "dbaName": "Stratacard",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "30",
+        "verifiableOrgId": "12"
+    },
+    {
+        "dbaName": "J. Brannam",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "31",
+        "verifiableOrgId": "12"
+    }
+]

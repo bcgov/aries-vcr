@@ -5,7 +5,7 @@
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
-        "theType": "Corporation"
+        "orgType": "Corporation"
     },
     {
         "description": "A Sole Proprietorship",
@@ -13,7 +13,7 @@
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
-        "theType": "Sole Proprietorship"
+        "orgType": "Sole Proprietorship"
     },
     {
         "description": "A Partnership",
@@ -21,7 +21,7 @@
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
-        "theType": "Partnership"
+        "orgType": "Partnership"
     },
     {
         "description": "A Limited Liability Partnership",
@@ -29,6 +29,6 @@
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
-        "theType": "Limited Liability Partnership"
+        "orgType": "Limited Liability Partnership"
     }
 ]

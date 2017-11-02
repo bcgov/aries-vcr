@@ -1,8 +1,8 @@
-  /verifiedorgs/{id}/voclaims:
+  /verifiedorgs/{id}/verifiableclaims:
     get:
-      summary: Returns the VO Claims for a Verified Organization
+      summary: Returns the Verifiable Claims for a Verifiable Organization
       tags:
-        - VerifiedOrg
+        - VerifiableOrg
       produces:
         - text/plain
         - application/json
@@ -10,7 +10,7 @@
       parameters:
         - name: id
           in: path
-          description: id of VerifiedOrg for which to fetch VOClaims
+          description: id of VerifiableOrg for which to fetch VerifiableClaims
           required: true
           type: integer
       responses:
@@ -19,7 +19,7 @@
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOClaim"
+              $ref: "#/definitions/VerifiableClaim"
         404:
            description: User not found
   /roles/{id}/permissions:

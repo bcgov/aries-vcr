@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -23,15 +23,18 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from .VerifiableOrgType import VerifiableOrgType
+from .Jurisdiction import Jurisdiction
 
 from auditable.models import Auditable
 
-class VOLocationType(Auditable):	    
-    theType = models.CharField(max_length=255)   
-    description = models.CharField(max_length=255)   
+class VerifiableOrg(Auditable):	    
+    orgId = models.CharField(max_length=255)   
+    orgTypeId = models.ForeignKey('VerifiableOrgType', related_name='VerifiableOrgorgTypeId')   
+    jurisdictionId = models.ForeignKey('Jurisdiction', related_name='VerifiableOrgjurisdictionId')   
+    legalName = models.CharField(max_length=255)   
     effectiveDate = models.DateField()   
     endDate = models.DateField(blank=True, null=True)   
-    displayOrder = models.IntegerField()   
     class Meta:
-        db_table = 'V_O_LOCATION_TYPE'
+        db_table = 'VERIFIABLE_ORG'
 

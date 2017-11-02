@@ -2,15 +2,15 @@ swagger: '2.0'
 info:
   version: v1
   title: REST API Documentation for TheOrgBook
-  description: TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+  description: TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
   termsOfService: N/A
 basePath: /api/v1
 paths:
-  /verifiedorgs:
+  /verifiableorgs:
     get:
       tags:
-        - VerifiedOrg
-      summary: Lists available VerifiedOrg objects
+        - VerifiableOrg
+      summary: Lists available VerifiableOrg objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -23,12 +23,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VerifiedOrg"
+              $ref: "#/definitions/VerifiableOrg"
     post:
       tags:
-        - VerifiedOrg
+        - VerifiableOrg
       x-codegen-operation: create
-      summary: Creates a new VerifiedOrg object            
+      summary: Creates a new VerifiableOrg object            
       consumes:
         - application/json
       produces:
@@ -40,22 +40,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VerifiedOrg"
+            $ref: "#/definitions/VerifiableOrg"
       responses:
         201:
-          description: VerifiedOrg created
+          description: VerifiableOrg created
           headers:
             Location:
-              description: A link to the VerifiedOrg
+              description: A link to the VerifiableOrg
               type: string
               format: url
           schema:
-            $ref: "#/definitions/VerifiedOrg"  
-  /verifiedorgs/bulk:
+            $ref: "#/definitions/VerifiableOrg"  
+  /verifiableorgs/bulk:
     post:
       tags:
-        - VerifiedOrg
-      summary: Bulk create / update a number of VerifiedOrg object      
+        - VerifiableOrg
+      summary: Bulk create / update a number of VerifiableOrg object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -70,15 +70,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VerifiedOrg"
+              $ref: "#/definitions/VerifiableOrg"
       responses:
         201:
-          description: VerifiedOrg created
-  /verifiedorgs/{id}:
+          description: VerifiableOrg created
+  /verifiableorgs/{id}:
     get:
       tags:
-        - VerifiedOrg
-      summary: Gets a specific VerifiedOrg object      
+        - VerifiableOrg
+      summary: Gets a specific VerifiableOrg object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -89,20 +89,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VerifiedOrg"
+            $ref: "#/definitions/VerifiableOrg"
         404:
-          description: VerifiedOrg not found
+          description: VerifiableOrg not found
       parameters:
         - name: id
           in: path
-          description: id of VerifiedOrg to fetch
+          description: id of VerifiableOrg to fetch
           required: true
           type: integer
     put:
       tags:
-        - VerifiedOrg
+        - VerifiableOrg
       x-codegen-operation: update
-      summary: Updates a specific VerifiedOrg object      
+      summary: Updates a specific VerifiableOrg object      
       consumes:
         - application/json
       produces:
@@ -113,26 +113,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VerifiedOrg"
+            $ref: "#/definitions/VerifiableOrg"
         404:
-          description: VerifiedOrg not found
+          description: VerifiableOrg not found
       parameters:
         - name: id
           in: path
-          description: id of VerifiedOrg to fetch
+          description: id of VerifiableOrg to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VerifiedOrg"
-  /verifiedorgs/{id}/delete:
+            $ref: "#/definitions/VerifiableOrg"
+  /verifiableorgs/{id}/delete:
     post:
       tags:
-        - VerifiedOrg
+        - VerifiableOrg
       x-codegen-operation: destroy
-      summary: Deletes a specific VerifiedOrg object      
+      summary: Deletes a specific VerifiableOrg object      
       consumes: []
       produces:
         - text/plain
@@ -142,18 +142,18 @@ paths:
         200:
           description: OK
         404:
-          description: VerifiedOrg not found
+          description: VerifiableOrg not found
       parameters:
         - name: id
           in: path
-          description: id of VerifiedOrg to delete
+          description: id of VerifiableOrg to delete
           required: true
           type: integer
-  /voorgtypes:
+  /verifiableorgtypes:
     get:
       tags:
-        - VOType
-      summary: Lists available VOType objects
+        - VerifiableOrgType
+      summary: Lists available VerifiableOrgType objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -166,12 +166,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOType"
+              $ref: "#/definitions/VerifiableOrgType"
     post:
       tags:
-        - VOType
+        - VerifiableOrgType
       x-codegen-operation: create
-      summary: Creates a new VOType object            
+      summary: Creates a new VerifiableOrgType object            
       consumes:
         - application/json
       produces:
@@ -183,22 +183,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOType"
+            $ref: "#/definitions/VerifiableOrgType"
       responses:
         201:
-          description: VOType created
+          description: VerifiableOrgType created
           headers:
             Location:
-              description: A link to the VOType
+              description: A link to the VerifiableOrgType
               type: string
               format: url
           schema:
-            $ref: "#/definitions/VOType"  
-  /voorgtypes/bulk:
+            $ref: "#/definitions/VerifiableOrgType"  
+  /verifiableorgtypes/bulk:
     post:
       tags:
-        - VOType
-      summary: Bulk create / update a number of VOType object      
+        - VerifiableOrgType
+      summary: Bulk create / update a number of VerifiableOrgType object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -213,15 +213,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOType"
+              $ref: "#/definitions/VerifiableOrgType"
       responses:
         201:
-          description: VOType created
-  /voorgtypes/{id}:
+          description: VerifiableOrgType created
+  /verifiableorgtypes/{id}:
     get:
       tags:
-        - VOType
-      summary: Gets a specific VOType object      
+        - VerifiableOrgType
+      summary: Gets a specific VerifiableOrgType object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -232,20 +232,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOType"
+            $ref: "#/definitions/VerifiableOrgType"
         404:
-          description: VOType not found
+          description: VerifiableOrgType not found
       parameters:
         - name: id
           in: path
-          description: id of VOType to fetch
+          description: id of VerifiableOrgType to fetch
           required: true
           type: integer
     put:
       tags:
-        - VOType
+        - VerifiableOrgType
       x-codegen-operation: update
-      summary: Updates a specific VOType object      
+      summary: Updates a specific VerifiableOrgType object      
       consumes:
         - application/json
       produces:
@@ -256,26 +256,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOType"
+            $ref: "#/definitions/VerifiableOrgType"
         404:
-          description: VOType not found
+          description: VerifiableOrgType not found
       parameters:
         - name: id
           in: path
-          description: id of VOType to fetch
+          description: id of VerifiableOrgType to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOType"
-  /voorgtypes/{id}/delete:
+            $ref: "#/definitions/VerifiableOrgType"
+  /verifiableorgtypes/{id}/delete:
     post:
       tags:
-        - VOType
+        - VerifiableOrgType
       x-codegen-operation: destroy
-      summary: Deletes a specific VOType object      
+      summary: Deletes a specific VerifiableOrgType object      
       consumes: []
       produces:
         - text/plain
@@ -285,18 +285,18 @@ paths:
         200:
           description: OK
         404:
-          description: VOType not found
+          description: VerifiableOrgType not found
       parameters:
         - name: id
           in: path
-          description: id of VOType to delete
+          description: id of VerifiableOrgType to delete
           required: true
           type: integer
-  /volocations:
+  /locations:
     get:
       tags:
-        - VOLocation
-      summary: Lists available VOLocation objects
+        - Location
+      summary: Lists available Location objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -309,12 +309,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOLocation"
+              $ref: "#/definitions/Location"
     post:
       tags:
-        - VOLocation
+        - Location
       x-codegen-operation: create
-      summary: Creates a new VOLocation object            
+      summary: Creates a new Location object            
       consumes:
         - application/json
       produces:
@@ -326,22 +326,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOLocation"
+            $ref: "#/definitions/Location"
       responses:
         201:
-          description: VOLocation created
+          description: Location created
           headers:
             Location:
-              description: A link to the VOLocation
+              description: A link to the Location
               type: string
               format: url
           schema:
-            $ref: "#/definitions/VOLocation"  
-  /volocations/bulk:
+            $ref: "#/definitions/Location"  
+  /locations/bulk:
     post:
       tags:
-        - VOLocation
-      summary: Bulk create / update a number of VOLocation object      
+        - Location
+      summary: Bulk create / update a number of Location object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -356,15 +356,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOLocation"
+              $ref: "#/definitions/Location"
       responses:
         201:
-          description: VOLocation created
-  /volocations/{id}:
+          description: Location created
+  /locations/{id}:
     get:
       tags:
-        - VOLocation
-      summary: Gets a specific VOLocation object      
+        - Location
+      summary: Gets a specific Location object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -375,20 +375,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOLocation"
+            $ref: "#/definitions/Location"
         404:
-          description: VOLocation not found
+          description: Location not found
       parameters:
         - name: id
           in: path
-          description: id of VOLocation to fetch
+          description: id of Location to fetch
           required: true
           type: integer
     put:
       tags:
-        - VOLocation
+        - Location
       x-codegen-operation: update
-      summary: Updates a specific VOLocation object      
+      summary: Updates a specific Location object      
       consumes:
         - application/json
       produces:
@@ -399,26 +399,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOLocation"
+            $ref: "#/definitions/Location"
         404:
-          description: VOLocation not found
+          description: Location not found
       parameters:
         - name: id
           in: path
-          description: id of VOLocation to fetch
+          description: id of Location to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOLocation"
-  /volocations/{id}/delete:
+            $ref: "#/definitions/Location"
+  /locations/{id}/delete:
     post:
       tags:
-        - VOLocation
+        - Location
       x-codegen-operation: destroy
-      summary: Deletes a specific VOLocation object      
+      summary: Deletes a specific Location object      
       consumes: []
       produces:
         - text/plain
@@ -428,18 +428,18 @@ paths:
         200:
           description: OK
         404:
-          description: VOLocation not found
+          description: Location not found
       parameters:
         - name: id
           in: path
-          description: id of VOLocation to delete
+          description: id of Location to delete
           required: true
           type: integer
-  /volocationtypes:
+  /locationtypes:
     get:
       tags:
-        - VOLocationType
-      summary: Lists available VOLocationType objects
+        - LocationType
+      summary: Lists available LocationType objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -452,12 +452,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOLocationType"
+              $ref: "#/definitions/LocationType"
     post:
       tags:
-        - VOLocationType
+        - LocationType
       x-codegen-operation: create
-      summary: Creates a new VOLocationType object            
+      summary: Creates a new LocationType object            
       consumes:
         - application/json
       produces:
@@ -469,22 +469,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOLocationType"
+            $ref: "#/definitions/LocationType"
       responses:
         201:
-          description: VOLocationType created
+          description: LocationType created
           headers:
             Location:
-              description: A link to the VOLocationType
+              description: A link to the LocationType
               type: string
               format: url
           schema:
-            $ref: "#/definitions/VOLocationType"  
-  /volocationtypes/bulk:
+            $ref: "#/definitions/LocationType"  
+  /locationtypes/bulk:
     post:
       tags:
-        - VOLocationType
-      summary: Bulk create / update a number of VOLocationType object      
+        - LocationType
+      summary: Bulk create / update a number of LocationType object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -499,15 +499,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOLocationType"
+              $ref: "#/definitions/LocationType"
       responses:
         201:
-          description: VOLocationType created
-  /volocationtypes/{id}:
+          description: LocationType created
+  /locationtypes/{id}:
     get:
       tags:
-        - VOLocationType
-      summary: Gets a specific VOLocationType object      
+        - LocationType
+      summary: Gets a specific LocationType object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -518,20 +518,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOLocationType"
+            $ref: "#/definitions/LocationType"
         404:
-          description: VOLocationType not found
+          description: LocationType not found
       parameters:
         - name: id
           in: path
-          description: id of VOLocationType to fetch
+          description: id of LocationType to fetch
           required: true
           type: integer
     put:
       tags:
-        - VOLocationType
+        - LocationType
       x-codegen-operation: update
-      summary: Updates a specific VOLocationType object      
+      summary: Updates a specific LocationType object      
       consumes:
         - application/json
       produces:
@@ -542,26 +542,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOLocationType"
+            $ref: "#/definitions/LocationType"
         404:
-          description: VOLocationType not found
+          description: LocationType not found
       parameters:
         - name: id
           in: path
-          description: id of VOLocationType to fetch
+          description: id of LocationType to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOLocationType"
-  /volocationtypes/{id}/delete:
+            $ref: "#/definitions/LocationType"
+  /locationtypes/{id}/delete:
     post:
       tags:
-        - VOLocationType
+        - LocationType
       x-codegen-operation: destroy
-      summary: Deletes a specific VOLocationType object      
+      summary: Deletes a specific LocationType object      
       consumes: []
       produces:
         - text/plain
@@ -571,18 +571,18 @@ paths:
         200:
           description: OK
         404:
-          description: VOLocationType not found
+          description: LocationType not found
       parameters:
         - name: id
           in: path
-          description: id of VOLocationType to delete
+          description: id of LocationType to delete
           required: true
           type: integer
-  /vodoingbusinessas:
+  /doingbusinessas:
     get:
       tags:
-        - VODoingBusinessAs
-      summary: Lists available VODoingBusinessAs objects
+        - DoingBusinessAs
+      summary: Lists available DoingBusinessAs objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -595,12 +595,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VODoingBusinessAs"
+              $ref: "#/definitions/DoingBusinessAs"
     post:
       tags:
-        - VODoingBusinessAs
+        - DoingBusinessAs
       x-codegen-operation: create
-      summary: Creates a new VODoingBusinessAs object            
+      summary: Creates a new DoingBusinessAs object            
       consumes:
         - application/json
       produces:
@@ -612,22 +612,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VODoingBusinessAs"
+            $ref: "#/definitions/DoingBusinessAs"
       responses:
         201:
-          description: VODoingBusinessAs created
+          description: DoingBusinessAs created
           headers:
             Location:
-              description: A link to the VODoingBusinessAs
+              description: A link to the DoingBusinessAs
               type: string
               format: url
           schema:
-            $ref: "#/definitions/VODoingBusinessAs"  
-  /vodoingbusinessas/bulk:
+            $ref: "#/definitions/DoingBusinessAs"  
+  /doingbusinessas/bulk:
     post:
       tags:
-        - VODoingBusinessAs
-      summary: Bulk create / update a number of VODoingBusinessAs object      
+        - DoingBusinessAs
+      summary: Bulk create / update a number of DoingBusinessAs object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -642,15 +642,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VODoingBusinessAs"
+              $ref: "#/definitions/DoingBusinessAs"
       responses:
         201:
-          description: VODoingBusinessAs created
-  /vodoingbusinessas/{id}:
+          description: DoingBusinessAs created
+  /doingbusinessas/{id}:
     get:
       tags:
-        - VODoingBusinessAs
-      summary: Gets a specific VODoingBusinessAs object      
+        - DoingBusinessAs
+      summary: Gets a specific DoingBusinessAs object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -661,20 +661,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VODoingBusinessAs"
+            $ref: "#/definitions/DoingBusinessAs"
         404:
-          description: VODoingBusinessAs not found
+          description: DoingBusinessAs not found
       parameters:
         - name: id
           in: path
-          description: id of VODoingBusinessAs to fetch
+          description: id of DoingBusinessAs to fetch
           required: true
           type: integer
     put:
       tags:
-        - VODoingBusinessAs
+        - DoingBusinessAs
       x-codegen-operation: update
-      summary: Updates a specific VODoingBusinessAs object      
+      summary: Updates a specific DoingBusinessAs object      
       consumes:
         - application/json
       produces:
@@ -685,26 +685,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VODoingBusinessAs"
+            $ref: "#/definitions/DoingBusinessAs"
         404:
-          description: VODoingBusinessAs not found
+          description: DoingBusinessAs not found
       parameters:
         - name: id
           in: path
-          description: id of VODoingBusinessAs to fetch
+          description: id of DoingBusinessAs to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VODoingBusinessAs"
-  /vodoingbusinessas/{id}/delete:
+            $ref: "#/definitions/DoingBusinessAs"
+  /doingbusinessas/{id}/delete:
     post:
       tags:
-        - VODoingBusinessAs
+        - DoingBusinessAs
       x-codegen-operation: destroy
-      summary: Deletes a specific VODoingBusinessAs object      
+      summary: Deletes a specific DoingBusinessAs object      
       consumes: []
       produces:
         - text/plain
@@ -714,18 +714,18 @@ paths:
         200:
           description: OK
         404:
-          description: VODoingBusinessAs not found
+          description: DoingBusinessAs not found
       parameters:
         - name: id
           in: path
-          description: id of VODoingBusinessAs to delete
+          description: id of DoingBusinessAs to delete
           required: true
           type: integer
-  /voclaims:
+  /verifiableclaims:
     get:
       tags:
-        - VOClaim
-      summary: Lists available VOClaim objects
+        - VerifiableClaim
+      summary: Lists available VerifiableClaim objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -738,12 +738,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOClaim"
+              $ref: "#/definitions/VerifiableClaim"
     post:
       tags:
-        - VOClaim
+        - VerifiableClaim
       x-codegen-operation: create
-      summary: Creates a new VOClaim object            
+      summary: Creates a new VerifiableClaim object            
       consumes:
         - application/json
       produces:
@@ -755,22 +755,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOClaim"
+            $ref: "#/definitions/VerifiableClaim"
       responses:
         201:
-          description: VOClaim created
+          description: VerifiableClaim created
           headers:
             Location:
-              description: A link to the VOClaim
+              description: A link to the VerifiableClaim
               type: string
               format: url
           schema:
-            $ref: "#/definitions/VOClaim"  
-  /voclaims/bulk:
+            $ref: "#/definitions/VerifiableClaim"  
+  /verifiableclaims/bulk:
     post:
       tags:
-        - VOClaim
-      summary: Bulk create / update a number of VOClaim object      
+        - VerifiableClaim
+      summary: Bulk create / update a number of VerifiableClaim object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -785,15 +785,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOClaim"
+              $ref: "#/definitions/VerifiableClaim"
       responses:
         201:
-          description: VOClaim created
-  /voclaims/{id}:
+          description: VerifiableClaim created
+  /verifiableclaims/{id}:
     get:
       tags:
-        - VOClaim
-      summary: Gets a specific VOClaim object      
+        - VerifiableClaim
+      summary: Gets a specific VerifiableClaim object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -804,20 +804,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOClaim"
+            $ref: "#/definitions/VerifiableClaim"
         404:
-          description: VOClaim not found
+          description: VerifiableClaim not found
       parameters:
         - name: id
           in: path
-          description: id of VOClaim to fetch
+          description: id of VerifiableClaim to fetch
           required: true
           type: integer
     put:
       tags:
-        - VOClaim
+        - VerifiableClaim
       x-codegen-operation: update
-      summary: Updates a specific VOClaim object      
+      summary: Updates a specific VerifiableClaim object      
       consumes:
         - application/json
       produces:
@@ -828,26 +828,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOClaim"
+            $ref: "#/definitions/VerifiableClaim"
         404:
-          description: VOClaim not found
+          description: VerifiableClaim not found
       parameters:
         - name: id
           in: path
-          description: id of VOClaim to fetch
+          description: id of VerifiableClaim to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOClaim"
-  /voclaims/{id}/delete:
+            $ref: "#/definitions/VerifiableClaim"
+  /verifiableclaims/{id}/delete:
     post:
       tags:
-        - VOClaim
+        - VerifiableClaim
       x-codegen-operation: destroy
-      summary: Deletes a specific VOClaim object      
+      summary: Deletes a specific VerifiableClaim object      
       consumes: []
       produces:
         - text/plain
@@ -857,18 +857,18 @@ paths:
         200:
           description: OK
         404:
-          description: VOClaim not found
+          description: VerifiableClaim not found
       parameters:
         - name: id
           in: path
-          description: id of VOClaim to delete
+          description: id of VerifiableClaim to delete
           required: true
           type: integer
-  /voclaimtypes:
+  /verifiableclaimtypes:
     get:
       tags:
-        - VOClaimType
-      summary: Lists available VOClaimType objects
+        - VerifiableClaimType
+      summary: Lists available VerifiableClaimType objects
       x-codegen-operation: list
       consumes: []
       produces:
@@ -881,12 +881,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOClaimType"
+              $ref: "#/definitions/VerifiableClaimType"
     post:
       tags:
-        - VOClaimType
+        - VerifiableClaimType
       x-codegen-operation: create
-      summary: Creates a new VOClaimType object            
+      summary: Creates a new VerifiableClaimType object            
       consumes:
         - application/json
       produces:
@@ -898,22 +898,22 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOClaimType"
+            $ref: "#/definitions/VerifiableClaimType"
       responses:
         201:
-          description: VOClaimType created
+          description: VerifiableClaimType created
           headers:
             Location:
-              description: A link to the VOClaimType
+              description: A link to the VerifiableClaimType
               type: string
               format: url
           schema:
-            $ref: "#/definitions/VOClaimType"  
-  /voclaimtypes/bulk:
+            $ref: "#/definitions/VerifiableClaimType"  
+  /verifiableclaimtypes/bulk:
     post:
       tags:
-        - VOClaimType
-      summary: Bulk create / update a number of VOClaimType object      
+        - VerifiableClaimType
+      summary: Bulk create / update a number of VerifiableClaimType object      
       x-codegen-operation: bulk
       consumes:
         - application/json
@@ -928,15 +928,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOClaimType"
+              $ref: "#/definitions/VerifiableClaimType"
       responses:
         201:
-          description: VOClaimType created
-  /voclaimtypes/{id}:
+          description: VerifiableClaimType created
+  /verifiableclaimtypes/{id}:
     get:
       tags:
-        - VOClaimType
-      summary: Gets a specific VOClaimType object      
+        - VerifiableClaimType
+      summary: Gets a specific VerifiableClaimType object      
       x-codegen-operation: retrieve
       consumes: []
       produces:
@@ -947,20 +947,20 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOClaimType"
+            $ref: "#/definitions/VerifiableClaimType"
         404:
-          description: VOClaimType not found
+          description: VerifiableClaimType not found
       parameters:
         - name: id
           in: path
-          description: id of VOClaimType to fetch
+          description: id of VerifiableClaimType to fetch
           required: true
           type: integer
     put:
       tags:
-        - VOClaimType
+        - VerifiableClaimType
       x-codegen-operation: update
-      summary: Updates a specific VOClaimType object      
+      summary: Updates a specific VerifiableClaimType object      
       consumes:
         - application/json
       produces:
@@ -971,26 +971,26 @@ paths:
         200:
           description: OK
           schema:
-            $ref: "#/definitions/VOClaimType"
+            $ref: "#/definitions/VerifiableClaimType"
         404:
-          description: VOClaimType not found
+          description: VerifiableClaimType not found
       parameters:
         - name: id
           in: path
-          description: id of VOClaimType to fetch
+          description: id of VerifiableClaimType to fetch
           required: true
           type: integer
         - name: item
           in: body
           required: true
           schema:
-            $ref: "#/definitions/VOClaimType"
-  /voclaimtypes/{id}/delete:
+            $ref: "#/definitions/VerifiableClaimType"
+  /verifiableclaimtypes/{id}/delete:
     post:
       tags:
-        - VOClaimType
+        - VerifiableClaimType
       x-codegen-operation: destroy
-      summary: Deletes a specific VOClaimType object      
+      summary: Deletes a specific VerifiableClaimType object      
       consumes: []
       produces:
         - text/plain
@@ -1000,11 +1000,11 @@ paths:
         200:
           description: OK
         404:
-          description: VOClaimType not found
+          description: VerifiableClaimType not found
       parameters:
         - name: id
           in: path
-          description: id of VOClaimType to delete
+          description: id of VerifiableClaimType to delete
           required: true
           type: integer
   /inactiveclaimreasons:
@@ -2151,11 +2151,11 @@ paths:
           description: id of RolePermission to delete
           required: true
           type: integer
-  /verifiedorgs/{id}/voclaims:
+  /verifiedorgs/{id}/verifiableclaims:
     get:
-      summary: Returns the VO Claims for a Verified Organization
+      summary: Returns the Verifiable Claims for a Verifiable Organization
       tags:
-        - VerifiedOrg
+        - VerifiableOrg
       produces:
         - text/plain
         - application/json
@@ -2163,7 +2163,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: id of VerifiedOrg for which to fetch VOClaims
+          description: id of VerifiableOrg for which to fetch VerifiableClaims
           required: true
           type: integer
       responses:
@@ -2172,7 +2172,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/VOClaim"
+              $ref: "#/definitions/VerifiableClaim"
         404:
            description: User not found
   /roles/{id}/permissions:
@@ -2484,34 +2484,34 @@ paths:
         404:
            description: User not found
 definitions:
-  VerifiedOrg:
+  VerifiableOrg:
     type: object
-    description: Information about a verified organization in the database.
+    description: Information about a Verifiable organization in the database.
     required:
       - id
-      - busId
+      - orgId
       - orgTypeId
       - jurisdictionId
-      - LegalName
+      - legalName
       - effectiveDate
     properties:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Verified Organization.
-      busId:
+        description: A system-generated unique identifier for a Verifiable Organization.
+      orgId:
         type: string
         uniqueItems: true
-        description: The primary business key for the Verified Organization. This is a value that is likely published to and known by the business and entites providing services to the business.
+        description: The primary key for the Verifiable Organization. This is a value that is likely published to and known by the Verifiable Organzation and entites providing services to the organzation.
       orgTypeId:
-        $ref: '#/definitions/VOType'
+        $ref: '#/definitions/VerifiableOrgType'
         description: A foreign key reference to the VOType table.
       jurisdictionId:
         $ref: '#/definitions/Jurisdiction'
         description: A foreign key reference into the Jurisdiction table.
-      LegalName:
+      legalName:
         type: string
-        description: The Legal Name of the Verified Organization
+        description: The Legal Name of the Verifiable Organization
       effectiveDate:
         type: string
         format: date-time
@@ -2520,9 +2520,9 @@ definitions:
         type: string
         format: date-time
         description: The date the record became inactive. A null in the field indicates the record is active.
-  VOType:
+  VerifiableOrgType:
     type: object
-    description: A list of the possible types of a Verified Organization, as defined by 
+    description: A list of the possible types of a Verifiable Organization, as defined by 
     required:
       - id
       - effectiveDate
@@ -2530,45 +2530,45 @@ definitions:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Verified Organization Type.
-      theType:
+        description: A system-generated unique identifier for a Verifiable Organization Type.
+      orgType:
         type: string
-        description: The name of the type of Verified Organization, such as partnership, corporation, etc.
+        description: The name of the type of Verifiable Organization, such as partnership, corporation, etc.
       description:
         type: string
-        description: End user help-text information about the Verified Organization type.
+        description: End user help-text information about the Verifiable Organization type.
       effectiveDate:
         type: string
         format: date-time
-        description: The date upon which the Verified Organization type was activated for use.
+        description: The date upon which the Verifiable Organization type was activated for use.
       endDate:
         type: string
         format: date-time
-        description: The date after which the Verified Organization type will no longer be used.
+        description: The date after which the Verifiable Organization type will no longer be used.
       displayOrder:
         format: int32
         type: integer
-        description: The order of display of the Verified Organization type. In general, the order will be listed in the order of expected frequency.
-  VOLocation:
+        description: The order of display of the Verifiable Organization type. In general, the order will be listed in the order of expected frequency.
+  Location:
     type: object
-    description: A location (name, address and geolocation) of a Verified Organization.
+    description: A location (name, address and geolocation) of a Verifiable Organization.
     required:
       - id
-      - verifiedOrgId
-      - voLocationTypeId
+      - verifiableOrgId
+      - locationTypeId
       - effectiveDate
     properties:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Verified Org location.
-      verifiedOrgId:
-        $ref: '#/definitions/VerifiedOrg'
-        description: A foreign key reference to the Verified Organization table.
-      voLocationTypeId:
-        $ref: '#/definitions/VOLocationType'
-        description: A foreign key reference to the Verified Organization Location Type table.
-      Addressee:
+        description: A system-generated unique identifier for a Verifiable Org location.
+      verifiableOrgId:
+        $ref: '#/definitions/VerifiableOrg'
+        description: A foreign key reference to the Verifiable Organization table.
+      locationTypeId:
+        $ref: '#/definitions/LocationType'
+        description: A foreign key reference to the Verifiable Organization Location Type table.
+      addressee:
         type: string
         description: The Addressee Line of an official address.
       AddlDeliveryInfo:
@@ -2595,87 +2595,107 @@ definitions:
       effectiveDate:
         type: string
         format: date-time
-        description: The date upon which the Verified Organization location was active
+        description: The date upon which the Verifiable Organization location was active
       endDate:
         type: string
         format: date-time
-        description: The date after which the Verified Organization location is no longer active.
-  VOLocationType:
+        description: The date after which the Verifiable Organization location is no longer active.
+  LocationOrg:
     type: object
-    description: A list of the possible types of a Verified Organization location
+    description: A table to connect locations to Verifiable Organizations and DoingBusinessAs
     required:
       - id
-      - theType
+      - locationId
+      - verifiableOrgId
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: A system-generated unique identifier for a Location Organization
+      locationId:
+        $ref: '#/definitions/Location'
+        description: A foreign key reference into the Location table.
+      verifiableOrgId:
+        $ref: '#/definitions/VerifiableOrg'
+        description: A foreign key reference into the VerfiedOrg table.
+      doingBusinessAsId:
+        $ref: '#/definitions/DoingBusinessAs'
+        description: An optional foreign key reference into the DoingBusinessAs table.
+  LocationType:
+    type: object
+    description: A list of the possible types of a Verifiable Organization location
+    required:
+      - id
+      - locType
       - description
       - effectiveDate
     properties:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Verified Organization Location Type.
-      theType:
+        description: A system-generated unique identifier for a Verifiable Organization Location Type.
+      locType:
         type: string
-        description: The name of the type of Verified Organization Location, such as headquarters, regional office, etc.
+        description: The name of the type of Verifiable Organization Location, such as headquarters, regional office, etc.
       description:
         type: string
-        description: End user help-text information about the Verified Organization Location type.
+        description: End user help-text information about the Verifiable Organization Location type.
       effectiveDate:
         type: string
         format: date-time
-        description: The date upon which the Verified Organization Location type was activated for use.
+        description: The date upon which the Verifiable Organization Location type was activated for use.
       endDate:
         type: string
         format: date-time
-        description: The date after which the Verified Organization Location type will no longer be used.
+        description: The date after which the Verifiable Organization Location type will no longer be used.
       displayOrder:
         format: int32
         type: integer
-        description: The order of display of the Verified Organization Location type. In general, the order will be listed in the order of expected frequency.
-  VODoingBusinessAs:
+        description: The order of display of the Verifiable Organization Location type. In general, the order will be listed in the order of expected frequency.
+  DoingBusinessAs:
     type: object
-    description: Names under which a Verified Organization is Doing Business.
+    description: Names under which a Verifiable Organization is Doing Business.
     required:
       - id
-      - DBA
+      - dbaName
       - effectiveDate
     properties:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Verified Organization Location Type.
-      verifiedOrgId:
-        $ref: '#/definitions/VerifiedOrg'
+        description: A system-generated unique identifier for a Verifiable Organization Location Type.
+      verifiableOrgId:
+        $ref: '#/definitions/VerifiableOrg'
         description: A foreign key reference into the VerfiedOrg table.
-      DBA:
+      dbaName:
         type: string
         description: The doing business as name of the business.
       effectiveDate:
         type: string
         format: date-time
-        description: The date upon which the Verified Organization DBA record was activated for use.
+        description: The date upon which the Verifiable Organization DBA record was activated for use.
       endDate:
         type: string
         format: date-time
-        description: The date after which the Verified Organization DBA record will no longer be used.
-  VOClaim:
+        description: The date after which the Verifiable Organization DBA record will no longer be used.
+  VerifiableClaim:
     type: object
     description: A claim of a given type, issued by a known entite
     required:
       - id
-      - verifiedOrgId
-      - voClaimType
+      - verifiableOrgId
+      - claimType
       - effectiveDate
     properties:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Verified Organization Claim.
-      verifiedOrgId:
-        $ref: '#/definitions/VerifiedOrg'
+        description: A system-generated unique identifier for a Verifiable Organization Claim.
+      verifiableOrgId:
+        $ref: '#/definitions/VerifiableOrg'
         description: A foreign key reference into the VerfiedOrg table.
-      voClaimType:
-        $ref: '#/definitions/VOClaimType'
-        uniqueItems: true
+      claimType:
+        $ref: '#/definitions/VerifiableClaimType'
         description: A foreign key reference into the VOClaimType table.
       claimJSON:
         type: string
@@ -2691,13 +2711,13 @@ definitions:
       inactiveClaimReasonId:
         $ref: '#/definitions/InactiveClaimReason'
         description: A foreign key reference into the IncactiveClaimReason table.
-  VOClaimType:
+  VerifiableClaimType:
     type: object
-    description: A list of the possible types of a Verified Organization, as defined by 
+    description: A list of the possible types of a Verifiable Organization, as defined by 
     required:
       - id
-      - theType
-      - issuerOrgId
+      - claimType
+      - issuerServiceId
       - issuerURL
       - claimSchemaDefinition
       - effectiveDate
@@ -2705,14 +2725,14 @@ definitions:
       id:
         format: int32
         type: integer
-        description: A system-generated unique identifier for a Verified Organization Location Type.
-      theType:
+        description: A system-generated unique identifier for a Verifiable Organization Location Type.
+      claimType:
         type: string
         description: A user friendly name for the claim type.
       base64Logo:
         type: string
         description: A base64-encoded logo to display as a representation of the claim.
-      issuerOrgId:
+      issuerServiceId:
         $ref: '#/definitions/IssuerService'
         description: The name of the organization that issued the claim.
       issuerURL:
@@ -2724,11 +2744,11 @@ definitions:
       effectiveDate:
         type: string
         format: date-time
-        description: The date upon which the Verified Organization Claim type was activated for use.
+        description: The date upon which the Verifiable Organization Claim type was activated for use.
       endDate:
         type: string
         format: date-time
-        description: The date after which the Verified Organization Claim type will no longer be used.
+        description: The date after which the Verifiable Organization Claim type will no longer be used.
   InactiveClaimReason:
     type: object
     description: A list of the possible reasons why a Claim might be inactive. 
@@ -2760,7 +2780,7 @@ definitions:
         description: The order of display Inactive Claim reason. In general, the order will be alpha.
   IssuerService:
     type: object
-    description: The list of Organizations that have issued claims to Verified Organizations that are stored in this repository.
+    description: The list of Organizations that have issued claims to Verifiable Organizations that are stored in this repository.
     required:
       - id
       - name

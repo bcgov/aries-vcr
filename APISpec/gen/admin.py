@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -21,9 +21,13 @@
 
 from django.contrib import admin
 
+from .models.DoingBusinessAs import DoingBusinessAs
 from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Location import Location
+from .models.LocationOrg import LocationOrg
+from .models.LocationType import LocationType
 from .models.Permission import Permission
 
 from .models.Role import Role
@@ -35,28 +39,26 @@ from .models.User import User
 from .models.UserRole import UserRole
 
 
-from .models.VOClaim import VOClaim
-from .models.VOClaimType import VOClaimType
-from .models.VODoingBusinessAs import VODoingBusinessAs
-from .models.VOLocation import VOLocation
-from .models.VOLocationType import VOLocationType
-from .models.VOType import VOType
-from .models.VerifiedOrg import VerifiedOrg
+from .models.VerifiableClaim import VerifiableClaim
+from .models.VerifiableClaimType import VerifiableClaimType
+from .models.VerifiableOrg import VerifiableOrg
+from .models.VerifiableOrgType import VerifiableOrgType
 
 
 
+admin.site.register(DoingBusinessAs)
 admin.site.register(InactiveClaimReason)
 admin.site.register(IssuerService)
 admin.site.register(Jurisdiction)
+admin.site.register(Location)
+admin.site.register(LocationOrg)
+admin.site.register(LocationType)
 admin.site.register(Permission)
 admin.site.register(Role)
 admin.site.register(RolePermission)
 admin.site.register(User)
 admin.site.register(UserRole)
-admin.site.register(VOClaim)
-admin.site.register(VOClaimType)
-admin.site.register(VODoingBusinessAs)
-admin.site.register(VOLocation)
-admin.site.register(VOLocationType)
-admin.site.register(VOType)
-admin.site.register(VerifiedOrg)
+admin.site.register(VerifiableClaim)
+admin.site.register(VerifiableClaimType)
+admin.site.register(VerifiableOrg)
+admin.site.register(VerifiableOrgType)

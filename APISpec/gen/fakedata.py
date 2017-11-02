@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -40,6 +40,17 @@ def CurrentUserViewModelTestDataUpdate():
     'active':False,
     'smUserId':'Changed',
     'smAuthorizationDirectory':'Changed',
+  }
+
+
+def DoingBusinessAsTestDataCreate():
+  return {
+    'dbaName':'Initial',
+  }
+
+def DoingBusinessAsTestDataUpdate():
+  return {
+    'dbaName':'Changed',
   }
 
 
@@ -89,6 +100,55 @@ def JurisdictionTestDataUpdate():
     'jurisdictionName':'Changed',
     'displayOrder':0,
     'isOnCommonList':False,
+  }
+
+
+def LocationTestDataCreate():
+  return {
+    'addressee':'Initial',
+    'addlDeliveryInfo':'Initial',
+    'unitNumber':'Initial',
+    'streetAddress':'Initial',
+    'municipality':'Initial',
+    'province':'Initial',
+    'postalCode':'Initial',
+    'latLong':'Initial',
+  }
+
+def LocationTestDataUpdate():
+  return {
+    'addressee':'Changed',
+    'addlDeliveryInfo':'Changed',
+    'unitNumber':'Changed',
+    'streetAddress':'Changed',
+    'municipality':'Changed',
+    'province':'Changed',
+    'postalCode':'Changed',
+    'latLong':'Changed',
+  }
+
+
+def LocationOrgTestDataCreate():
+  return {
+  }
+
+def LocationOrgTestDataUpdate():
+  return {
+  }
+
+
+def LocationTypeTestDataCreate():
+  return {
+    'locType':'Initial',
+    'description':'Initial',
+    'displayOrder':1,
+  }
+
+def LocationTypeTestDataUpdate():
+  return {
+    'locType':'Changed',
+    'description':'Changed',
+    'displayOrder':0,
   }
 
 
@@ -249,109 +309,58 @@ def UserViewModelTestDataUpdate():
   }
 
 
-def VOClaimTestDataCreate():
+def VerifiableClaimTestDataCreate():
   return {
     'claimJSON':'Initial',
   }
 
-def VOClaimTestDataUpdate():
+def VerifiableClaimTestDataUpdate():
   return {
     'claimJSON':'Changed',
   }
 
 
-def VOClaimTypeTestDataCreate():
+def VerifiableClaimTypeTestDataCreate():
   return {
-    'theType':'Initial',
+    'claimType':'Initial',
     'base64Logo':'Initial',
     'issuerURL':'Initial',
     'claimSchemaDefinition':'Initial',
   }
 
-def VOClaimTypeTestDataUpdate():
+def VerifiableClaimTypeTestDataUpdate():
   return {
-    'theType':'Changed',
+    'claimType':'Changed',
     'base64Logo':'Changed',
     'issuerURL':'Changed',
     'claimSchemaDefinition':'Changed',
   }
 
 
-def VODoingBusinessAsTestDataCreate():
+def VerifiableOrgTestDataCreate():
   return {
-    'DBA':'Initial',
+    'orgId':'Initial',
+    'legalName':'Initial',
   }
 
-def VODoingBusinessAsTestDataUpdate():
+def VerifiableOrgTestDataUpdate():
   return {
-    'DBA':'Changed',
-  }
-
-
-def VOLocationTestDataCreate():
-  return {
-    'Addressee':'Initial',
-    'AddlDeliveryInfo':'Initial',
-    'unitNumber':'Initial',
-    'streetAddress':'Initial',
-    'municipality':'Initial',
-    'province':'Initial',
-    'postalCode':'Initial',
-    'latLong':'Initial',
-  }
-
-def VOLocationTestDataUpdate():
-  return {
-    'Addressee':'Changed',
-    'AddlDeliveryInfo':'Changed',
-    'unitNumber':'Changed',
-    'streetAddress':'Changed',
-    'municipality':'Changed',
-    'province':'Changed',
-    'postalCode':'Changed',
-    'latLong':'Changed',
+    'orgId':'Changed',
+    'legalName':'Changed',
   }
 
 
-def VOLocationTypeTestDataCreate():
+def VerifiableOrgTypeTestDataCreate():
   return {
-    'theType':'Initial',
+    'orgType':'Initial',
     'description':'Initial',
     'displayOrder':1,
   }
 
-def VOLocationTypeTestDataUpdate():
+def VerifiableOrgTypeTestDataUpdate():
   return {
-    'theType':'Changed',
+    'orgType':'Changed',
     'description':'Changed',
     'displayOrder':0,
-  }
-
-
-def VOTypeTestDataCreate():
-  return {
-    'theType':'Initial',
-    'description':'Initial',
-    'displayOrder':1,
-  }
-
-def VOTypeTestDataUpdate():
-  return {
-    'theType':'Changed',
-    'description':'Changed',
-    'displayOrder':0,
-  }
-
-
-def VerifiedOrgTestDataCreate():
-  return {
-    'busId':'Initial',
-    'LegalName':'Initial',
-  }
-
-def VerifiedOrgTestDataUpdate():
-  return {
-    'busId':'Changed',
-    'LegalName':'Changed',
   }
 

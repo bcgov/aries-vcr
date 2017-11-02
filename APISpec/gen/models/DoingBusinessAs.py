@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -23,19 +23,15 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from .VerifiedOrg import VerifiedOrg
-from .VOClaimType import VOClaimType
-from .InactiveClaimReason import InactiveClaimReason
+from .VerifiableOrg import VerifiableOrg
 
 from auditable.models import Auditable
 
-class VOClaim(Auditable):	    
-    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VOClaimverifiedOrgId')   
-    voClaimType = models.ForeignKey('VOClaimType', related_name='VOClaimvoClaimType')   
-    claimJSON = models.CharField(max_length=255, blank=True, null=True)   
+class DoingBusinessAs(Auditable):	    
+    verifiableOrgId = models.ForeignKey('VerifiableOrg', related_name='DoingBusinessAsverifiableOrgId', blank=True, null=True)   
+    dbaName = models.CharField(max_length=255)   
     effectiveDate = models.DateField()   
     endDate = models.DateField(blank=True, null=True)   
-    inactiveClaimReasonId = models.ForeignKey('InactiveClaimReason', related_name='VOClaiminactiveClaimReasonId', blank=True, null=True)   
     class Meta:
-        db_table = 'V_O_CLAIM'
+        db_table = 'DOING_BUSINESS_AS'
 

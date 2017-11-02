@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -28,9 +28,13 @@ from rest_framework import generics
 from rest_framework_bulk import BulkCreateModelMixin
 from . import serializers
 from .models.CurrentUserViewModel import CurrentUserViewModel
+from .models.DoingBusinessAs import DoingBusinessAs
 from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Location import Location
+from .models.LocationOrg import LocationOrg
+from .models.LocationType import LocationType
 from .models.Permission import Permission
 from .models.PermissionViewModel import PermissionViewModel
 from .models.Role import Role
@@ -42,13 +46,10 @@ from .models.UserDetailsViewModel import UserDetailsViewModel
 from .models.UserRole import UserRole
 from .models.UserRoleViewModel import UserRoleViewModel
 from .models.UserViewModel import UserViewModel
-from .models.VOClaim import VOClaim
-from .models.VOClaimType import VOClaimType
-from .models.VODoingBusinessAs import VODoingBusinessAs
-from .models.VOLocation import VOLocation
-from .models.VOLocationType import VOLocationType
-from .models.VOType import VOType
-from .models.VerifiedOrg import VerifiedOrg
+from .models.VerifiableClaim import VerifiableClaim
+from .models.VerifiableClaimType import VerifiableClaimType
+from .models.VerifiableOrg import VerifiableOrg
+from .models.VerifiableOrgType import VerifiableOrgType
 
 
 # Custom views.  This file is hand edited.
@@ -107,9 +108,9 @@ class usersSearchGet(APIView):
   def get(self, request, fuelSuppliers = None, surname = None, includeInactive = None):
     return Response()
 
-class verifiedorgsIdVoclaimsGet(APIView):
+class verifiedorgsIdVerifiableclaimsGet(APIView):
   """  
-  Returns the VO Claims for a Verified Organization  
+  Returns the Verifiable Claims for a Verifiable Organization  
   """
   # enter code for this routine here.        
   

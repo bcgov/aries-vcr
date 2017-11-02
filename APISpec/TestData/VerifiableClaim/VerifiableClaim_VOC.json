@@ -1,0 +1,407 @@
+[
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "1",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "1"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "2",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "1"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "3",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "1"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "4",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "1"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "5",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "2"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "6",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "2"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "7",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "2"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "8",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "3"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "9",
+        "inactiveClaimReasonId": "2",
+        "verifiableOrgId": "3"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "10",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "3"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "11",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "3"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "12",
+        "inactiveClaimReasonId": "2",
+        "verifiableOrgId": "4"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "13",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "4"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "14",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "4"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "15",
+        "inactiveClaimReasonId": "2",
+        "verifiableOrgId": "5"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "16",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "5"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "17",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "5"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "18",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "5"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "5",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "19",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "5"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "20",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "6"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "21",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "6"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "22",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "6"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "23",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "6"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "5",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "24",
+        "inactiveClaimReasonId": "2",
+        "verifiableOrgId": "6"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "25",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "7"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "26",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "7"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "27",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "7"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "28",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "7"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "29",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "8"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "30",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "8"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "31",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "9"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "32",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "9"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "33",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "9"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "34",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "9"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "5",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "35",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "9"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "36",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "10"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "37",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "10"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "38",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "10"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "39",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "10"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "40",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "11"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "41",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "11"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "42",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "11"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "43",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "11"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "44",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "12"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "45",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "13"
+    }
+]

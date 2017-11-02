@@ -10,9 +10,7 @@
         "postalCode": "V8Z 2J8",
         "province": "BC",
         "streetAddress": "2262 Burdett Avenue",
-        "unitNumber": null,
-        "verifiedOrgId": "1",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -25,9 +23,7 @@
         "postalCode": "V0N 1B0",
         "province": "BC",
         "streetAddress": "223 Brew Creek Rd",
-        "unitNumber": null,
-        "verifiedOrgId": "1",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -40,9 +36,7 @@
         "postalCode": "V0K 1C0",
         "province": "BC",
         "streetAddress": "2310 Mesa Vista Drive",
-        "unitNumber": null,
-        "verifiedOrgId": "1",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -55,9 +49,7 @@
         "postalCode": "V8Y 1Y7",
         "province": "BC",
         "streetAddress": "3795 Burdett Avenue",
-        "unitNumber": null,
-        "verifiedOrgId": "1",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -70,9 +62,7 @@
         "postalCode": "V0P 1T0",
         "province": "BC",
         "streetAddress": "3746 Noble Rd",
-        "unitNumber": null,
-        "verifiedOrgId": "1",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -85,9 +75,7 @@
         "postalCode": "V2S 2H7",
         "province": "BC",
         "streetAddress": "3617 Essendene Avenue",
-        "unitNumber": null,
-        "verifiedOrgId": "1",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -100,9 +88,7 @@
         "postalCode": "V6B 1E1",
         "province": "BC",
         "streetAddress": "2426 Cordova Street",
-        "unitNumber": null,
-        "verifiedOrgId": "1",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -115,9 +101,7 @@
         "postalCode": "V1Y 8H2",
         "province": "BC",
         "streetAddress": "1019 Hardy Street",
-        "unitNumber": null,
-        "verifiedOrgId": "2",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -130,9 +114,7 @@
         "postalCode": "V6B 3K9",
         "province": "BC",
         "streetAddress": "1004 Robson St",
-        "unitNumber": null,
-        "verifiedOrgId": "2",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -145,9 +127,7 @@
         "postalCode": "V2P 2M1",
         "province": "BC",
         "streetAddress": "3561 Wellington Ave",
-        "unitNumber": null,
-        "verifiedOrgId": "2",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -160,9 +140,7 @@
         "postalCode": "V0X 1L0",
         "province": "BC",
         "streetAddress": "365 Old Spallumcheen Rd",
-        "unitNumber": null,
-        "verifiedOrgId": "2",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -175,9 +153,7 @@
         "postalCode": "V0P 1R0",
         "province": "BC",
         "streetAddress": "47 Noble Rd",
-        "unitNumber": null,
-        "verifiedOrgId": "3",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -190,9 +166,7 @@
         "postalCode": "V7E 2E4",
         "province": "BC",
         "streetAddress": "4764 Jade St",
-        "unitNumber": null,
-        "verifiedOrgId": "3",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -205,9 +179,7 @@
         "postalCode": "V9R 3A8",
         "province": "BC",
         "streetAddress": "3356 Wallace Street",
-        "unitNumber": null,
-        "verifiedOrgId": "4",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -220,9 +192,7 @@
         "postalCode": "V5G 4W7",
         "province": "BC",
         "streetAddress": "4173 James Street",
-        "unitNumber": null,
-        "verifiedOrgId": "5",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -235,9 +205,7 @@
         "postalCode": "V3T 4Y5",
         "province": "BC",
         "streetAddress": "2553 Holdom Avenue",
-        "unitNumber": null,
-        "verifiedOrgId": "5",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -250,9 +218,7 @@
         "postalCode": "V9L 1P1",
         "province": "BC",
         "streetAddress": "3924 Roger Street",
-        "unitNumber": null,
-        "verifiedOrgId": "5",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -265,9 +231,7 @@
         "postalCode": "V0R 1S0",
         "province": "BC",
         "streetAddress": "616 Scotts Lane",
-        "unitNumber": null,
-        "verifiedOrgId": "5",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -280,9 +244,7 @@
         "postalCode": "V0B 1L0",
         "province": "BC",
         "streetAddress": "3690 Findlay Creek Road",
-        "unitNumber": null,
-        "verifiedOrgId": "6",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -295,9 +257,7 @@
         "postalCode": "V3L 3C1",
         "province": "BC",
         "streetAddress": "1065 Sixth Street",
-        "unitNumber": null,
-        "verifiedOrgId": "6",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -310,9 +270,7 @@
         "postalCode": "V8W 2H9",
         "province": "BC",
         "streetAddress": "2261 Blanshard",
-        "unitNumber": null,
-        "verifiedOrgId": "7",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -325,9 +283,7 @@
         "postalCode": "V3W 4E3",
         "province": "BC",
         "streetAddress": "4761 King George Hwy",
-        "unitNumber": null,
-        "verifiedOrgId": "7",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -340,9 +296,7 @@
         "postalCode": "V3A 4P6",
         "province": "BC",
         "streetAddress": "4136 Glover Road",
-        "unitNumber": null,
-        "verifiedOrgId": "7",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -355,9 +309,7 @@
         "postalCode": "V9R 3A8",
         "province": "BC",
         "streetAddress": "735 Wallace Street",
-        "unitNumber": null,
-        "verifiedOrgId": "8",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -370,9 +322,7 @@
         "postalCode": "V0A 1P0",
         "province": "BC",
         "streetAddress": "4359 Yoho Valley Road",
-        "unitNumber": null,
-        "verifiedOrgId": "8",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -385,9 +335,7 @@
         "postalCode": "V8Y 1Y7",
         "province": "BC",
         "streetAddress": "2890 Burdett Avenue",
-        "unitNumber": null,
-        "verifiedOrgId": "8",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -400,9 +348,7 @@
         "postalCode": "V6B 1E1",
         "province": "BC",
         "streetAddress": "1323 Cordova Street",
-        "unitNumber": null,
-        "verifiedOrgId": "8",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -415,9 +361,7 @@
         "postalCode": "V3A 4P6",
         "province": "BC",
         "streetAddress": "727 Glover Road",
-        "unitNumber": null,
-        "verifiedOrgId": "8",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -430,9 +374,7 @@
         "postalCode": "V0R 3E0",
         "province": "BC",
         "streetAddress": "2814 Scotts Lane",
-        "unitNumber": null,
-        "verifiedOrgId": "9",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -445,9 +387,7 @@
         "postalCode": "V5M 3M5",
         "province": "BC",
         "streetAddress": "907 Nootka Street",
-        "unitNumber": null,
-        "verifiedOrgId": "9",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -460,9 +400,7 @@
         "postalCode": "V5M 3M5",
         "province": "BC",
         "streetAddress": "4528 Nootka Street",
-        "unitNumber": null,
-        "verifiedOrgId": "10",
-        "voLocationTypeId": "1"
+        "unitNumber": null
     },
     {
         "addlDeliveryInfo": null,
@@ -475,8 +413,6 @@
         "postalCode": "V2N 2S6",
         "province": "BC",
         "streetAddress": "2183 Kinchant St",
-        "unitNumber": null,
-        "verifiedOrgId": "11",
-        "voLocationTypeId": "2"
+        "unitNumber": null
     }
 ]

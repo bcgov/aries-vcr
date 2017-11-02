@@ -23,13 +23,15 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from .PermissionViewModel import PermissionViewModel
 
-class UserDetailsViewModel(models.Model):	    
-    givenName = models.CharField(max_length=255, blank=True, null=True)   
-    surname = models.CharField(max_length=255, blank=True, null=True)   
-    email = models.CharField(max_length=255, blank=True, null=True)   
-    active = models.BooleanField()   
-    permissions = models.ManyToManyField('PermissionViewModel', related_name='UserDetailsViewModelpermissions', blank=True)   
+from auditable.models import Auditable
+
+class VerifiableOrgType(Auditable):	    
+    orgType = models.CharField(max_length=255, blank=True, null=True)   
+    description = models.CharField(max_length=255, blank=True, null=True)   
+    effectiveDate = models.DateField()   
+    endDate = models.DateField(blank=True, null=True)   
+    displayOrder = models.IntegerField()   
     class Meta:
-      abstract = True
+        db_table = 'VERIFIABLE_ORG_TYPE'
+

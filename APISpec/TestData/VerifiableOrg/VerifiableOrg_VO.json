@@ -1,0 +1,119 @@
+[
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "1",
+        "jurisdictionId": "1",
+        "legalName": "The Original House of Pies",
+        "orgId": "77667117",
+        "orgTypeId": "2"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "2",
+        "jurisdictionId": "1",
+        "legalName": "Price Savers",
+        "orgId": "83051690",
+        "orgTypeId": "3"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "3",
+        "jurisdictionId": "1",
+        "legalName": "Best Products",
+        "orgId": "62963812",
+        "orgTypeId": "3"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "4",
+        "jurisdictionId": "1",
+        "legalName": "Muirhead's",
+        "orgId": "54034658",
+        "orgTypeId": "3"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "5",
+        "jurisdictionId": "1",
+        "legalName": "Jeans Unlimited",
+        "orgId": "97418064",
+        "orgTypeId": "1"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "6",
+        "jurisdictionId": "1",
+        "legalName": "Henry's Hamburgers",
+        "orgId": "37857383",
+        "orgTypeId": "2"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "7",
+        "jurisdictionId": "1",
+        "legalName": "Harold's",
+        "orgId": "87850109",
+        "orgTypeId": "1"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "8",
+        "jurisdictionId": "1",
+        "legalName": "Edwards",
+        "orgId": "13582829",
+        "orgTypeId": "1"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "9",
+        "jurisdictionId": "1",
+        "legalName": "Pantry Pride",
+        "orgId": "73993371",
+        "orgTypeId": "4"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "10",
+        "jurisdictionId": "1",
+        "legalName": "Earthworks Garden Kare",
+        "orgId": "69464457",
+        "orgTypeId": "2"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "11",
+        "jurisdictionId": "1",
+        "legalName": "Universo Realtors",
+        "orgId": "28484204",
+        "orgTypeId": "2"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "12",
+        "jurisdictionId": "1",
+        "legalName": "Success Is Yours",
+        "orgId": "64847118",
+        "orgTypeId": "1"
+    },
+    {
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "13",
+        "jurisdictionId": "1",
+        "legalName": "Happy Family",
+        "orgId": "64716112",
+        "orgTypeId": "1"
+    }
+]

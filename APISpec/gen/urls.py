@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -48,6 +48,10 @@ urlpatterns = [
     # Swagger documentation
     url(r'^$', SwaggerSchemaView.as_view()),
     url(r'^users/current$', views_custom.usersCurrentGet.as_view()),
+    url(r'^doingbusinessas/bulk$', views.doingbusinessasBulkPost.as_view()),
+    url(r'^doingbusinessas$', views.doingbusinessasGet.as_view()),
+    url(r'^doingbusinessas/(?P<id>[0-9]+)/delete$', views.doingbusinessasIdDeletePost.as_view()),
+    url(r'^doingbusinessas/(?P<id>[0-9]+)$', views.doingbusinessasIdGet.as_view()),
     url(r'^inactiveclaimreasons/bulk$', views.inactiveclaimreasonsBulkPost.as_view()),
     url(r'^inactiveclaimreasons$', views.inactiveclaimreasonsGet.as_view()),
     url(r'^inactiveclaimreasons/(?P<id>[0-9]+)/delete$', views.inactiveclaimreasonsIdDeletePost.as_view()),
@@ -60,6 +64,14 @@ urlpatterns = [
     url(r'^jurisdictions$', views.jurisdictionsGet.as_view()),
     url(r'^jurisdictions/(?P<id>[0-9]+)/delete$', views.jurisdictionsIdDeletePost.as_view()),
     url(r'^jurisdictions/(?P<id>[0-9]+)$', views.jurisdictionsIdGet.as_view()),
+    url(r'^locations/bulk$', views.locationsBulkPost.as_view()),
+    url(r'^locations$', views.locationsGet.as_view()),
+    url(r'^locations/(?P<id>[0-9]+)/delete$', views.locationsIdDeletePost.as_view()),
+    url(r'^locations/(?P<id>[0-9]+)$', views.locationsIdGet.as_view()),
+    url(r'^locationtypes/bulk$', views.locationtypesBulkPost.as_view()),
+    url(r'^locationtypes$', views.locationtypesGet.as_view()),
+    url(r'^locationtypes/(?P<id>[0-9]+)/delete$', views.locationtypesIdDeletePost.as_view()),
+    url(r'^locationtypes/(?P<id>[0-9]+)$', views.locationtypesIdGet.as_view()),
     url(r'^permissions/bulk$', views.permissionsBulkPost.as_view()),
     url(r'^permissions$', views.permissionsGet.as_view()),
     url(r'^permissions/(?P<id>[0-9]+)/delete$', views.permissionsIdDeletePost.as_view()),
@@ -85,35 +97,23 @@ urlpatterns = [
     url(r'^userroles$', views.userrolesGet.as_view()),
     url(r'^userroles/(?P<id>[0-9]+)/delete$', views.userrolesIdDeletePost.as_view()),
     url(r'^userroles/(?P<id>[0-9]+)$', views.userrolesIdGet.as_view()),
-    url(r'^voclaims/bulk$', views.voclaimsBulkPost.as_view()),
-    url(r'^voclaims$', views.voclaimsGet.as_view()),
-    url(r'^voclaims/(?P<id>[0-9]+)/delete$', views.voclaimsIdDeletePost.as_view()),
-    url(r'^voclaims/(?P<id>[0-9]+)$', views.voclaimsIdGet.as_view()),
-    url(r'^voclaimtypes/bulk$', views.voclaimtypesBulkPost.as_view()),
-    url(r'^voclaimtypes$', views.voclaimtypesGet.as_view()),
-    url(r'^voclaimtypes/(?P<id>[0-9]+)/delete$', views.voclaimtypesIdDeletePost.as_view()),
-    url(r'^voclaimtypes/(?P<id>[0-9]+)$', views.voclaimtypesIdGet.as_view()),
-    url(r'^vodoingbusinessas/bulk$', views.vodoingbusinessasBulkPost.as_view()),
-    url(r'^vodoingbusinessas$', views.vodoingbusinessasGet.as_view()),
-    url(r'^vodoingbusinessas/(?P<id>[0-9]+)/delete$', views.vodoingbusinessasIdDeletePost.as_view()),
-    url(r'^vodoingbusinessas/(?P<id>[0-9]+)$', views.vodoingbusinessasIdGet.as_view()),
-    url(r'^volocations/bulk$', views.volocationsBulkPost.as_view()),
-    url(r'^volocations$', views.volocationsGet.as_view()),
-    url(r'^volocations/(?P<id>[0-9]+)/delete$', views.volocationsIdDeletePost.as_view()),
-    url(r'^volocations/(?P<id>[0-9]+)$', views.volocationsIdGet.as_view()),
-    url(r'^volocationtypes/bulk$', views.volocationtypesBulkPost.as_view()),
-    url(r'^volocationtypes$', views.volocationtypesGet.as_view()),
-    url(r'^volocationtypes/(?P<id>[0-9]+)/delete$', views.volocationtypesIdDeletePost.as_view()),
-    url(r'^volocationtypes/(?P<id>[0-9]+)$', views.volocationtypesIdGet.as_view()),
-    url(r'^voorgtypes/bulk$', views.voorgtypesBulkPost.as_view()),
-    url(r'^voorgtypes$', views.voorgtypesGet.as_view()),
-    url(r'^voorgtypes/(?P<id>[0-9]+)/delete$', views.voorgtypesIdDeletePost.as_view()),
-    url(r'^voorgtypes/(?P<id>[0-9]+)$', views.voorgtypesIdGet.as_view()),
-    url(r'^verifiedorgs/bulk$', views.verifiedorgsBulkPost.as_view()),
-    url(r'^verifiedorgs$', views.verifiedorgsGet.as_view()),
-    url(r'^verifiedorgs/(?P<id>[0-9]+)/delete$', views.verifiedorgsIdDeletePost.as_view()),
-    url(r'^verifiedorgs/(?P<id>[0-9]+)$', views.verifiedorgsIdGet.as_view()),
-    url(r'^verifiedorgs/(?P<id>[0-9]+)/voclaims$', views_custom.verifiedorgsIdVoclaimsGet.as_view())
+    url(r'^verifiableclaims/bulk$', views.verifiableclaimsBulkPost.as_view()),
+    url(r'^verifiableclaims$', views.verifiableclaimsGet.as_view()),
+    url(r'^verifiableclaims/(?P<id>[0-9]+)/delete$', views.verifiableclaimsIdDeletePost.as_view()),
+    url(r'^verifiableclaims/(?P<id>[0-9]+)$', views.verifiableclaimsIdGet.as_view()),
+    url(r'^verifiableclaimtypes/bulk$', views.verifiableclaimtypesBulkPost.as_view()),
+    url(r'^verifiableclaimtypes$', views.verifiableclaimtypesGet.as_view()),
+    url(r'^verifiableclaimtypes/(?P<id>[0-9]+)/delete$', views.verifiableclaimtypesIdDeletePost.as_view()),
+    url(r'^verifiableclaimtypes/(?P<id>[0-9]+)$', views.verifiableclaimtypesIdGet.as_view()),
+    url(r'^verifiableorgs/bulk$', views.verifiableorgsBulkPost.as_view()),
+    url(r'^verifiableorgs$', views.verifiableorgsGet.as_view()),
+    url(r'^verifiableorgs/(?P<id>[0-9]+)/delete$', views.verifiableorgsIdDeletePost.as_view()),
+    url(r'^verifiableorgs/(?P<id>[0-9]+)$', views.verifiableorgsIdGet.as_view()),
+    url(r'^verifiedorgs/(?P<id>[0-9]+)/verifiableclaims$', views_custom.verifiedorgsIdVerifiableclaimsGet.as_view()),
+    url(r'^verifiableorgtypes/bulk$', views.verifiableorgtypesBulkPost.as_view()),
+    url(r'^verifiableorgtypes$', views.verifiableorgtypesGet.as_view()),
+    url(r'^verifiableorgtypes/(?P<id>[0-9]+)/delete$', views.verifiableorgtypesIdDeletePost.as_view()),
+    url(r'^verifiableorgtypes/(?P<id>[0-9]+)$', views.verifiableorgtypesIdGet.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -31,12 +31,20 @@ from rest_framework import status
 from . import fakedata
 from .models.CurrentUserViewModel import CurrentUserViewModel
 from .serializers import CurrentUserViewModelSerializer
+from .models.DoingBusinessAs import DoingBusinessAs
+from .serializers import DoingBusinessAsSerializer
 from .models.InactiveClaimReason import InactiveClaimReason
 from .serializers import InactiveClaimReasonSerializer
 from .models.IssuerService import IssuerService
 from .serializers import IssuerServiceSerializer
 from .models.Jurisdiction import Jurisdiction
 from .serializers import JurisdictionSerializer
+from .models.Location import Location
+from .serializers import LocationSerializer
+from .models.LocationOrg import LocationOrg
+from .serializers import LocationOrgSerializer
+from .models.LocationType import LocationType
+from .serializers import LocationTypeSerializer
 from .models.Permission import Permission
 from .serializers import PermissionSerializer
 from .models.PermissionViewModel import PermissionViewModel
@@ -59,20 +67,14 @@ from .models.UserRoleViewModel import UserRoleViewModel
 from .serializers import UserRoleViewModelSerializer
 from .models.UserViewModel import UserViewModel
 from .serializers import UserViewModelSerializer
-from .models.VOClaim import VOClaim
-from .serializers import VOClaimSerializer
-from .models.VOClaimType import VOClaimType
-from .serializers import VOClaimTypeSerializer
-from .models.VODoingBusinessAs import VODoingBusinessAs
-from .serializers import VODoingBusinessAsSerializer
-from .models.VOLocation import VOLocation
-from .serializers import VOLocationSerializer
-from .models.VOLocationType import VOLocationType
-from .serializers import VOLocationTypeSerializer
-from .models.VOType import VOType
-from .serializers import VOTypeSerializer
-from .models.VerifiedOrg import VerifiedOrg
-from .serializers import VerifiedOrgSerializer
+from .models.VerifiableClaim import VerifiableClaim
+from .serializers import VerifiableClaimSerializer
+from .models.VerifiableClaimType import VerifiableClaimType
+from .serializers import VerifiableClaimTypeSerializer
+from .models.VerifiableOrg import VerifiableOrg
+from .serializers import VerifiableOrgSerializer
+from .models.VerifiableOrgType import VerifiableOrgType
+from .serializers import VerifiableOrgTypeSerializer
 
 
 # Custom API test cases. 
@@ -106,7 +108,7 @@ class Test_Api_Custom(TestCase):
     def test_usersSearchGet(self):
         self.fail("Not implemented")        
 
-    def test_verifiedorgsIdVoclaimsGet(self):
+    def test_verifiedorgsIdVerifiableclaimsGet(self):
         self.fail("Not implemented")        
 
 if __name__ == '__main__':
