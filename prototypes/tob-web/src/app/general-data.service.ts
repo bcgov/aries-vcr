@@ -18,7 +18,7 @@ export class GeneralDataService {
   }
 
   getRequestUrl(path: string) : string {
-    let root = this.apiUrl;
+    let root = (<any>window).testApiUrl || this.apiUrl;
     if(root) {
       if(! root.endsWith('/')) root += '/';
       return root + path;
