@@ -78,6 +78,11 @@ http {
             %HTTP_BASIC%
         }
 
+        # proxy requests to API
+        location /api/ {
+            proxy_pass %TOB_API_URL%;
+        }
+
         # redirect server error pages to the static page /50x.html
         error_page   500 502 503 504  /50x.html;
         location = /50x.html {
