@@ -10,22 +10,49 @@
           <li class="stat"><span class="numbers">356,632</span> organizations</li>
           <li class="stat"><span class="numbers">1,497,854</span> permits and licences</li>
         </ul>
-        <div class="large-search">
-          <span class="fa fa-search" *ngIf="!loading"></span>
-          <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
-          <input type="text" id="searchInput" name="query" size="40" placeholder="search" (input)="updateSearch($event)">
+        <div class="search-outer">
+          <div class="large-search">
+            <span class="fa fa-search" *ngIf="!loading"></span>
+            <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
+            <input type="text" id="searchInput" name="query" size="40" placeholder="search" (input)="updateSearch($event)">
+          </div>
+          <div class="btn-toolbar search-type">
+            <div class="btn-group">
+              <label [class]="'btn btn-default btn-radio' + (searchType=='name' ? ' active' : '')">
+                <input type="radio" name="search_type" value="name" [checked]="searchType=='name'" (click)="setSearchType($event)"> &nbsp;Search by Name
+              </label>
+              <label [class]="'btn btn-default btn-radio' + (searchType=='location' ? ' active' : '')">
+                <input type="radio" name="search_type" value="location" [checked]="searchType=='location'" (click)="setSearchType($event)"> &nbsp;Search by Location
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="results mrgn-tp-lg" *ngIf="results.length || none">
         <label class="control-label">Search Results</label>
-        <div class="row" *ngFor="let record of results">
-          <div class="col-sm-6">
-            <a href="" [routerLink]="['/business', record.id]">{{record.LegalName}}</a><br>
-            <small>{{record.type.theType}}</small>
+        <div *ngIf="searchType=='name' && !none">
+          <div class="row" *ngFor="let record of results">
+            <div class="col-sm-6">
+              <a href="" [routerLink]="['/business', record.id]">{{record.LegalName}}</a><br>
+              <small>{{record.type.description}}</small>
+            </div>
+            <div class="col-sm-6">
+              {{record.primaryLocation.street}}<br>
+              <small>{{record.primaryLocation.summary}}</small>
+            </div>
           </div>
-          <div class="col-sm-6">
-            {{record.primaryLocation.summary}}
+        </div>
+        <div *ngIf="searchType=='location' && !none">
+          <div class="row" *ngFor="let record of results">
+            <div class="col-sm-6">
+              <a href="" [routerLink]="['/business', record.verifiedOrgId]">{{record.addressee}}</a><br>
+              <small>{{record.type.theType}}</small>
+            </div>
+            <div class="col-sm-6">
+              {{record.streetAddress}}<br>
+              <small>{{record.municipality}}, {{record.province}}</small>
+            </div>
           </div>
         </div>
         <div class="row" *ngIf="none">
@@ -34,6 +61,7 @@
           </div>
         </div>
       </div>
+
       <div class="row results-nav" *ngIf="more || less">
         <div class="col-sm-12 text-right">
           <ul class="pager">
@@ -47,7 +75,7 @@
         </div>
       </div>
 
-      <div class="map mrgn-tp-lg">
+      <div class="map mrgn-tp-lg hidden">
         <label class="control-label">Search by Location</label>
         <div class="map-image"></div>
       </div>

@@ -1,3 +1,7 @@
+#dashboard {
+  min-height: 50vh;
+}
+
 $input-border: rgba(200, 220, 230, 0.9);
 
 .dashboard-title { margin-top: 0; }
@@ -27,6 +31,24 @@ $input-border: rgba(200, 220, 230, 0.9);
     outline: none;
     padding: 5px 0 5px 5px;
     margin: 0;
+  }
+}
+
+.search-type {
+  margin: 10px auto 0 auto;
+  max-width: 500px;
+  width: 100%;
+  .btn-group {
+    display: flex;
+    width: 100%;
+    .btn {
+      font-size: 1.8rem;
+      flex: 1 0 auto;
+      float: none;
+      input {
+        vertical-align: 1px;
+      }
+    }
   }
 }
 

@@ -18,12 +18,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.focusSearch();
+  }
+
+  focusSearch() {
     (<HTMLInputElement>document.getElementById('searchInput')).select();
   }
 
-  public query : string;
+  public query : string = '';
   public allResults;
   public results = [];
+  private searchType = 'name';
   private searchTimer;
   private sub;
   private page = 0;
@@ -38,10 +43,33 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.searchTimer = setTimeout(() => this.search(), 150);
   }
 
-  search() {
-    let srch = this.sub = this.dataService.searchOrgs(this.query);
+  search(setType? : string) {
+    let q = this.query.trim();
     this.loading = true;
-    this.sub.then(data => this.returnSearch(data, srch));
+    if(setType) {
+      this.searchType = setType;
+    }
+    if(q.length) {
+      let srch;
+      if(this.searchType === 'name') {
+        srch = this.sub = this.dataService.searchOrgs(this.query);
+      } else {
+        srch = this.sub = this.dataService.searchLocs(this.query);
+      }
+      this.sub.then(data => this.returnSearch(data, srch));
+    } else {
+      this.sub = null;
+      this.returnSearch([], this.sub);
+    }
+  }
+
+  setSearchType(evt) {
+    if(this.searchType !== evt.target.value) {
+      this.search(evt.target.value);
+    }
+    if(! this.query.trim().length) {
+      this.focusSearch();
+    }
   }
 
   returnSearch(data, from) {

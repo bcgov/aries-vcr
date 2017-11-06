@@ -85,3 +85,7 @@ $indicator-thickness: 0.2em;
 	font-variant-numeric: lining-nums tabular-nums;
 }
 
+.btn-group > .btn {
+  // why is this necessary??
+  margin-right: 0;
+}
