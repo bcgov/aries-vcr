@@ -12,7 +12,9 @@ export class BusinessComponent implements OnInit, OnDestroy {
   loaded: boolean;
   record: any;
   loc: any;
+  dbas: any[];
   certs: any[];
+  locations: any[];
   error: string;
   sub: any;
 
@@ -21,7 +23,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    let loaded = this.dataService.preloadData(['voclaimtypes', 'voorgtypes', 'volocations']);
+    let loaded = this.dataService.preloadData(['voclaimtypes', 'voorgtypes', 'volocationtypes']);
     this.sub = this.route.params.subscribe(params => {
       this.id = +params['recordId'];
       loaded.then(status => {
@@ -33,8 +35,54 @@ export class BusinessComponent implements OnInit, OnDestroy {
           else {
             let orgType = this.dataService.findOrgData('voorgtypes', record.orgTypeId);
             this.record.type = orgType || {};
-            this.record.typeName = orgType && orgType.theType;
-            this.dataService.loadFromApi('verifiedorgs/' + this.id + '/voclaims')
+            this.record.typeName = orgType && orgType.description;
+
+            let locs = [];
+            if(Array.isArray(record.locations)) {
+              for(var i = 0; i < record.locations.length; i++) {
+                let loc = Object.assign({}, record.locations[i]);
+                let locType = this.dataService.findOrgData('volocationtypes', loc.voLocationTypeId);
+                loc.type = locType || {};
+                loc.typeName = locType && locType.theType;
+                locs.push(loc);
+              }
+            }
+            this.locations = locs;
+            console.log('locations', locs);
+
+            let dbas = [];
+            if(Array.isArray(record.doingBusinessAs)) {
+              for(var i = 0; i < record.doingBusinessAs.length; i++) {
+                let dba = Object.assign({}, record.doingBusinessAs[i]);
+                dbas.push(dba.DBA);
+              }
+            }
+            this.dbas = dbas;
+            console.log('dbas', dbas);
+
+            let certs = [];
+            if(Array.isArray(record.claims)) {
+              let seen = {};
+              for(var i = 0; i < record.claims.length; i++) {
+                let cert = Object.assign({}, record.claims[i]);
+                let grp = seen[cert.voClaimType];
+                if(! grp) {
+                  grp = seen[cert.voClaimType] = {others: []};
+                  grp.type = this.dataService.findOrgData('voclaimtypes', cert.voClaimType);
+                  grp.typeName = grp.type ? grp.type.theType : '';
+                  grp.color = ['green', 'orange', 'blue', 'purple'][cert.voClaimType % 4];
+                  grp.top = cert;
+                  certs.push(grp);
+                } else {
+                  grp.others.push(cert);
+                }
+              }
+              certs.sort((a,b) => a.typeName.localeCompare(b.typeName));
+            }
+            this.certs = certs;
+            console.log('claims', certs);
+
+            /*this.dataService.loadFromApi('verifiedorgs/' + this.id + '/voclaims')
               .subscribe((res: any) => {
                 let certs = [];
                 let seen = {};
@@ -49,7 +97,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
                 }
                 this.certs = certs;
                 console.log('claims', res);
-              });
+              });*/
           }
         }, err => {
           this.error = err;

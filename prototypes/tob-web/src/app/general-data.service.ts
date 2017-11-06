@@ -53,7 +53,7 @@ export class GeneralDataService {
     return this.loadRecord('verifiedorgs', recordId)
       .map((res: Object) => {
         let row : {[key:string]: any} = res; // <VerifiedOrg>res;
-        let locs = this.getOrgData('volocations');
+        /*let locs = this.getOrgData('volocations');
         if(locs) {
           console.log('locs', locs);
           for (let j = 0; j < locs.length; j++) {
@@ -64,7 +64,7 @@ export class GeneralDataService {
         }
         if(! row.primaryLocation) {
           row.primaryLocation = (new MockData()).fetchRecord('verifiedorgs', 1).primaryLocation;
-        }
+        }*/
         row.type = {};
         return row;
       });
