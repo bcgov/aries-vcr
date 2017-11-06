@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   public query : string = '';
   public allResults;
   public results = [];
-  private searchType = 'name';
+  public searchType = 'name';
   private searchTimer;
   private sub;
   private page = 0;
