@@ -25,6 +25,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     (<HTMLInputElement>document.getElementById('searchInput')).select();
   }
 
+  setFocus(evt) {
+    if(evt.type === 'focus') {
+      evt.target.parentNode.classList.add('active');
+    } else {
+      evt.target.parentNode.classList.remove('active');
+    }
+  }
+
   public query : string = '';
   public allResults;
   public results = [];
