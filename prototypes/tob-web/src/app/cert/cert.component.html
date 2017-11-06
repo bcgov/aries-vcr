@@ -25,8 +25,8 @@
             <label class="col-sm-4 control-label">Issuer</label>
             <div class="col-sm-8 form-field">
               <a *ngIf="record.type.issuerURL" [href]="record.type.issuerURL" rel="external">
-                {{record.issuer.name}}
-              </a>
+                {{record.issuer.name}}</a>
+              <small><span class="fa fa-external-link"></span></small>
             </div>
           </div>
           <div class="row form-group">
@@ -43,9 +43,9 @@
           </div>
           <div class="row form-group mrgn-tp-lg">
             <div class="col-sm-4">
-              <button class="btn btn-primary btn-verify"><span class="fa fa-accept"></span> Verify License</button>
+              <button type="button" class="btn btn-primary btn-verify" (click)="showVerify($event)"><span class="fa fa-accept"></span> Verify License</button>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-8 mrgn-tp-sm">
               <a class="verify-help" href="#">What's this?</a>
             </div>
           </div>
@@ -60,15 +60,15 @@
   </div>
 
   <!-- http://certificates-bootcamp.mit.edu/57b5085663e25800096f99b4 -->
-  <div class="row cert-verify" *ngIf="loaded">
+  <div class="row cert-verify">
     <div class="col-sm-12">
-      <div class="verify-line"><span class="verify-pfx">Verify certificate:</span> Verified</div>
+      <div class="verify-line"><span class="verify-pfx">Verify certificate:</span> <span id="verify-status">Pending verification ...</span></div>
       <div class="verify-line">Computing SHA256 digest of local certificate [DONE 1/5]</div>
-      <div class="verify-line">Fetching hash in OP_RETURN field [DONE 2/5]</div>
-      <div class="verify-line">Comparing local and blockchain hashes [PASS 3/5]</div>
-      <div class="verify-line">Checking Verified Organization signature [PASS 4/5]</div>
-      <div class="verify-line">Checking not revoked by issuer [PASS 5/5]</div>
-      <div class="verify-line"><span class="verify-pfx">Success!</span> The certificate has been verified.</div>
+      <div class="verify-line delay">Fetching hash in OP_RETURN field [DONE 2/5]</div>
+      <div class="verify-line delay">Comparing local and blockchain hashes [PASS 3/5]</div>
+      <div class="verify-line delay">Checking Verified Organization signature [PASS 4/5]</div>
+      <div class="verify-line delay">Checking not revoked by issuer [PASS 5/5]</div>
+      <div class="verify-line delay"><span class="verify-pfx">Success!</span> The certificate has been verified.</div>
       <div class="verify-line"><span class="verify-pfx">Public Key:</span> 1GuqT4EpnhmA6GQvA3Fz5JWPjcZyXSQpFw</div>
     </div>
   </div>

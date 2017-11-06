@@ -32,8 +32,18 @@
 }
 
 .cert-verify {
+  display: none;
   font-size: 1.5rem;
   line-height: 1.6;
+  .verify-line {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.25s linear;
+    &.show {
+      display: initial;
+      opacity: 1;
+    }
+  }
   .verify-pfx {
     display: inline-block;
     font-weight: bold;

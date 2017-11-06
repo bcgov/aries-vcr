@@ -54,4 +54,23 @@ export class CertComponent implements OnInit {
     this.sub.unsubscribe();
   }
 
+  showVerify() {
+    let div = document.getElementsByClassName('cert-verify');
+    let time = 0;
+    if(div.length) {
+      let outer = <any>div[0];
+      outer.style.display = 'block';
+      let inner = outer.getElementsByClassName('verify-line');
+      for(let i = 0; i < inner.length; i++) {
+        let line = <any>inner[i];
+        if(line.classList.contains('delay')) time += 500;
+        setTimeout(() => line.classList.add('show'), time);
+      }
+    }
+    let stat = document.getElementById('verify-status');
+    if(stat) {
+      setTimeout(() => (<any>stat).textContent = 'Verified', time);
+    }
+  }
+
 }
