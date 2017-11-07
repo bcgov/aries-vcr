@@ -1,11 +1,26 @@
 #!/bin/bash
 
+export MSYS_NO_PATHCONV=1
+
 USER_ID="$(id -u)"
 SCRIPT_DIR=$(dirname $0)
 SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
 TEMPLATE_DIR="${SCRIPT_DIR}/templates"
+# oc create does not like absolute paths
+TEMPLATE_DIR=${TEMPLATE_DIR/${SCRIPT_DIR}/.}
 
-export MSYS_NO_PATHCONV=1
+changeDir (){
+	#echo "Switching working directory to ${SCRIPT_DIR} ..."
+	ORG_DIR=$(pwd)
+	cd ${SCRIPT_DIR}
+}
+
+resetDir (){
+	#echo "Switching working directory to ${ORG_DIR} ..."
+	cd ${ORG_DIR}
+}
+
+changeDir
 # ==============================================================================
 # Script for setting up the deployment environment in OpenShift
 #
@@ -137,13 +152,6 @@ ${SCRIPTS_DIR}/configureSchemaSpyDeployment.sh \
 echo "============================================================================="
 echo
 
-# echo "============================================================================="
-# echo "Cleaning out all existing OpenShift resources ..."
-# echo "-----------------------------------------------------------------------------"
-# oc delete routes,services,dc,imagestreams,horizontalpodautoscalers --all
-# echo "============================================================================="
-# echo
-
 echo "============================================================================="
 echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
@@ -154,3 +162,5 @@ for file in *${DeploymentConfigPostfix}; do
 done
 echo "============================================================================="
 echo
+
+resetDir

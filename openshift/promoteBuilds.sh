@@ -1,36 +1,19 @@
 #!/bin/bash
 
-export MSYS_NO_PATHCONV=1
-
 USER_ID="$(id -u)"
-SCRIPT_DIR=$(dirname $0)
-SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
-TEMPLATE_DIR="${SCRIPT_DIR}/templates"
-# oc create does not like absolute paths
-TEMPLATE_DIR=${TEMPLATE_DIR/${SCRIPT_DIR}/.}
+SCRIPT_DIR=${DIR}
 
-changeDir (){
-	#echo "Switching working directory to ${SCRIPT_DIR} ..."
-	ORG_DIR=$(pwd)
-	cd ${SCRIPT_DIR}
-}
-
-resetDir (){
-	#echo "Switching working directory to ${ORG_DIR} ..."
-	cd ${ORG_DIR}
-}
-
-changeDir
+export MSYS_NO_PATHCONV=1
 # ==============================================================================
 # Script for setting up the deployment environment in OpenShift
 #
 # * Requires the OpenShift Origin CLI
 # ------------------------------------------------------------------------------
 # Usage on Windows:
-#  ./generateDeployments.sh [project_namespace] [deployment_env_name] [build_env_name]
+#  ./promoteBuilds.sh [project_namespace] [deployment_env_name] [build_env_name]
 #
 # Example:
-#  ./generateDeployments.sh devex-von dev tools
+#  ./promoteBuilds.sh devex-von dev tools
 # ------------------------------------------------------------------------------
 # ToDo:
 # * Add support for create or update.
@@ -73,53 +56,23 @@ if [ ! -z "$MissingParam" ]; then
 	exit 1
 fi
 # -------------------------------------------------------------------------------------
-DeploymentConfigPostfix="_DeploymentConfig.json"
-
 DEPLOYMENT_PROJECT_NAME="${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME}"
 BUILD_PROJECT_NAME="${PROJECT_NAMESPACE}-${BUILD_ENV_NAME}"
 # -------------------------------------------------------------------------------------
-SOLR_DEPLOYMENT_NAME="solr"
+SOLR_IMAGE_NAME=solr
+DJANGO_IMAGE_NAME=django
+ANGULAR_IMAGE_NAME=angular-on-nginx
+SCHEMA_SPY_IMAGE_NAME=schema-spy
 # ==============================================================================
 
 echo "============================================================================="
-echo "Switching to project ${DEPLOYMENT_PROJECT_NAME} ..."
+echo "Switching to project ${BUILD_PROJECT_NAME} ..."
 echo "-----------------------------------------------------------------------------"
-oc project ${DEPLOYMENT_PROJECT_NAME}
+oc project ${BUILD_PROJECT_NAME}
 echo "============================================================================"
-echo
+echo 
 
-echo "============================================================================="
-echo "Deleting previous deployment configuration files ..."
-echo "-----------------------------------------------------------------------------"
-for file in *${DeploymentConfigPostfix}; do
-	echo "Deleting ${file} ..."
-	rm -rf ${file};
-done
-echo "============================================================================="
-echo
-
-echo "============================================================================="
-echo "Generating deployment configuration for ${SOLR_DEPLOYMENT_NAME} ..."
-echo "-----------------------------------------------------------------------------"
-${SCRIPTS_DIR}/configureSolrDeployment.sh \
-	${SOLR_DEPLOYMENT_NAME} \
-	${DEPLOYMENT_ENV_NAME} \
-	${BUILD_PROJECT_NAME} \
-	"${SOLR_DEPLOYMENT_NAME}-${DEPLOYMENT_PROJECT_NAME}.pathfinder.gov.bc.ca" \
-	"${TEMPLATE_DIR}/${SOLR_DEPLOYMENT_NAME}-deploy.json"
-
-echo "============================================================================="
-echo
-
-echo "============================================================================="
-echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
-echo "-----------------------------------------------------------------------------"
-for file in *${DeploymentConfigPostfix}; do
-	echo "Loading ${file} ...";
-	oc create -f ${file};
-	echo;
-done
-echo "============================================================================="
-echo
-
-resetDir
+oc tag ${SOLR_IMAGE_NAME}:latest ${SOLR_IMAGE_NAME}:${DEPLOYMENT_ENV_NAME} --namespace=${BUILD_PROJECT_NAME}
+oc tag ${DJANGO_IMAGE_NAME}:latest ${DJANGO_IMAGE_NAME}:${DEPLOYMENT_ENV_NAME} --namespace=${BUILD_PROJECT_NAME}
+oc tag ${ANGULAR_IMAGE_NAME}:latest ${ANGULAR_IMAGE_NAME}:${DEPLOYMENT_ENV_NAME} --namespace=${BUILD_PROJECT_NAME}
+oc tag ${SCHEMA_SPY_IMAGE_NAME}:latest ${SCHEMA_SPY_IMAGE_NAME}:${DEPLOYMENT_ENV_NAME} --namespace=${BUILD_PROJECT_NAME}

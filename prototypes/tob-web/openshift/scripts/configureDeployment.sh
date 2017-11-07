@@ -11,10 +11,10 @@ BUILD_NAME=${1}
 TAG_NAME=${2}
 IMAGE_NAMESPACE=${3}
 APPLICATION_DOMAIN=${4}
-DEPLOYMENT_CONFIG_TEMPLATE=${5}
-DEPLOYMENT_CONFIG_POST_FIX=${6}
-TOB_API_URL=${7}
+TOB_API_URL=${5}
 
+DEPLOYMENT_CONFIG_TEMPLATE=${6}
+DEPLOYMENT_CONFIG_POST_FIX=${7}
 # -----------------------------------------------------------------------------------
 # DEBUG_MESSAGES=1
 # -----------------------------------------------------------------------------------
@@ -63,9 +63,9 @@ if [ ! -z "$MissingParam" ]; then
 	echo "TAG_NAME[{2}]: ${2}"
 	echo "IMAGE_NAMESPACE[{3}]: ${3}"
 	echo "APPLICATION_DOMAIN[{4}]: ${4}"
-	echo "DEPLOYMENT_CONFIG_TEMPLATE[{5}]: ${5}"
-	echo "DEPLOYMENT_CONFIG_POST_FIX[{6}]: ${6}"
-	echo "TOB_API_URL[{7}]: ${7}"
+	echo "TOB_API_URL[{5}]: ${5}"
+	echo "DEPLOYMENT_CONFIG_TEMPLATE[{6}]: ${6}"
+	echo "DEPLOYMENT_CONFIG_POST_FIX[{7}]: ${7}"
     echo "============================================"
 	echo
 	exit 1
