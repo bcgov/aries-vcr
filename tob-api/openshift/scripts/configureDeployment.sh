@@ -19,10 +19,11 @@ APP_CONFIG=${9}
 DJANGO_SECRET_KEY=${10}
 DJANGO_DEBUG=${11}
 DATABASE_DEPLOYMENT_NAME=${12}
+SOLR_SERVICE_NAME=${13}
+SOLR_CORE_NAME=${14}
+DEPLOYMENT_CONFIG_TEMPLATE=${15}
 
-DEPLOYMENT_CONFIG_TEMPLATE=${13}
-
-DEPLOYMENT_CONFIG_POST_FIX=${14}
+DEPLOYMENT_CONFIG_POST_FIX=${16}
 # -----------------------------------------------------------------------------------
 #DEBUG_MESSAGES=1
 # -----------------------------------------------------------------------------------
@@ -85,6 +86,14 @@ if [ -z "$DATABASE_DEPLOYMENT_NAME" ]; then
 	MissingParam=1
 fi
 
+if [ -z "$SOLR_SERVICE_NAME" ]; then
+	echo "Warning SOLR_SERVICE_NAME is blank."
+fi
+
+if [ -z "$SOLR_CORE_NAME" ]; then
+	echo "Warning SOLR_CORE_NAME is blank."
+fi
+
 if [ -z "$DEPLOYMENT_CONFIG_TEMPLATE" ]; then
 	echo "You must supply DEPLOYMENT_CONFIG_TEMPLATE."
 	MissingParam=1
@@ -112,8 +121,10 @@ if [ ! -z "$MissingParam" ]; then
 	echo "DJANGO_SECRET_KEY[{10}]: ${10}"
 	echo "DJANGO_DEBUG[{11}]: ${11}"
 	echo "DATABASE_DEPLOYMENT_NAME[{12}]: ${12}"
-	echo "DEPLOYMENT_CONFIG_TEMPLATE[{5}]: ${13}"
-	echo "DEPLOYMENT_CONFIG_POST_FIX[{6}]: ${14}"
+	echo "SOLR_SERVICE_NAME[{13}]: ${13}"
+	echo "SOLR_CORE_NAME[{14}]: ${14}"
+	echo "DEPLOYMENT_CONFIG_TEMPLATE[{15}]: ${15}"
+	echo "DEPLOYMENT_CONFIG_POST_FIX[{16}]: ${16}"
     echo "============================================"
 	echo
 	exit 1
@@ -142,6 +153,8 @@ if [ ! -z "$DEBUG_MESSAGES" ]; then
 	echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}"
 	echo "DJANGO_DEBUG=${DJANGO_DEBUG}"
 	echo "DATABASE_DEPLOYMENT_NAME=${DATABASE_DEPLOYMENT_NAME}"
+	echo "SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}"
+	echo "SOLR_CORE_NAME=${SOLR_CORE_NAME}"
 	echo "Output File=${DEPLOYMENT_CONFIG}"	
 	echo "------------------------------------------------------------------------"
 	echo
@@ -161,6 +174,8 @@ oc process \
 -p DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY} \
 -p DJANGO_DEBUG=${DJANGO_DEBUG} \
 -p DATABASE_DEPLOYMENT_NAME=${DATABASE_DEPLOYMENT_NAME} \
+-p SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME} \
+-p SOLR_CORE_NAME=${SOLR_CORE_NAME} \
 > ${DEPLOYMENT_CONFIG}
 echo "Generated ${DEPLOYMENT_CONFIG} ..."
 echo

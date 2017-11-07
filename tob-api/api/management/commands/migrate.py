@@ -13,4 +13,4 @@ class Command(migrate.Command):
 
       self.stdout.write("")
       self.stdout.write("Updating search indexes ...")
-      management.call_command('update_index')
+      management.call_command('update_index', '--max-retries=5')

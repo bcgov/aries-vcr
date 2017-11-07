@@ -17,7 +17,7 @@
         "name": "${NAME}",
         "annotations": {
           "description": "Exposes and load balances the application pods",
-          "service.alpha.openshift.io/dependencies": "[{\"name\": \"${DATABASE_SERVICE_NAME}\", \"kind\": \"Service\"}]"
+          "service.alpha.openshift.io/dependencies": "[{\"name\": \"${DATABASE_SERVICE_NAME}\", \"kind\": \"Service\"},{\"name\": \"${SOLR_SERVICE_NAME}\", \"kind\": \"Service\"}]"
         }
       },
       "spec": {
@@ -167,6 +167,14 @@
                   {
                     "name": "DJANGO_DEBUG",
                     "value": "${DJANGO_DEBUG}"
+                  },
+                  {
+                    "name": "SOLR_SERVICE_NAME",
+                    "value": "${SOLR_SERVICE_NAME}"
+                  },
+                  {
+                    "name": "SOLR_CORE_NAME",
+                    "value": "${SOLR_CORE_NAME}"
                   }
                 ],
                 "resources": {
@@ -250,6 +258,20 @@
       "value": "False"
     },
     {
+      "name": "SOLR_SERVICE_NAME",
+      "displayName": "SOLR Service Name",
+      "description": "The name of the service associated with the SOLR search engine.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "SOLR_CORE_NAME",
+      "displayName": "SOLR Core Name",
+      "description": "The name of the core to use when connecting with SOLR.",
+      "required": false,
+      "value": ""
+    },
+	{
       "name": "TAG_NAME",
       "displayName": "Environment TAG name",
       "description": "The TAG name for this environment, e.g., dev, test, prod",

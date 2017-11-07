@@ -82,6 +82,8 @@ DJANGO_DEPLOYMENT_NAME="django"
 DATABASE_SERVICES_NAME="postgresql"
 DATABASE_ENGINE="postgresql"
 DATABASE_NAME="TheOrgBook_Database"
+SOLR_SERVICE_NAME="solr"
+SOLR_CORE_NAME="the_org_book"
 
 if [ ${DEPLOYMENT_ENV_NAME} = "dev" ]; then
 	DJANGO_DEBUG="True"
@@ -130,6 +132,8 @@ ${SCRIPTS_DIR}/configureDeployment.sh \
 	${DJANGO_SECRET_KEY} \
 	${DJANGO_DEBUG} \
 	${DATABASE_SERVICES_NAME} \
+	${SOLR_SERVICE_NAME} \
+	${SOLR_CORE_NAME} \
 	"${TEMPLATE_DIR}/${DJANGO_DEPLOYMENT_NAME}-deploy.json"
 
 echo "============================================================================="
@@ -152,15 +156,15 @@ ${SCRIPTS_DIR}/configureSchemaSpyDeployment.sh \
 echo "============================================================================="
 echo
 
-echo "============================================================================="
-echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
-echo "-----------------------------------------------------------------------------"
-for file in *${DeploymentConfigPostfix}; do
-	echo "Loading ${file} ...";
-	oc create -f ${file};
-	echo;
-done
-echo "============================================================================="
-echo
+# echo "============================================================================="
+# echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
+# echo "-----------------------------------------------------------------------------"
+# for file in *${DeploymentConfigPostfix}; do
+	# echo "Loading ${file} ...";
+	# oc create -f ${file};
+	# echo;
+# done
+# echo "============================================================================="
+# echo
 
 resetDir
