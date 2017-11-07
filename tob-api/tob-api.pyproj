@@ -33,6 +33,15 @@
     <Compile Include="api\admin.py" />
     <Compile Include="api\apps.py" />
     <Compile Include="api\fakedata.py" />
+    <Compile Include="api\management\commands\migrate.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="api\management\commands\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="api\management\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="api\migrations\0001_initial.py" />
     <Compile Include="api\migrations\0002_auto_20171013_0922.py" />
     <Compile Include="api\migrations\0003_auto_20171016_0911.py" />
@@ -116,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
+    <Folder Include="api\management\" />
+    <Folder Include="api\management\commands\" />
     <Folder Include="api\migrations\" />
     <Folder Include="api\models\" />
     <Folder Include="api\templates\" />
