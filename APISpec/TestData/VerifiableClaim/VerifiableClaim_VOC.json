@@ -2,7 +2,7 @@
     {
         "claimJSON": null,
         "claimType": "1",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2013-01-05",
         "endDate": null,
         "id": "1",
         "inactiveClaimReasonId": null,
@@ -11,7 +11,7 @@
     {
         "claimJSON": null,
         "claimType": "2",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2017-03-03",
         "endDate": null,
         "id": "2",
         "inactiveClaimReasonId": null,
@@ -20,7 +20,7 @@
     {
         "claimJSON": null,
         "claimType": "3",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2012-03-13",
         "endDate": null,
         "id": "3",
         "inactiveClaimReasonId": null,
@@ -29,7 +29,7 @@
     {
         "claimJSON": null,
         "claimType": "4",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2009-11-17",
         "endDate": null,
         "id": "4",
         "inactiveClaimReasonId": null,
@@ -38,7 +38,7 @@
     {
         "claimJSON": null,
         "claimType": "1",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2015-05-09",
         "endDate": null,
         "id": "5",
         "inactiveClaimReasonId": null,
@@ -47,7 +47,7 @@
     {
         "claimJSON": null,
         "claimType": "2",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2006-07-30",
         "endDate": null,
         "id": "6",
         "inactiveClaimReasonId": null,
@@ -55,17 +55,17 @@
     },
     {
         "claimJSON": null,
-        "claimType": "3",
-        "effectiveDate": "2010-10-10",
+        "claimType": "1",
+        "effectiveDate": "2014-10-23",
         "endDate": null,
         "id": "7",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "2"
+        "verifiableOrgId": "3"
     },
     {
         "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
+        "claimType": "2",
+        "effectiveDate": "2008-08-19",
         "endDate": null,
         "id": "8",
         "inactiveClaimReasonId": null,
@@ -73,335 +73,281 @@
     },
     {
         "claimJSON": null,
-        "claimType": "2",
-        "effectiveDate": "2010-10-10",
+        "claimType": "3",
+        "effectiveDate": "2012-04-27",
         "endDate": null,
         "id": "9",
-        "inactiveClaimReasonId": "2",
+        "inactiveClaimReasonId": null,
         "verifiableOrgId": "3"
     },
     {
         "claimJSON": null,
-        "claimType": "3",
-        "effectiveDate": "2010-10-10",
+        "claimType": "1",
+        "effectiveDate": "2007-12-27",
         "endDate": null,
         "id": "10",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "3"
+        "verifiableOrgId": "4"
     },
     {
         "claimJSON": null,
-        "claimType": "4",
-        "effectiveDate": "2010-10-10",
+        "claimType": "1",
+        "effectiveDate": "2007-07-27",
         "endDate": null,
         "id": "11",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "3"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "12",
-        "inactiveClaimReasonId": "2",
-        "verifiableOrgId": "4"
+        "verifiableOrgId": "5"
     },
     {
         "claimJSON": null,
         "claimType": "2",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2016-12-24",
         "endDate": null,
-        "id": "13",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "4"
+        "id": "12",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "5"
     },
     {
         "claimJSON": null,
         "claimType": "3",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2011-12-12",
+        "endDate": null,
+        "id": "13",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "5"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2016-04-26",
         "endDate": null,
         "id": "14",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "4"
+        "verifiableOrgId": "6"
     },
     {
         "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
+        "claimType": "2",
+        "effectiveDate": "2014-10-26",
         "endDate": null,
         "id": "15",
         "inactiveClaimReasonId": "2",
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "6"
     },
     {
         "claimJSON": null,
-        "claimType": "2",
-        "effectiveDate": "2010-10-10",
+        "claimType": "1",
+        "effectiveDate": "2013-08-28",
         "endDate": null,
         "id": "16",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "7"
     },
     {
         "claimJSON": null,
-        "claimType": "3",
-        "effectiveDate": "2010-10-10",
+        "claimType": "1",
+        "effectiveDate": "2005-09-16",
         "endDate": null,
         "id": "17",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "8"
     },
     {
         "claimJSON": null,
-        "claimType": "4",
-        "effectiveDate": "2010-10-10",
+        "claimType": "1",
+        "effectiveDate": "2014-01-11",
         "endDate": null,
         "id": "18",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "9"
     },
     {
         "claimJSON": null,
-        "claimType": "5",
-        "effectiveDate": "2010-10-10",
+        "claimType": "2",
+        "effectiveDate": "2016-08-15",
         "endDate": null,
         "id": "19",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "9"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2014-08-30",
+        "endDate": null,
+        "id": "20",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "9"
     },
     {
         "claimJSON": null,
         "claimType": "1",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "20",
-        "inactiveClaimReasonId": "1",
-        "verifiableOrgId": "6"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "2",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2010-04-17",
         "endDate": null,
         "id": "21",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "6"
+        "verifiableOrgId": "10"
     },
     {
         "claimJSON": null,
-        "claimType": "3",
-        "effectiveDate": "2010-10-10",
+        "claimType": "2",
+        "effectiveDate": "2004-06-22",
         "endDate": null,
         "id": "22",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "6"
+        "verifiableOrgId": "10"
     },
     {
         "claimJSON": null,
-        "claimType": "4",
-        "effectiveDate": "2010-10-10",
+        "claimType": "3",
+        "effectiveDate": "2015-09-16",
         "endDate": null,
         "id": "23",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "6"
+        "verifiableOrgId": "10"
     },
     {
         "claimJSON": null,
-        "claimType": "5",
-        "effectiveDate": "2010-10-10",
+        "claimType": "4",
+        "effectiveDate": "2013-01-24",
         "endDate": null,
         "id": "24",
-        "inactiveClaimReasonId": "2",
-        "verifiableOrgId": "6"
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "10"
     },
     {
         "claimJSON": null,
         "claimType": "1",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2006-01-10",
         "endDate": null,
         "id": "25",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "7"
+        "verifiableOrgId": "11"
     },
     {
         "claimJSON": null,
         "claimType": "2",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2010-07-11",
         "endDate": null,
         "id": "26",
         "inactiveClaimReasonId": null,
-        "verifiableOrgId": "7"
+        "verifiableOrgId": "11"
     },
     {
         "claimJSON": null,
         "claimType": "3",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2009-12-23",
         "endDate": null,
         "id": "27",
-        "inactiveClaimReasonId": "1",
-        "verifiableOrgId": "7"
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "11"
     },
     {
         "claimJSON": null,
-        "claimType": "4",
-        "effectiveDate": "2010-10-10",
+        "claimType": "1",
+        "effectiveDate": "2009-03-14",
         "endDate": null,
         "id": "28",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "7"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "29",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "8"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "2",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "30",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "8"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "31",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "9"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "2",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "32",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "9"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "3",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "33",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "9"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "4",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "34",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "9"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "5",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "35",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "9"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "36",
-        "inactiveClaimReasonId": "1",
-        "verifiableOrgId": "10"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "2",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "37",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "10"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "3",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "38",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "10"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "4",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "39",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "10"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "40",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "11"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "2",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "41",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "11"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "3",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "42",
-        "inactiveClaimReasonId": null,
-        "verifiableOrgId": "11"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "4",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "43",
-        "inactiveClaimReasonId": "1",
-        "verifiableOrgId": "11"
-    },
-    {
-        "claimJSON": null,
-        "claimType": "1",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "44",
-        "inactiveClaimReasonId": null,
+        "inactiveClaimReasonId": "2",
         "verifiableOrgId": "12"
     },
     {
         "claimJSON": null,
         "claimType": "1",
-        "effectiveDate": "2010-10-10",
+        "effectiveDate": "2007-04-24",
         "endDate": null,
-        "id": "45",
-        "inactiveClaimReasonId": "1",
+        "id": "29",
+        "inactiveClaimReasonId": null,
         "verifiableOrgId": "13"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2013-03-30",
+        "endDate": null,
+        "id": "30",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "13"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2010-06-13",
+        "endDate": null,
+        "id": "31",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "13"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2017-08-17",
+        "endDate": null,
+        "id": "32",
+        "inactiveClaimReasonId": "2",
+        "verifiableOrgId": "13"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2007-02-01",
+        "endDate": null,
+        "id": "33",
+        "inactiveClaimReasonId": "1",
+        "verifiableOrgId": "14"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2017-04-02",
+        "endDate": null,
+        "id": "34",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "15"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2007-01-02",
+        "endDate": null,
+        "id": "35",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "15"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "3",
+        "effectiveDate": "2008-02-20",
+        "endDate": null,
+        "id": "36",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "15"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "4",
+        "effectiveDate": "2011-09-02",
+        "endDate": null,
+        "id": "37",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "15"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "1",
+        "effectiveDate": "2008-08-05",
+        "endDate": null,
+        "id": "38",
+        "inactiveClaimReasonId": null,
+        "verifiableOrgId": "16"
+    },
+    {
+        "claimJSON": null,
+        "claimType": "2",
+        "effectiveDate": "2007-05-11",
+        "endDate": null,
+        "id": "39",
+        "inactiveClaimReasonId": "2",
+        "verifiableOrgId": "16"
     }
 ]
