@@ -5,7 +5,7 @@
         "id": "1",
         "jurisdictionId": "1",
         "legalName": "The Original House of Pies",
-        "orgId": "16355371",
+        "orgId": "72001757",
         "orgTypeId": "3"
     },
     {
@@ -14,7 +14,7 @@
         "id": "2",
         "jurisdictionId": "1",
         "legalName": "Asian Junction",
-        "orgId": "35005520",
+        "orgId": "40929339",
         "orgTypeId": "1"
     },
     {
@@ -22,8 +22,8 @@
         "endDate": null,
         "id": "3",
         "jurisdictionId": "1",
-        "legalName": "Best Products",
-        "orgId": "42627527",
+        "legalName": "Muirhead's",
+        "orgId": "52629869",
         "orgTypeId": "1"
     },
     {
@@ -31,8 +31,8 @@
         "endDate": null,
         "id": "4",
         "jurisdictionId": "1",
-        "legalName": "Muirhead's",
-        "orgId": "45082985",
+        "legalName": "Museum Company",
+        "orgId": "50549812",
         "orgTypeId": "1"
     },
     {
@@ -40,80 +40,80 @@
         "endDate": null,
         "id": "5",
         "jurisdictionId": "1",
-        "legalName": "Jeans Unlimited",
-        "orgId": "31328879",
-        "orgTypeId": "4"
+        "legalName": "Henry's Hamburgers",
+        "orgId": "29296044",
+        "orgTypeId": "1"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "6",
         "jurisdictionId": "1",
-        "legalName": "Museum Company",
-        "orgId": "41423779",
-        "orgTypeId": "4"
+        "legalName": "Body Toning",
+        "orgId": "43151558",
+        "orgTypeId": "1"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "7",
         "jurisdictionId": "1",
-        "legalName": "Brendle's",
-        "orgId": "53641512",
-        "orgTypeId": "3"
+        "legalName": "Britling Cafeterias",
+        "orgId": "77293724",
+        "orgTypeId": "1"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "8",
         "jurisdictionId": "1",
-        "legalName": "Britling Cafeterias",
-        "orgId": "82150154",
-        "orgTypeId": "2"
+        "legalName": "Record World",
+        "orgId": "99581461",
+        "orgTypeId": "1"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "9",
         "jurisdictionId": "1",
-        "legalName": "The Fox and Hound ",
-        "orgId": "75727600",
-        "orgTypeId": "2"
+        "legalName": "Edwards",
+        "orgId": "18121039",
+        "orgTypeId": "1"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "10",
         "jurisdictionId": "1",
-        "legalName": "Edwards",
-        "orgId": "35053744",
-        "orgTypeId": "1"
+        "legalName": "Grass Roots Yard Services",
+        "orgId": "40092140",
+        "orgTypeId": "2"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "11",
         "jurisdictionId": "1",
-        "legalName": "Magik Grey",
-        "orgId": "54216270",
-        "orgTypeId": "4"
+        "legalName": "Pantry Food Stores",
+        "orgId": "92842438",
+        "orgTypeId": "3"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "12",
         "jurisdictionId": "1",
-        "legalName": "Earthworks Garden Kare",
-        "orgId": "15373498",
-        "orgTypeId": "2"
+        "legalName": "Magik Grey",
+        "orgId": "67237026",
+        "orgTypeId": "4"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "13",
         "jurisdictionId": "1",
-        "legalName": "Universo Realtors",
-        "orgId": "88038007",
+        "legalName": "Earthworks Garden Kare",
+        "orgId": "64933914",
         "orgTypeId": "1"
     },
     {
@@ -121,8 +121,8 @@
         "endDate": null,
         "id": "14",
         "jurisdictionId": "1",
-        "legalName": "Gas Depot",
-        "orgId": "97322548",
+        "legalName": "Stratacard",
+        "orgId": "91702515",
         "orgTypeId": "1"
     },
     {
@@ -131,16 +131,7 @@
         "id": "15",
         "jurisdictionId": "1",
         "legalName": "J. Brannam",
-        "orgId": "14196446",
-        "orgTypeId": "1"
-    },
-    {
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "16",
-        "jurisdictionId": "1",
-        "legalName": "Happy Family",
-        "orgId": "14341278",
-        "orgTypeId": "1"
+        "orgId": "85528970",
+        "orgTypeId": "2"
     }
 ]

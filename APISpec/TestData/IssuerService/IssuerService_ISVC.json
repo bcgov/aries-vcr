@@ -1,6 +1,6 @@
 [
     {
-        "DID": "did:sovrin:1BB240C5A073102E897C6A",
+        "DID": "did:sovrin:39BF03A0245C06C28E657A1",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
@@ -12,7 +12,7 @@
         "name": "BC Registry"
     },
     {
-        "DID": "did:sovrin:393DFCB01CE9783D2F27C8CD",
+        "DID": "did:sovrin:AB113F72765FB53F2D92AF",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
@@ -24,7 +24,7 @@
         "name": "Business License"
     },
     {
-        "DID": "did:sovrin:1B3C0EAF316D283F1FB689F7",
+        "DID": "did:sovrin:39D8632212C3C6273B38640B",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
@@ -36,7 +36,7 @@
         "name": "FoodSafe BC"
     },
     {
-        "DID": "did:sovrin:12D835CF2A64A378275CFC6C",
+        "DID": "did:sovrin:323100B1979AA9E202F2EBE",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
