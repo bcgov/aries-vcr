@@ -578,6 +578,149 @@ paths:
           description: id of LocationType to delete
           required: true
           type: integer
+  /locationorgs:
+    get:
+      tags:
+        - LocationOrg
+      summary: Lists available LocationOrg objects
+      x-codegen-operation: list
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/LocationOrg"
+    post:
+      tags:
+        - LocationOrg
+      x-codegen-operation: create
+      summary: Creates a new LocationOrg object            
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/LocationOrg"
+      responses:
+        201:
+          description: LocationOrg created
+          headers:
+            Location:
+              description: A link to the LocationOrg
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/LocationOrg"  
+  /locationorgs/bulk:
+    post:
+      tags:
+        - LocationOrg
+      summary: Bulk create / update a number of LocationOrg object      
+      x-codegen-operation: bulk
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: items
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/LocationOrg"
+      responses:
+        201:
+          description: LocationOrg created
+  /locationorgs/{id}:
+    get:
+      tags:
+        - LocationOrg
+      summary: Gets a specific LocationOrg object      
+      x-codegen-operation: retrieve
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/LocationOrg"
+        404:
+          description: LocationOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of LocationOrg to fetch
+          required: true
+          type: integer
+    put:
+      tags:
+        - LocationOrg
+      x-codegen-operation: update
+      summary: Updates a specific LocationOrg object      
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/LocationOrg"
+        404:
+          description: LocationOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of LocationOrg to fetch
+          required: true
+          type: integer
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/LocationOrg"
+  /locationorgs/{id}/delete:
+    post:
+      tags:
+        - LocationOrg
+      x-codegen-operation: destroy
+      summary: Deletes a specific LocationOrg object      
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      responses:
+        200:
+          description: OK
+        404:
+          description: LocationOrg not found
+      parameters:
+        - name: id
+          in: path
+          description: id of LocationOrg to delete
+          required: true
+          type: integer
   /doingbusinessas:
     get:
       tags:
