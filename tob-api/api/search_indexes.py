@@ -1,48 +1,48 @@
 import datetime
-from api.models.VODoingBusinessAs import VODoingBusinessAs
-from api.models.VerifiedOrg import VerifiedOrg
-from api.models.VOLocation import VOLocation
+from api.models.DoingBusinessAs import DoingBusinessAs
+from api.models.VerifiableOrg import VerifiableOrg
+from api.models.Location import Location
 from haystack import indexes
 from django.utils import timezone
 
-class VerifiedOrgIndex(indexes.SearchIndex, indexes.Indexable):
+class VerifiableOrgIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    busId = indexes.CharField(model_attr="busId")
-    LegalName = indexes.CharField(model_attr="LegalName")
-    name = indexes.CharField(model_attr="LegalName")
+    orgId = indexes.CharField(model_attr="orgId")
+    legalName = indexes.CharField(model_attr="legalName")
+    name = indexes.CharField(model_attr="legalName")
     
     autocomplete = indexes.EdgeNgramField()
 
     @staticmethod
     def prepare_autocomplete(obj):
         return " ".join((
-            obj.busId,
-            obj.LegalName,
+            obj.orgId,
+            obj.legalName,
         ))
 
     def get_model(self):
-        return VerifiedOrg
+        return VerifiableOrg
 
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(
             CREATE_TIMESTAMP__lte=timezone.now()
         )
 
-class VODoingBusinessAsIndex(indexes.SearchIndex, indexes.Indexable):
+class DoingBusinessAsIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    DBA = indexes.CharField(model_attr="DBA")
-    name = indexes.CharField(model_attr="DBA")
+    dbaName = indexes.CharField(model_attr="dbaName")
+    name = indexes.CharField(model_attr="dbaName")
 
     autocomplete = indexes.EdgeNgramField()
 
     @staticmethod
     def prepare_autocomplete(obj):
         return " ".join((
-            obj.DBA,
+            obj.dbaName,
         ))
 
     def get_model(self):
-        return VODoingBusinessAs
+        return DoingBusinessAs
 
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(
@@ -70,7 +70,7 @@ class LocationIndex(indexes.SearchIndex, indexes.Indexable):
         ))
 
     def get_model(self):
-        return VOLocation
+        return Location
 
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(

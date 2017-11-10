@@ -1,10 +1,10 @@
 [
     {
-        "dbaName": "Asian Junction",
+        "dbaName": "Price Savers",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
-        "verifiableOrgId": "1"
+        "verifiableOrgId": "2"
     },
     {
         "dbaName": "Best Products",
@@ -14,115 +14,101 @@
         "verifiableOrgId": "2"
     },
     {
-        "dbaName": "Museum Company",
+        "dbaName": "McDuff",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "2"
     },
     {
-        "dbaName": "Henry's Hamburgers",
+        "dbaName": "Muirhead's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "4",
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "2"
     },
     {
-        "dbaName": "Body Toning",
+        "dbaName": "Jeans Unlimited",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "5",
-        "verifiableOrgId": "5"
-    },
-    {
-        "dbaName": "Wells & Wade",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "6",
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "2"
     },
     {
         "dbaName": "Brendle's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "7",
-        "verifiableOrgId": "5"
+        "id": "6",
+        "verifiableOrgId": "6"
     },
     {
-        "dbaName": "Britling Cafeterias",
+        "dbaName": "Harold's",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "7",
+        "verifiableOrgId": "7"
+    },
+    {
+        "dbaName": "Pantry Pride",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "8",
-        "verifiableOrgId": "5"
+        "verifiableOrgId": "13"
     },
     {
-        "dbaName": "The Fox and Hound ",
+        "dbaName": "Sandy's",
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "9",
-        "verifiableOrgId": "7"
-    },
-    {
-        "dbaName": "Edwards",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "10",
-        "verifiableOrgId": "7"
-    },
-    {
-        "dbaName": "Grass Roots Yard Services",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "11",
-        "verifiableOrgId": "7"
+        "verifiableOrgId": "13"
     },
     {
         "dbaName": "Earthworks Garden Kare",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "12",
-        "verifiableOrgId": "11"
-    },
-    {
-        "dbaName": "Gamma Gas",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "13",
-        "verifiableOrgId": "11"
+        "id": "10",
+        "verifiableOrgId": "13"
     },
     {
         "dbaName": "Universo Realtors",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "14",
-        "verifiableOrgId": "11"
+        "id": "11",
+        "verifiableOrgId": "14"
     },
     {
         "dbaName": "Gas Depot",
         "effectiveDate": "2010-10-10",
         "endDate": null,
+        "id": "12",
+        "verifiableOrgId": "14"
+    },
+    {
+        "dbaName": "Service Merchandise",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "13",
+        "verifiableOrgId": "14"
+    },
+    {
+        "dbaName": "Stratacard",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "14",
+        "verifiableOrgId": "16"
+    },
+    {
+        "dbaName": "J. Brannam",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
         "id": "15",
-        "verifiableOrgId": "11"
-    },
-    {
-        "dbaName": "Lionel Playworld",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "16",
-        "verifiableOrgId": "12"
-    },
-    {
-        "dbaName": "Success Is Yours",
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "17",
-        "verifiableOrgId": "12"
+        "verifiableOrgId": "16"
     },
     {
         "dbaName": "Happy Family",
         "effectiveDate": "2010-10-10",
         "endDate": null,
-        "id": "18",
-        "verifiableOrgId": "14"
+        "id": "16",
+        "verifiableOrgId": "16"
     }
 ]

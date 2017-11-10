@@ -1,18 +1,18 @@
-#!/c/Python27/python
+#!/c/Python3/python
 
 import sys, csv, json
 import os, os.path
 from itertools import groupby
 
 def hello(name="woot"):
-    print "Hello, %s!" % name
+    print("Hello, %s!" % name)
 
 def get_field_names(filename):
     input_file = open(filename)
     gdoc = csv.reader(input_file)
 
     # Get the 1st line, assuming it contains the column titles
-    fieldnames = gdoc.next()
+    fieldnames = gdoc.__next__()
 
     input_file.close()
 
@@ -26,7 +26,7 @@ def process_file(filename):
     gdoc = csv.reader(input_file)
 
     # skip the 1st line, assuming it contains the column titles
-    gdoc.next()
+    gdoc.__next__()
 
     # Get the total number of columns
     fieldnames_len = len(fieldnames)
@@ -139,7 +139,7 @@ def output_dataset(entity_name, dataset_name, dataset, excluded_field_names=['Fi
     group_data_file.close()
 
 if len(sys.argv) == 1:
-    print "1 argument for filename required"
+    print("1 argument for filename required")
     sys.exit()
 input_filename = sys.argv[1]
 
@@ -149,7 +149,7 @@ if len(sys.argv) == 3:
     flat = sys.argv[2] in ['True', 'true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']
 
 if os.path.exists(input_filename):
-        print 'Processing input file \'%s\'.' % input_filename
+        print('Processing input file \'%s\'.' % input_filename)
 
 dir_name_part, file_name_part = os.path.split(input_filename)
 # print "Dir: %s" % dir_name_part
@@ -159,5 +159,5 @@ entity_name = file_name_part.split(".")[0]
 data_dicts = process_file(file_name_part)
 datasets = make_datasets(data_dicts)
 
-for dataset_name, dataset_data in datasets.iteritems():
+for dataset_name, dataset_data in datasets.items():
     output_dataset(entity_name, dataset_name, dataset_data, None, flat)

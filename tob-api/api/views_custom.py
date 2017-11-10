@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -28,9 +28,12 @@ from rest_framework import generics
 from rest_framework_bulk import BulkCreateModelMixin
 from . import serializers
 from .models.CurrentUserViewModel import CurrentUserViewModel
+from .models.DoingBusinessAs import DoingBusinessAs
 from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Location import Location
+from .models.LocationType import LocationType
 from .models.Permission import Permission
 from .models.PermissionViewModel import PermissionViewModel
 from .models.Role import Role
@@ -42,17 +45,12 @@ from .models.UserDetailsViewModel import UserDetailsViewModel
 from .models.UserRole import UserRole
 from .models.UserRoleViewModel import UserRoleViewModel
 from .models.UserViewModel import UserViewModel
-from .models.VOClaim import VOClaim
-from .models.VOClaimType import VOClaimType
-from .models.VODoingBusinessAs import VODoingBusinessAs
-from .models.VOLocation import VOLocation
-from .models.VOLocationType import VOLocationType
-from .models.VOType import VOType
-from .models.VerifiedOrg import VerifiedOrg
-
+from .models.VerifiableClaim import VerifiableClaim
+from .models.VerifiableClaimType import VerifiableClaimType
+from .models.VerifiableOrg import VerifiableOrg
+from .models.VerifiableOrgType import VerifiableOrgType
 
 # Custom views.  This file is hand edited.
-
 class usersCurrentGet(APIView):
   """  
   Get the currently logged in user  
@@ -107,9 +105,12 @@ class usersIdRolesGet(APIView):
     return Response(serializer.data)
 
 class usersSearchGet(APIView):
-  def get(self, request, fuelSuppliers = None, surname = None, includeInactive = None):
+  def get(self, request, surname = None, includeInactive = None):
     """
     Searches Users
+
+    Searchable fields:
+    - surname
     """
     result = User.objects.all()
     if surname != None:
@@ -118,32 +119,32 @@ class usersSearchGet(APIView):
     serializer = serializers.UserSerializer(result, many=True)
     return Response(serializer.data)
 
-class verifiedorgsIdVoclaimsGet(APIView):
+class verifiableOrgsIdVerifiableclaimsGet(APIView):
   def get(self, request, id):
     """  
-    Returns the Claims for a Verified Organization  
+    Returns the Claims for a verifiable Organization  
     """
-    org = VerifiedOrg.objects.get(id=id)
-    claims = VOClaim.objects.filter(verifiedOrgId=org)
-    serializer = serializers.VOClaimSerializer(claims, many=True)
+    org = VerifiableOrg.objects.get(id=id)
+    claims = VerifiableClaim.objects.filter(verifiableOrgId=org)
+    serializer = serializers.VerifiableClaimSerializer(claims, many=True)
     return Response(serializer.data)
 
-class verifiedorgsIdVoDoingBusinessAsGet(APIView):
+class verifiableOrgsIdDoingBusinessAsGet(APIView):
   def get(self, request, id):
     """  
-    Returns the Doing Business As information for a Verified Organization  
+    Returns the Doing Business As information for a verifiable Organization  
     """
-    org = VerifiedOrg.objects.get(id=id)
-    dbas = VODoingBusinessAs.objects.filter(verifiedOrgId=org)
-    serializer = serializers.VODoingBusinessAsSerializer(dbas, many=True)
+    org = VerifiableOrg.objects.get(id=id)
+    dbas = DoingBusinessAs.objects.filter(verifiableOrgId=org)
+    serializer = serializers.DoingBusinessAsSerializer(dbas, many=True)
     return Response(serializer.data)
 
-class verifiedorgsIdVoLocationsGet(APIView):
+class verifiableOrgsIdLocationsGet(APIView):
   def get(self, request, id):
     """  
-    Returns the locations for a Verified Organization  
+    Returns the locations for a verifiable Organization  
     """
-    org = VerifiedOrg.objects.get(id=id)
-    locations = VOLocation.objects.filter(verifiedOrgId=org)
-    serializer = serializers.VOLocationSerializer(locations, many=True)
+    org = VerifiableOrg.objects.get(id=id)
+    locations = Location.objects.filter(verifiableOrgId=org)
+    serializer = serializers.LocationSerializer(locations, many=True)
     return Response(serializer.data)

@@ -1,12 +1,12 @@
 from rest_framework.mixins import ListModelMixin
 from api.search_serializers import OrganizationSearchSerializer
 from api.search_serializers import NameSearchSerializer
-from api.search_serializers import VODoingBusinessAsSearchSerializer
-from api.models.VODoingBusinessAs import VODoingBusinessAs
+from api.search_serializers import DoingBusinessAsSearchSerializer
+from api.models.DoingBusinessAs import DoingBusinessAs
 from drf_haystack.generics import HaystackGenericAPIView
-from api.models.VerifiedOrg import VerifiedOrg
-from api.models.VOLocation import VOLocation
-from api.search_serializers import VerifiedOrgSearchSerializer
+from api.models.VerifiableOrg import VerifiableOrg
+from api.models.Location import Location
+from api.search_serializers import VerifiableOrgSearchSerializer
 from api.search_serializers import LocationSearchSerializer
 
 # -----------------------------------------------------------------------------------
@@ -17,35 +17,37 @@ from api.search_serializers import LocationSearchSerializer
 # bells and whistles, but requires a router for URL configuration;
 # - http://drf-haystack.readthedocs.io/en/latest/01_intro.html
 # -----------------------------------------------------------------------------------
-class VerifiedOrgSearchView(ListModelMixin, HaystackGenericAPIView):
-    index_models = [VerifiedOrg]
-    serializer_class = VerifiedOrgSearchSerializer
+class VerifiableOrgSearchView(ListModelMixin, HaystackGenericAPIView):
+    index_models = [VerifiableOrg]
+    serializer_class = VerifiableOrgSearchSerializer
     def get(self, request, *args, **kwargs):
         """
         Provides basic search capabilities.
         For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
 
         Searchable fields:
-        - busId
-        - LegalName
+        - text - Full text search of the model.  Includes the fields listed below.
+        - orgId
+        - legalName
         """
         return self.list(request, *args, **kwargs)
 
-class VODoingBusinessAsSearchView(ListModelMixin, HaystackGenericAPIView):
-    index_models = [VODoingBusinessAs]
-    serializer_class = VODoingBusinessAsSearchSerializer
+class DoingBusinessAsSearchView(ListModelMixin, HaystackGenericAPIView):
+    index_models = [DoingBusinessAs]
+    serializer_class = DoingBusinessAsSearchSerializer
     def get(self, request, *args, **kwargs):
         """
         Provides basic search capabilities.
         For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
 
         Searchable fields:
-        - DBA
+        - text - Full text search of the model.  Includes the fields listed below.
+        - dbaName
         """
         return self.list(request, *args, **kwargs)
 
 class LocationSearchView(ListModelMixin, HaystackGenericAPIView):
-    index_models = [VOLocation]
+    index_models = [Location]
     serializer_class = LocationSearchSerializer
     def get(self, request, *args, **kwargs):
         """
@@ -53,6 +55,7 @@ class LocationSearchView(ListModelMixin, HaystackGenericAPIView):
         For more information refer to [drf-haystack](http://drf-haystack.readthedocs.io/en/latest/)
 
         Searchable fields:
+        - text - Full text search of the model.  Includes the fields listed below.
         - addressee
         - municipality
         - postalCode
@@ -62,11 +65,11 @@ class LocationSearchView(ListModelMixin, HaystackGenericAPIView):
         return self.list(request, *args, **kwargs)
 
 class NameSearchView(ListModelMixin, HaystackGenericAPIView):
-    index_models = [VerifiedOrg, VODoingBusinessAs]
+    index_models = [VerifiableOrg, DoingBusinessAs]
     serializer_class = NameSearchSerializer
     def get(self, request, *args, **kwargs):
         """
-        Searches across the 'name' fields of Verified Organization and 
+        Searches across the 'name' fields of Verifiable Organization and 
         Doing Business As records.
         
         Returns any records that match the search criteria.
@@ -93,7 +96,7 @@ class NameSearchView(ListModelMixin, HaystackGenericAPIView):
             },
             {
                 "id": 18,
-                "verifiedOrgId": 8,
+                "verifiableOrgId": 8,
                 "DBA": "Gas Depot",
                 "effectiveDate": "2010-10-10",
                 "endDate": null
@@ -104,11 +107,11 @@ class NameSearchView(ListModelMixin, HaystackGenericAPIView):
         return self.list(request, *args, **kwargs)
 
 class OrganizationSearchView(ListModelMixin, HaystackGenericAPIView):
-    index_models = [VerifiedOrg, VODoingBusinessAs, VOLocation]
+    index_models = [VerifiableOrg, DoingBusinessAs, Location]
     serializer_class = OrganizationSearchSerializer
     def get(self, request, *args, **kwargs):
         """
-        Searches across the text fields of Verified Organization, Doing Business As, and Location records.
+        Searches across the text fields of Verifiable Organization, Doing Business As, and Location records.
         
         Returns any records that match the search criteria.
 
@@ -125,15 +128,15 @@ class OrganizationSearchView(ListModelMixin, HaystackGenericAPIView):
         [
             {
                 "id": 18,
-                "verifiedOrgId": 8,
+                "verifiableOrgId": 8,
                 "DBA": "Gas Depot",
                 "effectiveDate": "2010-10-10",
                 "endDate": null
             },
             {
                 "id": 24,
-                "verifiedOrgId": 8,
-                "voLocationTypeId": 2,
+                "verifiableOrgId": 8,
+                "locationTypeId": 2,
                 "addressee": "Gamma Gas",
                 "addlDeliveryInfo": null,
                 "unitNumber": null,
@@ -147,8 +150,8 @@ class OrganizationSearchView(ListModelMixin, HaystackGenericAPIView):
             },
             {
                 "id": 26,
-                "verifiedOrgId": 8,
-                "voLocationTypeId": 2,
+                "verifiableOrgId": 8,
+                "locationTypeId": 2,
                 "addressee": "Gas Depot",
                 "addlDeliveryInfo": null,
                 "unitNumber": null,

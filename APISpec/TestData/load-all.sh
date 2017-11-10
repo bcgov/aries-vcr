@@ -1,4 +1,5 @@
 #$/bin/bash
+export MSYS_NO_PATHCONV=1
 
 # ==============================================================================
 # Script for loading test data into the TheOrgBook database
@@ -6,10 +7,11 @@
 # * Requires curl
 # ------------------------------------------------------------------------------
 # Usage on Windows (using Git Bash):
-#  MSYS_NO_PATHCONV=1 ./load-all.sh <server URL>
+#  ./load-all.sh <server URL>
 #
 # Example:
-#  MSYS_NO_PATHCONV=1 ./load-all.sh dev
+#  ./load-all.sh dev
+#  ./load-all.sh http://localhost:60381
 # ------------------------------------------------------------------------------
 exitOnError () {
   rtnCd=$?
@@ -93,6 +95,4 @@ exitOnError
 ./load.sh ./${DoingBusinessAs} ${API_PREFIX}/doingbusinessas/${BULK_PATH} "$@"
 exitOnError
 ./load.sh ./${Location} ${API_PREFIX}/locations/${BULK_PATH} "$@"
-exitOnError
-./load.sh ./${LocationOrg} ${API_PREFIX}/locationorgs/${BULK_PATH} "$@"
 exitOnError

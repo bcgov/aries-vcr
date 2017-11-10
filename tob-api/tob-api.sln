@@ -13,13 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openshift", "openshift", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{02EFACDC-12BE-4CB9-A15B-CFF64379CC8B}"
 	ProjectSection(SolutionItems) = preProject
-		openshift\scripts\configureBaseBuild.sh = openshift\scripts\configureBaseBuild.sh
 		openshift\scripts\configureBuild.sh = openshift\scripts\configureBuild.sh
 		openshift\scripts\configureDeployment.sh = openshift\scripts\configureDeployment.sh
 		openshift\scripts\configureJenkinsPipelineBuild.sh = openshift\scripts\configureJenkinsPipelineBuild.sh
 		openshift\scripts\configureSchemaSpyBuild.sh = openshift\scripts\configureSchemaSpyBuild.sh
 		openshift\scripts\configureSchemaSpyDeployment.sh = openshift\scripts\configureSchemaSpyDeployment.sh
-		openshift\scripts\configureSolrBuild.sh = openshift\scripts\configureSolrBuild.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{BB3B5ACC-D3D4-464D-9F4C-B38279180294}"
@@ -28,9 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 		openshift\templates\django-deploy.json = openshift\templates\django-deploy.json
 		openshift\templates\schema-spy-build.json = openshift\templates\schema-spy-build.json
 		openshift\templates\schema-spy-deploy.json = openshift\templates\schema-spy-deploy.json
-		openshift\templates\solr-base-build.json = openshift\templates\solr-base-build.json
-		openshift\templates\solr-build.json = openshift\templates\solr-build.json
-		openshift\templates\solr-deployment.json = openshift\templates\solr-deployment.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jenkins", "jenkins", "{0C360F57-D16B-4BE4-AAA6-9CC9678CB663}"

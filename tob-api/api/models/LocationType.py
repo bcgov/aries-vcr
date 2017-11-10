@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -23,19 +23,15 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from .VerifiedOrg import VerifiedOrg
-from .VOClaimType import VOClaimType
-from .InactiveClaimReason import InactiveClaimReason
 
 from auditable.models import Auditable
 
-class VOClaim(Auditable):	    
-    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='claims')   
-    voClaimType = models.ForeignKey('VOClaimType', related_name='claimTypes')   
-    claimJSON = models.CharField(max_length=255, blank=True, null=True)   
+class LocationType(Auditable):	    
+    locType = models.CharField(max_length=255)   
+    description = models.CharField(max_length=255)   
     effectiveDate = models.DateField(default=timezone.now)   
     endDate = models.DateField(blank=True, null=True)   
-    inactiveClaimReasonId = models.ForeignKey('InactiveClaimReason', related_name='inactiveClaimReasons', blank=True, null=True)   
+    displayOrder = models.IntegerField()   
     class Meta:
-        db_table = 'V_O_CLAIM'
+        db_table = 'LOCATION_TYPE'
 

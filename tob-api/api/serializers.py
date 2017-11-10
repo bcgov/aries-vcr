@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -22,9 +22,12 @@
 from rest_framework import serializers
 
 from .models.CurrentUserViewModel import CurrentUserViewModel
+from .models.DoingBusinessAs import DoingBusinessAs
 from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
+from .models.Location import Location
+from .models.LocationType import LocationType
 from .models.Permission import Permission
 from .models.PermissionViewModel import PermissionViewModel
 from .models.Role import Role
@@ -36,18 +39,20 @@ from .models.UserDetailsViewModel import UserDetailsViewModel
 from .models.UserRole import UserRole
 from .models.UserRoleViewModel import UserRoleViewModel
 from .models.UserViewModel import UserViewModel
-from .models.VOClaim import VOClaim
-from .models.VOClaimType import VOClaimType
-from .models.VODoingBusinessAs import VODoingBusinessAs
-from .models.VOLocation import VOLocation
-from .models.VOLocationType import VOLocationType
-from .models.VOType import VOType
-from .models.VerifiedOrg import VerifiedOrg
+from .models.VerifiableClaim import VerifiableClaim
+from .models.VerifiableClaimType import VerifiableClaimType
+from .models.VerifiableOrg import VerifiableOrg
+from .models.VerifiableOrgType import VerifiableOrgType
 
 class CurrentUserViewModelSerializer(serializers.ModelSerializer):
   class Meta:
     model = CurrentUserViewModel
     fields = ('id','givenName','surname','email','active','userRoles','smUserId','smAuthorizationDirectory')
+
+class DoingBusinessAsSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DoingBusinessAs
+    fields = ('id','verifiableOrgId','dbaName','effectiveDate','endDate')
 
 class InactiveClaimReasonSerializer(serializers.ModelSerializer):
   class Meta:
@@ -63,6 +68,16 @@ class JurisdictionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Jurisdiction
     fields = ('id','abbrv','name','displayOrder','isOnCommonList','effectiveDate','endDate')
+
+class LocationSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Location
+    fields = ('id','verifiableOrgId','doingBusinessAsId','locationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
+
+class LocationTypeSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = LocationType
+    fields = ('id','locType','description','effectiveDate','endDate','displayOrder')
 
 class PermissionSerializer(serializers.ModelSerializer):
   class Meta:
@@ -119,46 +134,36 @@ class UserViewModelSerializer(serializers.ModelSerializer):
     model = UserViewModel
     fields = ('id','givenName','surname','email','active','smUserId','userRoles')
 
-class VOClaimSerializer(serializers.ModelSerializer):
+class VerifiableClaimSerializer(serializers.ModelSerializer):
   class Meta:
-    model = VOClaim
-    fields = ('id','verifiedOrgId','voClaimType','claimJSON','effectiveDate','endDate','inactiveClaimReasonId')
+    model = VerifiableClaim
+    fields = ('id','verifiableOrgId','claimType','claimJSON','effectiveDate','endDate','inactiveClaimReasonId')
 
-class VOClaimTypeSerializer(serializers.ModelSerializer):
+class VerifiableClaimTypeSerializer(serializers.ModelSerializer):
   class Meta:
-    model = VOClaimType
-    fields = ('id','theType','base64Logo','issuerOrgId','issuerURL','effectiveDate','endDate')
+    model = VerifiableClaimType
+    fields = ('id','claimType','base64Logo','issuerServiceId','issuerURL','effectiveDate','endDate')
 
-class VODoingBusinessAsSerializer(serializers.ModelSerializer):
+class VerifiableOrgSerializer(serializers.ModelSerializer):
   class Meta:
-    model = VODoingBusinessAs
-    fields = ('id','verifiedOrgId','DBA','effectiveDate','endDate')
+    model = VerifiableOrg
+    fields = ('id','orgId','orgTypeId','jurisdictionId','legalName','effectiveDate','endDate')
 
-class VOLocationSerializer(serializers.ModelSerializer):
+class VerifiableOrgTypeSerializer(serializers.ModelSerializer):
   class Meta:
-    model = VOLocation
-    fields = ('id','verifiedOrgId','voLocationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
+    model = VerifiableOrgType
+    fields = ('id','orgType','description','effectiveDate','endDate','displayOrder')
 
-class VOLocationTypeSerializer(serializers.ModelSerializer):
+class DoingBusinessAsDetailSerializer(serializers.ModelSerializer):
+  locations = LocationSerializer(many=True, read_only=True)
   class Meta:
-    model = VOLocationType
-    fields = ('id','theType','description','effectiveDate','endDate','displayOrder')
+    model = DoingBusinessAs
+    fields = ('id','verifiableOrgId','dbaName','effectiveDate','endDate','locations')
 
-class VOTypeSerializer(serializers.ModelSerializer):
+class VerifiableOrgDetailSerializer(serializers.ModelSerializer):
+  locations = LocationSerializer(many=True, read_only=True)
+  claims = VerifiableClaimSerializer(many=True, read_only=True)
+  doingBusinessAs = DoingBusinessAsDetailSerializer(many=True, read_only=True)
   class Meta:
-    model = VOType
-    fields = ('id','theType','description','effectiveDate','endDate','displayOrder')
-
-class VerifiedOrgSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = VerifiedOrg
-    fields = ('id','busId','orgTypeId','jurisdictionId','LegalName','effectiveDate','endDate')
-
-class VerifiedOrgDetailSerializer(serializers.ModelSerializer):
-  locations = VOLocationSerializer(many=True, read_only=True)
-  claims = VOClaimSerializer(many=True, read_only=True)
-  doingBusinessAs = VODoingBusinessAsSerializer(many=True, read_only=True)
-  
-  class Meta:
-    model = VerifiedOrg
-    fields = ('id','busId','orgTypeId','jurisdictionId','LegalName','effectiveDate','endDate','claims','doingBusinessAs','locations')
+    model = VerifiableOrg
+    fields = ('id','orgId','orgTypeId','jurisdictionId','legalName','effectiveDate','endDate','claims','doingBusinessAs','locations')

@@ -1,9 +1,9 @@
 #$/bin/bash
 
 local=https://django-devex-von-dev.10.0.75.2.nip.io
-dev=https://devex-von-dev-django.pathfinder.gov.bc.ca
-test=https://devex-von-test-django.pathfinder.gov.bc.ca
-prod=https://devex-von-prod-django.pathfinder.gov.bc.ca
+dev=https://django-devex-von-dev.pathfinder.gov.bc.ca
+test=https://django-devex-von-test.pathfinder.gov.bc.ca
+prod=https://django-devex-von-prod.pathfinder.gov.bc.ca
 
 if [ -z "${3}" ]; then
   echo Incorrect syntax

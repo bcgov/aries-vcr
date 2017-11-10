@@ -3,7 +3,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -29,6 +29,10 @@
 #except:
 #     import CurrentUserViewModel
 #try:
+#     from . import DoingBusinessAs  
+#except:
+#     import DoingBusinessAs
+#try:
 #     from . import InactiveClaimReason  
 #except:
 #     import InactiveClaimReason
@@ -40,6 +44,14 @@
 #     from . import Jurisdiction  
 #except:
 #     import Jurisdiction
+#try:
+#     from . import Location  
+#except:
+#     import Location
+#try:
+#     from . import LocationType  
+#except:
+#     import LocationType
 #try:
 #     from . import Permission  
 #except:
@@ -85,31 +97,19 @@
 #except:
 #     import UserViewModel
 #try:
-#     from . import VOClaim  
+#     from . import VerifiableClaim  
 #except:
-#     import VOClaim
+#     import VerifiableClaim
 #try:
-#     from . import VOClaimType  
+#     from . import VerifiableClaimType  
 #except:
-#     import VOClaimType
+#     import VerifiableClaimType
 #try:
-#     from . import VODoingBusinessAs  
+#     from . import VerifiableOrg  
 #except:
-#     import VODoingBusinessAs
+#     import VerifiableOrg
 #try:
-#     from . import VOLocation  
+#     from . import VerifiableOrgType  
 #except:
-#     import VOLocation
-#try:
-#     from . import VOLocationType  
-#except:
-#     import VOLocationType
-#try:
-#     from . import VOType  
-#except:
-#     import VOType
-#try:
-#     from . import VerifiedOrg  
-#except:
-#     import VerifiedOrg
+#     import VerifiableOrgType
 #

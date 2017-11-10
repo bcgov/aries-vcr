@@ -1,10 +1,10 @@
 from drf_haystack.serializers import HaystackSerializerMixin, HaystackSerializer
 from api.search_indexes import LocationIndex
-from api.search_indexes import VODoingBusinessAsIndex
-from api.search_indexes import VerifiedOrgIndex
-from api.serializers import VODoingBusinessAsSerializer
-from api.serializers import VerifiedOrgSerializer
-from api.serializers import VOLocationSerializer
+from api.search_indexes import DoingBusinessAsIndex
+from api.search_indexes import VerifiableOrgIndex
+from api.serializers import DoingBusinessAsSerializer
+from api.serializers import VerifiableOrgSerializer
+from api.serializers import LocationSerializer
 
 # -----------------------------------------------------------------------------------
 # The Search serializers reuse the model serializers as shown here;
@@ -14,20 +14,20 @@ from api.serializers import VOLocationSerializer
 # For now it is more convenient.
 # -----------------------------------------------------------------------------------
 
-class VerifiedOrgSearchSerializer(HaystackSerializerMixin, VerifiedOrgSerializer):
-  class Meta (VerifiedOrgSerializer.Meta):
+class VerifiableOrgSearchSerializer(HaystackSerializerMixin, VerifiableOrgSerializer):
+  class Meta (VerifiableOrgSerializer.Meta):
     search_fields = ("text", )    
     field_aliases = {}
     exclude = tuple()
 
-class VODoingBusinessAsSearchSerializer(HaystackSerializerMixin, VODoingBusinessAsSerializer):
-  class Meta (VODoingBusinessAsSerializer.Meta):
+class DoingBusinessAsSearchSerializer(HaystackSerializerMixin, DoingBusinessAsSerializer):
+  class Meta (DoingBusinessAsSerializer.Meta):
     search_fields = ("text", )    
     field_aliases = {}
     exclude = tuple()
 
-class LocationSearchSerializer(HaystackSerializerMixin, VOLocationSerializer):
-  class Meta (VOLocationSerializer.Meta):
+class LocationSearchSerializer(HaystackSerializerMixin, LocationSerializer):
+  class Meta (LocationSerializer.Meta):
     search_fields = ("text", )    
     field_aliases = {}
     exclude = tuple()
@@ -38,8 +38,8 @@ class NameSearchSerializer(HaystackSerializer):
     field_aliases = {}
     exclude = tuple()
     serializers = {
-      VerifiedOrgIndex: VerifiedOrgSearchSerializer,
-      VODoingBusinessAsIndex: VODoingBusinessAsSearchSerializer
+      VerifiableOrgIndex: VerifiableOrgSearchSerializer,
+      DoingBusinessAsIndex: DoingBusinessAsSearchSerializer
     }
 
 class OrganizationSearchSerializer(HaystackSerializer):
@@ -48,7 +48,7 @@ class OrganizationSearchSerializer(HaystackSerializer):
     field_aliases = {}
     exclude = tuple()
     serializers = {
-      VerifiedOrgIndex: VerifiedOrgSearchSerializer,
-      VODoingBusinessAsIndex: VODoingBusinessAsSearchSerializer,
+      VerifiableOrgIndex: VerifiableOrgSearchSerializer,
+      DoingBusinessAsIndex: DoingBusinessAsSearchSerializer,
       LocationIndex: LocationSearchSerializer
     }

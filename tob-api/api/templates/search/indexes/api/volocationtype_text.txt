@@ -1,4 +1,0 @@
-{{ object.theType }}
-{{ object.description }}
-Created: {{ object.CREATE_TIMESTAMP }}
-Last modified: {{ object.UPDATE_TIMESTAMP }}

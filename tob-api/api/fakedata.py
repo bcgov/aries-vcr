@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -54,426 +54,412 @@ def BulkUserTestDataCreate():
   dataPath = testDataFolder + 'users/users_user.json'
   return open(dataPath).read()
 
-def BulkVerifiedOrgTestDataCreate():
-  dataPath = testDataFolder + 'VerifiedOrg/VerifiedOrg_VO.json'
+def BulkVerifiableOrgTestDataCreate():
+  dataPath = testDataFolder + 'VerifiableOrg/VerifiableOrg_VO.json'
   return open(dataPath).read()
 
-def BulkVOClaimTestDataCreate():
-  dataPath = testDataFolder + 'VOClaim/VOClaim_VOC.json'
+def BulkVerifiableClaimTestDataCreate():
+  dataPath = testDataFolder + 'VerifiableClaim/VerifiableClaim_VOC.json'
   return open(dataPath).read()
 
-def BulkVOClaimTypeTestDataCreate():
-  dataPath = testDataFolder + 'VOClaimType/VOClaimType_CT.json'
+def BulkVerifiableClaimTypeTestDataCreate():
+  dataPath = testDataFolder + 'VerifiableClaimType/VerifiableClaimType_CT.json'
   return open(dataPath).read()
 
-def BulkVODoingBusinessAsTestDataCreate():
-  dataPath = testDataFolder + 'VODoingBusinessAs/VODoingBusinessAs_VODBA.json'
+def BulkDoingBusinessAsTestDataCreate():
+  dataPath = testDataFolder + 'DoingBusinessAs/DoingBusinessAs_VODBA.json'
   return open(dataPath).read()
 
-def BulkVOLocationTestDataCreate():
-  dataPath = testDataFolder + 'VOLocation/VOLocation_VOL.json'
+def BulkLocationTestDataCreate():
+  dataPath = testDataFolder + 'Location/Location_VOL.json'
   return open(dataPath).read()
 
-def BulkVOLocationTypeTestDataCreate():
-  dataPath = testDataFolder + 'VOLocationType/VOLocationType_VLT.json'
+def BulkLocationTypeTestDataCreate():
+  dataPath = testDataFolder + 'LocationType/LocationType_VLT.json'
   return open(dataPath).read()
 
-def BulkVOTypeTestDataCreate():
-  dataPath = testDataFolder + 'VOType/VOType_VOType.json'
+def BulkVerifiableOrgTypeTestDataCreate():
+  dataPath = testDataFolder + 'VerifiableOrgType/VerifiableOrgType_VOType.json'
   return open(dataPath).read()
 
 def CurrentUserViewModelTestDataCreate():
   return {
-    "givenName":"Initial",
-    "surname":"Initial",
-    "email":"Initial",
-    "active":True,
-    "smUserId":"Initial",
-    "smAuthorizationDirectory":"Initial",
+    'givenName':'Initial',
+    'surname':'Initial',
+    'email':'Initial',
+    'active':True,
+    'smUserId':'Initial',
+    'smAuthorizationDirectory':'Initial',
   }
 
 def CurrentUserViewModelTestDataUpdate():
   return {
-    "givenName":"Changed",
-    "surname":"Changed",
-    "email":"Changed",
-    "active":False,
-    "smUserId":"Changed",
-    "smAuthorizationDirectory":"Changed",
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'active':False,
+    'smUserId':'Changed',
+    'smAuthorizationDirectory':'Changed',
+  }
+
+def DoingBusinessAsTestDataCreate():
+  return {
+    'dbaName':'Initial',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'verifiableOrgId': '2'
+  }
+
+def DoingBusinessAsTestDataUpdate():
+  return {
+    'dbaName':'Changed',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'verifiableOrgId': '2'
   }
 
 def InactiveClaimReasonTestDataCreate():
   return {
-    "displayOrder": "1",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "reason": "Claim has Expired",
-    "shortReason": "Expired"
+    'displayOrder': '1',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'reason': 'Claim has Expired',
+    'shortReason': 'Expired'
   }
 
 def InactiveClaimReasonTestDataUpdate():
   return {
-    "shortReason":"Changed",
-    "reason":"Changed",
-    "displayOrder":0,
+    'shortReason':'Changed',
+    'reason':'Changed',
+    'displayOrder':0,
   }
-
 
 def IssuerServiceTestDataCreate():
   return {
-    "DID": "did:sovrin:27F88573114C227A17684860",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "issuerOrgTLA": "BCReg",
-    "issuerOrgURL": "https://bcregistries.gov.bc.ca",
-    "jurisdictionId": "1",
-    "name": "BC Registry"
+    'DID': 'did:sovrin:27F88573114C227A17684860',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'issuerOrgTLA': 'BCReg',
+    'issuerOrgURL': 'https://bcregistries.gov.bc.ca',
+    'jurisdictionId': '1',
+    'name': 'BC Registry'
   }
 
 def IssuerServiceTestDataUpdate():
   return {
-    "name":"Changed",
-    "issuerOrgTLA":"Changed",
-    "issuerOrgURL":"Changed",
-    "DID":"Changed",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "jurisdictionId": "1",
+    'name':'Changed',
+    'issuerOrgTLA':'Changed',
+    'issuerOrgURL':'Changed',
+    'DID':'Changed',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'jurisdictionId': '1',
   }
+
 
 def JurisdictionTestDataCreate():
   return {
-    "abbrv": "BC",
-    "displayOrder": "1",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "isOnCommonList": True,
-    "name": "British Columbia"
+    'abbrv': 'BC',
+    'displayOrder': '1',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'isOnCommonList': True,
+    'name': 'British Columbia'
   }
 
 def JurisdictionTestDataUpdate():
   return {
-    "abbrv":"Changed",
-    "name":"Changed",
-    "displayOrder":0,
-    "isOnCommonList":False,
+    'abbrv':'Changed',
+    'name':'Changed',
+    'displayOrder':0,
+    'isOnCommonList':False,
+  }
+
+def LocationTestDataCreate():
+  return {
+    'addlDeliveryInfo': None,
+    'addressee': 'The Original House of Pies',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'latLong': '48.343285, -123.398304',
+    'municipality': 'Victoria',
+    'postalCode': 'V8Z 2J8',
+    'province': 'BC',
+    'streetAddress': '2262 Burdett Avenue',
+    'unitNumber': None,
+    'verifiableOrgId': '1',
+    'locationTypeId': '1'
+  }
+
+def LocationTestDataUpdate():
+  return {
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'verifiableOrgId': '1',
+    'locationTypeId': '1',
+    'addressee':'Changed',
+    'addlDeliveryInfo':'Changed',
+    'unitNumber':'Changed',
+    'streetAddress':'Changed',
+    'municipality':'Changed',
+    'province':'Changed',
+    'postalCode':'Changed',
+    'latLong':'Changed',
+  }
+
+def LocationTypeTestDataCreate():
+  return {
+    'description': 'Headquarters',
+    'displayOrder': '1',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'locType': 'Headquarters'
+  }
+
+def LocationTypeTestDataUpdate():
+  return {
+    'locType':'Changed',
+    'description':'Changed',
+    'displayOrder':0,
   }
 
 
 def PermissionTestDataCreate():
   return {
-    "code":"Initial",
-    "name":"Initial",
-    "description":"Initial",
+    'code':'Initial',
+    'name':'Initial',
+    'description':'Initial',
   }
 
 def PermissionTestDataUpdate():
   return {
-    "code":"Changed",
-    "name":"Changed",
-    "description":"Changed",
+    'code':'Changed',
+    'name':'Changed',
+    'description':'Changed',
   }
 
 
 def PermissionViewModelTestDataCreate():
   return {
-    "code":"Initial",
-    "name":"Initial",
-    "description":"Initial",
+    'code':'Initial',
+    'name':'Initial',
+    'description':'Initial',
   }
 
 def PermissionViewModelTestDataUpdate():
   return {
-    "code":"Changed",
-    "name":"Changed",
-    "description":"Changed",
+    'code':'Changed',
+    'name':'Changed',
+    'description':'Changed',
   }
 
 
 def RoleTestDataCreate():
   return {
-    "name":"Initial",
-    "description":"Initial",
+    'name':'Initial',
+    'description':'Initial',
   }
 
 def RoleTestDataUpdate():
   return {
-    "name":"Changed",
-    "description":"Changed",
+    'name':'Changed',
+    'description':'Changed',
   }
 
 
 def RolePermissionTestDataCreate():
   return {
-    "permissionId": "1",
-    "roleId": "1"
+    'permissionId': '1',
+    'roleId': '1'
   }
 
 def RolePermissionTestDataUpdate():
   return {
-    "permissionId": "2",
-    "roleId": "2"
+    'permissionId': '2',
+    'roleId': '2'
   }
-
 
 def RolePermissionViewModelTestDataCreate():
   return {
-    "roleId":1,
-    "permissionId":1,
+    'roleId':1,
+    'permissionId':1,
   }
 
 def RolePermissionViewModelTestDataUpdate():
   return {
-    "roleId":0,
-    "permissionId":0,
+    'roleId':0,
+    'permissionId':0,
   }
-
 
 def RoleViewModelTestDataCreate():
   return {
-    "name":"Initial",
-    "description":"Initial",
+    'name':'Initial',
+    'description':'Initial',
   }
 
 def RoleViewModelTestDataUpdate():
   return {
-    "name":"Changed",
-    "description":"Changed",
+    'name':'Changed',
+    'description':'Changed',
   }
-
 
 def UserTestDataCreate():
   return {
-    "authorizationDirectory": "IDIR",
-    "effectiveDate": "2010-10-10",
-    "email": "JudyHHolbert@gustr.com",
-    "endDate": None,
-    "givenName": "Judy",
-    "guid": None,
-    "surname": "Holbert",
-    "userId": None
+    'authorizationDirectory': 'IDIR',
+    'effectiveDate': '2010-10-10',
+    'email': 'JudyHHolbert@gustr.com',
+    'endDate': None,
+    'givenName': 'Judy',
+    'guid': None,
+    'surname': 'Holbert',
+    'userId': None
   }
 
 def UserTestDataUpdate():
   return {
-    "givenName":"Changed",
-    "surname":"Changed",
-    "email":"Changed",
-    "userId":"Changed",
-    "guid":"Changed",
-    "authorizationDirectory":"Changed",
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'userId':'Changed',
+    'guid':'Changed',
+    'authorizationDirectory':'Changed',
   }
-
 
 def UserDetailsViewModelTestDataCreate():
   return {
-    "givenName":"Initial",
-    "surname":"Initial",
-    "email":"Initial",
-    "active":True,
+    'givenName':'Initial',
+    'surname':'Initial',
+    'email':'Initial',
+    'active':True,
   }
 
 def UserDetailsViewModelTestDataUpdate():
   return {
-    "givenName":"Changed",
-    "surname":"Changed",
-    "email":"Changed",
-    "active":False,
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'active':False,
   }
-
 
 def UserRoleTestDataCreate():
   return {
-    "effectiveDate": "2017-01-01",
-    "endDate": None,
-    "roleId": "2",
-    "userId": "1"
+    'effectiveDate': '2017-01-01',
+    'endDate': None,
+    'roleId': '2',
+    'userId': '1'
   }
 
 def UserRoleTestDataUpdate():
   return {
-    "effectiveDate": "2017-02-01",
-    "endDate": None,
-    "roleId": "2",
-    "userId": "1"
+    'effectiveDate': '2017-02-01',
+    'endDate': None,
+    'roleId': '2',
+    'userId': '1'
   }
-
 
 def UserRoleViewModelTestDataCreate():
   return {
-    "roleId":1,
-    "userId":1,
+    'roleId':1,
+    'userId':1,
   }
 
 def UserRoleViewModelTestDataUpdate():
   return {
-    "roleId":0,
-    "userId":0,
+    'roleId':0,
+    'userId':0,
   }
-
 
 def UserViewModelTestDataCreate():
   return {
-    "givenName":"Initial",
-    "surname":"Initial",
-    "email":"Initial",
-    "active":True,
-    "smUserId":"Initial",
+    'givenName':'Initial',
+    'surname':'Initial',
+    'email':'Initial',
+    'active':True,
+    'smUserId':'Initial',
   }
 
 def UserViewModelTestDataUpdate():
   return {
-    "givenName":"Changed",
-    "surname":"Changed",
-    "email":"Changed",
-    "active":False,
-    "smUserId":"Changed",
+    'givenName':'Changed',
+    'surname':'Changed',
+    'email':'Changed',
+    'active':False,
+    'smUserId':'Changed',
   }
 
-
-def VOClaimTestDataCreate():
+def VerifiableClaimTestDataCreate():
   return {
-    "claimJSON":"Initial",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "inactiveClaimReasonId": None,
-    "inactiveReason": "N/A",
-    "verifiedOrgId": "1",
-    "voClaimType": "1"
+    'claimJSON':'Initial',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'inactiveClaimReasonId': None,
+    'verifiableOrgId': '1',
+    'claimType': '1'
   }
 
-def VOClaimTestDataUpdate():
+def VerifiableClaimTestDataUpdate():
   return {
-    "claimJSON":"Changed",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "inactiveClaimReasonId": None,
-    "inactiveReason": "N/A",
-    "verifiedOrgId": "1",
-    "voClaimType": "1"
+    'claimJSON':'Changed',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'inactiveClaimReasonId': None,
+    'verifiableOrgId': '1',
+    'claimType': '1'
   }
 
-
-def VOClaimTypeTestDataCreate():
+def VerifiableClaimTypeTestDataCreate():
   return {
-    "theType":"Initial",
-    "base64Logo":"Initial",
-    "issuerURL":"Initial",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "issuerOrgId": "1",
+    'claimType':'Initial',
+    'base64Logo':'Initial',
+    'issuerURL':'Initial',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'issuerServiceId': '1',
   }
 
-def VOClaimTypeTestDataUpdate():
+def VerifiableClaimTypeTestDataUpdate():
   return {
-    "theType":"Changed",
-    "base64Logo":"Changed",
-    "issuerURL":"Changed",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "issuerOrgId": "1",
+    'claimType':'Changed',
+    'base64Logo':'Changed',
+    'issuerURL':'Changed',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'issuerServiceId': '1',
   }
 
-def VODoingBusinessAsTestDataCreate():
+def VerifiableOrgTestDataCreate():
   return {
-    "DBA":"Initial",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "verifiedOrgId": "2"
+    'legalName': 'The Original House of Pies',
+    'orgId': '11121398',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'jurisdictionId': '1',
+    'orgTypeId': '2'
   }
 
-def VODoingBusinessAsTestDataUpdate():
+def VerifiableOrgTestDataUpdate():
   return {
-    "DBA":"Changed",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "verifiedOrgId": "2"
+    'orgId':'Changed',
+    'legalName':'Changed',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'jurisdictionId': '1',
+    'orgTypeId': '2'
   }
 
-def VOLocationTestDataCreate():
+def VerifiableOrgTypeTestDataCreate():
   return {
-    "addlDeliveryInfo": None,
-    "addressee": "The Original House of Pies",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "latLong": "48.343285, -123.398304",
-    "municipality": "Victoria",
-    "postalCode": "V8Z 2J8",
-    "province": "BC",
-    "streetAddress": "2262 Burdett Avenue",
-    "unitNumber": None,
-    "verifiedOrgId": "1",
-    "voLocationTypeId": "1"
+    'description': 'A Registered Corporation',
+    'displayOrder': '1',
+    'effectiveDate': '2010-10-10',
+    'endDate': None,
+    'orgType': 'Corporation'
   }
 
-def VOLocationTestDataUpdate():
+def VerifiableOrgTypeTestDataUpdate():
   return {
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "verifiedOrgId": "1",
-    "voLocationTypeId": "1",
-    "addressee":"Changed",
-    "addlDeliveryInfo":"Changed",
-    "unitNumber":"Changed",
-    "streetAddress":"Changed",
-    "municipality":"Changed",
-    "province":"Changed",
-    "postalCode":"Changed",
-    "latLong":"Changed",
-  }
-
-
-def VOLocationTypeTestDataCreate():
-  return {
-    "description": "Headquarters",
-    "displayOrder": "1",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "theType": "Headquarters"
-  }
-
-def VOLocationTypeTestDataUpdate():
-  return {
-    "theType":"Changed",
-    "description":"Changed",
-    "displayOrder":0,
-  }
-
-
-def VOTypeTestDataCreate():
-  return {
-    "description": "A Registered Corporation",
-    "displayOrder": "1",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "theType": "Corporation"
-  }
-
-def VOTypeTestDataUpdate():
-  return {
-    "theType":"Changed",
-    "description":"Changed",
-    "displayOrder":0,
-  }
-
-
-def VerifiedOrgTestDataCreate():
-  return {
-    "LegalName": "The Original House of Pies",
-    "busId": "11121398",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "jurisdictionId": "1",
-    "orgTypeId": "2"
-  }
-
-def VerifiedOrgTestDataUpdate():
-  return {
-    "busId":"Changed",
-    "LegalName":"Changed",
-    "effectiveDate": "2010-10-10",
-    "endDate": None,
-    "jurisdictionId": "1",
-    "orgTypeId": "2"
+    'orgType':'Changed',
+    'description':'Changed',
+    'displayOrder':0,
   }
 

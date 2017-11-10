@@ -1,7 +1,7 @@
 """
     REST API Documentation for TheOrgBook
 
-    TheOrgBook is a repository for Verified Claims made about Organizations related to a known foundational Verified Claim. See https://github.com/bcgov/VON
+    TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
         
@@ -32,12 +32,18 @@ from rest_framework import status
 from . import fakedata
 from .models.CurrentUserViewModel import CurrentUserViewModel
 from .serializers import CurrentUserViewModelSerializer
+from .models.DoingBusinessAs import DoingBusinessAs
+from .serializers import DoingBusinessAsSerializer
 from .models.InactiveClaimReason import InactiveClaimReason
 from .serializers import InactiveClaimReasonSerializer
 from .models.IssuerService import IssuerService
 from .serializers import IssuerServiceSerializer
 from .models.Jurisdiction import Jurisdiction
 from .serializers import JurisdictionSerializer
+from .models.Location import Location
+from .serializers import LocationSerializer
+from .models.LocationType import LocationType
+from .serializers import LocationTypeSerializer
 from .models.Permission import Permission
 from .serializers import PermissionSerializer
 from .models.PermissionViewModel import PermissionViewModel
@@ -60,20 +66,14 @@ from .models.UserRoleViewModel import UserRoleViewModel
 from .serializers import UserRoleViewModelSerializer
 from .models.UserViewModel import UserViewModel
 from .serializers import UserViewModelSerializer
-from .models.VOClaim import VOClaim
-from .serializers import VOClaimSerializer
-from .models.VOClaimType import VOClaimType
-from .serializers import VOClaimTypeSerializer
-from .models.VODoingBusinessAs import VODoingBusinessAs
-from .serializers import VODoingBusinessAsSerializer
-from .models.VOLocation import VOLocation
-from .serializers import VOLocationSerializer
-from .models.VOLocationType import VOLocationType
-from .serializers import VOLocationTypeSerializer
-from .models.VOType import VOType
-from .serializers import VOTypeSerializer
-from .models.VerifiedOrg import VerifiedOrg
-from .serializers import VerifiedOrgSerializer
+from .models.VerifiableClaim import VerifiableClaim
+from .serializers import VerifiableClaimSerializer
+from .models.VerifiableClaimType import VerifiableClaimType
+from .serializers import VerifiableClaimTypeSerializer
+from .models.VerifiableOrg import VerifiableOrg
+from .serializers import VerifiableOrgSerializer
+from .models.VerifiableOrgType import VerifiableOrgType
+from .serializers import VerifiableOrgTypeSerializer
 
 # Simple API test cases. 
 # If an API operation contains generated code and requires a simple model object
@@ -248,6 +248,87 @@ class Test_Api_Simple(TestCase):
         # Update the object:
         updateUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
         payload = fakedata.JurisdictionTestDataUpdate()
+        jsonString = json.dumps(payload)
+        response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
+        # Check that the response is 200 OK.
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        # Cleanup:
+        deleteUrl = createUrl + "/" + str(createdId) + "/delete"
+        response = self.client.post(deleteUrl)
+        # Check that the response is OK.
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        
+
+    def test_locationtypesBulkPost(self):
+        # Test Bulk Load.
+        jsonString = fakedata.BulkLocationTypeTestDataCreate()
+        response = self.client.post('/api/v1/locationtypes/bulk',content_type='application/json', data=jsonString)
+        # Check that the response is 200 OK.
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        
+
+    def test_locationtypesGet(self):
+        # Test Create and List operations.
+        testUrl = "/api/v1/locationtypes"
+        # Create:
+        serializer_class = LocationTypeSerializer
+        payload = fakedata.LocationTypeTestDataCreate()
+        jsonString = json.dumps(payload)
+        response = self.client.post(testUrl, content_type='application/json', data=jsonString)
+        # Check that the response is OK.
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        # parse the response.
+        jsonString = response.content.decode("utf-8")
+        data = json.loads(jsonString)
+        createdId = data['id']
+        # List:
+        response = self.client.get(testUrl)
+        # Check that the response is 200 OK.
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        # Cleanup:
+        deleteUrl = testUrl + "/" + str(createdId) + "/delete"
+        response = self.client.post(deleteUrl)
+        # Check that the response is OK.
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        
+
+    def test_locationtypesIdDeletePost(self):
+        # Test Retrieve and Update operations.
+        testUrl = "/api/v1/locationtypes/(?P<id>[0-9]+)/delete"
+        createUrl = testUrl.replace ("/(?P<id>[0-9]+)/delete","")
+        # Create an object:
+        payload = fakedata.LocationTypeTestDataCreate()
+        jsonString = json.dumps(payload)
+        response = self.client.post(createUrl, content_type='application/json', data=jsonString)
+        # Check that the response is OK.
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        # parse the response.
+        jsonString = response.content.decode("utf-8")
+        data = json.loads(jsonString)
+        createdId = data['id']
+        deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
+        response = self.client.post(deleteUrl)
+        # Check that the response is OK.
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        
+
+    def test_locationtypesIdGet(self):
+        # Test Retrieve and Update operations.
+        testUrl = "/api/v1/locationtypes/(?P<id>[0-9]+)"
+        createUrl = testUrl.replace ("/(?P<id>[0-9]+)","")
+        # Create an object:
+        payload = fakedata.LocationTypeTestDataCreate()
+        jsonString = json.dumps(payload)
+        response = self.client.post(createUrl, content_type='application/json', data=jsonString)
+        # Check that the response is OK.
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        # parse the response.
+        jsonString = response.content.decode("utf-8")
+        data = json.loads(jsonString)
+        createdId = data['id']
+        # Update the object:
+        updateUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
+        payload = fakedata.LocationTypeTestDataUpdate()
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
@@ -502,20 +583,20 @@ class Test_Api_Simple(TestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
-    def test_volocationtypesBulkPost(self):
+    def test_verifiableorgtypesBulkPost(self):
         # Test Bulk Load.
-        jsonString = fakedata.BulkVOLocationTypeTestDataCreate()
-        response = self.client.post('/api/v1/volocationtypes/bulk',content_type='application/json', data=jsonString)
+        jsonString = fakedata.BulkVerifiableOrgTypeTestDataCreate()
+        response = self.client.post('/api/v1/verifiableorgtypes/bulk',content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         
 
-    def test_volocationtypesGet(self):
+    def test_verifiableorgtypesGet(self):
         # Test Create and List operations.
-        testUrl = "/api/v1/volocationtypes"
+        testUrl = "/api/v1/verifiableorgtypes"
         # Create:
-        serializer_class = VOLocationTypeSerializer
-        payload = fakedata.VOLocationTypeTestDataCreate()
+        serializer_class = VerifiableOrgTypeSerializer
+        payload = fakedata.VerifiableOrgTypeTestDataCreate()
         jsonString = json.dumps(payload)
         response = self.client.post(testUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
@@ -535,12 +616,12 @@ class Test_Api_Simple(TestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
-    def test_volocationtypesIdDeletePost(self):
+    def test_verifiableorgtypesIdDeletePost(self):
         # Test Retrieve and Update operations.
-        testUrl = "/api/v1/volocationtypes/(?P<id>[0-9]+)/delete"
+        testUrl = "/api/v1/verifiableorgtypes/(?P<id>[0-9]+)/delete"
         createUrl = testUrl.replace ("/(?P<id>[0-9]+)/delete","")
         # Create an object:
-        payload = fakedata.VOLocationTypeTestDataCreate()
+        payload = fakedata.VerifiableOrgTypeTestDataCreate()
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
@@ -555,12 +636,12 @@ class Test_Api_Simple(TestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         
 
-    def test_volocationtypesIdGet(self):
+    def test_verifiableorgtypesIdGet(self):
         # Test Retrieve and Update operations.
-        testUrl = "/api/v1/volocationtypes/(?P<id>[0-9]+)"
+        testUrl = "/api/v1/verifiableorgtypes/(?P<id>[0-9]+)"
         createUrl = testUrl.replace ("/(?P<id>[0-9]+)","")
         # Create an object:
-        payload = fakedata.VOLocationTypeTestDataCreate()
+        payload = fakedata.VerifiableOrgTypeTestDataCreate()
         jsonString = json.dumps(payload)
         response = self.client.post(createUrl, content_type='application/json', data=jsonString)
         # Check that the response is OK.
@@ -571,88 +652,7 @@ class Test_Api_Simple(TestCase):
         createdId = data['id']
         # Update the object:
         updateUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
-        payload = fakedata.VOLocationTypeTestDataUpdate()
-        jsonString = json.dumps(payload)
-        response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
-        # Check that the response is 200 OK.
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        # Cleanup:
-        deleteUrl = createUrl + "/" + str(createdId) + "/delete"
-        response = self.client.post(deleteUrl)
-        # Check that the response is OK.
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
-        
-
-    def test_voorgtypesBulkPost(self):
-        # Test Bulk Load.
-        jsonString = fakedata.BulkVOTypeTestDataCreate()
-        response = self.client.post('/api/v1/voorgtypes/bulk',content_type='application/json', data=jsonString)
-        # Check that the response is 200 OK.
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        
-
-    def test_voorgtypesGet(self):
-        # Test Create and List operations.
-        testUrl = "/api/v1/voorgtypes"
-        # Create:
-        serializer_class = VOTypeSerializer
-        payload = fakedata.VOTypeTestDataCreate()
-        jsonString = json.dumps(payload)
-        response = self.client.post(testUrl, content_type='application/json', data=jsonString)
-        # Check that the response is OK.
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        # parse the response.
-        jsonString = response.content.decode("utf-8")
-        data = json.loads(jsonString)
-        createdId = data['id']
-        # List:
-        response = self.client.get(testUrl)
-        # Check that the response is 200 OK.
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        # Cleanup:
-        deleteUrl = testUrl + "/" + str(createdId) + "/delete"
-        response = self.client.post(deleteUrl)
-        # Check that the response is OK.
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
-        
-
-    def test_voorgtypesIdDeletePost(self):
-        # Test Retrieve and Update operations.
-        testUrl = "/api/v1/voorgtypes/(?P<id>[0-9]+)/delete"
-        createUrl = testUrl.replace ("/(?P<id>[0-9]+)/delete","")
-        # Create an object:
-        payload = fakedata.VOTypeTestDataCreate()
-        jsonString = json.dumps(payload)
-        response = self.client.post(createUrl, content_type='application/json', data=jsonString)
-        # Check that the response is OK.
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        # parse the response.
-        jsonString = response.content.decode("utf-8")
-        data = json.loads(jsonString)
-        createdId = data['id']
-        deleteUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
-        response = self.client.post(deleteUrl)
-        # Check that the response is OK.
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
-        
-
-    def test_voorgtypesIdGet(self):
-        # Test Retrieve and Update operations.
-        testUrl = "/api/v1/voorgtypes/(?P<id>[0-9]+)"
-        createUrl = testUrl.replace ("/(?P<id>[0-9]+)","")
-        # Create an object:
-        payload = fakedata.VOTypeTestDataCreate()
-        jsonString = json.dumps(payload)
-        response = self.client.post(createUrl, content_type='application/json', data=jsonString)
-        # Check that the response is OK.
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        # parse the response.
-        jsonString = response.content.decode("utf-8")
-        data = json.loads(jsonString)
-        createdId = data['id']
-        # Update the object:
-        updateUrl = testUrl.replace ("(?P<id>[0-9]+)",str(createdId))
-        payload = fakedata.VOTypeTestDataUpdate()
+        payload = fakedata.VerifiableOrgTypeTestDataUpdate()
         jsonString = json.dumps(payload)
         response = self.client.put(updateUrl, content_type='application/json', data=jsonString)
         # Check that the response is 200 OK.
