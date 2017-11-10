@@ -63,7 +63,7 @@ CONTEXT_DIR_ROOT="tob-api"
 
 DJANGO_BUILDER_NAME="django"
 DJANGO_SOURCE_IMAGE_NAME="python"
-DJANGO_SOURCE_IMAGE_TAG="3.5"
+DJANGO_SOURCE_IMAGE_TAG="3.6"
 DJANGO_SOURCE_IMAGE_NAMESPACE="openshift"
 PIP_INDEX_URL=""
 
@@ -138,12 +138,12 @@ echo
 # oc delete imagestreams,bc --all
 # echo
 
-echo "============================================================================="
-echo "Creating build configurations in OpenShift project; ${PROJECT_NAME} ..."
-echo "============================================================================="
-for file in *${BuildConfigPostfix}; do
-	echo "Loading ${file} ...";
-	oc create -f ${file};
-	echo;
-done
-echo
+# echo "============================================================================="
+# echo "Creating build configurations in OpenShift project; ${PROJECT_NAME} ..."
+# echo "============================================================================="
+# for file in *${BuildConfigPostfix}; do
+	# echo "Loading ${file} ...";
+	# oc create -f ${file};
+	# echo;
+# done
+# echo

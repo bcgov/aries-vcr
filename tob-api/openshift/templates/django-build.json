@@ -110,7 +110,7 @@
       "displayName": "Source Image Tag",
       "required": true,
       "description": "The tag of the source image.",
-      "value": "3.5"
+      "value": "3.6"
     },
     {
       "name": "SOURCE_IMAGE_NAMESPACE",
