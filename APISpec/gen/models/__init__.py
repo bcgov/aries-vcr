@@ -49,10 +49,6 @@
 #except:
 #     import Location
 #try:
-#     from . import LocationOrg  
-#except:
-#     import LocationOrg
-#try:
 #     from . import LocationType  
 #except:
 #     import LocationType

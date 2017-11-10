@@ -4,26 +4,26 @@
         "endDate": null,
         "id": "1",
         "jurisdictionId": "1",
-        "legalName": "The Original House of Pies",
-        "orgId": "72001757",
-        "orgTypeId": "3"
+        "legalName": "1",
+        "orgId": "42765409",
+        "orgTypeId": "2"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
         "jurisdictionId": "1",
-        "legalName": "Asian Junction",
-        "orgId": "40929339",
-        "orgTypeId": "1"
+        "legalName": "1",
+        "orgId": "34443698",
+        "orgTypeId": "3"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "3",
         "jurisdictionId": "1",
-        "legalName": "Muirhead's",
-        "orgId": "52629869",
+        "legalName": "1",
+        "orgId": "36379959",
         "orgTypeId": "1"
     },
     {
@@ -31,8 +31,8 @@
         "endDate": null,
         "id": "4",
         "jurisdictionId": "1",
-        "legalName": "Museum Company",
-        "orgId": "50549812",
+        "legalName": "1",
+        "orgId": "84938004",
         "orgTypeId": "1"
     },
     {
@@ -40,8 +40,8 @@
         "endDate": null,
         "id": "5",
         "jurisdictionId": "1",
-        "legalName": "Henry's Hamburgers",
-        "orgId": "29296044",
+        "legalName": "2",
+        "orgId": "10991985",
         "orgTypeId": "1"
     },
     {
@@ -49,35 +49,35 @@
         "endDate": null,
         "id": "6",
         "jurisdictionId": "1",
-        "legalName": "Body Toning",
-        "orgId": "43151558",
-        "orgTypeId": "1"
+        "legalName": "1",
+        "orgId": "59184698",
+        "orgTypeId": "4"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "7",
         "jurisdictionId": "1",
-        "legalName": "Britling Cafeterias",
-        "orgId": "77293724",
-        "orgTypeId": "1"
+        "legalName": "1",
+        "orgId": "44827253",
+        "orgTypeId": "4"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "8",
         "jurisdictionId": "1",
-        "legalName": "Record World",
-        "orgId": "99581461",
-        "orgTypeId": "1"
+        "legalName": "2",
+        "orgId": "70263469",
+        "orgTypeId": "4"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "9",
         "jurisdictionId": "1",
-        "legalName": "Edwards",
-        "orgId": "18121039",
+        "legalName": "2",
+        "orgId": "36436024",
         "orgTypeId": "1"
     },
     {
@@ -85,53 +85,44 @@
         "endDate": null,
         "id": "10",
         "jurisdictionId": "1",
-        "legalName": "Grass Roots Yard Services",
-        "orgId": "40092140",
-        "orgTypeId": "2"
+        "legalName": "2",
+        "orgId": "52776927",
+        "orgTypeId": "3"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "11",
         "jurisdictionId": "1",
-        "legalName": "Pantry Food Stores",
-        "orgId": "92842438",
-        "orgTypeId": "3"
+        "legalName": "2",
+        "orgId": "98904807",
+        "orgTypeId": "2"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "12",
         "jurisdictionId": "1",
-        "legalName": "Magik Grey",
-        "orgId": "67237026",
-        "orgTypeId": "4"
+        "legalName": "2",
+        "orgId": "53883631",
+        "orgTypeId": "1"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "13",
         "jurisdictionId": "1",
-        "legalName": "Earthworks Garden Kare",
-        "orgId": "64933914",
-        "orgTypeId": "1"
+        "legalName": "1",
+        "orgId": "12079366",
+        "orgTypeId": "4"
     },
     {
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "14",
         "jurisdictionId": "1",
-        "legalName": "Stratacard",
-        "orgId": "91702515",
+        "legalName": "2",
+        "orgId": "76545633",
         "orgTypeId": "1"
-    },
-    {
-        "effectiveDate": "2010-10-10",
-        "endDate": null,
-        "id": "15",
-        "jurisdictionId": "1",
-        "legalName": "J. Brannam",
-        "orgId": "85528970",
-        "orgTypeId": "2"
     }
 ]

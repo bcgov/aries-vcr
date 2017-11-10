@@ -128,15 +128,6 @@ def LocationTestDataUpdate():
   }
 
 
-def LocationOrgTestDataCreate():
-  return {
-  }
-
-def LocationOrgTestDataUpdate():
-  return {
-  }
-
-
 def LocationTypeTestDataCreate():
   return {
     'locType':'Initial',

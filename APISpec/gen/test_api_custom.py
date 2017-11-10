@@ -41,8 +41,6 @@ from .models.Jurisdiction import Jurisdiction
 from .serializers import JurisdictionSerializer
 from .models.Location import Location
 from .serializers import LocationSerializer
-from .models.LocationOrg import LocationOrg
-from .serializers import LocationOrgSerializer
 from .models.LocationType import LocationType
 from .serializers import LocationTypeSerializer
 from .models.Permission import Permission

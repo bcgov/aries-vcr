@@ -33,7 +33,6 @@ from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
 from .models.Location import Location
-from .models.LocationOrg import LocationOrg
 from .models.LocationType import LocationType
 from .models.Permission import Permission
 from .models.PermissionViewModel import PermissionViewModel

@@ -28,9 +28,9 @@ from .LocationType import LocationType
 
 from auditable.models import Auditable
 
-class VOLocation(Auditable):	    
-    verifiedOrgId = models.ForeignKey('VerifiedOrg', related_name='VOLocationverifiedOrgId')   
-    voLocationTypeId = models.ForeignKey('VOLocationType', related_name='VOLocationvoLocationTypeId')   
+class Location(Auditable):	    
+    verifiableOrgId = models.ForeignKey('VerifiableOrg', related_name='LocationverifiableOrgId')   
+    locationTypeId = models.ForeignKey('LocationType', related_name='LocationlocationTypeId')   
     addressee = models.CharField(max_length=255, blank=True, null=True)   
     addlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   
     unitNumber = models.CharField(max_length=255, blank=True, null=True)   
@@ -50,3 +50,10 @@ class Location(Auditable):
     locationTypeId = models.ForeignKey('LocationType', related_name='LocationlocationTypeId')   
     addressee = models.CharField(max_length=255, blank=True, null=True)   
     addlDeliveryInfo = models.CharField(max_length=255, blank=True, null=True)   
+from .VerifiableOrg import VerifiableOrg
+from .DoingBusinessAs import DoingBusinessAs
+from .LocationType import LocationType
+class Location(Auditable):	    
+    verifiableOrgId = models.ForeignKey('VerifiableOrg', related_name='LocationverifiableOrgId')   
+    doingBusinessAsId = models.ForeignKey('DoingBusinessAs', related_name='LocationdoingBusinessAsId', blank=True, null=True)   
+    locationTypeId = models.ForeignKey('LocationType', related_name='LocationlocationTypeId')   

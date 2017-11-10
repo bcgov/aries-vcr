@@ -27,7 +27,6 @@ from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
 from .models.Location import Location
-from .models.LocationOrg import LocationOrg
 from .models.LocationType import LocationType
 from .models.Permission import Permission
 from .models.PermissionViewModel import PermissionViewModel
@@ -73,12 +72,7 @@ class JurisdictionSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Location
-    fields = ('id','verifiableOrgId','locationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
-
-class LocationOrgSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = LocationOrg
-    fields = ('id','locationId','verifiableOrgId','doingBusinessAsId')
+    fields = ('id','verifiableOrgId','doingBusinessAsId','locationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
 
 class LocationTypeSerializer(serializers.ModelSerializer):
   class Meta:

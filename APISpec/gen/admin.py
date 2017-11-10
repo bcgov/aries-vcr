@@ -26,7 +26,6 @@ from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
 from .models.Location import Location
-from .models.LocationOrg import LocationOrg
 from .models.LocationType import LocationType
 from .models.Permission import Permission
 
@@ -51,7 +50,6 @@ admin.site.register(InactiveClaimReason)
 admin.site.register(IssuerService)
 admin.site.register(Jurisdiction)
 admin.site.register(Location)
-admin.site.register(LocationOrg)
 admin.site.register(LocationType)
 admin.site.register(Permission)
 admin.site.register(Role)
