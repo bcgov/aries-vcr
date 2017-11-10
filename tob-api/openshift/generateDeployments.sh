@@ -45,7 +45,7 @@ if [ -z "$PROJECT_NAMESPACE" ]; then
 	echo "You must supply PROJECT_NAMESPACE."
 	echo -n "Please enter the root namespace of the project; for example 'devex-von': "
 	read PROJECT_NAMESPACE
-	PROJECT_NAMESPACE="$(echo "${PROJECT_NAMESPACE}" | tr '[:upper:]' '[:lower:]')"
+	PROJECT_NAMESPACE="$(echo "${PROJECT_NAMESPACE}" | LC_CTYPE=C tr '[:upper:]' '[:lower:]')"
 	echo
 fi
 
@@ -93,7 +93,7 @@ fi
 
 if [ -z "${DJANGO_SECRET_KEY}" ]; then
 	echo "DJANGO_SECRET_KEY will be auto generated ..."
-	DJANGO_SECRET_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9_' | fold -w 50 | head -n 1)
+	DJANGO_SECRET_KEY=$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9_' | fold -w 50 | head -n 1)
 fi
 
 SCHEMA_SPY_DEPLOYMENT_NAME="schema-spy"
