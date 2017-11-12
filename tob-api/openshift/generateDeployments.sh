@@ -156,15 +156,15 @@ ${SCRIPTS_DIR}/configureSchemaSpyDeployment.sh \
 echo "============================================================================="
 echo
 
-# echo "============================================================================="
-# echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
-# echo "-----------------------------------------------------------------------------"
-# for file in *${DeploymentConfigPostfix}; do
-	# echo "Loading ${file} ...";
-	# oc create -f ${file};
-	# echo;
-# done
-# echo "============================================================================="
-# echo
+echo "============================================================================="
+echo "Creating deployment configurations in OpenShift project; ${DEPLOYMENT_PROJECT_NAME} ..."
+echo "-----------------------------------------------------------------------------"
+for file in *${DeploymentConfigPostfix}; do
+	echo "Loading ${file} ...";
+	oc create -f ${file};
+	echo;
+done
+echo "============================================================================="
+echo
 
 resetDir

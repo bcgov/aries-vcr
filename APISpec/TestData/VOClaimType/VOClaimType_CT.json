@@ -1,0 +1,47 @@
+[
+    {
+        "base64Logo": null,
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "1",
+        "issuerOrgId": "1",
+        "issuerURL": "https://registries.bc.gov.ca/verifiedOrganization",
+        "theType": "Verified Organization"
+    },
+    {
+        "base64Logo": null,
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "2",
+        "issuerOrgId": "2",
+        "issuerURL": "https://bizlic.bc.gov.ca/BusinessLicense",
+        "theType": "Business License"
+    },
+    {
+        "base64Logo": null,
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "3",
+        "issuerOrgId": "3",
+        "issuerURL": "https://foodsafe.bc.gov.ca/RestaurantLicense",
+        "theType": "Restaurant License"
+    },
+    {
+        "base64Logo": null,
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "4",
+        "issuerOrgId": "3",
+        "issuerURL": "https://foodsafebc.bc.gov.ca/FoodSafetyLicense",
+        "theType": "Food Safety License"
+    },
+    {
+        "base64Logo": null,
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "5",
+        "issuerOrgId": "4",
+        "issuerURL": "https://llbc.bc.gov.ca/LiquorLicense",
+        "theType": "Liquor Licence"
+    }
+]

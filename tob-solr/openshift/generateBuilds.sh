@@ -41,7 +41,7 @@ if [ -z "$GIT_REF" ]; then
 fi
 
 if [ -z "$GIT_URI" ]; then
-	GIT_URI="https://github.com/bcgov/openshift-solr.git"
+	GIT_URI="https://github.com/bcgov/TheOrgBook.git"
 	echo "Defaulting 'GIT_URI' to ${GIT_URI} ..."
 	echo
 fi

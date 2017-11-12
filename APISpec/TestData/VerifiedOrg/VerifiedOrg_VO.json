@@ -1,0 +1,101 @@
+[
+    {
+        "LegalName": "The Original House of Pies",
+        "busId": "75899091",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "1",
+        "jurisdictionId": "1",
+        "orgTypeId": "1"
+    },
+    {
+        "LegalName": "Museum Company",
+        "busId": "24462232",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "2",
+        "jurisdictionId": "1",
+        "orgTypeId": "4"
+    },
+    {
+        "LegalName": "Brendle's",
+        "busId": "22679970",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "3",
+        "jurisdictionId": "1",
+        "orgTypeId": "1"
+    },
+    {
+        "LegalName": "Harold's",
+        "busId": "61923140",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "4",
+        "jurisdictionId": "1",
+        "orgTypeId": "1"
+    },
+    {
+        "LegalName": "Record World",
+        "busId": "86803566",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "5",
+        "jurisdictionId": "1",
+        "orgTypeId": "1"
+    },
+    {
+        "LegalName": "Pantry Food Stores",
+        "busId": "86282755",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "6",
+        "jurisdictionId": "1",
+        "orgTypeId": "2"
+    },
+    {
+        "LegalName": "Pantry Pride",
+        "busId": "52515169",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "7",
+        "jurisdictionId": "1",
+        "orgTypeId": "2"
+    },
+    {
+        "LegalName": "Gamma Gas",
+        "busId": "74905418",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "8",
+        "jurisdictionId": "1",
+        "orgTypeId": "1"
+    },
+    {
+        "LegalName": "Success Is Yours",
+        "busId": "23458016",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "9",
+        "jurisdictionId": "1",
+        "orgTypeId": "2"
+    },
+    {
+        "LegalName": "J. Brannam",
+        "busId": "74029843",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "10",
+        "jurisdictionId": "1",
+        "orgTypeId": "1"
+    },
+    {
+        "LegalName": "Happy Family",
+        "busId": "48371974",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "11",
+        "jurisdictionId": "1",
+        "orgTypeId": "4"
+    }
+]

@@ -46,7 +46,7 @@ fi
 
 if [ -z "$POSTGRESQL_PASSWORD" ]; then
 	echo "POSTGRESQL_PASSWORD will be auto generated ..."
-	POSTGRESQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9_@#=;:|' | fold -w 16 | head -n 1)
+	POSTGRESQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9_@#=' | fold -w 16 | head -n 1)
 fi
 
 if [ -z "$DEPLOYMENT_CONFIG_TEMPLATE" ]; then

@@ -1,0 +1,18 @@
+[
+    {
+        "description": "Headquarters",
+        "displayOrder": "1",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "1",
+        "theType": "Headquarters"
+    },
+    {
+        "description": "Regional Office",
+        "displayOrder": "2",
+        "effectiveDate": "2010-10-10",
+        "endDate": null,
+        "id": "2",
+        "theType": "Regional Office"
+    }
+]
