@@ -76,6 +76,18 @@ For the latest on what we are doing, check into [TheOrgBook on github](https://g
 
 A detailed document about the project can be found [here](https://docs.google.com/document/d/1wNnXdQKUtWnx--xw3VQ9Fr2TDa0kUNIBSMmFGR4uoMg/edit?usp=sharing).
 
+More links that may be of interest (There may be some instability in these links as the effort is in early days)
+
+[TheOrgBook Demo (Test Build - More Stable)](https://devex-von-test.pathfinder.gov.bc.ca/home) 
+[Swagger API UI (Test Build - More Stable)](https://django-devex-von-test.pathfinder.gov.bc.ca/api/v1/) 
+[TheOrgBook Demo (Dev Build - YMMV)](https://devex-von-dev.pathfinder.gov.bc.ca/home) 
+[Swagger API UI (Dev Build - YMMV)](http://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/) 
+[TheOrgBook_Database (Test)](http://schema-spy-devex-von-test.pathfinder.gov.bc.ca/)
+[TheOrgBook_Database (Dev)](http://schema-spy-devex-von-dev.pathfinder.gov.bc.ca/) 
+[bcgov/TheOrgBook: The main registry used for verified organizations and their verifiable claims.](https://github.com/bcgov/TheOrgBook) 
+[bcgov/von: Verified Organization Network](https://github.com/bcgov/von)
+[Public Services and Procurement Canada: buyandsell.gc.ca](https://github.com/PSPC-SPAC-buyandsell)
+
 Want to help?
 ===============
 
