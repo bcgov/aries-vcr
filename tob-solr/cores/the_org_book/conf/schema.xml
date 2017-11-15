@@ -50,6 +50,7 @@
     <!--
     ######################## django-haystack specifics begin ########################
     -->
+
     <fieldType name="edge_ngram" class="solr.TextField" positionIncrementGap="1">
         <analyzer type="index">
             <tokenizer class="solr.WhitespaceTokenizerFactory" />
@@ -104,17 +105,11 @@
     
     <field name="text" type="text_en" indexed="true" stored="true" multiValued="false" />
     
-    <field name="reason" type="text_en" indexed="true" stored="true" multiValued="false" />
-    
-    <field name="shortReason" type="text_en" indexed="true" stored="true" multiValued="false" />
-    
-    <field name="autocomplete" type="edge_ngram" indexed="true" stored="true" multiValued="false" />
+    <field name="dbaName" type="text_en" indexed="true" stored="true" multiValued="false" />
     
     <field name="name" type="text_en" indexed="true" stored="true" multiValued="false" />
     
-    <field name="issuerOrgTLA" type="text_en" indexed="true" stored="true" multiValued="false" />
-    
-    <field name="abbrv" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="autocomplete" type="edge_ngram" indexed="true" stored="true" multiValued="false" />
     
     <field name="addressee" type="text_en" indexed="true" stored="true" multiValued="false" />
     
@@ -126,15 +121,9 @@
     
     <field name="streetAddress" type="text_en" indexed="true" stored="true" multiValued="false" />
     
-    <field name="theType" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="orgId" type="text_en" indexed="true" stored="true" multiValued="false" />
     
-    <field name="DBA" type="text_en" indexed="true" stored="true" multiValued="false" />
-    
-    <field name="description" type="text_en" indexed="true" stored="true" multiValued="false" />
-    
-    <field name="busId" type="text_en" indexed="true" stored="true" multiValued="false" />
-    
-    <field name="LegalName" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="legalName" type="text_en" indexed="true" stored="true" multiValued="false" />
     
     <uniqueKey>id</uniqueKey>
 
