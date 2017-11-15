@@ -31,8 +31,16 @@ The Process
 ----------------
 The following is a simplified version of a more detailed process documented here; [Detailed Steps to reset the Database for an environment](https://github.com/bcgov/hets/tree/master/APISpec/TestData#detailed-steps-to-reset-the-database-for-an-environment).  The idea is to _eventually_ completely automate the process.
 
-1. Scale the API server (django) to zero pods.
+1. Scale the API server (django) to zero pods using the scripts here; [OpenShift Scripts](../../openshift/scripts).
+  - `./scaleDeployment.sh django 0`
 1. Recreate the database (postgresql) using the scripts here; [OpenShift Scripts](../../openshift/scripts).
+  - `./dropAndRecreateDatabase.sh devex-von-dev postgresql TheOrgBook_Database TheOrgBook_User`
 1. Scale the API server (django) back up to it's working set of pods.  The database schema will get created as part of the migration process as the pods(s) come up.
+  - `./scaleDeployment.sh django 0`
 1. Use the `load-all.sh` script to populate the database through the API server.
+  - `./load-all.sh dev`
+1. Rebuild the Solr search index using the scripts here; [OpenShift Scripts](../../openshift/scripts).
+  - `./runInContainer.sh django 'python ./manage.py rebuild_index --noinput'`
 
+ToDo:
+- Wrap the above in a master script that has the user wait between the steps.

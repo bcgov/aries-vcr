@@ -36,9 +36,10 @@ usage () {
   echo "${0} postgresql \"psql -c 'CREATE DATABASE \"TheOrgBook_Database\";'\""
   echo "${0} postgresql \"psql -c 'GRANT ALL ON DATABASE \"TheOrgBook_Database\" TO \"TheOrgBook_User\";'\""
   echo
-  echo "${0} django './manage.py migrate'"
-  echo "${0} django './manage.py createsuperuser'"
-  echo "${0} django './manage.py shell'"
+  echo "${0} django 'python ./manage.py migrate'"
+  echo "${0} django 'python ./manage.py createsuperuser'"
+  echo "${0} django 'python ./manage.py shell'"
+  echo "${0} django 'python ./manage.py rebuild_index --noinput'"
   echo "========================================================================================"
   exit 1
 }
