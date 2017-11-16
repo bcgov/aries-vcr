@@ -56,6 +56,10 @@ TOOLS_PROJECT="${PROJECT_NAMESPACE}-${TOOLS_PROJECT_NAME}"
 DEV_PROJECT="${PROJECT_NAMESPACE}-${DEV_PROJECT_NAME}"
 TEST_PROJECT="${PROJECT_NAMESPACE}-${TEST_PROJECT_NAME}"
 PROD_PROJECT="${PROJECT_NAMESPACE}-${PROD_PROJECT_NAME}"
+
+JENKINS_ACCOUNT_NAME="jenkins"
+JENKINS_SERVICE_ACCOUNT_NAME="system:serviceaccount:${TOOLS_PROJECT}:${JENKINS_ACCOUNT_NAME}"
+JENKINS_SERVICE_ACCOUNT_ROLE="edit"
 # ===================================================================================
 
 echo "============================================================================="
@@ -72,6 +76,31 @@ ${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
 ${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
 	${PROD_PROJECT} \
 	${TOOLS_PROJECT}
+
+${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
+	${PROD_PROJECT} \
+	${TOOLS_PROJECT}
+	
+echo "============================================================================"
+echo
+
+echo "============================================================================="
+echo "Initializing permissions for the Jenkins service account ..."
+echo "-----------------------------------------------------------------------------"
+${SCRIPTS_DIR}/updatePolicy.sh \
+	${JENKINS_SERVICE_ACCOUNT_ROLE} \
+	${JENKINS_SERVICE_ACCOUNT_NAME} \
+	${DEV_PROJECT}
+
+${SCRIPTS_DIR}/updatePolicy.sh \
+	${JENKINS_SERVICE_ACCOUNT_ROLE} \
+	${JENKINS_SERVICE_ACCOUNT_NAME} \
+	${TEST_PROJECT}
+
+${SCRIPTS_DIR}/updatePolicy.sh \
+	${JENKINS_SERVICE_ACCOUNT_ROLE} \
+	${JENKINS_SERVICE_ACCOUNT_NAME} \
+	${PROD_PROJECT}
 
 echo "============================================================================"
 echo
