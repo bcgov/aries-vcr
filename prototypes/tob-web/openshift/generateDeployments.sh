@@ -75,6 +75,8 @@ fi
 # -------------------------------------------------------------------------------------
 DeploymentConfigPostfix="_DeploymentConfig.json"
 ANGULAR_ON_NGINX_NAME="angular-on-nginx"
+API_SERVICE_NAME="django"
+API_PATH="/api/v1/"
 
 DEPLOYMENT_PROJECT_NAME="${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME}"
 BUILD_PROJECT_NAME="${PROJECT_NAMESPACE}-${BUILD_ENV_NAME}"
@@ -106,6 +108,8 @@ ${SCRIPTS_DIR}/configureDeployment.sh \
 	${BUILD_PROJECT_NAME} \
 	"${DEPLOYMENT_PROJECT_NAME}.pathfinder.gov.bc.ca" \
 	"https://django-devex-von-${DEPLOYMENT_ENV_NAME}.pathfinder.gov.bc.ca/api/v1/" \
+	"${API_SERVICE_NAME}" \
+	"${API_PATH}" \
 	"${TEMPLATE_DIR}/${ANGULAR_ON_NGINX_NAME}/${ANGULAR_ON_NGINX_NAME}-deploy.json"
 echo "============================================================================="
 echo

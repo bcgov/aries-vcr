@@ -12,7 +12,7 @@ import 'rxjs/add/observable/throw';
 @Injectable()
 export class GeneralDataService {
 
-  public apiUrl = environment.TOB_API_URL;
+  public apiUrl = environment.API_URL;
 
   constructor(private http: Http) {
   }

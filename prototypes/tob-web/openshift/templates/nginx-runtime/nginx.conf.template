@@ -67,7 +67,7 @@ http {
 
         # proxy requests to API
         location /api/ {
-            proxy_pass %TOB_API_URL%;
+            proxy_pass %API_URL%;
         }
 
         # serve our angular app here

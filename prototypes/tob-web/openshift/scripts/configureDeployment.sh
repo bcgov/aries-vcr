@@ -11,10 +11,12 @@ BUILD_NAME=${1}
 TAG_NAME=${2}
 IMAGE_NAMESPACE=${3}
 APPLICATION_DOMAIN=${4}
-TOB_API_URL=${5}
+API_URL=${5}
+API_SERVICE_NAME=${6}
+API_PATH=${7}
 
-DEPLOYMENT_CONFIG_TEMPLATE=${6}
-DEPLOYMENT_CONFIG_POST_FIX=${7}
+DEPLOYMENT_CONFIG_TEMPLATE=${8}
+DEPLOYMENT_CONFIG_POST_FIX=${9}
 # -----------------------------------------------------------------------------------
 # DEBUG_MESSAGES=1
 # -----------------------------------------------------------------------------------
@@ -48,12 +50,20 @@ if [ -z "$DEPLOYMENT_CONFIG_POST_FIX" ]; then
    echo "Defaulting 'DEPLOYMENT_CONFIG_POST_FIX' to ${DEPLOYMENT_CONFIG_POST_FIX} ..."
 fi
 
-if [ -z "$TOB_API_URL" ]; then
-	TOB_API_URL="https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
-	echo "Defaulting 'TOB_API_URL' to ${TOB_API_URL} ..."
+if [ -z "$API_URL" ]; then
+	API_URL="https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
+	echo "Defaulting 'API_URL' to ${API_URL} ..."
 	echo
 fi
 
+if [ -z "$API_SERVICE_NAME" ]; then
+	echo "Warning; API_SERVICE_NAME is blank."
+fi
+
+if [ -z "$API_PATH" ]; then
+	echo "You must supply API_PATH."
+	MissingParam=1
+fi
 
 if [ ! -z "$MissingParam" ]; then
 	echo "============================================"
@@ -63,9 +73,11 @@ if [ ! -z "$MissingParam" ]; then
 	echo "TAG_NAME[{2}]: ${2}"
 	echo "IMAGE_NAMESPACE[{3}]: ${3}"
 	echo "APPLICATION_DOMAIN[{4}]: ${4}"
-	echo "TOB_API_URL[{5}]: ${5}"
-	echo "DEPLOYMENT_CONFIG_TEMPLATE[{6}]: ${6}"
-	echo "DEPLOYMENT_CONFIG_POST_FIX[{7}]: ${7}"
+	echo "API_URL[{5}]: ${5}"
+	echo "API_SERVICE_NAME[{6}]: ${6}"
+	echo "API_PATH[{7}]: ${7}"
+	echo "DEPLOYMENT_CONFIG_TEMPLATE[{8}]: ${8}"
+	echo "DEPLOYMENT_CONFIG_POST_FIX[{9}]: ${9}"
     echo "============================================"
 	echo
 	exit 1
@@ -86,7 +98,9 @@ if [ ! -z "$DEBUG_MESSAGES" ]; then
 	echo "TAG_NAME=${TAG_NAME}"
 	echo "IMAGE_NAMESPACE=${IMAGE_NAMESPACE}"
 	echo "APPLICATION_DOMAIN=${APPLICATION_DOMAIN}"
-	echo "TOB_API_URL=${TOB_API_URL}"
+	echo "API_URL=${API_URL}"	
+	echo "API_SERVICE_NAME=${API_SERVICE_NAME}"
+	echo "API_PATH=${API_PATH}"
 	echo "Output File=${DEPLOYMENT_CONFIG}"
 	echo "------------------------------------------------------------------------"
 	echo
@@ -98,7 +112,9 @@ oc process \
 -p TAG_NAME=${TAG_NAME} \
 -p IMAGE_NAMESPACE=${IMAGE_NAMESPACE} \
 -p APPLICATION_DOMAIN=${APPLICATION_DOMAIN} \
--p TOB_API_URL=${TOB_API_URL} \
+-p API_URL=${API_URL} \
+-p API_SERVICE_NAME=${API_SERVICE_NAME} \
+-p API_PATH=${API_PATH} \
 > ${DEPLOYMENT_CONFIG}
 echo "Generated ${DEPLOYMENT_CONFIG} ..."
 echo

@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  TOB_API_URL: "https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
+  API_URL: "https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
 };
