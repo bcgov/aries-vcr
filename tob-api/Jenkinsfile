@@ -21,6 +21,9 @@ node {
   stage('deploy-' + TAG_NAMES[0]) {
     openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: '$BUILD_ID'
     openshiftTag destStream: SCHEMA_SPY_IMAGSTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: SCHEMA_SPY_IMAGSTREAM_NAME, srcTag: 'latest'
+  }
+
+  stage('Update ' + SCHEMA_SPY_IMAGSTREAM_NAME + ' instance in ' + TAG_NAMES[0]) {
 	openshiftScale deploymentConfig: SCHEMA_SPY_IMAGSTREAM_NAME, replicaCount: 0, namespace: PROJECT_NAMESPACE + TAG_NAMES[0]
 	openshiftScale deploymentConfig: SCHEMA_SPY_IMAGSTREAM_NAME, replicaCount: 1, namespace: PROJECT_NAMESPACE + TAG_NAMES[0]
   }
