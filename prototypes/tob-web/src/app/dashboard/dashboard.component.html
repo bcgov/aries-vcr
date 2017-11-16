@@ -14,7 +14,7 @@
           <div class="large-search">
             <span class="fa fa-search" *ngIf="!loading"></span>
             <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
-            <input type="text" id="searchInput" name="query" size="40" placeholder="search" (input)="updateSearch($event)" (focus)="setFocus($event)" (blur)="setFocus($event)">
+            <input type="text" id="searchInput" name="query" size="40" placeholder="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" (input)="updateSearch($event)" (focus)="setFocus($event)" (blur)="setFocus($event)">
           </div>
           <div class="btn-toolbar search-type">
             <div class="btn-group">
@@ -34,7 +34,7 @@
         <div *ngIf="searchType=='name' && !none">
           <div class="row" *ngFor="let record of results">
             <div class="col-sm-6">
-              <a href="" [routerLink]="['/business', record.id]">{{record.LegalName}}</a><br>
+              <a href="" [routerLink]="['/business', record.id]">{{record.legalName}}</a><br>
               <small>{{record.type.description}}</small>
             </div>
             <div class="col-sm-6">
@@ -46,8 +46,8 @@
         <div *ngIf="searchType=='location' && !none">
           <div class="row" *ngFor="let record of results">
             <div class="col-sm-6">
-              <a href="" [routerLink]="['/business', record.verifiedOrgId]">{{record.addressee}}</a><br>
-              <small>{{record.type.theType}}</small>
+              <a href="" [routerLink]="['/business', record.verifiableOrgId]">{{record.addressee}}</a><br>
+              <small>{{record.type.locType}}</small>
             </div>
             <div class="col-sm-6">
               {{record.streetAddress}}<br>

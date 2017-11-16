@@ -13,11 +13,11 @@
 
   <div class="row" *ngIf="loaded">
     <div class="col-md-8 col-sm-7">
-      <h1 class="business-title">{{record.org.LegalName}}</h1>
+      <h1 class="business-title">{{record.org.legalName}}</h1>
 
-      <a [routerLink]="'/business/' + record.verifiedOrgId" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Organization Info</a>
+      <a [routerLink]="'/business/' + record.verifiableOrgId" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Organization Info</a>
 
-      <h2 class="cert-title">{{record.type.theType}}</h2>
+      <h2 class="cert-title">{{record.type.claimType}}</h2>
 
       <div class="row">
         <div class="col-md-12 cert-info">

@@ -21,22 +21,22 @@ export class CertComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    let loaded = this.dataService.preloadData(['voclaimtypes', 'issuerservices']);
+    let loaded = this.dataService.preloadData(['verifiableclaimtypes', 'issuerservices']);
     this.sub = this.route.params.subscribe(params => {
       this.id = +params['recordId'];
       loaded.then(status => {
-        this.dataService.loadRecord('voclaims', ''+this.id).subscribe(record => {
-          record.color = ['green', 'orange', 'blue', 'purple'][record.voClaimType % 4];
+        this.dataService.loadRecord('verifiableclaims', ''+this.id).subscribe(record => {
+          record.color = ['green', 'orange', 'blue', 'purple'][record.claimType % 4];
           this.record = record;
           console.log('vo claim:', record);
           if(! record) this.error = 'Record not found';
           else {
-            let claimType = this.dataService.findOrgData('voclaimtypes', record.voClaimType);
+            let claimType = this.dataService.findOrgData('verifiableclaimtypes', record.claimType);
             this.record.type = claimType || {};
             if(claimType) {
-              this.record.issuer = this.dataService.findOrgData('issuerservices', claimType.issuerOrgId);
+              this.record.issuer = this.dataService.findOrgData('issuerservices', claimType.issuerServiceId);
             }
-            this.dataService.loadVerifiedOrg(record.verifiedOrgId)
+            this.dataService.loadVerifiedOrg(record.verifiableOrgId)
               .subscribe((res: any) => {
                 console.log('org', res);
                 this.record.org = res;

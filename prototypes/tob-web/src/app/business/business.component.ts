@@ -23,7 +23,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    let loaded = this.dataService.preloadData(['voclaimtypes', 'voorgtypes', 'volocationtypes']);
+    let loaded = this.dataService.preloadData(['verifiableclaimtypes', 'verifiableorgtypes', 'locationtypes']);
     this.sub = this.route.params.subscribe(params => {
       this.id = +params['recordId'];
       loaded.then(status => {
@@ -33,7 +33,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
           this.loaded = !!record;
           if(! record) this.error = 'Record not found';
           else {
-            let orgType = this.dataService.findOrgData('voorgtypes', record.orgTypeId);
+            let orgType = this.dataService.findOrgData('verifiableorgtypes', record.orgTypeId);
             this.record.type = orgType || {};
             this.record.typeName = orgType && orgType.description;
 
@@ -41,9 +41,9 @@ export class BusinessComponent implements OnInit, OnDestroy {
             if(Array.isArray(record.locations)) {
               for(var i = 0; i < record.locations.length; i++) {
                 let loc = Object.assign({}, record.locations[i]);
-                let locType = this.dataService.findOrgData('volocationtypes', loc.voLocationTypeId);
+                let locType = this.dataService.findOrgData('locationtypes', loc.locationTypeId);
                 loc.type = locType || {};
-                loc.typeName = locType && locType.theType;
+                loc.typeName = locType && locType.locType;
                 locs.push(loc);
               }
             }
@@ -68,9 +68,9 @@ export class BusinessComponent implements OnInit, OnDestroy {
                 let grp = seen[cert.voClaimType];
                 if(! grp) {
                   grp = seen[cert.voClaimType] = {others: []};
-                  grp.type = this.dataService.findOrgData('voclaimtypes', cert.voClaimType);
-                  grp.typeName = grp.type ? grp.type.theType : '';
-                  grp.color = ['green', 'orange', 'blue', 'purple'][cert.voClaimType % 4];
+                  grp.type = this.dataService.findOrgData('verifiableclaimtypes', cert.claimType);
+                  grp.typeName = grp.type ? grp.type.claimType : '';
+                  grp.color = ['green', 'orange', 'blue', 'purple'][cert.claimType % 4];
                   grp.top = cert;
                   certs.push(grp);
                 } else {
@@ -82,14 +82,14 @@ export class BusinessComponent implements OnInit, OnDestroy {
             this.certs = certs;
             console.log('claims', certs);
 
-            /*this.dataService.loadFromApi('verifiedorgs/' + this.id + '/voclaims')
+            /*this.dataService.loadFromApi('verifiableorgs/' + this.id + '/voclaims')
               .subscribe((res: any) => {
                 let certs = [];
                 let seen = {};
                 for(var i = 0; i < res.length; i++) {
                   let cert = res[i];
                   if(! seen[cert.voClaimType]) {
-                    cert.type = this.dataService.findOrgData('voclaimtypes', cert.voClaimType);
+                    cert.type = this.dataService.findOrgData('verifiableclaimtypes', cert.voClaimType);
                     cert.color = ['green', 'orange', 'blue', 'purple'][cert.voClaimType % 4];
                     certs.push(cert);
                     seen[cert.voClaimType] = 1;

@@ -50,20 +50,20 @@ export class GeneralDataService {
   }
 
   loadVerifiedOrg(recordId): Observable<any> { // Observable<VerifiedOrg> {
-    return this.loadRecord('verifiedorgs', recordId)
+    return this.loadRecord('verifiableorgs', recordId)
       .map((res: Object) => {
         let row : {[key:string]: any} = res; // <VerifiedOrg>res;
-        /*let locs = this.getOrgData('volocations');
+        /*let locs = this.getOrgData('locations');
         if(locs) {
           console.log('locs', locs);
           for (let j = 0; j < locs.length; j++) {
-            if (locs[j].verifiedOrgId === row.id && locs[j].voLocationTypeId === 1) {
+            if (locs[j].verifiableOrgId === row.id && locs[j].locationTypeId === 1) {
               row.primaryLocation = locs[j];
             }
           }
         }
         if(! row.primaryLocation) {
-          row.primaryLocation = (new MockData()).fetchRecord('verifiedorgs', 1).primaryLocation;
+          row.primaryLocation = (new MockData()).fetchRecord('verifiableorgs', 1).primaryLocation;
         }*/
         row.type = {};
         return row;
@@ -79,7 +79,7 @@ export class GeneralDataService {
       let baseurl = this.getRequestUrl('');
       console.log('base url: ' + baseurl);
       if(! baseurl) return;
-      let types = reqTypes || ['voorgtypes', 'volocationtypes', 'jurisdictions', 'volocations'];
+      let types = reqTypes || ['verifiableorgtypes', 'locationtypes', 'jurisdictions', 'locations'];
       let wait = 0;
       for (let i = 0; i < types.length; i++) {
         let type = types[i];
@@ -118,20 +118,20 @@ export class GeneralDataService {
 
   searchLocs (query: string) {
     let adj = (loc) => {
-      loc.type = this.findOrgData('volocationtypes', loc.voLocationTypeId) || {};
+      loc.type = this.findOrgData('locationtypes', loc.locationTypeId) || {};
     };
-    return this.searchMod('volocations', {text: query}, adj);
+    return this.searchMod('locations', {text: query}, adj);
   }
 
   searchOrgs (query: string) {
     let adj = (org) => {
-      let locs = this.orgData.volocations;
+      let locs = this.orgData.locations;
       org.jurisdiction = this.findOrgData('jurisdictions', org.jurisdictionId) || {};
-      org.type = this.findOrgData('voorgtypes', org.orgTypeId) || {};
+      org.type = this.findOrgData('verifiableorgtypes', org.orgTypeId) || {};
       org.primaryLocation = {summary: '', street: ''};
       if (locs) {
         for (let j = 0; j < locs.length; j++) {
-          if (locs[j].verifiedOrgId === org.id && locs[j].voLocationTypeId === 1) {
+          if (locs[j].verifiableOrgId === org.id && locs[j].locationTypeId === 1) {
             let loc = Object.assign({}, locs[j]);
             loc.street = loc.streetAddress || '';
             if(loc.unitNumber != null) {
@@ -143,12 +143,12 @@ export class GeneralDataService {
         }
       }
     };
-    return this.searchMod('verifiedorgs', {text: query}, adj);
+    return this.searchMod('verifiableorgs', {text: query}, adj);
   }
 
   searchMod (mod: string, params: any, adj: any) {
     return new Promise(resolve => {
-      let baseurl = this.getRequestUrl(mod + '/search');
+      let baseurl = this.getRequestUrl('search/' + mod);
       let req = this.http.get(baseurl, {params: params})
         .map((res: Response) => res.json())
         .catch(error => {

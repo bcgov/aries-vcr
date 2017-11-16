@@ -13,7 +13,7 @@
 
   <div class="row" *ngIf="loaded">
     <div class="col-md-8 col-sm-7">
-      <h1 class="business-title">{{record.LegalName}}</h1>
+      <h1 class="business-title">{{record.legalName}}</h1>
 
       <a [routerLink]="'/'" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Search</a>
 
@@ -22,7 +22,7 @@
           <div class="form-group">
             <label class="control-label">Organization Identifier</label>
             <div class="form-field">
-              {{record.busId}}
+              {{record.orgId}}
             </div>
           </div>
           <div class="form-group">
@@ -81,7 +81,7 @@
             <div class="cert-image">
               <img src="/assets/cert.svg" [class]="'color-' + cert.color" alt="">
             </div>
-            <label>{{cert.type.theType}}
+            <label>{{cert.typeName}}
               <div class="year text-muted">{{cert.top.effectiveDate}}</div>
             </label>
           </a>

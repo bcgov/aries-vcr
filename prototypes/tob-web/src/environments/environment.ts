@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  API_URL: "https://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/"
+  API_URL: "https://devex-von-dev.pathfinder.gov.bc.ca/api/"
 };
