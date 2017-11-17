@@ -60,6 +60,8 @@ fi
 # -------------------------------------------------------------------------------------
 BuildConfigPostfix="_BuildConfig.json"
 
+CONTEXT_DIR_ROOT="tob-solr"
+
 SOLR_BASE_BUILD_NAME="solr-base"
 SOLR_BASE_GIT_URI="https://github.com/bcgov/openshift-solr.git"
 SOLR_BASE_GIT_REF="master"
@@ -72,6 +74,8 @@ SOLR_CONTEXT_DIR_ROOT="tob-solr/cores"
 SOLR_SOURCE_IMAGE_NAME="${SOLR_BASE_BUILD_NAME}"
 SOLR_SOURCE_IMAGE_TAG="latest"
 SOLR_SOURCE_IMAGE_NAMESPACE="${PROJECT_NAME}"
+
+JENKINS_PIPELINE_NAME="solr"
 # ==============================================================================
 
 echo "============================================================================="
@@ -115,6 +119,17 @@ ${SCRIPTS_DIR}/configureSolrBuild.sh \
 	${SOLR_SOURCE_IMAGE_NAME} \
 	${SOLR_SOURCE_IMAGE_TAG} \
 	${SOLR_SOURCE_IMAGE_NAMESPACE}
+echo "============================================================================="
+echo
+
+echo "============================================================================="
+echo "Generating build configuration for the ${JENKINS_PIPELINE_NAME} pipeline ..."
+echo "-----------------------------------------------------------------------------"
+${SCRIPTS_DIR}/configureJenkinsPipelineBuild.sh \
+	${JENKINS_PIPELINE_NAME} \
+	${SOLR_GIT_URI} \
+	${SOLR_GIT_REF} \
+	"${CONTEXT_DIR_ROOT}/"
 echo "============================================================================="
 echo
 
