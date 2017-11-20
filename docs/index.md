@@ -84,7 +84,7 @@ A detailed document about our first demonstration project can be found [here](ht
 * [Swagger API UI (Dev Build - YMMV)](https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/) 
 
 ### TheOrgBook Database Explorers
-* [TheOrgBook_Database (Test)](http://schema-spy-devex-von-test.pathfinder.gov.bc.ca/)
+* [TheOrgBook_Database (Test)](http://schema-spy-schema-spy-devex-von-test.pathfinder.gov.bc.ca)
 * [TheOrgBook_Database (Dev)](http://schema-spy-devex-von-dev.pathfinder.gov.bc.ca/) 
 
 ### Repos
