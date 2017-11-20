@@ -61,6 +61,8 @@ fi
 BuildConfigPostfix="_BuildConfig.json"
 CONTEXT_DIR_ROOT="tob-api"
 
+LIB_INDY_BUILDER_NAME="lib-indy"
+
 DJANGO_BUILDER_NAME="django"
 DJANGO_SOURCE_IMAGE_NAME="python"
 DJANGO_SOURCE_IMAGE_TAG="3.6"
@@ -89,6 +91,19 @@ for file in *${BuildConfigPostfix}; do
 	echo "Deleting ${file} ..."
 	rm -rf ${file};
 done
+echo "============================================================================="
+echo
+
+echo "============================================================================="
+echo "Generating build configuration for ${LIB_INDY_BUILDER_NAME} ..."
+echo "-----------------------------------------------------------------------------"
+${SCRIPTS_DIR}/configureLibIndyBuild.sh \
+	${GIT_URI} \
+	${GIT_REF} \
+	${CONTEXT_DIR_ROOT} \
+	${LIB_INDY_BUILDER_NAME} \
+	"${TEMPLATE_DIR}/${LIB_INDY_BUILDER_NAME}-build.json" \
+
 echo "============================================================================="
 echo
 
