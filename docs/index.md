@@ -3,7 +3,7 @@ layout: default
 title: Main Page
 ---
 
-[Quick link to Demos and repos](#want-to-know-more)
+[Quick link to Clicky Things (Demos), APIs and Repos](#clicky-things)
 
 # Background - Adding Trust to the Internet
 
@@ -73,18 +73,22 @@ The VON-Connector is code to minimize the effort for a Service to become SSI-ena
 
 ## Want to know more?
 
-For the latest on what we are doing, check into [TheOrgBook on github](https://github.com/bcgov/TheOrgBook).
+A detailed document about our first demonstration project can be found [here](https://docs.google.com/document/d/1wNnXdQKUtWnx--xw3VQ9Fr2TDa0kUNIBSMmFGR4uoMg/edit?usp=sharing).
 
-A detailed document about the project can be found [here](https://docs.google.com/document/d/1wNnXdQKUtWnx--xw3VQ9Fr2TDa0kUNIBSMmFGR4uoMg/edit?usp=sharing).
-
-More links that may be of interest (There may be some instability in these links as the effort is in early days)
-
+### Clicky Things!
 * [TheOrgBook Demo (Test Build - More Stable)](https://devex-von-test.pathfinder.gov.bc.ca/home) 
-* [Swagger API UI (Test Build - More Stable)](https://django-devex-von-test.pathfinder.gov.bc.ca/api/v1/) 
 * [TheOrgBook Demo (Dev Build - YMMV)](https://devex-von-dev.pathfinder.gov.bc.ca/home) 
+
+### APIs
+* [Swagger API UI (Test Build - More Stable)](https://django-devex-von-test.pathfinder.gov.bc.ca/api/v1/) 
 * [Swagger API UI (Dev Build - YMMV)](https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/) 
+
+### TheOrgBook Database Explorers
 * [TheOrgBook_Database (Test)](http://schema-spy-devex-von-test.pathfinder.gov.bc.ca/)
 * [TheOrgBook_Database (Dev)](http://schema-spy-devex-von-dev.pathfinder.gov.bc.ca/) 
+
+### Repos
+* [TheOrgBook on github](https://github.com/bcgov/TheOrgBook)
 * [bcgov/von: Verified Organization Network](https://github.com/bcgov/von)
 * [Public Services and Procurement Canada: buyandsell.gc.ca](https://github.com/PSPC-SPAC-buyandsell)
 
