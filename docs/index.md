@@ -71,7 +71,7 @@ The VON-Connector is code to minimize the effort for a Service to become SSI-ena
 * Issue Verifiable Claims to an SSI-enabled Organization
 * Provide updates (including revocations) of Verifiable Claims to TheOrgBook and/or SSI-enabled Organizations
 
-# Want to know more?
+## Want to know more?
 
 For the latest on what we are doing, check into [TheOrgBook on github](https://github.com/bcgov/TheOrgBook).
 
@@ -88,6 +88,6 @@ More links that may be of interest (There may be some instability in these links
 * [bcgov/von: Verified Organization Network](https://github.com/bcgov/von)
 * [Public Services and Procurement Canada: buyandsell.gc.ca](https://github.com/PSPC-SPAC-buyandsell)
 
-# Want to help?
+## Want to help?
 
 Fork the code, get in touch and let's build this together.
