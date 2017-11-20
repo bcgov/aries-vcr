@@ -65,10 +65,7 @@ http {
         add_header X-XSS-Protection 1;
         add_header X-Frame-Options DENY;
 
-        # proxy requests to API
-        location /api/ {
-            proxy_pass %API_URL%;
-        }
+        %API_CONFIG_SECTION%
 
         # serve our angular app here
         location / {
