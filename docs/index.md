@@ -2,6 +2,9 @@
 layout: default
 title: Main Page
 ---
+
+[Quick link to Demos and repos](#want-to-know-more)
+
 # Background - Adding Trust to the Internet
 
 Putting Internet users - and organizations - in control of their own online Identity has been a growing challenge since the start of the internet. With the creation of massive centralized stores of private data (e.g. Equifax, Google, Facebook, etc.), the ability for holders to use that data in ways that are not always in the best interest of the data owner (you!). Further, given the rise of cyber-hacking which exposes that data, a change is needed in how our data is handled. [Self-Sovereign Identity](https://bitsonblocks.net/2017/05/17/a-gentle-introduction-to-self-sovereign-identity/)  (SSI) is a promising approach to decentralize the control and location of our data, giving control of our data back to us. Taken further, SSI enables a higher level of trust on the Internet by providing mechanisms that enable verifiable identification of parties to a transaction, reducing the need for high-cost mechanisms to establish trust.
@@ -41,8 +44,7 @@ As an Organization goes through an online process to acquire their Registrations
 - This saves the users from having to re-type the information for each Service (and eliminates typos in the data)
 - Each Service can trust the information because it comes from a trusted source - and is cryptographically signed
 
-The Code
------------
+## The Code
 
 We're currently building two components to support TheOrgBook:
 
@@ -69,8 +71,7 @@ The VON-Connector is code to minimize the effort for a Service to become SSI-ena
 * Issue Verifiable Claims to an SSI-enabled Organization
 * Provide updates (including revocations) of Verifiable Claims to TheOrgBook and/or SSI-enabled Organizations
 
-Want to know more?
-==============
+# Want to know more?
 
 For the latest on what we are doing, check into [TheOrgBook on github](https://github.com/bcgov/TheOrgBook).
 
@@ -87,7 +88,6 @@ More links that may be of interest (There may be some instability in these links
 * [bcgov/von: Verified Organization Network](https://github.com/bcgov/von)
 * [Public Services and Procurement Canada: buyandsell.gc.ca](https://github.com/PSPC-SPAC-buyandsell)
 
-Want to help?
-===============
+# Want to help?
 
 Fork the code, get in touch and let's build this together.
