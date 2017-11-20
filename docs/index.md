@@ -81,7 +81,7 @@ More links that may be of interest (There may be some instability in these links
 * [TheOrgBook Demo (Test Build - More Stable)](https://devex-von-test.pathfinder.gov.bc.ca/home) 
 * [Swagger API UI (Test Build - More Stable)](https://django-devex-von-test.pathfinder.gov.bc.ca/api/v1/) 
 * [TheOrgBook Demo (Dev Build - YMMV)](https://devex-von-dev.pathfinder.gov.bc.ca/home) 
-* [Swagger API UI (Dev Build - YMMV)](http://devex-von-dev-django.pathfinder.gov.bc.ca/api/v1/) 
+* [Swagger API UI (Dev Build - YMMV)](https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/) 
 * [TheOrgBook_Database (Test)](http://schema-spy-devex-von-test.pathfinder.gov.bc.ca/)
 * [TheOrgBook_Database (Dev)](http://schema-spy-devex-von-dev.pathfinder.gov.bc.ca/) 
 * [bcgov/von: Verified Organization Network](https://github.com/bcgov/von)
