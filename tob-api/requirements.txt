@@ -22,3 +22,6 @@ pytest-django>=3.1.2,<4
 drf-haystack>=1.6.1,<2
 django-haystack>=2.7.dev0,<3
 pysolr>=3.6.0,<4
+
+# Von Agent
+von-agent=*
