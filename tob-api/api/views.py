@@ -20,10 +20,10 @@
 """
 
 import asyncio
-import calendar
 import json
 import os
-import time
+import random
+
 from von_agent.nodepool import NodePool
 from von_agent.demo_agents import OrgBookAgent
 from django.http import JsonResponse
@@ -1078,7 +1078,7 @@ class bcovrinGenerateClaimRequest():
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
-        'theorgbook' + str(calendar.timegm(time.gmtime())),
+        'theorgbook' + str(random()),
         os.path.abspath('./api/genesis_txn'))
     await pool.open()
     orgbook = OrgBookAgent(
@@ -1097,4 +1097,58 @@ class bcovrinGenerateClaimRequest():
   loop.close()
 
   def post(self, request, *args, **kwargs):
-    return JsonResponse({"hello": "world"})
+    async def do():
+      request_json = json.loads(request.body)
+      did = request_json['did']
+      seqNo = request_json['seqNo']
+      claim_def_json = request_json['claim_def']
+      await orgbook.store_claim_offer(did, seqNo)
+      claim_req_json = await orgbook.store_claim_req(did, claim_def_json)
+      return claim_req_json
+
+    loop = asyncio.get_event_loop()
+    json = loop.run_until_complete(do())
+    loop.close()
+
+    return JsonResponse(json)
+
+
+class bcovrinStoreClaim():
+
+  async def boot():
+    global pool
+    global orgbook
+
+    print('connecting to node pool with genesis txn file:')
+    print(os.path.abspath('./api/genesis_txn'))
+
+    pool = NodePool(
+        # Hack to use different pool names. Agent lib doesn't support
+        # reopening existing pool config...
+        'theorgbook' + str(random()),
+        os.path.abspath('./api/genesis_txn'))
+    await pool.open()
+    orgbook = OrgBookAgent(
+        pool,
+        'The-Org-Book-Agent-0000000000000',
+        'the-org-book-agent-wallet',
+        None,
+        '127.0.0.1',
+        9702,
+        'api/v0')
+    await orgbook.open()
+    await orgbook.create_master_secret('secret')
+
+  loop = asyncio.get_event_loop()
+  loop.run_until_complete(boot())
+  loop.close()
+
+  def post(self, request, *args, **kwargs):
+    async def do():
+      await orgbook.store_claim(request.body)
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(do())
+    loop.close()
+
+    return JsonResponse({"success": True})
