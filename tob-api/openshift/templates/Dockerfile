@@ -34,8 +34,6 @@ RUN $HOME/.cargo/bin/cargo build
 RUN mv target/debug/libindy.so /usr/lib
 WORKDIR $HOME
 
-
-
 EXPOSE 8080
 
 ENV PYTHON_VERSION=3.6 \
@@ -104,7 +102,7 @@ RUN virtualenv .
 #   && chmod -R g+rwX /usr/lib
 
 RUN chgrp -R 0 $STI_SCRIPTS_PATH \
-  && chmod -R g+rwX $STI_SCRIPTS_PATH
+  && chmod -R a+rwX $STI_SCRIPTS_PATH
 
 USER 1001
 
