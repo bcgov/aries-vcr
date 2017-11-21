@@ -30,10 +30,11 @@ RUN ./rustup -y
 RUN git clone https://github.com/hyperledger/indy-sdk.git
 WORKDIR $HOME/indy-sdk/libindy
 RUN $HOME/.cargo/bin/cargo build
-WORKDIR $HOME
-
 # Move libindy to lib path
 RUN mv target/debug/libindy.so /usr/lib
+WORKDIR $HOME
+
+
 
 EXPOSE 8080
 
