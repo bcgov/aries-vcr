@@ -45,6 +45,17 @@ ENV PYTHON_VERSION=3.6 \
 ENV LC_ALL="C"
 ENV LC_CTYPE="en_US.utf-8"
 
+LABEL summary="$SUMMARY" \
+      description="$DESCRIPTION" \
+      io.k8s.description="$DESCRIPTION" \
+      io.k8s.display-name="Python 3.6" \
+      io.openshift.expose-services="8080:http" \
+      io.openshift.tags="builder,python,python36,rh-python36" \
+      com.redhat.component="python36-docker" \
+      name="centos/python-36-centos7" \
+      version="1" \
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
+
 ENV SUMMARY="Platform for building and running Python $PYTHON_VERSION applications" \
     DESCRIPTION="Python $PYTHON_VERSION available as docker container is a base platform for \
 building and running various Python $PYTHON_VERSION applications and frameworks. \
