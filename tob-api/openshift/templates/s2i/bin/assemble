@@ -77,5 +77,4 @@ if should_collectstatic; then
 fi
 
 # set permissions for any installed artifacts
-chgrp -R 0 /opt/app-root \
-  && chmod -R g+rwx /opt/app-root
+fix-permissions /opt/app-root
