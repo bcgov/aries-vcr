@@ -22,6 +22,7 @@
 import asyncio
 import calendar
 import json
+import os
 import time
 from von_agent.nodepool import NodePool
 from von_agent.demo_agents import OrgBookAgent
@@ -1067,30 +1068,30 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
 
 class bcovrinGenerateClaimRequest():
 
-  # async def boot():
-  #   global pool
-  #   global orgbook
+  async def boot():
+    global pool
+    global orgbook
 
-  #   pool = NodePool(
-  #       # Hack to use different pool names. Agent lib doesn't support
-  #       # reopening existing pool config...
-  #       'theorgbook' + str(calendar.timegm(time.gmtime())),
-  #       '/home/indy/.indy-cli/networks/sandbox/pool_transactions_genesis')
-  #   await pool.open()
-  #   orgbook = OrgBookAgent(
-  #       pool,
-  #       'The-Org-Book-Agent-0000000000000',
-  #       'the-org-book-agent-wallet',
-  #       None,
-  #       '127.0.0.1',
-  #       9702,
-  #       'api/v0')
-  #   await orgbook.open()
-  #   await orgbook.create_master_secret('secret')
+    pool = NodePool(
+        # Hack to use different pool names. Agent lib doesn't support
+        # reopening existing pool config...
+        'theorgbook' + str(calendar.timegm(time.gmtime())),
+        os.path.abspath('./genesis_txn'))
+    await pool.open()
+    orgbook = OrgBookAgent(
+        pool,
+        'The-Org-Book-Agent-0000000000000',
+        'the-org-book-agent-wallet',
+        None,
+        '127.0.0.1',
+        9702,
+        'api/v0')
+    await orgbook.open()
+    await orgbook.create_master_secret('secret')
 
-  # loop = asyncio.get_event_loop()
-  # loop.run_until_complete(boot())
-  # loop.close()
+  loop = asyncio.get_event_loop()
+  loop.run_until_complete(boot())
+  loop.close()
 
   def post(self, request, *args, **kwargs):
     return JsonResponse({"hello": "world"})
