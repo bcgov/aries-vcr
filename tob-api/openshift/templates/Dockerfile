@@ -24,7 +24,7 @@ RUN chmod +x rustup
 RUN ./rustup -y
 
 # Build libindy
-WORKDIR /root
+WORKDIR ${HOME}
 RUN git clone https://github.com/hyperledger/indy-sdk.git
 WORKDIR /root/indy-sdk/libindy
 RUN /root/.cargo/bin/cargo build
@@ -41,7 +41,8 @@ ENV PYTHON_VERSION=3.6 \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     PIP_NO_CACHE_DIR=off \
-    STI_SCRIPTS_PATH=/root/bin
+    STI_SCRIPTS_PATH=/usr/libexec/s2i
+
 
 ENV LC_ALL="C"
 ENV LC_CTYPE="en_US.utf-8"
@@ -93,7 +94,7 @@ RUN ln -sf /usr/bin/pip3 /usr/bin/pip
 
 RUN pip install virtualenv 
 
-RUN virtualenv /root
+RUN virtualenv
 
 # RUN chgrp -R 0 /usr/lib/libindy.so \
 #   && chmod -R g+rwX /usr/lib
@@ -102,8 +103,6 @@ RUN chgrp -R 0 $STI_SCRIPTS_PATH \
   && chmod -R g+rwX $STI_SCRIPTS_PATH
 
 USER 1001
-
-RUN echo $STI_SCRIPTS_PATH
 
 # Set the default CMD to print the usage of the language image.
 CMD $STI_SCRIPTS_PATH/usage
