@@ -1,5 +1,5 @@
 #!/bin/bash
-source /root/generate_container_user
+source /generate_container_user
 
 set -e
 

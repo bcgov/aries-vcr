@@ -18,7 +18,6 @@ RUN apt-get update -y && apt-get install -y \
     libsodium-dev \
     curl
 
-
 ENV HOME=/home/user
 WORKDIR $HOME
 
@@ -104,9 +103,11 @@ RUN virtualenv /opt/app-root
 RUN chgrp -R 0 $STI_SCRIPTS_PATH \
   && chmod -R g+rwx $STI_SCRIPTS_PATH
 
-
 RUN chgrp -R 0 /usr/bin/fix-permissions \
   && chmod -R g+rwx /usr/bin/fix-permissions
+
+RUN chgrp -R 0 /generate_container_user \
+  && chmod -R g+rwx /generate_container_user
 
 RUN chgrp -R 0 $HOME \
   && chmod -R g+rwx $HOME
