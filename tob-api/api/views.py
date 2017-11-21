@@ -1072,6 +1072,8 @@ class bcovrinGenerateClaimRequest():
     global pool
     global orgbook
 
+    print(os.path.abspath('./genesis_txn'))
+
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
