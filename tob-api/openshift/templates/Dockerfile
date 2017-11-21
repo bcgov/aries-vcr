@@ -106,6 +106,9 @@ RUN chgrp -R 0 $STI_SCRIPTS_PATH \
 RUN chgrp -R 0 /usr/bin/fix-permissions \
   && chmod -R g+rwx /usr/bin/fix-permissions
 
+RUN chgrp -R 0 /usr/bin/cgroup-limits \
+  && chmod -R g+rwx /usr/bin/cgroup-limits
+
 RUN chgrp -R 0 /generate_container_user \
   && chmod -R g+rwx /generate_container_user
 
