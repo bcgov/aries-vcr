@@ -60,6 +60,7 @@ fi
 # -------------------------------------------------------------------------------------
 BuildConfigPostfix="_BuildConfig.json"
 CONTEXT_DIR_ROOT="tob-api"
+TEMPLATE_CONTEXT_DIR_ROOT="${CONTEXT_DIR_ROOT}/openshift/templates"
 
 LIB_INDY_BUILDER_NAME="lib-indy"
 
@@ -100,7 +101,7 @@ echo "--------------------------------------------------------------------------
 ${SCRIPTS_DIR}/configureLibIndyBuild.sh \
 	${GIT_URI} \
 	${GIT_REF} \
-	${CONTEXT_DIR_ROOT} \
+	${TEMPLATE_CONTEXT_DIR_ROOT} \
 	${LIB_INDY_BUILDER_NAME} \
 	"${TEMPLATE_DIR}/${LIB_INDY_BUILDER_NAME}-build.json" \
 
