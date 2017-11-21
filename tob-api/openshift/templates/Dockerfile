@@ -23,11 +23,14 @@ RUN curl -o rustup https://sh.rustup.rs
 RUN chmod +x rustup
 RUN ./rustup -y
 
+ENV HOME=/home/user
+
 # Build libindy
 WORKDIR $HOME
 RUN git clone https://github.com/hyperledger/indy-sdk.git
-WORKDIR /root/indy-sdk/libindy
+WORKDIR $HOME/indy-sdk/libindy
 RUN /root/.cargo/bin/cargo build
+WORKDIR $HOME
 
 # Move libindy to lib path
 RUN mv target/debug/libindy.so /usr/lib
