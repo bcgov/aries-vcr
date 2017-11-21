@@ -96,7 +96,7 @@ RUN ln -sf /usr/bin/pip3 /usr/bin/pip
 
 RUN pip install virtualenv 
 
-RUN virtualenv .
+RUN virtualenv /opt/app-root
 
 # RUN chgrp -R 0 /usr/lib/libindy.so \
 #   && chmod -R g+rwX /usr/lib
