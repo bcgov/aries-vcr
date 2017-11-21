@@ -77,4 +77,4 @@ if should_collectstatic; then
 fi
 
 # set permissions for any installed artifacts
-fix-permissions /opt/app-root
+# fix-permissions /opt/app-root
