@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
 
+ARG uid=1000
+
 # Install environment
 RUN apt-get update -y && apt-get install -y \
     git \
@@ -27,9 +29,10 @@ RUN ./rustup -y
 WORKDIR /root
 RUN git clone https://github.com/hyperledger/indy-sdk.git
 WORKDIR /root/indy-sdk/libindy
-RUN ls
 RUN /root/.cargo/bin/cargo build
 
 # Move libindy to lib path
-USER root
 RUN mv target/debug/libindy.so /usr/lib
+
+RUN useradd -ms /bin/bash -u $uid tob
+USER tob
