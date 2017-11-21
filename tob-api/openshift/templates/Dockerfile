@@ -102,7 +102,7 @@ RUN virtualenv .
 #   && chmod -R g+rwX /usr/lib
 
 RUN chgrp -R 0 $STI_SCRIPTS_PATH \
-  && chmod -R a+rwX $STI_SCRIPTS_PATH
+  && chmod -R g+rwx $STI_SCRIPTS_PATH
 
 USER 1001
 
