@@ -80,7 +80,7 @@ on most platforms."
 #     yum install -y --setopt=tsflags=nodocs --enablerepo=centosplus $INSTALL_PKGS && \
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH.
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+COPY ./s2i/bin/. $STI_SCRIPTS_PATH
 
 # Copy extra files to the image.
 COPY ./root/ /
