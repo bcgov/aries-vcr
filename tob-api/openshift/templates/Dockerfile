@@ -104,6 +104,9 @@ RUN virtualenv .
 RUN chgrp -R 0 $STI_SCRIPTS_PATH \
   && chmod -R g+rwx $STI_SCRIPTS_PATH
 
+RUN chgrp -R 0 $HOME \
+  && chmod -R g+rwx $HOME
+
 USER 1001
 
 # Set the default CMD to print the usage of the language image.
