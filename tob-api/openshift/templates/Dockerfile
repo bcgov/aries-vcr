@@ -52,6 +52,7 @@ LABEL summary="$SUMMARY" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,python,python36,rh-python36" \
       com.redhat.component="python36-docker" \
+      io.openshift.s2i.scripts-url="image:///${STI_SCRIPTS_PATH}" \
       name="centos/python-36-centos7" \
       version="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
