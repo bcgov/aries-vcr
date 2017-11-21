@@ -32,9 +32,6 @@ RUN /root/.cargo/bin/cargo build
 # Move libindy to lib path
 RUN mv target/debug/libindy.so /usr/lib
 
-RUN chgrp -R 0 /usr/lib \
-  && chmod -R g+rwX /usr/lib
-
 EXPOSE 8080
 
 ENV PYTHON_VERSION=3.6 \
@@ -44,6 +41,9 @@ ENV PYTHON_VERSION=3.6 \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     PIP_NO_CACHE_DIR=off
+
+ENV LC_ALL="C"
+ENV LC_CTYPE="en_US.utf-8"
 
 ENV SUMMARY="Platform for building and running Python $PYTHON_VERSION applications" \
     DESCRIPTION="Python $PYTHON_VERSION available as docker container is a base platform for \
@@ -73,11 +73,20 @@ COPY ./root/ /
 # - In order to drop the root user, we have to make some directories world
 #   writable as OpenShift default security model is to run the container
 #   under random UID.
-RUN source scl_source enable rh-python36 && \
-    virtualenv /opt/app-root && \
-    chown -R 1001:0 /opt/app-root && \
-    fix-permissions /opt/app-root && \
-    rpm-file-permissions
+
+
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+RUN ln -sf /usr/bin/pip3 /usr/bin/pip
+
+RUN pip install virtualenv 
+
+RUN virtualenv /root
+
+RUN chgrp -R 0 /usr/lib \
+  && chmod -R g+rwX /usr/lib
+
+RUN chgrp -R 0 /usr/lib \
+  && chmod -R g+rwX /root
 
 USER 1001
 
