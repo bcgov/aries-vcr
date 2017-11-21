@@ -18,7 +18,7 @@ RUN apt-get update -y && apt-get install -y \
     libsodium-dev \
     curl
 
-ENV HOME=/home/user
+ENV HOME=/opt/app-root/src
 WORKDIR $HOME
 
 # Install rust toolchain
