@@ -1,7 +1,5 @@
 FROM ubuntu:16.04
 
-ARG uid=1000
-
 # Install environment
 RUN apt-get update -y && apt-get install -y \
     git \
@@ -34,5 +32,7 @@ RUN /root/.cargo/bin/cargo build
 # Move libindy to lib path
 RUN mv target/debug/libindy.so /usr/lib
 
-RUN useradd -ms /bin/bash -u $uid tob
-USER tob
+RUN chgrp -R 0 /usr/lib \
+  && chmod -R g+rwX /usr/lib
+
+USER 8983
