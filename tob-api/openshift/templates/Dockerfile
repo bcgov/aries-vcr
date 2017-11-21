@@ -40,7 +40,8 @@ ENV PYTHON_VERSION=3.6 \
     PYTHONIOENCODING=UTF-8 \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
-    PIP_NO_CACHE_DIR=off
+    PIP_NO_CACHE_DIR=off \
+    STI_SCRIPTS_PATH=/usr/bin
 
 ENV LC_ALL="C"
 ENV LC_CTYPE="en_US.utf-8"
@@ -101,6 +102,8 @@ RUN chgrp -R 0 /root \
   && chmod -R g+rwX /root
 
 USER 1001
+
+RUN echo $STI_SCRIPTS_PATH
 
 # Set the default CMD to print the usage of the language image.
 CMD $STI_SCRIPTS_PATH/usage
