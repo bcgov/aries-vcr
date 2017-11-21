@@ -1,0 +1,8 @@
+# OpenShift template parameters for:
+# Component: tob-api
+# JSON Template File: schema-spy-build.json
+NAME=schema-spy
+GIT_REPO_URL=https://github.com/bcgov/SchemaSpy.git
+GIT_REF=master
+SOURCE_CONTEXT_DIR=
+OUTPUT_IMAGE_TAG=latest

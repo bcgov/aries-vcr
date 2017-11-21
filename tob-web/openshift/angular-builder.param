@@ -1,0 +1,8 @@
+# OpenShift template parameters for:
+# Component: tob-web
+# JSON Template File: angular-builder/angular-builder-build.json
+NAME=angular-builder
+GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
+GIT_REF=master
+SOURCE_CONTEXT_DIR=tob-web/openshift/templates/angular-builder/
+OUTPUT_IMAGE_TAG=latest

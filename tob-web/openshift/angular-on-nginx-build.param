@@ -1,0 +1,8 @@
+# OpenShift template parameters for:
+# Component: tob-web
+# JSON Template File: angular-on-nginx/angular-on-nginx-build.json
+NAME=angular-on-nginx
+GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
+GIT_REF=master
+SOURCE_CONTEXT_DIR=tob-web
+OUTPUT_IMAGE_TAG=latest

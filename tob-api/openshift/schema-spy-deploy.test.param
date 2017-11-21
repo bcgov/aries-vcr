@@ -1,0 +1,12 @@
+# OpenShift template parameters for:
+# Component: tob-api
+# JSON Template File: schema-spy-deploy.json
+#=======================================
+# NAME=schema-spy
+# IMAGE_NAMESPACE=devex-von-tools
+# MEMORY_LIMIT=512Mi
+# APPLICATION_DOMAIN=
+# DATABASE_SERVICE_NAME=postgresql
+# DATABASE_NAME=gwells
+TAG_NAME=test
+# DATABASE_DEPLOYMENT_NAME=postgresql

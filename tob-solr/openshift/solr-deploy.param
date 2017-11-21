@@ -1,0 +1,10 @@
+# OpenShift template parameters for:
+# Component: tob-solr
+# JSON Template File: solr-deploy.json
+NAME=solr
+IMAGE_NAMESPACE=devex-von-tools
+TAG_NAME=dev
+APPLICATION_DOMAIN=solr-devex-von-dev.pathfinder.gov.bc.ca
+PERSISTENT_VOLUME_SIZE=1Gi
+MOUNT_PATH=/opt/solr/server/solr/mycores
+CORE_NAME=the_org_book

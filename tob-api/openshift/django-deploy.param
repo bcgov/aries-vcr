@@ -1,0 +1,17 @@
+# OpenShift template parameters for:
+# Component: tob-api
+# JSON Template File: django-deploy.json
+NAME=django
+IMAGE_NAMESPACE=devex-von-tools
+MEMORY_LIMIT=512Mi
+APPLICATION_DOMAIN=
+DATABASE_SERVICE_NAME=postgresql
+DATABASE_ENGINE=postgresql
+DATABASE_NAME=TheOrgBook_Database
+APP_CONFIG=""
+DJANGO_SECRET_KEY=[\w]{50}
+DJANGO_DEBUG=False
+SOLR_SERVICE_NAME=solr
+SOLR_CORE_NAME=the_org_book
+TAG_NAME=dev
+DATABASE_DEPLOYMENT_NAME=postgresql

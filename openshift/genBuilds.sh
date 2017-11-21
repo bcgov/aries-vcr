@@ -1,90 +1,91 @@
 #!/bin/bash
 
-# git bash hack on windows - deals with pathname conversions from dos to unix-style
-export MSYS_NO_PATHCONV=1
+usage() {
+  cat <<-EOF
+  Tool to create or update OpenShift build config templates and Jenkins pipeline deployment using
+  local and project settings. Also triggers builds that aren't auto-triggered ("builds"
+  variable in settings.sh) and tags the images ("images" variable in settings.sh).
 
-#Script variables to be set
-PROJECT_NAME="devex-von-tools"
-GIT_REF="master"
-GIT_URI="https://github.com/bcgov/TheOrgBook.git"
-RUN_SCRIPT="no"
-# The components to be built
-declare -a components=("tob-api" "tob-solr" "tob-web")
-# The builds to be triggered after buildconfigs created (not auto-triggered)
-declare -a builds=("nginx-runtime" "angular-builder")
-# The images to be tagged after build
-declare -a images=("angular-on-nginx" "django" "solr" "schema-spy")
+  Usage: $0 [ -h -u -c <comp> -k -x ]
 
-#Usage function
-function USAGE {
-  echo -e "Usage: $0 [ -h -g -p <ToolsProject> -r <gitRepo> -b <gitBranch> ]"
-	echo -e Where:
-	echo -e "-h prints the usage for the script"
-  echo -e "-g run the script - go. Must be specified for the script to be executed"
-	echo -e "-p <ToolsProject> sets the OpenShift Project you are using for tools (default: ${PROJECT_NAME})"
-	echo -e "-r <gitRepo> sets the source code repo to use (default: ${GIT_URI})"
-	echo -e "-b <gitBranch> sets the branch in the git repo (default: ${GIT_REF})"
-  exit 1
+  OPTIONS:
+  ========
+    -h prints the usage for the script
+    -c <component> to generate parameters for templates of a specific component
+    -u update OpenShift build configs vs. creating the configs
+    -k keep the json produced by processing the template
+    -x run the script in debug mode to see what's happening
+
+    Update settings.sh and settings.local.sh files to set defaults
+EOF
+exit
 }
+
+# Set project and local environment variables
+if [ -f settings.sh ]; then
+  . settings.sh
+fi
+
+# Script-specific variables to be set
+COMP=${NO}
 
 # In case you wanted to check what variables were passed
 # echo "flags = $*"
-while getopts p:r:b:gh FLAG; do
+while getopts c:ukxh FLAG; do
   case $FLAG in
-    p)
-      PROJECT_NAME=$OPTARG
-      ;;
-    r)
-      GIT_URI=$OPTARG
-      ;;
-    b)
-      GIT_REF=$OPTARG
-      ;;
-    g)
-      RUN_SCRIPT="yes"
-      ;;
-    h)
-      USAGE
-      ;;
+    c ) export COMP=$OPTARG ;;
+    u ) export OC_ACTION=replace ;;
+    k ) export KEEPJSON=${YES} ;;
+    x ) export DEBUG=${YES} ;;
+    h ) usage ;;
     \?) #unrecognized option - show help
       echo -e \\n"Invalid script option"\\n
-      USAGE
+      usage
       ;;
   esac
 done
 
 # Shift the parameters in case there any more to be used
 shift $((OPTIND-1))
-echo Remaining arguments: $@
+# echo Remaining arguments: $@
 
-if [ "${RUN_SCRIPT}" != "yes" ]; then
-  echo -e \\n"The -g parameter was not specified - not running script. Exiting..."
-  USAGE
+if [ "${DEBUG}" = "${YES}" ]; then
+  set -x
 fi
 
 # ==============================================================================
 
-# Run the initialize script to set Permissions
-./initializeProjects.sh devex-von
-
 for component in "${components[@]}"; do
-	pushd ../${component}/openshift
-	./generateBuilds.sh ${PROJECT_NAME} ${GIT_REF} ${GIT_URI}
-	popd
+
+  echo -e \\n"Deploying component ${component} to the ${DEPLOYMENT_ENV_NAME} environment..."\\n
+
+  if [ ! "${COMP}" = "${NO}" ] && [ ! "${COMP}" = ${component} ]; then
+    # Only process named component if -c option specified
+    continue
+  fi
+
+	pushd ../${component}/openshift >/dev/null
+  ${LOCAL_DIR}/compBuilds.sh
+	popd >/dev/null
 done
+
+if [ ! "${COMP}" = "${NO}" ]; then
+  # If only processing one component, don't do the post build steps
+  exit
+fi
 
 # ==============================================================================
 # Post Build processing
-echo -e "Builds created. Use the OpenShift Console to monitor the progress in the ${PROJECT_NAME} project."
-echo -e "Pause here until the started builds complete, and then hit a key to continue the script."
+echo -e \\n"Builds created. Use the OpenShift Console to monitor the progress in the ${PROJECT_NAME} project."
+echo -e \\n"Pause here until the started builds complete, and then hit a key to continue the script."
 read -n1 -s -r -p "Press a key to continue..." key
 echo -e \\n
 
-oc project ${PROJECT_NAME}
+oc project ${TOOLS}
 for build in "${builds[@]}"; do
-  echo -e \\n"Building component ${build}..."\\n
+  echo -e \\n"Manually triggering build of ${build}..."\\n
   oc start-build ${build}
-  echo -e "Use the OpenShift Console to monitor the build in the ${PROJECT_NAME} project."
+  echo -e \\n"Use the OpenShift Console to monitor the build in the ${PROJECT_NAME} project."
   echo -e "Pause here until the build completes, and then hit a key to continue the script."
   echo -e \\n
   echo -e "If a build hangs take these steps:"
@@ -96,7 +97,7 @@ for build in "${builds[@]}"; do
   echo -e \\n
 done
 
+echo -e \\n"Tagging images for dev environment deployment..."\\n
 for image in "${images[@]}"; do
-  echo -e \\n"Tagging image ${image} for dev environment deployment..."\\n
   oc tag ${image}:latest ${image}:dev
 done

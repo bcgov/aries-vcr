@@ -1,0 +1,9 @@
+# OpenShift Jenkins template parameters for:
+# Component: tob-web
+# JSON Template File: https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/provisioning/pipeline/resources/pipeline-build.json
+NAME=angular
+GITHUB_WEBHOOK_SECRET=[a-zA-Z0-9]{40}
+SOURCE_REPOSITORY_URL=https://github.com/bcgov/TheOrgBook.git
+SOURCE_REPOSITORY_REF=master
+CONTEXT_DIR=tob-web
+JENKINSFILE_PATH=Jenkinsfile

@@ -6,7 +6,7 @@ TheOrgBook DB is used to store the core Organizational data for searching (notab
 
 ## Development
 
-The DB component is an instance of Postgres. The schema and data loading is all handled by TheOrgBook API, and the Postgres image being used is an unchanged Red Hat image. As such, there is no build or database intialization associated with the DB - just the Deployment.
+The DB component is an instance of Postgres. The schema and data loading is all handled by TheOrgBook API, and the Postgres image being used is an unchanged Red Hat image. As such, there is no build or database initialization associated with the DB - just the Deployment.
 
 ## Deployment
 
