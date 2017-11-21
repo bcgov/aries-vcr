@@ -24,7 +24,7 @@ RUN chmod +x rustup
 RUN ./rustup -y
 
 # Build libindy
-WORKDIR ${HOME}
+WORKDIR $HOME
 RUN git clone https://github.com/hyperledger/indy-sdk.git
 WORKDIR /root/indy-sdk/libindy
 RUN /root/.cargo/bin/cargo build
