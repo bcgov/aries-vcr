@@ -1,6 +1,6 @@
 FROM centos/python-36-centos7:latest
 
-RUN apt-get update -y && apt-get install -y \
+RUN yum install \
     git \
     build-essential \
     pkg-config \
