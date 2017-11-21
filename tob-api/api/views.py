@@ -1072,13 +1072,14 @@ class bcovrinGenerateClaimRequest():
     global pool
     global orgbook
 
-    print(os.path.abspath('./genesis_txn'))
+    print('connecting to node pool with genesis txn file:')
+    print(os.path.abspath('./api/genesis_txn'))
 
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
         'theorgbook' + str(calendar.timegm(time.gmtime())),
-        os.path.abspath('./genesis_txn'))
+        os.path.abspath('./api/genesis_txn'))
     await pool.open()
     orgbook = OrgBookAgent(
         pool,
