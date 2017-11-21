@@ -18,18 +18,18 @@ RUN apt-get update -y && apt-get install -y \
     libsodium-dev \
     curl
 
+
+ENV HOME=/home/user
+WORKDIR $HOME
+
 # Install rust toolchain
 RUN curl -o rustup https://sh.rustup.rs
 RUN chmod +x rustup
 RUN ./rustup -y
 
-ENV HOME=/home/user
-
-# Build libindy
-WORKDIR $HOME
 RUN git clone https://github.com/hyperledger/indy-sdk.git
 WORKDIR $HOME/indy-sdk/libindy
-RUN /root/.cargo/bin/cargo build
+RUN $HOME/.cargo/bin/cargo build
 WORKDIR $HOME
 
 # Move libindy to lib path
