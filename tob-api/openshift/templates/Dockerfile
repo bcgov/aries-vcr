@@ -96,7 +96,7 @@ RUN virtualenv /root
 # RUN chgrp -R 0 /usr/lib/libindy.so \
 #   && chmod -R g+rwX /usr/lib
 
-RUN chgrp -R 0 /usr/lib \
+RUN chgrp -R 0 /root \
   && chmod -R g+rwX /root
 
 USER 1001
