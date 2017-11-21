@@ -1,9 +1,15 @@
-FROM centos/python-36-centos7:latest
+FROM ubuntu:16.04
 
-USER root
-
-RUN yum install \
+# Install environment
+RUN apt-get update -y && apt-get install -y \
     git \
+    wget \
+    python3.5 \
+    python3-pip \
+    python-setuptools \
+    python3-nacl \
+    apt-transport-https \
+    ca-certificates \
     build-essential \
     pkg-config \
     cmake \
@@ -18,9 +24,11 @@ RUN chmod +x rustup
 RUN ./rustup -y
 
 # Build libindy
+WORKDIR /root
 RUN git clone https://github.com/hyperledger/indy-sdk.git
-WORKDIR /home/indy/indy-sdk/libindy
-RUN /home/indy/.cargo/bin/cargo build
+WORKDIR /root/indy-sdk/libindy
+RUN ls
+RUN /root/.cargo/bin/cargo build
 
 # Move libindy to lib path
 USER root
