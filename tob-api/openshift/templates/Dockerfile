@@ -41,7 +41,7 @@ ENV PYTHON_VERSION=3.6 \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     PIP_NO_CACHE_DIR=off \
-    STI_SCRIPTS_PATH=/usr/bin
+    STI_SCRIPTS_PATH=/root/bin
 
 ENV LC_ALL="C"
 ENV LC_CTYPE="en_US.utf-8"
@@ -98,8 +98,8 @@ RUN virtualenv /root
 # RUN chgrp -R 0 /usr/lib/libindy.so \
 #   && chmod -R g+rwX /usr/lib
 
-RUN chgrp -R 0 /root \
-  && chmod -R g+rwX /root
+RUN chgrp -R 0 $STI_SCRIPTS_PATH \
+  && chmod -R g+rwX $STI_SCRIPTS_PATH
 
 USER 1001
 
