@@ -1124,7 +1124,7 @@ def bcovrinGenerateClaimRequest(request):
   print("=-==-\n\n\n")
   print(resp)
 
-  return JsonResponse(resp)
+  return JsonResponse(json.loads(resp))
 
 
 @csrf_exempt
