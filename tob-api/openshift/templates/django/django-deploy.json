@@ -56,6 +56,32 @@
       }
     },
     {
+      "kind": "PersistentVolumeClaim",
+      "apiVersion": "v1",
+      "metadata":
+      {
+        "name": "${NAME}",
+        "labels":
+        {
+          "app": "${NAME}",
+          "template": "${NAME}-deployment-template"
+        }
+      },
+      "spec":
+      {
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "resources":
+        {
+          "requests":
+          {
+            "storage": "${PERSISTENT_VOLUME_SIZE}"
+          }
+        }
+      }
+    },
+    {
       "kind": "DeploymentConfig",
       "apiVersion": "v1",
       "metadata": {
@@ -99,6 +125,15 @@
             }
           },
           "spec": {
+            "volumes": [
+              {
+                "name": "${NAME}-data",
+                "persistentVolumeClaim":
+                {
+                  "claimName": "${NAME}"
+                }
+              }
+            ],
             "containers": [
               {
                 "name": "${NAME}",
@@ -125,6 +160,12 @@
                     "port": 8080
                   }
                 },
+                "volumeMounts": [
+                  {
+                    "name": "${NAME}-data",
+                    "mountPath": "${MOUNT_PATH}"
+                  }
+                ],
                 "env": [
                   {
                     "name": "DATABASE_SERVICE_NAME",
@@ -284,6 +325,20 @@
       "description": "The name associated to the database deployment resources.  In particular, this is used to wrie up the credentials associated to the database.",
       "required": true,
       "value": "postgresql"
-    }
+    },
+    {
+      "name": "PERSISTENT_VOLUME_SIZE",
+      "displayName": "Persistent Volume Size",
+      "description": "The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.",
+      "required": true,
+      "value": "1Gi"
+    },
+    {
+      "name": "MOUNT_PATH",
+      "displayName": "Mount Path",
+      "description": "The path to mount the persistent volume.",
+      "required": true,
+      "value": "/opt/app-root/src/,indy_client"
+    },
   ]
 }

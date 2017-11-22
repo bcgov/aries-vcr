@@ -40,7 +40,6 @@
           "sourceStrategy": {
             "from": {
               "kind": "${KIND_OF_IMAGE}",
-              "namespace": "${SOURCE_IMAGE_NAMESPACE}",
               "name": "${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
             },
             "env": [
