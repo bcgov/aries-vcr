@@ -1066,7 +1066,7 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
     """
     return self.update(request, *args, **kwargs)
 
-class bcovrinGenerateClaimRequest():
+class bcovrinGenerateClaimRequest(generics.GenericAPIView):
 
   async def boot():
     global pool
@@ -1111,7 +1111,7 @@ class bcovrinGenerateClaimRequest():
     return JsonResponse(json)
 
 
-class bcovrinStoreClaim():
+class bcovrinStoreClaim(generics.GenericAPIView):
 
   async def boot():
     global pool
