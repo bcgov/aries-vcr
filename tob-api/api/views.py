@@ -1078,7 +1078,7 @@ class bcovrinGenerateClaimRequest():
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
-        'theorgbook' + str(random()),
+        'theorgbook' + str(random.random()),
         os.path.abspath('./api/genesis_txn'))
     await pool.open()
     orgbook = OrgBookAgent(
