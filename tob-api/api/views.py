@@ -1130,7 +1130,9 @@ def bcovrinGenerateClaimRequest(request):
 @csrf_exempt
 def bcovrinStoreClaim(request):
   async def do():
-    await orgbook.store_claim(request.body)
+    body_unicode = request.body.decode('utf-8')
+    request_json = json.loads(body_unicode)
+    await orgbook.store_claim(request_json)
 
   loop = asyncio.get_event_loop()
   loop.run_until_complete(do())
