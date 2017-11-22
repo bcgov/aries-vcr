@@ -1078,13 +1078,13 @@ class bcovrinGenerateClaimRequest(generics.GenericAPIView):
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
-        'theorgbook' + str(random.random()),
+        'theorgbook' + str(random.random() * 100000),
         os.path.abspath('./api/genesis_txn'))
     await pool.open()
     orgbook = OrgBookAgent(
         pool,
         'The-Org-Book-Agent-0000000000000',
-        'the-org-book-agent-wallet',
+        'the-org-book-agent-wallet' + str(random.random() * 100000),
         None,
         '127.0.0.1',
         9702,
@@ -1127,13 +1127,13 @@ class bcovrinStoreClaim(generics.GenericAPIView):
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
-        'theorgbook' + str(random.random()),
+        'theorgbook' + str(random.random() * 100000),
         os.path.abspath('./api/genesis_txn'))
     await pool.open()
     orgbook = OrgBookAgent(
         pool,
         'The-Org-Book-Agent-0000000000000',
-        'the-org-book-agent-wallet',
+        'the-org-book-agent-wallet' + str(random.random() * 100000),
         None,
         '127.0.0.1',
         9702,
