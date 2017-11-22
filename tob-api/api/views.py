@@ -80,7 +80,7 @@ async def boot():
     orgbook = OrgBookAgent(
         pool,
         'The-Org-Book-Agent-0000000000000',
-        'the-org-book-agent-wallet-asdasd23423jh',
+        'the-org-book-agent-wallet',
         None,
         '127.0.0.1',
         9702,
