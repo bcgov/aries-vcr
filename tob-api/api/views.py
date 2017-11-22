@@ -1102,7 +1102,8 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
 @csrf_exempt
 def bcovrinGenerateClaimRequest(request):
   async def do():
-    request_json = json.loads(request.body)
+    body_unicode = request.body.decode('utf-8')
+    request_json = json.loads(body_unicode)
     did = request_json['did']
     seqNo = request_json['seqNo']
     claim_def_json = request_json['claim_def']
