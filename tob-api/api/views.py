@@ -1094,7 +1094,6 @@ class bcovrinGenerateClaimRequest():
 
   loop = asyncio.get_event_loop()
   loop.run_until_complete(boot())
-  loop.close()
 
   def post(self, request, *args, **kwargs):
     async def do():
@@ -1108,7 +1107,6 @@ class bcovrinGenerateClaimRequest():
 
     loop = asyncio.get_event_loop()
     json = loop.run_until_complete(do())
-    loop.close()
 
     return JsonResponse(json)
 
@@ -1139,7 +1137,6 @@ class bcovrinStoreClaim():
 
   loop = asyncio.get_event_loop()
   loop.run_until_complete(boot())
-  loop.close()
 
   def post(self, request, *args, **kwargs):
     async def do():
@@ -1147,6 +1144,5 @@ class bcovrinStoreClaim():
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(do())
-    loop.close()
 
     return JsonResponse({"success": True})
