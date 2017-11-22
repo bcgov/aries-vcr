@@ -4,12 +4,12 @@
 MSYS_NO_PATHCONV=1
 
 # Project Variables
-export YES=Yes
-export NO=No
-export DEBUG=${NO}
+# export YES=Yes
+# export NO=No
+# export DEBUG=${NO}
 export LOCAL_DIR=../../openshift
 export OC_ACTION=create
-export KEEPJSON=${NO}
+#export KEEPJSON=${NO}
 export DEV=dev
 export TEST=test
 export PROD=prod

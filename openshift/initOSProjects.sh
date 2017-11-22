@@ -1,5 +1,9 @@
 #!/bin/bash
 
+SCRIPT_DIR=$(dirname $0)
+SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
+
+# ===================================================================================
 usage() { #Usage function
   cat <<-EOF
   Tool to initialize a set of BC Government standard OpenShift projects.
@@ -14,12 +18,16 @@ usage() { #Usage function
     Update settings.sh and settings.local.sh files to set defaults
 
 EOF
-exit
+exit 1
 }
-
+# ------------------------------------------------------------------------------
 # Set project and local environment variables
-if [ -f settings.sh ]; then
-  . settings.sh
+if [ -f ${SCRIPT_DIR}/settings.sh ]; then
+  . ${SCRIPT_DIR}/settings.sh
+fi
+
+if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
+  . ${SCRIPTS_DIR}/commonFunctions.inc
 fi
 
 # Script-specific variables to be set
@@ -28,7 +36,7 @@ fi
 # echo "flags = $*"
 while getopts xh FLAG; do
   case $FLAG in
-    x ) DEBUG=${YES} ;;
+    x ) export DEBUG=1 ;;
     h ) usage ;;
     \?) #unrecognized option - show help
       echo -e \\n"Invalid script option"\\n
@@ -41,28 +49,29 @@ done
 shift $((OPTIND-1))
 # echo Remaining arguments: $@
 
-if [ "${DEBUG}" = "${YES}" ]; then
+if [ ! -z "${DEBUG}" ]; then
   set -x
 fi
-
 # ===================================================================================
+
+${SCRIPTS_DIR}/createGlusterfsClusterApp.sh \
+  -p ${TOOLS}
+exitOnError
 
 # Iterate through Dev, Test and Prod projects granting permissions, etc.
 for project in ${PROJECT_NAMESPACE}-${DEV} ${PROJECT_NAMESPACE}-${TEST} ${PROJECT_NAMESPACE}-${PROD}; do
-	echo -e \\n"Granting project ${project} image puller permissions from ${TOOLS}"
-	oc policy add-role-to-user \
-	system:image-puller \
-	system:serviceaccount:${project}:default \
-	-n ${TOOLS}
+	
+  ${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
+    -p ${project} \
+    -t ${TOOLS}
+  exitOnError
+    
+	echo -e \\n"Granting ${JENKINS_SERVICE_ACCOUNT_ROLE} role to ${JENKINS_SERVICE_ACCOUNT_NAME} in ${project}"
+  assignRole ${JENKINS_SERVICE_ACCOUNT_ROLE} ${JENKINS_SERVICE_ACCOUNT_NAME} ${project}
+  exitOnError
 
-	echo -e \\n"Granting ${JENKINS_SERVICE_ACCOUNT_ROLE} role to Jenkins Service Account in ${project}"
-  oc policy add-role-to-user ${JENKINS_SERVICE_ACCOUNT_ROLE} ${JENKINS_SERVICE_ACCOUNT_NAME} -n ${project}
-
-	echo -e \\n"Creating GLUSTER endpoints and services in ${project} "
-	oc create -f ${GLUSTER_ENDPOINT_CONFIG} -n ${project}
-	oc create -f ${GLUSTER_SVC_CONFIG} -n ${project}
+  ${SCRIPTS_DIR}/createGlusterfsClusterApp.sh \
+    -p ${project}
+  exitOnError
 done
 
-echo -e \\n"Creating GLUSTER endpoints and services in ${TOOLS} "\\n
-oc create -f ${GLUSTER_ENDPOINT_CONFIG} -n ${TOOLS}
-oc create -f ${GLUSTER_SVC_CONFIG} -n ${TOOLS}

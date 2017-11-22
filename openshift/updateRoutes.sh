@@ -35,7 +35,7 @@ fi
 while getopts e:xh FLAG; do
   case $FLAG in
     e ) DEPLOYMENT_ENV_NAME=$OPTARG ;;
-    x ) DEBUG=${YES} ;;
+    x ) export DEBUG=1 ;;
     h ) usage ;;
     \?) #unrecognized option - show help
       echo -e \\n"Invalid script option"\\n
@@ -48,7 +48,7 @@ done
 shift $((OPTIND-1))
 # echo Remaining arguments: $@
 
-if [ "${DEBUG}" = "${YES}" ]; then
+if [ ! -z "${DEBUG}" ]; then
   set -x
 fi
 

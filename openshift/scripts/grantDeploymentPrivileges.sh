@@ -1,53 +1,62 @@
 #!/bin/bash
 
-USER_ID="$(id -u)"
 SCRIPT_DIR=$(dirname $0)
 
-# ===================================================================================
-# Granting deployment configurations access to the images in the tools project
-# ===================================================================================
-TARGET_PROJECT_NAME=${1}
-TOOLS_PROJECT_NAME=${2}
-# -----------------------------------------------------------------------------------
-#DEBUG_MESSAGES=1
-# -----------------------------------------------------------------------------------
-if [ -z "$TARGET_PROJECT_NAME" ]; then
-	echo "You must supply TARGET_PROJECT_NAME."
-	MissingParam=1
+# ==============================================================================
+usage() {
+cat <<EOF
+
+================================================================================
+Grants deployment configurations access to the images in the tools project.
+--------------------------------------------------------------------------------
+Usage: 
+  ${0} [ -h -x ] -p <TARGET_PROJECT> -t <TOOLS_PROJECT>
+
+Options:
+  -h prints the usage for the script
+  -x run the script in debug mode to see what's happening
+================================================================================
+EOF
+exit 1
+}
+
+if [ -f ${SCRIPT_DIR}/commonFunctions.inc ]; then
+  . ${SCRIPT_DIR}/commonFunctions.inc
 fi
 
-if [ -z "$TOOLS_PROJECT_NAME" ]; then
-	echo "You must supply TOOLS_PROJECT_NAME."
-	MissingParam=1
+# ------------------------------------------------------------------------------
+# In case you wanted to check what variables were passed
+# echo "flags = $*"
+while getopts p:t:xh FLAG; do
+  case $FLAG in
+    p ) TARGET_PROJECT_NAME=$OPTARG ;;
+    t ) TOOLS_PROJECT_NAME=$OPTARG ;;
+    x ) export DEBUG=1 ;;
+    h ) usage ;;
+    \?) #unrecognized option - show help
+      echo -e \\n"Invalid script option"\\n
+      usage
+      ;;
+  esac
+done
+
+# Shift the parameters in case there any more to be used
+shift $((OPTIND-1))
+# echo Remaining arguments: $@
+
+if [ ! -z "${DEBUG}" ]; then
+  set -x
 fi
 
-if [ ! -z "$MissingParam" ]; then
-	echo "============================================"
-	echo "One or more parameters are missing!"
-	echo "--------------------------------------------"	
-	echo "TARGET_PROJECT_NAME[{1}]: ${1}"
-	echo "TOOLS_PROJECT_NAME[{2}]: ${2}"
-    echo "============================================"
-	echo
-	exit 1
+if [ -z "${TARGET_PROJECT_NAME}" ] || [ -z "${TOOLS_PROJECT_NAME}" ]; then
+  echo -e \\n"Missing parameters!"  
+  usage
 fi
-# ===================================================================================
+# ==============================================================================
 
 echo "Granting deployment configuration access from ${TARGET_PROJECT_NAME}, to ${TOOLS_PROJECT_NAME} ..."
-
-if [ ! -z "$DEBUG_MESSAGES" ]; then
-	echo
-	echo "------------------------------------------------------------------------"
-	echo "Parameters for call to oc command ..."
-	echo "------------------------------------------------------------------------"
-	echo "TARGET_PROJECT_NAME=${TARGET_PROJECT_NAME}"
-	echo "TOOLS_PROJECT_NAME=${TOOLS_PROJECT_NAME}"
-	echo "------------------------------------------------------------------------"
-	echo
-fi
-
-oc policy add-role-to-user \
-system:image-puller \
-system:serviceaccount:${TARGET_PROJECT_NAME}:default \
--n ${TOOLS_PROJECT_NAME}
+assignRole \
+  system:image-puller \
+  system:serviceaccount:${TARGET_PROJECT_NAME}:default \
+  ${TOOLS_PROJECT_NAME}
 echo

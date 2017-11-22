@@ -26,19 +26,19 @@ if [ -f settings.sh ]; then
 fi
 
 # Initialize script-specific variables
-FORCE=${NO}
-FORCENOTE=${NO}
-LOCAL=${NO}
-COMP=${NO}
+# FORCE=${NO}
+# FORCENOTE=${NO}
+# LOCAL=${NO}
+# COMP=${NO}
 
 # Uncomment if you want to check what command line args were entered
 # echo "flags = $*"
 while getopts c:flxh FLAG; do
   case $FLAG in
     c ) COMP=$OPTARG ;;
-    f ) FORCE="${YES}" ;;
-    l ) LOCAL="${YES}" ;;
-    x ) DEBUG="${YES}" ;;
+    f ) FORCE=1 ;;
+    l ) LOCAL=1 ;;
+    x ) export DEBUG=1 ;;
     h ) usage ;;
     \?) #unrecognized option - show help
       echo -e \\n"Invalid script option"\\n
@@ -52,12 +52,12 @@ shift $((OPTIND-1))
 # echo Remaining arguments: $@
 
 # Debug mode
-if [ "${DEBUG}" = "${YES}" ]; then
+if [ ! -z "${DEBUG}" ]; then
   set -x
 fi
 
 # What types of files to generate - regular+dev/test/prod or local
-if [ "${LOCAL}" = "${YES}" ]; then
+if [ ! -z "${LOCAL}" ]; then
   PARM_TYPES="l"
 else
   PARM_TYPES="r d t p"
@@ -65,7 +65,7 @@ fi
 
 # ==============================================================================
 for component in "${components[@]}"; do
-  if [ ! "${COMP}" = ${NO} ] && [ ! "${COMP}" = ${component} ]; then
+  if [ ! -z "${COMP}" ] && [ ! "${COMP}" = ${component} ]; then
     # Only process named component if -c option specified
     continue
   fi
@@ -86,7 +86,7 @@ for component in "${components[@]}"; do
     ISDEPLOY=$( grep -l DeploymentConfig ${TEMPLATE} )
 
     for type in ${PARM_TYPES}; do
-      SKIP=${NO}
+      unset SKIP
       case ${type} in
         r ) # Regular file
           OUTPUT=${OUTPUTPREFIX}$( basename ${file}.param )
@@ -95,17 +95,17 @@ for component in "${components[@]}"; do
         d ) # Dev File
           OUTPUT=${OUTPUTPREFIX}$( basename ${file}.${DEV}.param )
           COMMENTFILTER="sed s/^/#/"
-          if [ "${ISDEPLOY}" = "" ]; then SKIP=${YES}; fi
+          if [ "${ISDEPLOY}" = "" ]; then SKIP=1; fi
           ;;
         t ) # Test File
           OUTPUT=${OUTPUTPREFIX}$( basename ${file}.${TEST}.param )
           COMMENTFILTER="sed s/^/#/"
-          if [ "${ISDEPLOY}" = "" ]; then SKIP=${YES}; fi
+          if [ "${ISDEPLOY}" = "" ]; then SKIP=1; fi
           ;;
         p ) # Prod
           OUTPUT=${OUTPUTPREFIX}$( basename ${file}.${PROD}.param )
           COMMENTFILTER="sed s/^/#/"
-          if [ "${ISDEPLOY}" = "" ]; then SKIP=${YES}; fi
+          if [ "${ISDEPLOY}" = "" ]; then SKIP=1; fi
           ;;
         l ) # Local Files
           OUTPUT=${LOCAL_DIR}/$( basename ${file}.local.param )
@@ -114,11 +114,11 @@ for component in "${components[@]}"; do
       esac
 
       # Don't create environment param files for Build Templates
-      if [ "${SKIP}" = ${YES} ]; then
+      if [ ! -z "${SKIP}" ]; then
         continue
       fi
 
-      if [ ! -f "${OUTPUT}" ] || [ "${FORCE}" = "${YES}" ]; then
+      if [ ! -f "${OUTPUT}" ] || [ ! -z "${FORCE}" ]; then
         echo -e "Generating parameters for template: ${file}.json to ${OUTPUT}"
         echo -e "# OpenShift template parameters for:" >${OUTPUT}
         echo -e "# Component: ${component}" >>${OUTPUT}
@@ -137,7 +137,7 @@ for component in "${components[@]}"; do
           >>${OUTPUT}
       else
         echo -e "Skipping parameter generation for template: ${file}.json to ${OUTPUT}"
-        FORCENOTE="Yes"
+        FORCENOTE=1
       fi
     done
   done
@@ -145,7 +145,7 @@ for component in "${components[@]}"; do
   # Generating pipeline parameter file
   if [ -f "${COMPONENT_JENKINSFILE}" ]; then
     OUTPUT=${PIPELINEPARAM}
-    if [ ! -f "${OUTPUT}" ] || [ "${FORCE}" = "${YES}" ]; then
+    if [ ! -f "${OUTPUT}" ] || [ ! -z "${FORCE}" ]; then
       echo -e "Generating parameters for Jenkins Pipeline to ${OUTPUT}"
       echo -e "# OpenShift Jenkins template parameters for:" >${OUTPUT}
       echo -e "# Component: ${component}" >>${OUTPUT}
@@ -160,11 +160,11 @@ for component in "${components[@]}"; do
 	popd >/dev/null
 done
 
-if [ "${FORCENOTE}" = "${YES}" ]; then
+if [ ! -z "${FORCENOTE}" ]; then
   echo -e \\n"One or more files to be generated already exist and were not overwritten"
   echo -e "Use the -f option to force the overwriting of existing files"
 fi
 
-if [ "${LOCAL}" = "${YES}" ]; then
+if [ ! -z "${LOCAL}" ]; then
   echo -e "Local files generated with parmeters commented out. Edit the files to uncomment and set needed parameters"
 fi

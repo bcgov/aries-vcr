@@ -13,30 +13,24 @@ Get a recent stable (or the latest) [Openshift Command Line tool](https://github
 
 **Login** to your local OpenShift instance on the command line and the Web Console.
 
-# Create projects
-
-If you are resetting your environment, here is a list of commands to copy/paste to remove the project set. Give this operation a bit of time to complete before recreating the projects.
-
-```
-oc delete project devex-von-tools;
-oc delete project devex-von-dev;
-oc delete project devex-von-test;
-oc delete project devex-von-prod;
-```
-
-Run the following commands to create the projects for the local instance. Test and Prod will not likely be used, but are referenced in some of the later scripts:
-
-```
-oc new-project devex-von-tools;
-oc new-project devex-von-dev;
-oc new-project devex-von-test;
-oc new-project devex-von-prod;
-```
-
 # Change into the openshift folder at the root of TheOrgBook
 
 ```
 cd openshift
+```
+
+# Create projects
+
+If you are resetting your environment, change into the "openshift" folder in the root of TheOrgBook repo and run the following script.  Give this operation a bit of time to complete before recreating the projects.
+
+```
+./generateLocalProjects.sh -D
+```
+
+Run the following command to create the projects for the local instance. Test and Prod will not likely be used, but are referenced in some of the later scripts:
+
+```
+./generateLocalProjects.sh
 ```
 
 # Initialize the projects - add permissions and storage

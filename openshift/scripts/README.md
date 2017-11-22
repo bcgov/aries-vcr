@@ -2,25 +2,21 @@
 
 A set of helper scripts to help maintain the project.
 
+## commonFunctions.inc
+
+A set of common functions to include in your scripts.
+
 ## createGlusterfsClusterApp.sh
 
 Create/re-create the Gluster file system resources on a project.
 
-## initializeProjects.sh
+## createLocalProject.sh
 
-A script to set the permissions and create (possibly needed) Glusterfs Services (does nothing on a local OpenShift instance - but that's OK).
+Creates an project on a local OpenShift cluster.
 
-## getPodByName.sh
+## deleteLocalProject.sh
 
-A utility script that returns the full name of a running instance of a pod, given the pod's name and optionally the pod index.
-
-Refer to the usage documentation contained in the script for details.  Run the script without parameters to see the documentation.
-
-## runInContainer.sh
-
-This script is a wrapper around `oc exec` that allows you to run commands inside a pod instance based on it's general name.
-
-Refer to the usage documentation contained in the script for details.  Run the script without parameters to see the documentation.
+Deletes an project from a local OpenShift cluster.
 
 ## dropAndRecreateDatabase.sh
 
@@ -30,9 +26,29 @@ Refer to the usage documentation contained in the script for details.  Run the s
 
 _This script could be further enhanced to utilize the environment variables within the running pod to determine various database parameters dynamically.  The process will require some fussing around with escaping quotes and such to get things just right._
 
+## getPodByName.sh
+
+A utility script that returns the full name of a running instance of a pod, given the pod's name and optionally the pod index.
+
+Refer to the usage documentation contained in the script for details.  Run the script without parameters to see the documentation.
+
+## grantDeploymentPrivileges.sh
+
+Grants deployment configurations access to the images in the tools project.
+
+## runInContainer.sh
+
+This script is a wrapper around `oc exec` that allows you to run commands inside a pod instance based on it's general name.
+
+Refer to the usage documentation contained in the script for details.  Run the script without parameters to see the documentation.
+
 ## scaleDeployment.sh
 
 A helper scrript to scale a deployment to a particular number of pods.
+
+## tagProjectImages.sh
+
+Tags the project's images, as defined in the project's settings.sh file.
 
 ## ToDo:
 
