@@ -6,3 +6,5 @@ GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
 GIT_REF=master
 SOURCE_CONTEXT_DIR=tob-web
 OUTPUT_IMAGE_TAG=latest
+CPU_LIMIT=1
+MEMORY_LIMIT=4Gi

@@ -1,5 +1,7 @@
 # Running TheOrgBook Locally on OpenShift
 
+**NOTE: These scripts do not currently work on a Mac. We're working on it...**
+
 These instructions assume:
 
 * a moderate to advanced knowledge of OpenShift. There are two good PDFs available from Red Hat and O'Reilly on [OpenShift for Developers](https://www.openshift.com/promotions/for-developers.html) and [DevOps with OpenShift](https://www.openshift.com/promotions/devops-with-openshift.html) that should be read and understood first.
@@ -97,3 +99,40 @@ If the load data step fails, you can:
 - view and run the "./load-all.sh" script. If you are loading data into the local environment, use an argument of "local"
 
 NOTE: Data loads cannot be run multiple times. If you want to reload the data, you must first delete the database. You can do that by redeploying the entire environment, or going into Postgres and drop/recreating the database (instructions not yet available).
+
+# Hangs, Corrections and Overrides
+
+The generation of builds and deployments may hang because the environment on which you are running has fewer resources (especially less memory) than is requested in the templates. The scripts give you some guidance as to what you need to do to manually fix your current setup run. Notably:
+
+* Cancel the current action (build or deploy)
+* Remove the resources settings in either the YAML (build config) or be clearing the fields in the "Resource Limits" screen (deployment config).
+
+The scripts also have a mechanism to override default parameters that should allow you to eliminate these hangs. The BuildConfig and DeploymentConfig overrides occur by setting values in template "param" files that override the defaults for the app. For local overrides, perform the steps below.
+
+## Generate Local Param Files
+
+Run the following script to generate a series of files with the extension ".local.param" in the "openshift" folder in the root of the repository:
+
+```
+./genParams -l
+```
+
+The files have all the parameters from the various templates in the project, with all of the parameters initially set to be commented out.
+
+# Override the settings that cause the hangs
+
+Find the .local.param file associated with the process that is hanging, edit that file, uncomment and change the parameter that is causing the hang.
+
+NOTE: All *.local.* files are .gitignore'd and so will not be pushed into the repo.
+
+For example, the ones that I find need overriding on my system are all related to builds or deploys that fail because of memory limitations. When the hang occurs, check the Web Console "Monitoring" and you will see a warning and message like: "No nodes are available that match all of the following predicates:: Insufficient memory (1)."
+
+The fixes I applied are to the files:
+
+* angular-on-nginx-build.local.param
+* django-deploy.local.param
+* schema-spy-deploy.local.param
+
+In all case I need to uncomment and set this parameter:
+
+MEMORY_LIMIT=0Mi
