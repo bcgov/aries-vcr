@@ -1117,9 +1117,9 @@ def bcovrinGenerateClaimRequest(request):
     return claim_req_json
 
   loop = asyncio.get_event_loop()
-  json = loop.run_until_complete(do())
+  resp = loop.run_until_complete(do())
 
-  return JsonResponse(json)
+  return JsonResponse(resp)
 
 
 @csrf_exempt
