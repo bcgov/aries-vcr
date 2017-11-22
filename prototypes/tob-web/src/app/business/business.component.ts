@@ -65,9 +65,9 @@ export class BusinessComponent implements OnInit, OnDestroy {
               let seen = {};
               for(var i = 0; i < record.claims.length; i++) {
                 let cert = Object.assign({}, record.claims[i]);
-                let grp = seen[cert.voClaimType];
+                let grp = seen[cert.claimType];
                 if(! grp) {
-                  grp = seen[cert.voClaimType] = {others: []};
+                  grp = seen[cert.claimType] = {others: []};
                   grp.type = this.dataService.findOrgData('verifiableclaimtypes', cert.claimType);
                   grp.typeName = grp.type ? grp.type.claimType : '';
                   grp.color = ['green', 'orange', 'blue', 'purple'][cert.claimType % 4];
