@@ -1131,8 +1131,7 @@ def bcovrinGenerateClaimRequest(request):
 def bcovrinStoreClaim(request):
   async def do():
     body_unicode = request.body.decode('utf-8')
-    request_json = json.loads(body_unicode)
-    await orgbook.store_claim(request_json)
+    await orgbook.store_claim(body_unicode)
 
   loop = asyncio.get_event_loop()
   loop.run_until_complete(do())
