@@ -25,12 +25,6 @@ if [ -f settings.sh ]; then
   . settings.sh
 fi
 
-# Initialize script-specific variables
-# FORCE=${NO}
-# FORCENOTE=${NO}
-# LOCAL=${NO}
-# COMP=${NO}
-
 # Uncomment if you want to check what command line args were entered
 # echo "flags = $*"
 while getopts c:flxh FLAG; do

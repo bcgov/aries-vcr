@@ -33,7 +33,6 @@ popd >/dev/null
 
 # Switch to Tools Project
 oc project ${TOOLS} >/dev/null
-exitOnError
 
 # for build in "${${COMPONENT}-builds[@]}"; do
 for build in ${BUILDS}; do
@@ -57,10 +56,8 @@ for build in ${BUILDS}; do
 	fi
 
   oc process --filename=${JSONFILE} ${LOCALPARAM} ${PARAMFILE} > ${JSONTMPFILE}
-  exitOnError  
   if [ -z ${GEN_ONLY} ]; then
     oc ${OC_ACTION} -f ${JSONTMPFILE}
-    exitOnError
   fi
 
   # Delete the tempfile if the keep command line option was not specified
@@ -80,10 +77,8 @@ if [ -f "${COMPONENT_JENKINSFILE}" ]; then
   
   echo -e "Generating Jenkins Pipeline for component ${_component_name}"
   oc process --filename=${PIPELINE_JSON} ${PIPELINEPARAM} > ${JSONTMPFILE}
-  exitOnError
   if [ -z ${GEN_ONLY} ]; then
     oc ${OC_ACTION} -f ${JSONTMPFILE}
-    exitOnError
   fi
 
   # Delete the tempfile if the keep command line option was not specified

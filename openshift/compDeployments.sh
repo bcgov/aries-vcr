@@ -34,7 +34,6 @@ popd >/dev/null
 
 # Switch to Tools Project
 oc project ${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME} >/dev/null
-exitOnError
 
 for deploy in ${DEPLOYS}; do
     echo -e "Processing deployment configuration; ${deploy} ..."\\n
@@ -64,10 +63,8 @@ for deploy in ${DEPLOYS}; do
 	fi
 
   oc process --filename=${JSONFILE} ${SPECIALDEPLOYPARM} ${LOCALPARAM} ${ENVPARAM} ${PARAMFILE} > ${JSONTMPFILE}
-  exitOnError
   if [ -z ${GEN_ONLY} ]; then
     oc ${OC_ACTION} -f ${JSONTMPFILE}
-    exitOnError
   fi
   
   # Delete the tempfile if the keep command line option was not specified
