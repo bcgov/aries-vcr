@@ -1,0 +1,9 @@
+# OpenShift template parameters for:
+# Component: tob-api
+# JSON Template File: lib-indy-build.json
+#=======================================
+NAME=lib-indy
+GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
+GIT_REF=master
+SOURCE_CONTEXT_DIR=openshift/templates/lib-indy/
+OUTPUT_IMAGE_TAG=latest
