@@ -1118,10 +1118,8 @@ class bcovrinStoreClaim():
   async def boot():
     global pool
     global orgbook
-
     print('connecting to node pool with genesis txn file:')
     print(os.path.abspath('./api/genesis_txn'))
-
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
