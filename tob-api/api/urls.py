@@ -140,8 +140,8 @@ urlpatterns = [
     url(r'^search/users$', views_custom.usersSearchGet.as_view()),
     url(r'^search/verifiableorgs$', search_views.VerifiableOrgSearchView.as_view()),
 
-    url(r'^bcovrin/generate-claim-request$', views.bcovrinGenerateClaimRequest.as_view()),
-    url(r'^bcovrin/store-claim$', views.bcovrinStoreClaim.as_view()),
+    url(r'^bcovrin/generate-claim-request$', views.bcovrinGenerateClaimRequest),
+    url(r'^bcovrin/store-claim$', views.bcovrinStoreClaim),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

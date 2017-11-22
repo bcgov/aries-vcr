@@ -61,6 +61,36 @@ from .models.VerifiableOrg import VerifiableOrg
 from .models.VerifiableOrgType import VerifiableOrgType
 
 
+async def boot():
+    global pool
+    global orgbook
+
+    print('connecting to node pool with genesis txn file:')
+    print(os.path.abspath('./api/genesis_txn'))
+
+    pool = NodePool(
+        # Hack to use different pool names. Agent lib doesn't support
+        # reopening existing pool config...
+        'theorgbook' + str(random.random() * 100000),
+        os.path.abspath('./api/genesis_txn'))
+    await pool.open()
+    orgbook = OrgBookAgent(
+        pool,
+        'The-Org-Book-Agent-0000000000000',
+        'the-org-book-agent-wallet' + str(random.random() * 100000),
+        None,
+        '127.0.0.1',
+        9702,
+        'api/v0')
+    await orgbook.open()
+    await orgbook.create_master_secret('secret')
+
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(boot())
+
+
+
 class doingbusinessasBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
   """  
   Bulk create / update a number of DoingBusinessAs object  
@@ -1066,91 +1096,35 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
     """
     return self.update(request, *args, **kwargs)
 
-class bcovrinGenerateClaimRequest(generics.GenericAPIView):
+def bcovrinGenerateClaimRequest(request):
+  async def do():
+    request_json = json.loads(request.body)
+    did = request_json['did']
+    seqNo = request_json['seqNo']
+    claim_def_json = request_json['claim_def']
 
-  async def boot():
-    global pool
-    global orgbook
+    print("\n\nStoring claim offer...\n\n")
 
-    print('connecting to node pool with genesis txn file:')
-    print(os.path.abspath('./api/genesis_txn'))
+    await orgbook.store_claim_offer(did, seqNo)
 
-    pool = NodePool(
-        # Hack to use different pool names. Agent lib doesn't support
-        # reopening existing pool config...
-        'theorgbook' + str(random.random() * 100000),
-        os.path.abspath('./api/genesis_txn'))
-    await pool.open()
-    orgbook = OrgBookAgent(
-        pool,
-        'The-Org-Book-Agent-0000000000000',
-        'the-org-book-agent-wallet' + str(random.random() * 100000),
-        None,
-        '127.0.0.1',
-        9702,
-        'api/v0')
-    await orgbook.open()
-    await orgbook.create_master_secret('secret')
+    print("\n\nGenerating claim request...\n\n")
+
+    claim_req_json = await orgbook.store_claim_req(did, claim_def_json)
+    return claim_req_json
 
   loop = asyncio.get_event_loop()
-  loop.run_until_complete(boot())
+  json = loop.run_until_complete(do())
 
-  def post(self, request, *args, **kwargs):
-    async def do():
-      request_json = json.loads(request.body)
-      did = request_json['did']
-      seqNo = request_json['seqNo']
-      claim_def_json = request_json['claim_def']
-
-      print("\n\nStoring claim offer...\n\n")
-
-      await orgbook.store_claim_offer(did, seqNo)
-
-      print("\n\nGenerating claim request...\n\n")
-
-      claim_req_json = await orgbook.store_claim_req(did, claim_def_json)
-      return claim_req_json
-
-    loop = asyncio.get_event_loop()
-    json = loop.run_until_complete(do())
-
-    return JsonResponse(json)
+  return JsonResponse(json)
 
 
-class bcovrinStoreClaim(generics.GenericAPIView):
-
-  async def boot():
-    global pool
-    global orgbook
-    print('connecting to node pool with genesis txn file:')
-    print(os.path.abspath('./api/genesis_txn'))
-    pool = NodePool(
-        # Hack to use different pool names. Agent lib doesn't support
-        # reopening existing pool config...
-        'theorgbook' + str(random.random() * 100000),
-        os.path.abspath('./api/genesis_txn'))
-    await pool.open()
-    orgbook = OrgBookAgent(
-        pool,
-        'The-Org-Book-Agent-0000000000000',
-        'the-org-book-agent-wallet' + str(random.random() * 100000),
-        None,
-        '127.0.0.1',
-        9702,
-        'api/v0')
-    await orgbook.open()
-    await orgbook.create_master_secret('secret')
+def bcovrinStoreClaim(request):
+  async def do():
+    await orgbook.store_claim(request.body)
 
   loop = asyncio.get_event_loop()
-  loop.run_until_complete(boot())
+  loop.run_until_complete(do())
 
-  def post(self, request, *args, **kwargs):
-    async def do():
-      await orgbook.store_claim(request.body)
+  print("\n\nStoring claim\n\n")
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(do())
-
-    print("\n\nStoring claim\n\n")
-
-    return JsonResponse({"success": True})
+  return JsonResponse({"success": True})
