@@ -24,4 +24,4 @@ django-haystack>=2.7.dev0,<3
 pysolr>=3.6.0,<4
 
 # Von Agent
-von-agent=git+https://github.com/nrempel/von_agent.git
+git+https://github.com/nrempel/von_agent.git#von-agent
