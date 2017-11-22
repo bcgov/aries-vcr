@@ -3,6 +3,12 @@
 SCRIPT_DIR=$(dirname $0)
 SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
 
+_component_name=${1}
+if [ -z "${_component_name}" ]; then
+  echo -e \\n"Missing parameter!"\\n
+  exit 1
+fi
+
 # Pull in any special component level settings ...
 # At this point the working directory will have been switched to the 
 # openshift directory of the component being processed.
@@ -24,11 +30,6 @@ fi
 pushd ${TEMPLATE_DIR} >/dev/null
 BUILDS=$(find . -name "*.json" -exec grep -l "BuildConfig" '{}' \; | sed "s/.json//" | xargs | sed "s/\.\///g")
 popd >/dev/null
-
-# Get the name of the component
-JENKINS_FILE_PATH=$(realpath ${COMPONENT_JENKINSFILE})
-JENKINS_FILE_DIR=$(dirname "${JENKINS_FILE_PATH}")
-COMPONENT_NAME=$(basename "${JENKINS_FILE_DIR}")
 
 # Switch to Tools Project
 oc project ${TOOLS} >/dev/null
@@ -70,14 +71,14 @@ done
 
 # If necessary, process the Jenkins pipeline
 if [ -f "${COMPONENT_JENKINSFILE}" ]; then
-  JSONTMPFILE="${COMPONENT_NAME}-pipeline_BuildConfig.json"
+  JSONTMPFILE="${_component_name}-pipeline_BuildConfig.json"
   if [ -f ${PIPELINEPARAM} ]; then
     PIPELINEPARAM="--param-file=${PIPELINEPARAM}"
   else
     PIPELINEPARAM=""
   fi
   
-  echo -e "Generating Jenkins Pipeline for component ${COMPONENT_NAME}"
+  echo -e "Generating Jenkins Pipeline for component ${_component_name}"
   oc process --filename=${PIPELINE_JSON} ${PIPELINEPARAM} > ${JSONTMPFILE}
   exitOnError
   if [ -z ${GEN_ONLY} ]; then
@@ -90,5 +91,5 @@ if [ -f "${COMPONENT_JENKINSFILE}" ]; then
     rm ${JSONTMPFILE}
   fi
 else
-  echo -e "No Jenkinsfile (${COMPONENT_JENKINSFILE}) found for ${COMPONENT_NAME}, so no pipeline created."\\n
+  echo -e "No Jenkinsfile (${COMPONENT_JENKINSFILE}) found for ${_component_name}, so no pipeline created."\\n
 fi

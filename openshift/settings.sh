@@ -49,6 +49,7 @@ declare -a images=("angular-on-nginx" "django" "solr" "schema-spy")
 declare -a routes=("angular-on-nginx" "django" "solr" "schema-spy")
 
 # Load in any overrides
-if [ -f settings.local.sh ]; then
-  . settings.local.sh
+if [ -f ./settings.local.sh ]; then
+  echo -e \\n"Overriding default settings, loading local project settings from $PWD/settings.local.sh ..."\\n
+  . ./settings.local.sh
 fi

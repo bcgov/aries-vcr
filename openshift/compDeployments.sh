@@ -3,6 +3,12 @@
 SCRIPT_DIR=$(dirname $0)
 SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
 
+_component_name=${1}
+if [ -z "${_component_name}" ]; then
+  echo -e \\n"Missing parameter!"\\n
+  exit 1
+fi
+
 # Pull in any special component level settings ...
 # At this point the working directory will have been switched to the 
 # openshift directory of the component being processed.
@@ -31,10 +37,10 @@ oc project ${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME} >/dev/null
 exitOnError
 
 for deploy in ${DEPLOYS}; do
-  echo -e "Processing deployment configuration; ${deploy} ..."\\n
+    echo -e "Processing deployment configuration; ${deploy} ..."\\n
 
-  JSONFILE="${TEMPLATE_DIR}/${deploy}.json"
-  JSONTMPFILE=$( basename ${deploy}_DeploymentConfig.json )
+    JSONFILE="${TEMPLATE_DIR}/${deploy}.json"
+    JSONTMPFILE=$( basename ${deploy}_DeploymentConfig.json )
 	PARAMFILE=$( basename ${deploy}.param )
 	ENVPARAM=$( basename ${deploy}.${DEPLOYMENT_ENV_NAME}.param )
 	LOCALPARAM=${LOCAL_DIR}/$( basename ${deploy}.local.param )

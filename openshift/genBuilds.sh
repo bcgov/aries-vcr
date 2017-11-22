@@ -28,6 +28,7 @@ exit 1
 
 # Set project and local environment variables
 if [ -f ${SCRIPT_DIR}/settings.sh ]; then
+  echo -e \\n"Loading default project settings from $PWD/settings.sh ..."\\n
   . ${SCRIPT_DIR}/settings.sh
 fi
 
@@ -71,7 +72,7 @@ for component in "${components[@]}"; do
 
   echo -e \\n"Deploying build configuration for ${component} into the ${TOOLS} project ..."\\n
   pushd ../${component}/openshift >/dev/null
-  ${LOCAL_DIR}/compBuilds.sh
+  ${LOCAL_DIR}/compBuilds.sh component
   exitOnError
   popd >/dev/null
 done
