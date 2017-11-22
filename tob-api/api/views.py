@@ -24,6 +24,9 @@ import json
 import os
 import random
 
+from django.views.decorators.csrf import csrf_exempt
+
+
 from von_agent.nodepool import NodePool
 from von_agent.demo_agents import OrgBookAgent
 from django.http import JsonResponse
@@ -1096,6 +1099,7 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
     """
     return self.update(request, *args, **kwargs)
 
+@csrf_exempt
 def bcovrinGenerateClaimRequest(request):
   async def do():
     request_json = json.loads(request.body)
@@ -1118,6 +1122,7 @@ def bcovrinGenerateClaimRequest(request):
   return JsonResponse(json)
 
 
+@csrf_exempt
 def bcovrinStoreClaim(request):
   async def do():
     await orgbook.store_claim(request.body)
