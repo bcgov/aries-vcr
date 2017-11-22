@@ -1101,7 +1101,13 @@ class bcovrinGenerateClaimRequest(generics.GenericAPIView):
       did = request_json['did']
       seqNo = request_json['seqNo']
       claim_def_json = request_json['claim_def']
+
+      print("\n\nStoring claim offer...\n\n")
+
       await orgbook.store_claim_offer(did, seqNo)
+
+      print("\n\nGenerating claim request...\n\n")
+
       claim_req_json = await orgbook.store_claim_req(did, claim_def_json)
       return claim_req_json
 
@@ -1144,5 +1150,7 @@ class bcovrinStoreClaim(generics.GenericAPIView):
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(do())
+
+    print("\n\nStoring claim\n\n")
 
     return JsonResponse({"success": True})
