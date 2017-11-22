@@ -1120,7 +1120,7 @@ def bcovrinGenerateClaimRequest(request):
   loop = asyncio.get_event_loop()
   resp = loop.run_until_complete(do())
 
-  return JsonResponse(resp)
+  return JsonResponse(resp, safe=False)
 
 
 @csrf_exempt
