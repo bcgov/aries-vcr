@@ -63,7 +63,7 @@ fi
 DEPLOYMENT_SCRIPT_NAME=generateDeployments.sh
 # ==============================================================================
 
-DEPLOYMENT_SCRIPTS=$(find ${PROJECT_ROOT} -name "${DEPLOYMENT_SCRIPT_NAME}")
+DEPLOYMENT_SCRIPTS=$(find . ${PROJECT_ROOT} -name "${DEPLOYMENT_SCRIPT_NAME}")
 for SCRIPT in ${DEPLOYMENT_SCRIPTS}
 	do
 		SCRIPT=$(realpath ${SCRIPT})

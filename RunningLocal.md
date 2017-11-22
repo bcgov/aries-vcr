@@ -1,7 +1,5 @@
 # Running TheOrgBook Locally on OpenShift
 
-**NOTE: These scripts do not currently work on a Mac. We're working on it...**
-
 These instructions assume:
 
 * a moderate to advanced knowledge of OpenShift. There are two good PDFs available from Red Hat and O'Reilly on [OpenShift for Developers](https://www.openshift.com/promotions/for-developers.html) and [DevOps with OpenShift](https://www.openshift.com/promotions/devops-with-openshift.html) that should be read and understood first.

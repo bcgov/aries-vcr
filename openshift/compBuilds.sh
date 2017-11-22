@@ -11,7 +11,7 @@ if [ ${DEBUG} = "${YES}" ]; then
 fi
 # Get list of JSON files - could be in multiple directories below
 pushd ${TEMPLATE_DIR} >/dev/null
-BUILDS=$(find -name "*.json" -exec grep -l "BuildConfig" '{}' \; | sed "s/.json//" | xargs | sed "s/\.\///g")
+BUILDS=$(find . -name "*.json" -exec grep -l "BuildConfig" '{}' \; | sed "s/.json//" | xargs | sed "s/\.\///g")
 popd >/dev/null
 
 # Switch to Tools Project

@@ -74,7 +74,7 @@ for component in "${components[@]}"; do
 
   # Get list of JSON files - could be in multiple directories below
   pushd ${TEMPLATE_DIR} >/dev/null
-  JSONFILES=$(find -name "*json" | sed "s/.json//" | xargs | sed "s/\.\///g")
+  JSONFILES=$(find . -name "*json" | sed "s/.json//" | xargs | sed "s/\.\///g")
   # echo -e "JSON Files: ${JSONFILES}"
   popd >/dev/null
 

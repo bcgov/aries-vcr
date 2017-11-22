@@ -13,7 +13,7 @@ fi
 # Get list of JSON files - could be in multiple directories below
 # To Do: Remove the change into TEMPLATE_DIR - just find all deploy templates
 pushd ${TEMPLATE_DIR} >/dev/null
-DEPLOYS=$(find -name "*.json" -exec grep -l "DeploymentConfig" '{}' \; | sed "s/.json//" | xargs | sed "s/\.\///g")
+DEPLOYS=$(find . -name "*.json" -exec grep -l "DeploymentConfig" '{}' \; | sed "s/.json//" | xargs | sed "s/\.\///g")
 echo -e "Files: ${DEPLOYS}"
 popd >/dev/null
 
