@@ -7,7 +7,7 @@ exitOnError () {
 }
 
 isLocalCluster (){
-  rtnVal=$(oc project | grep //10.0)
+  rtnVal=$(oc project | grep '[//127.0|//10.0]')
   if [ -z "$rtnVal" ]; then
     # Not a local cluster ..."
 	return 1
