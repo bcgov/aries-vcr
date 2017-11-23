@@ -1,8 +1,16 @@
 exitOnError () {
   rtnCd=$?
   if [ ${rtnCd} -ne 0 ]; then
-	echo "An error has occurred.  Please check the previous output message(s) for details."
-    exit ${rtnCd}
+    echo "An error has occurred.  Please check the previous output message(s) for details."
+    read -n1 -s -r -p "Would you like to continue?  Press 'c' to continue, or any other key to exit..." key
+    echo -e \\n
+    
+    if [ "${key}" = "c" ]; then
+      return 0
+    else
+	  echo "Exited with error code ${rtnCd}."
+	  exit ${rtnCd}      
+    fi
   fi
 }
 
@@ -10,10 +18,10 @@ isLocalCluster (){
   rtnVal=$(oc whoami -c | grep 10-0)
   if [ -z "$rtnVal" ]; then
     # Not a local cluster ..."
-	return 1
+    return 1
   else
     # Is a local cluster ..."
-	return 0
+    return 0
   fi
 }
 
@@ -23,10 +31,10 @@ projectExists (){
   rtnVal=$(eval ${cmd})
   if [ -z "${rtnVal}" ]; then
     # Project does not exist ..."
-	  return 1
+      return 1
   else
     # Project exists ..."
-	  return 0
+      return 0
   fi
 }
 

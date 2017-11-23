@@ -23,14 +23,12 @@ if [ -f settings.sh ]; then
   . settings.sh
 fi
 
-# Script-specific variables to be set
-
 # In case you wanted to check what variables were passed
 # echo "flags = $*"
 while getopts e:gh FLAG; do
   case $FLAG in
     e ) LOAD_DATA_SERVER=$OPTARG ;;
-    x ) export DEBUG="${YES}" ;;
+    x ) export DEBUG=1 ;;
     h ) USAGE ;;
     \? ) #unrecognized option - show help
       echo -e \\n"Invalid script option: -${OPTARG}"\\n

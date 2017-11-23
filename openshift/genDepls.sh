@@ -74,6 +74,7 @@ for component in "${components[@]}"; do
   echo -e \\n"Deploying deployment configuration for ${component} into the ${DEPLOYMENT_ENV_NAME} environment ..."\\n
 	pushd ../${component}/openshift >/dev/null
 	${LOCAL_DIR}/compDeployments.sh component
+	exitOnError
 	popd >/dev/null
 done
 

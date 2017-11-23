@@ -64,7 +64,7 @@ for component in "${components[@]}"; do
     continue
   fi
 
-	pushd ../${component}/openshift >/dev/null
+    pushd ../${component}/openshift >/dev/null
 
   # Get list of JSON files - could be in multiple directories below
   pushd ${TEMPLATE_DIR} >/dev/null
@@ -122,7 +122,7 @@ for component in "${components[@]}"; do
         #   Delete the first line of the oc process output
         #   Put "XXXX" in front of the parameter default value
         #   Remove all whitespace before the XXXX and change XXXX to =
-        #   Use COMMENTFILTER to add (or not) a "#" in front of each line - comments it out
+        #   Use COMMENTFILTER to add (or not) a "#" in front of each line; comments it out the line
         oc process --parameters --filename=${TEMPLATE} | \
           sed "1d" | \
           sed 's/\([^ ]*$\)/XXXX\1/' |  \
@@ -141,17 +141,20 @@ for component in "${components[@]}"; do
     OUTPUT=${PIPELINEPARAM}
     if [ ! -f "${OUTPUT}" ] || [ ! -z "${FORCE}" ]; then
       echo -e "Generating parameters for Jenkins Pipeline to ${OUTPUT}"
-      echo -e "# OpenShift Jenkins template parameters for:" >${OUTPUT}
-      echo -e "# Component: ${component}" >>${OUTPUT}
-      echo -e "# JSON Template File: ${PIPELINE_JSON}" >>${OUTPUT}
-      echo -e "#=======================================" >>${OUTPUT}
+      
+      echo -e "# OpenShift Jenkins template parameters for:" > ${OUTPUT}
+      echo -e "# Component: ${component}" >> ${OUTPUT}
+      echo -e "# JSON Template File: ${PIPELINE_JSON}" >> ${OUTPUT}
+      echo -e "#=======================================" >> ${OUTPUT}
       oc process --parameters --filename=${PIPELINE_JSON} | \
         sed "1d" | \
-        sed 's/\([^ ]*$\)/=\1/' |  \
-        sed 's/\s.*=/=/' >>${OUTPUT}
+        sed 's/\([^ ]*$\)/XXXX\1/' |  \
+        sed 's/\s.*XXXX/=/' | \
+        sed 's/^#/# /' \
+        >> ${OUTPUT}
     fi
   fi
-	popd >/dev/null
+  popd >/dev/null
 done
 
 if [ ! -z "${FORCENOTE}" ]; then

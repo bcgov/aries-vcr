@@ -23,8 +23,6 @@ if [ -f settings.sh ]; then
   . settings.sh
 fi
 
-# Script-specific variables to be set
-
 # In case you wanted to check what variables were passed
 # echo "flags = $*"
 while getopts e:xh FLAG; do

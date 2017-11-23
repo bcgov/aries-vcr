@@ -73,6 +73,7 @@ for component in "${components[@]}"; do
   echo -e \\n"Deploying build configuration for ${component} into the ${TOOLS} project ..."\\n
   pushd ../${component}/openshift >/dev/null
   ${LOCAL_DIR}/compBuilds.sh component
+  exitOnError
   popd >/dev/null
 done
 
@@ -90,9 +91,11 @@ if [ -z ${GEN_ONLY} ]; then
   echo -e \\n
 
   oc project ${TOOLS} >/dev/null
+  exitOnError
   for build in "${builds[@]}"; do
     echo -e \\n"Manually triggering build of ${build}..."\\n
     oc start-build ${build}
+	exitOnError
     echo -e \\n"Use the OpenShift Console to monitor the build in the ${TOOLS} project."
     echo -e "Pause here until the build completes, and then hit a key to continue the script."
     echo -e \\n
