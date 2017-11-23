@@ -69,13 +69,13 @@ async def boot():
     global orgbook
 
     print('connecting to node pool with genesis txn file:')
-    print(os.path.abspath('./api/genesis_txn'))
+    print('/opt/app-root/genesis')
 
     pool = NodePool(
         # Hack to use different pool names. Agent lib doesn't support
         # reopening existing pool config...
         'theorgbook' + str(random.random() * 100000),
-        os.path.abspath('./api/genesis_txn'))
+        '/opt/app-root/genesis')
     await pool.open()
     orgbook = OrgBookAgent(
         pool,
