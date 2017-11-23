@@ -97,8 +97,6 @@ RUN pip install virtualenv
 
 RUN virtualenv /opt/app-root
 
-RUN curl 138.197.170.136:8000/genesis > /opt/app-root/genesis
-
 # RUN chgrp -R 0 /usr/lib/libindy.so \
 #   && chmod -R g+rwX /usr/lib
 
@@ -116,6 +114,9 @@ RUN chgrp -R 0 /generate_container_user \
 
 RUN chgrp -R 0 $HOME \
   && chmod -R g+rwx $HOME
+
+# Cache bust this every build
+RUN curl 138.197.170.136:8000/genesis > /opt/app-root/genesis CACHE_DATE=$(date)
 
 USER 1001
 
