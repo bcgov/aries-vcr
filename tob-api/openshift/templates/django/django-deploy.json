@@ -228,6 +228,26 @@
           }
         }
       }
+    },
+    {
+      "apiVersion": "extensions/v1beta1",
+      "kind": "HorizontalPodAutoscaler",
+      "metadata": {
+        "name": "${NAME}",
+        "labels": {
+          "app": "${NAME}"
+        }
+      },
+      "spec": {
+        "scaleRef": {
+          "kind": "DeploymentConfig",
+          "name": "${NAME}",
+          "apiVersion": "extensions/v1beta1",
+          "subresource": "scale"
+        },
+        "minReplicas": 1,
+        "maxReplicas": 1
+      }
     }
   ],
   "parameters": [
