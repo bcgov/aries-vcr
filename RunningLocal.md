@@ -49,11 +49,9 @@ On the command line, change into the "openshift" folder in the root of TheOrgBoo
 ./genBuilds.sh -h
 ```
 
-There are currently many "Hit a key to continue..." pauses in the script so that you can look at the Web Console to see what has changed after each step. For the Build - look at the Builds in the "devex-von-tools" project, for the deploy look at the Deployments in the "devex-von-dev" project.
-
 Review the command line parameters and pass in the appropriate parameters - without the -h.  For an initial install, no parameters are needed.
 
-As of this writing, on some local OpenShift instances, builds fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console.
+As of this writing, on some local OpenShift instances, builds fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console. There are further instructions at the bottom of this Readme of how you can add local overrides that might prevent the hangs in the first place.
 
 # Generate the Deployment Configurations and Deploy the Components
 
@@ -65,7 +63,7 @@ On the command line, change into the "openshift" folder in the root of TheOrgBoo
 
 Review the command line parameters available and rerun with the appropriate parameters - without the -h. For an initial deploy, no parameters are needed.
 
-As of this writing, on some local OpenShift instances, deployments fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console.
+As of this writing, on some local OpenShift instances, deployments fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console. There are further instructions at the bottom of this Readme of how you can add local overrides that might prevent the hangs in the first place.
 
 # Fixing routes
 
@@ -111,7 +109,7 @@ Run the following script to generate a series of files with the extension ".loca
 
 The files have all the parameters from the various templates in the project, with all of the parameters initially set to be commented out.
 
-# Override the settings that cause the hangs
+## Override the settings that cause the hangs
 
 Find the .local.param file associated with the process that is hanging, edit that file, uncomment and change the parameter that is causing the hang.
 

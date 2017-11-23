@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Set project and local environment variables
-if [ -f settings.sh ]; then
-  . settings.sh
-fi
-
 usage() { #Usage function
   cat <<-EOF
   Delete and recreate with defaults the routes in an environment.
@@ -54,7 +49,7 @@ fi
 
 # ===================================================================================
 # Fix routes
-echo -e "Fixing routes in the project: ${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME}"
+echo -e "Update routes to default in the project: ${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME}"
 oc project ${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME}
 for route in "${routes[@]}"; do
   oc delete route ${route}
