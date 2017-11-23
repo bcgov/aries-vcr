@@ -17,6 +17,14 @@ function should_migrate() {
 
 # Guess the number of workers according to the number of cores
 function get_default_web_concurrency() {
+
+  
+  # We limit processes to 1 since libindy wallet 
+  # can only be used by 1 process
+  echo 1
+  return
+
+
   limit_vars=$(cgroup-limits)
   local $limit_vars
   if [ -z "${NUMBER_OF_CORES:-}" ]; then
@@ -24,13 +32,7 @@ function get_default_web_concurrency() {
     return
   fi
 
-  # local max=$((NUMBER_OF_CORES*2))
-  
-  # We limit processes to 1 since libindy wallet 
-  # can only be used by 1 process
-  local max=1
-  # local max=$((NUMBER_OF_CORES*2))
-
+  local max=$((NUMBER_OF_CORES*2))
 
   # Require at least 43 MiB and additional 40 MiB for every worker
   local default=$(((${MEMORY_LIMIT_IN_BYTES:-MAX_MEMORY_LIMIT_IN_BYTES}/1024/1024 - 43) / 40))
