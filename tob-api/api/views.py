@@ -24,11 +24,10 @@ import json
 import os
 import random
 
+from indy.agent import Agent
+
 from django.views.decorators.csrf import csrf_exempt
 
-
-from von_agent.nodepool import NodePool
-from von_agent.demo_agents import OrgBookAgent
 from django.http import JsonResponse
 
 from rest_framework.views import APIView
@@ -62,36 +61,6 @@ from .models.VerifiableClaim import VerifiableClaim
 from .models.VerifiableClaimType import VerifiableClaimType
 from .models.VerifiableOrg import VerifiableOrg
 from .models.VerifiableOrgType import VerifiableOrgType
-
-
-async def boot():
-    global pool
-    global orgbook
-
-    print('connecting to node pool with genesis txn file:')
-    print('/opt/app-root/genesis')
-
-    pool = NodePool(
-        # Hack to use different pool names. Agent lib doesn't support
-        # reopening existing pool config...
-        'theorgbook' + str(random.random() * 100000),
-        '/opt/app-root/genesis')
-    await pool.open()
-    orgbook = OrgBookAgent(
-        pool,
-        'The-Org-Book-Agent-0000000000000',
-        'the-org-book-agent-wallet',
-        None,
-        '127.0.0.1',
-        9702,
-        'api/v0')
-    await orgbook.open()
-    await orgbook.create_master_secret('secret')
-
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(boot())
-
 
 
 class doingbusinessasBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
@@ -1101,6 +1070,11 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
 
 @csrf_exempt
 def bcovrinGenerateClaimRequest(request):
+
+  print("HERHEHREHREHRHE 111111")
+
+  orgbook = Agent()
+
   async def do():
     body_unicode = request.body.decode('utf-8')
     request_json = json.loads(body_unicode)
@@ -1129,6 +1103,11 @@ def bcovrinGenerateClaimRequest(request):
 
 @csrf_exempt
 def bcovrinStoreClaim(request):
+
+  print("HERHEHREHREHRHE 22222222")
+
+  orgbook = Agent()
+
   async def do():
     body_unicode = request.body.decode('utf-8')
     await orgbook.store_claim(body_unicode)
