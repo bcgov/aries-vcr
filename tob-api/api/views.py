@@ -1071,8 +1071,6 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
 @csrf_exempt
 def bcovrinGenerateClaimRequest(request):
 
-  print("HERHEHREHREHRHE 111111")
-
   orgbook = Agent()
 
   async def do():
@@ -1103,8 +1101,6 @@ def bcovrinGenerateClaimRequest(request):
 
 @csrf_exempt
 def bcovrinStoreClaim(request):
-
-  print("HERHEHREHREHRHE 22222222")
 
   orgbook = Agent()
 
