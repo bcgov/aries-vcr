@@ -9,17 +9,10 @@ if [ -z "${_component_name}" ]; then
   exit 1
 fi
 
-# Pull in any special component level settings ...
-# At this point the working directory will have been switched to the 
-# openshift directory of the component being processed.
-if [ -f ./settings.sh ]; then
-  echo -e \\n"Loading component specific settings from $PWD/settings.sh ..."\\n
-  . ./settings.sh
-fi
-
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
   . ${SCRIPTS_DIR}/commonFunctions.inc
 fi
+loadComponentSettings
 
 # Turn on debugging if asked
 if [ ! -z "${DEBUG}" ]; then

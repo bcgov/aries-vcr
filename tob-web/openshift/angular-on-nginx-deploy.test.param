@@ -1,7 +1,8 @@
+#=========================================================
 # OpenShift template parameters for:
 # Component: tob-web
-# JSON Template File: angular-on-nginx/angular-on-nginx-deploy.json
-#=======================================
+# JSON Template File: templates/angular-on-nginx/angular-on-nginx-deploy.json
+#=========================================================
 # NAME=angular-scaffold
 # IMAGE_NAMESPACE=gcpe-mygovbc-demo
 # REAL_IP_FROM=172.51.0.0/16
@@ -11,7 +12,7 @@
 # AdditionalRealIpFromRules=
 # IpFilterRules=all;
 # APPLICATION_DOMAIN=angular-scaffold-demo.pathfinder.gov.bc.ca
-# TAG_NAME=dev
+# TAG_NAME=prod
 # HTTP_BASIC=
 # HTTP_BASIC_USERNAME=
 # HTTP_BASIC_PASSWORD=

@@ -1,7 +1,8 @@
+#=========================================================
 # OpenShift template parameters for:
 # Component: tob-api
-# JSON Template File: django-deploy.json
-#=======================================
+# JSON Template File: templates/django-deploy.json
+#=========================================================
 # NAME=django
 # IMAGE_NAMESPACE=devex-von-tools
 # MEMORY_LIMIT=512Mi

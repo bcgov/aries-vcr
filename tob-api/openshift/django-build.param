@@ -1,6 +1,8 @@
+#=========================================================
 # OpenShift template parameters for:
 # Component: tob-api
-# JSON Template File: django-build.json
+# JSON Template File: templates/django-build.json
+#=========================================================
 NAME=django
 GIT_REPO_URL=https://github.com/bcgov/TheOrgBook
 GIT_REF=master

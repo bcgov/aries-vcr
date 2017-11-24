@@ -95,7 +95,7 @@
       "displayName": "Source Context Directory",
       "description": "The source context directory.",
       "required": true,
-      "value": "tob-api/django/"
+      "value": "tob-api"
     },
     {
       "name": "KIND_OF_IMAGE",

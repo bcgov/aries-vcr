@@ -1,9 +1,0 @@
-# OpenShift Jenkins template parameters for:
-# Component: tob-solr
-# JSON Template File: https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/provisioning/pipeline/resources/pipeline-build.json
-# GITHUB_WEBHOOK_SECRET parameter has been left out intentionally so it gets auto-generated.
-NAME=solr
-SOURCE_REPOSITORY_URL=https://github.com/bcgov/TheOrgBook.git
-SOURCE_REPOSITORY_REF=master
-CONTEXT_DIR=tob-solr
-JENKINSFILE_PATH=Jenkinsfile

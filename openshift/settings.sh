@@ -34,16 +34,16 @@ export GLUSTER_SVC_CONFIG=https://raw.githubusercontent.com/BCDevOps/openshift-t
 export GLUSTER_SVC_NAME=glusterfs-cluster-app
 
 # The project components
-declare -a components=("tob-db" "tob-solr" "tob-api" "tob-web")
+export -a components=("tob-db" "tob-solr" "tob-api" "tob-web")
 
 # The builds to be triggered after buildconfigs created (not auto-triggered)
-declare -a builds=("nginx-runtime" "angular-builder")
+export -a builds=("nginx-runtime" "angular-builder")
 
 # The images to be tagged after build
-declare -a images=("angular-on-nginx" "django" "solr" "schema-spy")
+export -a images=("angular-on-nginx" "django" "solr" "schema-spy")
 
 # The routes for the project
-declare -a routes=("angular-on-nginx" "django" "solr" "schema-spy")
+export -a routes=("angular-on-nginx" "django" "solr" "schema-spy")
 
 # Load in any overrides
 if [ -f ./settings.local.sh ]; then

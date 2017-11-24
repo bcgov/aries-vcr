@@ -78,9 +78,12 @@ for component in "${components[@]}"; do
 done
 
 if [ ! -z "${COMP}" ]; then
-  # If only processing one component, don't do the post build steps
+  # If only processing one component stop here.
   exit
 fi
+
+# Process the Jenkins Pipeline configurations ...
+${SCRIPT_DIR}/processPipelines.sh
 
 if [ -z ${GEN_ONLY} ]; then
   # ==============================================================================

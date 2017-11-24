@@ -1,6 +1,8 @@
+#=========================================================
 # OpenShift template parameters for:
 # Component: tob-db
-# JSON Template File: postgresql-deploy.json
+# JSON Template File: templates/postgresql-deploy.json
+#=========================================================
 NAME=postgresql
 MEMORY_LIMIT=512Mi
 PERSISTENT_VOLUME_SIZE=1Gi

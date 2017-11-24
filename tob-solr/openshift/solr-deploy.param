@@ -1,6 +1,8 @@
+#=========================================================
 # OpenShift template parameters for:
 # Component: tob-solr
-# JSON Template File: solr-deploy.json
+# JSON Template File: templates/solr-deploy.json
+#=========================================================
 NAME=solr
 IMAGE_NAMESPACE=devex-von-tools
 TAG_NAME=dev
