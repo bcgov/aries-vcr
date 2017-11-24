@@ -33,6 +33,9 @@ class Agent:
             await orgbook.open()
             await orgbook.create_master_secret('secret')
 
+        def __getattr__(self, name):
+            return getattr(orgbook, name)
+
     instance = None
 
     def __init__(self):
