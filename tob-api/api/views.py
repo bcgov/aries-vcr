@@ -24,7 +24,7 @@ import json
 import os
 import random
 
-from indy.agent import Agent
+from .indy.agent import Agent
 
 from django.views.decorators.csrf import csrf_exempt
 

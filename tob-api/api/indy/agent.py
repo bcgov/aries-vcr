@@ -35,9 +35,9 @@ class Agent:
 
     instance = None
 
-    def __init__(self, arg):
+    def __init__(self):
         if not Agent.instance:
-            Agent.instance = Agent.__Agent(arg)
+            Agent.instance = Agent.__Agent()
             loop = asyncio.get_event_loop()
             loop.run_until_complete(Agent.instance.start())
             loop.close()
