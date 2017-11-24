@@ -9,7 +9,7 @@ class Agent:
     # Singleton
     class __Agent:
 
-        async def start():
+        async def start(self):
             global pool
             global orgbook
 
