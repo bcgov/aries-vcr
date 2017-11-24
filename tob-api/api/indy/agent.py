@@ -40,7 +40,6 @@ class Agent:
             Agent.instance = Agent.__Agent()
             loop = asyncio.get_event_loop()
             loop.run_until_complete(Agent.instance.start())
-            loop.close()
 
     def __getattr__(self, name):
         return getattr(self.instance, name)
