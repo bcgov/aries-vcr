@@ -37,7 +37,7 @@ export GLUSTER_SVC_NAME=glusterfs-cluster-app
 export -a components=("tob-db" "tob-solr" "tob-api" "tob-web")
 
 # The builds to be triggered after buildconfigs created (not auto-triggered)
-export -a builds=("nginx-runtime" "angular-builder")
+export -a builds=("nginx-runtime" "angular-builder" "lib-indy")
 
 # The images to be tagged after build
 export -a images=("angular-on-nginx" "django" "solr" "schema-spy")

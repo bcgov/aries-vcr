@@ -41,6 +41,8 @@ For all of the commands mentioned here, you can use the "-h" parameter for usage
 ./initOSProjects.sh
 ```
 
+If you are running locally you will see some "No resources found." messages which can be ignored.
+
 # Generate the Build and Images in the "tools" project; Deploy Jenkins
 
 On the command line, change into the "openshift" folder in the root of TheOrgBook repo and run the script:
@@ -78,7 +80,7 @@ In the current instance of the deployment, the routes created are explicitly def
 To load the test data into your instance of OpenShift, run:
 
 ```
-./loadData.sh -g
+./loadData.sh
 ```
 
 You should see a series of blocks of data and "201" return code. If you see errors messages, the data step had "challenges". Contact us with questions.

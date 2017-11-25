@@ -84,7 +84,6 @@ if [ -z ${GEN_ONLY} ]; then
   cat <<-EOF
 
 Use the OpenShift Console to monitor the deployment in the ${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME} project.
-Pause here until the component deploys, and then hit a key to continue the script.
 
 If a deploy hangs take these steps:
  - cancel the instance of the deployment
@@ -92,6 +91,4 @@ If a deploy hangs take these steps:
  - click the Deploy button to restart the deploy
 
 EOF
-  read -n1 -s -r -p "Press a key to continue..." key
-  echo -e \\n
 fi

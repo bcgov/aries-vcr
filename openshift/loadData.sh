@@ -10,7 +10,7 @@ usage() { #Usage function
   ========
     -h prints the usage for the script
     -x run the script in debug mode to see what's happening
-    -e <server> load data into the specified server (default: local, Options: local/dev/test/prod/<URL>)
+    -e <server> load data into the specified server (default: ${LOAD_DATA_SERVER}, Options: local/dev/test/prod/<URL>)
 
   Update settings.sh and settings.local.sh files to set defaults
 
@@ -29,10 +29,10 @@ while getopts e:gh FLAG; do
   case $FLAG in
     e ) LOAD_DATA_SERVER=$OPTARG ;;
     x ) export DEBUG=1 ;;
-    h ) USAGE ;;
+    h ) usage ;;
     \? ) #unrecognized option - show help
       echo -e \\n"Invalid script option: -${OPTARG}"\\n
-      USAGE
+      usage
       ;;
   esac
 done
