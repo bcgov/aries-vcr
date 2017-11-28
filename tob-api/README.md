@@ -10,9 +10,34 @@ The API is developed in Django/Python, using a Visual Studio 2017 project.
 
 ## Development
 
-To deploy TheOrgBook on an instance of OpenShift, see [the instructions](../RunningLocal.md) in the file RunningLocal.md.
+### libindy and the von-agent
+
+This project depends on libindy and the von-agent (some custom agent code).
+
+The von-agent can be installed into your virtual environment through the requirements.txt file for the python project.
+
+The libindy binaries can be download (for Windows) from, https://repo.sovrin.org/windows/libindy/stable/, or built from source.  At the time of writing the project is using 1.1.0.  The binaries can be copied into the virual environment along side Python.
+
+### Connecting to a Node Pool
+
+The von-agent requires a valid genesis transaction file in order to connect to a node pool.  For development purposes we are running a node pool on Digital Ocean and the genesis transaction file for the pool can be downloaded from here; http://138.197.170.136/genesis.
+
+Copy the content to a file on your system such as `C:/TheOrgBook/tob-api/app-root/genesis` or `/opt/app-root/genesis` and update the code in `.../TheOrgBook/tob-api/api/indy/agent.py` accordingly.  **Make sure this file and your changes do not get checked in.**
+
+ToDo:
+* Make this process easier for the developer.  Automate the configuration like we do for the database (database.py) and Haystack (haystack.py)
+* Perhaps even download the genesis transaction file automatically if it does not exist.
+
+### Local `.indy_client` Files
+
+Local node pool and a wallet database will be created.  Due to limitations with the referance implementations of the code these files cannot be re-used between sessions or by more than one process.  Therefore you will need to manually delete these files between session.  On Windows these files will be under the `C:\Users\<UserName>\.indy_client` directory.
+
+ToDo:
+* Delete the folders in `C:\Users\<UserName>\.indy_client` between debug sessions automatically, since the agent cannot reuse the files at the moment (time of writing).
 
 ## Development Deployment Environment
+
+To deploy TheOrgBook on an instance of OpenShift, see [the instructions](../RunningLocal.md) in the file RunningLocal.md.
 
 - [Schema Spy](http://schema-spy-devex-von-dev.pathfinder.gov.bc.ca/)
 - [Open API (Swagger) API Explorer](http://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/)
