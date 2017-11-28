@@ -116,7 +116,7 @@ RUN chgrp -R 0 $HOME \
   && chmod -R g+rwx $HOME
 
 # Cache bust this every build
-RUN echo "cache bust" && curl 138.197.170.136/genesis > /opt/app-root/genesis
+RUN echo "cache bust 2" && curl 138.197.170.136/genesis > /opt/app-root/genesis
 
 USER 1001
 
