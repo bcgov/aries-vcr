@@ -77,7 +77,7 @@
       "displayName": "Source Context Directory",
       "description": "The source context directory.",
       "required": true,
-      "value": "openshift/templates/nginx-runtime/"
+      "value": "tob-web/openshift/templates/nginx-runtime/"
     },
     {
       "name": "OUTPUT_IMAGE_TAG",

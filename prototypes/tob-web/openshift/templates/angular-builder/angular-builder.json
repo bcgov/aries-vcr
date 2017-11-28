@@ -78,7 +78,7 @@
       "displayName": "Source Context Directory",
       "description": "The source context directory.",
       "required": true,
-      "value": "openshift/templates/angular-builder/"
+      "value": "tob-web/openshift/templates/angular-builder/"
     },
     {
       "name": "OUTPUT_IMAGE_TAG",

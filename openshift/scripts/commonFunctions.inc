@@ -100,6 +100,7 @@ appendParametersToFile (){
   _template=${1}
   _outputPath=${2}
   _commentFilter=${3}
+  _parameterFilter=${4}
   if [ -z "${_template}" ] || [ -z "${_outputPath}" ]; then
     echo -e \\n"appendParametersToFile; Missing parameter!"\\n
     exit 1
@@ -109,6 +110,26 @@ appendParametersToFile (){
     _commentFilter=cat
   fi
 
+  if [ -z "${_parameterFilter}" ]; then
+    _parameterFilter=cat
+  fi
+  
+  # GIT Overrides ...
+  _gitUrlFilter=cat 
+  _gitRefFilter=cat
+  _templateName=$(basename ${_template})
+  if ! contains "${_templateName}" "${skip_git_overrides[@]}"; then
+    # Override the GIT URI if it is defined ...
+    if [ ! -z "${GIT_URI}" ]; then
+      _gitUrlFilter="sed s~\(^\(GIT_REPO_URL\|SOURCE_REPOSITORY_URL\)=\).*$~\1${GIT_URI}~"
+    fi
+      
+    # Override the GIT Ref if it is defined ...
+    if [ ! -z "${GIT_REF}" ]; then
+      _gitRefFilter="sed s~\(^\(GIT_REF\|SOURCE_REPOSITORY_REF\)=\).*$~\1${GIT_REF}~"
+    fi
+  fi    
+ 
   # Fancy sed handling below to convert parameters output to param file format
   # - Delete the first line of the oc process output
   # - Put "XXXX" in front of the parameter default value
@@ -119,7 +140,12 @@ appendParametersToFile (){
     sed "1d" | \
     sed 's/\([^ ]*$\)/XXXX\1/' |  \
     sed 's/\s.*XXXX/=/' | \
-    ${_commentFilter} |
+    sed 's~\(^GITHUB_WEBHOOK_SECRET=.*$\)~#\1~' | \
+    sed 's~\(^DJANGO_SECRET_KEY=.*$\)~#\1~' | \
+    ${_gitUrlFilter} | \
+    ${_gitRefFilter} | \
+    ${_parameterFilter} | \
+    ${_commentFilter} | \
     sed 's/^#/# /' \
     >> ${_outputPath}
   exitOnError
@@ -220,4 +246,12 @@ getPipelineParameterFileOutputPath () {
   fi
 
   echo ${_output}
+}
+
+contains (){
+  local _item
+  _find=${1}
+  shift
+  for _item; do [[ "${_item}" == "${_find}" ]] && return 0; done
+  return 1
 }

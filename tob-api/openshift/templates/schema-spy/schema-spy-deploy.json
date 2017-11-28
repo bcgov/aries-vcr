@@ -202,7 +202,7 @@
       "displayName": "Database Name",
       "required": true,
       "description": "Name of the deployed database (see environment variables in deployed database).",
-      "value": "gwells"
+      "value": "TheOrgBook_Database"
     },
     {
       "name": "TAG_NAME",

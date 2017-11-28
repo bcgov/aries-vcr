@@ -30,37 +30,37 @@ oc project ${PROJECT_NAMESPACE}-${DEPLOYMENT_ENV_NAME} >/dev/null
 exitOnError
 
 for deploy in ${DEPLOYS}; do
-    echo -e "Processing deployment configuration; ${deploy} ..."\\n
+  echo -e "Processing deployment configuration; ${deploy} ..."\\n
 
-    JSONFILE="${TEMPLATE_DIR}/${deploy}.json"
-    JSONTMPFILE=$( basename ${deploy}_DeploymentConfig.json )
-	PARAMFILE=$( basename ${deploy}.param )
-	ENVPARAM=$( basename ${deploy}.${DEPLOYMENT_ENV_NAME}.param )
-	LOCALPARAM=${LOCAL_DIR}/$( basename ${deploy}.local.param )
+  JSONFILE="${TEMPLATE_DIR}/${deploy}.json"
+  JSONTMPFILE=$( basename ${deploy}_DeploymentConfig.json )
+  PARAMFILE=$( basename ${deploy}.param )
+  ENVPARAM=$( basename ${deploy}.${DEPLOYMENT_ENV_NAME}.param )
+  LOCALPARAM=${LOCAL_DIR}/$( basename ${deploy}.local.param )
 
-	if [ -f "${PARAMFILE}" ]; then
-		PARAMFILE="--param-file=${PARAMFILE}"
-	else
-		PARAMFILE=""
-	fi
+  if [ -f "${PARAMFILE}" ]; then
+    PARAMFILE="--param-file=${PARAMFILE}"
+  else
+    PARAMFILE=""
+  fi
 
-	if [ -f "${ENVPARAM}" ]; then
-		ENVPARAM="--param-file=${ENVPARAM}"
-	else
-		ENVPARAM=""
-	fi
+  if [ -f "${ENVPARAM}" ]; then
+    ENVPARAM="--param-file=${ENVPARAM}"
+  else
+    ENVPARAM=""
+  fi
 
-	if [ -f "${LOCALPARAM}" ]; then
-		LOCALPARAM="--param-file=${LOCALPARAM}"
-	else
-		LOCALPARAM=""
-	fi
+  if [ -f "${LOCALPARAM}" ]; then
+    LOCALPARAM="--param-file=${LOCALPARAM}"
+  else
+    LOCALPARAM=""
+  fi
 
   oc process --filename=${JSONFILE} ${SPECIALDEPLOYPARM} ${LOCALPARAM} ${ENVPARAM} ${PARAMFILE} > ${JSONTMPFILE}
   exitOnError
   if [ -z ${GEN_ONLY} ]; then
     oc ${OC_ACTION} -f ${JSONTMPFILE}
-	exitOnError
+  exitOnError
   fi
   
   # Delete the tempfile if the keep command line option was not specified

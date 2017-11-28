@@ -57,12 +57,36 @@ fi
 # -----------------------------------------------------------------------------------------------------------------
 # Function(s):
 # -----------------------------------------------------------------------------------------------------------------
+generatePipelineParameterFilter (){
+  _jenkinsFile=${1}
+  if [ -z "${_jenkinsFile}" ]; then
+    echo -e \\n"generatePipelineParameterFilter; Missing parameter!"\\n
+    exit 1
+  fi
+
+  _directory=$(getDirectory ${_jenkinsFile})
+  
+  _jenkinsFileName=$(getJenkinsFileName ${_jenkinsFile})
+  _contextDirectory=$(getComponentNameFromDir ${_directory})
+  _componentName=$(getComponentNameFromDir ${_directory})
+  if [ -z "${_componentName}" ]; then
+    _componentName=$(echo ${_jenkinsFileName} | sed 's~.Jenkinsfile~~')    
+  fi
+  
+  _pipelineJenkinsPathFilter="s~\(^JENKINSFILE_PATH=\).*$~\1${_jenkinsFileName}~"
+  _pipelineNameFilter="s~\(^NAME=\).*$~\1${_componentName}~"
+  _pipelineContextDirFilter="s~\(^CONTEXT_DIR=\).*$~\1${_contextDirectory}~"
+  
+  echo "sed ${_pipelineNameFilter};${_pipelineContextDirFilter};${_pipelineJenkinsPathFilter}"
+}
+
 generatePipelineParameterFile (){
   _jenkinsFile=${1}
   _template=${2}
   _output=${3}
   _force=${4}
   _commentFilter=${5}
+  _parameterFilter=${6}
   if [ -z "${_jenkinsFile}" ] || [ -z "${_template}" ]; then
     echo -e \\n"generatePipelineParameterFile; Missing parameter!"\\n
     exit 1
@@ -82,7 +106,7 @@ generatePipelineParameterFile (){
       echo -e "# Jenkinsfile: ${_jenkinsFile}" >> ${_output}
       echo -e "# JSON Template File: ${_template}" >> ${_output}
       echo -e "#=========================================================" >> ${_output}
-      appendParametersToFile "${_template}" "${_output}" "${_commentFilter}"
+      appendParametersToFile "${_template}" "${_output}" "${_commentFilter}" "${_parameterFilter}"
       exitOnError
     else
       echoWarning "The pipeline parameter file for ${_jenkinsFile} already exisits and will not be overwritten; ${_output} ...\n" 
@@ -111,7 +135,8 @@ JENKINS_FILES=$(getJenkinsFiles)
 # Generate pipeline parameter files for each one ...
 for _jenkinsFile in ${JENKINS_FILES}; do
   _outputPath=$(getPipelineParameterFileOutputPath "${_jenkinsFile}" "${_outputDir}")
-  generatePipelineParameterFile "${_jenkinsFile}" "${PIPELINE_JSON}" "${_outputPath}" "${FORCE}" "${COMMENTFILTER}"
+  _parameterFilter=$(generatePipelineParameterFilter "${_jenkinsFile}")
+  generatePipelineParameterFile "${_jenkinsFile}" "${PIPELINE_JSON}" "${_outputPath}" "${FORCE}" "${COMMENTFILTER}" "${_parameterFilter}"
   exitOnError
 done
 popd >/dev/null

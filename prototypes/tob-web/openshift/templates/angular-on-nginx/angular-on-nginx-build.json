@@ -101,7 +101,7 @@
       "displayName": "Source Context Directory",
       "description": "The source context directory.",
       "required": false,
-      "value": ""
+      "value": "tob-web"
     },
     {
       "name": "OUTPUT_IMAGE_TAG",

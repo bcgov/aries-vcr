@@ -55,6 +55,14 @@ Review the command line parameters and pass in the appropriate parameters - with
 
 As of this writing, on some local OpenShift instances, builds fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console. There are further instructions at the bottom of this Readme of how you can add local overrides that might prevent the hangs in the first place.
 
+## Updating Build and Image Configurations
+
+If you are adding build and image configurations you can re-run this script.  You will encounter errors for any of the resources that already exist, but you can safely ignore these areas and allow the script to continue.
+
+If you are updating build and image configurations use the `-u` option.
+
+If you are adding and updating build and image configurations, run the script **without** the `-u` option first to create the new resources and then again **with** the `-u` option to update the existing configurations.
+
 # Generate the Deployment Configurations and Deploy the Components
 
 On the command line, change into the "openshift" folder in the root of TheOrgBook repo and run the script:
@@ -66,6 +74,16 @@ On the command line, change into the "openshift" folder in the root of TheOrgBoo
 Review the command line parameters available and rerun with the appropriate parameters - without the -h. For an initial deploy, no parameters are needed.
 
 As of this writing, on some local OpenShift instances, deployments fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console. There are further instructions at the bottom of this Readme of how you can add local overrides that might prevent the hangs in the first place.
+
+## Updating Deployment Configurations
+
+If you are adding deployment configurations you can re-run this script.  You will encounter errors for any of the resources that already exist, but you can safely ignore these areas and allow the script to continue.
+
+If you are updating deployment configurations use the `-u` option.
+
+If you are adding and updating deployment configurations, run the script **without** the `-u` option first to create the new resources and then again **with** the `-u` option to update the existing configurations.
+
+**_Note; Some settings on some resources are immutable.  You will need to delete and recreate the associated resource(s).  Care must be taken with resources containing credentials or other auto-generated resources, however.  You must insure such resources are replaced using the same values._**
 
 # Fixing routes
 

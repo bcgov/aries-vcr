@@ -98,7 +98,7 @@ if [ -z ${GEN_ONLY} ]; then
   for build in "${builds[@]}"; do
     echo -e \\n"Manually triggering build of ${build}..."\\n
     oc start-build ${build}
-	exitOnError
+      exitOnError
     echo -e \\n"Use the OpenShift Console to monitor the build in the ${TOOLS} project."
     echo -e "Pause here until the build completes, and then hit a key to continue the script."
     echo -e \\n

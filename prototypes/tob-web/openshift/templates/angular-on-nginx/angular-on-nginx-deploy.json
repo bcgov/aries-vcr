@@ -265,7 +265,7 @@
       "displayName": "API Service Name",
       "name": "API_SERVICE_NAME",
       "required": false,
-      "value": ""
+      "value": "django"
     },
     {
       "description": "The root path for the API.  Used in conjunction with API_SERVICE_NAME.",
@@ -283,7 +283,7 @@
       "description": "Nginx ngx_http_access_module ip filter rules",
       "displayName": "Ip Filter Rules",
       "name": "IpFilterRules",
-      "value": "#allow all; deny all;"
+      "value": ""
     },
     {
       "description": "The exposed hostname that will route to the service, e.g., myappname.pathfinder.gov.bc.ca, if left blank a value will be defaulted.",

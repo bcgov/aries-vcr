@@ -165,12 +165,62 @@ getParameterFileOutputPath () {
   echo ${_output}
 }
 
+generateParameterFilter (){
+  _component=${1}
+  _type=${2}
+  _templateName=${3}
+  if [ -z "${_component}" ] ||[ -z "${_type}" ] || [ -z "${_templateName}" ]; then
+    echo -e \\n"generateParameterFilter; Missing parameter!"\\n
+    exit 1
+  fi
+  
+  _parameterFilters=""
+  _environment=${DEV}  
+  case ${_type} in
+    # r ) # Regular file
+      # _output=${_outputPrefix}$( basename ${_fileName}.param )
+      # ;;
+    d ) # Dev File
+      _environment=${DEV}
+      ;;
+    t ) # Test File
+      _environment=${TEST}
+      _parameterFilters="${_parameterFilters}s~\(^TAG_NAME=\).*$~\1${TEST}~;"
+      ;;
+    p ) # Prod
+      _environment=${PROD}
+      ;;
+    l ) # Local Files
+      _parameterFilters="${_parameterFilters}s~\(^MEMORY_LIMIT=\).*$~\10Mi~;"
+      # ToDo:
+      # Determine whether setting CPU_LIMIT = 0millicores has the same 
+      # affect as setting MEMORY_LIMIT = 0Mi.
+      # _parameterFilters = "${_parameterFilters}s~\(^CPU_LIMIT=\).*$~\10millicores;"
+      ;;
+  esac
+  
+  _name=$(basename "${_templateName}")
+  _name=$(echo ${_name} | sed 's~\(^.*\)-\(build\|deploy\)$~\1~')
+  _parameterFilters="${_parameterFilters}s~\(^NAME=\).*$~\1${_name}~;"  
+  _parameterFilters="${_parameterFilters}s~\(^\(IMAGE_NAMESPACE\|SOURCE_IMAGE_NAMESPACE\)=\).*$~\1${TOOLS}~;"
+  
+  if [ ! -z "${_environment}" ]; then
+    _parameterFilters="${_parameterFilters}s~\(^TAG_NAME=\).*$~\1${_environment}~;"
+    
+    _appDomain="${_name}-${PROJECT_NAMESPACE}-${_environment}${APPLICATION_DOMAIN_POSTFIX}"
+    _parameterFilters="${_parameterFilters}s~\(^APPLICATION_DOMAIN=\).*$~\1${_appDomain}~;"    
+  fi
+
+  echo "sed ${_parameterFilters}"
+}
+
 generateParameterFile (){
   _component=${1}
   _template=${2}
   _output=${3}
   _force=${4}
   _commentFilter=${5}
+  _parameterFilter=${6}
   if [ -z "${_component}" ] || [ -z "${_template}" ]; then
     echo -e \\n"generatePipelineParameterFile; Missing parameter!"\\n
     exit 1
@@ -190,7 +240,7 @@ generateParameterFile (){
       echo -e "# Component: ${_component}" >> ${_output}
       echo -e "# JSON Template File: ${_template}" >> ${_output}
       echo -e "#=========================================================" >> ${_output}
-      appendParametersToFile "${_template}" "${_output}" "${_commentFilter}"
+      appendParametersToFile "${_template}" "${_output}" "${_commentFilter}" "${_parameterFilter}"
       exitOnError
     else
       echoWarning "The parameter file for ${_template} already exisits and will not be overwritten; ${_output} ...\n" 
@@ -234,7 +284,8 @@ for component in ${components[@]}; do
       if ! skipParameterFileGeneration "${type}" "${_isBuildConfig}"; then 
         _commentFilter=$(getParameterFileCommentFilter "${type}")
         _output=$(getParameterFileOutputPath "${type}" "${file}")
-        generateParameterFile "${component}" "${TEMPLATE}" "${_output}" "${FORCE}" "${_commentFilter}"
+        _parameterFilter=$(generateParameterFilter "${component}" "${type}" "${file}")
+        generateParameterFile "${component}" "${TEMPLATE}" "${_output}" "${FORCE}" "${_commentFilter}" "${_parameterFilter}"
         exitOnError
       else
         # Remove `>/dev/null` to enable this message.

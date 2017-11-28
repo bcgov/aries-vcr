@@ -323,14 +323,14 @@
       "displayName": "SOLR Service Name",
       "description": "The name of the service associated with the SOLR search engine.",
       "required": false,
-      "value": ""
+      "value": "solr"
     },
     {
       "name": "SOLR_CORE_NAME",
       "displayName": "SOLR Core Name",
       "description": "The name of the core to use when connecting with SOLR.",
       "required": false,
-      "value": ""
+      "value": "the_org_book"
     },
 	{
       "name": "TAG_NAME",

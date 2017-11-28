@@ -72,7 +72,7 @@
       "displayName": "Git Repo URL",
       "description": "The URL to your GIT repo, don't use the default unless your just experimenting.",
       "required": true,
-      "value": "https://github.com/WadeBarnes/openshift-solr"
+      "value": "https://github.com/bcgov/openshift-solr.git"
 
     },
     {

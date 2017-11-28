@@ -100,7 +100,7 @@
       "displayName": "Source Context Directory",
       "description": "The source context directory.",
       "required": false,
-      "value": "solr"
+      "value": "tob-solr/cores"
     },
     {
       "name": "SOURCE_IMAGE_NAME",

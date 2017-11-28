@@ -1,10 +1,10 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-api
-# JSON Template File: templates/django-build.json
+# JSON Template File: templates/django/django-build.json
 #=========================================================
 NAME=django
-GIT_REPO_URL=https://github.com/bcgov/TheOrgBook
+GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
 GIT_REF=master
 SOURCE_CONTEXT_DIR=tob-api
 KIND_OF_IMAGE=ImageStreamTag

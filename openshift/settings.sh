@@ -11,17 +11,23 @@ export DEV=dev
 export TEST=test
 export PROD=prod
 
-export PROJECT_NAMESPACE="devex-von"
+# The templates that should not have their GIT referances(uri and ref) over-ridden
+# Templates NOT in this list will have they GIT referances over-ridden
+# with the values of GIT_URI and GIT_REF
+export -a skip_git_overrides=("schema-spy-build.json" "solr-base-build.json")
 export GIT_URI="https://github.com/bcgov/TheOrgBook.git"
+export GIT_REF="master"
+
+export PROJECT_NAMESPACE="devex-von"
 export TOOLS=${PROJECT_NAMESPACE}-tools
 export DEPLOYMENT_ENV_NAME="${DEV}"
 export BUILD_ENV_NAME="tools"
-export GIT_REF="master"
 export LOAD_DATA_SERVER="dev"
 export TEMPLATE_DIR=templates
 export PIPELINE_JSON=https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/provisioning/pipeline/resources/pipeline-build.json
 export COMPONENT_JENKINSFILE=../Jenkinsfile
 export PIPELINEPARAM=pipeline.param
+export APPLICATION_DOMAIN_POSTFIX=".pathfinder.gov.bc.ca"
 
 # Jenkins account settings for initialization
 export JENKINS_ACCOUNT_NAME="jenkins"

@@ -108,21 +108,14 @@
       "displayName": "Source Image Name",
       "required": true,
       "description": "The name of the source image.",
-      "value": "python"
+      "value": "lib-indy"
     },
     {
       "name": "SOURCE_IMAGE_TAG",
       "displayName": "Source Image Tag",
       "required": true,
       "description": "The tag of the source image.",
-      "value": "3.6"
-    },
-    {
-      "name": "SOURCE_IMAGE_NAMESPACE",
-      "displayName": "Namespace",
-      "required": true,
-      "description": "The OpenShift Namespace where the ImageStream resides.",
-      "value": "openshift"
+      "value": "latest"
     },
     {
       "name": "PIP_INDEX_URL",
