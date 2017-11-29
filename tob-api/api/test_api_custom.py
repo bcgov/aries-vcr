@@ -74,8 +74,7 @@ from .models.VerifiableOrg import VerifiableOrg
 from .serializers import VerifiableOrgSerializer
 from .models.VerifiableOrgType import VerifiableOrgType
 from .serializers import VerifiableOrgTypeSerializer
-
-
+from api.claimProcesser import ClaimProcesser
 
 # Custom API test cases. 
 # If an API operation does not contains generated code then it is tested in this 
@@ -115,7 +114,13 @@ class Test_Api_Custom(TestCase):
         self.skipTest("Not implemented")        
 
     def test_verifiedorgsIdVerifiableclaimsGet(self):
-        self.skipTest("Not implemented")        
+        self.skipTest("Not implemented")
+       
+    def test_RecieveClaim(self):
+      claim = fakedata.FakeClaim()
+      claimProcesser = ClaimProcesser()
+      claimProcesser.SaveClaim(claim)
+      print("testing")
 
 if __name__ == '__main__':
     unittest.main()

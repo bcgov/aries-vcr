@@ -1105,8 +1105,10 @@ def bcovrinStoreClaim(request):
   orgbook = Agent()
 
   async def do():
-    body_unicode = request.body.decode('utf-8')
-    await orgbook.store_claim(body_unicode)
+    claim = request.body.decode('utf-8')
+    claimProcesser = ClaimProcesser()
+    claimProcesser.SaveClaim(claim)    
+    await orgbook.store_claim(claim)
 
   loop = asyncio.get_event_loop()
   loop.run_until_complete(do())
