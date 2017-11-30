@@ -20,6 +20,7 @@
 """
 
 import asyncio
+from api.claimProcesser import ClaimProcesser
 import json
 import os
 import random

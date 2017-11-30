@@ -1,5 +1,8 @@
 import json
 
+# ToDo:
+# * The code, currently, only supports a single claim type; a 'Verified Organization' claim.
+
 class ClaimParser(object):
     """
     description of class
@@ -9,33 +12,37 @@ class ClaimParser(object):
         Initializer
         """
         self._raw_claim = claim
+        self._data = json.loads(self.rawClaim)
         self.__parse()
 
     @property
-    def raw_claim(self) -> str:
+    def rawClaim(self) -> str:
         return self._raw_claim
+
+    @property
+    def fullClaim(self) -> str:
+        return self._data
 
     @property
     def claim(self) -> str:
         return self._claim
 
     @property
-    def issuer_did(self) -> str:
+    def issuerDid(self) -> str:
         return self._issuer_did
 
     def __parse(self):
-      data = json.loads(self.raw_claim)
-      self._issuer_did = data["issuer_did"]
-      self._claim = self.__parseClaim(data)
+      self._issuer_did = self.fullClaim["issuer_did"]
+      self._claim = self.__parseClaim()
 
-    def __parseClaim(self, data):
+    def __parseClaim(self):
       return {
-        "effectiveDate": data["claim"]["effectiveDate"][0],
-        "orgTypeId": data["claim"]["orgTypeId"][0],
-        "endDate": data["claim"]["endDate"][0],
-        "jurisdictionId": data["claim"]["jurisdictionId"][0],
-        "LegalName": data["claim"]["LegalName"][0],
-        "busId": data["claim"]["busId"][0]
+        "effectiveDate": self.fullClaim["claim"]["effectiveDate"][0],
+        "orgTypeId": self.fullClaim["claim"]["orgTypeId"][0],
+        "endDate": self.fullClaim["claim"]["endDate"][0],
+        "jurisdictionId": self.fullClaim["claim"]["jurisdictionId"][0],
+        "LegalName": self.fullClaim["claim"]["LegalName"][0],
+        "busId": self.fullClaim["claim"]["busId"][0]
       }
       
 
