@@ -1,39 +1,34 @@
 import json
 
-# ToDo:
-# * The code, currently, only supports a single claim type; a 'Verified Organization' claim.
-
 class ClaimParser(object):
     """
-    description of class
+    Parses a claim.
+    _Currently only supports 'Verified Organization' claims._
     """
     def __init__(self, claim: str) -> None:
-        """
-        Initializer
-        """
-        self._raw_claim = claim
-        self._data = json.loads(self.rawClaim)
+        self.__raw_claim = claim
+        self.__data = json.loads(self.rawClaim)
         self.__parse()
 
     @property
     def rawClaim(self) -> str:
-        return self._raw_claim
+        return self.__raw_claim
 
     @property
     def fullClaim(self) -> str:
-        return self._data
+        return self.__data
 
     @property
     def claim(self) -> str:
-        return self._claim
+        return self.__claim
 
     @property
     def issuerDid(self) -> str:
-        return self._issuer_did
+        return self.__issuer_did
 
     def __parse(self):
-      self._issuer_did = self.fullClaim["issuer_did"]
-      self._claim = self.__parseClaim()
+      self.__issuer_did = self.fullClaim["issuer_did"]
+      self.__claim = self.__parseClaim()
 
     def __parseClaim(self):
       return {

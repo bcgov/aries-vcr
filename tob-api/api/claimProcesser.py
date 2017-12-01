@@ -1,4 +1,5 @@
 from api.indy.claimParser import ClaimParser
+from api.indy.agent import Agent
 from django.utils import timezone
 from api.models.VerifiableClaimType import VerifiableClaimType
 from api.models.IssuerService import IssuerService
@@ -8,6 +9,8 @@ import base64
 from api.models.Jurisdiction import Jurisdiction
 from api.models.VerifiableOrgType import VerifiableOrgType
 from api.models.VerifiableOrg import VerifiableOrg
+from api.indy import eventloop
+
 
 # ToDo:
 # * The code is currently making assumtions in order to fill in gaps in the infomration provided with a claim.
@@ -30,16 +33,20 @@ from api.models.VerifiableOrg import VerifiableOrg
 
 class ClaimProcesser(object):
     """
-    description of class
+    Parses and processes a claim.
+
+    _Currently only supports 'Verified Organization' claims._
     """
+    __orgbook = Agent()
+
     def __init__(self) -> None:
-        self._logger = logging.getLogger(__name__)
+        self.__logger = logging.getLogger(__name__)
 
     def __get_VerifiableOrgType(self, claim):
       orgTypeCode = claim["orgTypeId"]
       verifiableOrgType = VerifiableOrgType.objects.filter(orgType=orgTypeCode)
       if not verifiableOrgType:
-        self._logger.debug("VerifiableOrgType, {0}, does not exist.  Creating ...".format(orgTypeCode))
+        self.__logger.debug("VerifiableOrgType, {0}, does not exist.  Creating ...".format(orgTypeCode))
         verifiableOrgType = VerifiableOrgType(
           orgType = orgTypeCode,
           description = orgTypeCode,
@@ -47,7 +54,7 @@ class ClaimProcesser(object):
         )
         verifiableOrgType.save()
       else:
-        self._logger.debug("VerifiableOrgType, {0}, exists ...".format(orgTypeCode))
+        self.__logger.debug("VerifiableOrgType, {0}, exists ...".format(orgTypeCode))
         verifiableOrgType = verifiableOrgType[0]
       
       return verifiableOrgType
@@ -56,7 +63,7 @@ class ClaimProcesser(object):
       jurisdictionName = claim["jurisdictionId"]
       jurisdiction = Jurisdiction.objects.filter(name=jurisdictionName)
       if not jurisdiction:
-        self._logger.debug("Jurisdiction, {0}, does not exist.  Creating ...".format(jurisdictionName))
+        self.__logger.debug("Jurisdiction, {0}, does not exist.  Creating ...".format(jurisdictionName))
         jurisdiction = Jurisdiction(
           abbrv = jurisdictionName,
           name = jurisdictionName,
@@ -65,7 +72,7 @@ class ClaimProcesser(object):
         )
         jurisdiction.save()
       else:
-        self._logger.debug("Jurisdiction, {0}, exists ...".format(jurisdictionName))
+        self.__logger.debug("Jurisdiction, {0}, exists ...".format(jurisdictionName))
         jurisdiction = jurisdiction[0]
       
       return jurisdiction
@@ -76,7 +83,7 @@ class ClaimProcesser(object):
 
       verifiableOrg = VerifiableOrg.objects.filter(orgId=organizationId)
       if not verifiableOrg:
-        self._logger.debug("Organization, {0}, with business id {1} does not exist.  Creating ... ".format(name, organizationId))
+        self.__logger.debug("Organization, {0}, with business id {1} does not exist.  Creating ... ".format(name, organizationId))
         verifiableOrg = VerifiableOrg(
           orgId = claim["busId"],
           orgTypeId = self.__get_VerifiableOrgType(claim),
@@ -86,7 +93,7 @@ class ClaimProcesser(object):
         )
         verifiableOrg.save()
       else:
-        self._logger.debug("Organization, {0}, with business id {1} exists.  Updating ... ".format(name, organizationId))
+        self.__logger.debug("Organization, {0}, with business id {1} exists.  Updating ... ".format(name, organizationId))
         verifiableOrg = verifiableOrg[0]
         verifiableOrg.orgId = claim["busId"]
         verifiableOrg.orgTypeId = self.__get_VerifiableOrgType(claim)
@@ -106,7 +113,7 @@ class ClaimProcesser(object):
 
       issuerService = IssuerService.objects.filter(DID=issuerServiceDID)
       if not issuerService:
-        self._logger.debug("IssuerService, {0}, does not exist.  Creating ...".format(issuerServiceDID))
+        self.__logger.debug("IssuerService, {0}, does not exist.  Creating ...".format(issuerServiceDID))
         issuerService = IssuerService(
           name = issuerServiceName,
           issuerOrgTLA = issuerOrgTLA,
@@ -118,7 +125,7 @@ class ClaimProcesser(object):
         )
         issuerService.save()     
       else:
-        self._logger.debug("IssuerService, {0}, exists ...".format(issuerServiceDID))
+        self.__logger.debug("IssuerService, {0}, exists ...".format(issuerServiceDID))
         issuerService = issuerService[0]
       
       return issuerService
@@ -130,7 +137,7 @@ class ClaimProcesser(object):
       verifiableClaimTypeName = "Verified Organization"
       verifiableClaimType = VerifiableClaimType.objects.filter(claimType=verifiableClaimTypeName)
       if not verifiableClaimType:
-        self._logger.debug("VerifiableClaimType, {0}, does not exist.  Creating ...".format(verifiableClaimTypeName))
+        self.__logger.debug("VerifiableClaimType, {0}, does not exist.  Creating ...".format(verifiableClaimTypeName))
         verifiableClaimType = VerifiableClaimType(
           claimType = verifiableClaimTypeName,
           base64Logo = base64Logo,
@@ -141,7 +148,7 @@ class ClaimProcesser(object):
         )
         verifiableClaimType.save()     
       else:
-        self._logger.debug("VerifiableClaimType, {0}, exists ...".format(verifiableClaimTypeName))
+        self.__logger.debug("VerifiableClaimType, {0}, exists ...".format(verifiableClaimTypeName))
         verifiableClaimType = verifiableClaimType[0]
       
       return verifiableClaimType
@@ -151,7 +158,7 @@ class ClaimProcesser(object):
       claim = claimParser.fullClaim
       verifiableClaim = VerifiableClaim.objects.filter(claimJSON=claim)
       if not verifiableClaim:
-        self._logger.debug("The VerifiableClaim does not exist.  Creating ...")
+        self.__logger.debug("The VerifiableClaim does not exist.  Creating ...")
         verifiableClaim = VerifiableClaim(
           verifiableOrgId = verifiableOrg,
           claimType = self.__get_VerifiableClaimType(claimParser),
@@ -164,13 +171,22 @@ class ClaimProcesser(object):
         )
         verifiableClaim.save()
       else:
-        self._logger.debug("The VerifiableClaim exists ...")
+        self.__logger.debug("The VerifiableClaim exists ...")
       
       return verifiableClaim
 
+    async def __StoreClaim(self, claim):
+      await self.__orgbook.store_claim(claim)
+    
     def SaveClaim(self, claimJson):      
-      self._logger.debug("Parsing claim ...")
+      self.__logger.debug("Parsing claim ...")
       claimParser = ClaimParser(claimJson)      
 
+      self.__logger.debug("Creating or updating the associated Verifiable Organization ...")
       verifiableOrg = self.__CreateOrUpdateVerifiableOrg(claimParser.claim)
+
+      self.__logger.debug("Creating or updating the associated Verifiable Claim ...")
       self.__CreateOrUpdateVerifiableClaim(claimParser, verifiableOrg)
+
+      self.__logger.debug("Storing the claim in the wallet ...")
+      eventloop.do(self.__StoreClaim(claimParser.rawClaim))

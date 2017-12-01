@@ -1,14 +1,12 @@
 import asyncio
-
+from api.indy import eventloop
 from von_agent.nodepool import NodePool
 from von_agent.demo_agents import OrgBookAgent
-
 
 class Agent:
 
     # Singleton
     class __Agent:
-
         async def start(self):
             global pool
             global orgbook
@@ -22,6 +20,7 @@ class Agent:
                 'theorgbook',
                 '/opt/app-root/genesis')
             await pool.open()
+
             orgbook = OrgBookAgent(
                 pool,
                 'The-Org-Book-Agent-0000000000000',
@@ -31,6 +30,7 @@ class Agent:
                 9702,
                 'api/v0')
             await orgbook.open()
+
             await orgbook.create_master_secret('secret')
 
         def __getattr__(self, name):
@@ -41,8 +41,7 @@ class Agent:
     def __init__(self):
         if not Agent.instance:
             Agent.instance = Agent.__Agent()
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(Agent.instance.start())
+            eventloop.do(Agent.instance.start())
 
     def __getattr__(self, name):
         return getattr(self.instance, name)

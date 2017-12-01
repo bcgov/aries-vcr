@@ -32,6 +32,8 @@ from . import views
 from . import views_custom
 # search views
 from . import search_views
+# indy views
+from . import indy_views
 
 class SwaggerSchemaView(APIView):
     permission_classes = [AllowAny]
@@ -140,8 +142,8 @@ urlpatterns = [
     url(r'^search/users$', views_custom.usersSearchGet.as_view()),
     url(r'^search/verifiableorgs$', search_views.VerifiableOrgSearchView.as_view()),
 
-    url(r'^bcovrin/generate-claim-request$', views.bcovrinGenerateClaimRequest),
-    url(r'^bcovrin/store-claim$', views.bcovrinStoreClaim),
+    url(r'^bcovrin/generate-claim-request$', indy_views.bcovrinGenerateClaimRequest.as_view()),
+    url(r'^bcovrin/store-claim$', indy_views.bcovrinStoreClaim.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

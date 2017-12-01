@@ -32,15 +32,23 @@
   <ItemGroup>
     <Compile Include="api\admin.py" />
     <Compile Include="api\apps.py" />
+    <Compile Include="api\claimDefProcesser.py" />
     <Compile Include="api\claimProcesser.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="api\fakedata.py" />
     <Compile Include="api\indy\agent.py" />
+    <Compile Include="api\indy\claimDefParser.py" />
     <Compile Include="api\indy\claimParser.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="api\indy\eventloop.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="api\indy\__init__.py" />
+    <Compile Include="api\indy_views.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="api\management\commands\migrate.py">
       <SubType>Code</SubType>
     </Compile>
