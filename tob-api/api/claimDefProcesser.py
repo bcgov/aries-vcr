@@ -10,9 +10,9 @@ class ClaimDefProcesser(object):
 
   _Currently only supports a 'Verified Organization' claim definition._
   """
-  __orgbook = Agent()
 
   def __init__(self, claimDef) -> None:
+    self.__orgbook = Agent()
     self.__logger = logging.getLogger(__name__)
     self.__claimDefParser = ClaimDefParser(claimDef)
 

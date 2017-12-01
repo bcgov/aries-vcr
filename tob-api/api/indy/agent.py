@@ -12,13 +12,13 @@ class Agent:
             global orgbook
 
             print('connecting to node pool with genesis txn file:')
-            print('/opt/app-root/genesis')
+            print('C:/TheOrgBook/tob-api/app-root/genesis')
 
             pool = NodePool(
                 # Hack to use different pool names. Agent lib doesn't support
                 # reopening existing pool config...
                 'theorgbook',
-                '/opt/app-root/genesis')
+                'C:/TheOrgBook/tob-api/app-root/genesis')
             await pool.open()
 
             orgbook = OrgBookAgent(

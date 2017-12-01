@@ -37,10 +37,10 @@ class ClaimProcesser(object):
 
     _Currently only supports 'Verified Organization' claims._
     """
-    __orgbook = Agent()
 
     def __init__(self) -> None:
-        self.__logger = logging.getLogger(__name__)
+      self.__orgbook = Agent()
+      self.__logger = logging.getLogger(__name__)
 
     def __get_VerifiableOrgType(self, claim):
       orgTypeCode = claim["orgTypeId"]
