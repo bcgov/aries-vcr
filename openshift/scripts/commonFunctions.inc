@@ -40,15 +40,11 @@ exitOnError () {
   rtnCd=$?
   if [ ${rtnCd} -ne 0 ]; then
     echoError "An error has occurred.  Please check the previous output message(s) for details."
-    read -n1 -s -r -p $'\e[33mWould you like to continue?\e[0m  Press 'c' to continue, or any other key to exit...' key
+    read -n1 -s -r -p $'\e[33mWould you like to continue?\e[0m  Press Ctrl-C to exist, or any other key to continue ...' key
     echo -e \\n
     
-    if [ "${key}" = "c" ]; then
-      return 0
-    else
-      echo "Exited with error code ${rtnCd}."
-      exit ${rtnCd}      
-    fi
+    # If we get here the user did NOT press Ctrl-C ...
+    return 0
   fi
 }
 

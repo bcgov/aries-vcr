@@ -83,7 +83,11 @@ If you are updating deployment configurations use the `-u` option.
 
 If you are adding and updating deployment configurations, run the script **without** the `-u` option first to create the new resources and then again **with** the `-u` option to update the existing configurations.
 
-**_Note; Some settings on some resources are immutable.  You will need to delete and recreate the associated resource(s).  Care must be taken with resources containing credentials or other auto-generated resources, however.  You must insure such resources are replaced using the same values._**
+**_Note;_**
+
+**_Some settings on some resources are immutable.  You will need to delete and recreate the associated resource(s).  Care must be taken with resources containing credentials or other auto-generated resources, however.  You must insure such resources are replaced using the same values._**
+
+**_Updating the deployment configurations can affect (overwrite) auto-generated secretes such as the database username and password._**
 
 # Fixing routes
 
