@@ -8,3 +8,7 @@ GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
 GIT_REF=master
 SOURCE_CONTEXT_DIR=tob-api/openshift/templates/python-libindy
 OUTPUT_IMAGE_TAG=latest
+DOCKER_FILE_PATH=Dockerfile
+SOURCE_IMAGE_KIND=ImageStreamTag
+SOURCE_IMAGE_NAME=libindy
+SOURCE_IMAGE_TAG=latest
