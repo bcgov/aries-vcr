@@ -1,38 +1,17 @@
-FROM ubuntu:16.04
+FROM libindy:latest
 
 # Install environment
-RUN apt-get update -y && apt-get install -y \
-    git \
-    wget \
+RUN apt-get update -y && \
+apt-get install -y \
     python3.5 \
     python3-pip \
     python-setuptools \
     python3-nacl \
     apt-transport-https \
-    ca-certificates \
-    build-essential \
-    pkg-config \
-    cmake \
-    libssl-dev \
-    libsqlite3-dev \
-    libsodium-dev \
-    curl
+    ca-certificates
 
 ENV HOME=/opt/app-root/src
 WORKDIR $HOME
-
-# Install rust toolchain
-RUN curl -o rustup https://sh.rustup.rs
-RUN chmod +x rustup
-RUN ./rustup -y
-
-RUN git clone https://github.com/hyperledger/indy-sdk.git
-WORKDIR $HOME/indy-sdk/libindy
-RUN $HOME/.cargo/bin/cargo build
-# Move libindy to lib path
-RUN mv target/debug/libindy.so /usr/lib
-WORKDIR $HOME
-
 EXPOSE 8080
 
 ENV PYTHON_VERSION=3.6 \
@@ -44,9 +23,17 @@ ENV PYTHON_VERSION=3.6 \
     PIP_NO_CACHE_DIR=off \
     STI_SCRIPTS_PATH=/usr/libexec/s2i
 
-
 ENV LC_ALL="C"
 ENV LC_CTYPE="en_US.utf-8"
+
+ENV SUMMARY="Platform for building and running Python $PYTHON_VERSION applications" \
+    DESCRIPTION="Python $PYTHON_VERSION available as docker container is a base platform for \
+building and running various Python $PYTHON_VERSION applications and frameworks. \
+Python is an easy to learn, powerful programming language. It has efficient high-level \
+data structures and a simple but effective approach to object-oriented programming. \
+Python's elegant syntax and dynamic typing, together with its interpreted nature, \
+make it an ideal language for scripting and rapid application development in many areas \
+on most platforms."
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
@@ -60,22 +47,6 @@ LABEL summary="$SUMMARY" \
       version="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
-ENV SUMMARY="Platform for building and running Python $PYTHON_VERSION applications" \
-    DESCRIPTION="Python $PYTHON_VERSION available as docker container is a base platform for \
-building and running various Python $PYTHON_VERSION applications and frameworks. \
-Python is an easy to learn, powerful programming language. It has efficient high-level \
-data structures and a simple but effective approach to object-oriented programming. \
-Python's elegant syntax and dynamic typing, together with its interpreted nature, \
-make it an ideal language for scripting and rapid application development in many areas \
-on most platforms."
-
-# RUN yum install -y centos-release-scl-rh && \
-#     yum-config-manager --enable centos-sclo-rh-testing && \
-#     INSTALL_PKGS="rh-python36 rh-python36-python-devel rh-python36-python-setuptools rh-python36-python-pip \
-#      nss_wrapper httpd24 httpd24-httpd-devel httpd24-mod_ssl httpd24-mod_auth_kerb httpd24-mod_ldap \
-#          httpd24-mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
-#     yum install -y --setopt=tsflags=nodocs --enablerepo=centosplus $INSTALL_PKGS && \
-
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH.
 COPY ./s2i/bin/. $STI_SCRIPTS_PATH
 
@@ -88,17 +59,10 @@ COPY ./root/ /
 # - In order to drop the root user, we have to make some directories world
 #   writable as OpenShift default security model is to run the container
 #   under random UID.
-
-
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN ln -sf /usr/bin/pip3 /usr/bin/pip
-
 RUN pip install virtualenv 
-
 RUN virtualenv /opt/app-root
-
-# RUN chgrp -R 0 /usr/lib/libindy.so \
-#   && chmod -R g+rwX /usr/lib
 
 RUN chgrp -R 0 $STI_SCRIPTS_PATH \
   && chmod -R g+rwx $STI_SCRIPTS_PATH

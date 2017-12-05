@@ -1,14 +1,10 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-api
-# JSON Template File: templates/django/django-build.json
+# JSON Template File: templates/libindy/libindy-build.json
 #=========================================================
-NAME=django
+NAME=libindy
 GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
 GIT_REF=master
-SOURCE_CONTEXT_DIR=tob-api
-KIND_OF_IMAGE=ImageStreamTag
-SOURCE_IMAGE_NAME=python-libindy
-SOURCE_IMAGE_TAG=latest
-PIP_INDEX_URL=
+SOURCE_CONTEXT_DIR=tob-api/openshift/templates/libindy
 OUTPUT_IMAGE_TAG=latest
