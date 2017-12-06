@@ -192,10 +192,12 @@ generateParameterFilter (){
       ;;
     l ) # Local Files
       _parameterFilters="${_parameterFilters}s~\(^MEMORY_LIMIT=\).*$~\10Mi~;"
+      _parameterFilters="${_parameterFilters}s~\(^MEMORY_REQUEST=\).*$~\10Mi~;"
       # ToDo:
       # Determine whether setting CPU_LIMIT = 0millicores has the same 
       # affect as setting MEMORY_LIMIT = 0Mi.
       # _parameterFilters = "${_parameterFilters}s~\(^CPU_LIMIT=\).*$~\10millicores;"
+      # _parameterFilters = "${_parameterFilters}s~\(^CPU_REQUEST=\).*$~\10millicores;"
       ;;
   esac
   
