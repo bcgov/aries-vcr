@@ -1,0 +1,16 @@
+// Edit your app's name below
+def APP_NAME = 'libindy'
+
+// You shouldn't have to edit these if you're following the conventions
+def BUILD_CONFIG = APP_NAME
+def IMAGESTREAM_NAME = APP_NAME
+
+properties([pipelineTriggers([cron('H 0 * * *')])])
+
+node {
+  stage('build ' + BUILD_CONFIG) {
+    echo "Building: " + BUILD_CONFIG
+    openshiftBuild bldCfg: BUILD_CONFIG, showBuildLogs: 'true'
+    openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: '$BUILD_ID', srcStream: IMAGESTREAM_NAME, srcTag: 'latest'
+  }
+}
