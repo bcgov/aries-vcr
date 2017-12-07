@@ -65,16 +65,13 @@ generatePipelineParameterFilter (){
   fi
 
   _directory=$(getDirectory ${_jenkinsFile})
-  
   _jenkinsFileName=$(getJenkinsFileName ${_jenkinsFile})
   _contextDirectory=$(getComponentNameFromDir ${_directory})
   _componentName=$(getComponentNameFromDir ${_directory})
-  if [ -z "${_componentName}" ]; then
-    _componentName=$(echo ${_jenkinsFileName} | sed 's~.Jenkinsfile~~')    
-  fi
+  _pipelineName=$(getPipelineName "${_jenkinsFileName}" "${_componentName}")
   
   _pipelineJenkinsPathFilter="s~\(^JENKINSFILE_PATH=\).*$~\1${_jenkinsFileName}~"
-  _pipelineNameFilter="s~\(^NAME=\).*$~\1${_componentName}~"
+  _pipelineNameFilter="s~\(^NAME=\).*$~\1${_pipelineName}~"
   _pipelineContextDirFilter="s~\(^CONTEXT_DIR=\).*$~\1${_contextDirectory}~"
   
   echo "sed ${_pipelineNameFilter};${_pipelineContextDirFilter};${_pipelineJenkinsPathFilter}"

@@ -40,7 +40,7 @@ exitOnError () {
   rtnCd=$?
   if [ ${rtnCd} -ne 0 ]; then
     echoError "An error has occurred.  Please check the previous output message(s) for details."
-    read -n1 -s -r -p $'\e[33mWould you like to continue?\e[0m  Press Ctrl-C to exist, or any other key to continue ...' key
+    read -n1 -s -r -p $'\e[33mWould you like to continue?\e[0m  Press Ctrl-C to exit, or any other key to continue ...' key
     echo -e \\n
     
     # If we get here the user did NOT press Ctrl-C ...
@@ -250,4 +250,24 @@ contains (){
   shift
   for _item; do [[ "${_item}" == "${_find}" ]] && return 0; done
   return 1
+}
+
+getPipelineName (){
+  _jenkinsFileName=${1}
+  _defaultName=${2}
+  if [ -z "${_jenkinsFileName}" ]; then
+    echo -e \\n"getPipelineName; Missing parameter!"\\n
+    exit 1
+  fi
+  
+  # Extract the name from the name of the JenkinsFile if possible
+  _pipelineName=$(echo ${_jenkinsFileName} | sed 's~Jenkinsfile~~I')
+  if [ ! -z "${_pipelineName}" ]; then
+    _pipelineName=$(echo ${_jenkinsFileName} | sed 's~.Jenkinsfile~~I')
+  else
+    _pipelineName=${_defaultName}
+  fi
+
+  # Pipeline names MUST be lowercase
+  echo $(echo ${_pipelineName} | tr '[:upper:]' '[:lower:]')
 }
