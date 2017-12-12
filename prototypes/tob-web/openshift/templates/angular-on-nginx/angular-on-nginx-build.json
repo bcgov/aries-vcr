@@ -52,7 +52,7 @@
             },
             "runtimeArtifacts": [{
               "sourcePath": "/opt/app-root/src/dist/",
-              "destinationDir": "tmp/app"
+              "destinationDir": "app"
             }]
           }
         },

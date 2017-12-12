@@ -1,0 +1,93 @@
+version: '3'
+services:
+  # 
+  # tob-web
+  # 
+  tob-web:
+    image: angular-on-nginx
+    environment:
+      - API_URL=${API_URL}
+      - IpFilterRules=${IpFilterRules}
+      - RealIpFrom=${RealIpFrom}
+    networks:
+      - tob
+    ports:
+      - 8080:8080
+    depends_on:
+      - tob-api
+
+  # 
+  # tob-api
+  # 
+  tob-api:
+    image: django
+    environment:
+      - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
+      - DATABASE_ENGINE=${DATABASE_ENGINE}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DJANGO_SECRET_KEY=wpn1GZrouOryH2FshRrpVHcEhMfMLtmTWMC2K5Vhx8MAi74H5y
+      - DJANGO_DEBUG=True
+      - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
+      - SOLR_CORE_NAME=${SOLR_CORE_NAME}
+    networks:
+      - tob
+    ports:
+      - 8081:8080
+    depends_on:
+      - tob-db
+      - tob-solr
+
+  # 
+  # schema-spy
+  # 
+  schema-spy:
+    image: schema-spy
+    environment:
+      - DATABASE_SERVICE_NAME=${SCHEMA_SPY_DATABASE_SERVICE_NAME}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+    networks:
+      - tob
+    ports:
+      - 8082:8080
+    depends_on:
+      - tob-db
+    
+  # 
+  # tob-solr
+  # 
+  tob-solr:
+    image: solr
+    environment:
+      - CORE_NAME=${CORE_NAME}
+    networks:
+      - tob
+    ports:
+      - 8983:8983
+    depends_on:
+      - tob-db
+
+  # 
+  # tob-db
+  # 
+  tob-db:
+    image: registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:155cf81a3d3a8bbcab3a1f61b177cab75a4105306146d172ef8fb29488cf58b4
+    environment:
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+    networks:
+      - tob
+    ports:
+      - 5432:5432
+    # volumes:
+      # - tob-data:/var/lib/pgsql/data     
+
+networks:
+  tob:
+
+# volumes:
+  # tob-data:

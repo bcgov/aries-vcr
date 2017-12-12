@@ -16,6 +16,9 @@ COPY nginx.conf.template /tmp/
 # Fix up permissions
 RUN chmod -R 0777 /tmp /var /run /etc /mnt /usr/libexec/s2i/
 
+# Work-around for issues with S2I builds on Windows
+WORKDIR /tmp
+
 # Nginx runs on port 8080 by default
 EXPOSE 8080
 

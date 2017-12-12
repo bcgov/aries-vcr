@@ -1,7 +1,7 @@
 # bash script to be sourced to set environment variables for OpenShift scripts
 
 # git bash hack on windows - deals with pathname conversions from dos to unix-style
-MSYS_NO_PATHCONV=1
+export MSYS_NO_PATHCONV=1
 
 # Project Variables
 export PROJECT_DIR=..
