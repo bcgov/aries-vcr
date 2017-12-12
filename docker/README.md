@@ -54,7 +54,7 @@ This will shutdown all of the containers in the project.
 
 ## Loading Data
 
-To load sample data into the running applicaiton use the `loadData.sh` script:
+To load sample data into the running application use the `loadData.sh` script:
 ```
 ../openshift/loadData.sh -e http://localhost:8081
 ```
@@ -63,13 +63,13 @@ This will load sample data directly into the exposed REST API.
 
 # Current State
 
-The application of operational, but not fully wired together and functional.  The current state is suitable as a PCO docker compose instance and for basic demos.
+The application is operational, but not fully wired together and functional.  The current state is suitable as a PCO docker compose instance and for basic demos/testing.
 
 * All of the builds work.
 * The main UI and the API are wired together and communicating.
 * The API server is using a local SqlLite database and the direct to database search engine.
 
-* Schema-Spy and Solr connecting to the database and are not functional yet.
+* Schema-Spy and Solr are not connecting to the database and are not functional yet.
 
 * The database comes up, but dependent services do not wait for it to become ready.
 

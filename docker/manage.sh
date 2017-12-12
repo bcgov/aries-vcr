@@ -20,7 +20,21 @@ export COMPOSE_PROJECT_NAME="tob"
 # -----------------------------------------------------------------------------------------------------------------
 usage() {
   cat <<-EOF
-  Usage: $0 {start|cli|stop|build|rebuild}
+  
+  Usage: $0 {start|stop|build}
+  
+  Options:
+  
+  build - Build the docker images for the project.
+          You need to do this first, since the builds require
+          a combination of Docker and S2I builds.
+
+  start - Creates the application containers from the built images
+          and starts the services based on the docker-compose.yml file.          
+  
+  stop - Stops the services.  This is a non-destructive process.  The containers
+         are not deleted so they will be reused the next time you run start.
+          
 
 EOF
 exit 1
