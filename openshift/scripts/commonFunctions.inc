@@ -261,9 +261,10 @@ getPipelineName (){
   fi
   
   # Extract the name from the name of the JenkinsFile if possible
-  _pipelineName=$(echo ${_jenkinsFileName} | sed 's~Jenkinsfile~~I')
+  _jenkinsFileName=$(echo ${_jenkinsFileName} | tr '[:upper:]' '[:lower:]')
+  _pipelineName=$(echo ${_jenkinsFileName} | sed 's~jenkinsfile~~')
   if [ ! -z "${_pipelineName}" ]; then
-    _pipelineName=$(echo ${_jenkinsFileName} | sed 's~.Jenkinsfile~~I')
+    _pipelineName=$(echo ${_jenkinsFileName} | sed 's~.jenkinsfile~~')
   else
     _pipelineName=${_defaultName}
   fi
