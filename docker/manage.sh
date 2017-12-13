@@ -123,6 +123,7 @@ configureEnvironment () {
   export CORE_NAME="the_org_book"
 
   # tob-api
+  export API_HTTP_PORT=${API_HTTP_PORT-8081}
   export DATABASE_SERVICE_NAME="tob-db"
   export DATABASE_ENGINE="postgresql"
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
@@ -134,6 +135,7 @@ configureEnvironment () {
   export SOLR_CORE_NAME=${CORE_NAME}
 
   # tob-web
+  export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}
   export API_URL="http://tob-api:8080/api/v1/"
   export IpFilterRules='#allow all; deny all;'
   export RealIpFrom='127.0.0.0/16'
@@ -148,7 +150,8 @@ case "$1" in
     docker-compose up tob-db tob-solr tob-api schema-spy tob-web
     ;;
   stop)
-      docker-compose stop
+    configureEnvironment
+    docker-compose stop
     ;;
   build)
     buildImages
