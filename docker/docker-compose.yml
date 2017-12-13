@@ -18,6 +18,15 @@ services:
 
   # 
   # tob-api
+  #-------------------------------------------------
+  # The API performs the migrations on the database
+  # and updates the indexes in Solr.  Therefore
+  # it needs to come up after the database and 
+  # and Solr services have had time to fully
+  # initialize.
+  # Using a simple sleep command to do this for the
+  # moment.  Would like to implement a more 
+  # deterministic solution.
   # 
   tob-api:
     image: django
@@ -27,10 +36,14 @@ services:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DJANGO_SECRET_KEY=wpn1GZrouOryH2FshRrpVHcEhMfMLtmTWMC2K5Vhx8MAi74H5y
-      - DJANGO_DEBUG=True
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
       - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
       - SOLR_CORE_NAME=${SOLR_CORE_NAME}
+      - TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
+      - TOB_DB_SERVICE_PORT=5432
+      - TOB_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
+      - TOB_SOLR_SERVICE_PORT=8983
     networks:
       - tob
     ports:
@@ -38,14 +51,27 @@ services:
     depends_on:
       - tob-db
       - tob-solr
+    command: >
+      /bin/bash -c "
+        echo sleeping ...;
+        sleep 10;
+        /usr/libexec/s2i/run;
+      "      
 
   # 
   # schema-spy
+  #-------------------------------------------------
+  # Needs to wait for the schema to be created/migrated
+  # by the API server; it's not enough to wait for the
+  # database to be available.
+  # Using a simple sleep command to do this for the
+  # moment.  Would like to implement a more 
+  # deterministic solution.
   # 
   schema-spy:
     image: schema-spy
     environment:
-      - DATABASE_SERVICE_NAME=${SCHEMA_SPY_DATABASE_SERVICE_NAME}
+      - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
       - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -55,6 +81,12 @@ services:
       - 8082:8080
     depends_on:
       - tob-db
+    command: >
+      /bin/bash -c "
+        echo sleeping ...;
+        sleep 20;
+        exec npm start;
+      "      
     
   # 
   # tob-solr
@@ -67,8 +99,6 @@ services:
       - tob
     ports:
       - 8983:8983
-    depends_on:
-      - tob-db
 
   # 
   # tob-db

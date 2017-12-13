@@ -12,11 +12,6 @@ export COMPOSE_PROJECT_NAME="tob"
 
 # =================================================================================================================
 # Usage:
-# - https://github.com/nrempel/von-network/blob/master/manage
-# - https://gist.github.com/nrempel/e1e587e93cc4f721b7d00b2f8f015234
-#
-# - https://github.com/nrempel/von-network/blob/master/docker-compose.yml
-# - https://gist.github.com/nrempel/d2681ab11c03e2d138f4317ad834c2bb
 # -----------------------------------------------------------------------------------------------------------------
 usage() {
   cat <<-EOF
@@ -75,7 +70,7 @@ buildImages() {
   
   echo -e "\nBuilding solr image ..."
   ${S2I_EXE} build \
-    '../tob-solr' \
+    '../tob-solr/cores' \
     'solr-base' \
     'solr'
 
@@ -116,7 +111,7 @@ configureEnvironment () {
   export POSTGRESQL_PASSWORD="DB_PASSWORD"
 
   # schema-spy
-  export SCHEMA_SPY_DATABASE_SERVICE_NAME="localhost"
+  export DATABASE_SERVICE_NAME="tob-db"
   export POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
   export POSTGRESQL_USER=${POSTGRESQL_USER}
   export POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -125,14 +120,14 @@ configureEnvironment () {
   export CORE_NAME="the_org_book"
 
   # tob-api
-  #export DATABASE_SERVICE_NAME="localhost"
+  export DATABASE_SERVICE_NAME="tob-db"
   export DATABASE_ENGINE="postgresql"
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
   export DATABASE_USER=${POSTGRESQL_USER}
   export DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
   export DJANGO_SECRET_KEY=wpn1GZrouOryH2FshRrpVHcEhMfMLtmTWMC2K5Vhx8MAi74H5y
   export DJANGO_DEBUG=True
-  export SOLR_SERVICE_NAME=""
+  export SOLR_SERVICE_NAME="tob-solr"
   export SOLR_CORE_NAME=${CORE_NAME}
 
   # tob-web
@@ -147,8 +142,7 @@ pushd ${SCRIPT_HOME} >/dev/null
 case "$1" in
   start)
     configureEnvironment
-    docker-compose up tob-web tob-api
-    #docker-compose up tob-web tob-api schema-spy tob-solr tob-db
+    docker-compose up tob-db tob-solr tob-api schema-spy tob-web
     ;;
   stop)
       docker-compose stop

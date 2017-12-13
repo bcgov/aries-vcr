@@ -26,6 +26,21 @@ To build the images run:
 ./manage.sh build
 ```
 
+### Troubleshooting the Building
+
+If you get errors during the build that reference scripts such as the following, check the line endings of your local copy of the file.  Replace `CRLF` line endings with `LF` and rebuild the image.
+
+The `.gitattributes` file for the project has been updated, but if your local copy predates the update, your files may still be affected.
+
+```
+/bin/sh: 1: /usr/libexec/s2i/assemble-runtime: not found
+error: Execution of post execute step failed
+Build failed
+ERROR: An error occurred: non-zero (13) exit code from angular-builder
+```
+
+In this example search your working copy for all instances of `assemble-runtime`.
+
 ## Starting the Project
 
 To start the project run:
@@ -63,18 +78,12 @@ This will load sample data directly into the exposed REST API.
 
 # Current State
 
-The application is operational, but not fully wired together and functional.  The current state is suitable as a PCO docker compose instance and for basic demos/testing.
+The project is fully wired together and functional.
 
-* All of the builds work.
-* The main UI and the API are wired together and communicating.
-* The API server is using a local SqlLite database and the direct to database search engine.
+None of the services define persistent storage.  If the images change and/or the containers from a previous run are removed, the data in the containers will be lost.
 
-* Schema-Spy and Solr are not connecting to the database and are not functional yet.
+## Start-up Orchestration
 
-* The database comes up, but dependent services do not wait for it to become ready.
+The API server manages the database schema and indexes, therefore it must wait until the database and search engine (Solr) services are up and running AND fully initialized.  Likewise, the Schema-Spy service must wait until the API service has created/migrated the database schema to the most recent version before it starts.
 
-## ToDo
-
-* Configure database dependent service(s) to:
-  * Wait for the database to become ready
-  * Connect to the database
+To accomplish this the docker compose file defines simple sleep commands to pause the startup for these services.  It would be nice to develop a more deterministic solution for the start-up orchestration.  In the case of the API server it would sufficient to detect that Solr and PostgreSQL are responding, however, in the case of the Schema-Spy service this would be insufficient as the API server needs time to create or migrate the schema to the latest version before Schema-Spy starts.
