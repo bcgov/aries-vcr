@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DISTRO=`cat /etc/*-release | grep ^ID= | grep -Po '".*?"' | tr -d '"'`
 NAMESPACE=ubuntu

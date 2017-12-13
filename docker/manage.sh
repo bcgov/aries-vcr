@@ -2,10 +2,13 @@
 export MSYS_NO_PATHCONV=1
 set -e
 
-if [ -z "${S2I_HOME}" ]; then
-  S2I_HOME="../../s2i"
+S2I_EXE=s2i
+if [ -z $(type -P "$S2I_EXE") ]; then
+  echo -e "The ${S2I_EXE} executable is needed and not on your path."
+  echo -e "It can be downloaded from here: https://github.com/openshift/source-to-image"
+  echo -e "Make sure you place it in a directory on your path."
+  exit 1
 fi
-S2I_EXE="${S2I_HOME}/s2i.exe"
 
 SCRIPT_HOME="$( cd "$( dirname "$0" )" && pwd )"
 export COMPOSE_PROJECT_NAME="tob"
@@ -15,21 +18,21 @@ export COMPOSE_PROJECT_NAME="tob"
 # -----------------------------------------------------------------------------------------------------------------
 usage() {
   cat <<-EOF
-  
+
   Usage: $0 {start|stop|build}
-  
+
   Options:
-  
+
   build - Build the docker images for the project.
           You need to do this first, since the builds require
           a combination of Docker and S2I builds.
 
   start - Creates the application containers from the built images
-          and starts the services based on the docker-compose.yml file.          
-  
+          and starts the services based on the docker-compose.yml file.
+
   stop - Stops the services.  This is a non-destructive process.  The containers
          are not deleted so they will be reused the next time you run start.
-          
+
 
 EOF
 exit 1
@@ -45,12 +48,12 @@ buildImages() {
   docker build \
     -t 'angular-builder' \
     -f '../tob-web/openshift/templates/angular-builder/Dockerfile' '../tob-web/openshift/templates/angular-builder/'
-  
+
   echo -e "\nBuilding nginx-runtime image ..."
   docker build \
     -t 'nginx-runtime' \
     -f '../tob-web/openshift/templates/nginx-runtime/Dockerfile' '../tob-web/openshift/templates/nginx-runtime/'
-  
+
   echo -e "\nBuilding angular-on-nginx image ..."
   ${S2I_EXE} build \
     '../tob-web' \
@@ -58,7 +61,7 @@ buildImages() {
     'angular-on-nginx' \
     --runtime-image \
     "nginx-runtime" \
-    -a "/opt/app-root/src/dist/:app" 
+    -a "/opt/app-root/src/dist/:app"
 
   #
   # tob-solr
@@ -67,7 +70,7 @@ buildImages() {
   docker build \
     https://github.com/bcgov/openshift-solr.git \
     -t 'solr-base'
-  
+
   echo -e "\nBuilding solr image ..."
   ${S2I_EXE} build \
     '../tob-solr/cores' \
@@ -78,7 +81,7 @@ buildImages() {
   # tob-db
   #
     # Nothing to build here ...
-  
+
   #
   # tob-api
   #
@@ -148,7 +151,7 @@ case "$1" in
       docker-compose stop
     ;;
   build)
-    buildImages      
+    buildImages
     ;;
   *)
     usage

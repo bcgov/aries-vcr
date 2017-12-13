@@ -4,5 +4,6 @@
 # Declare files that will always have LF line endings on checkout.
 *.sh text eol=lf
 *.json text eol=lf
-s2i/bin/* text eol=lf
-root/usr/bin/* text eol=lf
+tob-api/openshift/templates/python-libindy/s2i/bin/* text eol=lf
+tob-web/openshift/templates/nginx-runtime/s2i/bin/* text eol=lf
+tob-api/openshift/templates/python-libindy/root/usr/bin/* text eol=lf
