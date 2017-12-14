@@ -1,12 +1,16 @@
 # Running TheOrgBook with Docker Compose
 
+The following instructions provide details on how to deploy the project using Docker Compose.  This method of deployment is intended for local development and demonstration purposes.  It is **NOT** intended to be support production level deployments where security, availability, resilience, and data integrity are important.
+
+All application services are exposed to the host so they may be easily accessed individually for development and testing purposes.
+
 ## Prerequisites
 
 * Docker and Docker Compose
   * Install and configure Docker and Docker compose for your system.
 * The S2I CLI
   * Download and install the S2I CLI tool; [source-to-image](https://github.com/openshift/source-to-image)
-  * Set a S2I_HOME env variable to point at the folder containing the s2i.exe tool.
+  * Make sure it is avaialble on your `PATH`.  The `manage.sh` will look for the `s2i` executable on your `PATH`.  If it is not found you will get a message asking you to download and set it on your `PATH`.
 
 ## Management Script
 
