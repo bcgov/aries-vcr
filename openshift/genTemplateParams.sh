@@ -31,7 +31,12 @@ exit
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
   . ${SCRIPTS_DIR}/commonFunctions.inc
 fi
-loadSettings ${SCRIPT_DIR}
+
+# Set project and local environment variables
+if [ -f settings.sh ]; then
+  echo -e \\n"Loading default project settings from settings.sh ..."\\n
+  . settings.sh
+fi
 
 while getopts c:flxh FLAG; do
   case $FLAG in
@@ -70,7 +75,7 @@ skipParameterFileGeneration () {
   if [ -z "${_type}" ]; then
     echo -e \\n"skipParameterFileGeneration; Missing parameter!"\\n
     exit 1
-  fi  
+  fi
 
   unset _skip
   case ${type} in
@@ -104,7 +109,7 @@ getParameterFileCommentFilter () {
     echo -e \\n"getParameterFileCommentFilter; Missing parameter!"\\n
     exit 1
   fi
-  
+
   _commentFilter="sed s/^/#/"
   case ${_type} in
     r ) # Regular file
@@ -121,7 +126,7 @@ getParameterFileOutputPrefix () {
     echo -e \\n"getParameterFileOutputPrefix; Missing parameter!"\\n
     exit 1
   fi
-  
+
   _outputPrefix=${OUTPUTPREFIX}
   case ${_type} in
     l ) # Local Files
@@ -139,8 +144,8 @@ getParameterFileOutputPath () {
     echo -e \\n"getParameterFileOutputPath; Missing parameter!"\\n
     exit 1
   fi
-  
-  _outputPrefix=$(getParameterFileOutputPrefix "${_type}")  
+
+  _outputPrefix=$(getParameterFileOutputPrefix "${_type}")
   case ${_type} in
     r ) # Regular file
       _output=${_outputPrefix}$( basename ${_fileName}.param )
@@ -159,7 +164,7 @@ getParameterFileOutputPath () {
       ;;
     *) # unrecognized option
       echoError  "\ngetParameterFileOutputPath; Invalid type option\n"
-      ;;     
+      ;;
   esac
 
   echo ${_output}
@@ -173,9 +178,9 @@ generateParameterFilter (){
     echo -e \\n"generateParameterFilter; Missing parameter!"\\n
     exit 1
   fi
-  
+
   _parameterFilters=""
-  _environment=${DEV}  
+  _environment=${DEV}
   case ${_type} in
     # r ) # Regular file
       # _output=${_outputPrefix}$( basename ${_fileName}.param )
@@ -194,23 +199,23 @@ generateParameterFilter (){
       _parameterFilters="${_parameterFilters}s~\(^MEMORY_LIMIT=\).*$~\10Mi~;"
       _parameterFilters="${_parameterFilters}s~\(^MEMORY_REQUEST=\).*$~\10Mi~;"
       # ToDo:
-      # Determine whether setting CPU_LIMIT = 0millicores has the same 
+      # Determine whether setting CPU_LIMIT = 0millicores has the same
       # affect as setting MEMORY_LIMIT = 0Mi.
       # _parameterFilters = "${_parameterFilters}s~\(^CPU_LIMIT=\).*$~\10millicores;"
       # _parameterFilters = "${_parameterFilters}s~\(^CPU_REQUEST=\).*$~\10millicores;"
       ;;
   esac
-  
+
   _name=$(basename "${_templateName}")
   _name=$(echo ${_name} | sed 's~\(^.*\)-\(build\|deploy\)$~\1~')
-  _parameterFilters="${_parameterFilters}s~\(^NAME=\).*$~\1${_name}~;"  
+  _parameterFilters="${_parameterFilters}s~\(^NAME=\).*$~\1${_name}~;"
   _parameterFilters="${_parameterFilters}s~\(^\(IMAGE_NAMESPACE\|SOURCE_IMAGE_NAMESPACE\)=\).*$~\1${TOOLS}~;"
-  
+
   if [ ! -z "${_environment}" ]; then
     _parameterFilters="${_parameterFilters}s~\(^TAG_NAME=\).*$~\1${_environment}~;"
-    
+
     _appDomain="${_name}-${PROJECT_NAMESPACE}-${_environment}${APPLICATION_DOMAIN_POSTFIX}"
-    _parameterFilters="${_parameterFilters}s~\(^APPLICATION_DOMAIN=\).*$~\1${_appDomain}~;"    
+    _parameterFilters="${_parameterFilters}s~\(^APPLICATION_DOMAIN=\).*$~\1${_appDomain}~;"
   fi
 
   echo "sed ${_parameterFilters}"
@@ -228,14 +233,14 @@ generateParameterFile (){
     exit 1
   fi
 
-  if [ -f "${_template}" ]; then  
+  if [ -f "${_template}" ]; then
     if [ ! -f "${_output}" ] || [ ! -z "${_force}" ]; then
       if [ -z "${_force}" ]; then
         echo -e "Generating parameter file for ${_template}; ${_output} ..."\\n
       else
         echoWarning "Overwriting the parameter file for ${_template}; ${_output} ...\n"
       fi
-      
+
       # Generate the parameter file ...
       echo -e "#=========================================================" > ${_output}
       echo -e "# OpenShift template parameters for:" >> ${_output}
@@ -245,7 +250,7 @@ generateParameterFile (){
       appendParametersToFile "${_template}" "${_output}" "${_commentFilter}" "${_parameterFilter}"
       exitOnError
     else
-      echoWarning "The parameter file for ${_template} already exisits and will not be overwritten; ${_output} ...\n" 
+      echoWarning "The parameter file for ${_template} already exisits and will not be overwritten; ${_output} ...\n"
       export FORCENOTE=1
     fi
   else
@@ -259,7 +264,7 @@ for component in ${components[@]}; do
     # Only process named component if -c option specified
     continue
   fi
-  
+
   echo
   echo "================================================================================================================="
   echo "Processing templates for ${component}"
@@ -272,18 +277,18 @@ for component in ${components[@]}; do
   popd >/dev/null
 
   # Iterate through each file and generate the params files
-  for file in ${JSONFILES}; do  
+  for file in ${JSONFILES}; do
     # Don't generate dev/test/prod param files for Build templates
     TEMPLATE=${TEMPLATE_DIR}/${file}.json
-    if isBuildConfig ${TEMPLATE}; then 
+    if isBuildConfig ${TEMPLATE}; then
       _isBuildConfig=1
-    else 
+    else
       unset _isBuildConfig
     fi
 
     for type in ${PARM_TYPES}; do
       # Don't create environment specific param files for Build Templates
-      if ! skipParameterFileGeneration "${type}" "${_isBuildConfig}"; then 
+      if ! skipParameterFileGeneration "${type}" "${_isBuildConfig}"; then
         _commentFilter=$(getParameterFileCommentFilter "${type}")
         _output=$(getParameterFileOutputPath "${type}" "${file}")
         _parameterFilter=$(generateParameterFilter "${component}" "${type}" "${file}")
@@ -295,12 +300,12 @@ for component in ${components[@]}; do
         echo \
           "Skipping environment specific, environmentType '${type}', parameter file generation for build template; ${file} ..." \
           >/dev/null
-      fi      
+      fi
     done
   done
-  
+
   popd >/dev/null
-  echo "================================================================================================================="  
+  echo "================================================================================================================="
 done
 
 # Print informational messages ...

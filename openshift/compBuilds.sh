@@ -12,7 +12,11 @@ fi
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
   . ${SCRIPTS_DIR}/commonFunctions.inc
 fi
-loadComponentSettings
+
+if [ -f settings.sh ]; then
+  echo -e \\n"Loading default component settings from settings.sh ..."\\n
+  . settings.sh
+fi
 
 # Turn on debugging if asked
 if [ ! -z "${DEBUG}" ]; then

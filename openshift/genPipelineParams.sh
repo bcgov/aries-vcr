@@ -30,7 +30,12 @@ exit
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
   . ${SCRIPTS_DIR}/commonFunctions.inc
 fi
-loadSettings ${SCRIPT_DIR}
+
+# Set project and local environment variables
+if [ -f settings.sh ]; then
+  echo -e \\n"Loading default project settings from settings.sh ..."\\n
+  . settings.sh
+fi
 
 while getopts c:flxh FLAG; do
   case $FLAG in
@@ -69,11 +74,11 @@ generatePipelineParameterFilter (){
   _contextDirectory=$(getComponentNameFromDir ${_directory})
   _componentName=$(getComponentNameFromDir ${_directory})
   _pipelineName=$(getPipelineName "${_jenkinsFileName}" "${_componentName}")
-  
+
   _pipelineJenkinsPathFilter="s~\(^JENKINSFILE_PATH=\).*$~\1${_jenkinsFileName}~"
   _pipelineNameFilter="s~\(^NAME=\).*$~\1${_pipelineName}~"
   _pipelineContextDirFilter="s~\(^CONTEXT_DIR=\).*$~\1${_contextDirectory}~"
-  
+
   echo "sed ${_pipelineNameFilter};${_pipelineContextDirFilter};${_pipelineJenkinsPathFilter}"
 }
 
@@ -96,7 +101,7 @@ generatePipelineParameterFile (){
       else
         echoWarning "Overwriting the pipeline parameter file for ${_jenkinsFile}; ${_output} ...\n"
       fi
-      
+
       # Generate the pipeline parameter file ...
       echo -e "#=========================================================" > ${_output}
       echo -e "# OpenShift Jenkins pipeline template parameters for:" >> ${_output}
@@ -106,7 +111,7 @@ generatePipelineParameterFile (){
       appendParametersToFile "${_template}" "${_output}" "${_commentFilter}" "${_parameterFilter}"
       exitOnError
     else
-      echoWarning "The pipeline parameter file for ${_jenkinsFile} already exisits and will not be overwritten; ${_output} ...\n" 
+      echoWarning "The pipeline parameter file for ${_jenkinsFile} already exists and will not be overwritten; ${_output} ...\n"
       export FORCENOTE=1
     fi
   else
@@ -148,4 +153,3 @@ if [ ! -z "${FORCENOTE}" ]; then
   echoWarning "One or more pipeline parameter files to be generated already exist and were not overwritten.\nUse the -f option to force the overwriting of existing files.\n"
   unset FORCENOTE
 fi
-

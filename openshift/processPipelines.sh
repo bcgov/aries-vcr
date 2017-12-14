@@ -11,7 +11,11 @@ fi
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
   . ${SCRIPTS_DIR}/commonFunctions.inc
 fi
-loadComponentSettings
+# Set project and local environment variables
+if [ -f settings.sh ]; then
+  echo -e \\n"Loading default component settings from settings.sh ..."\\n
+  . settings.sh
+fi
 
 # Turn on debugging if asked
 if [ ! -z "${DEBUG}" ]; then
@@ -32,7 +36,7 @@ for _jenkinsFile in ${JENKINS_FILES}; do
   _defaultParams=$(getPipelineParameterFileOutputPath "${_jenkinsFile}")
   _localParams=$(getPipelineParameterFileOutputPath "${_jenkinsFile}" "${_localParamsDir}")
   _output="${_jenkinsFile}-pipeline_BuildConfig.json"
- 
+
   if [ -f "${_defaultParams}" ]; then
     _defaultParams="--param-file=${_defaultParams}"
   else
@@ -44,17 +48,17 @@ for _jenkinsFile in ${JENKINS_FILES}; do
   else
     _localParams=""
   fi
-   
-  oc process --filename=${_template} ${_localParams} ${_defaultParams} > ${_output}  
+
+  oc process --filename=${_template} ${_localParams} ${_defaultParams} > ${_output}
   exitOnError
   if [ -z ${GEN_ONLY} ]; then
     oc ${OC_ACTION} -f ${_output}
     exitOnError
   fi
-  
+
   # Delete the temp file if the keep command line option was not specified.
   if [ -z "${KEEPJSON}" ]; then
     rm ${_output}
-  fi  
+  fi
 done
 popd >/dev/null

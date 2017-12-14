@@ -43,7 +43,7 @@ export GLUSTER_SVC_NAME=glusterfs-cluster-app
 export -a components=("tob-db" "tob-solr" "tob-api" "tob-web")
 
 # The builds to be triggered after buildconfigs created (not auto-triggered)
-export -a builds=("nginx-runtime" "angular-builder" "lib-indy")
+export -a builds=("nginx-runtime" "angular-builder")
 
 # The images to be tagged after build
 export -a images=("angular-on-nginx" "django" "solr" "schema-spy")
@@ -53,6 +53,6 @@ export -a routes=("angular-on-nginx" "django" "solr" "schema-spy")
 
 # Load in any overrides
 if [ -f ./settings.local.sh ]; then
-  echo -e \\n"Overriding default settings, loading local project settings from $PWD/settings.local.sh ..."\\n
+  echo -e \\n"Overriding default settings, loading local project settings from ./settings.local.sh ..."\\n
   . ./settings.local.sh
 fi

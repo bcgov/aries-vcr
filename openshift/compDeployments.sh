@@ -12,7 +12,11 @@ fi
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
   . ${SCRIPTS_DIR}/commonFunctions.inc
 fi
-loadComponentSettings
+
+if [ -f settings.sh ]; then
+  echo -e \\n"Loading default component settings from settings.sh ..."\\n
+  . settings.sh
+fi
 
 # Turn on debugging if asked
 if [ ! -z "${DEBUG}" ]; then
@@ -62,7 +66,7 @@ for deploy in ${DEPLOYS}; do
     oc ${OC_ACTION} -f ${JSONTMPFILE}
   exitOnError
   fi
-  
+
   # Delete the tempfile if the keep command line option was not specified
   if [ -z "${KEEPJSON}" ]; then
     rm ${JSONTMPFILE}

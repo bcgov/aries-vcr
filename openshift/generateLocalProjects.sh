@@ -27,8 +27,9 @@ exit 1
 }
 
 # Set project and local environment variables
-if [ -f ${SCRIPT_DIR}/settings.sh ]; then
-  . ${SCRIPT_DIR}/settings.sh
+if [ -f settings.sh ]; then
+  echo -e \\n"Loading default project settings from settings.sh ..."\\n
+  . settings.sh
 fi
 
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
@@ -67,13 +68,13 @@ for project in ${TOOLS} ${PROJECT_NAMESPACE}-${DEV} ${PROJECT_NAMESPACE}-${TEST}
     # Create ..."
     ${SCRIPTS_DIR}/createLocalProject.sh \
       -p ${project}
-    exitOnError    
+    exitOnError
   else
     # Delete ..."
     ${SCRIPTS_DIR}/deleteLocalProject.sh \
       -p ${project}
-    exitOnError    
-  fi  
+    exitOnError
+  fi
 done
 
 # ToDo:

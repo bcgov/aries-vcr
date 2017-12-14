@@ -22,8 +22,9 @@ exit 1
 }
 # ------------------------------------------------------------------------------
 # Set project and local environment variables
-if [ -f ${SCRIPT_DIR}/settings.sh ]; then
-  . ${SCRIPT_DIR}/settings.sh
+if [ -f settings.sh ]; then
+  echo -e \\n"Loading default project settings from settings.sh ..."\\n
+  . settings.sh
 fi
 
 if [ -f ${SCRIPTS_DIR}/commonFunctions.inc ]; then
@@ -60,12 +61,12 @@ exitOnError
 
 # Iterate through Dev, Test and Prod projects granting permissions, etc.
 for project in ${PROJECT_NAMESPACE}-${DEV} ${PROJECT_NAMESPACE}-${TEST} ${PROJECT_NAMESPACE}-${PROD}; do
-	
+
   ${SCRIPTS_DIR}/grantDeploymentPrivileges.sh \
     -p ${project} \
     -t ${TOOLS}
   exitOnError
-    
+
 	echo -e \\n"Granting ${JENKINS_SERVICE_ACCOUNT_ROLE} role to ${JENKINS_SERVICE_ACCOUNT_NAME} in ${project}"
   assignRole ${JENKINS_SERVICE_ACCOUNT_ROLE} ${JENKINS_SERVICE_ACCOUNT_NAME} ${project}
   exitOnError
@@ -74,4 +75,3 @@ for project in ${PROJECT_NAMESPACE}-${DEV} ${PROJECT_NAMESPACE}-${TEST} ${PROJEC
     -p ${project}
   exitOnError
 done
-

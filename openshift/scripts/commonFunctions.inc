@@ -1,27 +1,3 @@
-loadSettings (){
-  _settingsScriptDir=${1}
-  if [ -z "${_settingsScriptDir}" ]; then
-    echo -e \\n"loadSettings; Missing parameter!"\\n
-    exit 1
-  fi
-
-  # Set project and local environment variables
-  if [ -f ${_settingsScriptDir}/settings.sh ]; then
-    echo -e "Loading default project settings from $PWD/settings.sh ..."\\n
-    . ${_settingsScriptDir}/settings.sh
-  fi
-}
-
-loadComponentSettings (){
-  # Pull in any special component level settings ...
-  # At this point the working directory will have been switched to the 
-  # openshift directory of the component being processed.
-  if [ -f ./settings.sh ]; then
-    echo -e "Loading component specific settings from $PWD/settings.sh ..."\\n
-    . ./settings.sh
-  fi
-}
-
 echoWarning (){
   _msg=${1}
   _yellow='\033[1;33m'
@@ -42,7 +18,7 @@ exitOnError () {
     echoError "An error has occurred.  Please check the previous output message(s) for details."
     read -n1 -s -r -p $'\e[33mWould you like to continue?\e[0m  Press Ctrl-C to exit, or any other key to continue ...' key
     echo -e \\n
-    
+
     # If we get here the user did NOT press Ctrl-C ...
     return 0
   fi
@@ -88,7 +64,7 @@ getDirectory () {
     echo -e \\n"getDirectory; Missing parameter!"\\n
     exit 1
   fi
-  
+
   echo ${_path%/*}
 }
 
@@ -101,7 +77,7 @@ appendParametersToFile (){
     echo -e \\n"appendParametersToFile; Missing parameter!"\\n
     exit 1
   fi
-  
+
   if [ -z "${_commentFilter}" ]; then
     _commentFilter=cat
   fi
@@ -109,9 +85,10 @@ appendParametersToFile (){
   if [ -z "${_parameterFilter}" ]; then
     _parameterFilter=cat
   fi
-  
+
   # GIT Overrides ...
   _gitUrlFilter=cat 
+  _gitUrlFilter=cat
   _gitRefFilter=cat
   _templateName=$(basename ${_template})
   if ! contains "${_templateName}" "${skip_git_overrides[@]}"; then
@@ -120,12 +97,13 @@ appendParametersToFile (){
       _gitUrlFilter="sed s~\(^\(GIT_REPO_URL\|SOURCE_REPOSITORY_URL\)=\).*$~\1${GIT_URI}~"
     fi
       
+
     # Override the GIT Ref if it is defined ...
     if [ ! -z "${GIT_REF}" ]; then
       _gitRefFilter="sed s~\(^\(GIT_REF\|SOURCE_REPOSITORY_REF\)=\).*$~\1${GIT_REF}~"
     fi
-  fi    
- 
+  fi
+
   # Fancy sed handling below to convert parameters output to param file format
   # - Delete the first line of the oc process output
   # - Put "XXXX" in front of the parameter default value
@@ -161,13 +139,13 @@ getComponentNameFromDir () {
     echo -e \\n"getComponentNameFromDir; Missing parameter!"\\n
     exit 1
   fi
-  
+
   _commentDir_FullName=$(echo ${_commentDir##*/} | sed 's/^\.//')
   _commentDir_Name=$(echo ${_commentDir%.*} | sed 's/^\.//')
   if [ -z "${_commentDir_Name}" ]; then
     echo ${_commentDir_FullName}
   else
-    echo ${_commentDir_Name}  
+    echo ${_commentDir_Name}
   fi
 }
 
@@ -177,13 +155,13 @@ getJenkinsFileName () {
     echo -e \\n"getJenkinsFileName; Missing parameter!"\\n
     exit 1
   fi
-  
+
   _jenkinsFile_FullName=${_jenkinsFilePath##*/}
   _jenkinsFile_Name=${_jenkinsFilePath%.*}
   if [ -z "${_jenkinsFile_Name}" ]; then
     echo ${_jenkinsFile_FullName}
   else
-    echo ${_jenkinsFile_Name}  
+    echo ${_jenkinsFile_Name}
   fi
 }
 
@@ -193,13 +171,13 @@ isBuildConfig() {
     echo -e \\n"isBuildConfig; Missing parameter!"\\n
     exit 1
   fi
-  
+
   _isBuildConfig=$( grep -l BuildConfig ${_template} )
   if [ -z "${_isBuildConfig}" ]; then
     return 1
   else
     return 0
-  fi  
+  fi
 }
 
 isDeploymentConfig() {
@@ -208,13 +186,13 @@ isDeploymentConfig() {
     echo -e \\n"isDeploymentConfig; Missing parameter!"\\n
     exit 1
   fi
-  
+
   _isDeploymentConfig=$( grep -l DeploymentConfig ${_template} )
   if [ -z "${_isDeploymentConfig}" ]; then
     return 1
   else
     return 0
-  fi  
+  fi
 }
 
 getPipelineParameterFileOutputPath () {
@@ -259,7 +237,7 @@ getPipelineName (){
     echo -e \\n"getPipelineName; Missing parameter!"\\n
     exit 1
   fi
-  
+
   # Extract the name from the name of the JenkinsFile if possible
   _jenkinsFileName=$(echo ${_jenkinsFileName} | tr '[:upper:]' '[:lower:]')
   _pipelineName=$(echo ${_jenkinsFileName} | sed 's~jenkinsfile~~')
