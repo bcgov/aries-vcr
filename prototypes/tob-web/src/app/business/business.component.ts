@@ -54,7 +54,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
             if(Array.isArray(record.doingBusinessAs)) {
               for(var i = 0; i < record.doingBusinessAs.length; i++) {
                 let dba = Object.assign({}, record.doingBusinessAs[i]);
-                dbas.push(dba.DBA);
+                dbas.push(dba.dbaName);
               }
             }
             this.dbas = dbas;
