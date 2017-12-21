@@ -1,4 +1,6 @@
-# Running TheOrgBook Locally on OpenShift
+# Running TheOrgBook on OpenShift
+
+This project uses the scripts found in [openshift-project-tools](https://github.com/BCDevOps/openshift-project-tools) to setup and maintain OpenShift environments (both local and hosted).  Refer to the [OpenShift Scripts](https://github.com/BCDevOps/openshift-project-tools/blob/master/bin/README.md) documentation for details.
 
 These instructions assume:
 
@@ -24,13 +26,13 @@ cd openshift
 If you are resetting your environment, change into the "openshift" folder in the root of TheOrgBook repo and run the following script.  Give this operation a bit of time to complete before recreating the projects.
 
 ```
-./generateLocalProjects.sh -D
+generateLocalProjects.sh -D
 ```
 
 Run the following command to create the projects for the local instance. Test and Prod will not likely be used, but are referenced in some of the later scripts:
 
 ```
-./generateLocalProjects.sh
+generateLocalProjects.sh
 ```
 
 # Initialize the projects - add permissions and storage
@@ -38,7 +40,7 @@ Run the following command to create the projects for the local instance. Test an
 For all of the commands mentioned here, you can use the "-h" parameter for usage help and options.
 
 ```
-./initOSProjects.sh
+initOSProjects.sh
 ```
 
 If you are running locally you will see some "No resources found." messages which can be ignored.
@@ -48,12 +50,10 @@ If you are running locally you will see some "No resources found." messages whic
 On the command line, change into the "openshift" folder in the root of TheOrgBook repo and run the script:
 
 ```
-./genBuilds.sh -h
+genBuilds.sh -h
 ```
 
 Review the command line parameters and pass in the appropriate parameters - without the -h.  For an initial install, no parameters are needed.
-
-As of this writing, on some local OpenShift instances, builds fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console. There are further instructions at the bottom of this Readme of how you can add local overrides that might prevent the hangs in the first place.
 
 ## Updating Build and Image Configurations
 
@@ -68,12 +68,10 @@ If you are adding and updating build and image configurations, run the script **
 On the command line, change into the "openshift" folder in the root of TheOrgBook repo and run the script:
 
 ```
-./genDepls.sh -h
+genDepls.sh -h
 ```
 
 Review the command line parameters available and rerun with the appropriate parameters - without the -h. For an initial deploy, no parameters are needed.
-
-As of this writing, on some local OpenShift instances, deployments fail because of resource limitations. Instructions are in the script to help with that scenario - things you have to do in the OpenShift Console. There are further instructions at the bottom of this Readme of how you can add local overrides that might prevent the hangs in the first place.
 
 ## Updating Deployment Configurations
 
@@ -94,7 +92,7 @@ If you are adding and updating deployment configurations, run the script **witho
 In the current instance of the deployment, the routes created are explicitly defined for the Pathfinder (BC Gov) instance of OpenShift. Run the script to create the default routes for your local environment:
 
 ```
-./updateRoutes.sh
+updateRoutes.sh
 ```
 
 # Loading Data
@@ -102,7 +100,7 @@ In the current instance of the deployment, the routes created are explicitly def
 To load the test data into your instance of OpenShift, run:
 
 ```
-./loadData.sh
+loadData.sh
 ```
 
 You should see a series of blocks of data and "201" return code. If you see errors messages, the data step had "challenges". Contact us with questions.
@@ -110,7 +108,7 @@ You should see a series of blocks of data and "201" return code. If you see erro
 If the load data step fails, you can:
 
 - go to the APISpec/TestData folder in the repository
-- view and run the "./load-all.sh" script. If you are loading data into the local environment, use an argument of "local"
+- view and run the "load-all.sh" script. If you are loading data into the local environment, use an argument of "local"
 
 NOTE: Data loads cannot be run multiple times. If you want to reload the data, you must first delete the database. You can do that by redeploying the entire environment, or going into Postgres and drop/recreating the database (instructions not yet available).
 
@@ -128,7 +126,7 @@ The scripts also have a mechanism to override default parameters that should all
 Run the following script to generate a series of files with the extension ".local.param" in the "openshift" folder in the root of the repository:
 
 ```
-./genParams -l
+genParams -l
 ```
 
 The files have all the parameters from the various templates in the project, with all of the parameters initially set to be commented out.
