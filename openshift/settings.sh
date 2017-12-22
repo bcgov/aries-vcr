@@ -1,4 +1,5 @@
 export PROJECT_NAMESPACE="devex-von"
+export PROJECT_OS_DIR=${PROJECT_OS_DIR:-../../openshift}
 
 # The templates that should not have their GIT referances(uri and ref) over-ridden
 # Templates NOT in this list will have they GIT referances over-ridden
