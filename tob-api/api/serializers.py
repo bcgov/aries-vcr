@@ -142,7 +142,7 @@ class VerifiableClaimSerializer(serializers.ModelSerializer):
 class VerifiableClaimTypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = VerifiableClaimType
-    fields = ('id','claimType','base64Logo','issuerServiceId','issuerURL','effectiveDate','endDate')
+    fields = ('id','claimType','schemaName','schemaVersion','base64Logo','issuerServiceId','issuerURL','effectiveDate','endDate')
 
 class VerifiableOrgSerializer(serializers.ModelSerializer):
   class Meta:

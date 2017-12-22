@@ -68,6 +68,7 @@
     <Compile Include="api\migrations\0008_auto_20171109_1357.py" />
     <Compile Include="api\migrations\0009_auto_20171110_0700.py" />
     <Compile Include="api\migrations\0010_auto_20171130_1202.py" />
+    <Compile Include="api\migrations\0011_auto_20171222_1231.py" />
     <Compile Include="api\migrations\__init__.py" />
     <Compile Include="api\models.py" />
     <Compile Include="api\models\CurrentUserViewModel.py" />

@@ -33,6 +33,8 @@ class VerifiableClaimType(Auditable):
     issuerServiceId = models.ForeignKey('IssuerService', related_name='issuerServices')   
     issuerURL = models.CharField(max_length=255)   
     effectiveDate = models.DateField(default=timezone.now)   
+    schemaName = models.CharField(max_length=255, blank=True, null=True)   
+    schemaVersion = models.CharField(max_length=255, blank=True, null=True)   
     endDate = models.DateField(blank=True, null=True)   
     class Meta:
         db_table = 'VERIFIABLE_CLAIM_TYPE'

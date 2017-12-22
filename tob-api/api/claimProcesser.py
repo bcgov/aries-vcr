@@ -136,6 +136,12 @@ class ClaimProcesser(object):
       issuerURL = "https://registries.bc.gov.ca/verifiedOrganization"
       verifiableClaimTypeName = "Verified Organization"
       verifiableClaimType = VerifiableClaimType.objects.filter(claimType=verifiableClaimTypeName)
+      
+      # ToDo:
+      # - Update or lookup this information
+      schemaName = None
+      schemaVersion = None
+
       if not verifiableClaimType:
         self.__logger.debug("VerifiableClaimType, {0}, does not exist.  Creating ...".format(verifiableClaimTypeName))
         verifiableClaimType = VerifiableClaimType(
@@ -143,6 +149,8 @@ class ClaimProcesser(object):
           base64Logo = base64Logo,
           issuerServiceId = self.__get_IssuerService(claimParser),
           issuerURL = issuerURL,
+          schemaName = schemaName,
+          schemaVersion = schemaVersion,
           # effectiveDate = timezone.now,
           # endDate = None
         )
