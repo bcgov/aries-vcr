@@ -49,17 +49,32 @@ node {
     stage('build nginx runtime') {
       echo "Building: " + NGINX_BUILD_CONFIG
       openshiftBuild bldCfg: NGINX_BUILD_CONFIG, showBuildLogs: 'true'
-      openshiftTag destStream: NGINX_BUILD_CONFIG, verbose: 'true', destTag: '$BUILD_ID', srcStream: NGINX_BUILD_CONFIG, srcTag: 'latest'
+            
+      // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+      // Tag the images for deployment based on the image's hash
+      IMAGE_HASH = sh (
+        script: """oc get istag ${NGINX_BUILD_CONFIG}:latest -o template --template=\"{{.image.dockerImageReference}}\"|awk -F \":\" \'{print \$3}\'""",
+        returnStdout: true).trim()
+      echo ">> IMAGE_HASH: ${IMAGE_HASH}"      
+      
+      // tag/retag the image to ensure it is there for the next build stage.
+      openshiftTag destStream: NGINX_BUILD_CONFIG, verbose: 'true', destTag: 'latest', srcStream: NGINX_BUILD_CONFIG, srcTag: "${IMAGE_HASH}"
     }
     
     stage('build ' + BUILD_CONFIG) {
       echo "Building: " + BUILD_CONFIG
       openshiftBuild bldCfg: BUILD_CONFIG, showBuildLogs: 'true'
-      openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: '$BUILD_ID', srcStream: IMAGESTREAM_NAME, srcTag: 'latest'
+      
+      // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+      // Tag the images for deployment based on the image's hash
+      IMAGE_HASH = sh (
+        script: """oc get istag ${IMAGESTREAM_NAME}:latest -o template --template=\"{{.image.dockerImageReference}}\"|awk -F \":\" \'{print \$3}\'""",
+        returnStdout: true).trim()
+      echo ">> IMAGE_HASH: ${IMAGE_HASH}"
     }
     
     stage('deploy-' + TAG_NAMES[0]) {
-      openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: '$BUILD_ID'
+      openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: "${IMAGE_HASH}"
     }
   }
   else {

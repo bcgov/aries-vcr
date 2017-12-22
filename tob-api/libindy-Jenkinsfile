@@ -11,6 +11,7 @@ node {
   stage('build ' + BUILD_CONFIG) {
     echo "Building: " + BUILD_CONFIG
     openshiftBuild bldCfg: BUILD_CONFIG, showBuildLogs: 'true'
-    openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: '$BUILD_ID', srcStream: IMAGESTREAM_NAME, srcTag: 'latest'
+
+    // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
   }
 }
