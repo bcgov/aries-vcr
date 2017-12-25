@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GeneralDataService } from 'app/general-data.service';
 import { ActivatedRoute } from '@angular/router';
+import { Location, LocationType, VerifiableOrg, VerifiableOrgType,
+  blankLocation, blankOrgType, blankLocationType } from '../data-types';
 
 @Component({
   selector: 'app-business',
@@ -10,11 +12,11 @@ import { ActivatedRoute } from '@angular/router';
 export class BusinessComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
-  record: any;
+  record: VerifiableOrg;
   loc: any;
   dbas: any[];
   certs: any[];
-  locations: any[];
+  locations: Location[];
   error: string;
   sub: any;
 
@@ -27,22 +29,22 @@ export class BusinessComponent implements OnInit, OnDestroy {
     this.sub = this.route.params.subscribe(params => {
       this.id = +params['recordId'];
       loaded.then(status => {
-        this.dataService.loadVerifiedOrg(this.id).subscribe(record => {
+        this.dataService.loadVerifiableOrg(this.id).subscribe((record : VerifiableOrg) => {
           this.record = record;
           console.log('verified org:', record);
           this.loaded = !!record;
           if(! record) this.error = 'Record not found';
           else {
-            let orgType = this.dataService.findOrgData('verifiableorgtypes', record.orgTypeId);
-            this.record.type = orgType || {};
+            let orgType = <VerifiableOrgType>this.dataService.findOrgData('verifiableorgtypes', record.orgTypeId);
+            this.record.type = orgType || blankOrgType();
             this.record.typeName = orgType && orgType.description;
 
             let locs = [];
-            if(Array.isArray(record.locations)) {
+            if(record.locations) {
               for(var i = 0; i < record.locations.length; i++) {
-                let loc = Object.assign({}, record.locations[i]);
-                let locType = this.dataService.findOrgData('locationtypes', loc.locationTypeId);
-                loc.type = locType || {};
+                let loc = <Location>Object.assign({}, record.locations[i]);
+                let locType = <LocationType>this.dataService.findOrgData('locationtypes', loc.locationTypeId);
+                loc.type = locType || blankLocationType();
                 loc.typeName = locType && locType.locType;
                 locs.push(loc);
               }

@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { ActivatedRoute, Router} from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
 
 @Component({
@@ -8,13 +9,34 @@ import { GeneralDataService } from 'app/general-data.service';
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
 
+  public query : string = '';
+  public allResults;
+  public results = [];
+  public searchType = 'name';
+  private searchTimer;
+  private sub;
+  private page = 0;
+  public more = false;
+  public less = false;
+  public none = false;
+  public loading = false;
+
   constructor(
-    private dataService: GeneralDataService
+    private dataService: GeneralDataService,
+    private $route: ActivatedRoute,
+    private $router: Router
   ) { }
 
   ngOnInit() {
     this.dataService.preloadData();
-
+    this.$route.queryParams.subscribe(params => {
+      let q = params.query;
+      if(typeof q !== 'string') q = '';
+      if(this.query !== q) {
+        this.query = q;
+        this.search();
+      }
+    })
   }
 
   ngAfterViewInit() {
@@ -33,22 +55,19 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public query : string = '';
-  public allResults;
-  public results = [];
-  public searchType = 'name';
-  private searchTimer;
-  private sub;
-  private page = 0;
-  public more = false;
-  public less = false;
-  public none = false;
-  public loading = false;
-
   updateSearch(evt) {
-    this.query = evt.target.value;
+    let q = evt.target.value;
+    let navParams = { queryParams: {}, relativeTo: this.$route };
+    if(q !== undefined && q !== null) {
+      q = q.trim();
+      if(q !== '') {
+        navParams.queryParams['query'] = q;
+      }
+    }
     if (this.searchTimer) clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(() => this.search(), 150);
+    this.searchTimer = setTimeout(() => {
+      this.$router.navigate(['./'], navParams);
+    }, 150);
   }
 
   search(setType? : string) {

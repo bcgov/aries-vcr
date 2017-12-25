@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { MockData } from './mock-data';
-import { VerifiedOrg } from './data-types';
+import { VerifiableOrg } from './data-types';
 import { environment } from '../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -37,7 +37,7 @@ export class GeneralDataService {
     }
   }
 
-  loadRecord(moduleId: string, recordId: string): Observable<any> {
+  loadRecord(moduleId: string, recordId: string): Observable<Object> {
     let ret = this.loadFromApi(moduleId + '/' + recordId);
     if(! ret) {
       ret = Observable.create((obs) => {
@@ -49,15 +49,16 @@ export class GeneralDataService {
     return ret;
   }
 
-  loadVerifiedOrg(recordId): Observable<any> { // Observable<VerifiedOrg> {
+  loadVerifiableOrg(recordId): Observable<VerifiableOrg> {
     return this.loadRecord('verifiableorgs', recordId)
       .map((res: Object) => {
-        let row : {[key:string]: any} = res; // <VerifiedOrg>res;
+        let row = <VerifiableOrg>res;
         /*let locs = this.getOrgData('locations');
         if(locs) {
           console.log('locs', locs);
           for (let j = 0; j < locs.length; j++) {
-            if (locs[j].verifiableOrgId === row.id && locs[j].locationTypeId === 1) {
+            let loc = <Location>locs[j];
+            if (loc.verifiableOrgId === row.id && loc.locationTypeId === 1) {
               row.primaryLocation = locs[j];
             }
           }
@@ -65,7 +66,14 @@ export class GeneralDataService {
         if(! row.primaryLocation) {
           row.primaryLocation = (new MockData()).fetchRecord('verifiableorgs', 1).primaryLocation;
         }*/
-        row.type = {};
+        row.type = {
+          id: 0,
+          orgType: '',
+          description: '',
+          effectiveDate: '',
+          endDate: '',
+          displayOrder: 0,
+        };
         return row;
       });
   }
@@ -102,7 +110,7 @@ export class GeneralDataService {
     });
   }
 
-  findOrgData (type, id) {
+  findOrgData (type, id) : Object {
     if (this.orgData[type]) {
       for (let i = 0; i < this.orgData[type].length; i++) {
         if (this.orgData[type][i].id === id) {
@@ -112,7 +120,7 @@ export class GeneralDataService {
     }
   }
 
-  getOrgData (type) {
+  getOrgData (type) : {[key:string]: Object} {
     return this.orgData[type];
   }
 
