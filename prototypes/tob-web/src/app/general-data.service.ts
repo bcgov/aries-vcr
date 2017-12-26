@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { MockData } from './mock-data';
-import { VerifiableOrg } from './data-types';
+import { VerifiableOrg, VerifiableClaim, VerifiableClaimType, IssuerService, blankClaimType, blankIssuerService } from './data-types';
 import { environment } from '../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -177,6 +177,40 @@ export class GeneralDataService {
         resolve(orgs);
       });
     });
+  }
+
+  formatClaim(claim : VerifiableClaim) {
+    let type = <VerifiableClaimType>this.findOrgData('verifiableclaimtypes', claim.claimType);
+    claim.type = type || blankClaimType();
+    claim.typeName = type.claimType || '';
+    claim.color = ['green', 'orange', 'blue', 'purple'][claim.claimType % 4];
+    let issuer = <IssuerService>this.findOrgData('issuerservices', type.issuerServiceId);
+    claim.issuer = issuer || blankIssuerService();
+    return claim;
+  }
+
+  formatClaims(claims) {
+    if (!claims) claims = [];
+    let result = [];
+    let seen = {};
+    let sorted = this.sortClaims(claims);
+    for(var i = 0; i < sorted.length; i++) {
+      let claim = <VerifiableClaim>Object.assign({}, sorted[i]);
+      let grp = seen[claim.claimType];
+      if(! grp) {
+        grp = seen[claim.claimType] = {others: []};
+        grp.top = this.formatClaim(claim);
+        result.push(grp);
+      } else {
+        grp.others.push(claim);
+      }
+    }
+    return result;
+  }
+
+  sortClaims(claims) {
+    let base = (claims || []).slice();
+    return base.sort((a, b) => b.effectiveDate.localeCompare(a.effectiveDate));
   }
 
 }

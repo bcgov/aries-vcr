@@ -115,6 +115,7 @@ export interface VerifiableClaim {
   issuer?: IssuerService;
   type?: VerifiableClaimType;
   org?: VerifiableOrg;
+  typeName?: string;
 }
 
 export interface VerifiableClaimType {

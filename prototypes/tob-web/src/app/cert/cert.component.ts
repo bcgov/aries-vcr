@@ -13,6 +13,7 @@ export class CertComponent implements OnInit {
   id: number;
   loaded: boolean;
   record: VerifiableClaim;
+  others: VerifiableClaim[];
   error: string;
   sub: any;
 
@@ -26,21 +27,25 @@ export class CertComponent implements OnInit {
       this.id = +params['recordId'];
       loaded.then(status => {
         this.dataService.loadRecord('verifiableclaims', ''+this.id).subscribe((record : VerifiableClaim) => {
-          record.color = ['green', 'orange', 'blue', 'purple'][record.claimType % 4];
-          this.record = record;
-          console.log('vo claim:', record);
-          if(! record) this.error = 'Record not found';
+          let claim = this.dataService.formatClaim(record);
+          console.log('vo claim:', claim);
+          if (! claim) this.error = 'Record not found';
           else {
-            let claimType = <VerifiableClaimType>this.dataService.findOrgData('verifiableclaimtypes', record.claimType);
-            this.record.type = claimType || blankClaimType();
-            if(claimType) {
-              this.record.issuer = <IssuerService>this.dataService.findOrgData('issuerservices', claimType.issuerServiceId);
-            }
-            this.dataService.loadVerifiableOrg(record.verifiableOrgId)
-              .subscribe((res: VerifiableOrg) => {
-                console.log('org', res);
-                this.record.org = res;
-                this.loaded = !!record;
+            this.dataService.loadVerifiableOrg(claim.verifiableOrgId)
+              .subscribe((org : VerifiableOrg) => {
+                console.log('org', org);
+                claim.org = org;
+                this.record = claim;
+                if (org.claims) {
+                  let others = [];
+                  for (let idx = 0; idx < org.claims.length; idx++) {
+                    if (org.claims[idx].claimType === claim.claimType && org.claims[idx].id !== claim.id) {
+                      others.push(org.claims[idx]);
+                    }
+                  }
+                  this.others = this.dataService.sortClaims(others);
+                }
+                this.loaded = !!claim;
               });
           }
         }, err => {

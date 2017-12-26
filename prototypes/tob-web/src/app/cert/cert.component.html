@@ -41,6 +41,14 @@
               {{record.endDate || '-'}}
             </div>
           </div>
+          <div class="row form-group" *ngIf="others.length">
+            <label class="col-sm-4 control-label">Related Claims</label>
+            <div class="col-sm-8 form-field">
+              <div *ngFor="let rel of others" class="rel-link">
+                <a [routerLink]="'/cert/' + rel.id">{{rel.effectiveDate}}</a>
+              </div>
+            </div>
+          </div>
           <div class="row form-group mrgn-tp-lg">
             <div class="col-sm-4">
               <button type="button" class="btn btn-primary btn-verify" (click)="showVerify($event)"><span class="fa fa-accept"></span> Verify License</button>

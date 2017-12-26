@@ -50,7 +50,7 @@
                 Canada
                 <div class="map-link"><span class="fa fa-map-marker"></span> <a href="#" class="small">Show on map</a></div>
               </div>
-              <div *ngIf="!locations">
+              <div *ngIf="!locations.length">
                 <em class="text-muted">None</em>
               </div>
             </div>
@@ -69,25 +69,30 @@
     <div class="col-sm-12">
       <label class="control-label"><span class="field-name">Permits and Licences</span> <span class="fa fa-question-circle text-muted"></span></label>
       <div class="certs-outer">
-        <div *ngFor="let cert of certs" class="cert">
-          <a class="cert-link" [routerLink]="'/cert/' + cert.top.id">
-            <div class="cert-image">
-              <img src="/assets/cert.svg" [class]="'color-' + cert.color" alt="">
+        <div *ngFor="let grp of certs" class="cert">
+          <div class="panel panel-cert cert-panel">
+            <div class="cert-name panel-heading">
+              <h3 class="panel-title"><div><a [routerLink]="'/cert/' + grp.top.id">{{grp.top.typeName}}</a></div></h3>
             </div>
-            <label>{{cert.typeName}}
-              <div class="year text-muted">{{cert.top.effectiveDate}}</div>
-            </label>
-          </a>
-          <div class="cert-others">
-            <a *ngFor="let inst of cert.others" class="other-link" [routerLink]="'/cert/' + inst.id">
-              <label>
-                <div class="year text-muted">
-                  {{inst.effectiveDate}}
+            <div class="panel-body cert-main">
+              <div class="cert-info">
+                <div class="issuer">{{grp.top.issuer.name}}</div>
+                <div class="year">{{grp.top.effectiveDate}}</div>
+                <div class="others text-muted" *ngIf="grp.others.length">
+                  <em>And {{grp.others.length}} related</em>
                 </div>
-              </label>
-            </a>
+              </div>
+              <div class="cert-image">
+                <a [routerLink]="'/cert/' + grp.top.id">
+                  <img src="/assets/cert.svg" [class]="'color-' + grp.top.color" alt="">
+                </a>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+      <div *ngIf="!certs.length">
+        <em class="text-muted">None</em>
       </div>
     </div>
   </div>
