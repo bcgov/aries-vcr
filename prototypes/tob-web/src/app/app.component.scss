@@ -4,3 +4,9 @@ $bootstrap-sass-asset-helper: true;
 main {
   margin-bottom: 80px;
 }
+
+@media screen and (max-width: 767px) {
+  .page-header {
+    margin-bottom: 0;
+  }
+}
