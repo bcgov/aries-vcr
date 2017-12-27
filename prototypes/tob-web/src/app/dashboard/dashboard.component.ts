@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.query = q;
         this.search();
       }
-    })
+    });
   }
 
   ngAfterViewInit() {
@@ -47,11 +47,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     (<HTMLInputElement>document.getElementById('searchInput')).select();
   }
 
-  setFocus(evt) {
+  inputEvent(evt) {
     if(evt.type === 'focus') {
       evt.target.parentNode.classList.add('active');
-    } else {
+    } else if(evt.type === 'blur') {
       evt.target.parentNode.classList.remove('active');
+    } else if(evt.type === 'input') {
+      this.updateSearch(evt);
     }
   }
 
@@ -79,11 +81,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if(q.length) {
       let srch;
       if(this.searchType === 'name') {
-        srch = this.sub = this.dataService.searchOrgs(this.query);
+        srch = this.sub = this.dataService.searchOrgs(q);
       } else {
-        srch = this.sub = this.dataService.searchLocs(this.query);
+        srch = this.sub = this.dataService.searchLocs(q);
       }
       this.sub.then(data => this.returnSearch(data, srch));
+      this.sub.catch(err => this.searchError(err));
     } else {
       this.sub = null;
       this.returnSearch([], this.sub);
@@ -105,6 +108,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.allResults = data;
     this.paginate();
     this.loading = false;
+  }
+
+  searchError(err) {
+    console.error(err);
+    this.returnSearch([], this.sub);
   }
 
   paginate() {
