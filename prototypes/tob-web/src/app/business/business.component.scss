@@ -50,7 +50,7 @@
     background: transparent;
     border: 2px solid #e0e3e9;
     border-radius: 5px;
-    //padding: 0.4em 0.4em 0.3em 0.4em;
+    overflow: hidden;
     text-decoration: none;
     .panel-title {
       font-size: 1.8rem;
@@ -61,17 +61,6 @@
     .panel-heading {
       background-color: #f8f8f8;
     }
-    /*label {
-      cursor: pointer;
-      flex: 1 0 auto;
-    }
-    &:hover, &:focus {
-      label {
-        border-color: #5260c9; // #d0d3d9;
-        box-shadow: 0 2px 1px 2px rgba(0, 10, 40, 0.05);
-        text-decoration: underline;
-      }
-    }*/
   }
   &-main {
     display: flex;
