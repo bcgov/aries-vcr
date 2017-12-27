@@ -102,6 +102,18 @@ export interface Jurisdiction {
   endDate: string;
 }
 
+export function blankJurisdiction(): Jurisdiction {
+  return {
+    id: 0,
+    abbrv: null,
+    name: '',
+    displayOrder: null,
+    isOnCommonList: null,
+    effectiveDate: null,
+    endDate: null
+  };
+}
+
 export interface VerifiableClaim {
   id: number;
   verifiableOrgId: number;

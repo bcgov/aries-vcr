@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { MockData } from './mock-data';
-import { VerifiableOrg, VerifiableClaim, VerifiableClaimType, IssuerService, blankClaimType, blankIssuerService } from './data-types';
+import {
+    VerifiableOrg, VerifiableOrgType, VerifiableClaim, VerifiableClaimType, IssuerService, Jurisdiction,
+    blankOrgType, blankClaimType, blankIssuerService, blankJurisdiction } from './data-types';
 import { environment } from '../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -134,8 +136,8 @@ export class GeneralDataService {
   searchOrgs (query: string) {
     let adj = (org) => {
       let locs = this.orgData.locations;
-      org.jurisdiction = this.findOrgData('jurisdictions', org.jurisdictionId) || {};
-      org.type = this.findOrgData('verifiableorgtypes', org.orgTypeId) || {};
+      org.jurisdiction = <Jurisdiction>this.findOrgData('jurisdictions', org.jurisdictionId) || blankJurisdiction();
+      org.type = <VerifiableOrgType>this.findOrgData('verifiableorgtypes', org.orgTypeId) || blankOrgType();
       org.primaryLocation = {summary: '', street: ''};
       if (locs) {
         for (let j = 0; j < locs.length; j++) {
