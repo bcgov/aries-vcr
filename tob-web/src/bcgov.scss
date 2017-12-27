@@ -1,0 +1,11 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~mygovbc-bootstrap-theme/dist/mygovbc-bootstrap-theme.min.css";
+
+.title {
+  letter-spacing: 0.05em;
+}
+
+.btn-group > .btn {
+  // why is this necessary??
+  margin-right: 0;
+}

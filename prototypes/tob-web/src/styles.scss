@@ -1,6 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
-@import "~mygovbc-bootstrap-theme/dist/mygovbc-bootstrap-theme.min.css";
-
 
 .color-red {
 	filter: sepia() hue-rotate(300deg) saturate(180%)
@@ -36,10 +33,6 @@
 }
 .mrgn-bttm-lg {
   margin-bottom: 3rem;
-}
-
-.title {
-  letter-spacing: 0.05em;
 }
 
 @keyframes spin {
@@ -83,9 +76,4 @@ $indicator-thickness: 0.2em;
 
 .text-number {
 	font-variant-numeric: lining-nums tabular-nums;
-}
-
-.btn-group > .btn {
-  // why is this necessary??
-  margin-right: 0;
 }
