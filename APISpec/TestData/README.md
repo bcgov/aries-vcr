@@ -31,16 +31,21 @@ The Process
 ----------------
 The following is a simplified version of a more detailed process documented here; [Detailed Steps to reset the Database for an environment](https://github.com/bcgov/hets/tree/master/APISpec/TestData#detailed-steps-to-reset-the-database-for-an-environment).  The idea is to _eventually_ completely automate the process.
 
-1. Scale the API server (django) to zero pods using the scripts here; [OpenShift Scripts](../../openshift/scripts).
-   - `./scaleDeployment.sh django 0`
-1. Recreate the database (postgresql) using the scripts here; [OpenShift Scripts](../../openshift/scripts).
-   - `./dropAndRecreateDatabase.sh devex-von-dev postgresql TheOrgBook_Database TheOrgBook_User`
-1. Scale the API server (django) back up to it's working set of pods.  The database schema will get created as part of the migration process as the pods(s) come up.
-   - `./scaleDeployment.sh django 1`
-1. Use the `load-all.sh` script to populate the database through the API server.
-   - `./load-all.sh dev`
-1. Rebuild the Solr search index using the scripts here; [OpenShift Scripts](../../openshift/scripts).
-   - `./runInContainer.sh django 'python ./manage.py rebuild_index --noinput'`
+These instructions assme you are using the OpenShift managment scripts found here; [openshift-project-tools](https://github.com/BCDevOps/openshift-project-tools).  Refer to the [OpenShift Scripts](https://github.com/BCDevOps/openshift-project-tools/blob/master/bin/README.md) documentation for details.
+
+1. Open a Git Bash command prompt to your project's root `openshift` directory.
+1. Switch to the appropriate OpenShift project.
+   - `oc project devex-von-dev`
+1. Scale the API server (django) to zero pods, and wait for the deployment to be scaled to zero (monitor the progress in the OpenShift console);
+   - `scaleDeployment.sh django 0`
+1. Recreate the database (postgresql);
+   - `dropAndRecreateDatabase.sh devex-von-dev postgresql TheOrgBook_Database TheOrgBook_User`
+1. Scale the API server (django) back up to it's working set of pods, and wait for the deployment to be scaled back up (monitor the progress in the OpenShift console).  The database schema will get created as part of the migration process as the pods(s) come up.
+   - `scaleDeployment.sh django 1`
+1. Use the `loadData.sh` script to populate the database through the API server.
+   - `loadData.sh -e dev`
+1. Rebuild the Solr search index;
+   - `runInContainer.sh django 'python ./manage.py rebuild_index --noinput'`
 
 ToDo:
 - Wrap the above in a master script that has the user wait between the steps.
