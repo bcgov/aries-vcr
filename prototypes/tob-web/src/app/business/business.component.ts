@@ -39,24 +39,32 @@ export class BusinessComponent implements OnInit, OnDestroy {
             this.record.type = orgType || blankOrgType();
             this.record.typeName = orgType && orgType.description;
 
-            let locs = [];
+            let orgLocs = [];
+            let claimLocs = {};
             if(record.locations) {
               for(var i = 0; i < record.locations.length; i++) {
                 let loc = <Location>Object.assign({}, record.locations[i]);
                 let locType = <LocationType>this.dataService.findOrgData('locationtypes', loc.locationTypeId);
                 loc.type = locType || blankLocationType();
                 loc.typeName = locType && locType.locType;
-                locs.push(loc);
+                if(loc.doingBusinessAsId) {
+                  let cid = loc.doingBusinessAsId;
+                  if(! claimLocs[cid]) claimLocs[cid] = [];
+                  claimLocs[cid].push(loc);
+                } else {
+                  orgLocs.push(loc);
+                }
               }
             }
-            this.locations = locs;
-            console.log('locations', locs);
+            this.locations = orgLocs;
+            console.log('locations', orgLocs);
 
             let dbas = [];
             if(Array.isArray(record.doingBusinessAs)) {
               for(var i = 0; i < record.doingBusinessAs.length; i++) {
                 let dba = <DoingBusinessAs>Object.assign({}, record.doingBusinessAs[i]);
-                dbas.push(dba.dbaName);
+                dba.locations = claimLocs[dba.id] || [];
+                dbas.push(dba);
               }
             }
             this.dbas = dbas;

@@ -5,6 +5,8 @@ export interface DoingBusinessAs {
   dbaName: string;
   effectiveDate: string;
   endDate: string;
+  // custom properties
+  locations?: Location[];
 }
 
 export interface IssuerService {
