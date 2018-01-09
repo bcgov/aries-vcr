@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   public less = false;
   public none = false;
   public loading = false;
+  private preload;
 
   constructor(
     private dataService: GeneralDataService,
@@ -28,13 +29,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.preloadData();
+    this.preload = this.dataService.preloadData(['locations', 'locationtypes', 'verifiableorgtypes']);
     this.$route.queryParams.subscribe(params => {
       let q = params.query;
       if(typeof q !== 'string') q = '';
       if(this.query !== q) {
         this.query = q;
-        this.search();
+        (<HTMLInputElement>document.getElementById('searchInput')).value = q;
+        this.preload.then(data => this.search());
       }
     });
   }
@@ -131,6 +133,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   next() {
     this.page ++;
     this.paginate();
+  }
+
+  orgCount() {
+    return this.dataService.getRecordCount('verifiableorgs');
+  }
+
+  claimCount() {
+    return this.dataService.getRecordCount('verifiableclaims');
   }
 
 }

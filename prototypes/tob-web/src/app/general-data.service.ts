@@ -83,13 +83,55 @@ export class GeneralDataService {
   // -- client-side search implementation --
 
   private orgData : {[key: string]: any} = {};
+  private quickLoaded = false;
+  private recordCounts : {[key: string]: number} = {};
 
-  preloadData(reqTypes?) {
+  quickLoad(force?) {
     return new Promise(resolve => {
+      if(this.quickLoaded && !force) {
+        resolve(1);
+        return;
+      }
       let baseurl = this.getRequestUrl('');
       console.log('base url: ' + baseurl);
-      if(! baseurl) return;
-      let types = reqTypes || ['verifiableorgtypes', 'locationtypes', 'jurisdictions', 'locations'];
+      if(! baseurl) {
+        resolve(0);
+        return;
+      }
+      let req = this.http.get(baseurl + 'quickload')
+        .map((res: Response) => res.json())
+        .catch(error => {
+          console.error(error);
+          resolve(1);
+          return Observable.throw(error);
+        });
+      req.subscribe(data => {
+        console.log('quickload', data);
+        if(data.counts) {
+          for (let k in data.counts) {
+            this.recordCounts[k] = parseInt(data.counts[k]);
+          }
+        }
+        if(data.records) {
+          for (let k in data.records) {
+            this.orgData[k] = data.records[k];
+          }
+        }
+        this.quickLoaded = true;
+        resolve(1);
+      });
+    });
+  }
+
+  preloadData(reqTypes?) {
+    return this.quickLoad().then(response => new Promise(resolve => {
+      let baseurl = this.getRequestUrl('');
+      console.log('base url: ' + baseurl);
+      if(! baseurl) {
+        resolve(0);
+        return;
+      }
+      let types = reqTypes || ['issuerservices', 'jurisdictions', 'locationtypes', 'verifiableclaimtypes', 'verifiableorgtypes'];
       let wait = 0;
       for (let i = 0; i < types.length; i++) {
         let type = types[i];
@@ -109,7 +151,7 @@ export class GeneralDataService {
         });
       }
       if(! wait) resolve(0);
-    });
+    }));
   }
 
   findOrgData (type, id) : Object {
@@ -120,6 +162,10 @@ export class GeneralDataService {
         }
       }
     }
+  }
+
+  getRecordCount (type) {
+    return this.recordCounts[type] || 0;
   }
 
   getOrgData (type) : {[key:string]: Object} {
