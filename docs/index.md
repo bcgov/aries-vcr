@@ -59,6 +59,8 @@ Code to make it easy to spin up instances of TheOrgBook in different jurisdictio
   * Receive issued Verifiable Claims from known Services about subject Verifiable Organizations
   * Provide Proofs to Services about subject Verifiable Organizations
 
+We have identified the requirements for extending the Hyperledger Indy implementation of a key component of TheOrgBook - the wallet - and noted those [requirements here](tobwallet.md). We welcome suggestions and solutions to these requirements.
+
 ### Verifiable Organization Network (VON) Connector (repo to be created)
 
 The VON-Connector is code to minimize the effort for a Service to become SSI-enabled and able to use an instance of TheOrgBook. The capabilities of a VON-Connector include:
