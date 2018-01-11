@@ -144,6 +144,7 @@ urlpatterns = [
 
     url(r'^bcovrin/generate-claim-request$', indy_views.bcovrinGenerateClaimRequest.as_view()),
     url(r'^bcovrin/store-claim$', indy_views.bcovrinStoreClaim.as_view()),
+    url(r'^bcovrin/construct-proof$', indy_views.bcovrinConstructProof.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -20,6 +20,7 @@
 """
 
 from api.claimDefProcesser import ClaimDefProcesser
+from api.proofRequestProcesser import ProofRequestProcesser
 import json
 from rest_framework import permissions
 from api.claimProcesser import ClaimProcesser
@@ -74,4 +75,23 @@ class bcovrinStoreClaim(APIView):
     claim = request.body.decode('utf-8')
     claimProcesser = ClaimProcesser()
     claimProcesser.SaveClaim(claim)
+    return JsonResponse({"success": True})
+
+
+class bcovrinConstructProof(APIView):
+  """  
+  Generates a proof based on a set of filters.
+  """
+  permission_classes = (permissions.AllowAny,)  
+ 
+  def post(self, request, *args, **kwargs):
+    """  
+    Generates a proof from a proof request and set of filters.
+    """
+    proofRequestWithFilters = request.body.decode('utf-8')
+    proofRequestProcesser = ProofRequestProcesser(proofRequestWithFilters)
+    proofResponse = proofRequestProcesser.ConstructProof()
+    print("=-==-\n\n\n")
+    print(proofResponse)
+    return JsonResponse(json.loads(proofResponse))
     return JsonResponse({"success": True})

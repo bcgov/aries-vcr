@@ -21,6 +21,7 @@
 
 import asyncio
 from api.claimDefProcesser import ClaimDefProcesser
+from api.proofRequestProcesser import ProofRequestProcesser
 from api.indy.claimDefParser import ClaimDefParser
 from api.claimProcesser import ClaimProcesser
 import json
@@ -1068,53 +1069,3 @@ class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.U
     Updates the specified VerifiableOrgType object
     """
     return self.update(request, *args, **kwargs)
-
-# ToDo:
-# * Refactor the saving process to use serializers, etc.
-# ** Make it work with generics.GenericAPIView
-# ** Using APIView for the moment so a serializer_class does not need to be defined; 
-#    as we manually processing things for the moment.
-class bcovrinGenerateClaimRequest(APIView):
-  """  
-  Generate a claim request from a given claim definition.
-  """
-  permission_classes = (permissions.AllowAny,)  
-  
-  def post(self, request, *args, **kwargs):
-    """  
-    Processes a claim definition and responds with a claim request which can then be used to submit a claim.
-
-    _Currently, this API only supports 'Verified Organization' claim definitions._
-    """
-    claimDef = request.body.decode('utf-8')
-    claimDefProcesser = ClaimDefProcesser(claimDef)
-    claimRequest = claimDefProcesser.GenerateClaimRequest()
-    print("=-==-\n\n\n")
-    print(claimRequest)
-    return JsonResponse(json.loads(claimRequest))
-
-# ToDo:
-# * Refactor the saving process to use serializers, etc.
-# ** Make it work with generics.GenericAPIView
-# ** Using APIView for the moment so a serializer_class does not need to be defined; 
-#    as we manually processing things for the moment.
-class bcovrinStoreClaim(APIView):
-  """  
-  Store a verifiable claim.
-  """
-  permission_classes = (permissions.AllowAny,)  
- 
-  def post(self, request, *args, **kwargs):
-    """  
-    Stores a verifiable claim into a central wallet.
-
-    The data in the claim is parsed and stored in the database
-    for search/display purposes; making it available through
-    the other APIs.
-
-    _Currently, this API only supports 'Verified Organization' claims._
-    """
-    claim = request.body.decode('utf-8')
-    claimProcesser = ClaimProcesser()
-    claimProcesser.SaveClaim(claim)
-    return JsonResponse({"success": True})
