@@ -230,8 +230,8 @@
       }
     },
     {
-      "apiVersion": "extensions/v1beta1",
       "kind": "HorizontalPodAutoscaler",
+      "apiVersion": "autoscaling/v1",
       "metadata": {
         "name": "${NAME}",
         "labels": {
@@ -239,11 +239,9 @@
         }
       },
       "spec": {
-        "scaleRef": {
+        "scaleTargetRef": {
           "kind": "DeploymentConfig",
-          "name": "${NAME}",
-          "apiVersion": "extensions/v1beta1",
-          "subresource": "scale"
+          "name": "${NAME}"
         },
         "minReplicas": 1,
         "maxReplicas": 1
