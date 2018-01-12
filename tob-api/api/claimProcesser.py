@@ -42,13 +42,14 @@ class ClaimProcesser(object):
     def __get_VerifiableClaimType(self, claim: ClaimParser):
       # VerifiableClaimTypes are registered by issuers.
       # If the VerifiableClaimType has not been registered we can't accept the claim.
-      verifiableClaimTypeName = claim.claimType
+      # VerifiableClaimType.claimType is the friendly name of the claim.
+      schemaName = claim.schemaName
       
-      verifiableClaimType = VerifiableClaimType.objects.filter(claimType=verifiableClaimTypeName)
+      verifiableClaimType = VerifiableClaimType.objects.filter(schemaName=schemaName)
       if not verifiableClaimType:
-        self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(verifiableClaimTypeName))
+        self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(schemaName))
       else:
-        self.__logger.debug("VerifiableClaimType, {0}, exists ...".format(verifiableClaimTypeName))
+        self.__logger.debug("VerifiableClaimType, {0}, exists ...".format(schemaName))
         verifiableClaimType = verifiableClaimType[0]
       
       return verifiableClaimType
@@ -265,7 +266,7 @@ class ClaimProcesser(object):
     
     def SaveClaim(self, claimJson):      
       claim = ClaimParser(claimJson)
-      self.__logger.debug("Processing {0} claim ...".format(claim.claimType))
+      self.__logger.debug("Processing {0} claim ...".format(claim.schemaName))
 
       # If the claim type has not been registered, reject the claim.
       verifiableClaimType = self.__get_VerifiableClaimType(claim)
@@ -278,7 +279,7 @@ class ClaimProcesser(object):
       # ToDo:
       # - Don't hard code the claim types at this level.  Get things working and refactor.
       # - Create claim processors that know how to deal with given claims.
-      if claim.claimType == "incorporation.bc_registries":
+      if claim.schemaName == "incorporation.bc_registries":
         verifiableOrg = self.__CreateOrUpdateVerifiableOrg(claim, verifiableOrg)
         location = self.__CreateOrUpdateLocation(claim, verifiableOrg, None, "Headquarters")
 
@@ -292,6 +293,6 @@ class ClaimProcesser(object):
       eventloop.do(self.__StoreClaim(claim.json))
 
       # Process all other parsable claim types ...
-      if claim.claimType == "doing_business_as.bc_registries":
+      if claim.schemaName == "doing_business_as.bc_registries":
         doingBusinessAs = self.__CreateOrUpdateDoingBusinessAs(claim, verifiableOrg)
         location = self.__CreateOrUpdateLocation(claim, verifiableOrg, doingBusinessAs, "Location")

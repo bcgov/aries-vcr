@@ -21,7 +21,7 @@ class ClaimParser(object):
       return self.__claim["claim"][field][0]
 
     @property
-    def claimType(self) -> str:
+    def schemaName(self) -> str:
         return self.__claim_type
 
     @property
