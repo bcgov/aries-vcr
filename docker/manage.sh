@@ -147,7 +147,7 @@ pushd ${SCRIPT_HOME} >/dev/null
 case "$1" in
   start)
     configureEnvironment
-    docker-compose up tob-db tob-solr tob-api schema-spy tob-web
+    docker-compose up --force-recreate tob-db tob-solr tob-api schema-spy tob-web
     ;;
   stop)
     configureEnvironment
