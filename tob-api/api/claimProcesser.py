@@ -16,20 +16,29 @@ from api.models.Jurisdiction import Jurisdiction
 from api.models.VerifiableOrgType import VerifiableOrgType
 from api.models.VerifiableOrg import VerifiableOrg
 from api.indy import eventloop
+import datetime
 
 # ToDo:
 # * The code is currently making assumtions in order to fill in gaps in the infomration provided with a claim.
 class ClaimProcesser(object):
     """
     Parses and processes a claim.
-
-    _Currently only supports 'Verified Organization' claims._
     """
 
     def __init__(self) -> None:
       self.__orgbook = Agent()
       self.__logger = logging.getLogger(__name__)
+    
+    def __ToDateTime(self, timeStamp: str):
+      dateTime = None
+      if timeStamp: 
+        try:
+          dateTime = datetime.datetime.utcfromtimestamp(int(timeStamp))
+        except:
+          pass
 
+      return dateTime
+      
     def __get_VerifiableClaimType(self, claim: ClaimParser):
       # VerifiableClaimTypes are registered by issuers.
       # If the VerifiableClaimType has not been registered we can't accept the claim.
@@ -114,7 +123,9 @@ class ClaimProcesser(object):
     def __CreateOrUpdateVerifiableOrg(self, claim: ClaimParser, verifiableOrg: VerifiableOrg):
       organizationId = claim.getField("legal_entity_id")
       name = claim.getField("legal_name")
-      effectiveDate = claim.getField("effective_date")
+      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
+      endDate = endDate = self.__ToDateTime(claim.getField("end_date"))
+
       orgType = self.__get_VerifiableOrgType(claim)
       jurisdiction = self.__get_Jurisdiction(claim)
 
@@ -125,7 +136,8 @@ class ClaimProcesser(object):
           orgTypeId = orgType,
           jurisdictionId = jurisdiction,
           legalName = name,
-          effectiveDate = effectiveDate
+          effectiveDate = effectiveDate,
+          endDate = endDate
         )
         verifiableOrg.save()
       else:
@@ -135,14 +147,15 @@ class ClaimProcesser(object):
         verifiableOrg.jurisdictionId = jurisdiction
         verifiableOrg.legalName = name
         verifiableOrg.effectiveDate = effectiveDate
+        verifiableOrg.endDate = endDate
         verifiableOrg.save()
 
       return verifiableOrg
 
     def __CreateOrUpdateDoingBusinessAs(self, claim: ClaimParser, verifiableOrg: VerifiableOrg):
       dbaName = claim.getField("doing_business_as_name")
-      effectiveDate = claim.getField("effective_date")
-      # endDate = claim.getField("end_date")
+      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
+      endDate = self.__ToDateTime(claim.getField("end_date"))
 
       doingBusinessAs = DoingBusinessAs.objects.filter(verifiableOrgId=verifiableOrg, dbaName=dbaName)
       if not doingBusinessAs:
@@ -151,7 +164,7 @@ class ClaimProcesser(object):
           verifiableOrgId = verifiableOrg,
           dbaName = dbaName,
           effectiveDate = effectiveDate,
-          #endDate = endDate
+          endDate = endDate
         )
         doingBusinessAs.save()
       else:
@@ -159,7 +172,7 @@ class ClaimProcesser(object):
         doingBusinessAs = doingBusinessAs[0]
         doingBusinessAs.dbaName = dbaName
         doingBusinessAs.effectiveDate = effectiveDate
-        #doingBusinessAs.endDate = endDate
+        doingBusinessAs.endDate = endDate
         doingBusinessAs.save()
 
       return doingBusinessAs
@@ -169,8 +182,8 @@ class ClaimProcesser(object):
       
       # We don't have enough information to update an existing claim.
       verifiableClaim = VerifiableClaim.objects.filter(claimJSON=claim.json)
-      effectiveDate = claim.getField("effective_date")
-      #endDate = claim.getField("end_date")
+      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
+      endDate = self.__ToDateTime(claim.getField("end_date"))
       
       if not verifiableClaim:
         self.__logger.debug("The verifiable claim does not exist.  Creating ...")
@@ -180,7 +193,7 @@ class ClaimProcesser(object):
           # Sould the claim be base64 encoded? i.e. claimJSON = base64.b64encode(claim.json)
           claimJSON = claim.json,
           effectiveDate = effectiveDate,
-          #endDate = endDate,
+          endDate = endDate,
           inactiveClaimReasonId = None,
         )
         verifiableClaim.save()
@@ -200,8 +213,8 @@ class ClaimProcesser(object):
       province = claim.getField("province")
       postalCode = claim.getField("postal_code")
       #latLong = claim.getField("")
-      effectiveDate = claim.getField("effective_date")
-      #endDate = claim.getField("end_date")
+      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
+      endDate = self.__ToDateTime(claim.getField("end_date"))
 
       orgName = verifiableOrg.legalName
       if doingBusinessAs:
@@ -223,7 +236,7 @@ class ClaimProcesser(object):
           postalCode = postalCode,
           #latLong = latLong,
           effectiveDate = effectiveDate,
-          #endDate = endDate
+          endDate = endDate
         )
         location.save()
       else:
@@ -241,7 +254,7 @@ class ClaimProcesser(object):
         location.postalCode = postalCode
         #location.latLong = latLong
         location.effectiveDate = effectiveDate
-        #location.endDate = endDate
+        location.endDate = endDate
         location.save()
 
       return location
