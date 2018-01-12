@@ -26,3 +26,4 @@ pysolr>=3.6.0,<4
 # Von Agent
 git+https://github.com/nrempel/von_agent.git#von-agent
 # von-agent
+asyncio>=3.4.3,<4

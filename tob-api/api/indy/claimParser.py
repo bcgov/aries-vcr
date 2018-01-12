@@ -1,43 +1,33 @@
 import json
+import logging
 
 class ClaimParser(object):
     """
-    Parses a claim.
-    _Currently only supports 'Verified Organization' claims._
+    Parses a generic claim.
     """
     def __init__(self, claim: str) -> None:
-        self.__raw_claim = claim
-        self.__data = json.loads(self.rawClaim)
-        self.__parse()
+      self.__logger = logging.getLogger(__name__)
+      self.__orgData = claim
+      self.__parse()
+
+    def __parse(self):
+      self.__logger.debug("Parsing claim ...")
+      data = json.loads(self.__orgData)
+      self.__claim_type = data["claim_type"]
+      self.__claim = data["claim_data"]
+      self.__issuer_did = data["claim_data"]["issuer_did"]
+    
+    def getField(self, field):
+      return self.__claim["claim"][field][0]
 
     @property
-    def rawClaim(self) -> str:
-        return self.__raw_claim
-
-    @property
-    def fullClaim(self) -> str:
-        return self.__data
-
-    @property
-    def claim(self) -> str:
-        return self.__claim
+    def claimType(self) -> str:
+        return self.__claim_type
 
     @property
     def issuerDid(self) -> str:
         return self.__issuer_did
 
-    def __parse(self):
-      self.__issuer_did = self.fullClaim["issuer_did"]
-      self.__claim = self.__parseClaim()
-
-    def __parseClaim(self):
-      return {
-        "effectiveDate": self.fullClaim["claim"]["effectiveDate"][0],
-        "orgTypeId": self.fullClaim["claim"]["orgTypeId"][0],
-        "endDate": self.fullClaim["claim"]["endDate"][0],
-        "jurisdictionId": self.fullClaim["claim"]["jurisdictionId"][0],
-        "LegalName": self.fullClaim["claim"]["LegalName"][0],
-        "busId": self.fullClaim["claim"]["busId"][0]
-      }
-      
-
+    @property
+    def json(self) -> str:
+        return json.dumps(self.__claim)
