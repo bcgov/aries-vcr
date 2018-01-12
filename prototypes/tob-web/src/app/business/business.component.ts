@@ -14,7 +14,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
   loaded: boolean;
   record: VerifiableOrg;
   loc: any;
-  dbas: any[];
+  dbas: DoingBusinessAs[];
   certs: any[];
   locations: Location[];
   error: string;

@@ -11,6 +11,7 @@ import { CertComponent } from './cert/cert.component';
 import { SearchBoxDirective } from './search-box/search-box.directive';
 import { GeneralDataService } from 'app/general-data.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { RoadmapComponent } from './roadmap/roadmap.component';
 import { AdminModule } from 'app/admin/admin.module';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
@@ -21,6 +22,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
     CertComponent,
     SearchBoxDirective,
     DashboardComponent,
+    RoadmapComponent,
     BreadcrumbComponent
   ],
   imports: [

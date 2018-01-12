@@ -31,18 +31,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.preload = this.dataService.preloadData(['locations', 'locationtypes', 'verifiableorgtypes']);
     this.$route.queryParams.subscribe(params => {
-      let q = params.query;
-      if(typeof q !== 'string') q = '';
-      if(this.query !== q) {
-        this.query = q;
-        (<HTMLInputElement>document.getElementById('searchInput')).value = q;
-        this.preload.then(data => this.search());
-      }
+      this.setQuery(params.query);
     });
   }
 
   ngAfterViewInit() {
+    (<HTMLInputElement>document.getElementById('searchInput')).value = this.query;
     this.focusSearch();
+  }
+
+  setQuery(q) {
+    if(typeof q !== 'string') q = '';
+    if(this.query !== q) {
+      this.query = q;
+      var search = (<HTMLInputElement>document.getElementById('searchInput'));
+      if(search) search.value = this.query;
+      this.preload.then(data => this.search());
+    }
   }
 
   focusSearch() {

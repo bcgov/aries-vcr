@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { BusinessComponent } from 'app/business/business.component';
 import { CertComponent } from 'app/cert/cert.component';
 import { DashboardComponent } from 'app/dashboard/dashboard.component';
+import { RoadmapComponent } from 'app/roadmap/roadmap.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,13 @@ const routes: Routes = [
     component: CertComponent,
     data: {
       breadcrumb: 'Permit and License Info'
+    }
+  },
+  {
+    path: 'roadmap',
+    component: RoadmapComponent,
+    data: {
+      breadcrumb: 'Roadmap'
     }
   }
 ];

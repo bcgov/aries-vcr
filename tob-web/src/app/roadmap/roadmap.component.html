@@ -1,0 +1,253 @@
+<section id="roadmap">
+
+  <h1 class="roadmap-title">Organization Roadmap</h1>
+
+  <ng-container *ngIf="! inited">
+    <em class="text-muted">Loading ...</em>
+  </ng-container>
+
+  <ng-container *ngIf="! orgRecord && inited">
+    <div class="row" >
+      <div class="col-md-5 col-md-push-7">
+        <div class="well">
+          <p class="lead">If your organization has not yet been incorporated, you may enroll with BC Registries here:</p>
+          <a class="btn btn-lg btn-primary" href="https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca"><span class="fa fa-sign-in"></span> Register your Organization</a>
+        </div>
+      </div>
+
+      <div class="col-md-7 col-md-pull-5">
+        <h2>Find your Organization</h2>
+
+        <div class="search-outer text-center">
+          <div class="large-search">
+            <span class="fa fa-search" *ngIf="!loading"></span>
+            <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
+            <input type="text" id="searchInput" name="query" size="40" placeholder="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" (input)="inputEvent($event)" (focus)="inputEvent($event)" (blur)="inputEvent($event)">
+          </div>
+          <div class="btn-toolbar search-type">
+            <div class="btn-group">
+              <label [class]="'btn btn-default btn-radio' + (searchType=='name' ? ' active' : '')">
+                <input type="radio" name="search_type" value="name" [checked]="searchType=='name'" (click)="setSearchType($event)"> &nbsp;Search by Name
+              </label>
+              <label [class]="'btn btn-default btn-radio' + (searchType=='location' ? ' active' : '')">
+                <input type="radio" name="search_type" value="location" [checked]="searchType=='location'" (click)="setSearchType($event)"> &nbsp;Search by Location
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="results mrgn-tp-lg" *ngIf="results.length || none">
+      <label class="control-label">Search Results</label>
+      <div *ngIf="searchType=='name' && !none">
+        <div class="row" *ngFor="let record of results">
+          <div class="col-sm-6">
+            <a href="" routerLink="/roadmap" [queryParams]="{record: record.id}">{{record.legalName}}</a><br>
+            <small>{{record.type.description}}</small>
+          </div>
+          <div class="col-sm-6">
+            {{record.primaryLocation.street}}<br>
+            <small>{{record.primaryLocation.summary}}</small>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="searchType=='location' && !none">
+        <div class="row" *ngFor="let record of results">
+          <div class="col-sm-6">
+            <a href="" routerLink="/roadmap" [queryParams]="{record: record.verifiableOrgId}">{{record.addressee}}</a><br>
+            <small>{{record.type.locType}}</small>
+          </div>
+          <div class="col-sm-6">
+            {{record.streetAddress}}<br>
+            <small>{{record.municipality}}, {{record.province}}</small>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="none">
+        <div class="col-sm-6 text-muted">
+          <em>No results</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="row results-nav" *ngIf="more || less">
+      <div class="col-sm-12 text-right">
+        <ul class="pager">
+          <li *ngIf="less">
+            <a href="#" (click)="prev(); $event.preventDefault();">&lt;&lt; Previous</a>
+          </li>
+          <li *ngIf="more">
+            <a href="#" (click)="next(); $event.preventDefault();">Next &gt;&gt;</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="orgRecord && inited">
+    <div class="row">
+      <div class="col-sm-8">
+        <h2>{{this.orgRecord.legalName}}</h2>
+      </div>
+      <div class="col-sm-4 mrgn-tp-md text-right">
+        <a href="" [routerLink]="['/business', this.recordId]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View organization record</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 business-info">
+        <div class="form-group">
+          <label class="control-label">Organization Identifier</label>
+          <div class="form-field">
+            {{orgRecord.orgId}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">Organization Type</label>
+          <div class="form-field">
+            {{orgRecord.typeName}}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 business-info">
+        <div class="form-group">
+          <label class="control-label">Location</label>
+          <div class="form-field">
+            <div class="field-value" *ngFor="let loc of locations">
+              <!--small class="text-muted">{{loc.typeName}}</small><br-->
+              <span *ngIf="loc.addressee != null">{{loc.addressee}}<br></span>
+              {{loc.unitNumber && ('' + loc.unitNumber + '-')}}{{loc.streetAddress}}<br>
+              {{loc.municipality}}, {{loc.province}}&nbsp; {{loc.postalCode}}<br>
+              Canada
+            </div>
+            <div *ngIf="!locations.length">
+              <em class="text-muted">None</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-10 col-sm-push-1">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">Registration</h2>
+          </div>
+          <div class="panel-body" *ngIf="regCert">
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Issuer</label>
+              <div class="col-sm-8 form-field">
+                <a *ngIf="regCert.type.issuerURL" [href]="regCert.type.issuerURL" rel="external">
+                  {{regCert.issuer.name}}</a>
+                <small><span class="fa fa-external-link"></span></small>
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Effective Date</label>
+              <div class="col-sm-8 form-field">
+                {{regCert.effectiveDate}}
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Expiry Date</label>
+              <div class="col-sm-8 form-field">
+                {{regCert.endDate || '-'}}
+              </div>
+            </div>
+          </div>
+          <div class="panel-body" *ngIf="! regCert">
+            <em class="text-muted">Certificate not found</em>
+          </div>
+          <div class="panel-footer text-right" *ngIf="regCert">
+            <a href="" [routerLink]="['/cert', regCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-10 col-sm-push-1">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">WorkSafe BC</h2>
+          </div>
+          <div class="panel-body" *ngIf="worksafeCert">
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Issuer</label>
+              <div class="col-sm-8 form-field">
+                <a *ngIf="worksafeCert.type.issuerURL" [href]="worksafeCert.type.issuerURL" rel="external">
+                  {{worksafeCert.issuer.name}}</a>
+                <small><span class="fa fa-external-link"></span></small>
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Effective Date</label>
+              <div class="col-sm-8 form-field">
+                {{worksafeCert.effectiveDate}}
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Expiry Date</label>
+              <div class="col-sm-8 form-field">
+                {{worksafeCert.endDate || '-'}}
+              </div>
+            </div>
+          </div>
+          <div class="panel-body" *ngIf="! worksafeCert">
+            <em class="text-muted">Certificate not found</em>
+          </div>
+          <div class="panel-footer text-right" *ngIf="worksafeCert">
+            <a href="" [routerLink]="['/cert', worksafeCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
+          </div>
+          <div class="panel-footer text-right" *ngIf="! worksafeCert">
+            <a [href]="'https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&tobOrgId='+recordId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with WorkSafe BC</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-10 col-sm-push-1">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">Health Inspection</h2>
+          </div>
+          <div class="panel-body" *ngIf="healthCert">
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Issuer</label>
+              <div class="col-sm-8 form-field">
+                <a *ngIf="healthCert.type.issuerURL" [href]="healthCert.type.issuerURL" rel="external">
+                  {{healthCert.issuer.name}}</a>
+                <small><span class="fa fa-external-link"></span></small>
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Effective Date</label>
+              <div class="col-sm-8 form-field">
+                {{worksafeCert.effectiveDate}}
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-sm-4 control-label">Expiry Date</label>
+              <div class="col-sm-8 form-field">
+                {{worksafeCert.endDate || '-'}}
+              </div>
+            </div>
+          </div>
+          <div class="panel-body" *ngIf="! healthCert">
+            <em class="text-muted">Certificate not found</em>
+          </div>
+          <div class="panel-footer text-right" *ngIf="healthCert">
+            <a href="" [routerLink]="['/cert', healthCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
+          </div>
+          <div class="panel-footer text-right" *ngIf="! healthCert">
+            <a [href]="'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&tobOrgId='+recordId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with the Fraser Valley Health Authority</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</section>
