@@ -19,6 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
+        "../node_modules/mygovbc-bootstrap-theme/dist/mygovbc-bootstrap-theme.min.css",
         "bcgov.scss",
         "styles.scss"
       ],
