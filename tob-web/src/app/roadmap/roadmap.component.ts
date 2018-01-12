@@ -52,7 +52,7 @@ export class RoadmapComponent implements OnInit {
   setParams(record, q) {
     if(typeof q !== 'string') q = '';
     this.recordId = record;
-    if(this.query !== q || record) {
+    if(this.query !== q || ! this.inited) {
       this.query = q;
       var search = (<HTMLInputElement>document.getElementById('searchInput'));
       if(search) search.value = this.query;
@@ -213,8 +213,10 @@ export class RoadmapComponent implements OnInit {
     this.allResults = data;
     this.paginate();
     this.loading = false;
-    this.inited = true;
-    setTimeout(() => this.initSearch(), 100);
+    if(! this.inited) {
+      this.inited = true;
+      setTimeout(() => this.initSearch(), 100);
+    }
   }
 
   searchError(err) {
