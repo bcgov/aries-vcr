@@ -24,7 +24,7 @@ class ProofRequestProcesser(object):
 
         # We keep a reference to schemas that we discover and retrieve from the
         # ledger. We will need these again later.
-        schemas = {}
+        schemas = {'by_key': {}}
 
         # The client is sending the proof request in an upcoming format.
         # This shim allows Permitify to declare its proof requests format
@@ -36,15 +36,29 @@ class ProofRequestProcesser(object):
             schema_key = self.__proof_request['requested_attrs'][
                 attr]['restrictions'][0]['schema_key']
 
-            # Not optimal. von-agent should cache this.
-            schema_json = await self.__orgbook.get_schema(
-                schema_key['did'],
-                schema_key['name'],
-                schema_key['version']
-            )
-            schema = json.loads(schema_json)
+            # Ugly cache for now...
+            if '%s::%s::%s' % (
+                    schema_key['did'],
+                    schema_key['name'],
+                    schema_key['version']) in schemas['by_key']:
+                schema = schemas['by_key']['%s::%s::%s' % (
+                    schema_key['did'],
+                    schema_key['name'],
+                    schema_key['version'])]
+            else:
+                # Not optimal. von-agent should cache this.
+                schema_json = await self.__orgbook.get_schema(
+                    schema_key['did'],
+                    schema_key['name'],
+                    schema_key['version']
+                )
+                schema = json.loads(schema_json)
 
             schemas[schema['seqNo']] = schema
+            schemas['by_key']['%s::%s::%s' % (
+                schema_key['did'],
+                schema_key['name'],
+                schema_key['version'])] = schema
 
             self.__proof_request['requested_attrs'][
                 attr]['schema_seq_no'] = schema['seqNo']
