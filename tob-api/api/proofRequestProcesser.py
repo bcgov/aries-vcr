@@ -17,7 +17,9 @@ class ProofRequestProcesser(object):
         self.__logger = logging.getLogger(__name__)
         self.__proof_request = json.loads(proofRequestWithFilters)[
             'proof_request']
-        self.__filters = json.loads(proofRequestWithFilters)['filters']
+        self.__filters = json.loads(proofRequestWithFilters)['filters'] \
+            if 'filters' in json.loads(proofRequestWithFilters) \
+            else {}
 
     async def __ConstructProof(self):
         self.__logger.debug("Constructing Proof ...")
@@ -74,13 +76,15 @@ class ProofRequestProcesser(object):
         # If any of the claims for proof are empty, we cannot construct a proof
         for attr in claims['attrs']:
             if not claims['attrs'][attr]:
-                raise NotAcceptable('No claims found for attr')
+                raise NotAcceptable('No claims found for attr %s' % attr)
 
         def get_claim_by_filter(clms, key, value):
             for clm in clms:
                 if clm["attrs"][key] == value:
                     return clm
-            raise NotAcceptable('No claims found for filter')
+            raise NotAcceptable(
+                'No claims found for filter %s = %s' % (
+                    key, value))
 
         requested_claims = {
             'self_attested_attributes': {},
