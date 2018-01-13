@@ -73,6 +73,10 @@ class ProofRequestProcesser(object):
             json.dumps(self.__proof_request))
         claims = json.loads(claims[1])
 
+        self.__logger.debug(
+            'Wallet returned the following claims for proof request: %s' %
+            json.dumps(claims))
+
         # If any of the claims for proof are empty, we cannot construct a proof
         for attr in claims['attrs']:
             if not claims['attrs'][attr]:
@@ -97,7 +101,7 @@ class ProofRequestProcesser(object):
                         attr,
                         self.__filters[attr])["claim_uuid"]
                     # Or we use the first claim found
-                    if attr in self.__filters[attr]
+                    if attr in self.__filters
                     else claims["attrs"][attr][0]["claim_uuid"],
                     True
                 ]
@@ -106,28 +110,54 @@ class ProofRequestProcesser(object):
             'requested_predicates': {}
         }
 
+        self.__logger.debug(
+            'Built requested claims: %s' %
+            json.dumps(requested_claims))
+
         # Build schemas json
         schemas = {
-            claims["attrs"][attr][0]['claim_uuid']: schemas[claims["attrs"][attr][0]["schema_seq_no"]]
+            claims["attrs"][attr][0]['claim_uuid']:
+                schemas[claims["attrs"][attr][0]["schema_seq_no"]]
             for attr in claims["attrs"]
         }
 
-        claim_defs = {
-            claims["attrs"][attr][0]['claim_uuid']: json.loads(eventloop.do(
-                self.holder.get_claim_def(
+        self.__logger.debug(
+            'Built schemas: %s' %
+            json.dumps(schemas))
+
+        claim_defs_cache = {}
+        claim_defs = {}
+        for attr in claims["attrs"]:
+            claim_def_cache_key = '%s::%s' % (
                     claims["attrs"][attr][0]["schema_seq_no"],
-                    claims["attrs"][attr][0]["issuer_did"]
-                )
-            ))
-            for attr in claims["attrs"]
-        }
+                    claims["attrs"][attr][0]["issuer_did"])
 
-        proof = await self.holder.create_proof(
+            if claim_def_cache_key not in claim_defs_cache:
+                claim_defs_cache[claim_def_cache_key] = \
+                    json.loads(await self.__orgbook.get_claim_def(
+                        claims["attrs"][attr][0]["schema_seq_no"],
+                        claims["attrs"][attr][0]["issuer_did"]
+                    ))
+
+            claim_defs[claims["attrs"][attr][0]['claim_uuid']] = \
+                claim_defs_cache[claim_def_cache_key]
+
+        self.__logger.debug(
+            'Built claim_defs: %s' %
+            json.dumps(claim_defs))
+
+        self.__logger.debug("Creating proof ...")
+
+        proof = await self.__orgbook.create_proof(
                 json.dumps(self.__proof_request),
                 json.dumps(schemas),
                 json.dumps(claim_defs),
                 requested_claims
             )
+
+        self.__logger.debug(
+            'Created proof: %s' %
+            json.dumps(proof))
 
         return proof
 
