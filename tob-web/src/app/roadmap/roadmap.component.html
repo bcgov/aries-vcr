@@ -11,7 +11,7 @@
       <div class="col-md-5 col-md-push-7">
         <div class="well">
           <p class="lead">If your organization has not yet been incorporated, you may enroll with BC Registries here:</p>
-          <a class="btn btn-lg btn-primary" href="https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca"><span class="fa fa-sign-in"></span> Register your Organization</a>
+          <a class="btn btn-lg btn-primary" href="https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca?source=bcorgbook"><span class="fa fa-sign-in"></span> Register your Organization</a>
         </div>
       </div>
 
@@ -202,7 +202,7 @@
             <a href="" [routerLink]="['/cert', worksafeCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
           </div>
           <div class="panel-footer text-right" *ngIf="! worksafeCert">
-            <a [href]="'https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&tobOrgId='+recordId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with WorkSafe BC</a>
+            <a [href]="'https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with WorkSafe BC</a>
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@
             <a href="" [routerLink]="['/cert', healthCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
           </div>
           <div class="panel-footer text-right" *ngIf="! healthCert">
-            <a [href]="'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&tobOrgId='+recordId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with the Fraser Valley Health Authority</a>
+            <a [href]="'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with the Fraser Valley Health Authority</a>
           </div>
         </div>
       </div>
