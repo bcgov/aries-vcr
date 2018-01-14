@@ -26,7 +26,7 @@ class ProofRequestProcesser(object):
 
         # We keep a reference to schemas that we discover and retrieve from the
         # ledger. We will need these again later.
-        schemas = {'by_key': {}}
+        schema_cache = {'by_key': {}}
 
         # The client is sending the proof request in an upcoming format.
         # This shim allows Permitify to declare its proof requests format
@@ -42,8 +42,8 @@ class ProofRequestProcesser(object):
             if '%s::%s::%s' % (
                     schema_key['did'],
                     schema_key['name'],
-                    schema_key['version']) in schemas['by_key']:
-                schema = schemas['by_key']['%s::%s::%s' % (
+                    schema_key['version']) in schema_cache['by_key']:
+                schema = schema_cache['by_key']['%s::%s::%s' % (
                     schema_key['did'],
                     schema_key['name'],
                     schema_key['version'])]
@@ -56,8 +56,8 @@ class ProofRequestProcesser(object):
                 )
                 schema = json.loads(schema_json)
 
-            schemas[schema['seqNo']] = schema
-            schemas['by_key']['%s::%s::%s' % (
+            schema_cache[schema['seqNo']] = schema
+            schema_cache['by_key']['%s::%s::%s' % (
                 schema_key['did'],
                 schema_key['name'],
                 schema_key['version'])] = schema
@@ -66,7 +66,10 @@ class ProofRequestProcesser(object):
                 attr]['schema_seq_no'] = schema['seqNo']
             del self.__proof_request['requested_attrs'][attr]['restrictions']
 
-        self.__logger.debug(self.__proof_request)
+        self.__logger.debug('Schema cache: %s' % json.dumps(schema_cache))
+
+        self.__logger.debug('Proof request: %s' % json.dumps(
+            self.__proof_request))
 
         # Get claims for proof request from wallet
         claims = await self.__orgbook.get_claims(
@@ -115,10 +118,20 @@ class ProofRequestProcesser(object):
             json.dumps(requested_claims))
 
         # Build schemas json
+        def wallet_claim_by_claim_uuid(clms, claim_uuid):
+            for clm in clms:
+                if clm['claim_uuid'] == claim_uuid:
+                    return clm
+
         schemas = {
-            claims["attrs"][attr][0]['claim_uuid']:
-                schemas[claims["attrs"][attr][0]["schema_seq_no"]]
-            for attr in claims["attrs"]
+            requested_claims['requested_attrs'][attr][0]:
+                schema_cache[
+                    wallet_claim_by_claim_uuid(
+                        claims["attrs"][attr],
+                        requested_claims['requested_attrs'][attr][0]
+                    )['schema_seq_no']
+                ]
+            for attr in requested_claims['requested_attrs']
         }
 
         self.__logger.debug(
@@ -127,20 +140,28 @@ class ProofRequestProcesser(object):
 
         claim_defs_cache = {}
         claim_defs = {}
-        for attr in claims["attrs"]:
-            claim_def_cache_key = '%s::%s' % (
-                    claims["attrs"][attr][0]["schema_seq_no"],
-                    claims["attrs"][attr][0]["issuer_did"])
+        for attr in requested_claims['requested_attrs']:
+            # claim uuid
+            claim_uuid = requested_claims['requested_attrs'][attr][0]
 
-            if claim_def_cache_key not in claim_defs_cache:
-                claim_defs_cache[claim_def_cache_key] = \
+            if claim_uuid not in claim_defs_cache:
+                claim_defs_cache[claim_uuid] = \
                     json.loads(await self.__orgbook.get_claim_def(
-                        claims["attrs"][attr][0]["schema_seq_no"],
-                        claims["attrs"][attr][0]["issuer_did"]
+                        wallet_claim_by_claim_uuid(
+                            claims["attrs"][attr],
+                            claim_uuid
+                        )["schema_seq_no"],
+                        wallet_claim_by_claim_uuid(
+                            claims["attrs"][attr],
+                            claim_uuid
+                        )["issuer_did"]
                     ))
 
-            claim_defs[claims["attrs"][attr][0]['claim_uuid']] = \
-                claim_defs_cache[claim_def_cache_key]
+            claim_defs[claim_uuid] = claim_defs_cache[claim_uuid]
+
+        self.__logger.debug(
+            'Claim def cache: %s' %
+            json.dumps(claim_defs_cache))
 
         self.__logger.debug(
             'Built claim_defs: %s' %
