@@ -129,125 +129,47 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" *ngFor="let claimType of claimTypes">
       <div class="col-sm-10 col-sm-push-1">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h2 class="panel-title">Registration</h2>
+            <h2 class="panel-title">{{ claimType.title }}</h2>
           </div>
-          <div class="panel-body" *ngIf="regCert">
+          <div class="panel-body" *ngIf="claimType.cert">
             <div class="row form-group">
               <label class="col-sm-4 control-label">Issuer</label>
               <div class="col-sm-8 form-field">
-                <a *ngIf="regCert.type.issuerURL" [href]="regCert.type.issuerURL" rel="external">
-                  {{regCert.issuer.name}}</a>
+                <a *ngIf="claimType.cert.type.issuerURL" [href]="claimType.cert.type.issuerURL" rel="external">
+                  {{claimType.cert.issuer.name}}</a>
                 <small><span class="fa fa-external-link"></span></small>
               </div>
             </div>
             <div class="row form-group">
               <label class="col-sm-4 control-label">Effective Date</label>
               <div class="col-sm-8 form-field">
-                {{regCert.effectiveDate}}
+                {{claimType.cert.effectiveDate || '-'}}
               </div>
             </div>
             <div class="row form-group">
               <label class="col-sm-4 control-label">Expiry Date</label>
               <div class="col-sm-8 form-field">
-                {{regCert.endDate || '-'}}
+                {{claimType.cert.endDate || '-'}}
               </div>
             </div>
           </div>
-          <div class="panel-body" *ngIf="! regCert">
-            <em class="text-muted">Certificate not found</em>
+          <div class="panel-body" *ngIf="! claimType.cert">
+            <em class="text-muted">{{ claimType.altText || 'Certificate not found' }}</em>
           </div>
-          <div class="panel-footer text-right" *ngIf="regCert">
-            <a href="" [routerLink]="['/cert', regCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
+          <div class="panel-footer text-right" *ngIf="claimType.cert">
+            <a href="" [routerLink]="['/cert', claimType.cert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> {{ claimType.linkText || 'View record' }}</a>
+          </div>
+          <div class="panel-footer text-right" *ngIf="! claimType.cert">
+            <a [href]="claimType.regLink + '?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId" class="btn btn-default"><span class="fa fa-sign-in"></span> {{ claimType.regText }}</a>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-10 col-sm-push-1">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h2 class="panel-title">WorkSafe BC</h2>
-          </div>
-          <div class="panel-body" *ngIf="worksafeCert">
-            <div class="row form-group">
-              <label class="col-sm-4 control-label">Issuer</label>
-              <div class="col-sm-8 form-field">
-                <a *ngIf="worksafeCert.type.issuerURL" [href]="worksafeCert.type.issuerURL" rel="external">
-                  {{worksafeCert.issuer.name}}</a>
-                <small><span class="fa fa-external-link"></span></small>
-              </div>
-            </div>
-            <div class="row form-group">
-              <label class="col-sm-4 control-label">Effective Date</label>
-              <div class="col-sm-8 form-field">
-                {{worksafeCert.effectiveDate}}
-              </div>
-            </div>
-            <div class="row form-group">
-              <label class="col-sm-4 control-label">Expiry Date</label>
-              <div class="col-sm-8 form-field">
-                {{worksafeCert.endDate || '-'}}
-              </div>
-            </div>
-          </div>
-          <div class="panel-body" *ngIf="! worksafeCert">
-            <em class="text-muted">Certificate not found</em>
-          </div>
-          <div class="panel-footer text-right" *ngIf="worksafeCert">
-            <a href="" [routerLink]="['/cert', worksafeCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
-          </div>
-          <div class="panel-footer text-right" *ngIf="! worksafeCert">
-            <a [href]="'https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with WorkSafe BC</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-10 col-sm-push-1">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h2 class="panel-title">Operating Permit</h2>
-          </div>
-          <div class="panel-body" *ngIf="healthCert">
-            <div class="row form-group">
-              <label class="col-sm-4 control-label">Issuer</label>
-              <div class="col-sm-8 form-field">
-                <a *ngIf="healthCert.type.issuerURL" [href]="healthCert.type.issuerURL" rel="external">
-                  {{healthCert.issuer.name}}</a>
-                <small><span class="fa fa-external-link"></span></small>
-              </div>
-            </div>
-            <div class="row form-group">
-              <label class="col-sm-4 control-label">Effective Date</label>
-              <div class="col-sm-8 form-field">
-                {{worksafeCert.effectiveDate}}
-              </div>
-            </div>
-            <div class="row form-group">
-              <label class="col-sm-4 control-label">Expiry Date</label>
-              <div class="col-sm-8 form-field">
-                {{worksafeCert.endDate || '-'}}
-              </div>
-            </div>
-          </div>
-          <div class="panel-body" *ngIf="! healthCert">
-            <em class="text-muted">Certificate not found</em>
-          </div>
-          <div class="panel-footer text-right" *ngIf="healthCert">
-            <a href="" [routerLink]="['/cert', healthCert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View registration record</a>
-          </div>
-          <div class="panel-footer text-right" *ngIf="! healthCert">
-            <a [href]="'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId"  class="btn btn-default"><span class="fa fa-sign-in"></span> Register with the Fraser Valley Health Authority</a>
-          </div>
-        </div>
-      </div>
-    </div>
   </ng-container>
 
 </section>

@@ -32,9 +32,62 @@ export class RoadmapComponent implements OnInit {
   public locations: Location[];
   private preload;
 
-  public regCert: VerifiableClaim;
-  public worksafeCert: VerifiableClaim;
-  public healthCert: VerifiableClaim;
+  public claimTypes = [
+    {
+      title: 'Registration',
+      issuerTLA: 'BCReg',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Enroll with BC Registries',
+      cert: null
+    },
+    {
+      title: 'Business License',
+      issuerTLA: 'Surrey',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with the City of Surrey',
+      cert: null
+    },
+    {
+      title: 'Operating Permit',
+      issuerTLA: 'Health Authority',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with the Fraser Valley Health Authority',
+      cert: null
+    },
+    {
+      title: 'Liquor License',
+      issuerTLA: 'LLBC',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with the BC Liquor Control and Licensing Branch',
+      cert: null
+    },
+    {
+      title: 'WorkSafe BC',
+      issuerTLA: 'WorkSafe',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with WorkSafe BC',
+      cert: null
+    },
+    {
+      title: 'PST Number',
+      issuerTLA: 'Ministry of Finance',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://ministry-of-finance-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with the BC Ministry of Finance',
+      cert: null
+    }
+  ];
 
   constructor(
     private dataService: GeneralDataService,
@@ -165,11 +218,17 @@ export class RoadmapComponent implements OnInit {
 
         this.certs = this.dataService.formatClaims(record.claims);
         console.log('claims', this.certs);
-        this.regCert = null;
+        let certPos = {};
+        for(let i = 0; i < this.claimTypes.length; i++) {
+          certPos[this.claimTypes[i].issuerTLA] = i;
+          this.claimTypes[i].cert = null;
+        }
         for(let i = 0; i < this.certs.length; i++) {
           let cert = <VerifiableClaim>this.certs[i].top;
-          if(cert.issuer.issuerOrgTLA === 'BCReg')
-            this.regCert = cert;
+          let tla = cert.issuer && cert.issuer.issuerOrgTLA;
+          if(tla in certPos) {
+            this.claimTypes[certPos[tla]].cert = cert;
+          }
         }
 
         /*this.dataService.loadFromApi('verifiableorgs/' + this.id + '/voclaims')
