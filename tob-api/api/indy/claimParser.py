@@ -30,4 +30,4 @@ class ClaimParser(object):
 
     @property
     def json(self) -> str:
-        return self.__claim
+        return json.dumps(self.__claim)
