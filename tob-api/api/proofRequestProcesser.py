@@ -181,9 +181,9 @@ class ProofRequestProcesser(object):
             json.dumps(proof))
 
         return {
-            proof: proof,
-            schemas: schemas,
-            claim_defs: claim_defs
+            'proof': proof,
+            'schemas': schemas,
+            'claim_defs': claim_defs
         }
 
     def ConstructProof(self):
