@@ -135,7 +135,7 @@
           <div class="panel-heading">
             <h2 class="panel-title">{{ claimType.title }}</h2>
           </div>
-          <div class="panel-body" *ngIf="claimType.cert">
+          <div class="panel-body claim-body" *ngIf="claimType.cert">
             <div class="row form-group">
               <label class="col-sm-4 control-label">Issuer</label>
               <div class="col-sm-8 form-field">
@@ -157,7 +157,7 @@
               </div>
             </div>
           </div>
-          <div class="panel-body" *ngIf="! claimType.cert">
+          <div class="panel-body claim-body empty" *ngIf="! claimType.cert">
             <em class="text-muted">{{ claimType.altText || 'Certificate not found' }}</em>
           </div>
           <div class="panel-footer text-right" *ngIf="claimType.cert">

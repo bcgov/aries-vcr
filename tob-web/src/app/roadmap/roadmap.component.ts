@@ -43,34 +43,7 @@ export class RoadmapComponent implements OnInit {
       cert: null
     },
     {
-      title: 'Business License',
-      issuerTLA: 'Surrey',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with the City of Surrey',
-      cert: null
-    },
-    {
-      title: 'Operating Permit',
-      issuerTLA: 'Health Authority',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with the Fraser Valley Health Authority',
-      cert: null
-    },
-    {
-      title: 'Liquor License',
-      issuerTLA: 'LLBC',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with the BC Liquor Control and Licensing Branch',
-      cert: null
-    },
-    {
-      title: 'WorkSafe BC',
+      title: 'Restaurant Clearance Letter',
       issuerTLA: 'WorkSafe',
       altText: 'Certificate not found',
       linkText: 'View registration record',
@@ -85,6 +58,33 @@ export class RoadmapComponent implements OnInit {
       linkText: 'View registration record',
       regLink: 'https://ministry-of-finance-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
       regText: 'Register with the BC Ministry of Finance',
+      cert: null
+    },
+    {
+      title: 'Operating Permit',
+      issuerTLA: 'Health Authority',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with the Fraser Valley Health Authority',
+      cert: null
+    },
+    {
+      title: 'Business License',
+      issuerTLA: 'Surrey',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with the City of Surrey',
+      cert: null
+    },
+    {
+      title: 'Liquor License',
+      issuerTLA: 'LLBC',
+      altText: 'Certificate not found',
+      linkText: 'View registration record',
+      regLink: 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
+      regText: 'Register with the BC Liquor Control and Licensing Branch',
       cert: null
     }
   ];

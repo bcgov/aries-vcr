@@ -2,3 +2,10 @@
   // should hide border on small screens
   border-left: 2px solid #55a;
 }
+
+.claim-body {
+  font-size: 15px;
+  .form-group {
+    margin-bottom: 10px;
+  }
+}
