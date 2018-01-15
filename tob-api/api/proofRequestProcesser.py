@@ -93,6 +93,7 @@ class ProofRequestProcesser(object):
                 'No claims found for filter %s = %s' % (
                     key, value))
 
+        # TODO: rework to support other filters other than legal_entity_id
         requested_claims = {
             'self_attested_attributes': {},
             'requested_attrs': {
@@ -101,10 +102,10 @@ class ProofRequestProcesser(object):
                     # by the provided filter
                     get_claim_by_filter(
                         claims["attrs"][attr],
-                        attr,
-                        self.__filters[attr])["claim_uuid"]
+                        'legal_entity_id',
+                        self.__filters['legal_entity_id'])["claim_uuid"]
                     # Or we use the first claim found
-                    if attr in self.__filters
+                    if 'legal_entity_id' in self.__filters
                     else claims["attrs"][attr][0]["claim_uuid"],
                     True
                 ]
