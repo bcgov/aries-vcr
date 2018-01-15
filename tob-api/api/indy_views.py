@@ -20,6 +20,8 @@
 """
 
 from api.claimDefProcesser import ClaimDefProcesser
+from rest_framework.response import Response
+from api import serializers
 from api.proofRequestProcesser import ProofRequestProcesser
 import json
 from rest_framework import permissions
@@ -70,9 +72,9 @@ class bcovrinStoreClaim(APIView):
     """
     claim = request.body.decode('utf-8')
     claimProcesser = ClaimProcesser()
-    claimProcesser.SaveClaim(claim)
-    return JsonResponse({"success": True})
-
+    verifiableOrg = claimProcesser.SaveClaim(claim)
+    serializer = serializers.VerifiableOrgSerializer(verifiableOrg)
+    return Response(serializer.data)
 
 class bcovrinConstructProof(APIView):
   """  

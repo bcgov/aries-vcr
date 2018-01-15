@@ -29,15 +29,15 @@ class ClaimProcesser(object):
       self.__orgbook = Agent()
       self.__logger = logging.getLogger(__name__)
     
-    def __ToDateTime(self, timeStamp: str):
-      dateTime = None
+    def __ToDate(self, timeStamp: str):
+      date = None
       if timeStamp: 
         try:
-          dateTime = datetime.datetime.utcfromtimestamp(int(timeStamp))
+          date = datetime.datetime.utcfromtimestamp(int(timeStamp)).date()
         except:
           pass
 
-      return dateTime
+      return date
       
     def __get_VerifiableClaimType(self, claim: ClaimParser):
       # VerifiableClaimTypes are registered by issuers.
@@ -124,8 +124,8 @@ class ClaimProcesser(object):
     def __CreateOrUpdateVerifiableOrg(self, claim: ClaimParser, verifiableOrg: VerifiableOrg):
       organizationId = claim.getField("legal_entity_id")
       name = claim.getField("legal_name")
-      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
-      endDate = endDate = self.__ToDateTime(claim.getField("end_date"))
+      effectiveDate = self.__ToDate(claim.getField("effective_date"))
+      endDate = endDate = self.__ToDate(claim.getField("end_date"))
 
       orgType = self.__get_VerifiableOrgType(claim)
       jurisdiction = self.__get_Jurisdiction(claim)
@@ -155,8 +155,8 @@ class ClaimProcesser(object):
 
     def __CreateOrUpdateDoingBusinessAs(self, claim: ClaimParser, verifiableOrg: VerifiableOrg):
       dbaName = claim.getField("doing_business_as_name")
-      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
-      endDate = self.__ToDateTime(claim.getField("end_date"))
+      effectiveDate = self.__ToDate(claim.getField("effective_date"))
+      endDate = self.__ToDate(claim.getField("end_date"))
 
       doingBusinessAs = DoingBusinessAs.objects.filter(verifiableOrgId=verifiableOrg, dbaName=dbaName)
       if not doingBusinessAs:
@@ -183,8 +183,8 @@ class ClaimProcesser(object):
       
       # We don't have enough information to update an existing claim.
       verifiableClaim = VerifiableClaim.objects.filter(claimJSON=claim.json)
-      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
-      endDate = self.__ToDateTime(claim.getField("end_date"))
+      effectiveDate = self.__ToDate(claim.getField("effective_date"))
+      endDate = self.__ToDate(claim.getField("end_date"))
       
       if not verifiableClaim:
         self.__logger.debug("The verifiable claim does not exist.  Creating ...")
@@ -214,8 +214,8 @@ class ClaimProcesser(object):
       province = claim.getField("province")
       postalCode = claim.getField("postal_code")
       #latLong = claim.getField("")
-      effectiveDate = self.__ToDateTime(claim.getField("effective_date"))
-      endDate = self.__ToDateTime(claim.getField("end_date"))
+      effectiveDate = self.__ToDate(claim.getField("effective_date"))
+      endDate = self.__ToDate(claim.getField("end_date"))
 
       orgName = verifiableOrg.legalName
       if doingBusinessAs:
@@ -296,3 +296,5 @@ class ClaimProcesser(object):
       if claim.schemaName == "doing_business_as.bc_registries":
         doingBusinessAs = self.__CreateOrUpdateDoingBusinessAs(claim, verifiableOrg)
         location = self.__CreateOrUpdateLocation(claim, verifiableOrg, doingBusinessAs, "Location")
+
+      return verifiableOrg
