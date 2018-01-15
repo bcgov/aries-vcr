@@ -18,7 +18,13 @@ class ClaimParser(object):
       self.__issuer_did = data["claim_data"]["issuer_did"]
     
     def getField(self, field):
-      return self.__claim["claim"][field][0]
+      value = None
+      try:
+        value = self.__claim["claim"][field][0]
+      except:
+        pass
+
+      return value
 
     @property
     def schemaName(self) -> str:
