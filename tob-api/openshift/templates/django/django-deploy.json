@@ -356,7 +356,7 @@
       "displayName": "Mount Path",
       "description": "The path to mount the persistent volume.",
       "required": true,
-      "value": "/opt/app-root/src/,indy_client"
+      "value": "/opt/app-root/src/.indy_client"
     }
   ]
 }
