@@ -3,7 +3,6 @@ import json
 class ClaimDefParser(object):
     """
     Parses a claim definition.
-    _Currently only supports 'Verified Organization' claim definitions._
     """
     def __init__(self, claimRequest: str) -> None:
         """

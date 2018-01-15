@@ -7,8 +7,6 @@ from api.indy import eventloop
 class ClaimDefProcesser(object):
   """
   Parses and processes a claim definition.
-
-  _Currently only supports a 'Verified Organization' claim definition._
   """
 
   def __init__(self, claimDef) -> None:

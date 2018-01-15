@@ -41,8 +41,6 @@ class bcovrinGenerateClaimRequest(APIView):
   def post(self, request, *args, **kwargs):
     """  
     Processes a claim definition and responds with a claim request which can then be used to submit a claim.
-
-    _Currently, this API only supports 'Verified Organization' claim definitions._
     """
     claimDef = request.body.decode('utf-8')
     claimDefProcesser = ClaimDefProcesser(claimDef)
@@ -69,8 +67,6 @@ class bcovrinStoreClaim(APIView):
     The data in the claim is parsed and stored in the database
     for search/display purposes; making it available through
     the other APIs.
-
-    _Currently, this API only supports 'Verified Organization' claims._
     """
     claim = request.body.decode('utf-8')
     claimProcesser = ClaimProcesser()
