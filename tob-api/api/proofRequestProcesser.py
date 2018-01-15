@@ -181,7 +181,7 @@ class ProofRequestProcesser(object):
             json.dumps(proof))
 
         return {
-            'proof': proof,
+            'proof': json.loads(proof),
             'schemas': schemas,
             'claim_defs': claim_defs
         }
