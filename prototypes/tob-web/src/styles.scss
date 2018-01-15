@@ -77,3 +77,30 @@ $indicator-thickness: 0.2em;
 .text-number {
 	font-variant-numeric: lining-nums tabular-nums;
 }
+
+@keyframes loading {
+    from {left: -100%; }
+    to { left: 100%; }
+}
+
+.btn.loading {
+  background-color: #ddd;
+  border-color: #bbb;
+  color: #666;
+  cursor: wait;
+  overflow: hidden;
+  position: relative;
+  text-shadow:0 2px 2px #fff;
+  &::before {
+    animation: loading 1s linear infinite;
+    background-color: #2980b9;
+    background: linear-gradient(to right, #ddd, #2980b9, #ddd);
+    bottom: 0;
+    content: "";
+    height: 2px;
+    left: -100%;
+    position: absolute;
+    width: 50%;
+  }
+}
+
