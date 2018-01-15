@@ -55,14 +55,13 @@ class ClaimProcesser(object):
       return verifiableClaimType
 
     def __get_VerifiableOrg(self, claim: ClaimParser):
-      name = claim.getField("legal_name")
       organizationId = claim.getField("legal_entity_id")
 
       verifiableOrg = VerifiableOrg.objects.filter(orgId=organizationId)
       if not verifiableOrg:
-        self.__logger.debug("Organization, {0}, with business id {1} does not exist.".format(name, organizationId))
+        self.__logger.debug("Organization with business id {0} does not exist.".format(organizationId))
       else:
-        self.__logger.debug("Organization, {0}, with business id {1} exists.".format(name, organizationId))
+        self.__logger.debug("Organization with business id {0} exists.".format(organizationId))
         verifiableOrg = verifiableOrg[0]
 
       return verifiableOrg
