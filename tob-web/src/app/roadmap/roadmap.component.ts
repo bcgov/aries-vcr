@@ -80,7 +80,7 @@ export class RoadmapComponent implements OnInit {
     },
     {
       title: 'Liquor License',
-      issuerTLA: 'LLBC',
+      issuerTLA: 'Liquor Licensing',
       altText: 'Certificate not found',
       linkText: 'View registration record',
       regLink: 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
