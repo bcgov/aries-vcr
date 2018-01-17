@@ -72,7 +72,7 @@ class NameSearchView(ListModelMixin, HaystackGenericAPIView):
         Searches across the 'name' fields of Verifiable Organization and 
         Doing Business As records.
         
-        Returns any records that match the search criteria.
+        Returns any records that match the search criteria.  The results are grouped by type.  The results are not guaranteed to always be returned in the same order.
 
         Search field:
         - name
@@ -82,26 +82,37 @@ class NameSearchView(ListModelMixin, HaystackGenericAPIView):
         .../api/v1/search/name?name=gas
         ```
 
-        Returns:
+        Returns results, such as:
         ```
-        [
-            {
-                "id": 8,
-                "busId": "74905418",
-                "orgTypeId": 1,
-                "jurisdictionId": 1,
-                "LegalName": "Gamma Gas",
-                "effectiveDate": "2010-10-10",
-                "endDate": null
-            },
-            {
-                "id": 18,
-                "verifiableOrgId": 8,
-                "DBA": "Gas Depot",
-                "effectiveDate": "2010-10-10",
-                "endDate": null
-            }
-        ]
+        {
+            "doingBusinessAs": [
+                {
+                    "id": 12,
+                    "verifiableOrgId": 14,
+                    "dbaName": "Gas Depot",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                },
+                {
+                    "id": 18,
+                    "verifiableOrgId": 14,
+                    "dbaName": "Gas Planet",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                }
+            ],
+            "verifiableOrg": [
+                {
+                    "id": 16,
+                    "orgId": "30042089",
+                    "orgTypeId": 1,
+                    "jurisdictionId": 1,
+                    "legalName": "Gamma Gas",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                }
+            ]
+        }
         ```
         """
         return self.list(request, *args, **kwargs)
@@ -113,7 +124,7 @@ class OrganizationSearchView(ListModelMixin, HaystackGenericAPIView):
         """
         Searches across the text fields of Verifiable Organization, Doing Business As, and Location records.
         
-        Returns any records that match the search criteria.
+        Returns any records that match the search criteria.  The results are grouped by type.  The results are not guaranteed to always be returned in the same order.
 
         Search field:
         - text
@@ -123,56 +134,71 @@ class OrganizationSearchView(ListModelMixin, HaystackGenericAPIView):
         .../api/v1/search/organization?text=gas
         ```
 
-        Returns:
+        Returns results, such as:
         ```
-        [
-            {
-                "id": 18,
-                "verifiableOrgId": 8,
-                "DBA": "Gas Depot",
-                "effectiveDate": "2010-10-10",
-                "endDate": null
-            },
-            {
-                "id": 24,
-                "verifiableOrgId": 8,
-                "locationTypeId": 2,
-                "addressee": "Gamma Gas",
-                "addlDeliveryInfo": null,
-                "unitNumber": null,
-                "streetAddress": "735 Wallace Street",
-                "municipality": "Nanaimo",
-                "province": "BC",
-                "postalCode": "V9R 3A8",
-                "latLong": "49.108632, -123.871502",
-                "effectiveDate": "2010-10-10",
-                "endDate": null
-            },
-            {
-                "id": 26,
-                "verifiableOrgId": 8,
-                "locationTypeId": 2,
-                "addressee": "Gas Depot",
-                "addlDeliveryInfo": null,
-                "unitNumber": null,
-                "streetAddress": "2890 Burdett Avenue",
-                "municipality": "Victoria",
-                "province": "BC",
-                "postalCode": "V8Y 1Y7",
-                "latLong": "48.415871, -123.392253",
-                "effectiveDate": "2010-10-10",
-                "endDate": null
-            },
-            {
-                "id": 8,
-                "busId": "74905418",
-                "orgTypeId": 1,
-                "jurisdictionId": 1,
-                "LegalName": "Gamma Gas",
-                "effectiveDate": "2010-10-10",
-                "endDate": null
-            }
-        ]
+        {
+            "location": [
+                {
+                    "id": 24,
+                    "verifiableOrgId": 14,
+                    "doingBusinessAsId": null,
+                    "locationTypeId": 1,
+                    "addressee": "Gamma Gas",
+                    "addlDeliveryInfo": null,
+                    "unitNumber": null,
+                    "streetAddress": "735 Wallace Street",
+                    "municipality": "Nanaimo",
+                    "province": "BC",
+                    "postalCode": "V9R 3A8",
+                    "latLong": "49.108632, -123.871502",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                },
+                {
+                    "id": 26,
+                    "verifiableOrgId": 14,
+                    "doingBusinessAsId": 12,
+                    "locationTypeId": 2,
+                    "addressee": "Gas Depot",
+                    "addlDeliveryInfo": null,
+                    "unitNumber": null,
+                    "streetAddress": "2890 Burdett Avenue",
+                    "municipality": "Victoria",
+                    "province": "BC",
+                    "postalCode": "V8Y 1Y7",
+                    "latLong": "48.415871, -123.392253",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                }
+            ],
+            "doingBusinessAs": [
+                {
+                    "id": 12,
+                    "verifiableOrgId": 14,
+                    "dbaName": "Gas Depot",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                },
+                {
+                    "id": 18,
+                    "verifiableOrgId": 14,
+                    "dbaName": "Gas Planet",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                }
+            ],
+            "verifiableOrg": [
+                {
+                    "id": 16,
+                    "orgId": "30042089",
+                    "orgTypeId": 1,
+                    "jurisdictionId": 1,
+                    "legalName": "Gamma Gas",
+                    "effectiveDate": "2010-10-10",
+                    "endDate": null
+                }
+            ]
+        }
         ```
         """
         return self.list(request, *args, **kwargs)
