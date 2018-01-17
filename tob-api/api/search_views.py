@@ -79,7 +79,7 @@ class NameSearchView(ListModelMixin, HaystackGenericAPIView):
 
         Example:
         ```
-        .../api/v1/name/search?name=gas
+        .../api/v1/search/name?name=gas
         ```
 
         Returns:
@@ -120,7 +120,7 @@ class OrganizationSearchView(ListModelMixin, HaystackGenericAPIView):
 
         Example:
         ```
-        .../api/v1/organization/search?text=gas
+        .../api/v1/search/organization?text=gas
         ```
 
         Returns:
