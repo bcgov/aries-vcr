@@ -67,7 +67,7 @@ class Holder:
             'the-org-book-holder',
             '/opt/app-root/genesis')
 
-        self.issuer = VonHolderProver(
+        self.instance = VonHolderProver(
             self.pool,
             'the_org_book_holder_000000000000',
             'TheOrgBook Holder Wallet',
