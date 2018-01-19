@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 class Issuer:
     def __init__(self):
         self.pool = NodePool(
-            'permitify-issuer',
-            '/app/.genesis')
+            'the-org-book-issuer',
+            '/opt/app-root/genesis')
 
         self.instance = VonIssuer(
             self.pool,
@@ -37,8 +37,8 @@ class Issuer:
 class Verifier:
     def __init__(self):
         self.pool = NodePool(
-            'permitify-verifier',
-            '/app/.genesis')
+            'the-org-book-verifier',
+            '/opt/app-root/genesis')
 
         self.instance = VonVerifier(
             self.pool,
@@ -64,8 +64,8 @@ class Verifier:
 class Holder:
     def __init__(self):
         self.pool = NodePool(
-            'permitify-holder',
-            '/app/.genesis')
+            'the-org-book-holder',
+            '/opt/app-root/genesis')
 
         self.issuer = VonHolderProver(
             self.pool,
