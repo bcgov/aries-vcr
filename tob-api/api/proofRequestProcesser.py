@@ -1,5 +1,5 @@
 import json
-from api.indy.agent import Agent
+from api.indy.agent import Holder
 import logging
 from api.indy import eventloop
 from rest_framework.exceptions import NotAcceptable
@@ -13,7 +13,6 @@ class ProofRequestProcesser(object):
     """
 
     def __init__(self, proofRequestWithFilters) -> None:
-        self.__orgbook = Agent()
         self.__logger = logging.getLogger(__name__)
         self.__proof_request = json.loads(proofRequestWithFilters)[
             'proof_request']
@@ -49,11 +48,12 @@ class ProofRequestProcesser(object):
                     schema_key['version'])]
             else:
                 # Not optimal. von-agent should cache this.
-                schema_json = await self.__orgbook.get_schema(
-                    schema_key['did'],
-                    schema_key['name'],
-                    schema_key['version']
-                )
+                async with Holder() as holder:
+                    schema_json = await holder.get_schema(
+                        schema_key['did'],
+                        schema_key['name'],
+                        schema_key['version']
+                    )
                 schema = json.loads(schema_json)
 
             schema_cache[schema['seqNo']] = schema
@@ -72,8 +72,9 @@ class ProofRequestProcesser(object):
             self.__proof_request))
 
         # Get claims for proof request from wallet
-        claims = await self.__orgbook.get_claims(
-            json.dumps(self.__proof_request))
+        async with Holder() as holder:
+            claims = await holder.get_claims(
+                json.dumps(self.__proof_request))
         claims = json.loads(claims[1])
 
         self.__logger.debug(
@@ -146,17 +147,18 @@ class ProofRequestProcesser(object):
             claim_uuid = requested_claims['requested_attrs'][attr][0]
 
             if claim_uuid not in claim_defs_cache:
-                claim_defs_cache[claim_uuid] = \
-                    json.loads(await self.__orgbook.get_claim_def(
-                        wallet_claim_by_claim_uuid(
-                            claims["attrs"][attr],
-                            claim_uuid
-                        )["schema_seq_no"],
-                        wallet_claim_by_claim_uuid(
-                            claims["attrs"][attr],
-                            claim_uuid
-                        )["issuer_did"]
-                    ))
+                async with Holder() as holder:
+                    claim_defs_cache[claim_uuid] = \
+                        json.loads(await holder.get_claim_def(
+                            wallet_claim_by_claim_uuid(
+                                claims["attrs"][attr],
+                                claim_uuid
+                            )["schema_seq_no"],
+                            wallet_claim_by_claim_uuid(
+                                claims["attrs"][attr],
+                                claim_uuid
+                            )["issuer_did"]
+                        ))
 
             claim_defs[claim_uuid] = claim_defs_cache[claim_uuid]
 
@@ -170,12 +172,13 @@ class ProofRequestProcesser(object):
 
         self.__logger.debug("Creating proof ...")
 
-        proof = await self.__orgbook.create_proof(
-                json.dumps(self.__proof_request),
-                json.dumps(schemas),
-                json.dumps(claim_defs),
-                requested_claims
-            )
+        async with Holder() as holder:
+            proof = await holder.create_proof(
+                    json.dumps(self.__proof_request),
+                    json.dumps(schemas),
+                    json.dumps(claim_defs),
+                    requested_claims
+                )
 
         self.__logger.debug(
             'Created proof: %s' %

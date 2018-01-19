@@ -1,47 +1,89 @@
-import asyncio
-from api.indy import eventloop
 from von_agent.nodepool import NodePool
-from von_agent.demo_agents import OrgBookAgent
+from von_agent.agents import Issuer as VonIssuer
+from von_agent.agents import Verifier as VonVerifier
+from von_agent.agents import HolderProver as VonHolderProver
 
-class Agent:
+import logging
+logger = logging.getLogger(__name__)
 
-    # Singleton
-    class __Agent:
-        async def start(self):
-            global pool
-            global orgbook
 
-            print('connecting to node pool with genesis txn file:')
-            print('/opt/app-root/genesis')
-
-            pool = NodePool(
-                # Hack to use different pool names. Agent lib doesn't support
-                # reopening existing pool config...
-                'theorgbook',
-                '/opt/app-root/genesis')
-            await pool.open()
-
-            orgbook = OrgBookAgent(
-                pool,
-                'The-Org-Book-Agent-0000000000000',
-                'the-org-book-agent-wallet',
-                None,
-                '127.0.0.1',
-                9702,
-                'api/v0')
-            await orgbook.open()
-
-            await orgbook.create_master_secret('secret')
-
-        def __getattr__(self, name):
-            return getattr(orgbook, name)
-
-    instance = None
-
+class Issuer:
     def __init__(self):
-        if not Agent.instance:
-            Agent.instance = Agent.__Agent()
-            eventloop.do(Agent.instance.start())
+        self.pool = NodePool(
+            'permitify-issuer',
+            '/app/.genesis')
 
-    def __getattr__(self, name):
-        return getattr(self.instance, name)
+        self.instance = VonIssuer(
+            self.pool,
+            'the_org_book_issuer_000000000000',
+            'TheOrgBook Issuer Wallet',
+            None,
+            '127.0.0.1',
+            9703,
+            'api/v0')
+
+    async def __aenter__(self):
+        await self.pool.open()
+        return await self.instance.open()
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            logger.error(exc_type, exc_value, traceback)
+
+        await self.instance.close()
+        await self.pool.close()
+
+
+class Verifier:
+    def __init__(self):
+        self.pool = NodePool(
+            'permitify-verifier',
+            '/app/.genesis')
+
+        self.instance = VonVerifier(
+            self.pool,
+            'the_org_book_verifier_0000000000',
+            'TheOrgBook Verifier Wallet',
+            None,
+            '127.0.0.1',
+            9703,
+            'api/v0')
+
+    async def __aenter__(self):
+        await self.pool.open()
+        return await self.instance.open()
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            logger.error(exc_type, exc_value, traceback)
+
+        await self.instance.close()
+        await self.pool.close()
+
+
+class Holder:
+    def __init__(self):
+        self.pool = NodePool(
+            'permitify-holder',
+            '/app/.genesis')
+
+        self.issuer = VonHolderProver(
+            self.pool,
+            'the_org_book_holder_000000000000',
+            'TheOrgBook Holder Wallet',
+            None,
+            '127.0.0.1',
+            9703,
+            'api/v0')
+
+    async def __aenter__(self):
+        await self.pool.open()
+        await self.create_master_secret('secret')
+        return await self.instance.open()
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            logger.error(exc_type, exc_value, traceback)
+
+        await self.instance.close()
+        await self.pool.close()
