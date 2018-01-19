@@ -54,7 +54,7 @@ class ProofRequestProcesser(object):
                         schema_key['name'],
                         schema_key['version']
                     )
-                schema = json.loads(schema_json)
+                    schema = json.loads(schema_json)
 
             schema_cache[schema['seqNo']] = schema
             schema_cache['by_key']['%s::%s::%s' % (
@@ -75,7 +75,7 @@ class ProofRequestProcesser(object):
         async with Holder() as holder:
             claims = await holder.get_claims(
                 json.dumps(self.__proof_request))
-        claims = json.loads(claims[1])
+            claims = json.loads(claims[1])
 
         self.__logger.debug(
             'Wallet returned the following claims for proof request: %s' %
