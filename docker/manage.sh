@@ -32,15 +32,19 @@ usage() {
 
   stop - Stops the services.  This is a non-destructive process.  The containers
          are not deleted so they will be reused the next time you run start.
-
-
+         
+  start-solr - Start the Solr Search Engine server only.
+  
+  build-api - Build the API server only.
+  
+  build-solr - Build the Solr Search Engine server only.
 EOF
 exit 1
 }
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
-buildImages() {
+build-web() {
   #
   # tob-web
   #
@@ -62,7 +66,9 @@ buildImages() {
     --runtime-image \
     "nginx-runtime" \
     -a "/opt/app-root/src/dist/:app"
+}
 
+build-solr() {
   #
   # tob-solr
   #
@@ -76,20 +82,30 @@ buildImages() {
     '../tob-solr/cores' \
     'solr-base' \
     'solr'
+}
 
+build-db() {
   #
   # tob-db
   #
     # Nothing to build here ...
+  echo
+}
 
+build-schema-spy() {
   #
-  # tob-api
+  # schema-spy
   #
   echo -e "\nBuilding schema-spy image ..."
   docker build \
     https://github.com/bcgov/SchemaSpy.git \
     -t 'schema-spy'
+}
 
+build-api() {
+  #
+  # tob-api
+  #
   echo -e "\nBuilding libindy image ..."
   docker build \
     -t 'libindy' \
@@ -105,6 +121,14 @@ buildImages() {
     '../tob-api' \
     'python-libindy' \
     'django'
+}
+
+buildImages() {
+  build-web
+  build-solr
+  build-db
+  build-schema-spy
+  build-api
 }
 
 configureEnvironment () {
@@ -149,12 +173,22 @@ case "$1" in
     configureEnvironment
     docker-compose up --force-recreate tob-db tob-solr tob-api schema-spy tob-web
     ;;
+  start-solr)
+    configureEnvironment
+    docker-compose up --force-recreate tob-solr
+    ;;
   stop)
     configureEnvironment
     docker-compose stop
     ;;
   build)
     buildImages
+    ;;
+  build-api)
+    build-api
+    ;;
+  build-solr)
+    build-solr
     ;;
   *)
     usage
