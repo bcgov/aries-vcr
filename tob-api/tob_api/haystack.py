@@ -17,24 +17,34 @@ engines = {
     'solr': 'haystack.backends.solr_backend.SolrEngine',
 }
 
-def config():
-    serviceName = os.getenv('SOLR_SERVICE_NAME', '').upper().replace('-', '_')
-    
-    coreName = os.getenv('SOLR_CORE_NAME')
-    if not coreName:
-      coreName = 'autocore'
+def getDefaultConfig():
+    return {
+      'ENGINE': engines['direct'],
+    }
 
-    if serviceName:
+def getSolrUrl():
+    solrUrl = os.getenv('SOLR_URL', '').lower()
+    if not solrUrl:
+      serviceName = os.getenv('SOLR_SERVICE_NAME', '').upper().replace('-', '_')   
+      if serviceName:
+        coreName = os.getenv('SOLR_CORE_NAME', 'autocore')
+        serviceHost = os.getenv('{}_SERVICE_HOST'.format(serviceName))
+        servicePort = os.getenv('{}_SERVICE_PORT'.format(serviceName))
+        solrUrl = 'http://{}:{}/solr/{}'.format(serviceHost, servicePort, coreName)
+
+    return solrUrl
+
+def getConfig():
+    config = getDefaultConfig() 
+    solrUrl = getSolrUrl()
+    if solrUrl:
       engine = engines.get(os.getenv('SOLR_ENGINE'), engines['solr'])
-      serviceHost = os.getenv('{}_SERVICE_HOST'.format(serviceName))
-      servicePort = os.getenv('{}_SERVICE_PORT'.format(serviceName))
-      url = 'http://{}:{}/solr/{}'.format(serviceHost, servicePort, coreName)
-      return {
+      config = {
         'ENGINE': engine,
-        'URL': url,
+        'URL': solrUrl,
       }
-    else:
-      engine = engines['direct']
-      return {
-        'ENGINE': engine,
-      }
+
+    return config
+
+def config():
+    return getConfig()
