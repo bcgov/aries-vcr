@@ -14,20 +14,24 @@ class ClaimDefProcesser(object):
     self.__claimDefParser = ClaimDefParser(claimDef)
 
   async def __StoreClaimOffer(self):
-    self.__logger.debug("Storing claim offer ...")
+    self.__logger.debug(">>> Storing claim offer ...")
     async with Holder() as holder:
       await holder.store_claim_offer(
         self.__claimDefParser.did,
         self.__claimDefParser.seqNo
       )
+    self.__logger.debug("<<< Storing claim offer.")
+
 
   async def __StoreClaimRequest(self):
-    self.__logger.debug("Storing claim request ...")
+    self.__logger.debug(">>> Storing claim request ...")
     async with Holder() as holder:
-      return await holder.store_claim_req(
+      claim_request = await holder.store_claim_req(
         self.__claimDefParser.did,
         self.__claimDefParser.claimDefinition
       )
+    self.__logger.debug("<<< Storing claim request.")
+    return claim_request
 
   async def __GenerateRequest(self):
     await self.__StoreClaimOffer()

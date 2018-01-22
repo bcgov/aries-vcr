@@ -258,7 +258,7 @@ class ClaimProcesser(object):
     
     def SaveClaim(self, claimJson):      
       claim = ClaimParser(claimJson)
-      self.__logger.debug("Processing {0} claim ...".format(claim.schemaName))
+      self.__logger.debug(">>> Processing {0} claim ...".format(claim.schemaName))
 
       # If the claim type has not been registered, reject the claim.
       verifiableClaimType = self.__get_VerifiableClaimType(claim)
@@ -289,4 +289,5 @@ class ClaimProcesser(object):
         doingBusinessAs = self.__CreateOrUpdateDoingBusinessAs(claim, verifiableOrg)
         location = self.__CreateOrUpdateLocation(claim, verifiableOrg, doingBusinessAs, "Location")
 
+      self.__logger.debug("<<< Processing {0} claim.")
       return verifiableOrg
