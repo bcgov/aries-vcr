@@ -11,8 +11,8 @@
 # API_PATH=/api/v1/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
-# APPLICATION_DOMAIN=angular-on-nginx-devex-von-prod.pathfinder.gov.bc.ca
-# TAG_NAME=prod
+APPLICATION_DOMAIN=angular-on-nginx-devex-von-prod.pathfinder.gov.bc.ca
+TAG_NAME=prod
 # HTTP_BASIC=
 # HTTP_BASIC_USERNAME=
 # HTTP_BASIC_PASSWORD=
