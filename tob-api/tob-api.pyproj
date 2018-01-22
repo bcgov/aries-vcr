@@ -131,6 +131,9 @@
     <Compile Include="tob_api\haystack.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tob_api\hyperledger_indy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tob_api\views.py">
       <SubType>Code</SubType>
     </Compile>
