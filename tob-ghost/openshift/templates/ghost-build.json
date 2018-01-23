@@ -2,56 +2,31 @@
   "kind": "Template",
   "apiVersion": "v1",
   "metadata": {
-    "name": "${NAME}-build-template"
+      "name": "${NAME}-imagestream-template"
   },
   "objects": [
-    {
-      "kind": "ImageStream",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "${NAME}"
-      }
-    },
-    {
-      "kind": "BuildConfig",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "${NAME}",
-        "labels": {
-          "app": "${NAME}"
-        }
-      },
-      "spec": {
-        "runPolicy": "Serial",
-        "source": {
-          "type": "Dockerfile",
-          "dockerfile": "FROM ${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
-        },
-        "strategy": {
-          "type": "Docker",
-          "dockerStrategy": {
-            "from": {
-              "kind": "${SOURCE_IMAGE_KIND}",
-              "name": "${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
-            }
-          }
-        },
-        "output": {
-          "to": {
-            "kind": "ImageStreamTag",
-            "name": "${NAME}:${OUTPUT_IMAGE_TAG}"
-          }
-        },
-        "triggers": [
-          {
-            "type": "ImageChange"
+      {
+          "kind": "ImageStream",
+          "apiVersion": "v1",
+          "metadata": {
+              "name": "${NAME}"
           },
-          {
-            "type": "ConfigChange"
+          "spec": {
+              "tags": [
+                  {
+                      "name": "${OUTPUT_IMAGE_TAG}",
+                      "annotations": null,
+                      "from": {
+                          "kind": "${SOURCE_IMAGE_KIND}",
+                          "name": "${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
+                      },
+                      "importPolicy": {
+                          "scheduled": true
+                      }
+                  }
+              ]
           }
-        ]
       }
-    }
   ],
   "parameters": [
     {

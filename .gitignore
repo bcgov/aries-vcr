@@ -36,3 +36,6 @@ Temporary Items
 
 # Indy Agent - genesis transaction file(s)
 genesis
+
+# Visual Studio Code
+.vscode
