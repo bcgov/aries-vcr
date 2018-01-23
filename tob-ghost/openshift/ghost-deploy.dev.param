@@ -7,7 +7,7 @@
 # SOURCE_IMAGE_NAME=ghost
 # IMAGE_NAMESPACE=devex-von-tools
 # TAG_NAME=dev
-# APPLICATION_DOMAIN=ghost-devex-von-dev.pathfinder.gov.bc.ca
+# APPLICATION_DOMAIN=von-dev.pathfinder.gov.bc.ca
 # URL_PREFIX=https://
 # MAIL_TRANSPORT=SMTP
 # MAIL_OPTIONS_HOST=apps.smtp.gov.bc.ca
