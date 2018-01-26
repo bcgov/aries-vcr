@@ -27,6 +27,7 @@ from api.claimProcesser import ClaimProcesser
 import json
 import os
 import random
+import logging
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -883,7 +884,7 @@ class verifiableclaimtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics
     """
     return self.create(request, *args, **kwargs)
 
-class verifiableclaimtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class verifiableclaimtypesGet(AuditableMixin, mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
   """  
   Lists available VerifiableClaimType objects  
   """
@@ -891,15 +892,22 @@ class verifiableclaimtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.Creat
   permission_classes = (permissions.AllowAny,)  
   queryset = VerifiableClaimType.objects.all()  
   serializer_class = serializers.VerifiableClaimTypeSerializer
+  
+  def __init__(self) -> None:
+    self.__logger = logging.getLogger(__name__)
+
   def get(self, request, *args, **kwargs):
     """
     Lists available VerifiableClaimType objects
     """
     return self.list(request, *args, **kwargs)
+
   def post(self, request, *args, **kwargs):
     """
     Creates a new VerifiableClaimType object
     """
+    data = request.data
+    self.__logger.debug("\nPosting VerifiableClaimType(s):\n{0}\n".format(data))
     return self.create(request, *args, **kwargs)
 
 class verifiableclaimtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):

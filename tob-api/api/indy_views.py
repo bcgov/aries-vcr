@@ -47,8 +47,6 @@ class bcovrinGenerateClaimRequest(APIView):
     claimDef = request.body.decode('utf-8')
     claimDefProcesser = ClaimDefProcesser(claimDef)
     claimRequest = claimDefProcesser.GenerateClaimRequest()
-    print("=-==-\n\n\n")
-    print(claimRequest)
     return JsonResponse(json.loads(claimRequest))
 
 # ToDo:
@@ -61,7 +59,7 @@ class bcovrinStoreClaim(APIView):
   Store a verifiable claim.
   """
   permission_classes = (permissions.AllowAny,)  
- 
+  
   def post(self, request, *args, **kwargs):
     """  
     Stores a verifiable claim into a central wallet.

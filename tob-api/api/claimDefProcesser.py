@@ -1,3 +1,4 @@
+import json
 import asyncio
 from api.indy.agent import Holder
 from api.indy.claimDefParser import ClaimDefParser
@@ -34,8 +35,18 @@ class ClaimDefProcesser(object):
     return claim_request
 
   async def __GenerateRequest(self):
+    self.__logger.debug("Generating claim request ...")
     await self.__StoreClaimOffer()
-    return await self.__StoreClaimRequest()
+    claim_request = await self.__StoreClaimRequest()
+
+    self.__logger.debug(
+      "\n============================================================================\n" +
+      "Claim request generated:\n" +
+      "----------------------------------------------------------------------------\n" +
+      "{0}\n".format(json.dumps(json.loads(claim_request), indent=4)) +
+      "============================================================================\n")
+
+    return claim_request
 
   def GenerateClaimRequest(self):
     return eventloop.do(self.__GenerateRequest())
