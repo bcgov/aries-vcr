@@ -30,7 +30,9 @@ usage() {
   start - Creates the application containers from the built images
           and starts the services based on the docker-compose.yml file.
 
-          You can pass in a list of containers to start.  By default all containers will be started.
+          You can pass in a list of containers to start.  
+          By default all containers will be started.
+          
           The API_URL used by tob-web can also be redirected.
 
           Examples:
@@ -48,6 +50,10 @@ usage() {
 EOF
 exit 1
 }
+# -----------------------------------------------------------------------------------------------------------------
+# Default Settings:
+# -----------------------------------------------------------------------------------------------------------------
+DEFAULT_CONTAINERS="tob-db tob-solr tob-api schema-spy tob-web"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -179,8 +185,6 @@ configureEnvironment () {
   export IpFilterRules='#allow all; deny all;'
   export RealIpFrom='127.0.0.0/16'
 }
-
-DEFAULT_CONTAINERS="tob-db tob-solr tob-api schema-spy tob-web"
 
 getStartupParams() {
   CONTAINERS=""
