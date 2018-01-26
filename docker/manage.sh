@@ -30,11 +30,18 @@ usage() {
   start - Creates the application containers from the built images
           and starts the services based on the docker-compose.yml file.
 
+          You can pass in a list of containers to start.  By default all containers will be started.
+          The API_URL used by tob-web can also be redirected.
+
+          Examples:
+          $0 start
+          $0 start tob-solr
+          $0 start tob-web
+          $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
+
   stop - Stops the services.  This is a non-destructive process.  The containers
          are not deleted so they will be reused the next time you run start.
          
-  start-solr - Start the Solr Search Engine server only.
-  
   build-api - Build the API server only.
   
   build-solr - Build the Solr Search Engine server only.
@@ -132,6 +139,14 @@ buildImages() {
 }
 
 configureEnvironment () {
+  for arg in $@; do
+    case "$arg" in
+      *=*)
+        export ${arg}
+        ;;  
+    esac
+  done
+  
   # tob-db
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
   export POSTGRESQL_USER="DB_USER"
@@ -160,9 +175,34 @@ configureEnvironment () {
 
   # tob-web
   export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}
-  export API_URL="http://tob-api:8080/api/v1/"
+  export API_URL=${API_URL-http://tob-api:8080/api/v1/}
   export IpFilterRules='#allow all; deny all;'
   export RealIpFrom='127.0.0.0/16'
+}
+
+DEFAULT_CONTAINERS="tob-db tob-solr tob-api schema-spy tob-web"
+
+getStartupParams() {
+  CONTAINERS=""
+  ARGS="--force-recreate"
+
+  for arg in $@; do
+    case "$arg" in
+      *=*)
+        # Skip it
+        ;;  
+     -*)
+        ARGS+=" $arg";;
+      *)
+        CONTAINERS+=" $arg";;
+    esac
+  done
+
+  if [ -z "$CONTAINERS" ]; then
+    CONTAINERS="$DEFAULT_CONTAINERS"
+  fi
+
+  echo ${ARGS} ${CONTAINERS}
 }
 # =================================================================================================================
 
@@ -170,12 +210,10 @@ pushd ${SCRIPT_HOME} >/dev/null
 
 case "$1" in
   start)
-    configureEnvironment
-    docker-compose up --force-recreate tob-db tob-solr tob-api schema-spy tob-web
-    ;;
-  start-solr)
-    configureEnvironment
-    docker-compose up --force-recreate tob-solr
+    shift
+    _startupParams=$(getStartupParams $@)
+    configureEnvironment $@
+    docker-compose up ${_startupParams}
     ;;
   stop)
     configureEnvironment
