@@ -43,7 +43,7 @@ class ClaimDefProcesser(object):
       "\n============================================================================\n" +
       "Claim request generated:\n" +
       "----------------------------------------------------------------------------\n" +
-      "{0}\n".format(json.dumps(json.loads(claim_request), indent=4)) +
+      "{0}\n".format(json.dumps(json.loads(claim_request), indent=2)) +
       "============================================================================\n")
 
     return claim_request
