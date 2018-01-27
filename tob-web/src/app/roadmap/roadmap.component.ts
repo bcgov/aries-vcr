@@ -52,6 +52,16 @@ export class RoadmapComponent implements OnInit {
   loadRecipe(recipe) {
     this.recipeId = recipe;
     this.dataService.loadJson('assets/recipes/' + recipe + '.json').subscribe((data) => {
+      let ctypes = data['claimTypes'] || [];
+      let ctype;
+      data['claimTypes'] = [];
+      for(let i = 0; i < ctypes.length; i++) {
+        ctype = Object.assign({}, ctypes[i]);
+        ctype.cert = null;
+        if(! ctype.altText) ctype.altText = "Certificate not found";
+        if(! ctype.linkText) ctype.linkText = "View registration record";
+        data['claimTypes'].push(ctype);
+      }
       this.recipe = data;
       console.log('recipe', data);
       this.$route.queryParams.subscribe(params => {
