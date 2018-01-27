@@ -42,36 +42,27 @@
     </div>
   </div>
 
-  <!-- div class="row mrgn-tp-md mrgn-bttm-lg business-certs" *ngIf="loaded">
+  <div class="row mrgn-tp-md mrgn-bttm-lg issuer-certs" *ngIf="loaded">
     <hr>
     <div class="col-sm-12">
-      <label class="control-label"><span class="field-name">Permits and Licences</span> <span class="fa fa-question-circle text-muted"></span></label>
-      <div class="certs-outer">
-        <div *ngFor="let grp of certs" class="cert">
+      <label class="control-label"><span class="field-name">Permit and License Types</span></label>
+      <div class="types-outer">
+        <div *ngFor="let type of claimTypes" class="cert">
           <div class="panel panel-cert cert-panel">
-            <div class="cert-name panel-heading">
-              <h3 class="panel-title"><div><a [routerLink]="'/cert/' + grp.top.id">{{grp.top.typeName}}</a></div></h3>
-            </div>
             <div class="panel-body cert-main">
-              <div class="cert-info">
-                <div class="issuer">{{grp.top.issuer.name}}</div>
-                <div class="year">{{grp.top.effectiveDate}}</div>
-                <div class="others text-muted" *ngIf="grp.others.length">
-                  <em>And {{grp.others.length}} related</em>
-                </div>
-              </div>
-              <div class="cert-image">
-                <a [routerLink]="'/cert/' + grp.top.id">
-                  <img src="/assets/cert.svg" [class]="'color-' + grp.top.color" alt="">
-                </a>
-              </div>
+              <h3 class="panel-title">{{type.claimType}}</h3>
+              <p>
+                <a [href]="type.issuerURL" rel="external">
+                  {{type.issuerURL}}</a>
+                <small><span class="fa fa-external-link"></span></small>
+              </p>
             </div>
           </div>
         </div>
       </div>
-      <div *ngIf="!certs.length">
+      <div *ngIf="!claimTypes.length">
         <em class="text-muted">None</em>
       </div>
     </div>
-  </div -->
+  </div>
 </section>

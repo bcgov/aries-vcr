@@ -27,7 +27,7 @@
               <a [routerLink]="['/issuer/', record.issuer.id]">{{record.issuer.name}}</a>
             </div>
           </div>
-          <div class="row form-group" *ngIf="record.type.issuerURL">
+          <div class="row form-group" *ngIf="record.type.issuerURL && record.type.issuerURL !== 'no'">
             <label class="col-sm-4 control-label">Issuer Website</label>
             <div class="col-sm-8 form-field">
               <a [href]="record.type.issuerURL" rel="external">

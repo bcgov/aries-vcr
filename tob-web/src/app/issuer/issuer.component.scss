@@ -9,7 +9,7 @@
   text-decoration: none;
 }
 
-.issuer-info {
+.issuer-info, .issuer-certs {
 	font-size: 1.7rem;
 }
 
@@ -19,5 +19,24 @@
 
 .field-list {
   padding-left: 1em;
+}
+
+.cert {
+  &-panel {
+    background: transparent;
+    border: 2px solid #e0e3e9;
+    border-radius: 5px;
+    overflow: hidden;
+    text-decoration: none;
+    .panel-title {
+      font-size: 1.8rem;
+      a {
+        text-decoration: none;
+      }
+    }
+    .panel-heading {
+      background-color: #f8f8f8;
+    }
+  }
 }
 

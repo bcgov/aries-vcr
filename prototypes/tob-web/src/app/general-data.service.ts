@@ -168,7 +168,7 @@ export class GeneralDataService {
     return this.recordCounts[type] || 0;
   }
 
-  getOrgData (type) : {[key:string]: Object} {
+  getOrgData (type) : Object[] {
     return this.orgData[type];
   }
 
