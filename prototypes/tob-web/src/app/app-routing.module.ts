@@ -41,7 +41,11 @@ const routes: Routes = [
     }
   },
   {
-    path: 'roadmap',
+    path: 'recipe',
+    redirectTo: 'recipe/start_a_restaurant'
+  },
+  {
+    path: 'recipe/:recipeName',
     component: RoadmapComponent,
     data: {
       breadcrumb: 'Roadmap'
