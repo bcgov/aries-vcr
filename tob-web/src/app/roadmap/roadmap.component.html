@@ -1,10 +1,14 @@
 <section id="roadmap">
 
-  <h1 class="roadmap-title">Permitify Demo - Starting a Restaurant Recipe</h1>
-
-  <ng-container *ngIf="! inited">
+  <ng-container *ngIf="! inited && ! error">
     <em class="text-muted">Loading ...</em>
   </ng-container>
+
+  <section *ngIf="error" class="alert alert-danger">
+    <h4 class="panel-title"><span class="fa fa-exclamation-triangle"></span> &nbsp;{{error}}</h4>
+  </section>
+
+  <h1 class="roadmap-title" *ngIf="inited">{{recipe.title}}</h1>
 
   <ng-container *ngIf="! orgRecord && inited">
     <div class="row" >
@@ -43,7 +47,7 @@
       <div *ngIf="searchType=='name' && !none">
         <div class="row" *ngFor="let record of results">
           <div class="col-sm-6">
-            <a href="" routerLink="/roadmap" [queryParams]="{record: record.id}">{{record.legalName}}</a><br>
+            <a href="" routerLink="." [queryParams]="{record: record.id}">{{record.legalName}}</a><br>
             <small>{{record.type.description}}</small>
           </div>
           <div class="col-sm-6">
@@ -129,7 +133,7 @@
       </div>
     </div>
 
-    <div class="row" *ngFor="let claimType of claimTypes">
+    <div class="row" *ngFor="let claimType of recipe.claimTypes">
       <div class="col-sm-10 col-sm-push-1">
         <div class="panel panel-primary">
           <div class="panel-heading">

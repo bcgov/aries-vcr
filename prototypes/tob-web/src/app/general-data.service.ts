@@ -261,5 +261,15 @@ export class GeneralDataService {
     return base.sort((a, b) => b.effectiveDate.localeCompare(a.effectiveDate));
   }
 
+  loadJson(url) : Observable<Object> {
+    let req = this.http.get(url)
+      .map((res: Response) => res.json())
+      .catch(error => {
+        console.error(error);
+        return Observable.throw(error);
+      });
+    return req;
+  }
+
 }
 

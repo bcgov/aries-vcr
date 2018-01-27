@@ -11,10 +11,12 @@ import { Location, LocationType, VerifiableOrg, VerifiableOrgType, IssuerService
 })
 export class RoadmapComponent implements OnInit {
 
+  public recipeId : string;
   public recordId : string = '';
   public query : string = '';
   public error : string = '';
   public orgRecord;
+  public recipe;
   public allResults;
   public results = [];
   public searchType = 'name';
@@ -30,64 +32,9 @@ export class RoadmapComponent implements OnInit {
   public dbas: DoingBusinessAs[];
   public certs: any[];
   public locations: Location[];
+  public claimTypes;
   private preload;
 
-  public claimTypes = [
-    {
-      title: 'Registration',
-      issuerTLA: 'BCReg',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Enroll with BC Registries',
-      cert: null
-    },
-    {
-      title: 'Restaurant Clearance Letter',
-      issuerTLA: 'WorkSafe',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with WorkSafe BC',
-      cert: null
-    },
-    {
-      title: 'PST Number',
-      issuerTLA: 'Ministry of Finance',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://ministry-of-finance-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with the BC Ministry of Finance',
-      cert: null
-    },
-    {
-      title: 'Operating Permit',
-      issuerTLA: 'Health Authority',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with the Fraser Valley Health Authority',
-      cert: null
-    },
-    {
-      title: 'Business License',
-      issuerTLA: 'Surrey',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with the City of Surrey',
-      cert: null
-    },
-    {
-      title: 'Liquor License',
-      issuerTLA: 'Liquor Licensing',
-      altText: 'Certificate not found',
-      linkText: 'View registration record',
-      regLink: 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca/',
-      regText: 'Register with the BC Liquor Control and Licensing Branch',
-      cert: null
-    }
-  ];
 
   constructor(
     private dataService: GeneralDataService,
@@ -97,8 +44,22 @@ export class RoadmapComponent implements OnInit {
 
   ngOnInit() {
     this.preload = this.dataService.preloadData(['locations', 'locationtypes', 'verifiableorgtypes']);
-    this.$route.queryParams.subscribe(params => {
-      this.setParams(params.record, params.query);
+    this.$route.params.subscribe(params => {
+      this.loadRecipe(params.recipeId);
+    });
+  }
+
+  loadRecipe(recipe) {
+    this.recipeId = recipe;
+    this.dataService.loadJson('assets/recipes/' + recipe + '.json').subscribe((data) => {
+      this.recipe = data;
+      console.log('recipe', data);
+      this.$route.queryParams.subscribe(params => {
+        this.setParams(params.record, params.query);
+      });
+    }, (failed) => {
+      console.log('failed');
+      this.error = "An error occurred while loading the recipe.";
     });
   }
 
@@ -219,34 +180,17 @@ export class RoadmapComponent implements OnInit {
         this.certs = this.dataService.formatClaims(record.claims);
         console.log('claims', this.certs);
         let certPos = {};
-        for(let i = 0; i < this.claimTypes.length; i++) {
-          certPos[this.claimTypes[i].issuerTLA] = i;
-          this.claimTypes[i].cert = null;
+        for(let i = 0; i < this.recipe.claimTypes.length; i++) {
+          certPos[this.recipe.claimTypes[i].issuerTLA] = i;
+          this.recipe.claimTypes[i].cert = null;
         }
         for(let i = 0; i < this.certs.length; i++) {
           let cert = <VerifiableClaim>this.certs[i].top;
           let tla = cert.issuer && cert.issuer.issuerOrgTLA;
           if(tla in certPos) {
-            this.claimTypes[certPos[tla]].cert = cert;
+            this.recipe.claimTypes[certPos[tla]].cert = cert;
           }
         }
-
-        /*this.dataService.loadFromApi('verifiableorgs/' + this.id + '/voclaims')
-          .subscribe((res: any) => {
-            let certs = [];
-            let seen = {};
-            for(var i = 0; i < res.length; i++) {
-              let cert = res[i];
-              if(! seen[cert.voClaimType]) {
-                cert.type = this.dataService.findOrgData('verifiableclaimtypes', cert.voClaimType);
-                cert.color = ['green', 'orange', 'blue', 'purple'][cert.voClaimType % 4];
-                certs.push(cert);
-                seen[cert.voClaimType] = 1;
-              }
-            }
-            this.certs = certs;
-            console.log('claims', res);
-          });*/
       }
 
       this.orgRecord = record;

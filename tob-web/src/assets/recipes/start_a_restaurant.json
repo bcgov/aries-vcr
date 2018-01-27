@@ -1,0 +1,59 @@
+{
+  "title": "Permitify Demo - Starting a Restaurant Recipe",
+  "claimTypes": [
+    {
+    "title": "Registration",
+    "issuerTLA": "BCReg",
+    "altText": "Certificate not found",
+    "linkText": "View registration record",
+    "regLink": "https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca/",
+    "regText": "Enroll with BC Registries",
+    "cert": null
+    },
+    {
+    "title": "Restaurant Clearance Letter",
+    "issuerTLA": "WorkSafe",
+    "altText": "Certificate not found",
+    "linkText": "View registration record",
+    "regLink": "https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca/",
+    "regText": "Register with WorkSafe BC",
+    "cert": null
+    },
+    {
+    "title": "PST Number",
+    "issuerTLA": "Ministry of Finance",
+    "altText": "Certificate not found",
+    "linkText": "View registration record",
+    "regLink": "https://ministry-of-finance-devex-von-permitify-dev.pathfinder.gov.bc.ca/",
+    "regText": "Register with the BC Ministry of Finance",
+    "cert": null
+    },
+    {
+    "title": "Operating Permit",
+    "issuerTLA": "Health Authority",
+    "altText": "Certificate not found",
+    "linkText": "View registration record",
+    "regLink": "https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca/",
+    "regText": "Register with the Fraser Valley Health Authority",
+    "cert": null
+    },
+    {
+    "title": "Business License",
+    "issuerTLA": "Surrey",
+    "altText": "Certificate not found",
+    "linkText": "View registration record",
+    "regLink": "https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca/",
+    "regText": "Register with the City of Surrey",
+    "cert": null
+    },
+    {
+    "title": "Liquor License",
+    "issuerTLA": "Liquor Licensing",
+    "altText": "Certificate not found",
+    "linkText": "View registration record",
+    "regLink": "https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca/",
+    "regText": "Register with the BC Liquor Control and Licensing Branch",
+    "cert": null
+    }
+  ]
+}
