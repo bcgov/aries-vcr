@@ -109,6 +109,9 @@
               <div class="cert-info">
                 <div class="issuer">{{grp.top.issuer.name}}</div>
                 <div class="year">{{grp.top.effectiveDate}}</div>
+                <div class="others text-muted" *ngIf="grp.top.inactiveReason && grp.top.inactiveReason.id">
+                  <strong class="text-danger">{{grp.top.inactiveReason.shortReason}}</strong>
+                </div>
                 <div class="others text-muted" *ngIf="grp.others.length">
                   <em>And {{grp.others.length}} related</em>
                 </div>

@@ -3,8 +3,10 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { MockData } from './mock-data';
 import {
-    VerifiableOrg, VerifiableOrgType, VerifiableClaim, VerifiableClaimType, IssuerService, Jurisdiction,
-    blankOrgType, blankClaimType, blankIssuerService, blankJurisdiction } from './data-types';
+    VerifiableOrg, VerifiableOrgType, VerifiableClaim, VerifiableClaimType,
+    InactiveClaimReason, IssuerService, Jurisdiction,
+    blankOrgType, blankClaimType,
+    blankInactiveClaimReason, blankIssuerService, blankJurisdiction } from './data-types';
 import { environment } from '../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -234,6 +236,8 @@ export class GeneralDataService {
     claim.color = ['green', 'orange', 'blue', 'purple'][claim.claimType % 4];
     let issuer = <IssuerService>this.findOrgData('issuerservices', type.issuerServiceId);
     claim.issuer = issuer || blankIssuerService();
+    let inactive = <InactiveClaimReason>this.findOrgData('inactiveclaimreasons', claim.inactiveClaimReasonId);
+    claim.inactiveReason = inactive || blankInactiveClaimReason();
     return claim;
   }
 

@@ -9,6 +9,26 @@ export interface DoingBusinessAs {
   locations?: Location[];
 }
 
+export interface InactiveClaimReason {
+  id: number;
+  shortReason: string;
+  reason: string;
+  effectiveDate: string;
+  endDate: string;
+  displayOrder: number;
+}
+
+export function blankInactiveClaimReason(): InactiveClaimReason {
+  return {
+    id: 0,
+    shortReason: '',
+    reason: '',
+    effectiveDate: null,
+    endDate: null,
+    displayOrder: null
+  };
+}
+
 export interface IssuerService {
   id: number;
   name: string;
@@ -130,6 +150,7 @@ export interface VerifiableClaim {
   type?: VerifiableClaimType;
   org?: VerifiableOrg;
   typeName?: string;
+  inactiveReason?: InactiveClaimReason;
 }
 
 export interface VerifiableClaimType {

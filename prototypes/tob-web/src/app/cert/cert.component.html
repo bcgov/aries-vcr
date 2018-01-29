@@ -19,8 +19,18 @@
 
       <h2 class="cert-title">{{record.type.claimType}}</h2>
 
+      <section *ngIf="record.inactiveReason && record.inactiveReason.id" class="alert alert-danger">
+        <h2 class="panel-title"><span class="fa fa-exclamation-triangle"></span> This claim is inactive: {{record.inactiveReason.reason}}</h2>
+      </section>
+
       <div class="row">
         <div class="col-md-12 cert-info">
+          <div class="row form-group">
+            <label class="col-sm-4 control-label">Active</label>
+            <div class="col-sm-8 form-field">
+              {{ record.inactiveReason && record.inactiveReason.id ? 'No' : 'Yes' }}
+            </div>
+          </div>
           <div class="row form-group">
             <label class="col-sm-4 control-label">Issuer</label>
             <div class="col-sm-8 form-field">
