@@ -26,9 +26,9 @@
       <div class="row">
         <div class="col-md-12 cert-info">
           <div class="row form-group">
-            <label class="col-sm-4 control-label">Active</label>
+            <label class="col-sm-4 control-label">Status</label>
             <div class="col-sm-8 form-field">
-              {{ record.inactiveReason && record.inactiveReason.id ? 'No' : 'Yes' }}
+              {{ record.inactiveReason && record.inactiveReason.id ? record.inactiveReason.shortReason : 'Active' }}
             </div>
           </div>
           <div class="row form-group">
@@ -67,7 +67,7 @@
           </div>
           <div class="row form-group mrgn-tp-lg">
             <div class="col-sm-4">
-              <button type="button" class="btn btn-primary btn-verify" (click)="showVerify($event)"><span class="fa fa-accept"></span> Verify License</button>
+              <button type="button" class="btn btn-primary btn-verify" (click)="showVerify($event)"><span class="fa fa-accept"></span> Verify Certification</button>
             </div>
             <div class="col-sm-8 mrgn-tp-sm">
               <a class="verify-help" href="#">What's this?</a>
