@@ -19,7 +19,7 @@ export COMPOSE_PROJECT_NAME="tob"
 usage() {
   cat <<-EOF
 
-  Usage: $0 {start|stop|build}
+  Usage: $0 {start|stop|build|rm}
 
   Options:
 
@@ -43,7 +43,9 @@ usage() {
 
   stop - Stops the services.  This is a non-destructive process.  The containers
          are not deleted so they will be reused the next time you run start.
-         
+
+  rm - Removes any existing application containers.
+
   build-api - Build the API server only.
   
   build-solr - Build the Solr Search Engine server only.
@@ -222,6 +224,10 @@ case "$1" in
   stop)
     configureEnvironment
     docker-compose stop
+    ;;
+  rm)
+    configureEnvironment
+    docker-compose rm
     ;;
   build)
     buildImages
