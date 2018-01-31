@@ -9,12 +9,12 @@
 }
 
 .business-info, .business-certs {
-	font-size: 1.7rem;
+  font-size: 1.7rem;
 }
 
 .business-badge img {
-	filter: sepia() hue-rotate(310deg) saturate(140%) contrast(95%);
-	margin-bottom: 1rem;
+  filter: sepia() hue-rotate(310deg) saturate(140%) contrast(95%);
+  margin-bottom: 1rem;
 }
 
 .field-value + .field-value {
@@ -26,9 +26,9 @@
 }
 
 .certs-outer {
-	display: flex;
-	flex-flow: row wrap;
-  margin: 0 -6px;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 8px -6px 0;
 }
 .cert {
   display: flex;
@@ -38,14 +38,14 @@
   min-width: 180px;
   max-width: 33.3%;
   padding: 0 6px;
-	.cert-image {
-		img {
-			display: block;
-			height: auto;
-			margin: 0 auto;
-			width: 100%;
-		}
-	}
+  .cert-image {
+    img {
+      display: block;
+      height: auto;
+      margin: 0 auto;
+      width: 100%;
+    }
+  }
   &-panel {
     background: transparent;
     border: 2px solid #e0e3e9;
@@ -73,9 +73,9 @@
     flex: 0 0 40%;
   }
   &-others {
-		flex: 1 0 auto;
-		.other-link {
-		  text-decoration: none;
+    flex: 1 0 auto;
+    .other-link {
+      text-decoration: none;
       &:hover, &:focus {
         label {
           border-color: #5260c9;
@@ -84,7 +84,7 @@
           text-decoration: underline;
         }
       }
-		}
+    }
   }
 }
 
