@@ -13,6 +13,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   public allResults;
   public results = [];
   public searchType = 'name';
+  public searchFocused = false;
   private searchTimer;
   private sub;
   private page = 0;
@@ -37,7 +38,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     (<HTMLInputElement>document.getElementById('searchInput')).value = this.query;
-    this.focusSearch();
+    requestAnimationFrame(() => this.focusSearch());
   }
 
   setQuery(q) {
@@ -57,9 +58,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   inputEvent(evt) {
     if(evt.type === 'focus') {
-      evt.target.parentNode.classList.add('active');
+      this.searchFocused = true;
     } else if(evt.type === 'blur') {
-      evt.target.parentNode.classList.remove('active');
+      this.searchFocused = false;
     } else if(evt.type === 'input') {
       this.updateSearch(evt);
     }

@@ -11,7 +11,7 @@
           <li class="stat"><span class="numbers">{{claimCount() | number}}</span> permits and licences</li>
         </ul>
         <div class="search-outer">
-          <div class="large-search">
+          <div [class]="'large-search' + (searchFocused ? ' active' : '')">
             <span class="fa fa-search" *ngIf="!loading" (click)="focusSearch($event)"></span>
             <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
             <input type="text" id="searchInput" name="query" size="40" placeholder="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" (input)="inputEvent($event)" (focus)="inputEvent($event)" (blur)="inputEvent($event)">
