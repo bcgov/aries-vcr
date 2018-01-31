@@ -4,7 +4,7 @@
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "1",
-        "reason": "Claim has Expired",
+        "reason": "Credential has Expired",
         "shortReason": "Expired"
     },
     {
@@ -12,7 +12,7 @@
         "effectiveDate": "2010-10-10",
         "endDate": null,
         "id": "2",
-        "reason": "Claim Revoked",
+        "reason": "Credential Revoked",
         "shortReason": "Revoked"
     }
 ]
