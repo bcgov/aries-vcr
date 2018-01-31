@@ -19,42 +19,44 @@ export class BreadcrumbComponent implements OnInit {
     const ROUTE_DATA_BREADCRUMB: string = 'breadcrumb';
     const PRIMARY_OUTLET: string = 'primary';
 
-    this.router.events
-      .filter( event => event instanceof NavigationEnd)
-      .subscribe( event => {
-
-        //reset breadcrumbs
-        this.breadcrumbs = [];
-
-        let currentRoute = this.route.root;
-        let childrenRoutes = currentRoute.children;
-        currentRoute = null;
-
-        childrenRoutes.forEach( route => {
+    function resolveBreadcrumbs(route, urlPrefix : string, prevName : string) {
+      let ret = [];
+      let children = route.children;
+      if(children) {
+        children.forEach(child => {
 
           // Verify this is the primary route
-          if (route.outlet !== PRIMARY_OUTLET) {
-            return;
-          }
-
-          // Verify the custom data property "breadcrumb" is specified on the route
-          if (!route.snapshot.data.hasOwnProperty(ROUTE_DATA_BREADCRUMB)) {
+          if (child.outlet !== PRIMARY_OUTLET) {
             return;
           }
 
           //get the route's URL segment
-          let routeURL: string = route.snapshot.url
+          let routeURL: string = urlPrefix + child.snapshot.url
               .map(segment => segment.path)
               .join('/');
 
-          console.log('Url segment', routeURL);
+          // Verify the custom data property "breadcrumb" is specified on the route
+          if (child.snapshot.data.hasOwnProperty(ROUTE_DATA_BREADCRUMB)) {
+            let bcName = child.snapshot.data[ROUTE_DATA_BREADCRUMB];
+            if(bcName !== null && bcName !== '' && bcName !== prevName) {
+              ret.push({
+                label: child.snapshot.data[ROUTE_DATA_BREADCRUMB],
+                url: routeURL
+              });
+            }
+            prevName = bcName;
+          }
 
-          //add breadcrumb
-          this.breadcrumbs.push({
-            label: route.snapshot.data[ROUTE_DATA_BREADCRUMB],
-            url: routeURL
-          });
+          ret = ret.concat(resolveBreadcrumbs(child, routeURL + '/', prevName));
         });
+      }
+      return ret;
+    }
+
+    this.router.events
+      .filter( event => event instanceof NavigationEnd)
+      .subscribe( event => {
+        this.breadcrumbs = resolveBreadcrumbs(this.route.root, '', '');
     })
   }
 

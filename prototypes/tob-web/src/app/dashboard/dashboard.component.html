@@ -34,7 +34,7 @@
         <div *ngIf="searchType=='name' && !none">
           <div class="row" *ngFor="let record of results">
             <div class="col-sm-6">
-              <a href="" [routerLink]="['/business', record.id]">{{record.legalName}}</a><br>
+              <a href="" [routerLink]="['/org', record.id]">{{record.legalName}}</a><br>
               <small>{{record.type.description}}</small>
             </div>
             <div class="col-sm-6">
@@ -46,7 +46,7 @@
         <div *ngIf="searchType=='location' && !none">
           <div class="row" *ngFor="let record of results">
             <div class="col-sm-6">
-              <a href="" [routerLink]="['/business', record.verifiableOrgId]">{{record.addressee}}</a><br>
+              <a href="" [routerLink]="['/org', record.verifiableOrgId]">{{record.addressee}}</a><br>
               <small>{{record.type.locType}}</small>
             </div>
             <div class="col-sm-6">

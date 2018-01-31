@@ -29,7 +29,7 @@ export class IssuerComponent implements OnInit {
   ngOnInit() {
     this.preload = this.dataService.preloadData();
     this.sub = this.route.params.subscribe(params => {
-      this.recordId = params['recordId'];
+      this.recordId = params['issuerId'];
       this.preload.then(status => {
         this.dataService.loadRecord('issuerservices', this.recordId).subscribe((record : IssuerService) => {
           console.log('issuer:', record);

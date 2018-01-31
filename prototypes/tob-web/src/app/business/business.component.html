@@ -103,7 +103,7 @@
         <div *ngFor="let grp of certs" class="cert">
           <div class="panel panel-cert cert-panel">
             <div class="cert-name panel-heading">
-              <h3 class="panel-title"><div><a [routerLink]="'/cert/' + grp.top.id">{{grp.top.typeName}}</a></div></h3>
+              <h3 class="panel-title"><div><a [routerLink]="['cert', grp.top.id]">{{grp.top.typeName}}</a></div></h3>
             </div>
             <div class="panel-body cert-main">
               <div class="cert-info">
@@ -117,7 +117,7 @@
                 </div>
               </div>
               <div class="cert-image">
-                <a [routerLink]="'/cert/' + grp.top.id">
+                <a [routerLink]="['cert', grp.top.id]">
                   <img src="/assets/cert.svg" [class]="'color-' + grp.top.color" alt="">
                 </a>
               </div>

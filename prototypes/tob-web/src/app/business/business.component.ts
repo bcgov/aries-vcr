@@ -27,7 +27,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
   ngOnInit() {
     let loaded = this.dataService.preloadData(['verifiableclaimtypes', 'verifiableorgtypes', 'locationtypes', 'issuerservices']);
     this.sub = this.route.params.subscribe(params => {
-      this.id = +params['recordId'];
+      this.id = +params['orgId'];
       loaded.then(status => {
         this.dataService.loadVerifiableOrg(this.id).subscribe((record : VerifiableOrg) => {
           if(! record) this.error = 'Record not found';
