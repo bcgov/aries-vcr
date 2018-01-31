@@ -50,8 +50,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  focusSearch() {
+  focusSearch(evt?) {
     (<HTMLInputElement>document.getElementById('searchInput')).select();
+    if(evt) evt.preventDefault();
   }
 
   inputEvent(evt) {
@@ -105,7 +106,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.search(evt.target.value);
     }
     if(! this.query.trim().length) {
-      this.focusSearch();
+      requestAnimationFrame(() => this.focusSearch());
     }
   }
 
