@@ -120,7 +120,8 @@ urlpatterns = [
     url(r'^verifiableclaims$', views.verifiableclaimsGet.as_view()),
     url(r'^verifiableclaims/(?P<id>[0-9]+)/delete$', views.verifiableclaimsIdDeletePost.as_view()),
     url(r'^verifiableclaims/(?P<id>[0-9]+)$', views.verifiableclaimsIdGet.as_view()),
-    
+    url(r'^verifiableclaims/(?P<id>[0-9]+)/verify$', indy_views.bcovrinVerifyCredential.as_view()),
+
     url(r'^verifiableclaimtypes/bulk$', views.verifiableclaimtypesBulkPost.as_view()),
     url(r'^verifiableclaimtypes$', views.verifiableclaimtypesGet.as_view()),
     url(r'^verifiableclaimtypes/(?P<id>[0-9]+)/delete$', views.verifiableclaimtypesIdDeletePost.as_view()),

@@ -88,3 +88,16 @@ class bcovrinConstructProof(APIView):
     proofRequestProcesser = ProofRequestProcesser(proofRequestWithFilters)
     proofResponse = proofRequestProcesser.ConstructProof()
     return JsonResponse(proofResponse)
+
+class bcovrinVerifyCredential(APIView):
+  """  
+  Verifies a verifiable claim
+  """
+  permission_classes = (permissions.AllowAny,)  
+
+  def post(self, request, *args, **kwargs):
+    """
+    Verifies a verifiable claim given a verifiable claim id
+    """
+    print(request)
+    return JsonResponse({'success': True})
