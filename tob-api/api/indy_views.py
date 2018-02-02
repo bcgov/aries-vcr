@@ -28,6 +28,7 @@ from rest_framework import permissions
 from api.claimProcesser import ClaimProcesser
 from django.http import JsonResponse
 from rest_framework.views import APIView
+from api.models.VerifiableClaim import VerifiableClaim
 
 # ToDo:
 # * Refactor the saving process to use serializers, etc.
@@ -42,7 +43,20 @@ class bcovrinGenerateClaimRequest(APIView):
   
   def post(self, request, *args, **kwargs):
     """  
-    Processes a claim definition and responds with a claim request which can then be used to submit a claim.
+    Processes a claim definition and responds with a claim request which
+    can then be used to submit a claim.
+
+    Example request payload:
+
+    ```json
+    {
+      'did': <issuer did>,
+      'seqNo': <schema sequence number>,
+      'claim_def': <claim definition json>
+    }
+    ```
+
+    returns: indy sdk claim request json
     """
     claimDef = request.body.decode('utf-8')
     claimDefProcesser = ClaimDefProcesser(claimDef)
@@ -67,6 +81,17 @@ class bcovrinStoreClaim(APIView):
     The data in the claim is parsed and stored in the database
     for search/display purposes; making it available through
     the other APIs.
+
+    Example request payload:
+
+    ```json
+    {
+      "claim_type": <schema name>,
+      "claim_data": <claim json>
+    }
+    ```
+
+    returns: created verifiableClaim model
     """
     claim = request.body.decode('utf-8')
     claimProcesser = ClaimProcesser()
@@ -83,6 +108,38 @@ class bcovrinConstructProof(APIView):
   def post(self, request, *args, **kwargs):
     """  
     Generates a proof from a proof request and set of filters.
+
+    Example request payload:
+
+    ```json
+    {
+      "filters": {
+        "legal_entity_id": "c914cd7d-1f44-44b2-a0d3-c0bea12067fa"
+      },
+      "proof_request": {
+        "name": "proof_request_name",
+        "version": "1.0.0",
+        "nonce": "1986273812765872",
+        "requested_attrs": {
+          "attr_1": {
+            "name": "attr_1",
+            "restrictions": [
+              {
+                "schema_key": {
+                  "did": "issuer_did",
+                  "name": "schema_name",
+                  "version": "schema_version"
+                }
+              }
+            ]
+          }
+        },
+        "requested_predicates": {}
+      }
+    }
+    ```
+
+    returns: indy sdk proof json
     """
     proofRequestWithFilters = request.body.decode('utf-8')
     proofRequestProcesser = ProofRequestProcesser(proofRequestWithFilters)
@@ -99,5 +156,15 @@ class bcovrinVerifyCredential(APIView):
     """
     Verifies a verifiable claim given a verifiable claim id
     """
-    print(request)
-    return JsonResponse({'success': True})
+
+    verifiableClaimId = self.kwargs.get('id')
+    if verifiableClaimId is not None:
+      verifiableClaim = VerifiableClaim.objects.get(id=verifiableClaimId)
+      claimType = verifiableClaim.claimType
+
+      print(claimType.schemaName)
+      print(claimType.schemaVersion)
+
+      return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False})
