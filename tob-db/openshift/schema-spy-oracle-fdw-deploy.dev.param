@@ -9,5 +9,6 @@
 # APPLICATION_DOMAIN=schema-spy-oracle-fdw-devex-von-dev.pathfinder.gov.bc.ca
 # DATABASE_SERVICE_NAME=postgresql-oracle-fdw
 # DATABASE_NAME=BC_REGISTRIES
+# SOURCE_IMAGE_NAME=schema-spy
 # TAG_NAME=dev
 # DATABASE_DEPLOYMENT_NAME=postgresql-oracle-fdw

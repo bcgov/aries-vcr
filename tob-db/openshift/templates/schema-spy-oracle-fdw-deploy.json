@@ -80,7 +80,7 @@
               "from": {
                 "kind": "ImageStreamTag",
                 "namespace": "${IMAGE_NAMESPACE}",
-                "name": "${NAME}:${TAG_NAME}"
+                "name": "${SOURCE_IMAGE_NAME}:${TAG_NAME}"
               }
             }
           }
@@ -203,6 +203,13 @@
       "required": true,
       "description": "Name of the deployed database (see environment variables in deployed database).",
       "value": "BC_REGISTRIES"
+    },
+    {
+      "name": "SOURCE_IMAGE_NAME",
+      "displayName": "Source Image Name",
+      "description": "The name of the image to use for this resource.",
+      "required": true,
+      "value": "schema-spy"
     },
     {
       "name": "TAG_NAME",
