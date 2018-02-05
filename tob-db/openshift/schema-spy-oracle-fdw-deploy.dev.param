@@ -1,0 +1,13 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-db
+# JSON Template File: templates/schema-spy-oracle-fdw-deploy.json
+#=========================================================
+# NAME=schema-spy-oracle-fdw
+# IMAGE_NAMESPACE=devex-von-tools
+# MEMORY_LIMIT=512Mi
+# APPLICATION_DOMAIN=schema-spy-oracle-fdw-devex-von-dev.pathfinder.gov.bc.ca
+# DATABASE_SERVICE_NAME=postgresql-oracle-fdw
+# DATABASE_NAME=BC_REGISTRIES
+# TAG_NAME=dev
+# DATABASE_DEPLOYMENT_NAME=postgresql-oracle-fdw
