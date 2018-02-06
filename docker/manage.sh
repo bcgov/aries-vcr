@@ -63,6 +63,8 @@ build-web() {
   #
   # tob-web
   #
+  # ToDo:
+  # - Migrate to a Chained Build workflow matching the OpenShift builds.
   echo -e "\nBuilding angular-builder image ..."
   docker build \
     -t 'angular-builder' \
@@ -237,6 +239,9 @@ case "$1" in
     ;;
   build-solr)
     build-solr
+    ;;
+  build-web)
+    build-web
     ;;
   *)
     usage
