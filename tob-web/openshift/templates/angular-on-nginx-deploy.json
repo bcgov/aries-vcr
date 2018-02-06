@@ -1,0 +1,356 @@
+{
+  "apiVersion": "v1",
+  "kind": "Template",
+  "metadata": {
+    "annotations": {
+      "description": "Deployment template for a angular on nginx",
+      "tags": "angular,nginx"
+    },
+    "name": "angular-on-nginx"
+  },
+  "objects": [
+    {
+      "apiVersion": "v1",
+      "kind": "DeploymentConfig",
+      "metadata": {
+        "creationTimestamp": null,
+        "labels": {
+          "app": "${NAME}"
+        },
+        "name": "${NAME}"
+      },
+      "spec": {
+        "replicas": 2,
+        "selector": {
+          "app": "${NAME}",
+          "deploymentconfig": "${NAME}"
+        },
+        "strategy": {
+          "rollingParams": {
+            "intervalSeconds": 1,
+            "maxSurge": "25%",
+            "maxUnavailable": "25%",
+            "timeoutSeconds": 600,
+            "updatePeriodSeconds": 1
+          },
+          "type": "Rolling"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "${NAME}",
+              "deploymentconfig": "${NAME}"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "image": "${NAME}",
+                "imagePullPolicy": "Always",
+                "name": "${NAME}",
+                "ports": [
+                  {
+                    "containerPort": 8080,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "API_URL",
+                    "value": "${API_URL}"
+                  },
+                  {
+                    "name": "API_SERVICE_NAME",
+                    "value": "${API_SERVICE_NAME}"
+                  },
+                  {
+                    "name": "API_PATH",
+                    "value": "${API_PATH}"
+                  },
+                  {
+                    "name": "RealIpFrom",
+                    "value": "${REAL_IP_FROM}"
+                  },
+                  {
+                    "name": "AdditionalRealIpFromRules",
+                    "value": "${AdditionalRealIpFromRules}"
+                  },
+                  {
+                    "name": "IpFilterRules",
+                    "value": "${IpFilterRules}"
+                  },
+                  {
+                    "name": "HTTP_BASIC",
+                    "value": "${HTTP_BASIC}"
+                  },
+                  {
+                    "name": "HTTP_BASIC_USERNAME",
+                    "value": "${HTTP_BASIC_USERNAME}"
+                  },
+                  {
+                    "name": "HTTP_BASIC_PASSWORD",
+                    "value": "${HTTP_BASIC_PASSWORD}"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "10m",
+                    "memory": "100Mi"
+                  },
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "1Gi"
+                  }
+                },
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/nginx_status",
+                    "port": 8080,
+                    "scheme": "HTTP"
+                  },
+                  "initialDelaySeconds": 30,
+                  "timeoutSeconds": 60,
+                  "periodSeconds": 10,
+                  "successThreshold": 1,
+                  "failureThreshold": 3
+                },
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/nginx_status",
+                    "port": 8080,
+                    "scheme": "HTTP"
+                  },
+                  "initialDelaySeconds": 10,
+                  "timeoutSeconds": 60,
+                  "periodSeconds": 10,
+                  "successThreshold": 1,
+                  "failureThreshold": 3
+                }
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "restartPolicy": "Always",
+            "securityContext": {
+            },
+            "terminationGracePeriodSeconds": 30
+          }
+        },
+        "test": false,
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "${NAME}"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "namespace": "${IMAGE_NAMESPACE}",
+                "name": "${NAME}:${TAG_NAME}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "creationTimestamp": null,
+        "labels": {
+          "app": "${NAME}"
+        },
+        "name": "${NAME}"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "8080-tcp",
+            "port": 8080,
+            "protocol": "TCP",
+            "targetPort": 8080
+          }
+        ],
+        "selector": {
+          "app": "${NAME}",
+          "deploymentconfig": "${NAME}"
+        },
+        "sessionAffinity": "None",
+        "type": "ClusterIP"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Route",
+      "metadata": {
+        "labels": {
+          "app": "${NAME}"
+        },
+        "name": "${NAME}"
+      },
+      "spec": {
+        "host": "${APPLICATION_DOMAIN}",
+        "port": {
+          "targetPort": "8080-tcp"
+        },
+        "tls": {
+          "insecureEdgeTerminationPolicy": "Redirect",
+          "termination": "edge"
+        },
+        "to": {
+          "kind": "Service",
+          "name": "${NAME}",
+          "weight": 100
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Route",
+      "metadata": {
+        "name": "${NAME}-siteminder-route",
+        "labels": {
+          "app": "${NAME}-siteminder-route"
+        },
+        "annotations": {
+          "haproxy.router.openshift.io/ip_whitelist": "${SITEMINDER_WHITE_LIST}"
+        }
+      },
+      "spec": {
+        "host": "${SITEMINDER_APPLICATION_DOMAIN}",
+        "port": {
+          "targetPort": "8080-tcp"
+        },
+        "to": {
+          "kind": "Service",
+          "name": "${NAME}",
+          "weight": 100
+        }
+      }
+    },
+    {
+      "apiVersion": "extensions/v1beta1",
+      "kind": "HorizontalPodAutoscaler",
+      "metadata": {
+        "name": "${NAME}",
+        "labels": {
+          "app": "${NAME}"
+        }
+      },
+      "spec": {
+        "scaleRef": {
+          "kind": "DeploymentConfig",
+          "name": "${NAME}",
+          "apiVersion": "extensions/v1beta1",
+          "subresource": "scale"
+        },
+        "minReplicas": 2,
+        "maxReplicas": 6
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "description": "The name assigned to all of the openshift objects defined in this template. It is also the name of runtime image you want.",
+      "displayName": "Name",
+      "name": "NAME",
+      "required": true,
+      "value": "angular-scaffold"
+    },
+    {
+      "description": "The namespace where to get the above image name",
+      "displayName": "Image Namespace",
+      "name": "IMAGE_NAMESPACE",
+      "required": true,
+      "value": "gcpe-mygovbc-demo"
+    },
+    {
+      "description": "OpenShift cluster private IP range in CIDR notation, used by Nginx ngx_http_realip_module.",
+      "displayName": "OpenShift Cluster IP Range",
+      "name": "REAL_IP_FROM",
+      "required": true,
+      "value": "172.51.0.0/16"
+    },
+    {
+      "description": "The default URL to use when proxying requests to the application's API.  The value here will be overridden if a API_SERVICE_NAME is defined.",
+      "displayName": "API URL",
+      "name": "API_URL",
+      "required": true,
+      "value": "https://django-jag-csb-jes-family-protection-order.pathfinder.gov.bc.ca/api/v1/"
+    },
+    {
+      "description": "The name of the service endpoint for the API.  Used to wire up to an API endpoint within the same project; overriding the URL defined by API_URL.",
+      "displayName": "API Service Name",
+      "name": "API_SERVICE_NAME",
+      "required": false,
+      "value": "django"
+    },
+    {
+      "description": "The root path for the API.  Used in conjunction with API_SERVICE_NAME.",
+      "displayName": "API Path",
+      "name": "API_PATH",
+      "required": true,
+      "value": "/api/v1/"
+    },
+    {
+      "description": "Additional known and trusted reverse proxy ips conforming to nginx set_real_ip_from directive syntax. Multiple directives are allowed, separated by semicolon.",
+      "displayName": "Additional real_ip_from Rules",
+      "name": "AdditionalRealIpFromRules"
+    },
+    {
+      "description": "Nginx ngx_http_access_module ip filter rules",
+      "displayName": "Ip Filter Rules",
+      "name": "IpFilterRules",
+      "value": ""
+    },
+    {
+      "description": "The exposed hostname that will route to the service, e.g., myappname.pathfinder.gov.bc.ca, if left blank a value will be defaulted.",
+      "displayName": "Application Domain",
+      "name": "APPLICATION_DOMAIN",
+      "value": "angular-scaffold-demo.pathfinder.gov.bc.ca"
+    },
+    {
+      "description": "The endpoint used for SiteMinder routed access to the application.",
+      "displayName": "SiteMinder Application Domain",
+      "name": "SITEMINDER_APPLICATION_DOMAIN",
+      "value": "protection-order-dev.pathfinder.bcgov"
+    },
+    {
+      "description": "The whitelist containing all of the trusted siteminder IPs.",
+      "displayName": "SiteMinder Whitelist",
+      "name": "SITEMINDER_WHITE_LIST",
+      "value": "142.34.49.76 142.34.49.77 142.34.157.10 142.34.157.11"
+    },
+    {
+      "description": "The TAG name for this environment, e.g., dev, test, prod",
+      "displayName": "Env TAG name",
+      "name": "TAG_NAME",
+      "value": "dev"
+    },
+    {
+      "description": "For very simple HTTP Basic authentication, use %HTTP_BASIC% in your nginx config and provide the value here that you want in nginx config, e.g., auth_basic 'restricted';",
+      "displayName": "HTTP Basic Nginx Config Line",
+      "name": "HTTP_BASIC",
+      "value": ""
+    },
+    {
+      "description": "For very simple HTTP Basic authentication, the username of the ONE user",
+      "displayName": "HTTP Basic Username",
+      "name": "HTTP_BASIC_USERNAME",
+      "value": ""
+    },
+    {
+      "description": "For very simple HTTP Basic authentication, the password of the ONE user",
+      "displayName": "HTTP Basic Password",
+      "name": "HTTP_BASIC_PASSWORD",
+      "value": ""
+    }
+
+  ]
+}
