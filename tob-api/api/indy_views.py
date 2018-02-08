@@ -19,6 +19,7 @@
     limitations under the License.
 """
 
+from api.indy.proofRequestBuilder import ProofRequestBuilder
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers
@@ -150,21 +151,38 @@ class bcovrinVerifyCredential(APIView):
   """  
   Verifies a verifiable claim
   """
-  permission_classes = (permissions.AllowAny,)  
+  permission_classes = (permissions.AllowAny,)
 
-  def post(self, request, *args, **kwargs):
+  def get(self, request, *args, **kwargs):
     """
     Verifies a verifiable claim given a verifiable claim id
     """
-
     verifiableClaimId = self.kwargs.get('id')
     if verifiableClaimId is not None:
       verifiableClaim = VerifiableClaim.objects.get(id=verifiableClaimId)
       claimType = verifiableClaim.claimType
 
-      print(claimType.schemaName)
-      print(claimType.schemaVersion)
+      proofRequestBuilder = ProofRequestBuilder(
+        claimType.schemaName,
+        claimType.schemaVersion
+      )
 
-      return JsonResponse({'success': True})
+      proofRequestBuilder.matchCredential(
+        verifiableClaim.claimJSON,
+        claimType.schemaName,
+        claimType.schemaVersion
+      )
+
+      proofRequest = proofRequestBuilder.asDict()
+
+      proofRequestWithFilters = {
+        'filters': {},
+        'proof_request': proofRequest
+      }
+
+      proofRequestProcesser = ProofRequestProcesser(json.dumps(proofRequestWithFilters))
+      proofResponse = proofRequestProcesser.ConstructProof()
+
+      return JsonResponse({'success': True, 'proof': proofResponse})
 
     return JsonResponse({'success': False})

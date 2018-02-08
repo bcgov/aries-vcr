@@ -56,6 +56,15 @@ class ProofRequestProcesser(object):
                     )
                     schema = json.loads(schema_json)
 
+            if not schema:
+                raise NotAcceptable(
+                    'No schema found for did:{} name:{} version:{}'.format(
+                        schema_key['did'],
+                        schema_key['name'],
+                        schema_key['version']
+                    )
+                )
+
             schema_cache[schema['seqNo']] = schema
             schema_cache['by_key']['%s::%s::%s' % (
                 schema_key['did'],
