@@ -195,7 +195,7 @@ class recordCounts(APIView):
       'locations': Location.objects.count(),
       'locationtypes': LocationType.objects.count(),
       'verifiableclaims': VerifiableClaim.objects.count(),
-      'verifiableclaimTypes': VerifiableClaimType.objects.count(),
+      'verifiableclaimtypes': VerifiableClaimType.objects.count(),
       'verifiableorgs': VerifiableOrg.objects.count(),
       'verifiableorgtypes': VerifiableOrgType.objects.count(),
     }
