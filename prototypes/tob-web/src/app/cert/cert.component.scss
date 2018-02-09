@@ -32,7 +32,6 @@
 }
 
 .cert-verify {
-  display: none;
   font-size: 1.5rem;
   line-height: 1.6;
   .verify-line {
@@ -50,4 +49,13 @@
     min-width: 10em;
     white-space: nowrap;
   }
+}
+
+code {
+  background: #eee;
+  color: #888;
+  display: block;
+  padding: 10px;
+  white-space: pre;
+  word-break: break-word;
 }

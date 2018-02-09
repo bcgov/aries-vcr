@@ -61,7 +61,7 @@
           </div>
           <div class="row form-group mrgn-tp-lg">
             <div class="col-sm-4">
-              <button type="button" class="btn btn-primary btn-verify" (click)="showVerify($event)"><span class="fa fa-accept"></span> Verify Credential</button>
+              <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyClaim($event)"><span class="fa fa-accept"></span> Verify Credential</button>
             </div>
             <div class="col-sm-8 mrgn-tp-sm">
               <a class="verify-help" href="#">What's this?</a>
@@ -77,8 +77,29 @@
     </div>
   </div>
 
+  <div class="row cert-verify" *ngIf="verifyResult || verifying">
+    <div class="col-sm-12" *ngIf="verifying">
+      <section class="alert alert-info">
+        <p>Requesting proof of credential ...</p>
+      </section>
+    </div>
+    <div class="col-sm-12" *ngIf="! verifying">
+      <div [class]="'verify-result panel panel-' + (verifyStatus == 'success' ? 'success' : 'warning')" *ngIf="verifyStatus && verifyStatus !== 'error'">
+        <div class="panel-heading">
+          Verification Status: {{verifyStatus}}
+        </div>
+        <div class="panel-body">
+          <code>{{verifyResult}}</code>
+        </div>
+      </div>
+      <section class="alert alert-danger" *ngIf="verifyStatus === 'error'">
+        <p>{{verifyResult}}</p>
+      </section>
+    </div>
+  </div>
+
   <!-- http://certificates-bootcamp.mit.edu/57b5085663e25800096f99b4 -->
-  <div class="row cert-verify">
+  <div class="row cert-verify-old" style="display: none">
     <div class="col-sm-12">
       <div class="verify-line"><span class="verify-pfx">Verify certificate:</span> <span id="verify-status">Pending verification ...</span></div>
       <div class="verify-line">Computing SHA256 digest of local certificate [DONE 1/5]</div>

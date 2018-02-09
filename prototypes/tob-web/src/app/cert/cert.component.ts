@@ -10,23 +10,27 @@ import { VerifiableClaim, VerifiableClaimType, blankClaimType, VerifiableOrg,
   styleUrls: ['./cert.component.scss']
 })
 export class CertComponent implements OnInit {
-  id: number;
+  recordId: string;
   loaded: boolean;
   record: VerifiableClaim;
   others: VerifiableClaim[];
   error: string;
   sub: any;
+  verifyStatus: string;
+  verifyResult: any;
+  verifying: boolean = false;
+  private preload;
 
   constructor(
     private dataService: GeneralDataService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    let loaded = this.dataService.preloadData(['inactiveclaimreasons', 'issuerservices', 'verifiableclaimtypes']);
+    let loaded = this.preload = this.dataService.preloadData(['inactiveclaimreasons', 'issuerservices', 'verifiableclaimtypes']);
     this.sub = this.route.params.subscribe(params => {
-      this.id = +params['certId'];
+      this.recordId = params['certId'];
       loaded.then(status => {
-        this.dataService.loadRecord('verifiableclaims', ''+this.id).subscribe((record : VerifiableClaim) => {
+        this.dataService.loadRecord('verifiableclaims', this.recordId).subscribe((record : VerifiableClaim) => {
           let claim = this.dataService.formatClaim(record);
           console.log('vo claim:', claim);
           if (! claim) this.error = 'Record not found';
@@ -76,6 +80,26 @@ export class CertComponent implements OnInit {
     if(stat) {
       setTimeout(() => (<any>stat).textContent = 'Verified', time);
     }
+  }
+
+  verifyClaim(evt) {
+    this.verifying = true;
+    this.preload.then((_) => {
+      this.dataService.verifyClaim(this.recordId).then((data : any) => {
+        this.verifyStatus = data.success ? 'success' : 'failure';
+        this.verifyResult = JSON.stringify(data, null, 2);
+        this.verifying = false;
+      }, (err) => {
+        this.verifyStatus = 'error';
+        if(err._body) {
+          let body = JSON.parse(err._body);
+          if(body && body.detail)
+            err = body.detail;
+        }
+        this.verifyResult = err;
+        this.verifying = false;
+      });
+    });
   }
 
 }
