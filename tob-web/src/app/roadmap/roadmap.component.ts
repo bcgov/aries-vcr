@@ -207,9 +207,9 @@ export class RoadmapComponent implements OnInit {
         this.certs = this.dataService.formatClaims(record.claims);
         console.log('claims', this.certs);
         let certPos = {};
-        for(let [idx, ctype] of this.recipe.claimTypes.entries()) {
+        this.recipe.claimTypes.forEach( (ctype, idx) => {
           certPos[ctype.regType.id] = idx;
-        }
+        });
         for(let i = 0; i < this.certs.length; i++) {
           let cert = <VerifiableClaim>this.certs[i].top;
           if(cert.type.id in certPos) {
