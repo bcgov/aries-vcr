@@ -3,6 +3,7 @@ import { ActivatedRoute, Router} from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
 import { Location, LocationType, VerifiableOrg, VerifiableOrgType, IssuerService, VerifiableClaim, VerifiableClaimType, DoingBusinessAs,
   blankLocation, blankOrgType, blankLocationType, blankIssuerService, blankClaimType } from '../data-types';
+import * as compareVersions from 'compare-versions';
 
 @Component({
   selector: 'app-roadmap',
@@ -32,7 +33,6 @@ export class RoadmapComponent implements OnInit {
   public dbas: DoingBusinessAs[];
   public certs: any[];
   public locations: Location[];
-  public claimTypes;
   private preload;
 
 
@@ -43,23 +43,40 @@ export class RoadmapComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.preload = this.dataService.preloadData(['locations', 'locationtypes', 'verifiableorgtypes']);
+    this.preload = this.dataService.preloadData(['locations', 'locationtypes', 'verifiableclaimtypes', 'verifiableorgtypes']);
     this.$route.params.subscribe(params => {
-      this.loadRecipe(params.recipeId);
+      this.preload.then(() => this.loadRecipe(params.recipeId));
     });
   }
 
   loadRecipe(recipe) {
     this.recipeId = recipe;
     this.dataService.loadJson('assets/recipes/' + recipe + '.json').subscribe((data) => {
+      // pre-index claim types by schema name with latest schema version
+      let regTypes = <VerifiableClaimType[]>this.dataService.getOrgData('verifiableclaimtypes');
+      let typesBySchema = {};
+      for(let regType of regTypes) {
+        if(regType.schemaName && regType.schemaVersion) {
+          let sname = regType.schemaName;
+          let other = typesBySchema[sname];
+          if(other && compareVersions(regType.schemaVersion, other.schemaVersion) <= 0)
+            continue;
+          typesBySchema[sname] = regType;
+        }
+      }
+
       let ctypes = data['claimTypes'] || [];
       let ctype;
       data['claimTypes'] = [];
       for(let i = 0; i < ctypes.length; i++) {
         ctype = Object.assign({}, ctypes[i]);
         ctype.cert = null;
+        if(! ctype.schemaName || ! typesBySchema[ctype.schemaName]) continue;
+        ctype.regType = typesBySchema[ctype.schemaName];
         if(! ctype.altText) ctype.altText = "Certificate not found";
         if(! ctype.linkText) ctype.linkText = "View registration record";
+        if(! ctype.regLink) ctype.regLink = ctype.regType.issuerURL;
+
         data['claimTypes'].push(ctype);
       }
       this.recipe = data;
@@ -190,15 +207,13 @@ export class RoadmapComponent implements OnInit {
         this.certs = this.dataService.formatClaims(record.claims);
         console.log('claims', this.certs);
         let certPos = {};
-        for(let i = 0; i < this.recipe.claimTypes.length; i++) {
-          certPos[this.recipe.claimTypes[i].issuerTLA] = i;
-          this.recipe.claimTypes[i].cert = null;
+        for(let [idx, ctype] of this.recipe.claimTypes.entries()) {
+          certPos[ctype.regType.id] = idx;
         }
         for(let i = 0; i < this.certs.length; i++) {
           let cert = <VerifiableClaim>this.certs[i].top;
-          let tla = cert.issuer && cert.issuer.issuerOrgTLA;
-          if(tla in certPos) {
-            this.recipe.claimTypes[certPos[tla]].cert = cert;
+          if(cert.type.id in certPos) {
+            this.recipe.claimTypes[certPos[cert.type.id]].cert = cert;
           }
         }
       }

@@ -95,7 +95,7 @@
         <h2>{{this.orgRecord.legalName}}</h2>
       </div>
       <div class="col-sm-4 mrgn-tp-md text-right">
-        <a href="" [routerLink]="['/org', this.recordId]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View organization record</a>
+        <a href="" [routerLink]="['/org', recordId]" class="btn btn-default"><span class="fa fa-arrow-right"></span> View organization record</a>
       </div>
     </div>
 
@@ -165,7 +165,7 @@
             <em class="text-muted">{{ claimType.altText || 'Certificate not found' }}</em>
           </div>
           <div class="panel-footer text-right" *ngIf="claimType.cert">
-            <a href="" [routerLink]="['/cert', claimType.cert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> {{ claimType.linkText || 'View record' }}</a>
+            <a href="" [routerLink]="['/org', recordId, 'cert', claimType.cert.id]" class="btn btn-default"><span class="fa fa-arrow-right"></span> {{ claimType.linkText || 'View record' }}</a>
           </div>
           <div class="panel-footer text-right" *ngIf="! claimType.cert">
             <a [href]="claimType.regLink + '?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId" class="btn btn-default"><span class="fa fa-sign-in"></span> {{ claimType.regText }}</a>
