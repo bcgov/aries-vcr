@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   public less = false;
   public none = false;
   public loading = false;
-  public recordCounts = {};
+  public recordCounts : {[key:string]:number} = {};
   private preload;
 
   constructor(
