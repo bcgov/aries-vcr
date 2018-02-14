@@ -15,24 +15,24 @@
     <div class="col-md-8 col-sm-7">
       <h1 class="business-title">{{record.org.legalName}}</h1>
 
-      <a [routerLink]="['/org', record.verifiableOrgId]" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Organization Info</a>
+      <a [routerLink]="['/org', record.verifiableOrgId]" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'org.return-link' | translate}}</a>
 
       <h2 class="cert-title">{{record.type.claimType}}</h2>
 
       <section *ngIf="record.inactiveReason && record.inactiveReason.id" class="alert alert-danger">
-        <h2 class="panel-title"><span class="fa fa-exclamation-triangle"></span> This credential is inactive: {{record.inactiveReason.reason}}</h2>
+        <h2 class="panel-title"><span class="fa fa-exclamation-triangle"></span> {{'cert.inactive-message' | translate}} {{record.inactiveReason.reason}}</h2>
       </section>
 
       <div class="row">
         <div class="col-md-12 cert-info">
           <div class="row form-group">
-            <label class="col-sm-4 control-label">Issuer</label>
+            <label class="col-sm-4 control-label" translate>cert.issuer</label>
             <div class="col-sm-8 form-field">
               <a [routerLink]="['/issuer/', record.issuer.id]">{{record.issuer.name}}</a>
             </div>
           </div>
           <div class="row form-group" *ngIf="record.type.issuerURL && record.type.issuerURL !== 'no'">
-            <label class="col-sm-4 control-label">Issuer Website</label>
+            <label class="col-sm-4 control-label" translate>cert.issuer-website</label>
             <div class="col-sm-8 form-field">
               <a [href]="record.type.issuerURL" rel="external">
                 {{record.type.issuerURL}}</a>
@@ -40,19 +40,19 @@
             </div>
           </div>
           <div class="row form-group">
-            <label class="col-sm-4 control-label">Effective Date</label>
+            <label class="col-sm-4 control-label" translate>cert.effective-date</label>
             <div class="col-sm-8 form-field">
               {{record.effectiveDate}}
             </div>
           </div>
           <div class="row form-group">
-            <label class="col-sm-4 control-label">Expiry Date</label>
+            <label class="col-sm-4 control-label" translate>cert.expiry-date</label>
             <div class="col-sm-8 form-field">
               {{record.endDate || '-'}}
             </div>
           </div>
           <div class="row form-group" *ngIf="others.length">
-            <label class="col-sm-4 control-label">Related Credentials</label>
+            <label class="col-sm-4 control-label" translate>cert.related-certs</label>
             <div class="col-sm-8 form-field">
               <div *ngFor="let rel of others" class="rel-link">
                 <a [routerLink]="['../cert' + rel.id]">{{rel.effectiveDate}}</a>
@@ -61,10 +61,10 @@
           </div>
           <div class="row form-group mrgn-tp-lg">
             <div class="col-sm-4">
-              <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyClaim($event)"><span class="fa fa-accept"></span> Verify Credential</button>
+              <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyClaim($event)"><span class="fa fa-accept"></span> {{'cert.verify-button-label' | translate}}</button>
             </div>
             <div class="col-sm-8 mrgn-tp-sm">
-              <a class="verify-help" href="#">What's this?</a>
+              <a class="verify-help" href="#" translate>cert.whats-this-link</a>
             </div>
           </div>
         </div>
@@ -80,13 +80,13 @@
   <div class="row cert-verify" *ngIf="verifyResult || verifying">
     <div class="col-sm-12" *ngIf="verifying">
       <section class="alert alert-info">
-        <p>Requesting proof of credential ...</p>
+        <p translate>cert.requesting-proof</p>
       </section>
     </div>
     <div class="col-sm-12" *ngIf="! verifying">
       <div [class]="'verify-result panel panel-' + (verifyStatus == 'success' ? 'success' : 'warning')" *ngIf="verifyStatus && verifyStatus !== 'error'">
         <div class="panel-heading">
-          Verification Status: {{verifyStatus}}
+          {{'cert.verify-status' | translate}} {{verifyStatus}}
         </div>
         <div class="panel-body">
           <code>{{verifyResult}}</code>

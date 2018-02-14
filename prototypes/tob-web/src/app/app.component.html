@@ -2,10 +2,10 @@
   <div class="container">
     <a href="http://www2.gov.bc.ca/" tabindex="-1">
       <img class="header-logo"
-           tabindex="-1" alt="B.C. Government Logo"
-           src="assets/bc-logo.svg">
+           tabindex="-1" [alt]="'app.header.logo-alt-text' | translate"
+           [src]="'assets/bc-logo-' + currentLang + '.svg'">
     </a>
-    <span class="title" role="banner">TheOrgBook</span>
+    <span class="title" role="banner" translate>app.header.title</span>
   </div>
 </header>
 
@@ -21,12 +21,12 @@
   <nav class="navbar navbar-default navbar-footer navbar-static-bottom">
     <div class="container">
       <ul class="nav navbar-nav">
-        <li><a href="http://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a></li>
-        <li><a href="http://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy</a></li>
-        <li><a href="http://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a></li>
-        <li><a href="http://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a></li>
+        <li><a href="http://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank" translate>app.footer.disclaimer</a></li>
+        <li><a href="http://www2.gov.bc.ca/gov/content/home/privacy" target="_blank" translate>app.footer.privacy</a></li>
+        <li><a href="http://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank" translate>app.footer.accessibility</a></li>
+        <li><a href="http://www2.gov.bc.ca/gov/content/home/copyright" target="_blank" translate>app.footer.copyright</a></li>
         <li><a href="http://www2.gov.bc.ca/gov/content/home/contact-us"
-               target="_blank">Contact Us</a></li>
+               target="_blank" translate>app.footer.contact</a></li>
       </ul>
     </div>
   </nav>

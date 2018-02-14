@@ -1,6 +1,11 @@
 $bootstrap-sass-asset-helper: true;
 // @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
+.header-logo {
+  margin-right: 24px;
+  width: auto;
+}
+
 main {
   margin-bottom: 80px;
 }

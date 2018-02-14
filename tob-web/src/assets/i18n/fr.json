@@ -1,0 +1,73 @@
+{
+  "app" : {
+    "breadcrumb" : "Accueil",
+    "title" : "Demo du livre d'organisation",
+    "header" : {
+      "title" : "Le livre d'organisation",
+      "logo-alt-text" : "Logo du Gouvernement de la C-B"
+    },
+    "footer" : {
+      "disclaimer" : "Avertissement",
+      "privacy" : "Politique de confidentialité",
+      "accessibility" : "Accessibilité",
+      "copyright" : "Droits d'auteur",
+      "contact" : "Contactez-nous"
+    }
+  },
+  "cert" : {
+    "breadcrumb" : "Permit and License Info",
+    "effective-date" : "Effective Date",
+    "expiry-date" : "Expiry Date",
+    "inactive-message" : "This credential is inactive:",
+    "issuer" : "Issuer",
+    "issuer-website" : "Issuer Website",
+    "related-certs" : "Related Credentials",
+    "requesting-proof" : "Requesting proof of credential ...",
+    "return-link" : "Back to Permit and License Info",
+    "verify-button-label" : "Verify Credential",
+    "whats-this-link" : "What's this?",
+    "verify-status" : "Verification Status:"
+  },
+  "dashboard" : {
+    "breadcrumb" : "Recherche",
+    "title" : "Bienvenue aux Organisations vérifiables de la Colombie-Britannique",
+    "title-orgs" : "organisations",
+    "title-certs" : "permis et licences"
+  },
+  "general" : {
+    "none" : "None",
+    "map-link" : "Show on map",
+    "next-link" : "Suivant",
+    "prev-link" : "Précédent",
+    "verified" : "Verified"
+  },
+  "issuer" : {
+    "breadcrumb" : "Issuer Service",
+    "cert-types" : "Permit and License Types",
+    "effective-date" : "Effective Date",
+    "expiry-date" : "Expiry Date",
+    "website" : "Issuer Website"
+  },
+  "org" : {
+    "breadcrumb" : "Organization Info",
+    "certs-title" : "Permis et Licences",
+    "dba" : "Doing Business As",
+    "effective-date" : "Effective Date",
+    "identifier" : "Organization Identifier",
+    "locations" : "Locations",
+    "return-link" : "Back to Organization Info",
+    "type" : "Organization Type"
+  },
+  "recipe" : {
+    "breadcrumb" : "Recipe",
+    "title" : "Recipe"
+  },
+  "search" : {
+    "by-name" : "Recherche par nom",
+    "by-location" : "Recherche par lieu",
+    "no-results" : "Aucun résultat",
+    "placeholder": "recherche",
+    "results-title" : "Résultats de la recherche",
+    "return-link" : "Back to Search"
+  }
+}

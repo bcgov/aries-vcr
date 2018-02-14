@@ -1,9 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule, Http } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
 import { BusinessComponent } from './business/business.component';
@@ -15,6 +18,18 @@ import { IssuerComponent } from './issuer/issuer.component';
 import { RoadmapComponent } from './roadmap/roadmap.component';
 import { AdminModule } from 'app/admin/admin.module';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+
+
+export function createTranslateLoader(http: Http) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+export class MyMissingTranslationHandler implements MissingTranslationHandler {
+  handle(params: MissingTranslationHandlerParams) {
+    // params: {key, translateService}
+    return '??' + params.key + '??';
+  }
+}
+
 
 @NgModule({
   declarations: [
@@ -34,8 +49,19 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
     AppRoutingModule,
     NgbModule,
     AdminModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [Http]
+      }
+    })
   ],
-  providers: [GeneralDataService],
+  providers: [
+    GeneralDataService,
+    {provide: MissingTranslationHandler, useClass: MyMissingTranslationHandler}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

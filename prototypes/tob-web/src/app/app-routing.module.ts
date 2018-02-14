@@ -16,13 +16,13 @@ const routes: Routes = [
     path: 'home',
     component: DashboardComponent,
     data: {
-      breadcrumb: 'Search'
+      breadcrumb: 'dashboard.breadcrumb'
     }
   },
   {
     path: 'org/:orgId',
     data: {
-      breadcrumb: 'Organization Info'
+      breadcrumb: 'org.breadcrumb'
     },
     children: [
       {
@@ -33,7 +33,7 @@ const routes: Routes = [
         path: 'cert/:certId',
         component: CertComponent,
         data: {
-          breadcrumb: 'Permit and License Info'
+          breadcrumb: 'cert.breadcrumb'
         }
       }
     ]
@@ -42,7 +42,7 @@ const routes: Routes = [
     path: 'issuer/:issuerId',
     component: IssuerComponent,
     data: {
-      breadcrumb: 'Issuer Service'
+      breadcrumb: 'issuer.breadcrumb'
     }
   },
   {
@@ -53,7 +53,7 @@ const routes: Routes = [
     path: 'recipe/:recipeId',
     component: RoadmapComponent,
     data: {
-      breadcrumb: 'Roadmap'
+      breadcrumb: 'recipe.breadcrumb'
     }
   }
 ];

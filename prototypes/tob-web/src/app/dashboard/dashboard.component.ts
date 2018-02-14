@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   public less = false;
   public none = false;
   public loading = false;
+  public recordCounts = {};
   private preload;
 
   constructor(
@@ -31,6 +32,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.preload = this.dataService.preloadData(['locations', 'locationtypes', 'verifiableorgtypes']);
+    this.preload.then(() => {
+      this.recordCounts = {
+        orgs: this.dataService.getRecordCount('verifiableorgs'),
+        certs: this.dataService.getRecordCount('verifiableclaims')
+      };
+    });
     this.$route.queryParams.subscribe(params => {
       this.setQuery(params.query);
     });
@@ -140,14 +147,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   next() {
     this.page ++;
     this.paginate();
-  }
-
-  orgCount() {
-    return this.dataService.getRecordCount('verifiableorgs');
-  }
-
-  claimCount() {
-    return this.dataService.getRecordCount('verifiableclaims');
   }
 
 }

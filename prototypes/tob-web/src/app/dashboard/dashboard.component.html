@@ -1,28 +1,28 @@
 <section id="dashboard">
 
-  <h1 class="dashboard-title text-center">Welcome to British Columbia's Verifiable Organizations</h1>
+  <h1 class="dashboard-title text-center" translate>dashboard.title</h1>
 
   <div class="row">
     <div class="col-sm-12">
 
       <div class="text-center">
         <ul class="stats">
-          <li class="stat"><span class="numbers">{{orgCount() | number}}</span> organizations</li>
-          <li class="stat"><span class="numbers">{{claimCount() | number}}</span> permits and licences</li>
+          <li class="stat"><span class="numbers">{{recordCounts.orgs | number}}</span> {{'dashboard.title-orgs' | translate}}</li>
+          <li class="stat"><span class="numbers">{{recordCounts.certs | number}}</span> {{'dashboard.title-certs' | translate}}</li>
         </ul>
         <div class="search-outer">
           <div [class]="'large-search' + (searchFocused ? ' active' : '')">
             <span class="fa fa-search" *ngIf="!loading" (click)="focusSearch($event)"></span>
             <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
-            <input type="text" id="searchInput" name="query" size="40" placeholder="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" (input)="inputEvent($event)" (focus)="inputEvent($event)" (blur)="inputEvent($event)">
+            <input type="text" id="searchInput" name="query" size="40" [placeholder]="'search.placeholder'|translate" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" (input)="inputEvent($event)" (focus)="inputEvent($event)" (blur)="inputEvent($event)">
           </div>
           <div class="btn-toolbar search-type">
             <div class="btn-group">
               <label [class]="'btn btn-default btn-radio' + (searchType=='name' ? ' active' : '')">
-                <input type="radio" name="search_type" value="name" [checked]="searchType=='name'" (click)="setSearchType($event)"> &nbsp;Search by Name
+                <input type="radio" name="search_type" value="name" [checked]="searchType=='name'" (click)="setSearchType($event)"> &nbsp;{{'search.by-name' | translate}}
               </label>
               <label [class]="'btn btn-default btn-radio' + (searchType=='location' ? ' active' : '')">
-                <input type="radio" name="search_type" value="location" [checked]="searchType=='location'" (click)="setSearchType($event)"> &nbsp;Search by Location
+                <input type="radio" name="search_type" value="location" [checked]="searchType=='location'" (click)="setSearchType($event)"> &nbsp;{{'search.by-location' | translate}}
               </label>
             </div>
           </div>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="results mrgn-tp-lg" *ngIf="results.length || none">
-        <label class="control-label">Search Results</label>
+        <label class="control-label" translate>search.results-title</label>
         <div *ngIf="searchType=='name' && !none">
           <div class="row" *ngFor="let record of results">
             <div class="col-sm-6">
@@ -57,7 +57,7 @@
         </div>
         <div class="row" *ngIf="none">
           <div class="col-sm-6 text-muted">
-            <em>No results</em>
+            <em translate>search.no-results</em>
           </div>
         </div>
       </div>
@@ -66,10 +66,10 @@
         <div class="col-sm-12 text-right">
           <ul class="pager">
             <li *ngIf="less">
-              <a href="#" (click)="prev(); $event.preventDefault();">&lt;&lt; Previous</a>
+              <a href="#" (click)="prev(); $event.preventDefault();">&lt;&lt; {{'general.prev-link' | translate}}</a>
             </li>
             <li *ngIf="more">
-              <a href="#" (click)="next(); $event.preventDefault();">Next &gt;&gt;</a>
+              <a href="#" (click)="next(); $event.preventDefault();">{{'general.next-link' | translate}} &gt;&gt;</a>
             </li>
           </ul>
         </div>

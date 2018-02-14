@@ -15,18 +15,18 @@
     <div class="col-md-8 col-sm-7">
       <h1 class="business-title">{{record.legalName}}</h1>
 
-      <a [routerLink]="'/'" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> Back to Search</a>
+      <a [routerLink]="'/'" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
 
       <div class="row">
         <div class="col-md-6 business-info">
           <div class="form-group">
-            <label class="control-label">Organization Identifier</label>
+            <label class="control-label" translate>org.identifier</label>
             <div class="form-field">
               {{record.orgId}}
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label">Organization Type</label>
+            <label class="control-label" translate>org.type</label>
             <div class="form-field">
               {{record.typeName}}
             </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="col-md-6 business-info">
           <div class="form-group">
-            <label class="control-label">Locations</label>
+            <label class="control-label" translate>org.locations</label>
             <div class="form-field">
               <div class="field-value" *ngFor="let loc of locations">
                 <!--small class="text-muted">{{loc.typeName}}</small><br-->
@@ -42,10 +42,10 @@
                 {{loc.unitNumber && ('' + loc.unitNumber + '-')}}{{loc.streetAddress}}<br>
                 {{loc.municipality}}, {{loc.province}}&nbsp; {{loc.postalCode}}<br>
                 Canada
-                <div class="map-link"><span class="fa fa-map-marker"></span> <a href="#" class="small">Show on map</a></div>
+                <div class="map-link"><span class="fa fa-map-marker"></span> <a href="#" class="small" translate>general.map-link</a></div>
               </div>
               <div *ngIf="!locations.length">
-                <em class="text-muted">None</em>
+                <em class="text-muted" translate>general.none</em>
               </div>
             </div>
           </div>
@@ -56,20 +56,20 @@
         <hr>
         <div class="col-sm-6 business-info">
           <div class="form-group">
-            <label class="control-label">Doing Business As</label>
+            <label class="control-label" translate>org.dba</label>
             <div class="form-field">
               <div class="field-value">{{dba.dbaName}}</div>
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label">Effective Date</label>
+            <label class="control-label" translate>org.effective-date</label>
             <div class="form-field">
               <div class="field-value">{{dba.effectiveDate}}</div>
             </div>
           </div>        </div>
         <div class="col-md-6 business-info" *ngIf="dba.locations.length">
           <div class="form-group">
-            <label class="control-label">Locations</label>
+            <label class="control-label" translate>org.locations</label>
             <div class="form-field">
               <div class="field-value" *ngFor="let loc of dba.locations">
                 <!--small class="text-muted">{{loc.typeName}}</small><br-->
@@ -77,10 +77,10 @@
                 {{loc.unitNumber && ('' + loc.unitNumber + '-')}}{{loc.streetAddress}}<br>
                 {{loc.municipality}}, {{loc.province}}&nbsp; {{loc.postalCode}}<br>
                 Canada
-                <div class="map-link"><span class="fa fa-map-marker"></span> <a href="#" class="small">Show on map</a></div>
+                <div class="map-link"><span class="fa fa-map-marker"></span> <a href="#" class="small" translate>general.map-link</a></div>
               </div>
               <div *ngIf="!dba.locations.length">
-                <em class="text-muted">None</em>
+                <em class="text-muted" translate>general.none</em>
               </div>
             </div>
           </div>
@@ -90,7 +90,7 @@
 
     <div class="col-md-4 col-sm-5 hidden-xs">
       <div class="business-badge">
-        <img src="/assets/ribbon.svg" alt="Verified">
+        <img src="/assets/ribbon.svg" [alt]="'general.verified' | translate">
       </div>
     </div>
   </div>
@@ -98,7 +98,7 @@
   <div class="row mrgn-tp-md mrgn-bttm-lg business-certs" *ngIf="loaded">
     <hr>
     <div class="col-sm-12">
-      <label class="control-label"><span class="field-name">Permits and Licences</span> <span class="fa fa-question-circle text-muted"></span></label>
+      <label class="control-label"><span class="field-name" translate>org.certs-title</span> <span class="fa fa-question-circle text-muted"></span></label>
       <div class="certs-outer">
         <div *ngFor="let grp of certs" class="cert">
           <div class="panel panel-cert cert-panel">
@@ -126,7 +126,7 @@
         </div>
       </div>
       <div *ngIf="!certs.length">
-        <em class="text-muted">None</em>
+        <em class="text-muted" translate>general.none</em>
       </div>
     </div>
   </div>
