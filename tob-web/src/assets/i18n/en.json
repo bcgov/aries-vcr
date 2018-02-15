@@ -1,73 +1,73 @@
 {
   "app" : {
-    "breadcrumb" : "Home",
-    "title" : "TheOrgBook Demo",
+    "breadcrumb": "Home",
+    "title": "TheOrgBook Demo",
     "header" : {
-      "title" : "TheOrgBook",
-      "logo-alt-text" : "B.C. Government Logo"
+      "title": "TheOrgBook",
+      "logo-alt-text": "B.C. Government Logo"
     },
     "footer" : {
-      "disclaimer" : "Disclaimer",
-      "privacy" : "Privacy",
-      "accessibility" : "Accessibility",
-      "copyright" : "Copyright",
-      "contact" : "Contact Us"
+      "disclaimer": "Disclaimer",
+      "privacy": "Privacy",
+      "accessibility": "Accessibility",
+      "copyright": "Copyright",
+      "contact": "Contact Us"
     }
   },
   "cert" : {
-    "breadcrumb" : "Permit and License Info",
-    "effective-date" : "Effective Date",
-    "expiry-date" : "Expiry Date",
-    "inactive-message" : "This credential is inactive:",
-    "issuer" : "Issuer",
-    "issuer-website" : "Issuer Website",
-    "related-certs" : "Related Credentials",
-    "requesting-proof" : "Requesting proof of credential ...",
-    "return-link" : "Back to Permit and License Info",
-    "verify-button-label" : "Verify Credential",
-    "whats-this-link" : "What's this?",
-    "verify-status" : "Verification Status:"
+    "breadcrumb": "Permit and License Info",
+    "effective-date": "Effective Date",
+    "expiry-date": "Expiry Date",
+    "inactive-message": "This credential is inactive:",
+    "issuer": "Issuer",
+    "issuer-website": "Issuer Website",
+    "related-certs": "Related Credentials",
+    "requesting-proof": "Requesting proof of credential ...",
+    "return-link": "Back to Permit and License Info",
+    "verify-button-label": "Verify Credential",
+    "whats-this-link": "What's this?",
+    "verify-status": "Verification Status:"
   },
   "dashboard" : {
-    "breadcrumb" : "Search",
-    "title" : "Welcome to British Columbia's Verifiable Organizations",
-    "title-orgs" : "organizations",
-    "title-certs" : "permits and licenses"
+    "breadcrumb": "Search",
+    "title": "Welcome to British Columbia's Verifiable Organizations",
+    "title-orgs": "organizations",
+    "title-certs": "permits and licenses"
   },
   "general" : {
-    "none" : "None",
-    "map-link" : "Show on map",
-    "next-link" : "Next",
-    "prev-link" : "Previous",
-    "verified" : "Verified"
+    "none": "None",
+    "map-link": "Show on map",
+    "next-link": "Next",
+    "prev-link": "Previous",
+    "verified": "Verified"
   },
   "issuer" : {
-    "breadcrumb" : "Issuer Service",
-    "cert-types" : "Permit and License Types",
-    "effective-date" : "Effective Date",
-    "expiry-date" : "Expiry Date",
-    "website" : "Issuer Website"
+    "breadcrumb": "Issuer Service",
+    "cert-types": "Permit and License Types",
+    "effective-date": "Effective Date",
+    "expiry-date": "Expiry Date",
+    "website": "Issuer Website"
   },
   "org" : {
-    "breadcrumb" : "Organization Info",
-    "certs-title" : "Permits and Licenses",
-    "dba" : "Doing Business As",
-    "effective-date" : "Effective Date",
-    "identifier" : "Organization Identifier",
-    "locations" : "Locations",
-    "return-link" : "Back to Organization Info",
-    "type" : "Organization Type"
+    "breadcrumb": "Organization Info",
+    "certs-title": "Permits and Licenses",
+    "dba": "Doing Business As",
+    "effective-date": "Effective Date",
+    "identifier": "Organization Identifier",
+    "locations": "Locations",
+    "return-link": "Back to Organization Info",
+    "type": "Organization Type"
   },
   "recipe" : {
-    "breadcrumb" : "Recipe",
-    "title" : "Recipe"
+    "breadcrumb": "Recipe",
+    "title": "Recipe"
   },
   "search" : {
-    "by-name" : "Search by Name",
-    "by-location" : "Search by Location",
-    "no-results" : "No results",
+    "by-name": "Search by Name",
+    "by-location": "Search by Location",
+    "no-results": "No results",
     "placeholder": "search",
-    "results-title" : "Search Results",
-    "return-link" : "Back to Search"
+    "results-title": "Search Results",
+    "return-link": "Back to Search"
   }
 }

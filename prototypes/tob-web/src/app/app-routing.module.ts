@@ -6,7 +6,7 @@ import { IssuerComponent } from 'app/issuer/issuer.component';
 import { DashboardComponent } from 'app/dashboard/dashboard.component';
 import { RoadmapComponent } from 'app/roadmap/roadmap.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',

@@ -15,7 +15,7 @@
     <div class="col-md-8 col-sm-7">
       <h1 class="business-title">{{record.org.legalName}}</h1>
 
-      <a [routerLink]="['/org', record.verifiableOrgId]" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'org.return-link' | translate}}</a>
+      <a [routerLink]="['/org', record.verifiableOrgId] | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'org.return-link' | translate}}</a>
 
       <h2 class="cert-title">{{record.type.claimType}}</h2>
 
@@ -28,7 +28,7 @@
           <div class="row form-group">
             <label class="col-sm-4 control-label" translate>cert.issuer</label>
             <div class="col-sm-8 form-field">
-              <a [routerLink]="['/issuer/', record.issuer.id]">{{record.issuer.name}}</a>
+              <a [routerLink]="['/issuer/', record.issuer.id] | localize">{{record.issuer.name}}</a>
             </div>
           </div>
           <div class="row form-group" *ngIf="record.type.issuerURL && record.type.issuerURL !== 'no'">
@@ -55,7 +55,7 @@
             <label class="col-sm-4 control-label" translate>cert.related-certs</label>
             <div class="col-sm-8 form-field">
               <div *ngFor="let rel of others" class="rel-link">
-                <a [routerLink]="['../cert' + rel.id]">{{rel.effectiveDate}}</a>
+                <a [routerLink]="['../cert' + rel.id] | localize">{{rel.effectiveDate}}</a>
               </div>
             </div>
           </div>

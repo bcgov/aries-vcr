@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { LocalizeRouterService } from 'localize-router';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
@@ -21,29 +22,31 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     public el: ElementRef,
     public translate: TranslateService,
-    private route:ActivatedRoute,
+    private localize: LocalizeRouterService,
+    private route: ActivatedRoute,
     private titleService: Title) {}
 
   ngOnInit() {
-    /*
-     * Fallback language for when a translation isn't found in the current language
-     */
-    this.translate.setDefaultLang(this.supportedLanguages[0]);
-
-     /*
-      * The primary language to use. If not yet available, it will use the
-      * current loader to fetch it.
-      */
-    this.translate.use(this.guessLanguage());
+    // Initialize fallback and initial language
+    // NOTE - currently superceded by localize-router
+    // this.translate.setDefaultLang(this.supportedLanguages[0]);
+    // this.translate.use(this.guessLanguage());
 
     this.onLangChange = this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.onUpdateLanguage(event.lang);
     });
+    if(this.translate.currentLang) {
+      // may already be initialized by localize-router
+      this.onUpdateLanguage(this.translate.currentLang);
+    }
   }
 
   ngOnDestroy() {
     if (this.onLangChange !== undefined) {
       this.onLangChange.unsubscribe();
+    }
+    if (this.onFetchTitle !== undefined) {
+      this.onFetchTitle.unsubscribe();
     }
   }
 
@@ -53,6 +56,10 @@ export class AppComponent implements OnInit, OnDestroy {
     // set the lang attribute on the html element
     this.el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
     this.setTitleLabel(this.titleLabel);
+  }
+
+  public changeLanguage(lang: string) {
+    this.localize.changeLanguage(lang);
   }
 
   /**
@@ -88,7 +95,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.onFetchTitle.unsubscribe();
     }
     this.titleLabel = newLabel;
-    this.onFetchTitle = this.translate.get(newLabel).subscribe((res: string) => {
+    this.onFetchTitle = this.translate.stream(newLabel).subscribe((res: string) => {
       this.setTitle(res);
     });
   }

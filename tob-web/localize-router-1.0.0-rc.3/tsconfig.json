@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "types": [
+      "hammerjs",
+      "jasmine",
+      "node"
+    ],
+    "lib": ["es2015", "dom"]
+  },
+  "files": [
+    "index.ts",
+    "./src/util.ts",
+    "./src/localize-router.config.ts",
+    "./src/localize-router.pipe.ts",
+    "./src/localize-router.service.ts",
+    "./src/localize-router.parser.ts",
+    "./src/localize-router.module.ts",
+    "./src/localize-router-config-loader.ts",
+    "./tests/localize-router.service.spec.ts",
+    "./tests/localize-router.parser.spec.ts",
+    "./tests/localize-router.pipe.spec.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "bundles"
+  ],
+  "angularCompilerOptions": {
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true
+  }
+}

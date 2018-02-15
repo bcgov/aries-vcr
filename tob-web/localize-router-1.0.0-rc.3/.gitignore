@@ -1,0 +1,50 @@
+############
+## Project
+############
+
+bundles/
+node_modules/
+coverage/
+
+*.map
+*.d.ts
+*.metadata.json
+*.js
+# overrides for js
+!config/*
+!demo/cli/*js
+!karma.conf.js
+!webpack.config.js
+package-lock.json
+
+#################
+## Misc
+#################
+
+nbproject
+manifest.mf
+build.xml
+npm-debug.log
+
+#################
+## IDEs
+#################
+
+.idea
+.project
+.settings
+.vscode
+
+############
+## Windows
+############
+
+Thumbs.db
+Desktop.ini
+
+############
+## Mac
+############
+
+.DS_Store
+
