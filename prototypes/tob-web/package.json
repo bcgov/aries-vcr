@@ -27,7 +27,7 @@
     "@ngx-translate/http-loader": "0.1.0",
     "compare-versions": "^3.1.0",
     "core-js": "^2.4.1",
-    "localize-router": "https://github.com/cywolf/localize-router",
+    "localize-router": "git+https://github.com/cywolf/localize-router.git",
     "mygovbc-bootstrap-theme": "^0.3.0",
     "rxjs": "^5.4.1",
     "typescript": ">=2.1.0 <2.4.0",
