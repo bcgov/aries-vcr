@@ -10,11 +10,20 @@
 </header>
 
 <main class="container">
-  <div class="page-header" id="banner">
-    <breadcrumb></breadcrumb>
+
+  <div class="row mrgn-tp-lg" *ngIf="!inited">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
   </div>
 
-  <router-outlet></router-outlet>
+  <ng-container *ngIf="inited">
+    <div class="page-header" id="banner">
+      <breadcrumb></breadcrumb>
+    </div>
+
+    <router-outlet></router-outlet>
+  </ng-container>
 </main>
 
 <footer>

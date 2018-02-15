@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   public more = false;
   public less = false;
   public none = false;
+  public inited = false;
   public loading = false;
   public recordCounts : {[key:string]:number} = {};
   private preload;
@@ -37,6 +38,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         orgs: this.dataService.getRecordCount('verifiableorgs'),
         certs: this.dataService.getRecordCount('verifiableclaims')
       };
+      this.inited = true;
     });
     this.$route.queryParams.subscribe(params => {
       this.setQuery(params.query);
@@ -44,8 +46,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    (<HTMLInputElement>document.getElementById('searchInput')).value = this.query;
-    requestAnimationFrame(() => this.focusSearch());
+    this.preload.then(() => {
+      requestAnimationFrame(() => {
+        (<HTMLInputElement>document.getElementById('searchInput')).value = this.query;
+        this.focusSearch()
+      });
+    });
   }
 
   setQuery(q) {

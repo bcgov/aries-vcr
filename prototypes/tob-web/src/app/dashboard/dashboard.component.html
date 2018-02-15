@@ -1,8 +1,15 @@
 <section id="dashboard">
 
-  <h1 class="dashboard-title text-center" translate>dashboard.title</h1>
+  <div class="row mrgn-tp-lg" *ngIf="!inited">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
 
-  <div class="row">
+
+  <h1 class="dashboard-title text-center" translate *ngIf="inited">dashboard.title</h1>
+
+  <div class="row" *ngIf="inited">
     <div class="col-sm-12">
 
       <div class="text-center">

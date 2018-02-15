@@ -6,3 +6,9 @@
   // why is this necessary??
   margin-right: 0;
 }
+
+.alert {
+  h2:first-child, h3:first-child, h4:first-child {
+    margin-top: 0;
+  }
+}

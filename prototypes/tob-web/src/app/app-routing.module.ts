@@ -5,6 +5,7 @@ import { CertComponent } from 'app/cert/cert.component';
 import { IssuerComponent } from 'app/issuer/issuer.component';
 import { DashboardComponent } from 'app/dashboard/dashboard.component';
 import { RoadmapComponent } from 'app/roadmap/roadmap.component';
+import { NotFoundComponent } from 'app/not-found/not-found.component';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,13 @@ export const routes: Routes = [
     component: RoadmapComponent,
     data: {
       breadcrumb: 'recipe.breadcrumb'
+    }
+  },
+  {
+    path: '**',
+    component: NotFoundComponent,
+    data: {
+      breadcrumb: 'not-found.breadcrumb'
     }
   }
 ];

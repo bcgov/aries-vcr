@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class AppComponent implements OnInit, OnDestroy {
   onLangChange: Subscription;
   currentLang = 'en';
+  inited = false;
   supportedLanguages = ['en', 'fr'];
   private titleLabel = 'app.title';
   private onFetchTitle: Subscription;
@@ -50,12 +51,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  onUpdateLanguage(lang): void {
+  onUpdateLanguage(lang) {
     console.log('Language:', lang);
     this.currentLang = this.translate.currentLang;
     // set the lang attribute on the html element
     this.el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
     this.setTitleLabel(this.titleLabel);
+    this.checkInit();
+  }
+
+  checkInit() {
+    if(this.currentLang) {
+      this.inited = true;
+    }
   }
 
   public changeLanguage(lang: string) {

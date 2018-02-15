@@ -20,6 +20,7 @@ import { IssuerComponent } from './issuer/issuer.component';
 import { RoadmapComponent } from './roadmap/roadmap.component';
 import { AdminModule } from 'app/admin/admin.module';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const ROUTE_PREFIX : string = 'ROUTES.';
 
@@ -51,7 +52,8 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     DashboardComponent,
     IssuerComponent,
     RoadmapComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,

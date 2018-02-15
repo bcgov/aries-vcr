@@ -2,14 +2,14 @@
   "ROUTES": {
     "home": "acceuil"
   },
-  "app" : {
+  "app": {
     "breadcrumb": "Accueil",
     "title": "Demo du livre d'organisation",
-    "header" : {
+    "header": {
       "title": "Le livre d'organisation",
       "logo-alt-text": "Logo du Gouvernement de la C-B"
     },
-    "footer" : {
+    "footer": {
       "disclaimer": "Avertissement",
       "privacy": "Politique de confidentialité",
       "accessibility": "Accessibilité",
@@ -17,7 +17,7 @@
       "contact": "Contactez-nous"
     }
   },
-  "cert" : {
+  "cert": {
     "breadcrumb": "Permit and License Info",
     "effective-date": "Effective Date",
     "expiry-date": "Expiry Date",
@@ -31,27 +31,33 @@
     "whats-this-link": "What's this?",
     "verify-status": "Verification Status:"
   },
-  "dashboard" : {
+  "dashboard": {
     "breadcrumb": "Recherche",
     "title": "Bienvenue aux Organisations vérifiables de la Colombie-Britannique",
     "title-orgs": "organisations",
     "title-certs": "permis et licences"
   },
-  "general" : {
+  "general": {
     "none": "None",
     "map-link": "Show on map",
     "next-link": "Suivant",
     "prev-link": "Précédent",
     "verified": "Verified"
   },
-  "issuer" : {
+  "issuer": {
     "breadcrumb": "Issuer Service",
     "cert-types": "Permit and License Types",
     "effective-date": "Effective Date",
     "expiry-date": "Expiry Date",
     "website": "Issuer Website"
   },
-  "org" : {
+  "not-found": {
+    "breadcrumb": "Page non trouvée",
+    "title": "Page non trouvée",
+    "error": "Cette page a été déplacée.",
+    "return-link-title": "Retournez sur la page d'accueil"
+  },
+  "org": {
     "breadcrumb": "Organization Info",
     "certs-title": "Permis et Licences",
     "dba": "Doing Business As",
@@ -61,11 +67,11 @@
     "return-link": "Back to Organization Info",
     "type": "Organization Type"
   },
-  "recipe" : {
+  "recipe": {
     "breadcrumb": "Recipe",
     "title": "Recipe"
   },
-  "search" : {
+  "search": {
     "by-name": "Recherche par nom",
     "by-location": "Recherche par lieu",
     "no-results": "Aucun résultat",
