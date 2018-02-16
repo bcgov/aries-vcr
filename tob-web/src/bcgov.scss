@@ -12,3 +12,22 @@
     margin-top: 0;
   }
 }
+
+header .navbar-nav {
+  float: right;
+  font-size: 16px;
+  margin-right: 5px;
+  margin-top: 5px;
+  > li > a {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+    padding: 10px 10px 8px;
+    text-decoration: none;
+    &:hover, &:focus, &:active {
+      background: none;
+      border-color: #fff;
+      text-decoration: underline;
+    }
+  }
+}

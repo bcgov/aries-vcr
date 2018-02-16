@@ -7,7 +7,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule, routes } from './app-routing.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader } from 'localize-router';
+import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings } from 'localize-router';
+import { LocalizeRouterHttpLoader } from 'localize-router-http-loader';
 import { MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
@@ -27,9 +28,10 @@ const ROUTE_PREFIX : string = 'ROUTES.';
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-export function createLocalizeLoader(translate: TranslateService, location: Location, settings: LocalizeRouterSettings) {
+export function createLocalizeLoader(translate: TranslateService, location: Location, settings: LocalizeRouterSettings, http: Http) {
   // list of locales could be loaded from an external file, ie. locales.json
-  return new ManualParserLoader(translate, location, settings, ['en', 'fr'], ROUTE_PREFIX);
+  //return new ManualParserLoader(translate, location, settings, ['en', 'fr'], ROUTE_PREFIX);
+  return new LocalizeRouterHttpLoader(translate, location, settings, http, './assets/i18n/locales.json');
 }
 export class MyMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
@@ -38,6 +40,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     // params: {key, translateService}
     if(params.key.substring(0, ROUTE_PREFIX.length) === ROUTE_PREFIX)
       return;
+    console.warn("missing translation: " + params.key);
     return '??' + params.key + '??';
   }
 }
@@ -65,15 +68,15 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [Http]
       }
     }),
     LocalizeRouterModule.forRoot(routes, {
       parser: {
         provide: LocalizeParser,
-        useFactory: (createLocalizeLoader),
-        deps: [TranslateService, Location, LocalizeRouterSettings]
+        useFactory: createLocalizeLoader,
+        deps: [TranslateService, Location, LocalizeRouterSettings, Http]
       }
     })
   ],

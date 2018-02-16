@@ -27,6 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
       label: 'Français'
     }
   ];
+  altLang : string;
+  altLangLabel : string;
   private titleLabel = 'app.title';
   private onFetchTitle: Subscription;
 
@@ -65,6 +67,10 @@ export class AppComponent implements OnInit, OnDestroy {
     if(lang && lang !== this.currentLang) {
       console.log('Language:', lang);
       this.currentLang = lang;
+      // need to add some functionality to localize-router to handle this properly
+      let alt = this.altLanguageInfo();
+      this.altLang = alt ? alt.name : 'en';
+      this.altLangLabel = alt ? alt.label : '';
       // set the lang attribute on the html element
       this.el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
       this.setTitleLabel(this.titleLabel);
@@ -78,8 +84,24 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  altLanguageInfo() {
+    for(let lang of this.supportedLanguages) {
+      if(lang.name !== this.currentLang)
+        return lang;
+    }
+  }
+
   public changeLanguage(lang: string) {
     this.localize.changeLanguage(lang);
+  }
+
+  public switchLanguage(evt) {
+    if(this.altLang) {
+      this.localize.changeLanguage(this.altLang);
+    }
+    if(evt) {
+      evt.preventDefault();
+    }
   }
 
   /**

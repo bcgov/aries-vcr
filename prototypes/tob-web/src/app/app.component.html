@@ -1,5 +1,10 @@
 <header>
   <div class="container">
+    <div id="header-links" role="navigation">
+      <ul class="inline nav navbar-nav">
+        <li><a href="#" [lang]="altLang" (click)="switchLanguage($event)">{{altLangLabel}}</a></li>
+      </ul>
+    </div>
     <a href="http://www2.gov.bc.ca/" tabindex="-1">
       <img class="header-logo"
            tabindex="-1" [alt]="'app.header.logo-alt-text' | translate"
