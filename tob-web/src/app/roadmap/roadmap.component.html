@@ -13,16 +13,16 @@
   <h1 class="roadmap-title" *ngIf="inited">{{recipe.title}}</h1>
 
   <ng-container *ngIf="! orgRecord && inited">
-    <div class="row" >
-      <div class="col-md-5 col-md-push-7">
+    <div class="row">
+      <div class="col-md-5 col-md-push-7" *ngIf="registerLink">
         <div class="well">
           <p class="lead">If your organization has not yet been incorporated, you may enroll with BC Registries here:</p>
-          <a class="btn btn-lg btn-primary" href="https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca?source=bcorgbook"><span class="fa fa-sign-in"></span> {{'recipe.register-link' | translate}}</a>
+          <a class="btn btn-lg btn-primary" [href]="registerLink + '?source=bcorgbook&lang=' + currentLang"><span class="fa fa-sign-in"></span> {{'recipe.register-link' | translate}}</a>
         </div>
       </div>
 
-      <div class="col-md-7 col-md-pull-5">
-        <h2>Find your Organization</h2>
+      <div [class]="(registerLink ? 'col-md-7 col-md-pull-5' : 'col-md-8 col-md-offset-2')">
+        <h2 class="text-center" translate>recipe.find-org-title</h2>
 
         <div class="search-outer text-center">
           <div class="large-search">
@@ -170,7 +170,7 @@
             <a href="" [routerLink]="['/org', recordId, 'cert', claimType.cert.id] | localize" class="btn btn-default"><span class="fa fa-arrow-right"></span> {{ (claimType.linkText || 'recipe.cert-view-link') | translate }}</a>
           </div>
           <div class="panel-footer text-right" *ngIf="! claimType.cert">
-            <a [href]="claimType.regLink + '?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId" class="btn btn-default"><span class="fa fa-sign-in"></span> {{ claimType.regText }}</a>
+            <a [href]="claimType.regLink + '?source=bcorgbook&source_id='+recordId+'&org_id='+orgRecord.orgId+'&lang='+currentLang" class="btn btn-default"><span class="fa fa-sign-in"></span> {{ claimType.regText }}</a>
           </div>
         </div>
       </div>

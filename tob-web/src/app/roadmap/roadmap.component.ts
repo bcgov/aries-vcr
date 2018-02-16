@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { GeneralDataService } from 'app/general-data.service';
 import { Location, LocationType, VerifiableOrg, VerifiableOrgType, IssuerService, VerifiableClaim, VerifiableClaimType, DoingBusinessAs,
   blankLocation, blankOrgType, blankLocationType, blankIssuerService, blankClaimType } from '../data-types';
@@ -21,6 +22,8 @@ export class RoadmapComponent implements OnInit {
   public allResults;
   public results = [];
   public searchType = 'name';
+  public currentLang : string;
+  public registerLink : string;
   private searchTimer;
   private sub;
   private page = 0;
@@ -38,11 +41,13 @@ export class RoadmapComponent implements OnInit {
 
   constructor(
     private dataService: GeneralDataService,
+    private translate: TranslateService,
     private $route: ActivatedRoute,
     private $router: Router
   ) { }
 
   ngOnInit() {
+    this.currentLang = this.translate.currentLang;
     this.preload = this.dataService.preloadData(['locations', 'locationtypes', 'verifiableclaimtypes', 'verifiableorgtypes']);
     this.$route.params.subscribe(params => {
       this.preload.then(() => this.loadRecipe(params.recipeId));
@@ -63,6 +68,10 @@ export class RoadmapComponent implements OnInit {
             continue;
           typesBySchema[sname] = regType;
         }
+      }
+
+      if(typesBySchema['incorporation.bc_registries']) {
+        this.registerLink = typesBySchema['incorporation.bc_registries'].issuerURL;
       }
 
       let ctypes = data['claimTypes'] || [];
