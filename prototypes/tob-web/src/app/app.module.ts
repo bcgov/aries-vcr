@@ -31,7 +31,7 @@ export function createTranslateLoader(http: Http) {
 export function createLocalizeLoader(translate: TranslateService, location: Location, settings: LocalizeRouterSettings, http: Http) {
   // list of locales could be loaded from an external file, ie. locales.json
   //return new ManualParserLoader(translate, location, settings, ['en', 'fr'], ROUTE_PREFIX);
-  return new LocalizeRouterHttpLoader(translate, location, settings, http, './assets/i18n/locales.json');
+  return new LocalizeRouterHttpLoader(translate, location, settings, http, './assets/locales.json');
 }
 export class MyMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
