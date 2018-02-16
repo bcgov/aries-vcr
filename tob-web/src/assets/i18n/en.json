@@ -15,7 +15,7 @@
     }
   },
   "cert": {
-    "breadcrumb": "Permit and License Info",
+    "breadcrumb": "Permit and Licence Info",
     "effective-date": "Effective Date",
     "expiry-date": "Expiry Date",
     "inactive-message": "This credential is inactive:",
@@ -23,7 +23,7 @@
     "issuer-website": "Issuer Website",
     "related-certs": "Related Credentials",
     "requesting-proof": "Requesting proof of credential ...",
-    "return-link": "Back to Permit and License Info",
+    "return-link": "Back to Permit and Licence Info",
     "verify-button-label": "Verify Credential",
     "whats-this-link": "What's this?",
     "verify-status": "Verification Status:"
@@ -32,7 +32,7 @@
     "breadcrumb": "Search",
     "title": "Welcome to British Columbia's Verifiable Organizations",
     "title-orgs": "organizations",
-    "title-certs": "permits and licenses"
+    "title-certs": "permits and licences"
   },
   "general": {
     "none": "None",
@@ -43,7 +43,7 @@
   },
   "issuer": {
     "breadcrumb": "Issuer Service",
-    "cert-types": "Permit and License Types",
+    "cert-types": "Permit and Licence Types",
     "effective-date": "Effective Date",
     "expiry-date": "Expiry Date",
     "website": "Issuer Website"
@@ -56,7 +56,7 @@
   },
   "org": {
     "breadcrumb": "Organization Info",
-    "certs-title": "Permits and Licenses",
+    "certs-title": "Permits and Licences",
     "dba": "Doing Business As",
     "effective-date": "Effective Date",
     "identifier": "Organization Identifier",
