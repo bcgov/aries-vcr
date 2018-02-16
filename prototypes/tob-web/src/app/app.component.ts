@@ -14,9 +14,19 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class AppComponent implements OnInit, OnDestroy {
   onLangChange: Subscription;
-  currentLang = 'en';
+  currentLang : string;
   inited = false;
-  supportedLanguages = ['en', 'fr'];
+  // to be moved into external JSON loaded by localize-router
+  supportedLanguages = [
+    {
+      name: 'en',
+      label: 'English'
+    },
+    {
+      name: 'fr',
+      label: 'Français'
+    }
+  ];
   private titleLabel = 'app.title';
   private onFetchTitle: Subscription;
 
@@ -52,12 +62,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onUpdateLanguage(lang) {
-    console.log('Language:', lang);
-    this.currentLang = this.translate.currentLang;
-    // set the lang attribute on the html element
-    this.el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
-    this.setTitleLabel(this.titleLabel);
-    this.checkInit();
+    if(lang && lang !== this.currentLang) {
+      console.log('Language:', lang);
+      this.currentLang = lang;
+      // set the lang attribute on the html element
+      this.el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
+      this.setTitleLabel(this.titleLabel);
+      this.checkInit();
+    }
   }
 
   checkInit() {
@@ -77,7 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * @returns {string}
    */
   public guessLanguage(): string | null {
-    let ret = this.supportedLanguages[0];
+    let ret = this.supportedLanguages[0]['name'];
     if(typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
       let lang = (window.navigator['languages'] ? window.navigator['languages'][0] : null)
         || window.navigator.language
@@ -91,8 +103,11 @@ export class AppComponent implements OnInit, OnDestroy {
         lang = lang.split('_')[0];
       }
       lang = lang.toLowerCase();
-      if(this.supportedLanguages.indexOf(lang) >= 0) {
-        ret = lang;
+      for(let check of this.supportedLanguages) {
+        if(check.name === lang) {
+          ret = lang;
+          break;
+        }
       }
     }
     return ret;
