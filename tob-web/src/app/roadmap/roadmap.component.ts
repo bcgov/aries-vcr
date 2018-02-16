@@ -73,8 +73,6 @@ export class RoadmapComponent implements OnInit {
         ctype.cert = null;
         if(! ctype.schemaName || ! typesBySchema[ctype.schemaName]) continue;
         ctype.regType = typesBySchema[ctype.schemaName];
-        if(! ctype.altText) ctype.altText = "Certificate not found";
-        if(! ctype.linkText) ctype.linkText = "View registration record";
         if(! ctype.regLink) ctype.regLink = ctype.regType.issuerURL;
 
         data['claimTypes'].push(ctype);

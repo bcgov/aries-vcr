@@ -60,12 +60,17 @@
     "dba": "Doing Business As",
     "effective-date": "Effective Date",
     "identifier": "Organization Identifier",
+    "location": "Location",
     "locations": "Locations",
     "return-link": "Back to Organization Info",
     "type": "Organization Type"
   },
   "recipe": {
     "breadcrumb": "Recipe",
+    "cert-view-link": "View record",
+    "cert-not-found": "Certificate not found",
+    "org-view-link": "View organization record",
+    "register-link": "Register your Organization",
     "title": "Recipe"
   },
   "search": {
