@@ -1,23 +1,23 @@
 {
     "City": [
         {
-            "effective_date": "2017-05-08",
-            "number_of_employees": "12",
+            "effective_date": "1508630400",
+            "number_of_employees": "7",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Mendez Diner",
+            "legal_name": "Mendez Charcuterie",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "48",
-            "effective_date": "2017-05-08",
+            "capacity": "28",
+            "effective_date": "1508630400",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
@@ -25,13 +25,13 @@
     "Liquor": [
         {
             "brewery": false,
-            "catering": true,
-            "dancing_permitted": true,
+            "catering": false,
+            "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "12",
+            "number_of_employees": "7",
             "overlap": true,
             "owner_agreement": true,
-            "owner_premises": true,
+            "owner_premises": false,
             "patio": false,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
             "standalone_patio": false,
@@ -46,7 +46,7 @@
             "addressee": "Gina Mendez",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Mendez Diner",
+            "legal_name": "Mendez Charcuterie",
             "postal_code": "V3W 4E3",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3W 4E3",
             "province": "BC",
-            "restaurant_name": "Mendez Diner",
+            "restaurant_name": "Mendez Charcuterie",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

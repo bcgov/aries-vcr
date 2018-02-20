@@ -1,40 +1,40 @@
 {
     "City": [
         {
-            "effective_date": "2018-02-15",
-            "number_of_employees": "5",
+            "effective_date": "1510099200",
+            "number_of_employees": "12",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Wright Cafe",
+            "legal_name": "Wright Eatry",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "20",
-            "effective_date": "2018-02-15",
+            "capacity": "48",
+            "effective_date": "1510099200",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
     ],
     "Liquor": [
         {
-            "brewery": true,
+            "brewery": false,
             "catering": false,
             "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "5",
+            "number_of_employees": "12",
             "overlap": true,
             "owner_agreement": true,
             "owner_premises": true,
             "patio": false,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": false,
+            "standalone_patio": true,
             "third_party": false,
             "treaty": true
         }
@@ -46,7 +46,7 @@
             "addressee": "Casey Wright",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Wright Cafe",
+            "legal_name": "Wright Eatry",
             "postal_code": "V3T 4Y5",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3T 4Y5",
             "province": "BC",
-            "restaurant_name": "Wright Cafe",
+            "restaurant_name": "Wright Eatry",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

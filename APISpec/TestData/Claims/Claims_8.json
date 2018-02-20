@@ -1,23 +1,23 @@
 {
     "City": [
         {
-            "effective_date": "2017-07-22",
-            "number_of_employees": "26",
+            "effective_date": "1470700800",
+            "number_of_employees": "13",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "Forum Cafeterias",
-            "legal_name": "Harrington Joint",
+            "legal_name": "Harrington Tavern",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "104",
-            "effective_date": "2017-07-22",
+            "capacity": "52",
+            "effective_date": "1470700800",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
@@ -26,15 +26,15 @@
         {
             "brewery": false,
             "catering": false,
-            "dancing_permitted": true,
+            "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "26",
+            "number_of_employees": "13",
             "overlap": true,
             "owner_agreement": true,
-            "owner_premises": true,
+            "owner_premises": false,
             "patio": false,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": false,
+            "standalone_patio": true,
             "third_party": false,
             "treaty": true
         }
@@ -46,7 +46,7 @@
             "addressee": "Esther Harrington",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Harrington Joint",
+            "legal_name": "Harrington Tavern",
             "postal_code": "V3W 4N6",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3W 4N6",
             "province": "BC",
-            "restaurant_name": "Harrington Joint",
+            "restaurant_name": "Harrington Tavern",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

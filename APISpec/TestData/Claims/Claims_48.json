@@ -1,37 +1,37 @@
 {
     "City": [
         {
-            "effective_date": "2017-03-10",
-            "number_of_employees": "14",
+            "effective_date": "1465084800",
+            "number_of_employees": "4",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Leblanc Palace",
+            "legal_name": "Leblanc Bar and Grill",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "56",
-            "effective_date": "2017-03-10",
+            "capacity": "16",
+            "effective_date": "1465084800",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
     ],
     "Liquor": [
         {
-            "brewery": false,
+            "brewery": true,
             "catering": true,
             "dancing_permitted": true,
             "is_owner": true,
-            "number_of_employees": "14",
+            "number_of_employees": "4",
             "overlap": true,
             "owner_agreement": true,
-            "owner_premises": false,
+            "owner_premises": true,
             "patio": false,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
             "standalone_patio": false,
@@ -46,7 +46,7 @@
             "addressee": "Avis Leblanc",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Leblanc Palace",
+            "legal_name": "Leblanc Bar and Grill",
             "postal_code": "V3S 4C4",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3S 4C4",
             "province": "BC",
-            "restaurant_name": "Leblanc Palace",
+            "restaurant_name": "Leblanc Bar and Grill",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

@@ -1,8 +1,8 @@
 {
     "City": [
         {
-            "effective_date": "2016-09-10",
-            "number_of_employees": "25",
+            "effective_date": "1485734400",
+            "number_of_employees": "12",
             "schema": "business_license.city_of_surrey"
         }
     ],
@@ -16,8 +16,8 @@
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "100",
-            "effective_date": "2016-09-10",
+            "capacity": "48",
+            "effective_date": "1485734400",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
@@ -26,15 +26,15 @@
         {
             "brewery": false,
             "catering": false,
-            "dancing_permitted": true,
+            "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "25",
+            "number_of_employees": "12",
             "overlap": true,
             "owner_agreement": true,
             "owner_premises": true,
             "patio": false,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": true,
+            "standalone_patio": false,
             "third_party": false,
             "treaty": true
         }

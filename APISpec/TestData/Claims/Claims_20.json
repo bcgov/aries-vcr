@@ -1,37 +1,37 @@
 {
     "City": [
         {
-            "effective_date": "2017-01-02",
-            "number_of_employees": "10",
+            "effective_date": "1510704000",
+            "number_of_employees": "27",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Rodriguez Diner",
+            "legal_name": "Rodriguez Eating House",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "40",
-            "effective_date": "2017-01-02",
+            "capacity": "108",
+            "effective_date": "1510704000",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
     ],
     "Liquor": [
         {
-            "brewery": true,
+            "brewery": false,
             "catering": false,
             "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "10",
+            "number_of_employees": "27",
             "overlap": true,
             "owner_agreement": true,
-            "owner_premises": false,
+            "owner_premises": true,
             "patio": false,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
             "standalone_patio": false,
@@ -46,7 +46,7 @@
             "addressee": "Dorothy Rodriguez",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Rodriguez Diner",
+            "legal_name": "Rodriguez Eating House",
             "postal_code": "V3T 4Y5",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3T 4Y5",
             "province": "BC",
-            "restaurant_name": "Rodriguez Diner",
+            "restaurant_name": "Rodriguez Eating House",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

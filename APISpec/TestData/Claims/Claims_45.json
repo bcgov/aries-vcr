@@ -1,23 +1,23 @@
 {
     "City": [
         {
-            "effective_date": "2016-06-06",
-            "number_of_employees": "27",
+            "effective_date": "1490400000",
+            "number_of_employees": "14",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Iverson Greasy Spoon",
+            "legal_name": "Iverson Shack",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "108",
-            "effective_date": "2016-06-06",
+            "capacity": "56",
+            "effective_date": "1490400000",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
@@ -28,10 +28,10 @@
             "catering": false,
             "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "27",
+            "number_of_employees": "14",
             "overlap": true,
             "owner_agreement": true,
-            "owner_premises": false,
+            "owner_premises": true,
             "patio": true,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
             "standalone_patio": true,
@@ -46,7 +46,7 @@
             "addressee": "Evelyn Iverson",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Iverson Greasy Spoon",
+            "legal_name": "Iverson Shack",
             "postal_code": "V3T 4Y5",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3T 4Y5",
             "province": "BC",
-            "restaurant_name": "Iverson Greasy Spoon",
+            "restaurant_name": "Iverson Shack",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

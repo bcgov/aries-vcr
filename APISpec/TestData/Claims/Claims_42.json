@@ -1,23 +1,23 @@
 {
     "City": [
         {
-            "effective_date": "2016-01-05",
-            "number_of_employees": "23",
+            "effective_date": "1507852800",
+            "number_of_employees": "26",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Ownby Stand",
+            "legal_name": "Ownby Restaurant",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "92",
-            "effective_date": "2016-01-05",
+            "capacity": "104",
+            "effective_date": "1507852800",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
@@ -26,13 +26,13 @@
         {
             "brewery": false,
             "catering": false,
-            "dancing_permitted": true,
+            "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "23",
+            "number_of_employees": "26",
             "overlap": true,
             "owner_agreement": true,
             "owner_premises": true,
-            "patio": true,
+            "patio": false,
             "schema": "liquor_license.liquor_control_and_licensing_branch",
             "standalone_patio": true,
             "third_party": false,
@@ -46,7 +46,7 @@
             "addressee": "Alice Ownby",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Ownby Stand",
+            "legal_name": "Ownby Restaurant",
             "postal_code": "V3W 4E3",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3W 4E3",
             "province": "BC",
-            "restaurant_name": "Ownby Stand",
+            "restaurant_name": "Ownby Restaurant",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

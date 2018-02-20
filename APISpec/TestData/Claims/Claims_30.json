@@ -1,23 +1,23 @@
 {
     "City": [
         {
-            "effective_date": "2017-07-24",
-            "number_of_employees": "28",
+            "effective_date": "1488499200",
+            "number_of_employees": "8",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Griffin Name",
+            "legal_name": "Griffin Dive",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "112",
-            "effective_date": "2017-07-24",
+            "capacity": "32",
+            "effective_date": "1488499200",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": false
         }
@@ -28,7 +28,7 @@
             "catering": false,
             "dancing_permitted": false,
             "is_owner": true,
-            "number_of_employees": "28",
+            "number_of_employees": "8",
             "overlap": true,
             "owner_agreement": true,
             "owner_premises": false,
@@ -46,7 +46,7 @@
             "addressee": "Paul Griffin",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Griffin Name",
+            "legal_name": "Griffin Dive",
             "postal_code": "V3W 4E3",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -62,7 +62,7 @@
             "coverage_description": "All Employees",
             "postal_code": "V3W 4E3",
             "province": "BC",
-            "restaurant_name": "Griffin Name",
+            "restaurant_name": "Griffin Dive",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]
