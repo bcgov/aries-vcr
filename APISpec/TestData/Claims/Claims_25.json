@@ -1,52 +1,51 @@
 {
     "City": [
         {
-            "effective_date": "1478563200",
-            "number_of_employees": "19",
+            "effective_date": "1434412800",
+            "number_of_employees": "20",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Bankston Seafood",
+            "legal_name": "Bankston Public House",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "76",
-            "effective_date": "1478563200",
+            "capacity": "80",
+            "effective_date": "1434412800",
             "schema": "operating_permit.fraser_valley_health_authority",
-            "tobacco": false
+            "tobacco": "False"
         }
     ],
     "Liquor": [
         {
-            "brewery": false,
-            "catering": false,
-            "dancing_permitted": false,
-            "is_owner": true,
-            "number_of_employees": "19",
-            "overlap": true,
-            "owner_agreement": true,
-            "owner_premises": true,
-            "patio": true,
+            "brewery": "False",
+            "catering": "False",
+            "dancing_permitted": "False",
+            "is_owner": "True",
+            "number_of_employees": "20",
+            "overlap": "True",
+            "owner_agreement": "True",
+            "owner_premises": "True",
+            "patio": "False",
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": true,
-            "third_party": false,
-            "treaty": true
+            "standalone_patio": "False",
+            "third_party": "False",
+            "treaty": "True"
         }
     ],
     "Reg": [
         {
             "address_line_1": "1489 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Joshua Bankston",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Bankston Seafood",
+            "legal_name": "Bankston Public House",
             "postal_code": "V3T 4Y5",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -55,14 +54,13 @@
     "Worksafe": [
         {
             "address_line_1": "1489 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Joshua Bankston",
             "city": "Surrey",
             "country": "CA",
             "coverage_description": "All Employees",
             "postal_code": "V3T 4Y5",
             "province": "BC",
-            "restaurant_name": "Bankston Seafood",
+            "restaurant_name": "Bankston Public House",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

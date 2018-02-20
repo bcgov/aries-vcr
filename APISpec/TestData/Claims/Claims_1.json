@@ -1,52 +1,51 @@
 {
     "City": [
         {
-            "effective_date": "1446940800",
-            "number_of_employees": "26",
+            "effective_date": "1503446400",
+            "number_of_employees": "27",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "Miller & Rhoads",
-            "legal_name": "Warner Seafood",
+            "legal_name": "Warner Bar and Grill",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "104",
-            "effective_date": "1446940800",
+            "capacity": "108",
+            "effective_date": "1503446400",
             "schema": "operating_permit.fraser_valley_health_authority",
-            "tobacco": false
+            "tobacco": "False"
         }
     ],
     "Liquor": [
         {
-            "brewery": false,
-            "catering": false,
-            "dancing_permitted": false,
-            "is_owner": true,
-            "number_of_employees": "26",
-            "overlap": true,
-            "owner_agreement": true,
-            "owner_premises": false,
-            "patio": false,
+            "brewery": "False",
+            "catering": "False",
+            "dancing_permitted": "False",
+            "is_owner": "True",
+            "number_of_employees": "27",
+            "overlap": "True",
+            "owner_agreement": "True",
+            "owner_premises": "True",
+            "patio": "False",
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": false,
-            "third_party": false,
-            "treaty": true
+            "standalone_patio": "False",
+            "third_party": "False",
+            "treaty": "True"
         }
     ],
     "Reg": [
         {
             "address_line_1": "2553 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Lillian Warner",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Warner Seafood",
+            "legal_name": "Warner Bar and Grill",
             "postal_code": "V3T 4Y5",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -55,14 +54,13 @@
     "Worksafe": [
         {
             "address_line_1": "2553 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Lillian Warner",
             "city": "Surrey",
             "country": "CA",
             "coverage_description": "All Employees",
             "postal_code": "V3T 4Y5",
             "province": "BC",
-            "restaurant_name": "Warner Seafood",
+            "restaurant_name": "Warner Bar and Grill",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

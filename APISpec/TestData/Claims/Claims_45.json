@@ -1,52 +1,51 @@
 {
     "City": [
         {
-            "effective_date": "1490400000",
-            "number_of_employees": "14",
+            "effective_date": "1505692800",
+            "number_of_employees": "28",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Iverson Shack",
+            "legal_name": "Iverson Luncheon",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "56",
-            "effective_date": "1490400000",
+            "capacity": "112",
+            "effective_date": "1505692800",
             "schema": "operating_permit.fraser_valley_health_authority",
-            "tobacco": false
+            "tobacco": "False"
         }
     ],
     "Liquor": [
         {
-            "brewery": false,
-            "catering": false,
-            "dancing_permitted": false,
-            "is_owner": true,
-            "number_of_employees": "14",
-            "overlap": true,
-            "owner_agreement": true,
-            "owner_premises": true,
-            "patio": true,
+            "brewery": "False",
+            "catering": "False",
+            "dancing_permitted": "False",
+            "is_owner": "True",
+            "number_of_employees": "28",
+            "overlap": "True",
+            "owner_agreement": "True",
+            "owner_premises": "False",
+            "patio": "True",
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": true,
-            "third_party": false,
-            "treaty": true
+            "standalone_patio": "True",
+            "third_party": "False",
+            "treaty": "True"
         }
     ],
     "Reg": [
         {
             "address_line_1": "3498 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Evelyn Iverson",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Iverson Shack",
+            "legal_name": "Iverson Luncheon",
             "postal_code": "V3T 4Y5",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -55,14 +54,13 @@
     "Worksafe": [
         {
             "address_line_1": "3498 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Evelyn Iverson",
             "city": "Surrey",
             "country": "CA",
             "coverage_description": "All Employees",
             "postal_code": "V3T 4Y5",
             "province": "BC",
-            "restaurant_name": "Iverson Shack",
+            "restaurant_name": "Iverson Luncheon",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]

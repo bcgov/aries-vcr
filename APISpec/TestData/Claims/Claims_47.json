@@ -1,8 +1,8 @@
 {
     "City": [
         {
-            "effective_date": "1457481600",
-            "number_of_employees": "9",
+            "effective_date": "1482364800",
+            "number_of_employees": "20",
             "schema": "business_license.city_of_surrey"
         }
     ],
@@ -16,33 +16,32 @@
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "36",
-            "effective_date": "1457481600",
+            "capacity": "80",
+            "effective_date": "1482364800",
             "schema": "operating_permit.fraser_valley_health_authority",
-            "tobacco": false
+            "tobacco": "False"
         }
     ],
     "Liquor": [
         {
-            "brewery": false,
-            "catering": false,
-            "dancing_permitted": true,
-            "is_owner": true,
-            "number_of_employees": "9",
-            "overlap": true,
-            "owner_agreement": true,
-            "owner_premises": true,
-            "patio": false,
+            "brewery": "False",
+            "catering": "False",
+            "dancing_permitted": "False",
+            "is_owner": "True",
+            "number_of_employees": "20",
+            "overlap": "True",
+            "owner_agreement": "True",
+            "owner_premises": "False",
+            "patio": "False",
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": true,
-            "third_party": false,
-            "treaty": true
+            "standalone_patio": "True",
+            "third_party": "False",
+            "treaty": "True"
         }
     ],
     "Reg": [
         {
             "address_line_1": "4974 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Elisa Love",
             "city": "Surrey",
             "country": "CA",
@@ -55,7 +54,6 @@
     "Worksafe": [
         {
             "address_line_1": "4974 Holdom Avenue",
-            "address_line_2": null,
             "addressee": "Elisa Love",
             "city": "Surrey",
             "country": "CA",

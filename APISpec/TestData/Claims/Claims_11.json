@@ -1,52 +1,51 @@
 {
     "City": [
         {
-            "effective_date": "1504569600",
-            "number_of_employees": "11",
+            "effective_date": "1467417600",
+            "number_of_employees": "21",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Lisi Luncheon",
+            "legal_name": "Lisi Eating House",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "44",
-            "effective_date": "1504569600",
+            "capacity": "84",
+            "effective_date": "1467417600",
             "schema": "operating_permit.fraser_valley_health_authority",
-            "tobacco": false
+            "tobacco": "False"
         }
     ],
     "Liquor": [
         {
-            "brewery": true,
-            "catering": false,
-            "dancing_permitted": false,
-            "is_owner": true,
-            "number_of_employees": "11",
-            "overlap": true,
-            "owner_agreement": true,
-            "owner_premises": false,
-            "patio": false,
+            "brewery": "False",
+            "catering": "False",
+            "dancing_permitted": "False",
+            "is_owner": "True",
+            "number_of_employees": "21",
+            "overlap": "True",
+            "owner_agreement": "True",
+            "owner_premises": "True",
+            "patio": "False",
             "schema": "liquor_license.liquor_control_and_licensing_branch",
-            "standalone_patio": true,
-            "third_party": false,
-            "treaty": true
+            "standalone_patio": "False",
+            "third_party": "False",
+            "treaty": "True"
         }
     ],
     "Reg": [
         {
             "address_line_1": "2415 Glover Road",
-            "address_line_2": null,
             "addressee": "Marion Lisi",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Lisi Luncheon",
+            "legal_name": "Lisi Eating House",
             "postal_code": "V3S 4C4",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -55,14 +54,13 @@
     "Worksafe": [
         {
             "address_line_1": "2415 Glover Road",
-            "address_line_2": null,
             "addressee": "Marion Lisi",
             "city": "Surrey",
             "country": "CA",
             "coverage_description": "All Employees",
             "postal_code": "V3S 4C4",
             "province": "BC",
-            "restaurant_name": "Lisi Luncheon",
+            "restaurant_name": "Lisi Eating House",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]
