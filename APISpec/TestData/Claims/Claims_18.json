@@ -1,38 +1,38 @@
 {
     "City": [
         {
-            "effective_date": "1473638400",
-            "number_of_employees": "21",
+            "effective_date": "1512864000",
+            "number_of_employees": "23",
             "schema": "business_license.city_of_surrey"
         }
     ],
     "Finance": [
         {
             "doing_business_as_name": "",
-            "legal_name": "Gleason Ratskeller",
+            "legal_name": "Gleason Canteen",
             "schema": "pst_number.ministry_of_finance"
         }
     ],
     "Health": [
         {
             "application_type": "New Facility",
-            "capacity": "84",
-            "effective_date": "1473638400",
+            "capacity": "92",
+            "effective_date": "1512864000",
             "schema": "operating_permit.fraser_valley_health_authority",
             "tobacco": "False"
         }
     ],
     "Liquor": [
         {
-            "brewery": "False",
+            "brewery": "True",
             "catering": "False",
-            "dancing_permitted": "True",
+            "dancing_permitted": "False",
             "is_owner": "True",
-            "number_of_employees": "21",
+            "number_of_employees": "23",
             "overlap": "True",
             "owner_agreement": "True",
             "owner_premises": "True",
-            "patio": "True",
+            "patio": "False",
             "schema": "liquor_license.liquor_control_and_licensing_branch",
             "standalone_patio": "True",
             "third_party": "False",
@@ -42,10 +42,11 @@
     "Reg": [
         {
             "address_line_1": "4945 King George Hwy",
+            "address_line_2": "",
             "addressee": "Albert Gleason",
             "city": "Surrey",
             "country": "CA",
-            "legal_name": "Gleason Ratskeller",
+            "legal_name": "Gleason Canteen",
             "postal_code": "V3W 4E3",
             "province": "BC",
             "schema": "incorporation.bc_registries"
@@ -54,13 +55,14 @@
     "Worksafe": [
         {
             "address_line_1": "4945 King George Hwy",
+            "address_line_2": "",
             "addressee": "Albert Gleason",
             "city": "Surrey",
             "country": "CA",
             "coverage_description": "All Employees",
             "postal_code": "V3W 4E3",
             "province": "BC",
-            "restaurant_name": "Gleason Ratskeller",
+            "restaurant_name": "Gleason Canteen",
             "schema": "restaurant_clearance_letter.worksafe_bc"
         }
     ]
