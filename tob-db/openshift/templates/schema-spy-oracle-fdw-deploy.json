@@ -39,7 +39,7 @@
         "name": "${NAME}"
       },
       "spec": {
-        "host": "${NAME}-${APPLICATION_DOMAIN}",
+        "host": "${APPLICATION_DOMAIN}",
         "to": {
           "kind": "Service",
           "name": "${NAME}"
@@ -189,7 +189,7 @@
       "name": "APPLICATION_DOMAIN",
       "displayName": "Application Hostname",
       "description": "The exposed hostname that will route to the Django service, if left blank a value will be defaulted.",
-      "value": ""
+      "value": "schema-spy-oracle-fdw-devex-von-dev.pathfinder.bcgov"
     },
     {
       "name": "DATABASE_SERVICE_NAME",
