@@ -38,7 +38,7 @@ class ClaimProcesser(object):
       # VerifiableClaimType.claimType is the friendly name of the claim.
       schemaName = claim.schemaName
       
-      verifiableClaimType = VerifiableClaimType.objects.filter(schemaName=schemaName).order_by('-CREATE_TIMESTAMP')
+      verifiableClaimType = VerifiableClaimType.objects.filter(schemaName=schemaName).order_by('CREATE_TIMESTAMP')
       if not verifiableClaimType:
         self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(schemaName))
       else:
