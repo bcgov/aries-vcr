@@ -57,6 +57,7 @@ export class RoadmapComponent implements OnInit {
   loadRecipe(recipe) {
     this.recipeId = recipe;
     this.dataService.loadJson('assets/recipes/' + recipe + '.json').subscribe((data) => {
+
       // pre-index claim types by schema name with latest schema version
       let regTypes = <VerifiableClaimType[]>this.dataService.getOrgData('verifiableclaimtypes');
       let typesBySchema = {};
@@ -64,8 +65,11 @@ export class RoadmapComponent implements OnInit {
         if(regType.schemaName && regType.schemaVersion) {
           let sname = regType.schemaName;
           let other = typesBySchema[sname];
-          if(other && compareVersions(regType.schemaVersion, other.schemaVersion) <= 0)
+
+          //if(other && compareVersions(regType.schemaVersion, other.schemaVersion) <= 0)
+          if(other && other.id < regType.id)
             continue;
+
           typesBySchema[sname] = regType;
         }
       }
