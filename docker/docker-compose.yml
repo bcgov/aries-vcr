@@ -24,10 +24,13 @@ services:
   # it needs to come up after the database and 
   # and Solr services have had time to fully
   # initialize.
-  # Using a simple sleep command to do this for the
-  # moment.  Would like to implement a more 
-  # deterministic solution.
-  # 
+  #
+  #
+  # We are using a simple sleep command to do this 
+  # for the moment; refer to the `command` section 
+  # of the configuration for details.  It would be 
+  # nice to implement a more deterministic solution.
+  #
   tob-api:
     image: django
     environment:
@@ -57,8 +60,7 @@ services:
       /bin/bash -c "
         echo sleeping ...;
         sleep 10;
-        python manage.py runserver 0.0.0.0:8080;
-      "      
+        /usr/libexec/s2i/run;"
 
   # 
   # schema-spy
@@ -66,10 +68,12 @@ services:
   # Needs to wait for the schema to be created/migrated
   # by the API server; it's not enough to wait for the
   # database to be available.
-  # Using a simple sleep command to do this for the
-  # moment.  Would like to implement a more 
-  # deterministic solution.
-  # 
+  #
+  # We are using a simple sleep command to do this 
+  # for the moment; refer to the `command` section 
+  # of the configuration for details.  It would be 
+  # nice to implement a more deterministic solution.
+  #
   schema-spy:
     image: schema-spy
     environment:
@@ -87,8 +91,7 @@ services:
       /bin/bash -c "
         echo sleeping ...;
         sleep 20;
-        exec npm start;
-      "      
+        exec npm start;"
     
   # 
   # tob-solr
