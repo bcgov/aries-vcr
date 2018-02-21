@@ -211,32 +211,8 @@
       }
     },
     {
-      "apiVersion": "v1",
-      "kind": "Route",
-      "metadata": {
-        "name": "${NAME}-siteminder-route",
-        "labels": {
-          "app": "${NAME}-siteminder-route"
-        },
-        "annotations": {
-          "haproxy.router.openshift.io/ip_whitelist": "${SITEMINDER_WHITE_LIST}"
-        }
-      },
-      "spec": {
-        "host": "${SITEMINDER_APPLICATION_DOMAIN}",
-        "port": {
-          "targetPort": "8080-tcp"
-        },
-        "to": {
-          "kind": "Service",
-          "name": "${NAME}",
-          "weight": 100
-        }
-      }
-    },
-    {
-      "apiVersion": "extensions/v1beta1",
       "kind": "HorizontalPodAutoscaler",
+      "apiVersion": "autoscaling/v1",
       "metadata": {
         "name": "${NAME}",
         "labels": {
@@ -244,11 +220,9 @@
         }
       },
       "spec": {
-        "scaleRef": {
+        "scaleTargetRef": {
           "kind": "DeploymentConfig",
-          "name": "${NAME}",
-          "apiVersion": "extensions/v1beta1",
-          "subresource": "scale"
+          "name": "${NAME}"
         },
         "minReplicas": 2,
         "maxReplicas": 6
@@ -282,7 +256,7 @@
       "displayName": "API URL",
       "name": "API_URL",
       "required": true,
-      "value": "https://django-jag-csb-jes-family-protection-order.pathfinder.gov.bc.ca/api/v1/"
+      "value": "https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/"
     },
     {
       "description": "The name of the service endpoint for the API.  Used to wire up to an API endpoint within the same project; overriding the URL defined by API_URL.",
@@ -311,21 +285,9 @@
     },
     {
       "description": "The exposed hostname that will route to the service, e.g., myappname.pathfinder.gov.bc.ca, if left blank a value will be defaulted.",
-      "displayName": "Application Domain",
+      "displayName": "Application Hostname",
       "name": "APPLICATION_DOMAIN",
       "value": "angular-scaffold-demo.pathfinder.gov.bc.ca"
-    },
-    {
-      "description": "The endpoint used for SiteMinder routed access to the application.",
-      "displayName": "SiteMinder Application Domain",
-      "name": "SITEMINDER_APPLICATION_DOMAIN",
-      "value": "protection-order-dev.pathfinder.bcgov"
-    },
-    {
-      "description": "The whitelist containing all of the trusted siteminder IPs.",
-      "displayName": "SiteMinder Whitelist",
-      "name": "SITEMINDER_WHITE_LIST",
-      "value": "142.34.49.76 142.34.49.77 142.34.157.10 142.34.157.11"
     },
     {
       "description": "The TAG name for this environment, e.g., dev, test, prod",
