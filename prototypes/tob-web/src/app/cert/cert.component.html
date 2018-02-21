@@ -28,7 +28,7 @@
           <div class="row form-group">
             <label class="col-sm-4 control-label" translate>cert.issuer</label>
             <div class="col-sm-8 form-field">
-              <a [routerLink]="['/issuer/', record.issuer.id] | localize">{{record.issuer.name}}</a>
+              <a [routerLink]="['issuer'] | localize">{{record.issuer.name}}</a>
             </div>
           </div>
           <div class="row form-group" *ngIf="record.type.issuerURL && record.type.issuerURL !== 'no'">

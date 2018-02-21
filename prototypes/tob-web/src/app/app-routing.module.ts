@@ -32,10 +32,22 @@ export const routes: Routes = [
       },
       {
         path: 'cert/:certId',
-        component: CertComponent,
         data: {
           breadcrumb: 'cert.breadcrumb'
-        }
+        },
+        children: [
+          {
+            path: '',
+            component: CertComponent,
+          },
+          {
+            path: 'issuer',
+            component: IssuerComponent,
+            data: {
+              breadcrumb: 'issuer.breadcrumb'
+            }
+          }
+        ]
       }
     ]
   },
