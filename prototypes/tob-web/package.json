@@ -5,12 +5,12 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve -o",
-    "build": "ng build --prod",
+    "start": "ng serve -o --base-href ${NG_BASE_HREF:-/}",
+    "build": "ng build --prod --base-href ${NG_BASE_HREF:-/}",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ng build --prod"
+    "postinstall": "ng build --prod --base-href ${NG_BASE_HREF:-/}"
   },
   "dependencies": {
     "@angular/common": "^4.2.4",

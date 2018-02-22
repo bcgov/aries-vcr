@@ -74,6 +74,7 @@ build-web() {
   
   echo -e "\nBuilding angular-app image ..."
   ${S2I_EXE} build \
+  	"-e NG_BASE_HREF=${WEB_BASE_HREF}" \
     '../tob-web' \
     'centos/nodejs-6-centos7:6' \
     'angular-app'
@@ -184,6 +185,7 @@ configureEnvironment () {
 
   # tob-web
   export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}
+  export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export API_URL=${API_URL-http://tob-api:8080/api/v1/}
   export IpFilterRules='#allow all; deny all;'
   export RealIpFrom='127.0.0.0/16'
@@ -231,6 +233,7 @@ case "$1" in
     docker-compose rm
     ;;
   build)
+  	configureEnvironment $@
     buildImages
     ;;
   build-api)
@@ -240,6 +243,7 @@ case "$1" in
     build-solr
     ;;
   build-web)
+  	configureEnvironment $@
     build-web
     ;;
   *)
