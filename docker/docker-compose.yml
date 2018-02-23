@@ -60,7 +60,8 @@ services:
       /bin/bash -c "
         echo sleeping ...;
         sleep 10;
-        /usr/libexec/s2i/run;"
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8080;"
 
   # 
   # schema-spy
