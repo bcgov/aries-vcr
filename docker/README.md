@@ -48,11 +48,18 @@ In this example search your working copy for all instances of `assemble-runtime`
 ## Starting the Project
 
 To start the project run:
+
+You will need to choose a unique seed value for development. Use a value that no one else is using. It must be 32 characters long exactly.
+
+
 ```
-./manage.sh start
+./manage.sh start seed=my_unique_seed_00000000000000000
 ```
 
 This will start the project interactively; with all of the logs being written to the command line.
+
+Each seed, must be authorized on the indy ledger. If you are using the https://github.com/bcgov/von-network network locally, you can visit the webserver running on your local machine to authorize the did for each seed. If you are using the shared development Indy ledger (which is an instance of von-network), you can visit this page to authorize your did: http://138.197.170.136
+
 
 ## Stopping the Project
 
