@@ -157,6 +157,20 @@ configureEnvironment () {
     esac
   done
   
+  if [ "$COMMAND" == "start" ]; then
+    if [ -z "$seed" ]; then
+      echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
+      exit 1
+    fi
+
+    if [ ${#seed} -ne 32 ]; then
+      echo "The seed parameter must be 32 characters long exactly."
+      exit 1
+    fi
+  fi
+
+  export INDY_WALLET_SEED=${seed}
+
   # tob-db
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
   export POSTGRESQL_USER="DB_USER"
@@ -219,6 +233,7 @@ pushd ${SCRIPT_HOME} >/dev/null
 
 case "$1" in
   start)
+    COMMAND=$1
     shift
     _startupParams=$(getStartupParams $@)
     configureEnvironment $@

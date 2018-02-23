@@ -47,6 +47,7 @@ services:
       - TOB_DB_SERVICE_PORT=5432
       - TOB_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
       - TOB_SOLR_SERVICE_PORT=8983
+      - INDY_WALLET_SEED=${INDY_WALLET_SEED}
     volumes:
       - ../tob-api/api:/opt/app-root/src/api
     networks:

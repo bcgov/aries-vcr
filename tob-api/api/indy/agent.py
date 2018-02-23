@@ -1,3 +1,5 @@
+import os
+
 from von_agent.nodepool import NodePool
 from tob_api import hyperledger_indy
 from von_agent.agents import Issuer as VonIssuer
@@ -6,6 +8,10 @@ from von_agent.agents import HolderProver as VonHolderProver
 
 import logging
 logger = logging.getLogger(__name__)
+
+WALLET_SEED = os.environ.get('INDY_WALLET_SEED')
+if not WALLET_SEED or len(WALLET_SEED) is not 32:
+    raise Exception('INDY_WALLET_SEED must be set and be 32 characters long.')
 
 
 class Issuer:
@@ -17,7 +23,7 @@ class Issuer:
 
         self.instance = VonIssuer(
             self.pool,
-            'the_org_book_issuer_000000000000',
+            WALLET_SEED,
             'TheOrgBook Issuer Wallet',
             None,
             '127.0.0.1',
@@ -45,7 +51,7 @@ class Verifier:
 
         self.instance = VonVerifier(
             self.pool,
-            'the_org_book_verifier_0000000000',
+            WALLET_SEED,
             'TheOrgBook Verifier Wallet',
             None,
             '127.0.0.1',
@@ -73,7 +79,7 @@ class Holder:
 
         self.instance = VonHolderProver(
             self.pool,
-            'the_org_book_holder_000000000000',
+            WALLET_SEED,
             'TheOrgBook Holder Wallet',
             None,
             '127.0.0.1',
