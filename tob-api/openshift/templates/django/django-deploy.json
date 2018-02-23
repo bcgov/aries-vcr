@@ -216,6 +216,10 @@
                   {
                     "name": "SOLR_CORE_NAME",
                     "value": "${SOLR_CORE_NAME}"
+                  },
+                  {
+                    "name": "INDY_WALLET_SEED",
+                    "value": "${INDY_WALLET_SEED}"
                   }
                 ],
                 "resources": {
@@ -357,6 +361,20 @@
       "description": "The path to mount the persistent volume.",
       "required": true,
       "value": "/opt/app-root/src/.indy_client"
+    },
+    {
+      "name": "MOUNT_PATH",
+      "displayName": "Mount Path",
+      "description": "The path to mount the persistent volume.",
+      "required": true,
+      "value": "/opt/app-root/src/.indy_client"
+    },
+    {
+      "name": "INDY_WALLET_SEED",
+      "displayName": "Indy Wallet Seed",
+      "description": "The seed that the indy wallet uses to generate predictable keys.",
+      "required": true,
+      "value": "the_org_book_dev_000000000000000"
     }
   ]
 }
