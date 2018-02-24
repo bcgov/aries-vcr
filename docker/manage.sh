@@ -74,7 +74,7 @@ build-web() {
   
   echo -e "\nBuilding angular-app image ..."
   ${S2I_EXE} build \
-  	"-e NG_BASE_HREF=${WEB_BASE_HREF}" \
+  	-e "NG_BASE_HREF=${WEB_BASE_HREF}" \
     '../tob-web' \
     'centos/nodejs-6-centos7:6' \
     'angular-app'

@@ -65,6 +65,8 @@ http {
         add_header X-XSS-Protection 1;
         add_header X-Frame-Options DENY;
 
+        %REMOVE_BASE_HREF%
+
         %API_CONFIG_SECTION%
 
         # serve our angular app here
@@ -82,7 +84,7 @@ http {
 
         # redirect server error pages to the static page /50x.html
         error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
+        location = 50x.html {
             root   /usr/share/nginx/html;
         }
 

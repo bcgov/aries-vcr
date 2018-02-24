@@ -3,7 +3,7 @@
 getApiProxyConfigSection (){
 # ================================================================================
 # Generate the /api proxy configuration section.
-# 
+#
 # Assumes there is a default for API_URL
 # --------------------------------------------------------------------------------
 # API_URL:
@@ -21,7 +21,7 @@ echo "${_CONFIG_SECTION}"
 
 getApiUrl (){
   # ================================================================================
-  # Extract the API URL from the container's environment variables based on 
+  # Extract the API URL from the container's environment variables based on
   # OpenShift service conventions.
   # --------------------------------------------------------------------------------
   # API_URL:
@@ -38,30 +38,30 @@ getApiUrl (){
   #  - For example /api/v1/
   # --------------------------------------------------------------------------------
   # Examples:
-  # 
+  #
   # 1)
-  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/   
+  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/
   #   API_SERVICE_NAME=django
-  #   DJANGO_SERVICE_HOST=172.50.105.217                                                                                                                                                                                        
-  #   DJANGO_SERVICE_PORT=8080                                                                                                                                                                                                  
+  #   DJANGO_SERVICE_HOST=172.50.105.217
+  #   DJANGO_SERVICE_PORT=8080
   #   API_PATH=/api/v1/
   #
   #   Results in API_URL=http://172.50.105.217:8080/api/v1/
-  # 
+  #
   # 2)
-  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/   
+  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/
   #   API_SERVICE_NAME=django
-  #   DJANGO_SERVICE_HOST=172.50.105.217                                                                                                                                                                                        
+  #   DJANGO_SERVICE_HOST=172.50.105.217
   #   API_PATH=/api/v1/
   #
   #   Results in API_URL=http://172.50.105.217/api/v1/
   #
   # 3)
   #   If either API_SERVICE_NAME or *_SERVICE_HOST are not defined...
-  # 
-  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/   
   #
-  #   Results in API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/   
+  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/
+  #
+  #   Results in API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/
   # ================================================================================
   if [ ! -z "${API_SERVICE_NAME}" ]; then
     _SERVICE_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${API_SERVICE_NAME/-/_})"
@@ -76,31 +76,59 @@ getApiUrl (){
       fi
     fi
   fi
-  
+
   echo ${API_URL}
 }
 
+getRemoveBaseHref() {
+  # If we are nested under a subpath, remove the subpath before processing URLs
+  # Base href must have a leading and trailing slash
+  BASE="$1"
+  if [ ! -z "${BASE}" ] && [ "${BASE}" != "/" ]; then
+    echo "rewrite ^${BASE}(.*)\$ /\$1 last;"
+  fi
+}
+
+export RealIpFrom="${RealIpFrom:-172.51.0.0/16}"
+export WEB_BASE_HREF="${WEB_BASE_HREF:-/}"
+export REMOVE_BASE_HREF=$(getRemoveBaseHref ${WEB_BASE_HREF})
 export API_URL=$(getApiUrl)
 if [ ! -z "${API_URL}" ]; then
 	# ================================================================================
 	# If an API_URL is defined, generate an /api proxy configuration section and
 	# escape it so sed can digest it and process it properly.
-	# Otherwise leave things undefined so the placeholder in the template gets 
+	# Otherwise leave things undefined so the placeholder in the template gets
 	# replaced with a blank string.
 	# ================================================================================
 	API_CONFIG_SECTION=$(getApiProxyConfigSection ${API_URL})
 	API_CONFIG_SECTION="$(echo "${API_CONFIG_SECTION}" | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/\$/\\$/g')"
 fi
 
+makeReplacementPattern() {
+  # Generate a replacement pattern for sed in order to replace our variables in
+  # the nginx configuration template
+  REPLACE=""
+  for VAR in $@; do
+    REPLACE+="s~%${VAR}%~${!VAR}~g; "
+  done
+  echo "${REPLACE}"
+}
+
 echo "---> Replacing Configuration ..."
 echo "Setting:"
-echo "RealIpFrom = ${RealIpFrom:-172.51.0.0/16}"
+echo "RealIpFrom = ${RealIpFrom}"
 echo "IpFilterRules = ${IpFilterRules}"
 echo "AdditionalRealIpFromRules = ${AdditionalRealIpFromRules}"
 echo "HTTP_BASIC = ${HTTP_BASIC}"
+echo "WEB_BASE_HREF = ${WEB_BASE_HREF}"
 echo "API_URL = ${API_URL}"
 
-sed "s~%RealIpFrom%~${RealIpFrom:-172.51.0.0/16}~g; s~%IpFilterRules%~${IpFilterRules}~g; s~%AdditionalRealIpFromRules%~${AdditionalRealIpFromRules}~g; s~%HTTP_BASIC%~${HTTP_BASIC}~g; s~%API_CONFIG_SECTION%~${API_CONFIG_SECTION}~g" /tmp/nginx.conf.template > /etc/nginx/nginx.conf
+REPLACE_VARS="
+  RealIpFrom IpFilterRules AdditionalRealIpFromRules
+  HTTP_BASIC WEB_BASE_HREF REMOVE_BASE_HREF API_CONFIG_SECTION
+"
+
+sed "$(makeReplacementPattern $REPLACE_VARS)" /tmp/nginx.conf.template > /etc/nginx/nginx.conf
 
 if [ -n "$HTTP_BASIC_USERNAME" ] && [ -n "$HTTP_BASIC_PASSWORD" ]; then
     echo "---> Generating .htpasswd file"
