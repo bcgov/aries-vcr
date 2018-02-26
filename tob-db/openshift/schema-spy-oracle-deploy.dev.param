@@ -1,0 +1,18 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-db
+# JSON Template File: templates/schema-spy-oracle-deploy.json
+#=========================================================
+# NAME=schema-spy-oracle
+# DATABASE_DEPLOYMENT_NAME=postgresql-oracle-fdw
+# DATABASE_TYPE=orathin
+# DATABASE_NAME=CUAT
+# DATABASE_SCHEMA=COLIN_MGR_UAT
+# DATABASE_CATALOG=CUAT.bcgov
+# DATABASE_HOST=142.34.88.17:1521
+# DATABASE_DRIVER=lib/ora-jdbc.jar
+# IMAGE_NAMESPACE=devex-von-tools
+# SOURCE_IMAGE_NAME=schema-spy-with-oracle-jdbc
+# TAG_NAME=dev
+# APPLICATION_DOMAIN=schema-spy-oracle-devex-von-dev.pathfinder.bcgov
+# MEMORY_LIMIT=512Mi

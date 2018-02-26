@@ -201,12 +201,6 @@
       "value": "orathin"
     },
     {
-      "name": "DATABASE_TYPE",
-      "displayName": "Database Type",
-      "required": true,
-      "value": "orathin"
-    },
-    {
       "name": "DATABASE_NAME",
       "displayName": "Database Name",
       "required": true,
