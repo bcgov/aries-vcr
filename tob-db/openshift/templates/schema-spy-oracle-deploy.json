@@ -152,7 +152,7 @@
                   }
                 ],
                 "readinessProbe": {
-                  "timeoutSeconds": 3000,
+                  "timeoutSeconds": 30,
                   "initialDelaySeconds": 3,
                   "httpGet": {
                     "path": "/",
@@ -160,8 +160,8 @@
                   }
                 },
                 "livenessProbe": {
-                  "timeoutSeconds": 3000,
-                  "initialDelaySeconds": 30,
+                  "timeoutSeconds": 30,
+                  "initialDelaySeconds": 900,
                   "httpGet": {
                     "path": "/",
                     "port": 8080
@@ -169,6 +169,7 @@
                 },
                 "resources": {
                   "limits": {
+                    "cpu": "${CPU_LIMIT}",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 }
@@ -263,11 +264,18 @@
       "value": "schema-spy-oracle-devex-von-dev.pathfinder.bcgov"
     },    
     {
-      "name": "MEMORY_LIMIT",
-      "displayName": "Memory Limit",
+      "name": "CPU_LIMIT",
+      "displayName": "Resources CPU Limit",
+      "description": "The resources CPU limit (in cores) for this build; 0 = use default.",
       "required": true,
-      "description": "Maximum amount of memory the Django container can use.",
-      "value": "512Mi"
+      "value": "2"
+    },
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Resources Memory Limit",
+      "description": "The resources Memory limit (in Mi, Gi, etc) for this build; 0Mi = use default.",
+      "required": true,
+      "value": "2Gi"
     }
   ]
 }

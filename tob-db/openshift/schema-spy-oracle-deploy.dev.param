@@ -15,4 +15,5 @@
 # SOURCE_IMAGE_NAME=schema-spy-with-oracle-jdbc
 # TAG_NAME=dev
 # APPLICATION_DOMAIN=schema-spy-oracle-devex-von-dev.pathfinder.bcgov
-# MEMORY_LIMIT=512Mi
+# CPU_LIMIT=2
+# MEMORY_LIMIT=2Gi
