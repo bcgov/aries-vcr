@@ -109,30 +109,46 @@
                 ],
                 "env": [
                   {
-                    "name": "DATABASE_SERVICE_NAME",
-                    "value": "${DATABASE_SERVICE_NAME}"
+                    "name": "DATABASE_TYPE",
+                    "value": "${DATABASE_TYPE}"
                   },
                   {
-                    "name": "POSTGRESQL_DATABASE",
+                    "name": "DATABASE_NAME",
                     "value": "${DATABASE_NAME}"
                   },
                   {
-                    "name": "POSTGRESQL_USER",
+                    "name": "DATABASE_SCHEMA",
+                    "value": "${DATABASE_SCHEMA}"
+                  },
+                  {
+                    "name": "DATABASE_CATALOG",
+                    "value": "${DATABASE_CATALOG}"
+                  },
+                  {
+                    "name": "DATABASE_USER",
                     "valueFrom": {
                       "secretKeyRef": {
                         "name": "${DATABASE_DEPLOYMENT_NAME}",
-                        "key": "database-user"
+                        "key": "fdw-user"
                       }
                     }
                   },
                   {
-                    "name": "POSTGRESQL_PASSWORD",
+                    "name": "DATABASE_PASSWORD",
                     "valueFrom": {
                       "secretKeyRef": {
                         "name": "${DATABASE_DEPLOYMENT_NAME}",
-                        "key": "database-password"
+                        "key": "fdw-password"
                       }
                     }
+                  },
+                  {
+                    "name": "DATABASE_HOST",
+                    "value": "${DATABASE_HOST}"
+                  },
+                  {
+                    "name": "DATABASE_DRIVER",
+                    "value": "${DATABASE_DRIVER}"
                   }
                 ],
                 "readinessProbe": {
@@ -166,10 +182,64 @@
   "parameters": [
     {
       "name": "NAME",
-      "displayName": "Schema Spy Name",
-      "description": "The name assigned to all of the schema spy objects defined in this template.",
+      "displayName": "Name",
+      "description": "The name assigned to all of the objects defined in this template.",
       "required": true,
-      "value": "schema-spy-oracle-fdw"
+      "value": "schema-spy-oracle"
+    },
+    {
+      "name": "DATABASE_DEPLOYMENT_NAME",
+      "displayName": "Database Deployment Name",
+      "description": "The name associated to the database deployment resources.  In particular, this is used to wire up the credentials associated to the database.",
+      "required": true,
+      "value": "postgresql-oracle-fdw"
+    },
+    {
+      "name": "DATABASE_TYPE",
+      "displayName": "Database Type",
+      "required": true,
+      "value": "orathin"
+    },
+    {
+      "name": "DATABASE_TYPE",
+      "displayName": "Database Type",
+      "required": true,
+      "value": "orathin"
+    },
+    {
+      "name": "DATABASE_NAME",
+      "displayName": "Database Name",
+      "required": true,
+      "description": "Name of the deployed database (see environment variables in deployed database).",
+      "value": "CUAT"
+    },
+    {
+      "name": "DATABASE_SCHEMA",
+      "displayName": "Database Schema",
+      "required": true,
+      "description": "Name of the database schema.",
+      "value": "COLIN_MGR_UAT"
+    },
+    {
+      "name": "DATABASE_CATALOG",
+      "displayName": "Database Catalog",
+      "required": true,
+      "description": "Name of the database catalog.",
+      "value": "CUAT.bcgov"
+    },
+    {
+      "name": "DATABASE_HOST",
+      "displayName": "Database Host",
+      "required": true,
+      "description": "The host name for the database.",
+      "value": "142.34.88.17:1521"
+    },
+    {
+      "name": "DATABASE_DRIVER",
+      "displayName": "Database Driver",
+      "required": true,
+      "description": "The path to the JDBC driver for the database.",
+      "value": "lib/ora-jdbc.jar"
     },
     {
       "name": "IMAGE_NAMESPACE",
@@ -179,37 +249,11 @@
       "value": "devex-von-tools"
     },
     {
-      "name": "MEMORY_LIMIT",
-      "displayName": "Memory Limit",
-      "required": true,
-      "description": "Maximum amount of memory the Django container can use.",
-      "value": "512Mi"
-    },
-    {
-      "name": "APPLICATION_DOMAIN",
-      "displayName": "Application Hostname",
-      "description": "The exposed hostname that will route to the Django service, if left blank a value will be defaulted.",
-      "value": "schema-spy-oracle-fdw-devex-von-dev.pathfinder.bcgov"
-    },
-    {
-      "name": "DATABASE_SERVICE_NAME",
-      "displayName": "Database Service Name",
-      "required": true,
-      "value": "postgresql-oracle-fdw"
-    },
-    {
-      "name": "DATABASE_NAME",
-      "displayName": "Database Name",
-      "required": true,
-      "description": "Name of the deployed database (see environment variables in deployed database).",
-      "value": "BC_REGISTRIES"
-    },
-    {
       "name": "SOURCE_IMAGE_NAME",
       "displayName": "Source Image Name",
       "description": "The name of the image to use for this resource.",
       "required": true,
-      "value": "schema-spy"
+      "value": "schema-spy-with-oracle-jdbc"
     },
     {
       "name": "TAG_NAME",
@@ -219,11 +263,17 @@
       "required": true
     },
     {
-      "name": "DATABASE_DEPLOYMENT_NAME",
-      "displayName": "Database Deployment Name",
-      "description": "The name associated to the database deployment resources.  In particular, this is used to wrie up the credentials associated to the database.",
+      "name": "APPLICATION_DOMAIN",
+      "displayName": "Application Hostname",
+      "description": "The exposed hostname that will route to the Django service, if left blank a value will be defaulted.",
+      "value": "schema-spy-oracle-devex-von-dev.pathfinder.bcgov"
+    },    
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Memory Limit",
       "required": true,
-      "value": "postgresql-oracle-fdw"
+      "description": "Maximum amount of memory the Django container can use.",
+      "value": "512Mi"
     }
   ]
 }
