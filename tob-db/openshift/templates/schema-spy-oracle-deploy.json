@@ -1,0 +1,279 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "${NAME}-deployment-template",
+    "annotations": {
+      "description": "Deployment template for a Schema Spy instance.",
+      "tags": "schema-spy"
+    }
+  },
+  "objects": [
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}",
+        "annotations": {
+          "description": "Exposes and load balances the application pods"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "8080-tcp",
+            "protocol": "TCP",
+            "port": 8080,
+            "targetPort": 8080
+          }
+        ],
+        "selector": {
+          "name": "${NAME}"
+        }
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}"
+      },
+      "spec": {
+        "host": "${APPLICATION_DOMAIN}",
+        "to": {
+          "kind": "Service",
+          "name": "${NAME}"
+        }
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}",
+        "annotations": {
+          "description": "Defines how to deploy the container."
+        }
+      },
+      "spec": {
+        "strategy": {
+          "type": "Rolling",
+          "rollingParams": {
+            "updatePeriodSeconds": 1,
+            "intervalSeconds": 1,
+            "timeoutSeconds": 600,
+            "maxUnavailable": "25%",
+            "maxSurge": "25%"
+          }
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "${NAME}"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "namespace": "${IMAGE_NAMESPACE}",
+                "name": "${SOURCE_IMAGE_NAME}:${TAG_NAME}"
+              }
+            }
+          }
+        ],
+        "replicas": 1,
+        "selector": {
+          "name": "${NAME}"
+        },
+        "template": {
+          "metadata": {
+            "name": "${NAME}",
+            "labels": {
+              "name": "${NAME}"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "${NAME}",
+                "image": " ",
+                "ports": [
+                  {
+                    "containerPort": 8080,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "DATABASE_TYPE",
+                    "value": "${DATABASE_TYPE}"
+                  },
+                  {
+                    "name": "DATABASE_NAME",
+                    "value": "${DATABASE_NAME}"
+                  },
+                  {
+                    "name": "DATABASE_SCHEMA",
+                    "value": "${DATABASE_SCHEMA}"
+                  },
+                  {
+                    "name": "DATABASE_CATALOG",
+                    "value": "${DATABASE_CATALOG}"
+                  },
+                  {
+                    "name": "DATABASE_USER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${DATABASE_DEPLOYMENT_NAME}",
+                        "key": "fdw-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "DATABASE_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${DATABASE_DEPLOYMENT_NAME}",
+                        "key": "fdw-password"
+                      }
+                    }
+                  },
+                  {
+                    "name": "DATABASE_HOST",
+                    "value": "${DATABASE_HOST}"
+                  },
+                  {
+                    "name": "DATABASE_DRIVER",
+                    "value": "${DATABASE_DRIVER}"
+                  }
+                ],
+                "readinessProbe": {
+                  "timeoutSeconds": 3000,
+                  "initialDelaySeconds": 3,
+                  "httpGet": {
+                    "path": "/",
+                    "port": 8080
+                  }
+                },
+                "livenessProbe": {
+                  "timeoutSeconds": 3000,
+                  "initialDelaySeconds": 30,
+                  "httpGet": {
+                    "path": "/",
+                    "port": 8080
+                  }
+                },
+                "resources": {
+                  "limits": {
+                    "memory": "${MEMORY_LIMIT}"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "name": "NAME",
+      "displayName": "Name",
+      "description": "The name assigned to all of the objects defined in this template.",
+      "required": true,
+      "value": "schema-spy-oracle"
+    },
+    {
+      "name": "DATABASE_DEPLOYMENT_NAME",
+      "displayName": "Database Deployment Name",
+      "description": "The name associated to the database deployment resources.  In particular, this is used to wire up the credentials associated to the database.",
+      "required": true,
+      "value": "postgresql-oracle-fdw"
+    },
+    {
+      "name": "DATABASE_TYPE",
+      "displayName": "Database Type",
+      "required": true,
+      "value": "orathin"
+    },
+    {
+      "name": "DATABASE_TYPE",
+      "displayName": "Database Type",
+      "required": true,
+      "value": "orathin"
+    },
+    {
+      "name": "DATABASE_NAME",
+      "displayName": "Database Name",
+      "required": true,
+      "description": "Name of the deployed database (see environment variables in deployed database).",
+      "value": "CUAT"
+    },
+    {
+      "name": "DATABASE_SCHEMA",
+      "displayName": "Database Schema",
+      "required": true,
+      "description": "Name of the database schema.",
+      "value": "COLIN_MGR_UAT"
+    },
+    {
+      "name": "DATABASE_CATALOG",
+      "displayName": "Database Catalog",
+      "required": true,
+      "description": "Name of the database catalog.",
+      "value": "CUAT.bcgov"
+    },
+    {
+      "name": "DATABASE_HOST",
+      "displayName": "Database Host",
+      "required": true,
+      "description": "The host name for the database.",
+      "value": "142.34.88.17:1521"
+    },
+    {
+      "name": "DATABASE_DRIVER",
+      "displayName": "Database Driver",
+      "required": true,
+      "description": "The path to the JDBC driver for the database.",
+      "value": "lib/ora-jdbc.jar"
+    },
+    {
+      "name": "IMAGE_NAMESPACE",
+      "displayName": "Image Namespace",
+      "required": true,
+      "description": "The namespace of the OpenShift project containing the imagestream for the application.",
+      "value": "devex-von-tools"
+    },
+    {
+      "name": "SOURCE_IMAGE_NAME",
+      "displayName": "Source Image Name",
+      "description": "The name of the image to use for this resource.",
+      "required": true,
+      "value": "schema-spy-with-oracle-jdbc"
+    },
+    {
+      "name": "TAG_NAME",
+      "displayName": "Environment TAG name",
+      "description": "The TAG name for this environment, e.g., dev, test, prod",
+      "value": "dev",
+      "required": true
+    },
+    {
+      "name": "APPLICATION_DOMAIN",
+      "displayName": "Application Hostname",
+      "description": "The exposed hostname that will route to the Django service, if left blank a value will be defaulted.",
+      "value": "schema-spy-oracle-devex-von-dev.pathfinder.bcgov"
+    },    
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Memory Limit",
+      "required": true,
+      "description": "Maximum amount of memory the Django container can use.",
+      "value": "512Mi"
+    }
+  ]
+}
