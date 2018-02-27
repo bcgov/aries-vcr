@@ -25,7 +25,8 @@ github_username:  swcurran
 # Build settings
 theme: jekyll-theme-slate
 # theme: minima
-# plugins:
+plugins:
+  - jekyll-redirect-from
 #   - jekyll-feed
 
 # Exclude from processing.
