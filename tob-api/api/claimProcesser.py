@@ -42,22 +42,11 @@ class ClaimProcesser(object):
       if not schema:
         raise Exception('Could not retrieve schema from ledger.')
 
-
-      self.__logger.debug("------\n\n\n{}\n\n\n{}\n\n\n{}\n\n\n------".format(
-        schema['data']['name'],
-        schema['data']['version'],
-        schema['identifier']
-      ))
-
-
       verifiableClaimType = VerifiableClaimType.objects.filter(
         schemaName=schema['data']['name'],
         schemaVersion=schema['data']['version'],
         issuerServiceId__DID=schema['identifier']
       )
-
-
-
 
       if not verifiableClaimType:
         self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(schemaName))

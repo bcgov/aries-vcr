@@ -220,6 +220,10 @@
                   {
                     "name": "INDY_WALLET_SEED",
                     "value": "${INDY_WALLET_SEED}"
+                  },
+                  {
+                    "name": "LEDGER_URL",
+                    "value": "${LEDGER_URL}"
                   }
                 ],
                 "resources": {
@@ -375,6 +379,13 @@
       "description": "The seed that the indy wallet uses to generate predictable keys.",
       "required": true,
       "value": "the_org_book_dev_000000000000000"
+    },
+    {
+      "name": "LEDGER_URL",
+      "displayName": "VON network ledger url.",
+      "description": "URL for a running instance of the von-network.",
+      "required": true,
+      "value": "http://138.197.170.136"
     }
   ]
 }

@@ -196,6 +196,7 @@ configureEnvironment () {
   export DJANGO_DEBUG=True
   export SOLR_SERVICE_NAME="tob-solr"
   export SOLR_CORE_NAME=${CORE_NAME}
+  export LEDGER_URL=${LEDGER_URL-http://138.197.170.136}
 
   # tob-web
   export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}

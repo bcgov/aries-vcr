@@ -1,9 +1,14 @@
+import os
 import json
 from api.indy.agent import Holder
 import logging
 from api.indy import eventloop
 from rest_framework.exceptions import NotAcceptable
 import requests
+
+LEDGER_URL = os.environ.get('LEDGER_URL')
+if not LEDGER_URL:
+    raise Exception('LEDGER_URL must be set.')
 
 
 class ProofRequestProcesser(object):
@@ -20,7 +25,9 @@ class ProofRequestProcesser(object):
         self.__filters = json.loads(proofRequestWithFilters)['filters'] \
             if 'filters' in json.loads(proofRequestWithFilters) \
             else {}
-        self.ledger = requests.get('http://138.197.170.136/ledger/domain').text
+        self.ledger = requests.get(
+            '{}/ledger/domain'.format(LEDGER_URL)
+        ).text
 
     async def __ConstructProof(self):
         self.__logger.debug("Constructing Proof ...")

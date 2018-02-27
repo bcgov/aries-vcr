@@ -1,6 +1,11 @@
+import os
 import json
 import logging
 import requests
+
+LEDGER_URL = os.environ.get('LEDGER_URL')
+if not LEDGER_URL:
+    raise Exception('LEDGER_URL must be set.')
 
 
 class ClaimParser(object):
@@ -22,7 +27,8 @@ class ClaimParser(object):
       # Get schema from ledger
       # Once we upgrade to later version of
       try:
-        resp = requests.get('http://138.197.170.136/ledger/domain/{}'.format(
+        resp = requests.get('{}/ledger/domain/{}'.format(
+            LEDGER_URL,
             self.__claim['schema_seq_no']
         ))
         self.__schema = resp.json()
