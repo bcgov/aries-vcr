@@ -3,6 +3,7 @@ from api.indy.agent import Holder
 import logging
 from api.indy import eventloop
 from rest_framework.exceptions import NotAcceptable
+import requests
 
 
 class ProofRequestProcesser(object):
@@ -19,6 +20,7 @@ class ProofRequestProcesser(object):
         self.__filters = json.loads(proofRequestWithFilters)['filters'] \
             if 'filters' in json.loads(proofRequestWithFilters) \
             else {}
+        self.ledger = requests.get('http://138.197.170.136/ledger/domain').text
 
     async def __ConstructProof(self):
         self.__logger.debug("Constructing Proof ...")
@@ -36,6 +38,21 @@ class ProofRequestProcesser(object):
             # Current format simply wants the seq_no of schema
             schema_key = self.__proof_request['requested_attrs'][
                 attr]['restrictions'][0]['schema_key']
+
+            # This is offensive...
+            # Get the schema from the ledger directly by name/version
+            # After upgrading von-agent we can loosen restrictions using
+            # schema_key
+            try:
+                for line in self.ledger.splitlines():
+                    entry = json.loads(line)[1]
+                    if entry['type'] == "101":
+                        if entry['data']['name'] == schema_key['name'] and \
+                                entry['data']['version'] == schema_key['version']:
+                            schema_key['did'] = entry['identifier']
+                            break
+            except:
+                raise Exception('Could not correlate schema name and version to did.')
 
             # Ugly cache for now...
             if '%s::%s::%s' % (
@@ -55,6 +72,8 @@ class ProofRequestProcesser(object):
                         schema_key['version']
                     )
                     schema = json.loads(schema_json)
+
+            self.__logger.debug("Using Schema key {}".format(schema_key))
 
             if not schema:
                 raise NotAcceptable(

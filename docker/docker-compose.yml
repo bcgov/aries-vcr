@@ -16,6 +16,7 @@ services:
       - "${WEB_HTTP_PORT}:8080"
     depends_on:
       - tob-api
+    # command: npm start
 
   # 
   # tob-api

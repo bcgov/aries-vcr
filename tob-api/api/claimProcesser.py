@@ -38,7 +38,27 @@ class ClaimProcesser(object):
       # VerifiableClaimType.claimType is the friendly name of the claim.
       schemaName = claim.schemaName
       
-      verifiableClaimType = VerifiableClaimType.objects.filter(schemaName=schemaName).order_by('CREATE_TIMESTAMP')
+      schema = claim.schema
+      if not schema:
+        raise Exception('Could not retrieve schema from ledger.')
+
+
+      self.__logger.debug("------\n\n\n{}\n\n\n{}\n\n\n{}\n\n\n------".format(
+        schema['data']['name'],
+        schema['data']['version'],
+        schema['identifier']
+      ))
+
+
+      verifiableClaimType = VerifiableClaimType.objects.filter(
+        schemaName=schema['data']['name'],
+        schemaVersion=schema['data']['version'],
+        issuerServiceId__DID=schema['identifier']
+      )
+
+
+
+
       if not verifiableClaimType:
         self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(schemaName))
       else:
@@ -258,7 +278,7 @@ class ClaimProcesser(object):
     
     def SaveClaim(self, claimJson):      
       claim = ClaimParser(claimJson)
-      self.__logger.debug(">>> Processing {0} claim ...".format(claim.schemaName))
+      self.__logger.debug(">>> Processing {0} claim ...\n{1}".format(claim.schemaName, claimJson))
 
       # If the claim type has not been registered, reject the claim.
       verifiableClaimType = self.__get_VerifiableClaimType(claim)
