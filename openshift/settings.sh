@@ -12,10 +12,10 @@ export GIT_REF="master"
 export components="tob-db tob-solr tob-api tob-web tob-ghost"
 
 # The builds to be triggered after buildconfigs created (not auto-triggered)
-export builds="nginx-runtime angular-builder"
+export builds=""
 
 # The images to be tagged after build
-export images="angular-on-nginx django solr schema-spy"
+export images="angular-on-nginx django solr schema-spy postgresql-oracle-fdw ghost"
 
 # The routes for the project
 export routes="angular-on-nginx django solr schema-spy"
