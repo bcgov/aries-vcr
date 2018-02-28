@@ -1,0 +1,153 @@
+
+/* We override base bootstrap class here */
+
+// Header
+header {
+  background-color: #333;
+  border-bottom: 2px solid #fcba19;
+  padding-top: 10px;
+  padding-bottom: 20px;
+
+  @media (max-width: 767px) {
+    padding-top: 2px;
+    padding-bottom: 8px;
+  }
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+    top: 7px;
+    position: relative;
+    white-space: nowrap;
+    letter-spacing: .05em;
+  
+    @media (max-width: 480px) {
+      font-size: 14px;
+    }
+  }
+
+  .header-logo {
+    width: 165px;
+    height: 45px;
+    margin-right: 18px;
+  
+    @media (max-width: 767px) {
+      width: 110px;
+      height: 30px;
+    }
+  
+  }
+
+// Headers
+.page-header {
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+h1 {
+    margin-top: 30px;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+// Panels
+
+.panel-primary {
+  background: #f1f1f2;
+}
+
+// Links and button
+a {
+  text-decoration: underline;
+}
+
+.btn {
+  text-decoration: none;
+}
+
+.btn-group {
+    margin-left: 10px;
+}
+
+.btn-default {
+    margin-right: 15px;
+    
+    @media screen and (max-width:768px) {
+        margin-top:15px;
+    }  
+}
+
+.btn-link {
+  text-decoration: underline;
+}
+
+
+// body
+body{
+    font-family: Myriad-Pro,Calibri,Arial,sans serif;
+    line-height: 1.42857143;
+}
+body, html{
+  height:100%;
+}
+
+.text-danger {
+    margin:5px 0 15px 0;
+}
+
+
+header .navbar-nav {
+    float: right;
+    font-size: 16px;
+    margin-right: 5px;
+    margin-top: 5px;
+    > li > a {
+      border: 1px solid transparent;
+      border-radius: 4px;
+      color: #fff;
+      padding: 10px 10px 8px;
+      text-decoration: none;
+      &:hover, &:focus, &:active {
+        background: none;
+        border-color: #fff;
+        text-decoration: underline;
+      }
+    }
+  }
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+// footer
+footer a {
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline !important;
+}
+footer {
+  border-color: #fcba19;
+  border-top: 2px solid #fcba19;
+  width: 100%;
+}
+footer .navbar {
+  margin-bottom: 0;
+}
+
+footer li {
+  border-left: 1px solid #4b5e73;
+  padding: 2px 10px;
+  margin-top: 10px;
+}
+footer .navbar-nav > li > a {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
