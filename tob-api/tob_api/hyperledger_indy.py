@@ -3,12 +3,19 @@ import platform
 import requests
 from pathlib import Path
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def getGenesisData():
     """
     Get a copy of the genesis transaction file from the web.
     """
-    genesisUrl = os.getenv('GENESIS_URL', 'http://138.197.170.136/genesis').lower()
-    response = requests.get(genesisUrl)
+    ledgerUrl = os.getenv('LEDGER_URL').lower()
+    if not ledgerUrl:
+        raise Exception('LEDGER_URL must be set.')
+    logger.info('Using genesis transaction file from {}/genesis'.format(ledgerUrl))
+    response = requests.get('{}/genesis'.format(ledgerUrl))
     return response.text
 
 def checkGenesisFile(genesis_txn_path):
@@ -27,10 +34,10 @@ def config():
     """
     Get the hyperledger configuration settings for the environment.
     """
-    genesis_txn_path = "/opt/app-root/genesis"
+    genesis_txn_path = "/opt/app-root/src/genesis"
     platform_name = platform.system()
     if platform_name == "Windows":
-        genesis_txn_path = os.path.realpath("./app-root/genesis")
+        genesis_txn_path = os.path.realpath("./app-root/src/genesis")
     
     checkGenesisFile(genesis_txn_path)
 

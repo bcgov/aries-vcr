@@ -1,4 +1,5 @@
 #!/bin/bash
+export DOCKERHOST=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)
 export MSYS_NO_PATHCONV=1
 set -e
 
@@ -196,7 +197,7 @@ configureEnvironment () {
   export DJANGO_DEBUG=True
   export SOLR_SERVICE_NAME="tob-solr"
   export SOLR_CORE_NAME=${CORE_NAME}
-  export LEDGER_URL=${LEDGER_URL-http://138.197.170.136}
+  export LEDGER_URL=${LEDGER_URL-http://$DOCKERHOST:9000}
 
   # tob-web
   export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}
