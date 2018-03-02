@@ -5,6 +5,7 @@
 #
 
 import json
+import os
 import sys
 from glob import glob
 from os.path import dirname, join
@@ -39,10 +40,27 @@ URLS = {
         'City': 'https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca',
         # liquor_control_and_licensing_branch
         'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca'
+    },
+  'test': {
+        # bc_registries (needs to be first)
+        'Reg': 'https://bc-registries-devex-von-permitify-test.pathfinder.gov.bc.ca',
+        # worksafe_bc
+        'Worksafe': 'https://worksafe-bc-devex-von-permitify-test.pathfinder.gov.bc.ca',
+        # ministry_of_finance
+        'Finance': 'https://ministry-of-finance-devex-von-permitify-test.pathfinder.gov.bc.ca',
+        # fraser_valley_health_authority
+        'Health': 'https://fraser-valley-health-authority-devex-von-permitify-test.pathfinder.gov.bc.ca',
+        # city_of_surrey
+        'City': 'https://city-of-surrey-devex-von-permitify-test.pathfinder.gov.bc.ca',
+        # liquor_control_and_licensing_branch
+        'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-test.pathfinder.gov.bc.ca'
     }
 }
 
-this_dir = dirname(__file__)
+# this_dir = dirname(__file__)
+
+this_dir = os.path.realpath('/Users/nbrempel/Downloads/')
+
 claim_files = glob(join(this_dir, 'Claims', 'Claims_*'))
 
 
@@ -54,52 +72,53 @@ def main(env):
             permitify_services = json.loads(content)
             legal_entity_id = None
             for service_name in URLS[env]:
-                claim = permitify_services[service_name][0]
+                if service_name not in permitify_services:
+                    continue
+                for claim in permitify_services[service_name]:
+                    if service_name != 'Reg':
+                        claim['legal_entity_id'] = legal_entity_id
+                        print('\n\n')
+                        print('Issuing permit: {}'.format(
+                            claim['schema']
+                        ))
+                    else:
+                        print('\n\n')
+                        print('==============================================')
+                        print('Registering new business: {}'.format(
+                            claim['legal_name']
+                        ))
+                        print('==============================================')
 
-                if service_name != 'Reg':
-                    claim['legal_entity_id'] = legal_entity_id
-                    print('\n\n')
-                    print('Issuing permit: {}'.format(
-                        claim['schema']
-                    ))
-                else:
-                    print('\n\n')
-                    print('==============================================')
-                    print('Registering new business: {}'.format(
-                        claim['legal_name']
-                    ))
-                    print('==============================================')
+                    claim['address_line_2'] = ""
 
-                claim['address_line_2'] = ""
+                    print('\n\nSubmitting Claim:\n\n{}'.format(claim))
 
-                print('\n\nSubmitting Claim:\n\n{}'.format(claim))
+                    try:
+                        response = requests.post(
+                            '{}/submit_claim'.format(
+                                URLS[env][service_name]),
+                            json=claim
+                        )
+                        result_json = response.json()
+                    except:
+                        raise Exception(
+                            'Could not submit claim. '
+                            'Are Permitify and Docker running?')
 
-                try:
-                    response = requests.post(
-                        '{}/submit_claim'.format(
-                            URLS[env][service_name]),
-                        json=claim
-                    )
-                    result_json = response.json()
-                except:
-                    raise Exception(
-                        'Could not submit claim. '
-                        'Are Permitify and Docker running?')
+                    print('\n\n Response from permitify:\n\n{}'.format(result_json))
 
-                print('\n\n Response from permitify:\n\n{}'.format(result_json))
-
-                if service_name == 'Reg':
-                    legal_entity_id = result_json['result']['orgId']
+                    if service_name == 'Reg':
+                        legal_entity_id = result_json['result']['orgId']
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('{} {{local|dev}}'.format(sys.argv[0]))
+        print('{} {{local|dev|test}}'.format(sys.argv[0]))
     else:
         try:
             URLS[sys.argv[1]]
         except KeyError:
-            print('{} {{local|dev}}'.format(sys.argv[0]))
+            print('{} {{local|dev|test}}'.format(sys.argv[0]))
         else:
             env = sys.argv[1]
             main(env)
