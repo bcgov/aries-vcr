@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "4304 Victoria Park Ave",
+            "address_line_2": "",
+            "addressee": "Angel Andrade",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Andrade Sandwich Shop",
+            "postal_code": "M2J 3T7",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

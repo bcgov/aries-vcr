@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3938 Blind Bay Road",
+            "address_line_2": "",
+            "addressee": "Marcus Ellis",
+            "city": "Armstrong",
+            "country": "CA",
+            "legal_name": "Ellis Chophouse",
+            "postal_code": "V0E 1B0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

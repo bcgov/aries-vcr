@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2878 Pitt St",
+            "address_line_2": "",
+            "addressee": "Tony Fox",
+            "city": "Cornwall",
+            "country": "CA",
+            "legal_name": "Fox Drive-In",
+            "postal_code": "K6J 3R2",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

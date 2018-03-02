@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2468 Eglinton Avenue",
+            "address_line_2": "",
+            "addressee": "Alma McGrew",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "McGrew Shack",
+            "postal_code": "M4P 1A6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

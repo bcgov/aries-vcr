@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "1 Eglinton Avenue",
+            "address_line_2": "",
+            "addressee": "Joshua Oconner",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Oconner Diner",
+            "postal_code": "M4P 1A6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

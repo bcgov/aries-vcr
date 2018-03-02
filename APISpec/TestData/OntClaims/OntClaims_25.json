@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "426 King Street",
+            "address_line_2": "",
+            "addressee": "Ross Graves",
+            "city": "Orillia",
+            "country": "CA",
+            "legal_name": "Graves Eating House",
+            "postal_code": "I3V 6H8",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

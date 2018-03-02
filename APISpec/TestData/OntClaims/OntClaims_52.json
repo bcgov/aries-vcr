@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "615 Fallon Drive",
+            "address_line_2": "",
+            "addressee": "Richard Boswell",
+            "city": "Lucan",
+            "country": "CA",
+            "legal_name": "Boswell Public House",
+            "postal_code": "N0M 2J0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2594 Fallon Drive",
+            "address_line_2": "",
+            "addressee": "Michael King",
+            "city": "Dungannon",
+            "country": "CA",
+            "legal_name": "King Canteen",
+            "postal_code": "N0M 1R0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

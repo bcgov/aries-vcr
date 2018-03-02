@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2567 Smith Avenue",
+            "address_line_2": "",
+            "addressee": "Donald Edwards",
+            "city": "Hamilton",
+            "country": "CA",
+            "legal_name": "Edwards Public House",
+            "postal_code": "L9H 1E6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

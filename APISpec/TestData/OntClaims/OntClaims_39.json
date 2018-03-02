@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2079 Montreal Road",
+            "address_line_2": "",
+            "addressee": "Jacob Gardner",
+            "city": "Ottawa",
+            "country": "CA",
+            "legal_name": "Gardner Dive",
+            "postal_code": "K1L 6C7",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

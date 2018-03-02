@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "973 Pitt St",
+            "address_line_2": "",
+            "addressee": "Amber Mason",
+            "city": "Cornwall",
+            "country": "CA",
+            "legal_name": "Mason Shack",
+            "postal_code": "K6J 3R2",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

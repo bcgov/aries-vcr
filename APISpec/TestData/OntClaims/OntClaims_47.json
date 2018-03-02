@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "4411 Fallon Drive",
+            "address_line_2": "",
+            "addressee": "Amy Boring",
+            "city": "Thamesville",
+            "country": "CA",
+            "legal_name": "Boring Shack",
+            "postal_code": "N0P 2K0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3759 Davis Drive",
+            "address_line_2": "",
+            "addressee": "John Smith",
+            "city": "Welland",
+            "country": "CA",
+            "legal_name": "Smith Dining Room",
+            "postal_code": "L3B 3Z6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

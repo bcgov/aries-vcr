@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "4819 Paris St",
+            "address_line_2": "",
+            "addressee": "Sadie Jenkins",
+            "city": "Sudbury",
+            "country": "CA",
+            "legal_name": "Jenkins Saloon",
+            "postal_code": "P3E 4K2",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

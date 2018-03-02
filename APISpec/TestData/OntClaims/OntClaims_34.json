@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3533 Bank St",
+            "address_line_2": "",
+            "addressee": "Sam Garrison",
+            "city": "Ottawa",
+            "country": "CA",
+            "legal_name": "Garrison Dining Room",
+            "postal_code": "K1H 7Z1",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

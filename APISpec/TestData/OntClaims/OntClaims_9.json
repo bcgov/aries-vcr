@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3013 Nelson Street",
+            "address_line_2": "",
+            "addressee": "Juliana August",
+            "city": "Eagle River",
+            "country": "CA",
+            "legal_name": "August Ratskeller",
+            "postal_code": "P0V 1S0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

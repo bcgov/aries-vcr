@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "1661 Front Street",
+            "address_line_2": "",
+            "addressee": "Leonard Lynch",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Lynch Dining Room",
+            "postal_code": "M5J 2N1",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3048 Nelson Street",
+            "address_line_2": "",
+            "addressee": "Douglas Gardner",
+            "city": "Rosseau",
+            "country": "CA",
+            "legal_name": "Gardner Name",
+            "postal_code": "P0C 1J0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

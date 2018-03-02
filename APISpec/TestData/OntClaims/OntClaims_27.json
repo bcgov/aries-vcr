@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "4714 Central Pkwy",
+            "address_line_2": "",
+            "addressee": "Julia Holmes",
+            "city": "Port Credit",
+            "country": "CA",
+            "legal_name": "Holmes Eatry",
+            "postal_code": "L5G 1K2",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

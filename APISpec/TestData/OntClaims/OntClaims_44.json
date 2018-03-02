@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "131 Adelaide St",
+            "address_line_2": "",
+            "addressee": "Florence Cohen",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Cohen Bar and Grill",
+            "postal_code": "M5H 1P6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

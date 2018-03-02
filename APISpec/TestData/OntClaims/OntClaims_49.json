@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "173 George Street",
+            "address_line_2": "",
+            "addressee": "Charlie Dixon",
+            "city": "Peterborough",
+            "country": "CA",
+            "legal_name": "Dixon Sandwich Shop",
+            "postal_code": "K9H 2L1",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

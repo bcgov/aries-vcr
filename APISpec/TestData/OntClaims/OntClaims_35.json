@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3446 Horner Ave",
+            "address_line_2": "",
+            "addressee": "John Martin",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Martin Seafood",
+            "postal_code": "M8W 4Y4",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

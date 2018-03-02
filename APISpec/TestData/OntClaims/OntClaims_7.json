@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3375 Islington Ave",
+            "address_line_2": "",
+            "addressee": "Melinda Baumgardner",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Baumgardner Luncheon",
+            "postal_code": "M8V 3B6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

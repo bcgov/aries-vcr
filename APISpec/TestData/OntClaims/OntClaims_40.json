@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2769 Wellington Street",
+            "address_line_2": "",
+            "addressee": "Brittney Aston",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Aston Canteen",
+            "postal_code": "M9C 3J5",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

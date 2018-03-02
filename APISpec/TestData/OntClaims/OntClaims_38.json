@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3570 Pape Ave",
+            "address_line_2": "",
+            "addressee": "Andy Grounds",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Grounds Restaurant",
+            "postal_code": "M4E 2V5",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

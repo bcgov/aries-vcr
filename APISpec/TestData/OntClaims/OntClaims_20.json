@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "482 Harvest Moon Dr",
+            "address_line_2": "",
+            "addressee": "Robin Stone",
+            "city": "Unionville",
+            "country": "CA",
+            "legal_name": "Stone Seafood",
+            "postal_code": "L3R 0L7",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

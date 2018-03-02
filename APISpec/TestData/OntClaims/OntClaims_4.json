@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "3988 Davis Drive",
+            "address_line_2": "",
+            "addressee": "Regina Etheredge",
+            "city": "Welland",
+            "country": "CA",
+            "legal_name": "Etheredge Luncheon",
+            "postal_code": "L3B 3Z6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

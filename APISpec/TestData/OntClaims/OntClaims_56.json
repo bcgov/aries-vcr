@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "4963 Adelaide St",
+            "address_line_2": "",
+            "addressee": "Angel Kee",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Kee Restaurant",
+            "postal_code": "M5H 1P6",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

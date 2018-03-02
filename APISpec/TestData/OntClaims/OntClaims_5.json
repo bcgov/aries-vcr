@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "630 Wellington Street",
+            "address_line_2": "",
+            "addressee": "Kenneth Gilman",
+            "city": "Toronto",
+            "country": "CA",
+            "legal_name": "Gilman Foods",
+            "postal_code": "M9C 3J5",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

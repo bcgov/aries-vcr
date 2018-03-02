@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2621 Davis Drive",
+            "address_line_2": "",
+            "addressee": "Lewis Mayer",
+            "city": "Port Colborne",
+            "country": "CA",
+            "legal_name": "Mayer Bar",
+            "postal_code": "L3K 3M2",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

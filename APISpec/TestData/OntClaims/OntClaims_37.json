@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "898 Heatherleigh",
+            "address_line_2": "",
+            "addressee": "Dorothy Harvey",
+            "city": "Cooksville",
+            "country": "CA",
+            "legal_name": "Harvey Inn",
+            "postal_code": "L5A 1V9",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2446 Reserve St",
+            "address_line_2": "",
+            "addressee": "Donna Ruiz",
+            "city": "Apsley",
+            "country": "CA",
+            "legal_name": "Ruiz Drive-In",
+            "postal_code": "K0L 1A0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

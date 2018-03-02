@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "738 Silver St",
+            "address_line_2": "",
+            "addressee": "Jonathan McConville",
+            "city": "Haileybury",
+            "country": "CA",
+            "legal_name": "McConville Dive",
+            "postal_code": "P0J 1K0",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}

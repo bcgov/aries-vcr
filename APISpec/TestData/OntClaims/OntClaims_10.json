@@ -1,0 +1,15 @@
+{
+    "Reg": [
+        {
+            "address_line_1": "2957 Scotchmere Dr",
+            "address_line_2": "",
+            "addressee": "Gabriel Tilson",
+            "city": "Goderich",
+            "country": "CA",
+            "legal_name": "Tilson Dining Room",
+            "postal_code": "N7A 1C9",
+            "province": "ON",
+            "schema": "incorporation.on_biz"
+        }
+    ]
+}
