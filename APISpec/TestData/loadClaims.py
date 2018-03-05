@@ -57,9 +57,7 @@ URLS = {
     }
 }
 
-# this_dir = dirname(__file__)
-
-this_dir = os.path.realpath('/Users/nbrempel/Downloads/')
+this_dir = dirname(__file__)
 
 claim_files = glob(join(this_dir, 'Claims', 'Claims_*'))
 
