@@ -25,5 +25,5 @@ pysolr>=3.6.0,<4
 
 # Von Agent
 python3-indy==1.1.0
-git+https://github.com/nrempel/von_agent.git#von-agent
+git+https://github.com/ianco/von_agent.git#von-agent
 # von-agent
