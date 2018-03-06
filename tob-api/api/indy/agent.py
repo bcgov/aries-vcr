@@ -21,11 +21,13 @@ class Issuer:
             'the-org-book-issuer',
             config['genesis_txn_path'])
 
+        issuer_config = '{"freshness_time":0}'
+
         self.instance = VonIssuer(
             self.pool,
             WALLET_SEED,
             'TheOrgBook Issuer Wallet',
-            None,
+            issuer_config,
             '127.0.0.1',
             9703,
             'api/v0')
@@ -49,11 +51,13 @@ class Verifier:
             'the-org-book-verifier',
             config['genesis_txn_path'])
 
+        verifier_config = '{"freshness_time":0}'
+
         self.instance = VonVerifier(
             self.pool,
             WALLET_SEED,
             'TheOrgBook Verifier Wallet',
-            None,
+            verifier_config,
             '127.0.0.1',
             9703,
             'api/v0')
@@ -77,11 +81,13 @@ class Holder:
             'the-org-book-holder',
             config['genesis_txn_path'])
 
+        holder_config = '{"freshness_time":0}'
+
         self.instance = VonHolderProver(
             self.pool,
             WALLET_SEED,
             'TheOrgBook Holder Wallet',
-            None,
+            holder_config,
             '127.0.0.1',
             9703,
             'api/v0')
