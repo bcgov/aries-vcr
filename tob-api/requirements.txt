@@ -24,6 +24,7 @@ django-haystack>=2.7.dev0,<3
 pysolr>=3.6.0,<4
 
 # Von Agent
-python3-indy==1.1.0
-git+https://github.com/ianco/von_agent.git#von-agent
-# von-agent
+# git+https://github.com/nrempel/von_agent.git#von-agent
+python3-indy==1.3.1-dev-371
+von-agent==0.4.2
+asyncio>=3.4.3,<4

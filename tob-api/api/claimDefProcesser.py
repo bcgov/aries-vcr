@@ -1,5 +1,6 @@
 import json
 import asyncio
+from von_agent.schema import schema_key_for
 from api.indy.agent import Holder
 from api.indy.claimDefParser import ClaimDefParser
 import logging
@@ -17,9 +18,19 @@ class ClaimDefProcesser(object):
   async def __StoreClaimOffer(self):
     self.__logger.debug(">>> Storing claim offer ...")
     async with Holder() as holder:
+      # Let's get the schema by seqNo to build schema key
+      # instead of changing protocol for now.
+      schema_json = await holder.get_schema(self.__claimDefParser.seqNo)
+      schema = json.loads(schema_json)
       await holder.store_claim_offer(
         self.__claimDefParser.did,
-        self.__claimDefParser.seqNo
+        schema_key_for(
+          {
+            'origin_did': schema['identifier'],
+            'name': schema['data']['name'],
+            'version': schema['data']['version']
+          }
+        )
       )
     self.__logger.debug("<<< Storing claim offer.")
 

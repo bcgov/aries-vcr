@@ -38,7 +38,7 @@ class ClaimParser(object):
     def getField(self, field):
       value = None
       try:
-        value = self.__claim["claim"][field][0]
+        value = self.__claim["values"][field][0]
       except:
         pass
 
