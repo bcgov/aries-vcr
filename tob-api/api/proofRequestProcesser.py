@@ -29,76 +29,76 @@ class ProofRequestProcesser(object):
     async def __ConstructProof(self):
         self.__logger.debug("Constructing Proof ...")
 
-        # We keep a reference to schemas that we discover and retrieve from the
-        # ledger. We will need these again later.
-        schema_cache = {'by_key': {}}
+        # # We keep a reference to schemas that we discover and retrieve from the
+        # # ledger. We will need these again later.
+        # schema_cache = {'by_key': {}}
 
-        # The client is sending the proof request in an upcoming format.
-        # This shim allows Permitify to declare its proof requests format
-        # in the latest format. Once von-agent is update to support the new
-        # format, this shim can be removed.
-        for attr in self.__proof_request['requested_attrs']:
-            # new format expects restrictions with "schema_key"
-            # Current format simply wants the seq_no of schema
-            schema_key = self.__proof_request['requested_attrs'][
-                attr]['restrictions'][0]['schema_key']
+        # # The client is sending the proof request in an upcoming format.
+        # # This shim allows Permitify to declare its proof requests format
+        # # in the latest format. Once von-agent is update to support the new
+        # # format, this shim can be removed.
+        # for attr in self.__proof_request['requested_attrs']:
+        #     # new format expects restrictions with "schema_key"
+        #     # Current format simply wants the seq_no of schema
+        #     schema_key = self.__proof_request['requested_attrs'][
+        #         attr]['restrictions'][0]['schema_key']
 
-            # This is offensive...
-            # Get the schema from the ledger directly by name/version
-            # After upgrading von-agent we can loosen restrictions using
-            # schema_key
-            # try:
-            #     for line in self.ledger.splitlines():
-            #         entry = json.loads(line)[1]
-            #         if entry['type'] == "101":
-            #             if entry['data']['name'] == schema_key['name'] and \
-            #                     entry['data']['version'] == schema_key['version']:
-            #                 schema_key['did'] = entry['identifier']
-            #                 break
-            # except:
-            #     raise Exception('Could not correlate schema name and version to did.')
+        #     # This is offensive...
+        #     # Get the schema from the ledger directly by name/version
+        #     # After upgrading von-agent we can loosen restrictions using
+        #     # schema_key
+        #     # try:
+        #     #     for line in self.ledger.splitlines():
+        #     #         entry = json.loads(line)[1]
+        #     #         if entry['type'] == "101":
+        #     #             if entry['data']['name'] == schema_key['name'] and \
+        #     #                     entry['data']['version'] == schema_key['version']:
+        #     #                 schema_key['did'] = entry['identifier']
+        #     #                 break
+        #     # except:
+        #     #     raise Exception('Could not correlate schema name and version to did.')
 
-            # Ugly cache for now...
-            if '%s::%s::%s' % (
-                    schema_key['did'],
-                    schema_key['name'],
-                    schema_key['version']) in schema_cache['by_key']:
-                schema = schema_cache['by_key']['%s::%s::%s' % (
-                    schema_key['did'],
-                    schema_key['name'],
-                    schema_key['version'])]
-            else:
-                # Not optimal. von-agent should cache this.
-                async with Holder() as holder:
-                    schema_json = await holder.get_schema(
-                        schema_key['did'],
-                        schema_key['name'],
-                        schema_key['version']
-                    )
-                    schema = json.loads(schema_json)
+        #     # Ugly cache for now...
+        #     if '%s::%s::%s' % (
+        #             schema_key['did'],
+        #             schema_key['name'],
+        #             schema_key['version']) in schema_cache['by_key']:
+        #         schema = schema_cache['by_key']['%s::%s::%s' % (
+        #             schema_key['did'],
+        #             schema_key['name'],
+        #             schema_key['version'])]
+        #     else:
+        #         # Not optimal. von-agent should cache this.
+        #         async with Holder() as holder:
+        #             schema_json = await holder.get_schema(
+        #                 schema_key['did'],
+        #                 schema_key['name'],
+        #                 schema_key['version']
+        #             )
+        #             schema = json.loads(schema_json)
 
-            self.__logger.debug("Using Schema key {}".format(schema_key))
+        #     self.__logger.debug("Using Schema key {}".format(schema_key))
 
-            if not schema:
-                raise NotAcceptable(
-                    'No schema found for did:{} name:{} version:{}'.format(
-                        schema_key['did'],
-                        schema_key['name'],
-                        schema_key['version']
-                    )
-                )
+        #     if not schema:
+        #         raise NotAcceptable(
+        #             'No schema found for did:{} name:{} version:{}'.format(
+        #                 schema_key['did'],
+        #                 schema_key['name'],
+        #                 schema_key['version']
+        #             )
+        #         )
 
-            schema_cache[schema['seqNo']] = schema
-            schema_cache['by_key']['%s::%s::%s' % (
-                schema_key['did'],
-                schema_key['name'],
-                schema_key['version'])] = schema
+        #     schema_cache[schema['seqNo']] = schema
+        #     schema_cache['by_key']['%s::%s::%s' % (
+        #         schema_key['did'],
+        #         schema_key['name'],
+        #         schema_key['version'])] = schema
 
-            self.__proof_request['requested_attrs'][
-                attr]['schema_seq_no'] = schema['seqNo']
-            del self.__proof_request['requested_attrs'][attr]['restrictions']
+        #     self.__proof_request['requested_attrs'][
+        #         attr]['schema_seq_no'] = schema['seqNo']
+        #     del self.__proof_request['requested_attrs'][attr]['restrictions']
 
-        self.__logger.debug('Schema cache: %s' % json.dumps(schema_cache))
+        # self.__logger.debug('Schema cache: %s' % json.dumps(schema_cache))
 
         self.__logger.debug('Proof request: %s' % json.dumps(
             self.__proof_request))
@@ -136,10 +136,10 @@ class ProofRequestProcesser(object):
                     get_claim_by_filter(
                         claims["attrs"][attr],
                         'legal_entity_id',
-                        self.__filters['legal_entity_id'])["claim_uuid"]
+                        self.__filters['legal_entity_id'])["referent"]
                     # Or we use the first claim found
                     if 'legal_entity_id' in self.__filters
-                    else claims["attrs"][attr][0]["claim_uuid"],
+                    else claims["attrs"][attr][0]["referent"],
                     True
                 ]
                 for attr in claims["attrs"]
@@ -152,63 +152,62 @@ class ProofRequestProcesser(object):
             json.dumps(requested_claims))
 
         # Build schemas json
-        def wallet_claim_by_claim_uuid(clms, claim_uuid):
+        def wallet_claim_by_referent(clms, referent):
             for clm in clms:
-                if clm['claim_uuid'] == claim_uuid:
+                if clm['referent'] == referent:
                     return clm
 
-        schemas = {
-            requested_claims['requested_attrs'][attr][0]:
-                schema_cache[
-                    wallet_claim_by_claim_uuid(
-                        claims["attrs"][attr],
-                        requested_claims['requested_attrs'][attr][0]
-                    )['schema_seq_no']
-                ]
-            for attr in requested_claims['requested_attrs']
-        }
+        # schemas = {
+        #     requested_claims['requested_attrs'][attr][0]:
+        #         schema_cache[
+        #             wallet_claim_by_referent(
+        #                 claims["attrs"][attr],
+        #                 requested_claims['requested_attrs'][attr][0]
+        #             )['schema_seq_no']
+        #         ]
+        #     for attr in requested_claims['requested_attrs']
+        # }
 
-        self.__logger.debug(
-            'Built schemas: %s' %
-            json.dumps(schemas))
+        # self.__logger.debug(
+        #     'Built schemas: %s' %
+        #     json.dumps(schemas))
 
-        claim_defs_cache = {}
-        claim_defs = {}
-        for attr in requested_claims['requested_attrs']:
-            # claim uuid
-            claim_uuid = requested_claims['requested_attrs'][attr][0]
+        # claim_defs_cache = {}
+        # claim_defs = {}
+        # for attr in requested_claims['requested_attrs']:
+        #     # claim uuid
+        #     referent = requested_claims['requested_attrs'][attr][0]
 
-            if claim_uuid not in claim_defs_cache:
-                async with Holder() as holder:
-                    claim_defs_cache[claim_uuid] = \
-                        json.loads(await holder.get_claim_def(
-                            wallet_claim_by_claim_uuid(
-                                claims["attrs"][attr],
-                                claim_uuid
-                            )["schema_seq_no"],
-                            wallet_claim_by_claim_uuid(
-                                claims["attrs"][attr],
-                                claim_uuid
-                            )["issuer_did"]
-                        ))
+        #     if referent not in claim_defs_cache:
+        #         async with Holder() as holder:
+        #             claim_defs_cache[referent] = \
+        #                 json.loads(await holder.get_claim_def(
+        #                     wallet_claim_by_referent(
+        #                         claims["attrs"][attr],
+        #                         referent
+        #                     )["schema_seq_no"],
+        #                     wallet_claim_by_referent(
+        #                         claims["attrs"][attr],
+        #                         referent
+        #                     )["issuer_did"]
+        #                 ))
 
-            claim_defs[claim_uuid] = claim_defs_cache[claim_uuid]
+        #     claim_defs[referent] = claim_defs_cache[referent]
 
-        self.__logger.debug(
-            'Claim def cache: %s' %
-            json.dumps(claim_defs_cache))
+        # self.__logger.debug(
+        #     'Claim def cache: %s' %
+        #     json.dumps(claim_defs_cache))
 
-        self.__logger.debug(
-            'Built claim_defs: %s' %
-            json.dumps(claim_defs))
+        # self.__logger.debug(
+        #     'Built claim_defs: %s' %
+        #     json.dumps(claim_defs))
 
         self.__logger.debug("Creating proof ...")
 
         async with Holder() as holder:
             proof = await holder.create_proof(
-                    json.dumps(self.__proof_request),
-                    json.dumps(schemas),
-                    json.dumps(claim_defs),
+                    self.__proof_request,
+                    claims,
                     requested_claims
                 )
 
@@ -217,9 +216,7 @@ class ProofRequestProcesser(object):
             json.dumps(proof))
 
         return {
-            'proof': json.loads(proof),
-            'schemas': schemas,
-            'claim_defs': claim_defs
+            'proof': json.loads(proof)
         }
 
     def ConstructProof(self):

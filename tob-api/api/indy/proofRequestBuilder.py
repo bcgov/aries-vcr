@@ -54,7 +54,7 @@ class ProofRequestBuilder(object):
         issuerDid = claim['issuer_did']
 
         # Extract attrs from claim
-        parsedClaimAttrs = [attr for attr in claim['claim']]
+        parsedClaimAttrs = [attr for attr in claim['values']]
 
         for attr in parsedClaimAttrs:
             self.addRequestedAttr(attr, [{
