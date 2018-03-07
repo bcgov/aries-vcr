@@ -32,7 +32,7 @@ class Issuer:
             'TheOrgBook Issuer Wallet',
             issuer_type,
             issuer_config,
-            issuer_creds
+            issuer_creds,
             '127.0.0.1',
             9703,
             'api/v0')
