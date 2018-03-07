@@ -1,9 +1,12 @@
-# Caddyfile for the SchemaSpy Oracle deployment.
-# This file is loaded as a config and used to transparently replace the default Caddyfile.
-# Adds basic authentication to limit access to the database documentation.
+# Caddyfile for the protected SchemaSpy Oracle deployment.
+#
+# This file is loaded as a config map and used to transparently replace the default Caddyfile.
+# It adds basic authentication to limit access to the database documentation.
+#
 # The root is redirected to /doc to allow an unauthenticated /health path for OpenShift
 # The deployment therefore needs to be configured to redirect the SchemaSpy
 # output to /var/www/html/doc using the OUTPUT_PATH variable.
+#
 # The username and password need to be injected into the environment using secretes,
 # this allows the use of a generic Caddyfile for all environments while using
 # randomly generated usernames and passwords for each environment.
