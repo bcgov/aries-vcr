@@ -40,6 +40,10 @@
       },
       "spec": {
         "host": "${NAME}-${APPLICATION_DOMAIN}",
+        "tls": {
+          "insecureEdgeTerminationPolicy": "Redirect",
+          "termination": "edge"
+        },
         "to": {
           "kind": "Service",
           "name": "${NAME}"
