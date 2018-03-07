@@ -51,8 +51,7 @@ class bcovrinGenerateClaimRequest(APIView):
 
     ```json
     {
-      'did': <issuer did>,
-      'seqNo': <schema sequence number>,
+      'claim_offer': <schema offer json>,
       'claim_def': <claim definition json>
     }
     ```

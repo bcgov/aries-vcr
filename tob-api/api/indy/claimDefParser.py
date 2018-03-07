@@ -25,14 +25,9 @@ class ClaimDefParser(object):
         return self.__claim_def
 
     @property
-    def did(self) -> str:
-        return self.__did
-
-    @property
-    def seqNo(self) -> str:
-        return self.__seqNo
+    def claimOffer(self) -> str:
+        return self.__claim_offer
 
     def __parse(self):
-      self.__did = self.fullClaimDefinition["did"]
-      self.__seqNo = self.fullClaimDefinition["seqNo"]
+      self.__claim_offer = self.fullClaimDefinition["claim_offer"]
       self.__claim_def = self.fullClaimDefinition["claim_def"]
