@@ -28,6 +28,26 @@ usage() {
           You need to do this first, since the builds require
           a combination of Docker and S2I builds.
 
+          You can build individual components as shown below, components that have dependencies will have these dependencies built too.
+
+          Examples:
+           - Build the web UI only
+
+            $0 build tob-web
+ 
+           - Build the API server only.
+ 
+            $0 build tob-api
+
+           - Build the Solr Search Engine server only.
+       
+            $0 build tob-solr
+
+          By default all containers that components comprise of, will be rebuilt.
+
+            $0 build
+
+
   start - Creates the application containers from the built images
           and starts the services based on the docker-compose.yml file.
 
@@ -41,15 +61,13 @@ usage() {
           $0 start tob-solr
           $0 start tob-web
           $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
+          $0 start tob-api
 
   stop - Stops the services.  This is a non-destructive process.  The containers
          are not deleted so they will be reused the next time you run start.
 
   rm - Removes any existing application containers.
 
-  build-api - Build the API server only.
-  
-  build-solr - Build the Solr Search Engine server only.
 EOF
 exit 1
 }
@@ -250,18 +268,23 @@ case "$1" in
     docker-compose rm
     ;;
   build)
-  	configureEnvironment $@
-    buildImages
-    ;;
-  build-api)
-    build-api
-    ;;
-  build-solr)
-    build-solr
-    ;;
-  build-web)
-  	configureEnvironment $@
-    build-web
+    COMMAND=$1
+    shift
+    _startupParams=$(getStartupParams $@)
+    configureEnvironment $@
+    case "$@" in
+      tob-api)
+        build-api
+        ;;
+      tob-web)
+        build-web
+        ;;
+      tob-solr)
+        build-solr
+        ;;
+      *)
+       buildImages
+    esac
     ;;
   *)
     usage
