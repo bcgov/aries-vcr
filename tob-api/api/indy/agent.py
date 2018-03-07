@@ -22,16 +22,20 @@ class Issuer:
             'the-org-book-issuer',
             config['genesis_txn_path'])
 
+        issuer_type = 'default'
         issuer_config = '{"freshness_time":0}'
+        issuer_creds = '{"key":""}'
 
         self.instance = VonIssuer(
             self.pool,
-            Wallet(
-                self.pool.name,
-                WALLET_SEED,
-                'TheOrgBook Issuer Wallet'
-            )
-        )
+            WALLET_SEED,
+            'TheOrgBook Issuer Wallet',
+            issuer_type,
+            issuer_config,
+            issuer_creds
+            '127.0.0.1',
+            9703,
+            'api/v0')
 
     async def __aenter__(self):
         await self.pool.open()
@@ -52,16 +56,20 @@ class Verifier:
             'the-org-book-verifier',
             config['genesis_txn_path'])
 
+        verifier_type = 'default'
         verifier_config = '{"freshness_time":0}'
+        verifier_creds = '{"key":""}'
 
         self.instance = VonVerifier(
             self.pool,
-            Wallet(
-                self.pool.name,
-                WALLET_SEED,
-                'TheOrgBook Verifier Wallet'
-            )
-        )
+            WALLET_SEED,
+            'TheOrgBook Verifier Wallet',
+            verifier_type,
+            verifier_config,
+            verifier_creds,
+            '127.0.0.1',
+            9703,
+            'api/v0')
 
     async def __aenter__(self):
         await self.pool.open()
@@ -82,16 +90,20 @@ class Holder:
             'the-org-book-holder',
             config['genesis_txn_path'])
 
+        holder_type = 'default'
         holder_config = '{"freshness_time":0}'
+        holder_creds = '{"key":""}'
 
         self.instance = VonHolderProver(
             self.pool,
-            Wallet(
-                self.pool.name,
-                WALLET_SEED,
-                'TheOrgBook Holder Wallet'
-            )
-        )
+            WALLET_SEED,
+            'TheOrgBook Holder Wallet',
+            holder_type,
+            holder_config,
+            holder_creds,
+            '127.0.0.1',
+            9703,
+            'api/v0')
 
     async def __aenter__(self):
         await self.pool.open()
