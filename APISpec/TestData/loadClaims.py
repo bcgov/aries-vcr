@@ -4,13 +4,44 @@
 # "requests" must be installed - pip3 install requests
 #
 
+import argparse
 import json
 import os
 import sys
 from glob import glob
 from os.path import dirname, join
-
+import threading
+import time
 import requests
+
+import string
+from random import *
+
+
+parser = argparse.ArgumentParser(description='A TheOrgBook Claim loader.  Supports randomization for test data and threading for fast loading')
+parser.add_argument('--random', action='store_true', required=False,
+                    help='If data is to be randomized before loading (useful for test data)')
+parser.add_argument('--env', metavar='env', type=str, default='local',
+                    help='Permitify and TheOrgBook services are on local/dev/test host')
+parser.add_argument('--inputdir', metavar='inputdir', type=str, default="Claims",
+                    help='The directory containing JSON claims to be loaded')
+parser.add_argument('--threads', metavar='threads', type=int, default=1,
+                    help='The number of threads to run for concurrent loading')
+
+args = parser.parse_args()
+
+print('Environment = \'%s\'' % args.env)
+if os.path.exists(args.inputdir):
+    print('Processing input directory \'%s\'' % args.inputdir)
+else:
+    print('Directory not found \'%s\'' % args.inputdir)
+
+print('Threads = {}'.format(args.threads))
+
+if args.random or args.threads > 1:
+    print('Randomizing!')
+else:
+    print('NOT Randomizing.')
 
 URLS = {
   'local': {
@@ -61,8 +92,68 @@ this_dir = dirname(__file__)
 
 claim_files = glob(join(this_dir, 'Claims', 'Claims_*'))
 
+do_it_random = (args.random or args.threads > 1)
+use_env = args.env
 
-def main(env):
+min_char = 4
+max_char = 6
+allchar = string.ascii_letters + string.digits
+
+# generate a short random string
+def random_string(i):
+    r_str = "_" + str(i) + "_" + "".join(choice(allchar) for x in range(randint(min_char, max_char)))
+    return r_str
+
+# check if field is a candidate for randomization
+def should_we_randomify(key, value):
+    # if value is all numeric, don't randomize
+    if value.isdigit():
+        return False
+
+    # key like "schema" don't randomize
+    if "schema" in key.lower():
+        return False;
+
+    # key like "type" probably a pick-list
+    if "_type" in key.lower():
+        return False;
+
+    # boolean flags
+    if value == "True" or value == "False":
+        return False;
+
+    # postal code or province
+    if key.lower() == "city" or key.lower() == "province" or key.lower() == "postal_code" or key.lower() == "country":
+        return False
+
+    # one more!
+    if key.lower() == "coverage_description":
+        return False
+
+    # ok go for it!
+    return True
+
+# randomize our test data so we can re-use it
+def randomify(claim, i):
+    for key in claim:
+        if should_we_randomify(key, claim[key]):
+            claim[key] = claim[key] + random_string(i)
+    return claim
+
+class myThread (threading.Thread):
+   def __init__(self, threadID, name, counter):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.counter = counter
+   def run(self):
+      print("Starting " + self.name)
+      main_load(use_env, do_it_random)
+      print("Exiting " + self.name)
+
+def main_load(env, do_it_random):
+    thread_id = 1   # until we start threading ... ;-)
+
     # Each filename is a full permitify recipe
     for filename in claim_files:
         with open(filename, 'r') as file:
@@ -73,6 +164,9 @@ def main(env):
                 if service_name not in permitify_services:
                     continue
                 for claim in permitify_services[service_name]:
+                    if do_it_random:
+                        claim = randomify(claim, thread_id)
+
                     if service_name != 'Reg':
                         claim['legal_entity_id'] = legal_entity_id
                         print('\n\n')
@@ -91,6 +185,7 @@ def main(env):
 
                     print('\n\nSubmitting Claim:\n\n{}'.format(claim))
 
+                    """
                     try:
                         response = requests.post(
                             '{}/submit_claim'.format(
@@ -104,19 +199,23 @@ def main(env):
                             'Are Permitify and Docker running?')
 
                     print('\n\n Response from permitify:\n\n{}'.format(result_json))
+                    """
 
                     if service_name == 'Reg':
-                        legal_entity_id = result_json['result']['orgId']
+                        legal_entity_id = random_string(thread_id) + random_string(thread_id) + random_string(thread_id) + random_string(thread_id)
+                        # legal_entity_id = result_json['result']['orgId']
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('{} {{local|dev|test}}'.format(sys.argv[0]))
+    try:
+        URLS[use_env]
+    except KeyError:
+        print('{} --env <local|dev|test>'.format(sys.argv[0]))
     else:
-        try:
-            URLS[sys.argv[1]]
-        except KeyError:
-            print('{} {{local|dev|test}}'.format(sys.argv[0]))
-        else:
-            env = sys.argv[1]
-            main(env)
+        # Create new threads
+        for i in range(0, args.threads):
+            thread = myThread(i, "Thread-{}".format(i), i)
+            # Start new Threads
+            thread.start()
+
+        print("Exiting Main Thread")
