@@ -13,6 +13,7 @@ from os.path import dirname, join
 import threading
 import time
 import requests
+from requests.auth import HTTPBasicAuth
 
 import string
 from random import *
@@ -27,6 +28,8 @@ parser.add_argument('--inputdir', metavar='inputdir', type=str, default="Claims"
                     help='The directory containing JSON claims to be loaded')
 parser.add_argument('--threads', metavar='threads', type=int, default=1,
                     help='The number of threads to run for concurrent loading')
+parser.add_argument('--loops', metavar='loops', type=int, default=1,
+                    help='The number of times to loop through the list')
 
 args = parser.parse_args()
 
@@ -38,7 +41,7 @@ else:
 
 print('Threads = {}'.format(args.threads))
 
-if args.random or args.threads > 1:
+if args.random or args.threads > 1 or args.loops > 1:
     print('Randomizing!')
 else:
     print('NOT Randomizing.')
@@ -85,6 +88,15 @@ URLS = {
         'City': 'https://city-of-surrey-devex-von-permitify-test.pathfinder.gov.bc.ca',
         # liquor_control_and_licensing_branch
         'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-test.pathfinder.gov.bc.ca'
+    },
+    'wallet': {
+        # if we're just dumping data into the wallet it all goes into the same url
+        'Reg': 'http://localhost:8000/items/',
+        'Worksafe': 'http://localhost:8000/items/',
+        'Finance': 'http://localhost:8000/items/',
+        'Health': 'http://localhost:8000/items/',
+        'City': 'http://localhost:8000/items/',
+        'Liquor': 'http://localhost:8000/items/'
     }
 }
 
@@ -92,7 +104,8 @@ this_dir = dirname(__file__)
 
 claim_files = glob(join(this_dir, 'Claims', 'Claims_*'))
 
-do_it_random = (args.random or args.threads > 1)
+do_it_random = (args.random or args.threads > 1 or args.loops > 1)
+num_loops = args.loops
 use_env = args.env
 
 min_char = 4
@@ -148,63 +161,94 @@ class myThread (threading.Thread):
       self.counter = counter
    def run(self):
       print("Starting " + self.name)
-      main_load(use_env, do_it_random)
+      main_load(use_env, do_it_random, num_loops, self.counter)
       print("Exiting " + self.name)
 
-def main_load(env, do_it_random):
-    thread_id = 1   # until we start threading ... ;-)
+def main_load(env, do_it_random, num_loops, thread_id):
+    # login to wallet
+    if env == 'wallet':
+        try:
+            my_url = "http://localhost:8000/api-token-auth/"
+            response = requests.post(my_url, data = {"username":"ian", "password":"pass1234"})
+            json_data = response.json()
+            remote_token = 'Token ' + json_data["token"]
+            print("Authenticated remote wallet server: " + remote_token)
+        except:
+            raise Exception(
+                'Could not login to wallet. '
+                'Is the Wallet Service running?')
 
-    # Each filename is a full permitify recipe
-    for filename in claim_files:
-        with open(filename, 'r') as file:
-            content = file.read()
-            permitify_services = json.loads(content)
-            legal_entity_id = None
-            for service_name in URLS[env]:
-                if service_name not in permitify_services:
-                    continue
-                for claim in permitify_services[service_name]:
-                    if do_it_random:
-                        claim = randomify(claim, thread_id)
+    # Create new threads
+    for _ in range(0, num_loops):
+        # Each filename is a full permitify recipe
+        for filename in claim_files:
+            with open(filename, 'r') as file:
+                content = file.read()
+                permitify_services = json.loads(content)
+                legal_entity_id = None
+                for service_name in URLS[env]:
+                    if service_name not in permitify_services:
+                        continue
+                    for claim in permitify_services[service_name]:
+                        if do_it_random:
+                            claim = randomify(claim, thread_id)
 
-                    if service_name != 'Reg':
-                        claim['legal_entity_id'] = legal_entity_id
-                        print('\n\n')
-                        print('Issuing permit: {}'.format(
-                            claim['schema']
-                        ))
-                    else:
-                        print('\n\n')
-                        print('==============================================')
-                        print('Registering new business: {}'.format(
-                            claim['legal_name']
-                        ))
-                        print('==============================================')
+                        if service_name != 'Reg':
+                            claim['legal_entity_id'] = legal_entity_id
+                            print('\n\n')
+                            print('Issuing permit: {}'.format(
+                                claim['schema']
+                            ))
+                        else:
+                            print('\n\n')
+                            print('==============================================')
+                            print('Registering new business: {}'.format(
+                                claim['legal_name']
+                            ))
+                            print('==============================================')
 
-                    claim['address_line_2'] = ""
+                        claim['address_line_2'] = ""
 
-                    print('\n\nSubmitting Claim:\n\n{}'.format(claim))
+                        print('\n\nSubmitting Claim:\n\n{}'.format(claim))
 
-                    """
-                    try:
-                        response = requests.post(
-                            '{}/submit_claim'.format(
-                                URLS[env][service_name]),
-                            json=claim
-                        )
-                        result_json = response.json()
-                    except:
-                        raise Exception(
-                            'Could not submit claim. '
-                            'Are Permitify and Docker running?')
-
-                    print('\n\n Response from permitify:\n\n{}'.format(result_json))
-                    """
-
-                    if service_name == 'Reg':
-                        legal_entity_id = random_string(thread_id) + random_string(thread_id) + random_string(thread_id) + random_string(thread_id)
-                        # legal_entity_id = result_json['result']['orgId']
-
+                        if env == 'wallet':
+                            legal_entity_id = random_string(thread_id) + random_string(thread_id) + random_string(thread_id) + random_string(thread_id)
+                            claim['legal_entity_id'] = legal_entity_id
+                            wallet_item = {
+                                'wallet_name':'TheOrgBook Holder Wallet',
+                                'item_type':'claim',
+                                'item_id':random_string(thread_id) + random_string(thread_id) + random_string(thread_id),
+                                'item_value':json.dumps(claim)
+                            }
+                            print(json.dumps(wallet_item))
+                            # post to the wallet service
+                            try:
+                                response = requests.post(
+                                    '{}'.format(
+                                        URLS[env][service_name]),
+                                    headers={'Authorization': remote_token},
+                                    json=wallet_item
+                                )
+                                result_json = response.json()
+                            except:
+                                raise Exception(
+                                    'Could not submit claim. '
+                                    'Is the Wallet Service running?')
+                        else:
+                            try:
+                                response = requests.post(
+                                    '{}/submit_claim'.format(
+                                        URLS[env][service_name]),
+                                    json=claim
+                                )
+                                result_json = response.json()
+                            except:
+                                raise Exception(
+                                    'Could not submit claim. '
+                                    'Are Permitify and Docker running?')
+                            print('\n\n Response from permitify:\n\n{}'.format(result_json))
+                            if service_name == 'Reg':
+                                legal_entity_id = result_json['result']['orgId']
 
 if __name__ == '__main__':
     try:
@@ -212,10 +256,8 @@ if __name__ == '__main__':
     except KeyError:
         print('{} --env <local|dev|test>'.format(sys.argv[0]))
     else:
-        # Create new threads
         for i in range(0, args.threads):
             thread = myThread(i, "Thread-{}".format(i), i)
             # Start new Threads
             thread.start()
-
         print("Exiting Main Thread")
