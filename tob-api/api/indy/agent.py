@@ -22,7 +22,7 @@ class Issuer:
             'the-org-book-issuer',
             config['genesis_txn_path'])
 
-        issuer_type   = 'default'
+        issuer_type   = 'virtual'
         issuer_config = {'freshness_time':0}
         issuer_creds  = {'key':''}
 
@@ -56,7 +56,7 @@ class Verifier:
             'the-org-book-verifier',
             config['genesis_txn_path'])
 
-        verifier_type   = 'default'
+        verifier_type   = 'virtual'
         verifier_config = {'freshness_time':0}
         verifier_creds  = {'key':''}
 

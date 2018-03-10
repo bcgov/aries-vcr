@@ -5,6 +5,7 @@ import logging
 from api.indy import eventloop
 from rest_framework.exceptions import NotAcceptable
 import requests
+import time
 
 # LEDGER_URL = os.environ.get('LEDGER_URL')
 # if not LEDGER_URL:
@@ -102,6 +103,8 @@ class ProofRequestProcesser(object):
 
         self.__logger.debug('Proof request: %s' % json.dumps(
             self.__proof_request))
+
+        start_time = time.time()
 
         # Get claims for proof request from wallet
         async with Holder() as holder:
@@ -210,6 +213,8 @@ class ProofRequestProcesser(object):
                     claims,
                     requested_claims
                 )
+        elapsed_time = time.time() - start_time
+        self.__logger.debug('Proof elapsed time >>> {}'.format(elapsed_time))
 
         self.__logger.debug(
             'Created proof: %s' %
