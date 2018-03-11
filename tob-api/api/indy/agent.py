@@ -86,38 +86,38 @@ class Verifier:
 
 class Holder(VonHolderProver):
     def __init__(self):
-        config = hyperledger_indy.config()
-        self.pool = NodePool(
+        self.my_config = hyperledger_indy.config()
+        self.my_pool = NodePool(
             'the-org-book-holder',
-            config['genesis_txn_path'])
+            self.my_config['genesis_txn_path'])
 
-        holder_type   = 'virtual'
-        holder_config = {'freshness_time':0}
-        holder_creds  = {'key':''}
+        self.holder_type   = 'virtual'
+        self.holder_config = {'freshness_time':0}
+        self.holder_creds  = {'key':''}
 
         super().__init__(
-            self.pool,
-            WALLET_SEED,
-            'TheOrgBook Holder Wallet',
-            holder_type,
-            holder_config,
-            holder_creds,
-            '127.0.0.1',
-            9703,
-            'api/v0')
+            self.my_pool,
+            Wallet(
+                self.my_pool.name,
+                WALLET_SEED,
+                'TheOrgBook Holder Wallet',
+                self.holder_type,
+                self.holder_config,
+                self.holder_creds,
+            )
+        )
 
     async def __aenter__(self):
-        await self.pool.open()
-        instance = await self.instance.open()
-        await self.instance.create_master_secret('secret')
+        await self.my_pool.open()
+        instance = await self.open()
+        await instance.create_master_secret('secret')
         return instance
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         if exc_type is not None:
             logger.error(exc_type, exc_value, traceback)
-
-        await self.instance.close()
-        await self.pool.close()
+        await self.my_pool.close()
+        await self.close()
 
 
     async def create_master_secret(self, master_secret: str) -> None:
