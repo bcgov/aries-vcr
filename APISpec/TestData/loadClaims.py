@@ -108,13 +108,13 @@ do_it_random = (args.random or args.threads > 1 or args.loops > 1)
 num_loops = args.loops
 use_env = args.env
 
-min_char = 4
-max_char = 6
-allchar = string.ascii_letters + string.digits
+min_char = 8
+max_char = 12
+allchar = "0123456789abcdef"
 
 # generate a short random string
 def random_string(i):
-    r_str = "_" + str(i) + "_" + "".join(choice(allchar) for x in range(randint(min_char, max_char)))
+    r_str = "-" + str(i) + "-" + "".join(choice(allchar) for x in range(randint(min_char, max_char)))
     return r_str
 
 # check if field is a candidate for randomization
@@ -212,12 +212,12 @@ def main_load(env, do_it_random, num_loops, thread_id):
                         print('\n\nSubmitting Claim:\n\n{}'.format(claim))
 
                         if env == 'wallet':
-                            legal_entity_id = random_string(thread_id) + random_string(thread_id) + random_string(thread_id) + random_string(thread_id)
+                            legal_entity_id = "da0" + random_string(thread_id) + random_string(thread_id) + random_string(thread_id)
                             claim['legal_entity_id'] = legal_entity_id
                             wallet_item = {
-                                'wallet_name':'TheOrgBook Holder Wallet',
+                                'wallet_name':'TheOrgBook Holder Wallet::' + legal_entity_id,
                                 'item_type':'claim',
-                                'item_id':random_string(thread_id) + random_string(thread_id) + random_string(thread_id),
+                                'item_id':legal_entity_id,
                                 'item_value':json.dumps(claim)
                             }
                             print(json.dumps(wallet_item))

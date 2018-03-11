@@ -12,6 +12,8 @@ apt-get install -y \
     libsqlite3-dev \
     libsodium-dev
 
+RUN apt-get install -y sqlite3 libsqlite3-dev
+
 ENV HOME=/opt/app-root/src
 WORKDIR $HOME
 
