@@ -6,6 +6,7 @@ from tob_api import hyperledger_indy
 from von_agent.agents import Issuer as VonIssuer
 from von_agent.agents import Verifier as VonVerifier
 from von_agent.agents import HolderProver as VonHolderProver
+from typing import Set, Union
 
 import logging
 logger = logging.getLogger(__name__)
