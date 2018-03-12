@@ -1,0 +1,18 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-web
+# JSON Template File: templates/angular-on-nginx/angular-on-nginx-deploy.json
+#=========================================================
+# NAME=angular-on-nginx
+# IMAGE_NAMESPACE=ontvon-von-tools
+# REAL_IP_FROM=172.51.0.0/16
+# API_URL=https://django-ontvon-von-dev.pathfinder.gov.bc.ca/api/v1/
+# API_SERVICE_NAME=django
+# API_PATH=/api/v1/
+# AdditionalRealIpFromRules=
+# IpFilterRules=
+APPLICATION_DOMAIN=angular-on-nginx-ontvon-von-test.pathfinder.gov.bc.ca
+TAG_NAME=test
+# HTTP_BASIC=
+# HTTP_BASIC_USERNAME=
+# HTTP_BASIC_PASSWORD=
