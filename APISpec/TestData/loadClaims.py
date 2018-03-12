@@ -215,7 +215,8 @@ def main_load(env, do_it_random, num_loops, thread_id):
                             legal_entity_id = "da0" + random_string(thread_id) + random_string(thread_id) + random_string(thread_id)
                             claim['legal_entity_id'] = legal_entity_id
                             wallet_item = {
-                                'wallet_name':'TheOrgBook Holder Wallet::' + legal_entity_id,
+                                'wallet_name':legal_entity_id,
+                                # 'wallet_name':'TheOrgBook Holder Wallet::' + legal_entity_id,
                                 'item_type':'claim',
                                 'item_id':legal_entity_id,
                                 'item_value':json.dumps(claim)
