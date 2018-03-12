@@ -168,6 +168,11 @@ buildImages() {
 }
 
 configureEnvironment () {
+
+  if [ -f .env ]; then
+  	export $(cat .env | xargs)
+  fi
+
   for arg in $@; do
     case "$arg" in
       *=*)
