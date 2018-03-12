@@ -12,6 +12,10 @@ The DB component is an instance of Postgres. The schema and data loading is all 
 
 To deploy TheOrgBook on an instance of OpenShift, see [the instructions](../RunningLocal.md) in the file RunningLocal.md.
 
+## Connecting a database tool to a database instance
+
+Refer to [Accessing a PostgreSQL Database Hosted in OpenShift](./PortForwardingaDatabase.md) for details on how to connect to an instance of a database hosted in OPenShift using port forwarding.
+
 # BC Registries DB
 
 ## Overview
