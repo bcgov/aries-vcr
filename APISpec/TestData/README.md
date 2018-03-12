@@ -13,14 +13,14 @@ TODO: describe method to generate data
 
 Loading the Test Data
 ----------------
-Once the data is generated, scripts are used to load the data via the permitify services.
+Once the data is generated, scripts are used to load the data via the Permitify services.
 
 The `load-all.sh` script takes just the server as an argument (same format as `load.sh` to be loaded and loads in relational appropriate order all of the tables to initialize the application.  The load-all script removes the "cookie" file if it exists so that on only the first call to the load script, the (currently commented out) authentication call will be made to the server.
 
 The Process
 ----------------
 
-These instructions assme you are using the OpenShift managment scripts found here; [openshift-project-tools](https://github.com/BCDevOps/openshift-project-tools).  Refer to the [OpenShift Scripts](https://github.com/BCDevOps/openshift-project-tools/blob/master/bin/README.md) documentation for details.
+These instructions assume you are using the OpenShift management scripts found here; [openshift-project-tools](https://github.com/BCDevOps/openshift-project-tools).  Refer to the [OpenShift Scripts](https://github.com/BCDevOps/openshift-project-tools/blob/master/bin/README.md) documentation for details.
 
 It is assumed you have an instance of Permitify running to run this script.
 
@@ -50,9 +50,53 @@ It is assumed you have an instance of Permitify running to run this script.
     - `scaleDeployment.sh bc-registries 1`
     - `oc project devex-von-dev`
 1. Use the `load-all.sh` script to populate the database through the Permitify services. (Assumes permitify is running)
-   - `./loadData.sh {local|dev}`
+   - `./loadData.sh --env {local|dev|test}`
 1. Rebuild the Solr search index;
    - `runInContainer.sh django 'python ./manage.py rebuild_index --noinput'`
 
 ToDo:
 - Wrap the above in a master script that has the user wait between the steps.
+
+Creating/Loading Test Data
+--------------------
+The load-all.sh can be used to create test data, using the following optional parameters:
+
+```
+$./load-all.sh -h
+Data for TheOrgBook is now loading via the loading of claims. Details to come...
+usage: loadClaims.py [-h] [--random] [--env env] [--inputdir inputdir]
+                     [--threads threads] [--loops loops]
+
+A TheOrgBook Claim loader. Supports randomization for test data and threading
+for fast loading
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --random             If data is to be randomized before loading (useful for
+                       test data)
+  --env env            Permitify and TheOrgBook services are on local/dev/test
+                       host
+  --inputdir inputdir  The directory containing JSON claims to be loaded
+  --threads threads    The number of threads to run for concurrent loading
+  --loops loops        The number of times to loop through the list
+```
+
+The loader will load data from the data files as described above, however it can optionally "randomize" the data to support loading multiple copies, using the "--random" flag:
+
+```
+$./load-all.sh --random
+```
+
+You can spin up multiple threads, and loop through the input data multiple times, as follows:
+
+```
+$./load-all.sh --threads 4 --loops 10
+```
+
+When you specify either of these flags, then "--random" is enabled automatically.
+
+There is also the option to load data directly into a wallet - this can be used for adding wallet data "through the back door" for performance testing.  This data won't have all the fancy anoncreds and can't be processed by the indy-sdk:
+
+```
+$./load-all.sh --env wallet
+```
