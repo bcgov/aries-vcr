@@ -261,8 +261,13 @@ class ClaimProcesser(object):
 
     async def __StoreClaim(self, claim):
       self.__logger.debug(claim)
-      legal_entity_id = json.loads(claim)["values"]["legal_entity_id"][0]
-      self.__logger.debug('Claim for legal_entity_id: %s' % legal_entity_id)
+      legal_entity_id = None
+      try:
+        legal_entity_id = json.loads(claim)["values"]["legal_entity_id"][0]
+        self.__logger.debug('Claim for legal_entity_id: %s' % legal_entity_id)
+      except Error as e:
+        # no-op
+        self.__logger.debug('Claim for NO legal_entity_id')
       async with Holder(legal_entity_id) as holder:
         self.__logger.debug("Storing the claim in the wallet ...")
         await holder.store_claim(claim)
