@@ -27,6 +27,8 @@ class Issuer:
         issuer_config = {'freshness_time':0}
         issuer_creds  = {'key':''}
 
+        logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
+
         issuer_wallet = Wallet(
                 self.pool.name,
                 WALLET_SEED,
@@ -35,6 +37,8 @@ class Issuer:
                 issuer_config,
                 issuer_creds)
         await issuer_wallet.create()
+
+        logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
         self.instance = VonIssuer(
             self.pool,
@@ -64,6 +68,8 @@ class Verifier:
         verifier_config = {'freshness_time':0}
         verifier_creds  = {'key':''}
 
+        logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
+
         verifier_wallet = Wallet(
                 self.pool.name,
                 WALLET_SEED,
@@ -72,6 +78,8 @@ class Verifier:
                 verifier_config,
                 verifier_creds)
         await verifier_wallet.create()
+
+        logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
         self.instance = VonVerifier(
             self.pool,
@@ -101,6 +109,8 @@ class Holder:
         holder_config = {'freshness_time':0}
         holder_creds  = {'key':'', 'virtual_wallet':legal_entity_id}
 
+        logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
+
         holder_wallet = Wallet(
                 self.pool.name,
                 WALLET_SEED,
@@ -109,6 +119,8 @@ class Holder:
                 holder_config,
                 holder_creds)
         await holder_wallet.create()
+
+        logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
         self.instance = VonHolderProver(
             self.pool,
