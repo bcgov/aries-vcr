@@ -17,7 +17,7 @@ if not WALLET_SEED or len(WALLET_SEED) is not 32:
 
 
 class Issuer:
-    def __init__(self):
+    async def __init__(self):
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-issuer',
@@ -27,16 +27,19 @@ class Issuer:
         issuer_config = {'freshness_time':0}
         issuer_creds  = {'key':''}
 
+        issuer_wallet = Wallet(
+                self.pool.name,
+                WALLET_SEED,
+                'TheOrgBookIssuerWallet',
+                issuer_type,
+                issuer_config,
+                issuer_creds)
+        await issuer_wallet.create()
+
         self.instance = VonIssuer(
             self.pool,
-            WALLET_SEED,
-            'TheOrgBook Issuer Wallet',
-            issuer_type,
-            issuer_config,
-            issuer_creds,
-            '127.0.0.1',
-            9703,
-            'api/v0')
+            issuer_wallet
+        )
 
     async def __aenter__(self):
         await self.pool.open()
@@ -51,7 +54,7 @@ class Issuer:
 
 
 class Verifier:
-    def __init__(self):
+    async def __init__(self):
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-verifier',
@@ -61,16 +64,19 @@ class Verifier:
         verifier_config = {'freshness_time':0}
         verifier_creds  = {'key':''}
 
+        verifier_wallet = Wallet(
+                self.pool.name,
+                WALLET_SEED,
+                'TheOrgBookVerifierWallet',
+                verifier_type,
+                verifier_config,
+                verifier_creds)
+        await verifier_wallet.create()
+
         self.instance = VonVerifier(
             self.pool,
-            WALLET_SEED,
-            'TheOrgBook Verifier Wallet',
-            verifier_type,
-            verifier_config,
-            verifier_creds,
-            '127.0.0.1',
-            9703,
-            'api/v0')
+            verifier_wallet
+        )
 
     async def __aenter__(self):
         await self.pool.open()
@@ -85,7 +91,7 @@ class Verifier:
 
 
 class Holder:
-    def __init__(self, legal_entity_id: str = None):
+    async def __init__(self, legal_entity_id: str = None):
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-holder',
@@ -95,16 +101,18 @@ class Holder:
         holder_config = {'freshness_time':0}
         holder_creds  = {'key':'', 'virtual_wallet':legal_entity_id}
 
-        self.instance = VonHolderProver(
-            self.pool,
-            Wallet(
+        holder_wallet = Wallet(
                 self.pool.name,
                 WALLET_SEED,
-                'TheOrgBook Holder Wallet',
+                'TheOrgBookHolderWallet',
                 holder_type,
                 holder_config,
-                holder_creds,
-            )
+                holder_creds)
+        await holder_wallet.create()
+
+        self.instance = VonHolderProver(
+            self.pool,
+            holder_wallet
         )
 
     async def __aenter__(self):
