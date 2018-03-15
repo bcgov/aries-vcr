@@ -3,12 +3,12 @@
 # Component: tob-web
 # JSON Template File: templates/angular-build.json
 #=========================================================
-NAME=angular
+NAME=angular-app
 OUTPUT_IMAGE_TAG=latest
 GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
 GIT_REF=master
 SOURCE_CONTEXT_DIR=tob-web
-SOURCE_IMAGE_NAMESPACE=ontvon-von-tools
+SOURCE_IMAGE_NAMESPACE=openshift
 SOURCE_IMAGE_NAME=nodejs
 SOURCE_IMAGE_TAG=6
 CPU_LIMIT=1
