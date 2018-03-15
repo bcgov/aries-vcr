@@ -51,6 +51,8 @@ services:
       - TOB_SOLR_SERVICE_PORT=8983
       - INDY_WALLET_SEED=${INDY_WALLET_SEED}
       - LEDGER_URL=${LEDGER_URL}
+      - INDY_WALLET_TYPE=${INDY_WALLET_TYPE}
+      - INDY_WALLET_URL=${INDY_WALLET_URL}
     volumes:
       - ../tob-api/api:/opt/app-root/src/api
     networks:
@@ -65,7 +67,7 @@ services:
         echo sleeping ...;
         sleep 10;
         python manage.py migrate &&
-        python manage.py runserver 0.0.0.0:8080;"
+        RUST_LOG=debug && RUST_BACKTRACE=full && python manage.py runserver 0.0.0.0:8080;"
 
   # 
   # schema-spy

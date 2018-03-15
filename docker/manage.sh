@@ -222,6 +222,9 @@ configureEnvironment () {
   export SOLR_CORE_NAME=${CORE_NAME}
   export LEDGER_URL=${LEDGER_URL-http://$DOCKERHOST:9000}
 
+  export INDY_WALLET_URL=http://${DOCKERHOST}:8000/api/v1/
+  export INDY_WALLET_TYPE="remote"
+
   # tob-web
   export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
