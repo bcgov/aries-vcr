@@ -183,6 +183,8 @@ def main_load(env, do_it_random, num_loops, thread_id):
         # Each filename is a full permitify recipe
         for filename in claim_files:
             with open(filename, 'r') as file:
+                print('==============================================')
+                print('FileName: {}'.format(filename))
                 content = file.read()
                 permitify_services = json.loads(content)
                 legal_entity_id = None
