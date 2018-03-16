@@ -242,9 +242,15 @@ configureEnvironment () {
   export SOLR_CORE_NAME=${CORE_NAME}
   export LEDGER_URL=${LEDGER_URL-http://$DOCKERHOST:9000}
 
-  # TODO make wallet type a command-line parameter (like seed) default to "virtual" if not specified
+  # wallet type a command-line parameter (like seed) default to "virtual" if not specified
   export INDY_WALLET_URL=http://${DOCKERHOST}:8000/api/v1/
-  export INDY_WALLET_TYPE="remote"
+  export INDY_WALLET_TYPE=${wallet}
+
+  if [ "$COMMAND" == "start" ]; then
+    if [ -z "$wallet" ]; then
+      export INDY_WALLET_TYPE="virtual"
+    fi
+  fi
 
   # tob-web
   export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}

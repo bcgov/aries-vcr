@@ -112,11 +112,13 @@ class Holder:
             holder_url = os.environ.get('INDY_WALLET_URL')
             holder_config = {'endpoint':holder_url,'ping':'schema/','auth':'api-token-auth/','keyval':'keyval/','freshness_time':0}
             holder_creds  = {'auth_token':apps.get_remote_wallet_token(),'virtual_wallet':legal_entity_id}
+            logger.debug('Using remote Cfg: {} Creds: {}'.format(holder_config, holder_creds))
         else:
             # TODO force to virtual for now
             holder_type = 'virtual'
             holder_config = {'freshness_time':0}
             holder_creds  = {'key':'','virtual_wallet':legal_entity_id}
+            logger.debug('Using virtual Cfg: {} Creds: {}'.format(holder_config, holder_creds))
 
         logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
