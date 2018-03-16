@@ -19,6 +19,45 @@ services:
     # command: npm start
 
   # 
+  # tob-wallet
+  #-------------------------------------------------
+  # The Wallet provides the backend storage for the 
+  # TheOrgBook Indy SDK wallet.
+  #
+  # We are using a simple sleep command to do this 
+  # for the moment; refer to the `command` section 
+  # of the configuration for details.  It would be 
+  # nice to implement a more deterministic solution.
+  #
+  tob-wallet:
+    image: tob-wallet
+    environment:
+      - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
+      - DATABASE_ENGINE=${DATABASE_ENGINE}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
+      - TOB_DB_SERVICE_PORT=5432
+    volumes:
+      - ../tob-wallet/api:/opt/app-root/src/api
+    networks:
+      - tob
+    ports:
+      - "${WALLET_HTTP_PORT}:8000"
+    depends_on:
+      - tob-db
+    command: >
+      /bin/bash -c "
+        echo sleeping ...;
+        sleep 10;
+        python manage.py migrate &&
+        echo \"from django.contrib.auth.models import User; User.objects.filter(username='wall-e').exists() or User.objects.create_superuser('wall-e', 'wall-e@example.com', 'pass1234')\" | python manage.py shell &&
+        python manage.py runserver 0.0.0.0:8000;"
+
+  # 
   # tob-api
   #-------------------------------------------------
   # The API performs the migrations on the database
@@ -61,11 +100,12 @@ services:
       - "${API_HTTP_PORT}:8080"
     depends_on:
       - tob-db
+      - tob-wallet
       - tob-solr
     command: >
       /bin/bash -c "
         echo sleeping ...;
-        sleep 10;
+        sleep 20;
         python manage.py migrate &&
         RUST_LOG=debug && RUST_BACKTRACE=full && python manage.py runserver 0.0.0.0:8080;"
 

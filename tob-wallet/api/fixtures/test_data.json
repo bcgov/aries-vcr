@@ -1,0 +1,80 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$36000$9c5oRkdV2wRl$MG9HUAXG4mctohM2ninkeWP5asVliY4VBc1ZZ2lMfUA=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "wall-e",
+      "first_name": "",
+      "last_name": "",
+      "email": "wall-e@mail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2018-03-13T23:43:37.454Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "api.walletitem",
+    "pk": 1,
+    "fields": {
+      "created": "2018-03-13T23:53:37.047Z",
+      "wallet_name": "Rust_Wallet",
+      "item_type": "rust_claim",
+      "item_id": "968522",
+      "item_value": "{\"this\":\"is\", \"a\":\"claim\", \"from\":\"rust\"}",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "api.walletitem",
+    "pk": 2,
+    "fields": {
+      "created": "2018-03-13T23:53:37.114Z",
+      "wallet_name": "Rust_Wallet",
+      "item_type": "rust_claim",
+      "item_id": "506034",
+      "item_value": "{\"this\":\"is\", \"a\":\"claim\", \"from\":\"rust\"}",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "api.walletitem",
+    "pk": 3,
+    "fields": {
+      "created": "2018-03-13T23:53:37.700Z",
+      "wallet_name": "my_wallet",
+      "item_type": "claim",
+      "item_id": "011156",
+      "item_value": "{\"this\":\"is\", \"a\":\"claim\", \"from\":\"rust\"}",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "api.walletitem",
+    "pk": 4,
+    "fields": {
+      "created": "2018-03-13T23:53:37.792Z",
+      "wallet_name": "Rust_Wallet",
+      "item_type": "rust_claim",
+      "item_id": "968563",
+      "item_value": "{\"this\":\"is\", \"a\":\"claim\", \"from\":\"rust\"}",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "api.walletitem",
+    "pk": 5,
+    "fields": {
+      "created": "2018-03-13T23:53:54.232Z",
+      "wallet_name": "wallet1::client1",
+      "item_type": "type278785",
+      "item_id": "key_8506011",
+      "item_value": "value1",
+      "created_by": 1
+    }
+  }
+]
