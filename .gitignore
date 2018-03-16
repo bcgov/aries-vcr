@@ -10,7 +10,7 @@ genesis
 .DS_Store
 .AppleDouble
 .LSOverride
-.env
+__pycache__
 
 # Icon must end with two \r
 Icon
