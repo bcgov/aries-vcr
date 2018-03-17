@@ -19,7 +19,7 @@ if not WALLET_SEED or len(WALLET_SEED) is not 32:
 
 
 class Issuer:
-    async def __init__(self):
+    def __init__(self):
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-issuer',
@@ -32,13 +32,12 @@ class Issuer:
         logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
         issuer_wallet = Wallet(
-                self.pool.name,
+                self.pool,
                 WALLET_SEED,
                 'TheOrgBook_Issuer_Wallet',
                 issuer_type,
                 issuer_config,
                 issuer_creds)
-        await issuer_wallet.create()
 
         logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
@@ -49,6 +48,7 @@ class Issuer:
 
     async def __aenter__(self):
         await self.pool.open()
+        await self.instance.wallet.create()
         return await self.instance.open()
 
     async def __aexit__(self, exc_type, exc_value, traceback):
@@ -60,7 +60,7 @@ class Issuer:
 
 
 class Verifier:
-    async def __init__(self):
+    def __init__(self):
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-verifier',
@@ -73,13 +73,12 @@ class Verifier:
         logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
         verifier_wallet = Wallet(
-                self.pool.name,
+                self.pool,
                 WALLET_SEED,
                 'TheOrgBook_Verifier_Wallet',
                 verifier_type,
                 verifier_config,
                 verifier_creds)
-        await verifier_wallet.create()
 
         logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
@@ -90,6 +89,7 @@ class Verifier:
 
     async def __aenter__(self):
         await self.pool.open()
+        await self.instance.wallet.create()
         return await self.instance.open()
 
     async def __aexit__(self, exc_type, exc_value, traceback):
@@ -101,7 +101,7 @@ class Verifier:
 
 
 class Holder:
-    async def __init__(self, legal_entity_id: str = None):
+    def __init__(self, legal_entity_id: str = None):
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-holder',
@@ -123,13 +123,12 @@ class Holder:
         logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
         holder_wallet = Wallet(
-                self.pool.name,
+                self.pool,
                 WALLET_SEED,
                 'TheOrgBook_Holder_Wallet',
                 holder_type,
                 holder_config,
                 holder_creds)
-        await holder_wallet.create()
 
         logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
@@ -140,6 +139,7 @@ class Holder:
 
     async def __aenter__(self):
         await self.pool.open()
+        await self.instance.wallet.create()
         instance = await self.instance.open()
         # TODO should only create this once, and only in the root wallet (virtual_wallet == None)
         await self.instance.create_master_secret('secret')

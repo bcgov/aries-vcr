@@ -10,7 +10,8 @@ apt-get install -y \
     cmake \
     libssl-dev \
     libsqlite3-dev \
-    libsodium-dev
+    libsodium-dev \
+    libzmq3-dev
 
 RUN apt-get install -y sqlite3 libsqlite3-dev
 
