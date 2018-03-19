@@ -9,7 +9,7 @@ import { AppComponent } from '../app.component';
 export class AppHeaderComponent {
 
   constructor (
-    @Host() protected parent: AppComponent
+    @Host() public parent: AppComponent
   ) { }
 
 }
