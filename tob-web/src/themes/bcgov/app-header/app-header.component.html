@@ -1,0 +1,15 @@
+<header>
+  <div class="container">
+    <div id="header-links" role="navigation">
+      <ul class="inline nav navbar-nav">
+        <li><a href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a></li>
+      </ul>
+    </div>
+    <a href="http://www2.gov.bc.ca/" tabindex="-1">
+      <img class="header-logo"
+           tabindex="-1" [alt]="'app.header.logo-alt-text' | translate"
+           [src]="'assets/bc-logo-' + parent.currentLang + '.svg'">
+    </a>
+    <span class="title" role="banner" translate>app.header.title</span>
+  </div>
+</header>

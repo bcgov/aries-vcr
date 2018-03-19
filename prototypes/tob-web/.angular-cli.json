@@ -8,10 +8,10 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
-        "assets",
-        "favicon.ico"
+        { "glob": "**/*", "input": "./themes/_active/assets/", "output": "./assets/" },
+        { "glob": "favicon.ico", "input": "./themes/_active/", "output": "./" }
       ],
-      "index": "index.html",
+      "index": "themes/_active/index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",
       "test": "test.ts",
@@ -19,9 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "../node_modules/mygovbc-bootstrap-theme/dist/mygovbc-bootstrap-theme.min.css",
-        "bcgov.scss",
-        "styles.scss"
+        "themes/_active/styles.scss"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

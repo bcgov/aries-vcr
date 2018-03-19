@@ -8,8 +8,8 @@ import * as compareVersions from 'compare-versions';
 
 @Component({
   selector: 'app-roadmap',
-  templateUrl: './roadmap.component.html',
-  styleUrls: ['../dashboard/dashboard.component.scss', './roadmap.component.scss']
+  templateUrl: '../../themes/_active/roadmap/roadmap.component.html',
+  styleUrls: ['../../themes/_active/roadmap/roadmap.component.scss']
 })
 export class RoadmapComponent implements OnInit {
 

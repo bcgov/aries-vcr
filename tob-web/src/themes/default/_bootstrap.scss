@@ -1,0 +1,9 @@
+// replace me in your custom theme directory if you
+// use a separate module to provide bootstrap CSS
+//$bootstrap-sass-asset-helper: true;
+$icon-font-path: "../../../node_modules/bootstrap-sass/assets/fonts/bootstrap/";
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap-sprockets";
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+$fa-font-path: "../../../node_modules/font-awesome/fonts/";
+@import "../../../node_modules/font-awesome/scss/font-awesome";

@@ -6,8 +6,8 @@ import { VerifiableClaim, VerifiableClaimType, blankClaimType, VerifiableOrg,
 
 @Component({
   selector: 'app-cert',
-  templateUrl: './cert.component.html',
-  styleUrls: ['./cert.component.scss']
+  templateUrl: '../../themes/_active/cert/cert.component.html',
+  styleUrls: ['../../themes/_active/cert/cert.component.scss']
 })
 export class CertComponent implements OnInit {
   recordId: string;

@@ -48,10 +48,10 @@
       <label class="control-label"><span class="field-name" translate>issuer.cert-types</span></label>
       <div class="types-outer">
         <div *ngFor="let type of claimTypes" class="cert">
-          <div class="panel panel-cert cert-panel">
+          <div class="panel cert-panel">
             <div class="panel-body cert-main">
               <h3 class="panel-title">{{type.claimType}}</h3>
-              <p>
+              <p class="mrgn-bttm-0">
                 <a [href]="type.issuerURL" rel="external">
                   {{type.issuerURL}}</a>
                 <small><span class="fa fa-external-link"></span></small>

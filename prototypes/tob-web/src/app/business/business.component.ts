@@ -6,8 +6,8 @@ import { Location, LocationType, VerifiableOrg, VerifiableOrgType, IssuerService
 
 @Component({
   selector: 'app-business',
-  templateUrl: './business.component.html',
-  styleUrls: ['./business.component.scss']
+  templateUrl: '../../themes/_active/business/business.component.html',
+  styleUrls: ['../../themes/_active/business/business.component.scss']
 })
 export class BusinessComponent implements OnInit, OnDestroy {
   id: number;

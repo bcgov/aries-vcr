@@ -4,8 +4,8 @@ import { GeneralDataService } from 'app/general-data.service';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  templateUrl: '../../themes/_active/dashboard/dashboard.component.html',
+  styleUrls: ['../../themes/_active/dashboard/dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
 

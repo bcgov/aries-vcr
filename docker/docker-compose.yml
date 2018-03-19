@@ -9,6 +9,7 @@ services:
       - API_URL=${API_URL}
       - IpFilterRules=${IpFilterRules}
       - RealIpFrom=${RealIpFrom}
+      - TOB_THEME=${TOB_THEME}
       - WEB_BASE_HREF=${WEB_BASE_HREF}
     networks:
       - tob

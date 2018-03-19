@@ -1,0 +1,27 @@
+.title {
+  font-size: 30px;
+  font-weight: 700;
+  top: 7px;
+  position: relative;
+  white-space: nowrap;
+  letter-spacing: .05em;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
+}
+
+header .navbar-nav {
+  float: right;
+  font-size: 16px;
+  margin-right: 5px;
+  margin-top: 5px;
+  > li > a {
+    padding: 10px 10px 8px;
+    text-decoration: none;
+    &:hover, &:focus, &:active {
+      background: none;
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@import "./app.component.custom";
+
+.header-logo {
+  margin-right: 24px;
+  width: auto;
+}
+
+main {
+  margin-bottom: 80px;
+}
+
+@media screen and (max-width: 767px) {
+  .page-header {
+    margin-bottom: 0;
+  }
+}

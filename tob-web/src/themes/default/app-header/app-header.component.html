@@ -1,0 +1,10 @@
+<header>
+  <div class="container">
+    <div id="header-links" role="navigation">
+      <ul class="inline nav navbar-nav">
+        <li><a href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a></li>
+      </ul>
+    </div>
+    <span class="title" role="banner" translate>app.header.title</span>
+  </div>
+</header>

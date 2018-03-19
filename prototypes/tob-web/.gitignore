@@ -2,6 +2,8 @@
 
 # local config
 .env
+# precompiled theme
+/src/themes/_active/
 
 # compiled output
 /dist

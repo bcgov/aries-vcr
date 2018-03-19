@@ -12,6 +12,8 @@ import { LocalizeRouterHttpLoader } from 'localize-router-http-loader';
 import { MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
+import { AppHeaderComponent } from './app-header/app-header.component';
+import { AppFooterComponent } from './app-footer/app-footer.component';
 import { BusinessComponent } from './business/business.component';
 import { CertComponent } from './cert/cert.component';
 import { SearchBoxDirective } from './search-box/search-box.directive';
@@ -49,6 +51,8 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
 @NgModule({
   declarations: [
     AppComponent,
+    AppHeaderComponent,
+    AppFooterComponent,
     BusinessComponent,
     CertComponent,
     SearchBoxDirective,

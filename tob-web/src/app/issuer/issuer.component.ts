@@ -5,8 +5,8 @@ import { IssuerService, VerifiableClaim, VerifiableClaimType } from '../data-typ
 
 @Component({
   selector: 'app-issuer',
-  templateUrl: './issuer.component.html',
-  styleUrls: ['./issuer.component.scss']
+  templateUrl: '../../themes/_active/issuer/issuer.component.html',
+  styleUrls: ['../../themes/_active/issuer/issuer.component.scss']
 })
 export class IssuerComponent implements OnInit {
 

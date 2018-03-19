@@ -9,8 +9,8 @@ import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  templateUrl: '../themes/_active/app/app.component.html',
+  styleUrls: ['../themes/_active/app/app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
   onLangChange: Subscription;

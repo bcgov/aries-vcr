@@ -253,6 +253,7 @@ configureEnvironment () {
   fi
 
   # tob-web
+  export TOB_THEME=${TOB_THEME-bcgov}
   export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export API_URL=${API_URL-http://tob-api:8080/api/v1/}

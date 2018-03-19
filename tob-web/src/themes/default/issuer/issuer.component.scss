@@ -1,3 +1,5 @@
+@import "./issuer.component.custom";
+
 .issuer-title {
   font-size: 3rem;
   margin-top: 0;
@@ -35,7 +37,7 @@
       }
     }
     .panel-heading {
-      background-color: #f8f8f8;
+      background-color: #eee;
     }
   }
 }
