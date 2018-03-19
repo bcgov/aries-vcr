@@ -7,7 +7,7 @@
 var fs = require('fs'),
     path = require('path');
 
-THEME_NAME = process.env.TOB_THEME || 'default';
+THEME_NAME = process.env.TOB_THEME || 'bcgov';
 if (THEME_NAME === '_active')
     throw 'Invalid theme name';
 TARGET_DIR = 'src/themes/_active';
