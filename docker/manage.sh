@@ -188,7 +188,11 @@ buildImages() {
 configureEnvironment () {
 
   if [ -f .env ]; then
-  	export $(cat .env | xargs)
+  	while read line; do
+  		if [[ ! "$line" =~ ^\# ]] && [[ "$line" =~ .*= ]]; then
+  			export $line
+  		fi
+  	done < .env
   fi
 
   for arg in $@; do
@@ -231,7 +235,7 @@ configureEnvironment () {
   export WALLET_HTTP_PORT=${WALLET_HTTP_PORT-8000}
 
   # tob-api
-  export API_HTTP_PORT=${API_HTTP_PORT-8081}
+  export API_HTTP_PORT=${API_HTTP_PORT:-8081}
   export DATABASE_SERVICE_NAME="tob-db"
   export DATABASE_ENGINE="postgresql"
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
@@ -254,8 +258,8 @@ configureEnvironment () {
   fi
 
   # tob-web
-  export TOB_THEME=${TOB_THEME-bcgov}
-  export WEB_HTTP_PORT=${WEB_HTTP_PORT-8080}
+  export TOB_THEME=${TOB_THEME:-bcgov}
+  export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export API_URL=${API_URL-http://tob-api:8080/api/v1/}
   export IpFilterRules='#allow all; deny all;'
