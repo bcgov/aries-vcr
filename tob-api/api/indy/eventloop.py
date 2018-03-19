@@ -14,6 +14,7 @@ limitations under the License.
 
 import asyncio
 
+
 def do(coro):
     event_loop = None
     try:

@@ -1,9 +1,8 @@
-
 # REST Server for Indy-SDK Wallet
 
 ## REST Client
 
-Client code is in the rest_client sub-directory.  This is a Rust application - there is a separate README.md file describing how to build and run this application.
+Client code is in the rest_client sub-directory. This is a Rust application - there is a separate README.md file describing how to build and run this application.
 
 ## REST Server
 
@@ -30,7 +29,7 @@ This requires Python 3.6.
 To build and run the server:
 
 ```
-git checkout https://github.com/ianco/indy-sdk.git
+git checkout https://github.com/bcgov/indy-sdk.git
 cd samples/rest-wallet
 pip install -r requirements.txt
 python manage.py makemigrations api
@@ -142,5 +141,4 @@ $ http GET 127.0.0.1:8000/items/ 'Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJ
         "wallet_name": "IanWallet"
     }
 ]
-
 ```
