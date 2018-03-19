@@ -6,12 +6,12 @@
   "scripts": {
     "ng": "ng",
     "start": "node preinstall.js && ng serve -o --base-href ${NG_BASE_HREF:-/}",
-    "build": "ng build --prod --base-href ${NG_BASE_HREF:-/}",
+    "build": "ng build --prod --base-href ${NG_BASE_HREF:-/} ${NG_BUILD_FLAGS:-}",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "preinstall": "node preinstall.js",
-    "postinstall": "ng build --prod --base-href ${NG_BASE_HREF:-/}"
+    "postinstall": "ng build --prod --base-href ${NG_BASE_HREF:-/} ${NG_BUILD_FLAGS:-} && cp dist/themes/_active/index.html dist/index.html"
   },
   "dependencies": {
     "@angular/common": "^4.2.4",
