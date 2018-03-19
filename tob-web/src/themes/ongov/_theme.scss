@@ -22,7 +22,7 @@ header {
     position: relative;
     white-space: nowrap;
     letter-spacing: .05em;
-  
+
     @media (max-width: 480px) {
       font-size: 14px;
     }
@@ -32,12 +32,12 @@ header {
     width: 165px;
     height: 45px;
     margin-right: 18px;
-  
+
     @media (max-width: 767px) {
       width: 110px;
       height: 30px;
     }
-  
+
   }
 
 // Headers
@@ -75,10 +75,10 @@ a {
 
 .btn-default {
     margin-right: 15px;
-    
+
     @media screen and (max-width:768px) {
         margin-top:15px;
-    }  
+    }
 }
 
 .btn-link {
@@ -112,7 +112,7 @@ header .navbar-nav {
       padding: 10px 10px 8px;
       text-decoration: none;
       &:hover, &:focus, &:active {
-        background: none;
+        background: initial;
         border-color: #fff;
         text-decoration: underline;
       }

@@ -25,7 +25,7 @@ header .navbar-nav {
     padding: 10px 10px 8px;
     text-decoration: none;
     &:hover, &:focus, &:active {
-      background: none;
+      background: initial;
       border-color: #fff;
       text-decoration: underline;
     }
