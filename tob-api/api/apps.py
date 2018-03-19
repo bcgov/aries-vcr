@@ -31,14 +31,14 @@ class apiConfig(AppConfig):
             	WALLET_USERID = 'wall-e'    # TODO hardcode for now
             	WALLET_PASSWD = 'pass1234'  # TODO hardcode for now
             	WALLET_BASE_URL = os.environ.get('INDY_WALLET_URL')
-            	print("Wallet URL: " + WALLET_BASE_URL)
+            	logger.debug("Wallet URL: " + WALLET_BASE_URL)
 
     	        try:
     	            my_url = WALLET_BASE_URL + "api-token-auth/"
     	            response = requests.post(my_url, data = {"username":WALLET_USERID, "password":WALLET_PASSWD})
     	            json_data = response.json()
     	            remote_token = json_data["token"]
-    	            print("Authenticated remote wallet server: " + remote_token)
+    	            logger.debug("Authenticated remote wallet server: " + remote_token)
     	        except:
     	            raise Exception(
     	                'Could not login to wallet. '
