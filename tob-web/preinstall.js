@@ -1,7 +1,7 @@
 /**
- * Before building, files must be symlinked to src/_deploy/ from src/themes/**
- * The default theme is always copied, and then another named theme provided by the
- * TOB_THEME environment variable can override files from the default theme.
+ * Before building, files must be copied or symlinked into src/themes/_active
+ * The default theme (src/themes/default) is always copied first, and then another
+ * theme named by the TOB_THEME environment variable can add to or replace these files.
  **/
 
 var fs = require('fs'),
@@ -14,6 +14,14 @@ TARGET_DIR = 'src/themes/_active';
 THEMES_ROOT = 'src/themes';
 RESOLVE_LINKS = ['favicon.ico', 'styles.scss']
 
+
+if(! fs.copyFileSync) {
+    // add stub for node.js versions before 8.5.0
+    // NB: flags not implemented
+    fs.copyFileSync = function(source, target, flags) {
+        return fs.writeFileSync(target, fs.readFileSync(source));
+    }
+}
 
 function unlinkRecursiveSync(dir) {
     if (fs.existsSync(dir)) {
