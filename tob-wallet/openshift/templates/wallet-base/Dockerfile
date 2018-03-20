@@ -25,7 +25,9 @@ apt-get install -y \
     python-setuptools \
     python3-nacl \
     apt-transport-https \
-    ca-certificates
+    ca-certificates \
+    postgresql-client \
+    postgresql-common
 
 WORKDIR $HOME
 EXPOSE 8000

@@ -74,7 +74,7 @@ exit 1
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="tob-db tob-solr tob-wallet tob-api schema-spy tob-web"
+DEFAULT_CONTAINERS="tob-db tob-wallet-db tob-solr tob-wallet tob-api schema-spy tob-web"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -233,6 +233,11 @@ configureEnvironment () {
 
   # tob-wallet
   export WALLET_HTTP_PORT=${WALLET_HTTP_PORT-8000}
+  export WALLET_DB_SERVICE_NAME="tob-wallet-db"
+  export DATABASE_ENGINE="postgresql"
+  export DATABASE_NAME=${POSTGRESQL_DATABASE}
+  export DATABASE_USER=${POSTGRESQL_USER}
+  export DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
 
   # tob-api
   export API_HTTP_PORT=${API_HTTP_PORT:-8081}

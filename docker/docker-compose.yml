@@ -33,23 +33,26 @@ services:
   tob-wallet:
     image: tob-wallet
     environment:
-      - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
+      - DATABASE_SERVICE_NAME=${WALLET_DB_SERVICE_NAME}
+      #- DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
       - DATABASE_ENGINE=${DATABASE_ENGINE}
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
-      - DJANGO_DEBUG=${DJANGO_DEBUG}
-      - TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
-      - TOB_DB_SERVICE_PORT=5432
+      - TOB_WALLET_DB_SERVICE_HOST=${WALLET_DB_SERVICE_NAME}
+      - TOB_WALLET_DB_SERVICE_PORT=5432
+      #- TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
+      #- TOB_DB_SERVICE_PORT=5432
     volumes:
       - ../tob-wallet/api:/opt/app-root/src/api
     networks:
       - tob
+      - wallet-db
     ports:
       - "${WALLET_HTTP_PORT}:8000"
     depends_on:
       - tob-db
+      - tob-wallet-db
     command: >
       /bin/bash -c "
         echo sleeping ...;
@@ -169,8 +172,25 @@ services:
     # volumes:
       # - tob-data:/var/lib/pgsql/data     
 
+  # 
+  # tob-wallet-db
+  # 
+  tob-wallet-db:
+    image: registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:155cf81a3d3a8bbcab3a1f61b177cab75a4105306146d172ef8fb29488cf58b4
+    environment:
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+    networks:
+      - wallet-db
+    ports:
+      - "8032:5432"
+    # volumes:
+      # - tob-data:/var/lib/pgsql/data     
+
 networks:
   tob:
+  wallet-db:
 
 # volumes:
   # tob-data:
