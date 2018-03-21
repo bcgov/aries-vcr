@@ -102,7 +102,7 @@ URLS = {
 
 this_dir = dirname(__file__)
 
-claim_files = glob(join(this_dir, 'Claims', 'Claims_*'))
+claim_files = glob(join(this_dir, args.inputdir, 'Claims_*'))
 
 do_it_random = (args.random or args.threads > 1 or args.loops > 1)
 num_loops = args.loops
@@ -179,6 +179,8 @@ def main_load(env, do_it_random, num_loops, thread_id):
                 'Is the Wallet Service running?')
 
     # Create new threads
+    loop_start_time = time.time()
+    loop_claims = 0
     for _ in range(0, num_loops):
         # Each filename is a full permitify recipe
         for filename in claim_files:
@@ -239,11 +241,14 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     'Is the Wallet Service running?')
                         else:
                             try:
+                                start_time = time.time()
                                 response = requests.post(
                                     '{}/submit_claim'.format(
                                         URLS[env][service_name]),
                                     json=claim
                                 )
+                                elapsed_time = time.time() - start_time
+                                print('Claim elapsed time >>> {}'.format(elapsed_time))
                                 result_json = response.json()
                             except:
                                 raise Exception(
@@ -252,6 +257,10 @@ def main_load(env, do_it_random, num_loops, thread_id):
                             print('\n\n Response from permitify:\n\n{}'.format(result_json))
                             if service_name == 'Reg':
                                 legal_entity_id = result_json['result']['orgId']
+                        loop_claims = loop_claims + 1
+
+    loop_elapsed_time = time.time() - loop_start_time
+    print('Loop elapsed time >>> {}, {} claims'.format(loop_elapsed_time, loop_claims))
 
 if __name__ == '__main__':
     try:

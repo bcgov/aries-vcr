@@ -104,8 +104,6 @@ class ProofRequestProcesser(object):
         self.__logger.debug('Proof request: %s' % json.dumps(
             self.__proof_request))
 
-        start_time = time.time()
-
         # legal entity id
         self.__logger.debug(self.__filters)
         if 'legal_entity_id' in self.__filters:
@@ -217,13 +215,14 @@ class ProofRequestProcesser(object):
         self.__logger.debug("Creating proof ...")
 
         async with Holder(legal_entity_id) as holder:
+            start_time = time.time()
             proof = await holder.create_proof(
                     self.__proof_request,
                     claims,
                     requested_claims
                 )
-        elapsed_time = time.time() - start_time
-        self.__logger.debug('Proof elapsed time >>> {}'.format(elapsed_time))
+            elapsed_time = time.time() - start_time
+            self.__logger.debug('Proof elapsed time >>> {}'.format(elapsed_time))
 
         self.__logger.debug(
             'Created proof: %s' %
