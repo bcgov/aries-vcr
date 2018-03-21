@@ -93,8 +93,8 @@ build-web() {
   
   echo -e "\nBuilding angular-app image ..."
   ${S2I_EXE} build \
-  	-e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-  	-e "TOB_THEME=${TOB_THEME}" \
+    -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
+    -e "TOB_THEME=${TOB_THEME}" \
     '../tob-web' \
     'centos/nodejs-6-centos7:6' \
     'angular-app'
@@ -188,11 +188,11 @@ buildImages() {
 configureEnvironment () {
 
   if [ -f .env ]; then
-  	while read line; do
-  		if [[ ! "$line" =~ ^\# ]] && [[ "$line" =~ .*= ]]; then
-  			export $line
-  		fi
-  	done < .env
+    while read line; do
+      if [[ ! "$line" =~ ^\# ]] && [[ "$line" =~ .*= ]]; then
+        export $line
+      fi
+    done < .env
   fi
 
   for arg in $@; do
