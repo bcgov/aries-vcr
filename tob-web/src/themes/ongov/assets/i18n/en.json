@@ -1,0 +1,86 @@
+{
+  "app": {
+    "breadcrumb": "Home",
+    "title": "TheOrgBook Demo",
+    "header": {
+      "title": "TheOrgBook",
+      "logo-alt-text": "Ontario Government Logo"
+    },
+    "footer": {
+      "disclaimer": "Disclaimer",
+      "privacy": "Privacy",
+      "accessibility": "Accessibility",
+      "copyright": "Copyright",
+      "contact": "Contact Us"
+    }
+  },
+  "cert": {
+    "breadcrumb": "Permit and Licence Info",
+    "effective-date": "Effective Date",
+    "expiry-date": "Expiry Date",
+    "inactive-message": "This credential is inactive:",
+    "issuer": "Issuer",
+    "issuer-website": "Issuer Website",
+    "related-certs": "Related Credentials",
+    "requesting-proof": "Requesting proof of credential ...",
+    "return-link": "Back to Permit and Licence Info",
+    "verify-button-label": "Verify Credential",
+    "whats-this-link": "What's this?",
+    "verify-status": "Verification Status:"
+  },
+  "dashboard": {
+    "breadcrumb": "Search",
+    "title": "Welcome to Ontario's Verifiable Organizations",
+    "title-orgs": "organizations",
+    "title-certs": "permits and licences"
+  },
+  "general": {
+    "none": "None",
+    "map-link": "Show on map",
+    "next-link": "Next",
+    "prev-link": "Previous",
+    "verified": "Verified"
+  },
+  "issuer": {
+    "breadcrumb": "Issuer Service",
+    "cert-types": "Permit and Licence Types",
+    "effective-date": "Effective Date",
+    "expiry-date": "Expiry Date",
+    "website": "Issuer Website"
+  },
+  "not-found": {
+    "breadcrumb": "Not Found",
+    "title": "Page not found",
+    "error": "This page could not be located. Please check the URL or follow the link below.",
+    "return-link-title": "Return to the home page"
+  },
+  "org": {
+    "breadcrumb": "Organization Info",
+    "certs-title": "Permits and Licences",
+    "dba": "Doing Business As",
+    "effective-date": "Effective Date",
+    "identifier": "Organization Identifier",
+    "location": "Location",
+    "locations": "Locations",
+    "return-link": "Back to Organization Info",
+    "type": "Organization Type"
+  },
+  "recipe": {
+    "breadcrumb": "Recipe",
+    "cert-depends-on": "Depends on",
+    "cert-view-link": "View record",
+    "cert-not-found": "Certificate not found",
+    "find-org-title": "Find your Organization",
+    "org-view-link": "View organization record",
+    "register-link": "Register your Organization",
+    "title": "Recipe"
+  },
+  "search": {
+    "by-name": "Search by Name",
+    "by-location": "Search by Location",
+    "no-results": "No results",
+    "placeholder": "search",
+    "results-title": "Search Results",
+    "return-link": "Back to Search"
+  }
+}
