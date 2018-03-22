@@ -19,7 +19,6 @@
       "schemaName": "pst_number.ministry_of_finance",
       "regText": "Register with the BC Ministry of Finance",
       "depends": [
-        "incorporation.bc_registries",
         "restaurant_clearance_letter.worksafe_bc"
       ]
     },
@@ -28,7 +27,6 @@
       "schemaName": "operating_permit.fraser_valley_health_authority",
       "regText": "Register with the Fraser Valley Health Authority",
       "depends": [
-        "incorporation.bc_registries",
         "restaurant_clearance_letter.worksafe_bc",
         "pst_number.ministry_of_finance"
       ]
@@ -38,9 +36,6 @@
       "schemaName": "business_license.city_of_surrey",
       "regText": "Register with the City of Surrey",
       "depends": [
-        "incorporation.bc_registries",
-        "restaurant_clearance_letter.worksafe_bc",
-        "pst_number.ministry_of_finance",
         "operating_permit.fraser_valley_health_authority"
       ]
     },
@@ -49,10 +44,6 @@
       "schemaName": "liquor_license.liquor_control_and_licensing_branch",
       "regText": "Register with the BC Liquor Control and Licensing Branch",
       "depends": [
-        "incorporation.bc_registries",
-        "restaurant_clearance_letter.worksafe_bc",
-        "pst_number.ministry_of_finance",
-        "operating_permit.fraser_valley_health_authority",
         "business_license.city_of_surrey"
       ]
     }
