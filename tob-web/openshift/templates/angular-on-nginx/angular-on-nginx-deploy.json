@@ -91,6 +91,10 @@
                   {
                     "name": "HTTP_BASIC_PASSWORD",
                     "value": "${HTTP_BASIC_PASSWORD}"
+                  },
+                  {
+                    "name": "TOB_THEME",
+                    "value": "${TOB_THEME}"
                   }
                 ],
                 "resources": {
@@ -312,7 +316,12 @@
       "displayName": "HTTP Basic Password",
       "name": "HTTP_BASIC_PASSWORD",
       "value": ""
+    },
+    {
+      "name": "TOB_THEME",
+      "displayName": "TheOrgBook Theme Name",
+      "description": "The name of the theme to be used for the site.",
+      "value": "default"
     }
-
   ]
 }
