@@ -13,6 +13,11 @@ def IMAGESTREAM_NAME = 'angular-on-nginx'
 // you'll need to change this to point to your application component's folder within your repository
 def CONTEXT_DIRECTORY = 'tob-web'
 
+// EDIT LINE BELOW
+// Add a reference to the RUNTIME_BUILD_CONFIG, if you are using a runtime that needs to be built.
+// Otherwise comment out the line and the associated build script.
+def RUNTIME_BUILD_CONFIG = 'nginx-runtime'
+
 // EDIT LINE BELOW (Add a reference to the CHAINED_BUILD_CONFIG)
 def CHAINED_BUILD_CONFIG = 'angular-on-nginx-build'
 
@@ -53,11 +58,16 @@ boolean triggerBuild(String contextDirectory) {
 node {
   if( triggerBuild(CONTEXT_DIRECTORY) ) {   
     stage('build ' + BUILD_CONFIG) {
+      
+      // Build the application artifacts
       echo "Building: " + BUILD_CONFIG
       openshiftBuild bldCfg: BUILD_CONFIG, showBuildLogs: 'true'
 
+      // Build the runtime image, if you are not using an off the shelf one.
+      openshiftBuild bldCfg: RUNTIME_BUILD_CONFIG, showBuildLogs: 'true'
+
       // the CHAINED_BUILD_CONFIG should be triggered when the above build completes, but it doesn't seem to be, so we trigger it explicitly.
-      openshiftBuild bldCfg: CHAINED_BUILD_CONFIG, showBuildLogs: 'true'      
+      openshiftBuild bldCfg: CHAINED_BUILD_CONFIG, showBuildLogs: 'true'
       
       // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
       // Tag the images for deployment based on the image's hash

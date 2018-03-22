@@ -110,7 +110,7 @@
       "displayName": "Runtime Image Namespace",
       "description": "The namespace containing the runtime image.",
       "required": false,
-      "value": "openshift"
+      "value": "devex-von-tools"
     },
     {
       "name": "RUNTIME_IMAGE_NAME",
