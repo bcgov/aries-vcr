@@ -67,6 +67,7 @@
   },
   "recipe": {
     "breadcrumb": "Recipe",
+    "cert-depends-on": "Depends on",
     "cert-view-link": "View record",
     "cert-not-found": "Certificate not found",
     "find-org-title": "Find your Organization",

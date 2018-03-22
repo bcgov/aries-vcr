@@ -80,16 +80,30 @@ export class RoadmapComponent implements OnInit {
 
       let ctypes = data['claimTypes'] || [];
       let ctype;
+      let dependIndex = {};
       data['claimTypes'] = [];
-      for(let i = 0; i < ctypes.length; i++) {
-        ctype = Object.assign({}, ctypes[i]);
+      ctypes.forEach(ctype_spec => {
+        ctype = Object.assign({}, ctype_spec);
         ctype.cert = null;
-        if(! ctype.schemaName || ! typesBySchema[ctype.schemaName]) continue;
+        if(! ctype.schemaName || ! typesBySchema[ctype.schemaName]) return;
         ctype.regType = typesBySchema[ctype.schemaName];
         if(! ctype.regLink) ctype.regLink = ctype.regType.issuerURL;
-
+        dependIndex[ctype.schemaName] = data['claimTypes'].length;
         data['claimTypes'].push(ctype);
-      }
+      });
+
+      // expand dependency information
+      data['claimTypes'].forEach(ctype => {
+        let depend_schemas = ctype['depends'] || [];
+        let depends = [];
+        depend_schemas.forEach(schema => {
+          let depIdx = dependIndex[schema];
+          if(depIdx !== undefined) depends.push(depIdx);
+        });
+        depends.sort();
+        ctype['depends'] = depends;
+      });
+
       this.recipe = data;
       console.log('recipe', data);
       this.$route.queryParams.subscribe(params => {

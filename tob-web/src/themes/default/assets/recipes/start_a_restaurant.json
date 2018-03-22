@@ -2,34 +2,59 @@
   "title": "Permitify Demo - Starting a Restaurant Recipe",
   "claimTypes": [
     {
-    "title": "Registration",
-    "schemaName": "incorporation.bc_registries",
-    "regText": "Enrol with BC Registries"
+      "title": "Registration",
+      "schemaName": "incorporation.bc_registries",
+      "regText": "Enrol with BC Registries"
     },
     {
-    "title": "Restaurant Clearance Letter",
-    "schemaName": "restaurant_clearance_letter.worksafe_bc",
-    "regText": "Register with WorkSafe BC"
+      "title": "Restaurant Clearance Letter",
+      "schemaName": "restaurant_clearance_letter.worksafe_bc",
+      "regText": "Register with WorkSafe BC",
+      "depends": [
+        "incorporation.bc_registries"
+      ]
     },
     {
-    "title": "PST Number",
-    "schemaName": "pst_number.ministry_of_finance",
-    "regText": "Register with the BC Ministry of Finance"
+      "title": "PST Number",
+      "schemaName": "pst_number.ministry_of_finance",
+      "regText": "Register with the BC Ministry of Finance",
+      "depends": [
+        "incorporation.bc_registries",
+        "restaurant_clearance_letter.worksafe_bc"
+      ]
     },
     {
-    "title": "Operating Permit",
-    "schemaName": "operating_permit.fraser_valley_health_authority",
-    "regText": "Register with the Fraser Valley Health Authority"
+      "title": "Operating Permit",
+      "schemaName": "operating_permit.fraser_valley_health_authority",
+      "regText": "Register with the Fraser Valley Health Authority",
+      "depends": [
+        "incorporation.bc_registries",
+        "restaurant_clearance_letter.worksafe_bc",
+        "pst_number.ministry_of_finance"
+      ]
     },
     {
-    "title": "Business License",
-    "schemaName": "business_license.city_of_surrey",
-    "regText": "Register with the City of Surrey"
+      "title": "Business License",
+      "schemaName": "business_license.city_of_surrey",
+      "regText": "Register with the City of Surrey",
+      "depends": [
+        "incorporation.bc_registries",
+        "restaurant_clearance_letter.worksafe_bc",
+        "pst_number.ministry_of_finance",
+        "operating_permit.fraser_valley_health_authority"
+      ]
     },
     {
-    "title": "Liquor License",
-    "schemaName": "liquor_license.liquor_control_and_licensing_branch",
-    "regText": "Register with the BC Liquor Control and Licensing Branch"
+      "title": "Liquor License",
+      "schemaName": "liquor_license.liquor_control_and_licensing_branch",
+      "regText": "Register with the BC Liquor Control and Licensing Branch",
+      "depends": [
+        "incorporation.bc_registries",
+        "restaurant_clearance_letter.worksafe_bc",
+        "pst_number.ministry_of_finance",
+        "operating_permit.fraser_valley_health_authority",
+        "business_license.city_of_surrey"
+      ]
     }
   ]
 }
