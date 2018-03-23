@@ -61,16 +61,18 @@ export class RoadmapComponent implements OnInit {
       // pre-index claim types by schema name with latest schema version
       let regTypes = <VerifiableClaimType[]>this.dataService.getOrgData('verifiableclaimtypes');
       let typesBySchema = {};
-      for(let regType of regTypes) {
-        if(regType.schemaName && regType.schemaVersion) {
-          let sname = regType.schemaName;
-          let other = typesBySchema[sname];
+      if(regTypes) {
+        for(let regType of regTypes) {
+          if(regType.schemaName && regType.schemaVersion) {
+            let sname = regType.schemaName;
+            let other = typesBySchema[sname];
 
-          // if(other && compareVersions(regType.schemaVersion, other.schemaVersion) <= 0)
-          if(other && other.id < regType.id)
-            continue;
+            // if(other && compareVersions(regType.schemaVersion, other.schemaVersion) <= 0)
+            if(other && other.id < regType.id)
+              continue;
 
-          typesBySchema[sname] = regType;
+            typesBySchema[sname] = regType;
+          }
         }
       }
 
@@ -80,7 +82,7 @@ export class RoadmapComponent implements OnInit {
 
       let ctypes = data['claimTypes'] || [];
       let ctype;
-      let depends = {};
+      let dependsMap = {};
       data['claimTypes'] = [];
       ctypes.forEach((ctype_spec, idx) => {
         ctype = Object.assign({}, ctype_spec);
@@ -88,26 +90,23 @@ export class RoadmapComponent implements OnInit {
         if(! ctype.schemaName || ! typesBySchema[ctype.schemaName]) return;
         ctype.regType = typesBySchema[ctype.schemaName];
         if(! ctype.regLink) ctype.regLink = ctype.regType.issuerURL;
-        depends[ctype.schemaName] = ctype.depends || [];
+        dependsMap[ctype.schemaName] = ctype.depends || [];
         ctype.oldIdx = idx;
         data['claimTypes'].push(ctype);
       });
-      this.expandDepends(depends);
+      this.expandDepends(dependsMap);
 
-      data['claimTypes'].sort(this.cmpDependClaims(depends));
+      data['claimTypes'].sort(this.cmpDependClaims(dependsMap));
       let dependIndex = {};
       data['claimTypes'].forEach( (ctype, idx) => {
         dependIndex[ctype['schemaName']] = idx;
       });
 
-      console.log(depends);
-      console.log(dependIndex);
-
       // expand dependency information
       data['claimTypes'].forEach(ctype => {
         let claimDeps = [];
-        if(ctype.schemaName in depends) {
-          depends[ctype.schemaName].forEach(schema => {
+        if(ctype.schemaName in dependsMap) {
+          dependsMap[ctype.schemaName].forEach(schema => {
             if(schema in dependIndex)
               claimDeps.push(dependIndex[schema]);
           });
@@ -116,7 +115,22 @@ export class RoadmapComponent implements OnInit {
         ctype['depends'] = claimDeps.length ? claimDeps : null;
       });
 
+      let dependsMapIdx = {};
+      for(let schema in dependsMap) {
+        dependsMapIdx[dependIndex[schema]] = dependsMap[schema].map(schema => ''+dependIndex[schema]);
+      }
+      try {
+        let tree = this.makeDependsTree(Object.keys(dependsMapIdx), dependsMapIdx);
+        console.log('tree', tree);
+        if(! tree[1].length) {
+          // no remaining, tree should be good
+          data['tree'] = tree[0];
+        }
+      } catch(e) {
+        console.error(e);
+      }
       this.recipe = data;
+
       console.log('recipe', data);
       this.$route.queryParams.subscribe(params => {
         this.setParams(params.record, params.query);
@@ -127,14 +141,127 @@ export class RoadmapComponent implements OnInit {
     });
   }
 
-  cmpDependClaims(depends) {
+  cmpDependClaims(dependsMap) {
     return (a, b) => {
       let schemaA = a.schemaName;
       let schemaB = b.schemaName;
-      if(schemaA in depends && ~depends[schemaA].indexOf(schemaB)) return 1;
-      if(schemaB in depends && ~depends[schemaB].indexOf(schemaA)) return -1;
+      if(schemaA in dependsMap && ~dependsMap[schemaA].indexOf(schemaB)) return 1;
+      if(schemaB in dependsMap && ~dependsMap[schemaB].indexOf(schemaA)) return -1;
       return (a.oldIdx == b.oldIdx ? 0 : (a.oldIdx < b.oldIdx ? 1 : -1));
     }
+  }
+
+  makeDependsTree(claims, allDepends, remainDepends?, parents?, depth?) {
+    let topClaims = [];
+    let remain = [];
+    if(! remainDepends) {
+      remainDepends = new Set(Object.keys(allDepends));
+    }
+    let nextDepends = new Set(remainDepends);
+    let idx = 0;
+    if(! depth) depth = 0;
+    if(! parents) parents = [];
+    // identify claims with no unsatisfied dependencies
+    for(; idx < claims.length; idx++) {
+      let claim = claims[idx];
+      let noRemain = true;
+      let depends = allDepends[claim];
+      if(depends) {
+        for(let dep of depends) {
+          if(remainDepends.has(dep)) {
+            noRemain = false;
+            break;
+          }
+        }
+      }
+      if(noRemain) {
+        topClaims.push(claim);
+        nextDepends.delete(claim);
+      } else {
+        remain.push(claim);
+      }
+    }
+    if(! topClaims.length) {
+      return [[], remain];
+    }
+    // initialize buckets for each parent of this level
+    let buckets = [];
+    // split top level claims into buckets
+    topClaims.forEach(claim => {
+      let parentClaims = [];
+      if(parents.length) {
+        parents.forEach(parentClaim => {
+          if(~allDepends[claim].indexOf(parentClaim))
+            parentClaims.push(parentClaim);
+        });
+      }
+      let key = parentClaims.join(',');
+      let found = null;
+      for(let idx = 0; idx < buckets.length; idx++) {
+        if(buckets[idx]['key'] === key) {
+          found = idx;
+          break;
+        }
+      }
+      if(found === null) {
+        found = buckets.length;
+        buckets.push({'key': key, 'parents': parentClaims, 'nodes': [], 'next': []});
+      }
+      let node = {'id': claim, 'children': [], 'descends': []};
+      if(remain.length) {
+        let nodeDepends = new Set(remainDepends);
+        nodeDepends.delete(claim);
+        let nodeNext = this.makeDependsTree(remain, allDepends, nodeDepends, [claim], depth+1);
+        node['children'] = nodeNext[0];
+        remain.forEach(claim => {
+          if(! ~nodeNext[1].indexOf(claim)) {
+            node['descends'].push(claim);
+            nextDepends.delete(claim);
+          }
+        });
+        remain = nodeNext[1];
+      }
+      buckets[found]['nodes'].push(node);
+    });
+    // add additional levels to each bucket if needed
+    buckets.forEach(bucket => {
+      if(! remain.length) return;
+      let bucketDepends = new Set(remainDepends);
+      let nodeIds = bucket['nodes'].map(node => node['id']);
+      nodeIds.forEach(id => bucketDepends.delete(id));
+      let bucketNext = this.makeDependsTree(remain, allDepends, bucketDepends, nodeIds, depth+1);
+      bucket['next'] = bucketNext[0];
+      remain = bucketNext[1];
+    });
+    // assign remaining claims to additional levels
+    let bottom = this.lastChildren(buckets);
+    let levels = [buckets];
+    if(0 && buckets.length == 1) {
+      // promote to top level (flatten hierarchy)
+      levels = levels.concat(buckets[0]['next']);
+      buckets[0]['next'] = [];
+    }
+    if(remain.length) {
+      let nextLevels = this.makeDependsTree(remain, allDepends, nextDepends, bottom, depth+1);
+      levels = levels.concat(nextLevels[0]);
+      remain = nextLevels[1];
+    }
+    return [levels, remain];
+  }
+
+  lastChildren(buckets) {
+    let bottom = [];
+    buckets.forEach(bucket => {
+      bucket['nodes'].forEach(node => {
+        let lvlCount = node['children'].length;
+        if(lvlCount) {
+          bottom = bottom.concat(this.lastChildren(node['children'][lvlCount - 1]));
+        } else {
+          bottom.push(node['id']);
+        }
+      });
+    });
+    return bottom;
   }
 
   expandDepends(all_deps) {

@@ -13,6 +13,9 @@
   <h1 class="roadmap-title" *ngIf="inited">{{recipe.title}}</h1>
 
   <ng-container *ngIf="! orgRecord && inited">
+    <div class="roadmap-tree mrgn-tp-lg mrgn-bttm-lg" *ngIf="recipe.tree">
+      <roadmap-tree [tree]="recipe.tree" [data]="recipe.claimTypes" [horizontal]="false"></roadmap-tree>
+    </div>
     <div class="row">
       <div class="col-md-5 col-md-push-7" *ngIf="registerLink">
         <div class="well">

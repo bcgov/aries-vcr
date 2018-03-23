@@ -21,6 +21,7 @@ import { GeneralDataService } from 'app/general-data.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { IssuerComponent } from './issuer/issuer.component';
 import { RoadmapComponent } from './roadmap/roadmap.component';
+import { RoadmapTreeComponent } from './roadmap/tree.component';
 import { AdminModule } from 'app/admin/admin.module';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -59,6 +60,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     DashboardComponent,
     IssuerComponent,
     RoadmapComponent,
+    RoadmapTreeComponent,
     BreadcrumbComponent,
     NotFoundComponent
   ],

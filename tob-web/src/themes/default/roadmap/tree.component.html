@@ -1,0 +1,22 @@
+<div [class]="'tree-outer' + (horizontal ? ' horizontal' : '')">
+  <div class="tree-level" *ngFor="let level of tree">
+    <div class="tree-column" *ngFor="let bucket of level">
+      <div class="tree-row">
+        <div class="tree-node" *ngFor="let node of bucket['nodes']">
+          <div class="tree-node-arrows" *ngIf="bucket['parents'].length">
+            <div class="tree-node-arrow" *ngFor="let parent of bucket['parents']">
+              <span class="fa fa-arrow-down arrow-vertical"></span>
+              <span class="fa fa-arrow-right arrow-horizontal"></span>
+            </div>
+          </div>
+          <div class="tree-node-body">
+            <div class="tree-node-content">
+              {{data[node['id']].title}}
+            </div>
+          </div>
+          <roadmap-tree [tree]="node['children']" [data]="data" [horizontal]="horizontal"></roadmap-tree>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
