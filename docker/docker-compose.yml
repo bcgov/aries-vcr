@@ -170,8 +170,8 @@ services:
       - tob
     ports:
       - 5432:5432
-    # volumes:
-      # - tob-data:/var/lib/pgsql/data     
+    volumes:
+      - tob-data:/var/lib/pgsql/data     
 
   # 
   # tob-wallet-db
@@ -186,13 +186,15 @@ services:
       - wallet-db
     ports:
       - "8032:5432"
-    # volumes:
-      # - tob-data:/var/lib/pgsql/data     
+    volumes:
+      - tob-wallet-data:/var/lib/pgsql/data     
 
 networks:
   tob:
   wallet-db:
   wallet-tob:
 
-# volumes:
-  # tob-data:
+volumes:
+  tob-data:
+  tob-wallet-data:
+  
