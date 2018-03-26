@@ -232,7 +232,7 @@ configureEnvironment () {
   export CORE_NAME="the_org_book"
 
   # tob-wallet
-  export WALLET_HTTP_PORT=${WALLET_HTTP_PORT-8000}
+  export WALLET_HTTP_PORT=${WALLET_HTTP_PORT-6000}
   export WALLET_DB_SERVICE_NAME="tob-wallet-db"
   export DATABASE_ENGINE="postgresql"
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
