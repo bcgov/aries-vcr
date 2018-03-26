@@ -22,4 +22,4 @@ The BC Registries database components have been migrated into their own reposito
 
 # Database Schema Documentation
 
-Databases are documented using [SchemaSpy](https://github.com/bcgov/SchemaSpy).  The documentation of the Oracle database requires Oracle JDBC drivers.  Due to licensing restrictions the image for the associated pod has been built manually and pushed into the project's tools project.
+Databases are documented using [SchemaSpy](https://github.com/bcgov/SchemaSpy).

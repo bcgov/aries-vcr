@@ -67,29 +67,6 @@ Local param files are ignored by Git, so you cannot accidentally commit them to 
 
 ## Update the local parameters
 
-### `postgresql-oracle-fdw-build.local.param`
-
-The `rhel7` image used by the build may not be available to you in your local openshift cluster, and/or you may not have the permissions needed to install packages on that image.
-
-To solve this update the file as follows;
-
-Replace the lines:
-```
-# DOCKER_FILE_PATH=Dockerfile.rhel7
-# SOURCE_IMAGE_NAME=rhel7
-# SOURCE_IMAGE_TAG=latest
-```
-
-With:
-```
-# Use the CentOS version of the Docker image.
-DOCKER_FILE_PATH=Dockerfile
-
-# Use CentOS as the base image for the build.
-SOURCE_IMAGE_NAME=centos
-SOURCE_IMAGE_TAG=centos7
-```
-
 ### `angular-on-nginx-build.local.param`
 
 The `openshift/nginx-runtime:latest` image that the angular-on-nginx build uses is not available to your local openshift cluster.
