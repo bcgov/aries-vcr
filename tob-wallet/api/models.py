@@ -19,7 +19,7 @@ class WalletItem(models.Model):
     wallet_name = models.CharField(max_length=255, blank=False)
     item_type = models.CharField(max_length=255, blank=False)
     item_id = models.CharField(max_length=255, blank=False)
-    item_value = models.TextField(blank=False)
+    item_value = models.TextField(blank=True)
     created_by = models.ForeignKey('auth.User', related_name='wallet_items', on_delete=models.CASCADE)
 
     class Meta:

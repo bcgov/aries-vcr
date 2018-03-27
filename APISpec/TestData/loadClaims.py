@@ -262,10 +262,10 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     json=claim
                                 )
                                 elapsed_time = time.time() - start_time
-                                print('Claim elapsed time >>> {}'.format(elapsed_time))
                                 claim_elapsed_time = claim_elapsed_time + elapsed_time
                                 result_json = response.json()
                                 loop_locks[service_name].release()
+                                print('Claim elapsed time >>> {}'.format(elapsed_time))
                             except:
                                 loop_locks[service_name].release()
                                 raise Exception(
