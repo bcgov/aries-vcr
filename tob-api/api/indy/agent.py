@@ -1,4 +1,5 @@
 import os
+import threading
 
 from von_agent.nodepool import NodePool
 from von_agent.wallet import Wallet
@@ -24,6 +25,7 @@ class Issuer:
         self.pool = NodePool(
             'the-org-book-issuer',
             config['genesis_txn_path'])
+        wallet_name = 'TheOrgBook_Issuer_Wallet'
 
         issuer_type   = 'virtual'
         issuer_config = {'freshness_time':0}
@@ -34,7 +36,7 @@ class Issuer:
         issuer_wallet = Wallet(
                 self.pool,
                 WALLET_SEED,
-                'TheOrgBook_Issuer_Wallet',
+                wallet_name,
                 issuer_type,
                 issuer_config,
                 issuer_creds)
@@ -65,6 +67,7 @@ class Verifier:
         self.pool = NodePool(
             'the-org-book-verifier',
             config['genesis_txn_path'])
+        wallet_name = 'TheOrgBook_Verifier_Wallet'
 
         verifier_type   = 'virtual'
         verifier_config = {'freshness_time':0}
@@ -75,7 +78,7 @@ class Verifier:
         verifier_wallet = Wallet(
                 self.pool,
                 WALLET_SEED,
-                'TheOrgBook_Verifier_Wallet',
+                wallet_name,
                 verifier_type,
                 verifier_config,
                 verifier_creds)
@@ -103,12 +106,15 @@ class Verifier:
 class Holder:
     def __init__(self, legal_entity_id: str = None):
         config = hyperledger_indy.config()
+        thread_id = threading.get_ident()
         self.pool = NodePool(
-            'the-org-book-holder',
+            'the-org-book-holder-' + str(thread_id),
             config['genesis_txn_path'])
+        wallet_name = 'TheOrgBook_Holder_Wallet'
 
         holder_type   = os.environ.get('INDY_WALLET_TYPE')
         if holder_type == 'remote':
+            wallet_name = wallet_name + "$$" + str(thread_id)
             holder_url = os.environ.get('INDY_WALLET_URL')
             holder_config = {'endpoint':holder_url,'ping':'schema/','auth':'api-token-auth/','keyval':'keyval/','freshness_time':0}
             holder_creds  = {'auth_token':apps.get_remote_wallet_token(),'virtual_wallet':legal_entity_id}
@@ -125,7 +131,7 @@ class Holder:
         holder_wallet = Wallet(
                 self.pool,
                 WALLET_SEED,
-                'TheOrgBook_Holder_Wallet',
+                wallet_name,
                 holder_type,
                 holder_config,
                 holder_creds)

@@ -53,15 +53,15 @@ URLS = {
         # bc_registries (needs to be first)
         'Reg': 'http://localhost:5000',
         # worksafe_bc
-        'Worksafe': 'http://localhost:5001',
+        # 'Worksafe': 'http://localhost:5001',
         # ministry_of_finance
-        'Finance': 'http://localhost:5002',
+        # 'Finance': 'http://localhost:5002',
         # fraser_valley_health_authority
-        'Health': 'http://localhost:5003',
+        # 'Health': 'http://localhost:5003',
         # city_of_surrey
-        'City': 'http://localhost:5004',
+        # 'City': 'http://localhost:5004',
         # liquor_control_and_licensing_branch
-        'Liquor': 'http://localhost:5005'
+        # 'Liquor': 'http://localhost:5005'
     },
   'dev': {
         # bc_registries (needs to be first)
@@ -298,4 +298,5 @@ if __name__ == '__main__':
             thread = myThread(i, "Thread-{}".format(i), i)
             # Start new Threads
             thread.start()
+            time.sleep(1)
         print("Exiting Main Thread")
