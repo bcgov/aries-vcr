@@ -206,7 +206,6 @@ def main_load(env, do_it_random, num_loops, thread_id):
                 for service_name in URLS[env]:
                     if service_name not in permitify_services:
                         continue
-                    loop_locks[service_name].acquire()
                     for claim in permitify_services[service_name]:
                         if do_it_random:
                             claim = randomify(claim, thread_id)
@@ -255,6 +254,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     'Is the Wallet Service running?')
                         else:
                             try:
+                                loop_locks[service_name].acquire()
                                 start_time = time.time()
                                 response = requests.post(
                                     '{}/submit_claim'.format(
@@ -265,7 +265,9 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                 print('Claim elapsed time >>> {}'.format(elapsed_time))
                                 claim_elapsed_time = claim_elapsed_time + elapsed_time
                                 result_json = response.json()
+                                loop_locks[service_name].release()
                             except:
+                                loop_locks[service_name].release()
                                 raise Exception(
                                     'Could not submit claim. '
                                     'Are Permitify and Docker running?')
@@ -293,7 +295,6 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     'Could not submit proof request. '
                                     'Are Permitify and Docker running?')
                             print('\n\n Response from TOB:\n\n')
-                    loop_locks[service_name].release()
 
     print('Claim elapsed time >>> {}, {} claims'.format(claim_elapsed_time, loop_claims))
     if args.proofs:
