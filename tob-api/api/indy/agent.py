@@ -42,7 +42,7 @@ class Issuer:
         logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
         self.instance = VonIssuer(
-            self.pool,
+            # self.pool,
             issuer_wallet
         )
 
@@ -83,7 +83,7 @@ class Verifier:
         logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
         self.instance = VonVerifier(
-            self.pool,
+            # self.pool,
             verifier_wallet
         )
 
@@ -133,7 +133,7 @@ class Holder:
         logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
         self.instance = VonHolderProver(
-            self.pool,
+            # self.pool,
             holder_wallet
         )
 

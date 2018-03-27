@@ -1,5 +1,5 @@
 # Use the offical nginx (based on debian)
-FROM nginx:mainline
+FROM nginx:stable
 
 # Required for HTTP Basic feature
 RUN apt-get update && apt-get install openssl
