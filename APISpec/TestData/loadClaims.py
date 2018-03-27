@@ -48,20 +48,29 @@ if args.random or args.threads > 1 or args.loops > 1:
 else:
     print('NOT Randomizing.')
 
+loop_locks = {
+    'Reg': threading.Semaphore(),
+    'Worksafe': threading.Semaphore(),
+    'Finance': threading.Semaphore(),
+    'Health': threading.Semaphore(),
+    'City': threading.Semaphore(),
+    'Liquor': threading.Semaphore()
+}
+
 URLS = {
   'local': {
         # bc_registries (needs to be first)
         'Reg': 'http://localhost:5000',
         # worksafe_bc
-        # 'Worksafe': 'http://localhost:5001',
+        'Worksafe': 'http://localhost:5001',
         # ministry_of_finance
-        # 'Finance': 'http://localhost:5002',
+        'Finance': 'http://localhost:5002',
         # fraser_valley_health_authority
-        # 'Health': 'http://localhost:5003',
+        'Health': 'http://localhost:5003',
         # city_of_surrey
-        # 'City': 'http://localhost:5004',
+        'City': 'http://localhost:5004',
         # liquor_control_and_licensing_branch
-        # 'Liquor': 'http://localhost:5005'
+        'Liquor': 'http://localhost:5005'
     },
   'dev': {
         # bc_registries (needs to be first)
@@ -197,6 +206,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
                 for service_name in URLS[env]:
                     if service_name not in permitify_services:
                         continue
+                    loop_locks[service_name].acquire()
                     for claim in permitify_services[service_name]:
                         if do_it_random:
                             claim = randomify(claim, thread_id)
@@ -283,6 +293,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     'Could not submit proof request. '
                                     'Are Permitify and Docker running?')
                             print('\n\n Response from TOB:\n\n')
+                    loop_locks[service_name].release()
 
     print('Claim elapsed time >>> {}, {} claims'.format(claim_elapsed_time, loop_claims))
     if args.proofs:
