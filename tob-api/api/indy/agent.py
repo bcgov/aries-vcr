@@ -114,7 +114,7 @@ class Holder:
 
         holder_type   = os.environ.get('INDY_WALLET_TYPE')
         if holder_type == 'remote':
-            wallet_name = wallet_name + "$$" + str(thread_id)
+            # wallet_name = wallet_name + "$$" + str(thread_id)
             holder_url = os.environ.get('INDY_WALLET_URL')
             holder_config = {'endpoint':holder_url,'ping':'schema/','auth':'api-token-auth/','keyval':'keyval/','freshness_time':0}
             holder_creds  = {'auth_token':apps.get_remote_wallet_token(),'virtual_wallet':legal_entity_id}
