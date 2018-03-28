@@ -70,7 +70,9 @@ URLS = {
         # city_of_surrey
         'City': 'http://localhost:5004',
         # liquor_control_and_licensing_branch
-        'Liquor': 'http://localhost:5005'
+        'Liquor': 'http://localhost:5005',
+        # on_biz
+        'OntarioReg': "http://localhost:5006"
     },
   'dev': {
         # bc_registries (needs to be first)
@@ -113,15 +115,37 @@ URLS = {
 
 this_dir = dirname(__file__)
 
-claim_files = glob(join(this_dir, args.inputdir, 'Claims_*'))
+#claim_files = glob(join(this_dir, 'Claims', 'Claims_*'))
 
 do_it_random = (args.random or args.threads > 1 or args.loops > 1)
 num_loops = args.loops
 use_env = args.env
 
-min_char = 8
-max_char = 12
-allchar = "0123456789abcdef"
+def main(env, data_dir):
+    # Each filename is a full permitify recipe
+    claim_files = glob(join(this_dir, data_dir + 'Claims', data_dir + 'Claims_*'))
+    for filename in claim_files:
+        with open(filename, 'r') as file:
+            content = file.read()
+            permitify_services = json.loads(content)
+            legal_entity_id = None
+            for service_name in URLS[env]:
+                if service_name not in permitify_services:
+                    continue
+                for claim in permitify_services[service_name]:
+                    if 'Reg' not in service_name:
+                        claim['legal_entity_id'] = legal_entity_id
+                        print('\n\n')
+                        print('Issuing permit: {}'.format(
+                            claim['schema']
+                        ))
+                    else:
+                        print('\n\n')
+                        print('==============================================')
+                        print('Registering new business: {}'.format(
+                            claim['legal_name']
+                        ))
+                        print('==============================================')
 
 # generate a short random string
 def random_string(i):
@@ -134,17 +158,25 @@ def should_we_randomify(key, value):
     if value.isdigit():
         return False
 
-    # key like "schema" don't randomize
-    if "schema" in key.lower():
-        return False;
+                    try:
+                        response = requests.post(
+                            '{}/submit_claim'.format(
+                                URLS[env][service_name]),
+                            json=claim
+                        )
+                        result_json = response.json()
+                        print(result_json)
+                    except:
+                        raise Exception(
+                            'Could not submit claim. '
+                            'Are Permitify and Docker running?')
 
     # key like "type" probably a pick-list
     if "_type" in key.lower():
         return False;
 
-    # boolean flags
-    if value == "True" or value == "False":
-        return False;
+                    if 'Reg' in service_name:
+                        legal_entity_id = result_json['result']['orgId']
 
     # postal code or province
     if key.lower() == "city" or key.lower() == "province" or key.lower() == "postal_code" or key.lower() == "country":
@@ -306,16 +338,12 @@ if __name__ == '__main__':
     except KeyError:
         print('{} --env <local|dev|test>'.format(sys.argv[0]))
     else:
-        execution_start = time.time()
-        my_threads = []
-        for i in range(0, args.threads):
-            thread = myThread(i, "Thread-{}".format(i), i)
-            # Start new Threads
-            thread.start()
-            my_threads.append(thread)
-            time.sleep(1)
-        for i in range(0, args.threads):
-            my_threads[i].join()
-        execution_elapsed = time.time() - execution_start
-        print("Exiting Main Thread, time = {} secs".format(execution_elapsed))
+        try:
+            URLS[sys.argv[1]]
+        except KeyError:
+            print('{} {{local|dev|test}}'.format(sys.argv[0]))
+        else:
+            env = sys.argv[1]
+            data_dir = sys.argv[2] if len(sys.argv) > 2 else ''
+            main(env, data_dir)
 

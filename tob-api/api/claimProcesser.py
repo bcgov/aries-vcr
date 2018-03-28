@@ -276,6 +276,7 @@ class ClaimProcesser(object):
     
     def SaveClaim(self, claimJson):      
       claim = ClaimParser(claimJson)
+      print(claimJson)
       self.__logger.debug(">>> Processing {0} claim ...\n{1}".format(claim.schemaName, claimJson))
       start_time = time.time()
 
@@ -293,7 +294,7 @@ class ClaimProcesser(object):
       # ToDo:
       # - Don't hard code the claim types at this level.  Get things working and refactor.
       # - Create claim processors that know how to deal with given claims.
-      if claim.schemaName == "incorporation.bc_registries":
+      if "incorporation" in claim.schemaName:
         verifiableOrg = self.__CreateOrUpdateVerifiableOrg(claim, verifiableOrg)
         location = self.__CreateOrUpdateLocation(claim, verifiableOrg, None, "Headquarters")
       elapsed_time = time.time() - start_time

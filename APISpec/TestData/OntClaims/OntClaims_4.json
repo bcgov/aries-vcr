@@ -1,9 +1,9 @@
 {
-    "Reg": [
+    "OntarioReg": [
         {
             "address_line_1": "3988 Davis Drive",
             "address_line_2": "",
-            "addressee": "Regina Etheredge",
+            "addressee": "OntarioRegina Etheredge",
             "city": "Welland",
             "country": "CA",
             "legal_name": "Etheredge Luncheon",

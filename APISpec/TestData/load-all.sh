@@ -34,4 +34,4 @@ exitOnError () {
 
 echo Data for TheOrgBook is now loading via the loading of claims. Details to come...
 
-./loadClaims.py "$@"
+./loadClaims.py "${1}" "${2}"
