@@ -59,9 +59,12 @@ class bcovrinGenerateClaimRequest(APIView):
 
     returns: indy sdk claim request json
     """
+    __logger = logging.getLogger(__name__)
+    __logger.warn('>>> Generate a claim request')
     claimDef = request.body.decode('utf-8')
     claimDefProcesser = ClaimDefProcesser(claimDef)
     claimRequest = claimDefProcesser.GenerateClaimRequest()
+    __logger.warn('<<< Generated claim request')
     return JsonResponse(json.loads(claimRequest))
 
 # ToDo:
@@ -94,10 +97,13 @@ class bcovrinStoreClaim(APIView):
 
     returns: created verifiableClaim model
     """
+    __logger = logging.getLogger(__name__)
+    __logger.warn('>>> Store a claim')
     claim = request.body.decode('utf-8')
     claimProcesser = ClaimProcesser()
     verifiableOrg = claimProcesser.SaveClaim(claim)
     serializer = serializers.VerifiableOrgSerializer(verifiableOrg)
+    __logger.warn('<<< Stored claim')
     return Response(serializer.data)
 
 class bcovrinConstructProof(APIView):
@@ -142,6 +148,7 @@ class bcovrinConstructProof(APIView):
 
     returns: indy sdk proof json
     """
+    __logger = logging.getLogger(__name__)
     proofRequestWithFilters = request.body.decode('utf-8')
     proofRequestProcesser = ProofRequestProcesser(proofRequestWithFilters)
     proofResponse = proofRequestProcesser.ConstructProof()

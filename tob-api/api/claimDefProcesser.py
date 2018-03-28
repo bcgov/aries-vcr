@@ -1,6 +1,5 @@
 import json
 import asyncio
-from von_agent.schema import schema_key_for
 from api.indy.agent import Holder
 from api.indy.claimDefParser import ClaimDefParser
 import logging

@@ -254,17 +254,17 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     'Is the Wallet Service running?')
                         else:
                             try:
-                                loop_locks[service_name].acquire()
                                 start_time = time.time()
+                                loop_locks[service_name].acquire()
                                 response = requests.post(
                                     '{}/submit_claim'.format(
                                         URLS[env][service_name]),
                                     json=claim
                                 )
+                                loop_locks[service_name].release()
+                                result_json = response.json()
                                 elapsed_time = time.time() - start_time
                                 claim_elapsed_time = claim_elapsed_time + elapsed_time
-                                result_json = response.json()
-                                loop_locks[service_name].release()
                                 print('Claim elapsed time >>> {}'.format(elapsed_time))
                             except:
                                 loop_locks[service_name].release()
@@ -306,9 +306,16 @@ if __name__ == '__main__':
     except KeyError:
         print('{} --env <local|dev|test>'.format(sys.argv[0]))
     else:
+        execution_start = time.time()
+        my_threads = []
         for i in range(0, args.threads):
             thread = myThread(i, "Thread-{}".format(i), i)
             # Start new Threads
             thread.start()
+            my_threads.append(thread)
             time.sleep(1)
-        print("Exiting Main Thread")
+        for i in range(0, args.threads):
+            my_threads[i].join()
+        execution_elapsed = time.time() - execution_start
+        print("Exiting Main Thread, time = {} secs".format(execution_elapsed))
+
