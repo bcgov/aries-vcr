@@ -1,4 +1,3 @@
-@import "./dashboard.component.custom";
 
 #dashboard {
   min-height: 50vh;
@@ -122,3 +121,5 @@ $input-border: rgba(128, 173, 210, 0.9);
   }
 }
 
+//place all overrides for a specific theme in this file inside your theme/dashboard directory
+@import "../../_active/dashboard/dashboard.component.custom.scss";

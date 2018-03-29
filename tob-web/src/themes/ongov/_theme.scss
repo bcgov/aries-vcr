@@ -1,10 +1,21 @@
 
 /* We override base bootstrap class here */
 
+.navbar-footer {
+  display: block;
+  height: 85px;
+  background: url('themes/ongov/assets/footer-swoop.gif') no-repeat bottom left;
+  background-color: #ededed;
+  background-size: 100% 100%;
+  padding: 0;
+  margin: 0 -0.375em 1em -0.375em;
+  text-align: left;
+  position: relative;
+
+}
 // Header
 header {
   background-color: #333;
-  border-bottom: 2px solid #fcba19;
   padding-top: 10px;
   padding-bottom: 20px;
 
@@ -14,22 +25,9 @@ header {
   }
 }
 
-.title {
-    font-size: 30px;
-    font-weight: 700;
-    color: #fff;
-    top: 7px;
-    position: relative;
-    white-space: nowrap;
-    letter-spacing: .05em;
 
-    @media (max-width: 480px) {
-      font-size: 14px;
-    }
-  }
 
   .header-logo {
-    width: 165px;
     height: 45px;
     margin-right: 18px;
 
@@ -44,6 +42,7 @@ header {
 .page-header {
   margin-top: 2px;
   font-weight: 600;
+  border-bottom: none;
 }
 
 h1 {
@@ -51,7 +50,7 @@ h1 {
 }
 
 h1, h2, h3 {
-    color: #333;
+    color: #4d4d4d;
 }
 
 // Panels
@@ -62,7 +61,11 @@ h1, h2, h3 {
 
 // Links and button
 a {
-  text-decoration: underline;
+  line-height: 1.1;
+  text-decoration: none;
+  color: #4d4d4d;
+  position: relative;
+  padding-right: 45px;
 }
 
 .btn {
@@ -133,8 +136,6 @@ footer a:hover {
   text-decoration: underline !important;
 }
 footer {
-  border-color: #fcba19;
-  border-top: 2px solid #fcba19;
   width: 100%;
 }
 footer .navbar {

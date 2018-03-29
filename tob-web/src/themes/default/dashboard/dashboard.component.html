@@ -28,8 +28,8 @@
               <label [class]="'btn btn-default btn-radio' + (searchType=='name' ? ' active' : '')">
                 <input type="radio" name="search_type" value="name" [checked]="searchType=='name'" (click)="setSearchType($event)"> &nbsp;{{'search.by-name' | translate}}
               </label>
-              <label [class]="'btn btn-default btn-radio' + (searchType=='location' ? ' active' : '')">
-                <input type="radio" name="search_type" value="location" [checked]="searchType=='location'" (click)="setSearchType($event)"> &nbsp;{{'search.by-location' | translate}}
+               <label [class]="'btn btn-default btn-radio search-by-location' + (searchType=='location' ? ' active' : '')">
+              <input type="radio" name="search_type" value="location" [checked]="searchType=='location'" (click)="setSearchType($event)"> &nbsp;{{'search.by-location' | translate}}
               </label>
             </div>
           </div>
