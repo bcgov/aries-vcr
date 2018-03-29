@@ -1,0 +1,10 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-did-auth
+# JSON Template File: templates/http-did-auth-proxy-build.json
+#=========================================================
+NAME=http-did-auth-proxy
+GIT_REPO_URL=https://github.com/bcgov/http-did-auth-proxy.git
+GIT_REF=master
+SOURCE_CONTEXT_DIR=
+OUTPUT_IMAGE_TAG=latest
