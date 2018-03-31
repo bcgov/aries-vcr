@@ -1,5 +1,4 @@
-@import "../dashboard/dashboard.component";
-@import "./roadmap.component.custom";
+@import "../../_active/dashboard/dashboard.component";
 
 .col-sep-left {
   // should hide border on small screens
@@ -52,3 +51,5 @@
   width: 800px;
   max-width: 90%;
 }
+
+@import "../../_active/roadmap/roadmap.component.custom";

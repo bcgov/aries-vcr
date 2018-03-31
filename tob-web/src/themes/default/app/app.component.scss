@@ -1,5 +1,3 @@
-@import "./app.component.custom";
-
 .header-logo {
   margin-right: 24px;
   width: auto;
@@ -14,3 +12,5 @@ main {
     margin-bottom: 0;
   }
 }
+
+@import "../../_active/app/app.component.custom";

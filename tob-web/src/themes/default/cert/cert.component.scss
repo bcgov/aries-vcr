@@ -1,5 +1,3 @@
-@import "./cert.component.custom";
-
 .business-title {
   font-size: 3rem;
   margin-top: 0;
@@ -61,3 +59,5 @@ code {
   white-space: pre;
   word-break: break-word;
 }
+
+@import "../../_active/cert/cert.component.custom";

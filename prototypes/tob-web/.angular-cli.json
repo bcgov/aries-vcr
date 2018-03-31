@@ -21,6 +21,12 @@
       "styles": [
         "themes/_active/styles.scss"
       ],
+      "stylePreprocessorOptions": {
+        "includePaths": [
+          ".",
+          "./themes/_active"
+        ]
+      },
       "scripts": [],
       "environmentSource": "environments/environment.ts",
       "environments": {

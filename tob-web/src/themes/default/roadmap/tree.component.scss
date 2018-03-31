@@ -1,5 +1,3 @@
-@import "./tree.component.custom";
-
 .tree-level {
   display: flex;
   flex-flow: row nowrap;
@@ -81,3 +79,5 @@
     }
   }
 }
+
+@import "../../_active/roadmap/tree.component.custom";
