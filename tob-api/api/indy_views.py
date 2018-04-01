@@ -184,7 +184,6 @@ class bcovrinVerifyCredential(APIView):
       legal_entity_id = None
       try:
         legal_entity_id = json.loads(verifiableClaim.claimJSON)['values']['legal_entity_id'][0]
-        __logger.debug('Claim for legal_entity_id: %s' % legal_entity_id)
       except Error as e:
         # no-op
         self.__logger.debug('Claim for NO legal_entity_id')
