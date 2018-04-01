@@ -2,51 +2,51 @@
   "title": "Permitify Demo - Starting a Restaurant Recipe",
   "claimTypes": [
     {
-      "title": "Registration",
+      "title": "Business Incorporation",
       "schemaName": "incorporation.bc_registries",
-      "regText": "Enrol with BC Registries"
+      "regText": "Register your business with BC Registries"
     },
     {
-      "title": "Restaurant Clearance Letter",
+      "title": "Worksafe Clearance Letter",
       "schemaName": "restaurant_clearance_letter.worksafe_bc",
-      "regText": "Register with WorkSafe BC",
+      "regText": "Enrolment for a Clearance Letter with WorkSafe BC",
       "depends": [
         "incorporation.bc_registries"
       ]
     },
     {
-      "title": "PST Number",
+      "title": "Provincial Sales Tax Number",
       "schemaName": "pst_number.ministry_of_finance",
-      "regText": "Register with the BC Ministry of Finance",
+      "regText": "Enroll with the BC Ministry of Finance for your Provincial Sales Tax",
       "depends": [
         "incorporation.bc_registries"
       ]
     },
     {
-      "title": "Operating Permit",
+      "title": "Health Operating Permit",
       "schemaName": "operating_permit.fraser_valley_health_authority",
-      "regText": "Register with the Fraser Valley Health Authority",
+      "regText": "Enrolment with the Fraser Valley Health Authority",
       "depends": [
         "restaurant_clearance_letter.worksafe_bc"
       ]
     },
     {
-      "title": "Business License",
-      "schemaName": "business_license.city_of_surrey",
-      "regText": "Register with the City of Surrey",
+      "title": "BC Liquor License",
+      "schemaName": "liquor_license.liquor_control_and_licensing_branch",
+      "regText": "Enrolment with the BC Liquor Control and Licensing Branch",
       "depends": [
         "operating_permit.fraser_valley_health_authority",
         "pst_number.ministry_of_finance"
-      ]
-    },
-    {
-      "title": "Liquor License",
-      "schemaName": "liquor_license.liquor_control_and_licensing_branch",
-      "regText": "Register with the BC Liquor Control and Licensing Branch",
-      "depends": [
-        "business_license.city_of_surrey"
       ],
       "optional": true
+    },
+    {
+      "title": "City of Surrey Business License",
+      "schemaName": "business_license.city_of_surrey",
+      "regText": "Enrolment for your Business Licence with the City of Surrey",
+      "depends": [
+        "liquor_license.liquor_control_and_licensing_branch"
+      ]
     }
   ]
 }
