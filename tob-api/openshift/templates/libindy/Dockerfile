@@ -27,7 +27,7 @@ RUN ./rustup -y
 RUN git clone https://github.com/bcgov/indy-sdk.git
 WORKDIR $HOME/indy-sdk/libindy
 RUN git fetch
-# RUN git checkout ew_wallet_dev
+RUN git checkout enterprise-wallet
 RUN $HOME/.cargo/bin/cargo build
 
 # Move libindy to lib path

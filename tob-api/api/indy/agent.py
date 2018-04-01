@@ -34,12 +34,12 @@ class Issuer:
         logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
         issuer_wallet = Wallet(
-                self.pool,
-                WALLET_SEED,
-                wallet_name,
-                issuer_type,
-                issuer_config,
-                issuer_creds)
+                 self.pool,
+                 WALLET_SEED,
+                 wallet_name,
+                 issuer_type,
+                 issuer_config,
+                 issuer_creds)
 
         logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
@@ -76,18 +76,17 @@ class Verifier:
         logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
         verifier_wallet = Wallet(
-                self.pool,
-                WALLET_SEED,
-                wallet_name,
-                verifier_type,
-                verifier_config,
-                verifier_creds)
+                 self.pool,
+                 wallet_name,
+                 verifier_type,
+                 verifier_config,
+                 verifier_creds)
 
         logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
         self.instance = VonVerifier(
-            # self.pool,
-            verifier_wallet
+             # self.pool,
+             verifier_wallet
         )
 
     async def __aenter__(self):
@@ -112,19 +111,11 @@ class Holder:
             config['genesis_txn_path'])
         wallet_name = 'TheOrgBook_Holder_Wallet'
 
-        holder_type   = os.environ.get('INDY_WALLET_TYPE')
-        if holder_type == 'remote':
-            # wallet_name = wallet_name + "$$" + str(thread_id)
-            holder_url = os.environ.get('INDY_WALLET_URL')
-            holder_config = {'endpoint':holder_url,'ping':'schema/','auth':'api-token-auth/','keyval':'keyval/','freshness_time':0}
-            holder_creds  = {'auth_token':apps.get_remote_wallet_token(),'virtual_wallet':legal_entity_id}
-            logger.debug('Using remote Cfg: {} Creds: {}'.format(holder_config, holder_creds))
-        else:
-            # TODO force to virtual for now
-            holder_type = 'virtual'
-            holder_config = {'freshness_time':0}
-            holder_creds  = {'key':'','virtual_wallet':legal_entity_id}
-            logger.debug('Using virtual Cfg: {} Creds: {}'.format(holder_config, holder_creds))
+        # TODO force to virtual for now
+        holder_type = 'virtual'
+        holder_config = {'freshness_time':0}
+        holder_creds  = {'key':''}
+        logger.debug('Using virtual Cfg: {} Creds: {}'.format(holder_config, holder_creds))
 
         logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
