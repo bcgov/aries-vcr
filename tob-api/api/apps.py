@@ -12,7 +12,6 @@ from django.apps import AppConfig
 import logging
 logger = logging.getLogger(__name__)
 
-
 # TODO fix this global variable, badly implemented :-(
 def get_remote_wallet_token():
     return remote_wallet_token
@@ -51,4 +50,3 @@ class apiConfig(AppConfig):
         # TODO fix must be a better way
         global remote_wallet_token
         remote_wallet_token = eventloop.do(run())
-

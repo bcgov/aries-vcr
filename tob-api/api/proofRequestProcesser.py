@@ -215,7 +215,6 @@ class ProofRequestProcesser(object):
         self.__logger.debug("Creating proof ...")
 
         async with Holder(legal_entity_id) as holder:
-            start_time = time.time()
             proof = await holder.create_proof(
                     self.__proof_request,
                     claims,

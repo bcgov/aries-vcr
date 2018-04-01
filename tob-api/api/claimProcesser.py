@@ -6,7 +6,6 @@ from api.models.IssuerService import IssuerService
 from api.models.VerifiableClaim import VerifiableClaim
 import logging
 import json
-
 import base64
 from api.models.Jurisdiction import Jurisdiction
 from api.models.VerifiableOrgType import VerifiableOrgType
