@@ -2,12 +2,12 @@
   "title": "Permitify Demo - Starting a Restaurant Recipe",
   "claimTypes": [
     {
-      "title": "Business Incorporation",
+      "title": "BC Registies Business Incorporation",
       "schemaName": "incorporation.bc_registries",
       "regText": "Register your business with BC Registries"
     },
     {
-      "title": "Worksafe Clearance Letter",
+      "title": "Worksafe BC Clearance Letter",
       "schemaName": "restaurant_clearance_letter.worksafe_bc",
       "regText": "Enrolment for a Clearance Letter with WorkSafe BC",
       "depends": [
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "title": "Provincial Sales Tax Number",
+      "title": "BC Provincial Sales Tax Number",
       "schemaName": "pst_number.ministry_of_finance",
       "regText": "Enroll with the BC Ministry of Finance for your Provincial Sales Tax",
       "depends": [
@@ -23,7 +23,7 @@
       ]
     },
     {
-      "title": "Health Operating Permit",
+      "title": "Fraser Valley Health Operating Permit",
       "schemaName": "operating_permit.fraser_valley_health_authority",
       "regText": "Enrolment with the Fraser Valley Health Authority",
       "depends": [
