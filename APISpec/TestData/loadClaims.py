@@ -28,6 +28,8 @@ parser.add_argument('--env', metavar='env', type=str, default='local',
                     help='Permitify and TheOrgBook services are on local/dev/test host')
 parser.add_argument('--inputdir', metavar='inputdir', type=str, default="Claims",
                     help='The directory containing JSON claims to be loaded')
+parser.add_argument('--prefix', metavar='prefix', type=str, default="",
+                    help='Prefix = Ont for Ontario')
 parser.add_argument('--threads', metavar='threads', type=int, default=1,
                     help='The number of threads to run for concurrent loading')
 parser.add_argument('--loops', metavar='loops', type=int, default=1,
@@ -40,6 +42,10 @@ if os.path.exists(args.inputdir):
     print('Processing input directory \'%s\'' % args.inputdir)
 else:
     print('Directory not found \'%s\'' % args.inputdir)
+my_prefix = ""
+if os.path.exists(args.prefix):
+    print('Processing prefix \'%s\'' % args.prefix)
+    my_prefix = args.prefix
 
 print('Threads = {}'.format(args.threads))
 
@@ -228,7 +234,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
     proof_elapsed_time = 0
     for _ in range(0, num_loops):
         # Each filename is a full permitify recipe
-        claim_files = glob(join(this_dir, args.inputdir, 'Claims_*'))
+        claim_files = glob(join(this_dir, my_prefix + args.inputdir, my_prefix + 'Claims_*'))
 
         # Each filename is a full permitify recipe
         for filename in claim_files:
@@ -245,7 +251,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
                         if do_it_random:
                             claim = randomify(claim, thread_id)
 
-                        if service_name != 'Reg':
+                        if 'Reg' not in service_name:
                             claim['legal_entity_id'] = legal_entity_id
                             print('\n\n')
                             print('Issuing permit: {}'.format(
@@ -307,7 +313,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     'Could not submit claim. '
                                     'Are Permitify and Docker running?')
                             print('\n\n Response from permitify:\n\n{}'.format(result_json))
-                            if service_name == 'Reg':
+                            if 'Reg' in service_name:
                                 legal_entity_id = result_json['result']['orgId']
                         loop_claims = loop_claims + 1
 
