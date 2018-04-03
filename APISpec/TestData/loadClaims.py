@@ -228,6 +228,9 @@ def main_load(env, do_it_random, num_loops, thread_id):
     proof_elapsed_time = 0
     for _ in range(0, num_loops):
         # Each filename is a full permitify recipe
+        claim_files = glob(join(this_dir, args.inputdir, 'Claims_*'))
+
+        # Each filename is a full permitify recipe
         for filename in claim_files:
             with open(filename, 'r') as file:
                 print('==============================================')
