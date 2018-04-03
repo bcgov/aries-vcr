@@ -10,7 +10,7 @@ genesis
 .DS_Store
 .AppleDouble
 .LSOverride
-__pycache__
+.env
 
 # Icon must end with two \r
 Icon
@@ -40,4 +40,4 @@ genesis
 
 # Visual Studio Code
 .vscode
-.idea
+.idea/*
