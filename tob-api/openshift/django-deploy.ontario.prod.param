@@ -21,4 +21,4 @@ TAG_NAME=prod
 # MOUNT_PATH=/opt/app-root/src/.indy_client
 # MOUNT_PATH=/opt/app-root/src/.indy_client
 # INDY_WALLET_SEED=the_org_book_dev_000000000000000
-# LEDGER_URL=http://138.197.170.136
+LEDGER_URL=http://159.89.125.134
