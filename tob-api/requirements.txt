@@ -1,6 +1,6 @@
 # Main
 django>=1.11.5,<2
-djangorestframework>=3.6.4,<4
+djangorestframework==3.6.4
 djangorestframework-bulk>=0.2.1,<1
 django-cors-headers>=2.1.0,<3
 

@@ -109,7 +109,7 @@ class Holder:
         self.pool = NodePool(
             'the-org-book-holder-' + str(thread_id),
             config['genesis_txn_path'])
-        wallet_name = 'TheOrgBook_Holder_Wallet'
+        wallet_name = 'TheOrgBook_Holder_Wallet' + '$$' +  str(thread_id)
 
         # TODO force to virtual for now
         holder_type = 'virtual'
