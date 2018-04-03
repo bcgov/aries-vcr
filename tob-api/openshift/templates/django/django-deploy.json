@@ -385,7 +385,7 @@
       "displayName": "VON network ledger url.",
       "description": "URL for a running instance of the von-network.",
       "required": true,
-      "value": "http://138.197.170.136"
+      "value": "http://159.89.115.24"
     }
   ]
 }
