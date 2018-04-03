@@ -40,4 +40,4 @@ genesis
 
 # Visual Studio Code
 .vscode
-.idea/*
+.idea
