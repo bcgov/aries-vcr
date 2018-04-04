@@ -2,7 +2,7 @@
   "title": "Permitify Demo - Starting a Restaurant Recipe",
   "claimTypes": [
     {
-      "title": "BC Registies Business Incorporation",
+      "title": "BC Registries Business Incorporation",
       "schemaName": "incorporation.bc_registries",
       "regText": "Register your business with BC Registries"
     },
