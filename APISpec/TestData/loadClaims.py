@@ -110,12 +110,12 @@ URLS = {
     },
     'wallet': {
         # if we're just dumping data into the wallet it all goes into the same url
-        'Reg': 'http://localhost:8000/api/v1/keyval/',
-        'Worksafe': 'http://localhost:8000/api/v1/keyval/',
-        'Finance': 'http://localhost:8000/api/v1/keyval/',
-        'Health': 'http://localhost:8000/api/v1/keyval/',
-        'City': 'http://localhost:8000/api/v1/keyval/',
-        'Liquor': 'http://localhost:8000/api/v1/keyval/'
+        'Reg': 'http://localhost:6000/api/v1/keyval/',
+        'Worksafe': 'http://localhost:6000/api/v1/keyval/',
+        'Finance': 'http://localhost:6000/api/v1/keyval/',
+        'Health': 'http://localhost:6000/api/v1/keyval/',
+        'City': 'http://localhost:6000/api/v1/keyval/',
+        'Liquor': 'http://localhost:6000/api/v1/keyval/'
     }
 }
 
@@ -217,7 +217,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
     # login to wallet
     if env == 'wallet':
         try:
-            my_url = "http://localhost:8000/api/v1/api-token-auth/"
+            my_url = "http://localhost:6000/api/v1/api-token-auth/"
             response = requests.post(my_url, data = {"username":"wall-e", "password":"pass1234"})
             json_data = response.json()
             remote_token = 'Token ' + json_data["token"]
