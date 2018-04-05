@@ -35,7 +35,7 @@ usage () {
       - Rebuild search indexes.
 
     hardReset
-      - Delete the persistant indy wallet information.
+      - Delete the persistent indy wallet information.
       - Drop and recreate the database.
       - Rebuild search indexes.
       - Register the environment's DID with the ledger.
@@ -173,7 +173,8 @@ hardReset() {
   runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
   exitOnError
 
-  echo
+  printAndWait "If you are resetting the ledger, wait for the ledger to completely start up down before continuing."
+
   registerDid "the_org_book"
 
   echoWarning "\nThe project's database and indy wallets have been reset."  
