@@ -172,7 +172,7 @@ hardReset() {
   runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
   exitOnError
 
-  printAndWait "If you are resetting the ledger, wait for the ledger to completely start up down before continuing."
+  printAndWait "If you are resetting the ledger, wait for the ledger to completely start up before continuing."
 
   registerDid "the_org_book"
 
