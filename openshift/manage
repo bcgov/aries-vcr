@@ -169,7 +169,7 @@ hardReset() {
   printAndWait "Wait for the ${_apiPodName} pod to completely start up down before continuing."
 
   echoWarning "\nRebuilding the search index ..."
-  echoWarning "The command will start interactively in the pod.  Please answer 'y' to the question when prompted."
+  echoWarning "The command may start interactively in the pod.  Please answer 'y' to the question if you are prompted."
   runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
   exitOnError
 
