@@ -111,8 +111,6 @@ resetDatabase() {
     exit 1
   fi
 
-  printAndWait "Use the Permitify manage script to scale down the Permitify pods.\nWait for all of the pods to completely shut down before continuing."
-
   switchProject
   exitOnError
 
@@ -127,14 +125,15 @@ resetDatabase() {
   scaleUp ${_apiPodName}
   exitOnError
 
-  printAndWait "Wait for the ${_apiPodName} pod to completely start up down before continuing."
+  printAndWait "Wait for the ${_apiPodName} pod to completely start up before continuing."
 
   echoWarning "\nRebuilding the search index ..."
-  echoWarning "The command will start interactively in the pod.  Please answer 'y' to the question when prompted."
+  echoWarning "The command may start interactively in the pod.  Please answer 'y' to the question if you are prompted."
   runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
   exitOnError
 
-  echoWarning "\nThe project's database has been reset."  
+  echoWarning "\nThe project's database has been reset."
+  echoWarning "You can now use the Permitify manage script to recycle the Permitify pods."  
 }
 
 hardReset() {
@@ -166,7 +165,7 @@ hardReset() {
   scaleUp ${_apiPodName}
   exitOnError
 
-  printAndWait "Wait for the ${_apiPodName} pod to completely start up down before continuing."
+  printAndWait "Wait for the ${_apiPodName} pod to completely start up before continuing."
 
   echoWarning "\nRebuilding the search index ..."
   echoWarning "The command may start interactively in the pod.  Please answer 'y' to the question if you are prompted."
