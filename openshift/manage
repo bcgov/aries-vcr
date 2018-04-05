@@ -1,0 +1,220 @@
+#!/bin/bash
+export MSYS_NO_PATHCONV=1
+set -e
+SCRIPT_HOME="$( cd "$( dirname "$0" )" && pwd )"
+
+# =================================================================================================================
+# Usage:
+# -----------------------------------------------------------------------------------------------------------------
+usage () {
+  cat <<-EOF
+
+  Allows you to manage certain aspects of TheOrgBook environment.
+
+  Usage: 
+    $0 [options] [commands]
+
+  Options:
+  ========
+    -h prints the usage for the script
+    -e <Environment> the environment (dev/test/prod) into which you are deploying (default: ${DEPLOYMENT_ENV_NAME})
+    -l apply local settings and parameters
+    -p <profile> load a specific settings profile; setting.<profile>.sh
+    -P Use the default settings profile; settings.sh.  Use this flag to ignore all but the default 
+       settings profile when there is more than one settings profile defined for a project.
+    -x run the script in debug mode to see what's happening
+
+  Commands:
+  ========
+    resetDatabase
+      - Drop and recreate the database.
+      - Rebuild search indexes.
+
+    hardReset
+      - Delete the persistant indy wallet information.
+      - Drop and recreate the database.
+      - Rebuild search indexes.
+      - Register the environment's DID with the ledger.
+EOF
+exit 1
+}
+
+# -----------------------------------------------------------------------------------------------------------------
+# Initialization:
+# -----------------------------------------------------------------------------------------------------------------
+while getopts p:Pe:lxh FLAG; do
+  case $FLAG in
+    p ) export PROFILE=$OPTARG ;;
+    P ) export IGNORE_PROFILES=1 ;;    
+    e ) export DEPLOYMENT_ENV_NAME=$OPTARG ;;
+    l ) export APPLY_LOCAL_SETTINGS=1 ;;
+    x ) export DEBUG=1 ;;
+    h ) usage ;;
+    \? ) #unrecognized option - show help
+      echo -e \\n"Invalid script option: -${OPTARG}"\\n
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+
+if [ ! -z "${DEBUG}" ]; then
+  set -x
+fi
+
+# Check for required options ...
+if [ -z "${DEPLOYMENT_ENV_NAME}" ]; then
+  _red='\033[0;31m'
+  _nc='\033[0m' # No Color
+  echo -e "${_red}You MUST specify an environment name using the '-e' flag.${_nc}"
+  echo -e "${_red}Assuming a default would have unwanted consequences.${_nc}"
+  usage
+fi
+
+# Load the project settings and functions ...
+_includeFile="ocFunctions.inc"
+_settingsFile="settings.sh"
+if [ ! -z $(type -p ${_includeFile}) ]; then
+  _includeFilePath=$(type -p ${_includeFile})
+  export OCTOOLSBIN=$(dirname ${_includeFilePath})
+
+  if [ -f ${OCTOOLSBIN}/${_settingsFile} ]; then
+    . ${OCTOOLSBIN}/${_settingsFile}
+  fi
+
+  if [ -f ${OCTOOLSBIN}/${_includeFile} ]; then
+    . ${OCTOOLSBIN}/${_includeFile}
+  fi
+else
+  _red='\033[0;31m'
+  _yellow='\033[1;33m'
+  _nc='\033[0m' # No Color
+  echo -e \\n"${_red}${_includeFile} could not be found on the path.${_nc}"
+  echo -e "${_yellow}Please ensure the openshift-developer-tools are installed on and registered on your path.${_nc}"
+  echo -e "${_yellow}https://github.com/BCDevOps/openshift-developer-tools${_nc}"
+fi
+
+# -----------------------------------------------------------------------------------------------------------------
+# Functions:
+# -----------------------------------------------------------------------------------------------------------------
+resetDatabase() {
+  _apiPodName=${1}
+  _dbPodName=${2}
+  _dbName=${3}
+  _dbUsername=${4}
+  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ] || [ -z "${_dbName}" ] || [ -z "${_dbUsername}" ]; then
+    echo -e \\n"resetDatabase; Missing parameter!"\\n
+    exit 1
+  fi
+
+  switchProject
+  exitOnError
+
+  scaleDown ${_apiPodName}
+  exitOnError
+  
+  printAndWait "Wait for the ${_apiPodName} pod to completely shut down before continuing."
+
+  dropAndRecreateDatabase.sh "" "${_dbPodName}" "${_dbName}" "${_dbUsername}"
+  exitOnError
+  
+  scaleUp ${_apiPodName}
+  exitOnError
+
+  printAndWait "Wait for the ${_apiPodName} pod to completely start up down before continuing."
+
+  echoWarning "\nRebuilding the search index ..."
+  echoWarning "The command will start interactively in the pod.  Please answer 'y' to the question when prompted."
+  runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
+  exitOnError
+
+  echoWarning "\nThe project's database has been reset."  
+}
+
+hardReset() {
+  _apiPodName=${1}
+  _dbPodName=${2}
+  _dbName=${3}
+  _dbUsername=${4}
+  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ] || [ -z "${_dbName}" ] || [ -z "${_dbUsername}" ]; then
+    echo -e \\n"resetDatabase; Missing parameter!"\\n
+    exit 1
+  fi
+
+  printAndWait "Use the Permitify manage script to reset the Permitify pods.\nWait for all of the pods to completely shut down before continuing."
+
+  switchProject
+  exitOnError
+
+  deleteFromPods "/opt/app-root/src/.indy_client/*" ${_apiPodName}
+  exitOnError
+
+  scaleDown ${_apiPodName}
+  exitOnError
+  
+  printAndWait "Wait for the ${_apiPodName} pod to completely shut down before continuing."
+
+  dropAndRecreateDatabase.sh "" "${_dbPodName}" "${_dbName}" "${_dbUsername}"
+  exitOnError
+  
+  scaleUp ${_apiPodName}
+  exitOnError
+
+  printAndWait "Wait for the ${_apiPodName} pod to completely start up down before continuing."
+
+  echoWarning "\nRebuilding the search index ..."
+  echoWarning "The command will start interactively in the pod.  Please answer 'y' to the question when prompted."
+  runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
+  exitOnError
+
+  echo
+  registerDid "the_org_book"
+
+  echoWarning "\nThe project's database and indy wallets have been reset."  
+  echoWarning "You can now use the Permitify manage script to scale the Permitify pods up."  
+}
+
+getLedgerAddress() {
+  case "${DEPLOYMENT_ENV_NAME}" in
+    dev)
+      _ledgerAddress="159.89.115.24";;
+    test)
+      _ledgerAddress="159.89.125.134";;
+    prod)
+      _ledgerAddress="159.89.125.134";;
+    *)
+      return 1;;
+  esac
+
+  echo ${_ledgerAddress}
+}
+# =================================================================================================================
+
+pushd ${SCRIPT_HOME} >/dev/null
+_cmd=$(toLower ${1})
+shift
+
+case "${_cmd}" in
+  resetdatabase)
+    # Allow all of the other parameters to be overridden ...
+    apiPodName=${1:-django}
+    dbPodName=${2:-postgresql}
+    dbName=${3:-TheOrgBook_Database}
+    dbUsername=${4:-TheOrgBook_User}
+
+    resetDatabase "${apiPodName}" "${dbPodName}" "${dbName}" "${dbUsername}"
+    ;;
+  hardreset)
+    # Allow all of the other parameters to be overridden ...
+    apiPodName=${1:-django}
+    dbPodName=${2:-postgresql}
+    dbName=${3:-TheOrgBook_Database}
+    dbUsername=${4:-TheOrgBook_User}
+
+    hardReset "${apiPodName}" "${dbPodName}" "${dbName}" "${dbUsername}"
+    ;;
+  *)
+      usage;;
+esac
+
+popd >/dev/null
