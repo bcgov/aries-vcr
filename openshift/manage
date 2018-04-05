@@ -14,6 +14,10 @@ usage () {
   Usage: 
     $0 [options] [commands]
 
+  Example:
+    $0 -P -e test resetDatabase
+    - This will reset the database in TheOrgBook's TEST environment.
+
   Options:
   ========
     -h prints the usage for the script
@@ -106,6 +110,8 @@ resetDatabase() {
     echo -e \\n"resetDatabase; Missing parameter!"\\n
     exit 1
   fi
+
+  printAndWait "Use the Permitify manage script to scale down the Permitify pods.\nWait for all of the pods to completely shut down before continuing."
 
   switchProject
   exitOnError
