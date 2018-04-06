@@ -303,6 +303,7 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     json=claim
                                 )
                                 loop_locks[service_name].release()
+                                print(response)
                                 result_json = response.json()
                                 elapsed_time = time.time() - start_time
                                 claim_elapsed_time = claim_elapsed_time + elapsed_time
