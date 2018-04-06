@@ -12,15 +12,15 @@ from typing import Set, Union
 from api import apps
 
 import logging
-logger = logging.getLogger(__name__)
-
-WALLET_SEED = os.environ.get('INDY_WALLET_SEED')
-if not WALLET_SEED or len(WALLET_SEED) is not 32:
-    raise Exception('INDY_WALLET_SEED must be set and be 32 characters long.')
-
 
 class Issuer:
     def __init__(self):
+        WALLET_SEED = os.environ.get('INDY_WALLET_SEED')
+        if not WALLET_SEED or len(WALLET_SEED) is not 32:
+            raise Exception('INDY_WALLET_SEED must be set and be 32 characters long.')
+
+        self.__logger = logging.getLogger(__name__)
+
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-issuer',
@@ -31,7 +31,7 @@ class Issuer:
         issuer_config = {'freshness_time':0}
         issuer_creds  = {'key':''}
 
-        logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
+        self.__logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
         issuer_wallet = Wallet(
                  self.pool,
@@ -41,7 +41,7 @@ class Issuer:
                  issuer_config,
                  issuer_creds)
 
-        logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
+        self.__logger.debug("Issuer __init__>>> {} {} {}".format(issuer_type, issuer_config, issuer_creds))
 
         self.instance = VonIssuer(
             # self.pool,
@@ -55,7 +55,7 @@ class Issuer:
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         if exc_type is not None:
-            logger.error(exc_type, exc_value, traceback)
+            self.__logger.error(exc_type, exc_value, traceback)
 
         await self.instance.close()
         await self.pool.close()
@@ -63,6 +63,12 @@ class Issuer:
 
 class Verifier:
     def __init__(self):
+        WALLET_SEED = os.environ.get('INDY_WALLET_SEED')
+        if not WALLET_SEED or len(WALLET_SEED) is not 32:
+            raise Exception('INDY_WALLET_SEED must be set and be 32 characters long.')
+
+        self.__logger = logging.getLogger(__name__)
+
         config = hyperledger_indy.config()
         self.pool = NodePool(
             'the-org-book-verifier',
@@ -73,7 +79,7 @@ class Verifier:
         verifier_config = {'freshness_time':0}
         verifier_creds  = {'key':''}
 
-        logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
+        self.__logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
         verifier_wallet = Wallet(
                  self.pool,
@@ -82,7 +88,7 @@ class Verifier:
                  verifier_config,
                  verifier_creds)
 
-        logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
+        self.__logger.debug("Verifier __init__>>> {} {} {}".format(verifier_type, verifier_config, verifier_creds))
 
         self.instance = VonVerifier(
              # self.pool,
@@ -96,7 +102,7 @@ class Verifier:
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         if exc_type is not None:
-            logger.error(exc_type, exc_value, traceback)
+            self.__logger.error(exc_type, exc_value, traceback)
 
         await self.instance.close()
         await self.pool.close()
@@ -104,6 +110,12 @@ class Verifier:
 
 class Holder:
     def __init__(self, legal_entity_id: str = None):
+        WALLET_SEED = os.environ.get('INDY_WALLET_SEED')
+        if not WALLET_SEED or len(WALLET_SEED) is not 32:
+            raise Exception('INDY_WALLET_SEED must be set and be 32 characters long.')
+
+        self.__logger = logging.getLogger(__name__)
+
         config = hyperledger_indy.config()
         thread_id = threading.get_ident()
         self.pool = NodePool(
@@ -115,9 +127,9 @@ class Holder:
         holder_type = 'virtual'
         holder_config = {'freshness_time':0}
         holder_creds  = {'key':'','virtual_wallet':legal_entity_id}
-        logger.debug('Using virtual Cfg: {} Creds: {}'.format(holder_config, holder_creds))
+        self.__logger.debug('Using virtual Cfg: {} Creds: {}'.format(holder_config, holder_creds))
 
-        logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
+        self.__logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
         holder_wallet = Wallet(
                 self.pool,
@@ -127,7 +139,7 @@ class Holder:
                 holder_config,
                 holder_creds)
 
-        logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
+        self.__logger.debug("Holder __init__>>> {} {} {}".format(holder_type, holder_config, holder_creds))
 
         self.instance = VonHolderProver(
             # self.pool,
@@ -144,6 +156,7 @@ class Holder:
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         if exc_type is not None:
-            logger.error(exc_type, exc_value, traceback)
+            self.__logger.error(exc_type, exc_value, traceback)
+
         await self.instance.close()
         await self.pool.close()
