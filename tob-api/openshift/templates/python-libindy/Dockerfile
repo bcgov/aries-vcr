@@ -60,9 +60,11 @@ COPY ./root/ /
 #   writable as OpenShift default security model is to run the container
 #   under random UID.
 RUN ln -sf /usr/bin/python3 /usr/bin/python && \
-	ln -sf /usr/bin/pip3 /usr/bin/pip && \
-	pip install virtualenv && \
-	virtualenv /opt/app-root
+    ln -sf /usr/bin/pip3 /usr/bin/pip && \
+    pip install virtualenv && \
+    virtualenv /opt/app-root && \
+    chown -R 1001:0 /opt/app-root && \
+    chmod -R ug+rw /opt/app-root
 
 RUN chgrp -R 0 $STI_SCRIPTS_PATH \
   && chmod -R g+rwx $STI_SCRIPTS_PATH \
@@ -71,9 +73,7 @@ RUN chgrp -R 0 $STI_SCRIPTS_PATH \
   && chgrp -R 0 /usr/bin/cgroup-limits \
   && chmod -R g+rwx /usr/bin/cgroup-limits \
   && chgrp -R 0 /generate_container_user \
-  && chmod -R g+rwx /generate_container_user \
-  && chgrp -R 0 $HOME \
-  && chmod -R g+rwx $HOME
+  && chmod -R g+rwx /generate_container_user
 
 # Cache bust this every build
 # RUN curl 138.197.170.136/genesis > /opt/app-root/genesis
