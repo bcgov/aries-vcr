@@ -30,7 +30,7 @@
     "compare-versions": "^3.1.0",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
-    "localize-router": "https://github.com/cywolf/localize-router.git",
+    "localize-router": "git+https://github.com/cywolf/localize-router.git",
     "localize-router-http-loader": "~0.0.3",
     "mygovbc-bootstrap-theme": "^0.3.0",
     "rxjs": "^5.4.1",
