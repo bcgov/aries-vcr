@@ -1,6 +1,6 @@
 #!/bin/bash
-export DOCKERHOST=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)
 export MSYS_NO_PATHCONV=1
+export DOCKERHOST=${APPLICATION_URL-$(docker run --net=host codenvy/che-ip)}
 set -e
 
 S2I_EXE=s2i
