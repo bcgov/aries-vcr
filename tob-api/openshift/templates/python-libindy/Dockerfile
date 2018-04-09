@@ -63,8 +63,8 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python && \
     ln -sf /usr/bin/pip3 /usr/bin/pip && \
     pip install virtualenv && \
     virtualenv /opt/app-root && \
-    chown -R 1001:0 /opt/app-root && \
-    chmod -R ug+rw /opt/app-root
+    chown -R 0 /opt/app-root && \
+    chmod -R g+rw /opt/app-root
 
 RUN chgrp -R 0 $STI_SCRIPTS_PATH \
   && chmod -R g+rwx $STI_SCRIPTS_PATH \
