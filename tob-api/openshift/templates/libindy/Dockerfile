@@ -11,26 +11,22 @@ apt-get install -y \
     libssl-dev \
     libsqlite3-dev \
     libsodium-dev \
-    libzmq3-dev
-
-RUN apt-get install -y sqlite3 libsqlite3-dev
+    libzmq3-dev \
+    sqlite3
 
 ENV HOME=/opt/app-root/src
 WORKDIR $HOME
 
 # Install rust toolchain
-RUN curl -o rustup https://sh.rustup.rs
-RUN chmod +x rustup
-RUN ./rustup -y
+RUN curl -o rustup https://sh.rustup.rs && \
+	chmod +x rustup && \
+	./rustup -y
 
 # Build libindy
-RUN git clone https://github.com/bcgov/indy-sdk.git
-WORKDIR $HOME/indy-sdk/libindy
-RUN git fetch
-RUN git checkout ew_wallet_dev
-RUN $HOME/.cargo/bin/cargo build
-
-# Move libindy to lib path
-RUN mv target/debug/libindy.so /usr/lib
+RUN git clone https://github.com/bcgov/indy-sdk.git && \
+	cd indy-sdk/libindy && \
+	$HOME/.cargo/bin/cargo build && \
+	mv target/debug/libindy.so /usr/lib && \
+	rm -rf $HOME/.cargo
 
 WORKDIR $HOME
