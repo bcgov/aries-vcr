@@ -11,7 +11,7 @@
 # API_PATH=/api/v1/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
-APPLICATION_DOMAIN=angular-on-nginx-ontvon-von-test.pathfinder.gov.bc.ca
+APPLICATION_DOMAIN=ontvon-von-test.pathfinder.gov.bc.ca
 TAG_NAME=test
 # HTTP_BASIC=
 # HTTP_BASIC_USERNAME=
