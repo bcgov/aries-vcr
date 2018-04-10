@@ -230,11 +230,13 @@ case "${_cmd}" in
 
     hardReset "${apiPodName}" "${dbPodName}" "${dbName}" "${dbUsername}"
     ;;
-  registerDids)
+  registerdids)
     registerDids $(getDidNames)
     ;;
   *)
-      usage;;
+    echoWarning "Unrecognized command; ${_cmd}"
+    usage
+    ;;
 esac
 
 popd >/dev/null
