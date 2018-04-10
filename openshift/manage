@@ -227,6 +227,9 @@ case "${_cmd}" in
 
     hardReset "${apiPodName}" "${dbPodName}" "${dbName}" "${dbUsername}"
     ;;
+  registerDids)
+    registerDids $(getDidNames)
+    ;;
   *)
       usage;;
 esac
