@@ -39,6 +39,9 @@ usage () {
       - Drop and recreate the database.
       - Rebuild search indexes.
       - Register the environment's DID with the ledger.
+
+    registerDids
+      - Register/re-register the services's DIDs with the ledger.
 EOF
 exit 1
 }
