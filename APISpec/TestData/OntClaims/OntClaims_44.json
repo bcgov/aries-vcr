@@ -9,7 +9,7 @@
             "legal_name": "Cohen Bar and Grill",
             "postal_code": "M5H 1P6",
             "province": "ON",
-            "schema": "incorporation.on_biz"
+            "schema": "incorporation.onbis"
         }
     ]
 }

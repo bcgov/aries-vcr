@@ -9,7 +9,7 @@
             "legal_name": "Gardner Name",
             "postal_code": "P0C 1J0",
             "province": "ON",
-            "schema": "incorporation.on_biz"
+            "schema": "incorporation.onbis"
         }
     ]
 }

@@ -9,7 +9,7 @@
             "legal_name": "Gilman Foods",
             "postal_code": "M9C 3J5",
             "province": "ON",
-            "schema": "incorporation.on_biz"
+            "schema": "incorporation.onbis"
         }
     ]
 }

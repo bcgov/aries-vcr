@@ -77,7 +77,7 @@ URLS = {
         'City': 'http://localhost:5004',
         # liquor_control_and_licensing_branch
         'Liquor': 'http://localhost:5005',
-        # on_biz
+        # onbis
         'OntarioReg': "http://localhost:5006"
     },
   'dev': {
@@ -93,6 +93,8 @@ URLS = {
         'City': 'https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca',
         # liquor_control_and_licensing_branch
         'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca'
+         # onbis
+        'OntarioReg': "https://onbis-devex-von-permitify-dev.pathfinder.gov.bc.ca"
     },
   'test': {
         # bc_registries (needs to be first)

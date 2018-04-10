@@ -9,7 +9,7 @@
             "legal_name": "Oconner Diner",
             "postal_code": "M4P 1A6",
             "province": "ON",
-            "schema": "incorporation.on_biz"
+            "schema": "incorporation.onbis"
         }
     ]
 }
