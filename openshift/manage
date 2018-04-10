@@ -174,10 +174,18 @@ hardReset() {
 
   printAndWait "If you are resetting the ledger, wait for the ledger to completely start up before continuing."
 
-  registerDid "the_org_book"
+  registerDids $(getDidNames)
 
   echoWarning "\nThe project's database and indy wallets have been reset."  
   echoWarning "You can now use the Permitify manage script to scale the Permitify pods up."  
+}
+
+getDidNames() {
+  _didNames="
+    the_org_book
+    the_org_book_on"
+  
+  echo ${_didNames}
 }
 
 getLedgerAddress() {
