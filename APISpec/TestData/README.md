@@ -37,4 +37,47 @@ It is assumed you have an instance of Permitify running to run this script, and 
         - `./manage -h`
 1. Wait for all of the Permitify services to full start before continuing.
 1. Use the `load-all.sh` script to populate the database through the Permitify services.
-   - `./loadData.sh {local|dev|test}`
+
+Creating/Loading Test Data
+--------------------
+The load-all.sh can be used to create test data, using the following optional parameters:
+
+```
+$./load-all.sh -h
+Data for TheOrgBook is now loading via the loading of claims. Details to come...
+usage: loadClaims.py [-h] [--random] [--env env] [--inputdir inputdir]
+                     [--threads threads] [--loops loops]
+
+A TheOrgBook Claim loader. Supports randomization for test data and threading
+for fast loading
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --random             If data is to be randomized before loading (useful for
+                       test data)
+  --env env            Permitify and TheOrgBook services are on local/dev/test
+                       host
+  --inputdir inputdir  The directory containing JSON claims to be loaded
+  --threads threads    The number of threads to run for concurrent loading
+  --loops loops        The number of times to loop through the list
+```
+
+The loader will load data from the data files as described above, however it can optionally "randomize" the data to support loading multiple copies, using the "--random" flag:
+
+```
+$./load-all.sh --random
+```
+
+You can spin up multiple threads, and loop through the input data multiple times, as follows:
+
+```
+$./load-all.sh --threads 4 --loops 10
+```
+
+When you specify either of these flags, then "--random" is enabled automatically.
+
+There is also the option to load data directly into a wallet - this can be used for adding wallet data "through the back door" for performance testing.  This data won't have all the fancy anoncreds and can't be processed by the indy-sdk:
+
+```
+$./load-all.sh --env wallet
+```

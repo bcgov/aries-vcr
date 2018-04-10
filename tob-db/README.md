@@ -14,7 +14,7 @@ To deploy TheOrgBook on an instance of OpenShift, see [the instructions](../Runn
 
 ## Connecting a database tool to a database instance
 
-Refer to [Accessing a PostgreSQL Database Hosted in OpenShift](./PortForwardingaDatabase.md) for details on how to connect to an instance of a database hosted in OPenShift using port forwarding.
+Refer to [Accessing a PostgreSQL Database Hosted in OpenShift](./PortForwardingaDatabase.md) for details on how to connect to an instance of a database hosted in OpenShift using port forwarding.
 
 ## BC Registries Database Agent
 
