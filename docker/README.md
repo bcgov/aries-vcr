@@ -119,18 +119,13 @@ Refer to the docker compose documentation in each of the projects for specific d
 
 ## Tips and Tricks
 
-The component containers use persistent volumes, which can be a bit of an issue from time to time during testing as the various ledgers and wallets may get out of sync.  To clear out the volumes and start again you can use the following docker commands.
+The component containers use persistent volumes, which can be a bit of an issue from time to time during testing as the various ledgers and wallets may get out of sync.  To clear out the volumes and start again you can use the following management command included in each of the projects.
 
-Make sure you stop all of the components first.
+```
+./manage rm
+```
 
-Delete all exited containers so you can delete the volumes;
-- `docker ps -a -f status=exited -q | xargs docker rm`
-
-Delete all volumes;
-- `docker volume ls -q | xargs docker volume rm`
-
-ToDo:
-- Add these cleanup routines to the docker `manage` scripts.
+This command will stop and remove any project related containers, and then remove their associated volumes.
 
 # Current State
 
