@@ -112,7 +112,7 @@ Refer to the docker compose documentation in each of the projects for specific d
 1. From `../TheOrgBook/docker` run `./manage start seed=the_org_book_0000000000000000000`
 1. Wait for the TheOrgBook's components to start up.
 1. Ensure TheOrgBook is running by opening a browser window to http://localhost:8080/en/home
-1. From `.../permitify/docker` run `./manage start seed=issuer_service_000000000000000000 TOB_INDY_SEED=the_org_book_0000000000000000000`
+1. From `.../permitify/docker` run `./manage start seed=issuer_service_00000000000000000 TOB_INDY_SEED=the_org_book_0000000000000000000`
 1. Wait for all of the issuer services to start up.
 1. Ensure the issuer services are running by opening a browser window to http://localhost:5000/ to start.  Each service starts up on a different port starting with 5000, the next on 5001, and so on.
 1. You should now be able to browser to http://localhost:8080/en/recipe/start_a_restaurant and walk though the **Permitify Demo - Starting a Restaurant Recipe** demo, starting with registering an organization.
