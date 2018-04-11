@@ -20,9 +20,9 @@ export COMPOSE_PROJECT_NAME="tob"
 usage() {
   cat <<-EOF
 
-  Usage: $0 {start|stop|build|rm}
+  Usage: $0 [command] [options]
 
-  Options:
+  Commands:
 
   build - Build the docker images for the project.
           You need to do this first, since the builds require
@@ -66,8 +66,7 @@ usage() {
   stop - Stops the services.  This is a non-destructive process.  The containers
          are not deleted so they will be reused the next time you run start.
 
-  rm - Removes any existing application containers.
-
+  rm - Remove project containers and associated volumes.
 EOF
 exit 1
 }
@@ -293,6 +292,23 @@ getStartupParams() {
 
   echo ${ARGS} ${CONTAINERS}
 }
+
+deleteVolumes() {
+  _projectName=${COMPOSE_PROJECT_NAME:-docker}
+
+  echo "Stopping and removing any running containers ..."
+  docker-compose rm -svf >/dev/null
+
+  _pattern="^${_projectName}_\|^docker_"
+  _volumes=$(docker volume ls -q | grep ${_pattern})
+
+  if [ ! -z "${_volumes}" ]; then
+    echo "Removing project volumes ..."
+    echo ${_volumes} |  xargs docker volume rm
+  else
+    echo "No project volumes exist."
+  fi
+}
 # =================================================================================================================
 
 pushd ${SCRIPT_HOME} >/dev/null
@@ -311,7 +327,7 @@ case "$1" in
     ;;
   rm)
     configureEnvironment
-    docker-compose rm
+    deleteVolumes
     ;;
   build)
     COMMAND=$1
