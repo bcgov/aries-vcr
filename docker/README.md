@@ -98,18 +98,15 @@ Refer to the docker compose documentation in each of the projects for specific d
 
 ## Quick Start Guide
 
-1. Open shell windows (Git Bash for instance) to your working copies of `.../von-network`, `../TheOrgBook/docker`, and `.../permitify/docker`.
+1. Open shell windows (Git Bash for instance) to your working copies of `.../von-network`, `.../TheOrgBook/docker`, and `.../permitify/docker`.
 1. In turn, run `./manage build` in each of the shell windows.
 1. Wait for the builds to complete.
 1. From `.../von-network` run `./manage start`, and wait for the von-network components to fully start.
 1. Ensure the node pool is running by opening a browser window to http://localhost:9000
-1. Register the DIDs you will be using for TheOrgBook and the Permitify service(s) using the ledger browser interface.
-    - For example;
-      - the_org_book_0000000000000000000
-      - issuer_service_00000000000000001
-      - issuer_service_00000000000000002
-      - etc., each issuer service will startup with a different seed (INDY_WALLET_SEED).  Refer to the [docker-compose.yml](https://github.com/bcgov/permitify/blob/master/docker/docker-compose.yml) for details.
-1. From `../TheOrgBook/docker` run `./manage start seed=the_org_book_0000000000000000000`
+1. Register the DIDs you will be using for TheOrgBook and the Permitify service(s).
+    1. From `.../TheOrgBook/docker` run `./manage registerDids seed=the_org_book_0000000000000000000`
+    1. From `.../permitify/docker` run `./manage registerDids seed=issuer_service_00000000000000000`
+1. From `.../TheOrgBook/docker` run `./manage start seed=the_org_book_0000000000000000000`
 1. Wait for the TheOrgBook's components to start up.
 1. Ensure TheOrgBook is running by opening a browser window to http://localhost:8080/en/home
 1. From `.../permitify/docker` run `./manage start seed=issuer_service_00000000000000000 TOB_INDY_SEED=the_org_book_0000000000000000000`

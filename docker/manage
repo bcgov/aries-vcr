@@ -67,6 +67,13 @@ usage() {
          are not deleted so they will be reused the next time you run start.
 
   rm - Remove project containers and associated volumes.
+
+  registerDids - Register the DIDs for the issuer services.
+                 This is intended for development use.
+
+                 Examples:
+                 $0 registerDids seed=the_org_book_0000000000000000000
+                 - This will register the DID using the provided seed with the locally running von-network instance.
 EOF
 exit 1
 }
@@ -202,7 +209,7 @@ configureEnvironment () {
     esac
   done
   
-  if [ "$COMMAND" == "start" ]; then
+  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
       echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
       exit 1
@@ -309,14 +316,70 @@ deleteVolumes() {
     echo "No project volumes exist."
   fi
 }
+
+registerDids() {
+  _seeds=${@}
+  if [ -z "${_seeds}" ]; then
+    echo -e \\n"registerDids; Missing parameter!"\\n
+    exit 1
+  fi
+
+  for _seed in ${_seeds}; do
+    registerDid ${_seed}
+  done
+}
+
+registerDid() {
+  _seed=${1}
+  if [ -z "${_seed}" ]; then
+    echo -e \\n"registerDid; Missing parameter!"\\n
+    exit 1
+  fi
+  _seedJson=$(getSeedJson ${_seed})
+  _ledgerUri=$(getLedgerRegistrationUrl)
+
+  echo -e \\n"Registering ${_seed} with the ledger ..."
+  curl -X POST \
+    ${_ledgerUri} \
+    -H 'content-type: application/json' \
+    -d "${_seedJson}"
+}
+
+getSeedJson() {
+  _seed=${1}
+  if [ -z "${_seed}" ]; then
+    echo -e \\n"getSeedJson; Missing parameter!"\\n
+    exit 1
+  fi
+
+  echo "{\"seed\": \"${_seed}\"}"
+}
+
+generateSeeds() {
+  echo ${INDY_WALLET_SEED}
+}
+
+getLedgerRegistrationUrl() {
+  if [[ ("${LEDGER_URL}" == "http://${DOCKERHOST}:9000") && ("${DOCKERHOST}" != "localhost") ]]; then
+    _ledgerUrl="http://localhost:9000"  
+  else
+    _ledgerUrl="${LEDGER_URL}"
+  fi
+
+  echo "${_ledgerUrl}/register"
+}
+
+toLower() {
+  echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+}
 # =================================================================================================================
 
 pushd ${SCRIPT_HOME} >/dev/null
+COMMAND=$(toLower ${1})
+shift
 
-case "$1" in
+case "${COMMAND}" in
   start)
-    COMMAND=$1
-    shift
     _startupParams=$(getStartupParams $@)
     configureEnvironment $@
     docker-compose up ${_startupParams}
@@ -329,9 +392,11 @@ case "$1" in
     configureEnvironment
     deleteVolumes
     ;;
+  registerdids)
+      configureEnvironment $@
+      registerDids $(generateSeeds)
+    ;;
   build)
-    COMMAND=$1
-    shift
     _startupParams=$(getStartupParams $@)
     configureEnvironment $@
     case "$@" in
