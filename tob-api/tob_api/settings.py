@@ -204,3 +204,11 @@ LOGGING = {
         'propagate': False,
     },
 }
+
+EXCLUDED_FIELDS = {
+    'ongov':
+      {'Location': 
+           {'streetAddress', 'municipality'}
+      },
+     'default': {}
+}

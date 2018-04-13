@@ -35,7 +35,8 @@
     "breadcrumb": "Recherche",
     "title": "Bienvenue aux Organisations vérifiables de l'Ontario'",
     "title-orgs": "organisations",
-    "title-certs": "permis et licences"
+    "title-certs": "permis et licences",
+    "message": "TBD"
   },
   "general": {
     "none": "None",
