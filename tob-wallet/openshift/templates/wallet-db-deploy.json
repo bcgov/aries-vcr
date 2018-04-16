@@ -98,6 +98,15 @@
                                         }
                                     },
                                     {
+                                        "name": "POSTGRESQL_ADMIN_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "${NAME}",
+                                                "key": "admin-password"
+                                            }
+                                        }
+                                    },                                    
+                                    {
                                         "name": "POSTGRESQL_DATABASE",
                                         "value": "${POSTGRESQL_DATABASE_NAME}"
                                     }
@@ -183,15 +192,11 @@
             "metadata": {
                 "name": "${NAME}",
                 "labels": {
-                    "app": "${NAME}-persistent",
-                    "template": "${NAME}-persistent-template"
-                },
-                "annotations": {
-                    "template.openshift.io/expose-password": "{.data['database-password']}",
-                    "template.openshift.io/expose-username": "{.data['database-user']}"
+                    "app": "${NAME}"
                 }
             },
             "data": {
+                "admin-password": "${POSTGRESQL_ADMIN_PASSWORD}",
                 "database-password": "${POSTGRESQL_PASSWORD}",
                 "database-user": "${POSTGRESQL_USER}"
             },
@@ -277,6 +282,14 @@
             "name": "POSTGRESQL_PASSWORD",
             "displayName": "PostgreSQL Connection Password",
             "description": "Password for the PostgreSQL connection user.  Needs to be basee64 encoded/",
+            "required": true,
+            "generate": "expression",
+            "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+        },
+        {
+            "name": "POSTGRESQL_ADMIN_PASSWORD",
+            "displayName": "PostgreSQL Admin Password",
+            "description": "Password for the 'postgres' PostgreSQL administrative account.  Needs to be basee64 encoded.",
             "required": true,
             "generate": "expression",
             "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
