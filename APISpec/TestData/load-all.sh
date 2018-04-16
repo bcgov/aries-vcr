@@ -1,5 +1,13 @@
 #!/bin/bash
 export MSYS_NO_PATHCONV=1
+SCRIPT_DIR=$(dirname $0)
+ENV_DIR=${SCRIPT_DIR}/../../tob-api/env
+
+if [[ ! -d ${ENV_DIR} ]]; then
+  PYTHON_EXE=python
+else
+  PYTHON_EXE=${ENV_DIR}/Scripts/python
+fi
 
 # ==============================================================================
 # Script for loading test data into the TheOrgBook database
@@ -34,4 +42,4 @@ exitOnError () {
 
 echo Data for TheOrgBook is now loading via the loading of claims. Details to come...
 
-./loadClaims.py "${1}" "${2}"
+${PYTHON_EXE} ./loadClaims.py "$@"
