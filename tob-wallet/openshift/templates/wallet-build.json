@@ -103,7 +103,7 @@
       "name": "SOURCE_IMAGE_NAMESPACE",
       "displayName": "Namespace",
       "description": "The Namespace where the source image resides.",
-      "required": true,
+      "required": false,
       "value": ""
     },
     {
