@@ -29,4 +29,15 @@ RUN curl -o rustup https://sh.rustup.rs && \
 	cd $HOME && \
 	rm -rf .cargo .rustup indy-sdk
 
+# Build libindy
+# RUN git clone https://github.com/ianco/indy-sdk.git
+RUN git clone https://github.com/ianco/indy-sdk.git
+WORKDIR $HOME/indy-sdk/libindy
+RUN git fetch
+# RUN git checkout ew_wallet_dev
+RUN $HOME/.cargo/bin/cargo build
+
+# Move libindy to lib path
+RUN mv target/debug/libindy.so /usr/lib
+
 WORKDIR $HOME
