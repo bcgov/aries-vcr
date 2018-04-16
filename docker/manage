@@ -170,15 +170,10 @@ build-wallet() {
   #
   # tob-wallet
   #
-  echo -e "\nBuilding wallet-base image ..."
-  docker build \
-    -t 'wallet-base' \
-    -f '../tob-wallet/openshift/templates/wallet-base/Dockerfile' '../tob-wallet/openshift/templates/wallet-base/'
-
   echo -e "\nBuilding tob-wallet image ..."
   ${S2I_EXE} build \
     '../tob-wallet' \
-    'wallet-base' \
+    'registry.access.redhat.com/rhscl/python-35-rhel7:3.5' \
     'tob-wallet'
 }
 
