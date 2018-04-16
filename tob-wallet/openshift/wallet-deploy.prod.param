@@ -1,0 +1,16 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-wallet
+# JSON Template File: templates/wallet-deploy.json
+#=========================================================
+# NAME=wallet
+# IMAGE_NAMESPACE=devex-von-tools
+# DATABASE_SERVICE_NAME=wallet-db
+# DATABASE_ENGINE=postgresql
+# DATABASE_NAME=TheOrgBook_Database
+# APP_CONFIG=
+# #DJANGO_SECRET_KEY=[\w]{50}
+# DJANGO_DEBUG=False
+TAG_NAME=prod
+# DATABASE_DEPLOYMENT_NAME=wallet-db
+# MEMORY_LIMIT=512Mi

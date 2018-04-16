@@ -4,7 +4,7 @@
   "metadata": {
     "name": "${NAME}-deployment-template",
     "annotations": {
-      "description": "Deployment template for a django server connected to a PostGreSQL database.",
+      "description": "Deployment template for a django server connected to a PostgreSQL database.",
       "tags": "django",
       "iconClass": "icon-python"
     }
@@ -17,7 +17,7 @@
         "name": "${NAME}",
         "annotations": {
           "description": "Exposes and load balances the application pods",
-          "service.alpha.openshift.io/dependencies": "[{\"name\": \"${DATABASE_SERVICE_NAME}\", \"kind\": \"Service\"},{\"name\": \"${SOLR_SERVICE_NAME}\", \"kind\": \"Service\"}]"
+          "service.alpha.openshift.io/dependencies": "[{\"name\": \"${DATABASE_SERVICE_NAME}\", \"kind\": \"Service\"}]"
         }
       },
       "spec": {
@@ -34,60 +34,12 @@
       }
     },
     {
-      "kind": "Route",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "${NAME}"
-      },
-      "spec": {
-        "host": "${APPLICATION_DOMAIN}",
-        "port": {
-          "targetPort": "8080-tcp"
-        },
-        "tls": {
-          "insecureEdgeTerminationPolicy": "Redirect",
-          "termination": "edge"
-        },
-        "to": {
-          "kind": "Service",
-          "name": "${NAME}",
-          "weight": 100
-        }
-      }
-    },
-    {
-      "kind": "PersistentVolumeClaim",
-      "apiVersion": "v1",
-      "metadata":
-      {
-        "name": "${NAME}",
-        "labels":
-        {
-          "app": "${NAME}",
-          "template": "${NAME}-deployment-template"
-        }
-      },
-      "spec":
-      {
-        "accessModes": [
-          "ReadWriteOnce"
-        ],
-        "resources":
-        {
-          "requests":
-          {
-            "storage": "${PERSISTENT_VOLUME_SIZE}"
-          }
-        }
-      }
-    },
-    {
       "kind": "DeploymentConfig",
       "apiVersion": "v1",
       "metadata": {
         "name": "${NAME}",
         "annotations": {
-          "description": "Defines how to deploy the application server"
+          "description": "Defines how to deploy the application server."
         }
       },
       "spec": {
@@ -125,15 +77,6 @@
             }
           },
           "spec": {
-            "volumes": [
-              {
-                "name": "${NAME}-data",
-                "persistentVolumeClaim":
-                {
-                  "claimName": "${NAME}"
-                }
-              }
-            ],
             "containers": [
               {
                 "name": "${NAME}",
@@ -160,12 +103,6 @@
                     "port": 8080
                   }
                 },
-                "volumeMounts": [
-                  {
-                    "name": "${NAME}-data",
-                    "mountPath": "${MOUNT_PATH}"
-                  }
-                ],
                 "env": [
                   {
                     "name": "DATABASE_SERVICE_NAME",
@@ -208,22 +145,6 @@
                   {
                     "name": "DJANGO_DEBUG",
                     "value": "${DJANGO_DEBUG}"
-                  },
-                  {
-                    "name": "SOLR_SERVICE_NAME",
-                    "value": "${SOLR_SERVICE_NAME}"
-                  },
-                  {
-                    "name": "SOLR_CORE_NAME",
-                    "value": "${SOLR_CORE_NAME}"
-                  },
-                  {
-                    "name": "INDY_WALLET_SEED",
-                    "value": "${INDY_WALLET_SEED}"
-                  },
-                  {
-                    "name": "LEDGER_URL",
-                    "value": "${LEDGER_URL}"
                   }
                 ],
                 "resources": {
@@ -236,24 +157,6 @@
           }
         }
       }
-    },
-    {
-      "kind": "HorizontalPodAutoscaler",
-      "apiVersion": "autoscaling/v1",
-      "metadata": {
-        "name": "${NAME}",
-        "labels": {
-          "app": "${NAME}"
-        }
-      },
-      "spec": {
-        "scaleTargetRef": {
-          "kind": "DeploymentConfig",
-          "name": "${NAME}"
-        },
-        "minReplicas": 1,
-        "maxReplicas": 1
-      }
     }
   ],
   "parameters": [
@@ -262,7 +165,7 @@
       "displayName": "Name",
       "description": "The name assigned to all of the OpenShift resources associated to the server instance.",
       "required": true,
-      "value": "django"
+      "value": "wallet"
     },
     {
       "name": "IMAGE_NAMESPACE",
@@ -272,24 +175,11 @@
       "value": "devex-von-tools"
     },
     {
-      "name": "MEMORY_LIMIT",
-      "displayName": "Memory Limit",
-      "required": true,
-      "description": "Maximum amount of memory the Django container can use.",
-      "value": "512Mi"
-    },
-    {
-      "name": "APPLICATION_DOMAIN",
-      "displayName": "Application Hostname",
-      "description": "The exposed hostname that will route to the Django service, if left blank a value will be defaulted.",
-      "value": ""
-    },
-    {
       "name": "DATABASE_SERVICE_NAME",
       "displayName": "Database Service Name",
       "description": "The name of the database server/service.",
       "required": true,
-      "value": "postgresql"
+      "value": "wallet-db"
     },
     {
       "name": "DATABASE_ENGINE",
@@ -325,67 +215,25 @@
       "value": "False"
     },
     {
-      "name": "SOLR_SERVICE_NAME",
-      "displayName": "SOLR Service Name",
-      "description": "The name of the service associated with the SOLR search engine.",
-      "required": false,
-      "value": "solr"
-    },
-    {
-      "name": "SOLR_CORE_NAME",
-      "displayName": "SOLR Core Name",
-      "description": "The name of the core to use when connecting with SOLR.",
-      "required": false,
-      "value": "the_org_book"
-    },
-	{
       "name": "TAG_NAME",
       "displayName": "Environment TAG name",
       "description": "The TAG name for this environment, e.g., dev, test, prod",
-      "value": "dev",
-      "required": true
+      "required": true,
+      "value": "dev"
     },
     {
       "name": "DATABASE_DEPLOYMENT_NAME",
       "displayName": "Database Deployment Name",
       "description": "The name associated to the database deployment resources.  In particular, this is used to wire up the credentials associated to the database.",
       "required": true,
-      "value": "postgresql"
+      "value": "wallet-db"
     },
     {
-      "name": "PERSISTENT_VOLUME_SIZE",
-      "displayName": "Persistent Volume Size",
-      "description": "The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.",
+      "name": "MEMORY_LIMIT",
+      "displayName": "Memory Limit",
       "required": true,
-      "value": "1Gi"
-    },
-    {
-      "name": "MOUNT_PATH",
-      "displayName": "Mount Path",
-      "description": "The path to mount the persistent volume.",
-      "required": true,
-      "value": "/opt/app-root/src/.indy_client"
-    },
-    {
-      "name": "MOUNT_PATH",
-      "displayName": "Mount Path",
-      "description": "The path to mount the persistent volume.",
-      "required": true,
-      "value": "/opt/app-root/src/.indy_client"
-    },
-    {
-      "name": "INDY_WALLET_SEED",
-      "displayName": "Indy Wallet Seed",
-      "description": "The seed that the indy wallet uses to generate predictable keys.",
-      "required": true,
-      "value": "the_org_book_dev_000000000000000"
-    },
-    {
-      "name": "LEDGER_URL",
-      "displayName": "VON network ledger url.",
-      "description": "URL for a running instance of the von-network.",
-      "required": true,
-      "value": "http://159.89.115.24"
+      "description": "Maximum amount of memory the Django container can use.",
+      "value": "512Mi"
     }
   ]
 }
