@@ -58,24 +58,19 @@
     {
       "kind": "PersistentVolumeClaim",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${NAME}",
-        "labels":
-        {
+        "labels": {
           "app": "${NAME}",
           "template": "${NAME}-deployment-template"
         }
       },
-      "spec":
-      {
+      "spec": {
         "accessModes": [
           "ReadWriteOnce"
         ],
-        "resources":
-        {
-          "requests":
-          {
+        "resources": {
+          "requests": {
             "storage": "${PERSISTENT_VOLUME_SIZE}"
           }
         }
@@ -128,8 +123,7 @@
             "volumes": [
               {
                 "name": "${NAME}-data",
-                "persistentVolumeClaim":
-                {
+                "persistentVolumeClaim": {
                   "claimName": "${NAME}"
                 }
               }
@@ -224,6 +218,14 @@
                   {
                     "name": "LEDGER_URL",
                     "value": "${LEDGER_URL}"
+                  },
+                  {
+                    "name": "INDY_WALLET_TYPE",
+                    "value": "${INDY_WALLET_TYPE}"
+                  },
+                  {
+                    "name": "INDY_WALLET_URL",
+                    "value": "${INDY_WALLET_URL}"
                   }
                 ],
                 "resources": {
@@ -338,7 +340,7 @@
       "required": false,
       "value": "the_org_book"
     },
-	{
+    {
       "name": "TAG_NAME",
       "displayName": "Environment TAG name",
       "description": "The TAG name for this environment, e.g., dev, test, prod",
@@ -367,13 +369,6 @@
       "value": "/opt/app-root/src/.indy_client"
     },
     {
-      "name": "MOUNT_PATH",
-      "displayName": "Mount Path",
-      "description": "The path to mount the persistent volume.",
-      "required": true,
-      "value": "/opt/app-root/src/.indy_client"
-    },
-    {
       "name": "INDY_WALLET_SEED",
       "displayName": "Indy Wallet Seed",
       "description": "The seed that the indy wallet uses to generate predictable keys.",
@@ -386,6 +381,20 @@
       "description": "URL for a running instance of the von-network.",
       "required": true,
       "value": "http://159.89.115.24"
+    },
+    {
+      "name": "INDY_WALLET_TYPE",
+      "displayName": "Indy Wallet Type",
+      "description": "The wallet type to use; remote (enterprise) or virtual (local), defaults to virtual.",
+      "required": true,
+      "value": "remote"
+    },
+    {
+      "name": "INDY_WALLET_URL",
+      "displayName": "Indy Wallet URL",
+      "description": "The URL to the wallet provider.  Used only when using a remote (enterprise) wallet.",
+      "required": true,
+      "value": "http://wallet:8080/api/v1/"
     }
   ]
 }
