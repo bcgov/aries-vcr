@@ -226,6 +226,24 @@
                   {
                     "name": "INDY_WALLET_URL",
                     "value": "${INDY_WALLET_URL}"
+                  },
+                  {
+                    "name": "WALLET_USER_ID",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_DEPLOYMENT_NAME}",
+                        "key": "wallet-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "WALLET_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_DEPLOYMENT_NAME}",
+                        "key": "wallet-password"
+                      }
+                    }
                   }
                 ],
                 "resources": {
@@ -395,6 +413,13 @@
       "description": "The URL to the wallet provider.  Used only when using a remote (enterprise) wallet.",
       "required": true,
       "value": "http://wallet:8080/api/v1/"
+    },
+    {
+      "name": "WALLET_DEPLOYMENT_NAME",
+      "displayName": "Wallet Deployment Name",
+      "description": "The name associated to the wallet deployment resources.  In particular, this is used to wire up the credentials associated to the wallet.",
+      "required": true,
+      "value": "wallet"
     }
   ]
 }

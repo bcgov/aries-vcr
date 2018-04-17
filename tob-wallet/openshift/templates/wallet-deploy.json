@@ -11,6 +11,22 @@
   },
   "objects": [
     {
+      "kind": "Secret",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}",
+        "labels": {
+          "app": "${NAME}"
+        }
+      },
+      "data": {
+        "wallet-user": "${WALLET_USER}",
+        "wallet-password": "${WALLET_PASSWORD}",
+        "admin-password": "${WALLET_ADMIN_PASSWORD}"
+      },
+      "type": "Opaque"
+    },
+    {
       "kind": "Service",
       "apiVersion": "v1",
       "metadata": {
@@ -145,6 +161,33 @@
                   {
                     "name": "DJANGO_DEBUG",
                     "value": "${DJANGO_DEBUG}"
+                  },
+                  {
+                    "name": "WALLET_USER_ID",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "wallet-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "WALLET_USER_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "wallet-password"
+                      }
+                    }
+                  },
+                  {
+                    "name": "WALLET_ADMIN_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "admin-password"
+                      }
+                    }
                   }
                 ],
                 "resources": {
@@ -194,6 +237,30 @@
       "required": true,
       "description": "Name of the deployed database (see environment variables in deployed database).",
       "value": "TheOrgBook_Database"
+    },
+    {
+      "name": "WALLET_USER",
+      "displayName": "Wallet Connection Username",
+      "description": "Username for the account that will be used for accessing the wallet.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z_][a-zA-Z0-9_]{10}"
+    },
+    {
+      "name": "WALLET_PASSWORD",
+      "displayName": "Wallet Connection Password",
+      "description": "Password for the account that will be used for accessing the wallet.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "WALLET_ADMIN_PASSWORD",
+      "displayName": "Wallet Admin Password",
+      "description": "Password for the 'well-e-admin' superuser account.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
       "name": "APP_CONFIG",
