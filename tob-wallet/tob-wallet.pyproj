@@ -27,6 +27,7 @@
     <Compile Include="api\admin.py" />
     <Compile Include="api\apps.py" />
     <Compile Include="api\migrations\0001_initial.py" />
+    <Compile Include="api\migrations\0002_auto_20180417_0930.py" />
     <Compile Include="api\migrations\__init__.py" />
     <Compile Include="api\models.py" />
     <Compile Include="api\permissions.py" />
