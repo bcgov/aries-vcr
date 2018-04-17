@@ -17,6 +17,7 @@ drf-haystack==1.6.1
 
 # Web Server
 gunicorn==19.7.1
+whitenoise==3.3.1
 httpie==0.9.9
 PyJWT==1.5.3
 pytest==3.4.1
