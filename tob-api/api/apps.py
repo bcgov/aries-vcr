@@ -27,14 +27,14 @@ class apiConfig(AppConfig):
             # If wallet type is "remote" then login to get  token
             WALLET_TYPE = os.environ.get('INDY_WALLET_TYPE')
             if WALLET_TYPE == 'remote':
-            	WALLET_USERID = 'wall-e'    # TODO hardcode for now
-            	WALLET_PASSWD = 'pass1234'  # TODO hardcode for now
-            	WALLET_BASE_URL = os.environ.get('INDY_WALLET_URL')
+            	WALLET_USER_ID = os.environ.get('WALLET_USER_ID', 'wall-e')
+            	WALLET_PASSWORD = os.environ.get('WALLET_PASSWORD', 'pass1234')
+                WALLET_BASE_URL = os.environ.get('INDY_WALLET_URL')
             	logger.debug("Wallet URL: " + WALLET_BASE_URL)
 
     	        try:
     	            my_url = WALLET_BASE_URL + "api-token-auth/"
-    	            response = requests.post(my_url, data = {"username":WALLET_USERID, "password":WALLET_PASSWD})
+    	            response = requests.post(my_url, data = {"username":WALLET_USER_ID, "password":WALLET_PASSWORD})
     	            json_data = response.json()
     	            remote_token = json_data["token"]
     	            logger.debug("Authenticated remote wallet server: " + remote_token)

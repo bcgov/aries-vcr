@@ -66,7 +66,7 @@ sqlite> select * from authtoken_token;
 sqlite>
 ```
 
-In the above example the DRF token is "71bee00fa76f08e5f17ceed783a9addd2619bc21" for my superuser (wall-e).
+In the above example the DRF token is "71bee00fa76f08e5f17ceed783a9addd2619bc21" for my user (wall-e).
 
 I can issue the following request using httpie:
 

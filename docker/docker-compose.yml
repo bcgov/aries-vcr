@@ -43,6 +43,10 @@ services:
       - TOB_WALLET_DB_SERVICE_PORT=5432
       #- TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
       #- TOB_DB_SERVICE_PORT=5432
+      - WALLET_USER_ID=${WALLET_USER_ID}
+      - WALLET_USER_PASSWORD=${WALLET_USER_PASSWORD}
+      - WALLET_ADMIN_USER_ID=${WALLET_ADMIN_USER_ID}
+      - WALLET_ADMIN_PASSWORD=${WALLET_ADMIN_PASSWORD}
     volumes:
       - ../tob-wallet/api:/opt/app-root/src/api
     networks:
@@ -56,9 +60,8 @@ services:
     command: >
       /bin/bash -c "
         echo sleeping ...;
-        sleep 10;
+        sleep 12;
         python manage.py migrate &&
-        echo \"from django.contrib.auth.models import User; User.objects.filter(username='wall-e').exists() or User.objects.create_superuser('wall-e', 'wall-e@example.com', 'pass1234')\" | python manage.py shell &&
         RUST_LOG=debug python manage.py runserver 0.0.0.0:8000;"
 
   # 
@@ -96,6 +99,9 @@ services:
       - LEDGER_URL=${LEDGER_URL}
       - INDY_WALLET_TYPE=${INDY_WALLET_TYPE}
       - INDY_WALLET_URL=${INDY_WALLET_URL}
+      - WALLET_USER_ID=${WALLET_USER_ID}
+      - WALLET_PASSWORD=${WALLET_USER_PASSWORD}
+      
     volumes:
       - ../tob-api/api:/opt/app-root/src/api
     networks:
