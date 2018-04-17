@@ -70,7 +70,7 @@
                         ],
                         "containers": [
                             {
-                                "name": "postgresql",
+                                "name": "${NAME}",
                                 "image": " ",
                                 "ports": [
                                     {
