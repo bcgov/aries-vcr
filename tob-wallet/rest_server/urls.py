@@ -5,9 +5,11 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 """
 from django.conf.urls import url, include
 from django.conf.urls import include
+from . import views
 
 urlpatterns = [
     # the next line is for DRF tokens, comment out for JWT tokens
     url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^api/v1/', include('api.urls')),
+    url(r'^health$', views.health),
 ]

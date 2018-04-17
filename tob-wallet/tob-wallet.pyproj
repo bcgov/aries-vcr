@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{38712ca4-8b3c-478e-b0d0-0e8421d3f2c0}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>manage.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{5F0BE9CA-D677-4A4D-8806-6076C0FAAD37};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Django launcher</LaunchProvider>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <DjangoSettingsModule>rest_server.settings</DjangoSettingsModule>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="api\admin.py" />
+    <Compile Include="api\apps.py" />
+    <Compile Include="api\migrations\0001_initial.py" />
+    <Compile Include="api\migrations\__init__.py" />
+    <Compile Include="api\models.py" />
+    <Compile Include="api\permissions.py" />
+    <Compile Include="api\serializers.py" />
+    <Compile Include="api\tests.py" />
+    <Compile Include="api\urls.py" />
+    <Compile Include="api\views.py" />
+    <Compile Include="api\__init__.py" />
+    <Compile Include="manage.py" />
+    <Compile Include="rest_server\database.py" />
+    <Compile Include="rest_server\settings.py" />
+    <Compile Include="rest_server\urls.py" />
+    <Compile Include="rest_server\views.py" />
+    <Compile Include="rest_server\wsgi.py" />
+    <Compile Include="rest_server\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="api" />
+    <Folder Include="api\migrations" />
+    <Folder Include="rest_server" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Description>env (Python 3.6 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <Version>3.6</Version>
+      <Architecture>X64</Architecture>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+    <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+    <WebProjectProperties>
+        <AutoAssignPort>True</AutoAssignPort>
+        <UseCustomServer>True</UseCustomServer>
+        <CustomServerUrl>http://localhost</CustomServerUrl>
+        <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+    </WebProjectProperties>
+    </FlavorProperties>
+    <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+    <WebProjectProperties>
+        <StartPageUrl>
+        </StartPageUrl>
+        <StartAction>CurrentPage</StartAction>
+        <AspNetDebugging>True</AspNetDebugging>
+        <SilverlightDebugging>False</SilverlightDebugging>
+        <NativeDebugging>False</NativeDebugging>
+        <SQLDebugging>False</SQLDebugging>
+        <ExternalProgram>
+        </ExternalProgram>
+        <StartExternalURL>
+        </StartExternalURL>
+        <StartCmdLineArguments>
+        </StartCmdLineArguments>
+        <StartWorkingDirectory>
+        </StartWorkingDirectory>
+        <EnableENC>False</EnableENC>
+        <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+    </WebProjectProperties>
+    </FlavorProperties>
+</VisualStudio>
+  </ProjectExtensions>
+</Project>
