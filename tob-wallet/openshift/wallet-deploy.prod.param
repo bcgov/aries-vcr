@@ -8,6 +8,9 @@
 # DATABASE_SERVICE_NAME=wallet-db
 # DATABASE_ENGINE=postgresql
 # DATABASE_NAME=TheOrgBook_Database
+# WALLET_USER=[a-zA-Z_][a-zA-Z0-9_]{10}
+# WALLET_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# WALLET_ADMIN_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # APP_CONFIG=
 # #DJANGO_SECRET_KEY=[\w]{50}
 # DJANGO_DEBUG=False
