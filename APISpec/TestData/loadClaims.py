@@ -222,7 +222,10 @@ def main_load(env, do_it_random, num_loops, thread_id):
         try:
             my_url = "http://localhost:6000/api/v1/api-token-auth/"
             response = requests.post(my_url, data = {"username":"wall-e", "password":"pass1234"})
+
+            print("Getting token from {} ...".format(response.url))
             json_data = response.json()
+
             remote_token = 'Token ' + json_data["token"]
             print("Authenticated remote wallet server: " + remote_token)
         except:
@@ -292,6 +295,8 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     headers={'Authorization': remote_token},
                                     json=wallet_item
                                 )
+
+                                print("Submitting claim to {} ...".format(response.url))
                                 result_json = response.json()
                             except:
                                 raise Exception(
@@ -307,8 +312,10 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                     json=claim
                                 )
                                 loop_locks[service_name].release()
-                                print(response)
+                                
+                                print("Submitting claim to {} ...".format(response.url))
                                 result_json = response.json()
+
                                 elapsed_time = time.time() - start_time
                                 claim_elapsed_time = claim_elapsed_time + elapsed_time
                                 print('Timing,Claim elapsed time,{},secs'.format(elapsed_time))
@@ -334,7 +341,9 @@ def main_load(env, do_it_random, num_loops, thread_id):
                                 )
                                 elapsed_time = time.time() - start_time
                                 proof_elapsed_time = proof_elapsed_time + elapsed_time
-                                print('Timing,Proof elapsed time,{},secs'.format(elapsed_time))
+                                print('Proof elapsed time >>> {}'.format(elapsed_time))
+
+                                print("Requesting proof from {} ...".format(response.url))
                                 result_json = response.json()
                                 loop_proofs = loop_proofs + 1
                             except:
