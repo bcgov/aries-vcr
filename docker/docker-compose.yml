@@ -11,6 +11,7 @@ services:
       - RealIpFrom=${RealIpFrom}
       - TOB_THEME=${TOB_THEME}
       - WEB_BASE_HREF=${WEB_BASE_HREF}
+      - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
     networks:
       - tob
     ports:
