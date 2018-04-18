@@ -110,16 +110,20 @@
                   }
                 ],
                 "readinessProbe": {
-                  "timeoutSeconds": 3,
+                  "failureThreshold": 5,
+                  "periodSeconds": 30,
                   "initialDelaySeconds": 3,
+                  "timeoutSeconds": 20,
                   "httpGet": {
                     "path": "/health",
                     "port": 8080
                   }
                 },
                 "livenessProbe": {
-                  "timeoutSeconds": 3,
+                  "failureThreshold": 5,
+                  "periodSeconds": 60,                  
                   "initialDelaySeconds": 30,
+                  "timeoutSeconds": 20,
                   "httpGet": {
                     "path": "/health",
                     "port": 8080
