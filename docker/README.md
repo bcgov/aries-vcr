@@ -94,7 +94,7 @@ A "complete" provisional VON Network consists of the following components;
 - An instance of TheOrgBook; [TheOrgBook](https://github.com/bcgov/TheOrgBook)
 - And a set of Issuer Services; [Permitify](https://github.com/bcgov/permitify)
 
-Refer to the docker compose documentation in each of the projects for specific details.
+The following **Quick Start Guide** will have you up and running in no time.  For specific details on the features and operation of the individual components refer to the docker compose documentation of the given projects.  For now, let's get you started with a working set of applications ...
 
 ## Quick Start Guide
 
