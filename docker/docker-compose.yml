@@ -48,6 +48,7 @@ services:
       - WALLET_ADMIN_USER_ID=${WALLET_ADMIN_USER_ID}
       - WALLET_ADMIN_PASSWORD=${WALLET_ADMIN_PASSWORD}
       - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY}
     volumes:
       - ../tob-wallet/api:/opt/app-root/src/api
     networks:
@@ -102,6 +103,7 @@ services:
       - WALLET_USER_ID=${WALLET_USER_ID}
       - WALLET_PASSWORD=${WALLET_USER_PASSWORD}
       - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY}
     volumes:
       - ../tob-api/api:/opt/app-root/src/api
     networks:
