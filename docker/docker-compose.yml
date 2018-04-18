@@ -47,6 +47,7 @@ services:
       - WALLET_USER_PASSWORD=${WALLET_USER_PASSWORD}
       - WALLET_ADMIN_USER_ID=${WALLET_ADMIN_USER_ID}
       - WALLET_ADMIN_PASSWORD=${WALLET_ADMIN_PASSWORD}
+      - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
     volumes:
       - ../tob-wallet/api:/opt/app-root/src/api
     networks:
@@ -61,8 +62,7 @@ services:
       /bin/bash -c "
         echo sleeping ...;
         sleep 12;
-        python manage.py migrate &&
-        RUST_LOG=debug python manage.py runserver 0.0.0.0:8000;"
+        ${STI_SCRIPTS_PATH}/run;"
 
   # 
   # tob-api
@@ -101,7 +101,7 @@ services:
       - INDY_WALLET_URL=${INDY_WALLET_URL}
       - WALLET_USER_ID=${WALLET_USER_ID}
       - WALLET_PASSWORD=${WALLET_USER_PASSWORD}
-      
+      - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
     volumes:
       - ../tob-api/api:/opt/app-root/src/api
     networks:
@@ -117,8 +117,7 @@ services:
       /bin/bash -c "
         echo sleeping ...;
         sleep 20;
-        python manage.py migrate &&
-        RUST_LOG=debug && RUST_BACKTRACE=full && python manage.py runserver 0.0.0.0:8080;"
+        ${STI_SCRIPTS_PATH}/run;"
 
   # 
   # schema-spy
