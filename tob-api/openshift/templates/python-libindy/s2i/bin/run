@@ -17,14 +17,6 @@ function should_migrate() {
 
 # Guess the number of workers according to the number of cores
 function get_default_web_concurrency() {
-
-  
-  # We limit processes to 1 since libindy wallet 
-  # can only be used by 1 process
-  echo 1
-  return
-
-
   limit_vars=$(cgroup-limits)
   local $limit_vars
   if [ -z "${NUMBER_OF_CORES:-}" ]; then
