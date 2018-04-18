@@ -56,27 +56,6 @@
       }
     },
     {
-      "kind": "PersistentVolumeClaim",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "${NAME}",
-        "labels": {
-          "app": "${NAME}",
-          "template": "${NAME}-deployment-template"
-        }
-      },
-      "spec": {
-        "accessModes": [
-          "ReadWriteOnce"
-        ],
-        "resources": {
-          "requests": {
-            "storage": "${PERSISTENT_VOLUME_SIZE}"
-          }
-        }
-      }
-    },
-    {
       "kind": "DeploymentConfig",
       "apiVersion": "v1",
       "metadata": {
@@ -120,14 +99,6 @@
             }
           },
           "spec": {
-            "volumes": [
-              {
-                "name": "${NAME}-data",
-                "persistentVolumeClaim": {
-                  "claimName": "${NAME}"
-                }
-              }
-            ],
             "containers": [
               {
                 "name": "${NAME}",
@@ -154,12 +125,6 @@
                     "port": 8080
                   }
                 },
-                "volumeMounts": [
-                  {
-                    "name": "${NAME}-data",
-                    "mountPath": "${MOUNT_PATH}"
-                  }
-                ],
                 "env": [
                   {
                     "name": "DATABASE_SERVICE_NAME",
@@ -256,24 +221,6 @@
           }
         }
       }
-    },
-    {
-      "kind": "HorizontalPodAutoscaler",
-      "apiVersion": "autoscaling/v1",
-      "metadata": {
-        "name": "${NAME}",
-        "labels": {
-          "app": "${NAME}"
-        }
-      },
-      "spec": {
-        "scaleTargetRef": {
-          "kind": "DeploymentConfig",
-          "name": "${NAME}"
-        },
-        "minReplicas": 1,
-        "maxReplicas": 1
-      }
     }
   ],
   "parameters": [
@@ -290,13 +237,6 @@
       "required": true,
       "description": "The namespace of the OpenShift project containing the imagestream for the application.",
       "value": "devex-von-tools"
-    },
-    {
-      "name": "MEMORY_LIMIT",
-      "displayName": "Memory Limit",
-      "required": true,
-      "description": "Maximum amount of memory the Django container can use.",
-      "value": "512Mi"
     },
     {
       "name": "APPLICATION_DOMAIN",
@@ -373,20 +313,6 @@
       "value": "postgresql"
     },
     {
-      "name": "PERSISTENT_VOLUME_SIZE",
-      "displayName": "Persistent Volume Size",
-      "description": "The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.",
-      "required": true,
-      "value": "1Gi"
-    },
-    {
-      "name": "MOUNT_PATH",
-      "displayName": "Mount Path",
-      "description": "The path to mount the persistent volume.",
-      "required": true,
-      "value": "/opt/app-root/src/.indy_client"
-    },
-    {
       "name": "INDY_WALLET_SEED",
       "displayName": "Indy Wallet Seed",
       "description": "The seed that the indy wallet uses to generate predictable keys.",
@@ -420,6 +346,13 @@
       "description": "The name associated to the wallet deployment resources.  In particular, this is used to wire up the credentials associated to the wallet.",
       "required": true,
       "value": "wallet"
-    }
+    },
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Memory Limit",
+      "required": true,
+      "description": "Maximum amount of memory the Django container can use.",
+      "value": "512Mi"
+    }    
   ]
 }
