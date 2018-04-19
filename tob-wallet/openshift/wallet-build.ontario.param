@@ -1,0 +1,15 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-wallet
+# JSON Template File: templates/wallet-build.json
+#=========================================================
+NAME=wallet
+GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
+GIT_REF=master
+SOURCE_CONTEXT_DIR=tob-wallet
+SOURCE_IMAGE_KIND=DockerImage
+SOURCE_IMAGE_NAMESPACE=ontvon-von-tools
+SOURCE_IMAGE_NAME=registry.access.redhat.com/rhscl/python-35-rhel7
+SOURCE_IMAGE_TAG=3.5
+PIP_INDEX_URL=
+OUTPUT_IMAGE_TAG=latest
