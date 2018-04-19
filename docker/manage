@@ -259,7 +259,7 @@ configureEnvironment () {
   export LEDGER_URL=${LEDGER_URL-http://$DOCKERHOST:9000}
 
   # wallet type a command-line parameter (like seed) default to "virtual" if not specified
-  export INDY_WALLET_URL=http://tob-wallet:8000/api/v1/
+  export INDY_WALLET_URL=http://tob-wallet:8080/api/v1/
   export INDY_WALLET_TYPE=${wallet}
 
   if [ "$COMMAND" == "start" ]; then

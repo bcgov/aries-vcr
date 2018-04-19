@@ -55,7 +55,7 @@ services:
       - wallet-tob
       - wallet-db
     ports:
-      - "${WALLET_HTTP_PORT}:8000"
+      - "${WALLET_HTTP_PORT}:8080"
     depends_on:
       - tob-db
       - tob-wallet-db
