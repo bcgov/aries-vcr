@@ -62,5 +62,8 @@ h1, h2, h3 {
 }
 ```
 
+Customized main page with Ontario look-n-feel:
+
+![Ontario's TheOrgBook UI](TOBOntario_MainPage.png "Ontario's TheOrgBook UI")
 
 
