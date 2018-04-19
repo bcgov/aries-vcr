@@ -20,6 +20,7 @@
 """
 
 from api.indy.proofRequestBuilder import ProofRequestBuilder
+from api.indy.issuer import IssuerManager
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers
@@ -200,3 +201,51 @@ class bcovrinVerifyCredential(APIView):
       return JsonResponse({'success': True, 'proof': proofResponse})
 
     return JsonResponse({'success': False})
+
+
+class bcovrinRegisterIssuer(APIView):
+  """
+  Register an issuer (like permitify), creating or updating the necessary records
+  """
+  permission_classes = (permissions.AllowAny,)  
+  
+  def post(self, request, *args, **kwargs):
+    """  
+    Processes an issuer definition and creates or updates the corresponding records.
+    Responds with the updated issuer definition including record IDs.
+
+    Example request payload:
+
+    ```json
+    {
+        "issuer": {
+            "did": "issuer DID",
+            "name": "issuer name (english)",
+            "abbreviation": "issuer TLA (english)",
+            "endpoint": "url for issuer details"
+        },
+        "jurisdiction": {
+            "name": "name of jurisdiction (english)",
+            "abbreviation": "jurisdiction TLA (english)"
+        },
+        "claim-types": [
+            {
+                "name": "claim type name (english)",
+                "endpoint": "url for issuing claims",
+                "schema": "schema name",
+                "version": "schema version"
+            }
+        ]
+    }
+    ```
+
+    returns: `{"success": boolean, "result": updated issuer definition}`
+    """
+    __logger = logging.getLogger(__name__)
+    __logger.warn('>>> Register issuer')
+    issuerDef = request.body.decode('utf-8')
+    issuerJson = json.loads(issuerDef)
+    issuerManager = IssuerManager()
+    updated = issuerManager.registerIssuer(issuerJson)
+    __logger.warn('<<< Registered issuer')
+    return JsonResponse({'success': True, 'result': updated})

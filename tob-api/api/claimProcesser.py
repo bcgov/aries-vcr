@@ -39,13 +39,15 @@ class ClaimProcesser(object):
       # VerifiableClaimTypes are registered by issuers.
       # If the VerifiableClaimType has not been registered we can't accept the claim.
       # VerifiableClaimType.claimType is the friendly name of the claim.
-      schemaName = claim.schemaName
+      filter = {'schemaName': claim.schemaName}
+      if claim.issuerDid:
+        filter['issuerServiceId__DID'] = claim.issuerDid
       
       # schema = claim.schema
       # if not schema:
       #   raise Exception('Could not retrieve schema from ledger.')
 
-      verifiableClaimType = VerifiableClaimType.objects.filter(schemaName=schemaName).order_by('CREATE_TIMESTAMP')
+      verifiableClaimType = VerifiableClaimType.objects.filter(**filter).order_by('CREATE_TIMESTAMP')
 
       if not verifiableClaimType:
         self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(schemaName))
