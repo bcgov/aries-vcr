@@ -50,9 +50,9 @@ class ClaimProcesser(object):
       verifiableClaimType = VerifiableClaimType.objects.filter(**filter).order_by('CREATE_TIMESTAMP')
 
       if not verifiableClaimType:
-        self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(schemaName))
+        self.__logger.warn("VerifiableClaimType, {0}, has not been registered ...".format(claim.schemaName))
       else:
-        self.__logger.debug("VerifiableClaimType, {0}, exists ...".format(schemaName))
+        self.__logger.debug("VerifiableClaimType, {0}, exists ...".format(claim.schemaName))
         verifiableClaimType = verifiableClaimType[0]
       
       return verifiableClaimType
