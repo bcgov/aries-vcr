@@ -4,7 +4,7 @@ GROUP_ID=$(id -g)
 
 if [ x"$USER_ID" != x"0" -a x"$USER_ID" != x"1001" ]; then
 
-    NSS_WRAPPER_PASSWD=/opt/app-root/etc/passwd
+    NSS_WRAPPER_PASSWD=/home/indy/etc/passwd
     NSS_WRAPPER_GROUP=/etc/group
 
     cat /etc/passwd | sed -e 's/^default:/builder:/' > $NSS_WRAPPER_PASSWD

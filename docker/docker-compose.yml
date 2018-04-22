@@ -110,7 +110,7 @@ services:
       - RUST_LOG=${RUST_LOG}
       - RUST_BACKTRACE=${RUST_BACKTRACE}
     volumes:
-      - ../tob-api/api:/opt/app-root/src/api
+      - ../tob-api/api:/home/indy/src/api
     networks:
       - wallet-tob
       - tob

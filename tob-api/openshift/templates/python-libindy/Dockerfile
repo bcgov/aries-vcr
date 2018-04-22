@@ -1,16 +1,5 @@
-FROM libindy:latest
+FROM von-image:py36-latest
 
-# Install environment
-RUN apt-get update -y && \
-apt-get install -y --no-install-recommends \
-    python3.5 \
-    python3-pip \
-    python3-setuptools \
-    python3-nacl \
-    apt-transport-https \
-    ca-certificates
-
-ENV HOME=/opt/app-root/src
 WORKDIR $HOME
 EXPOSE 8080
 
@@ -53,32 +42,18 @@ COPY ./s2i/bin/. $STI_SCRIPTS_PATH
 # Copy extra files to the image.
 COPY ./root/ /
 
-# - Create a Python virtual environment for use by any application to avoid
-#   potential conflicts with Python packages preinstalled in the main Python
-#   installation.
+USER root
+
 # - In order to drop the root user, we have to make some directories world
 #   writable as OpenShift default security model is to run the container
 #   under random UID.
-RUN ln -sf /usr/bin/python3 /usr/bin/python && \
-    ln -sf /usr/bin/pip3 /usr/bin/pip && \
-    pip install virtualenv && \
-    virtualenv /opt/app-root && \
-    chown -R 0 /opt/app-root && \
-    chmod -R g+rw /opt/app-root
+RUN chown -R indy:0 $HOME $STI_SCRIPTS_PATH \
+       /usr/bin/fix-permissions /usr/bin/cgroup-limits /generate_container_user && \
+    chmod -R ug+rw $HOME && \
+    chmod -R ug+rwx $STI_SCRIPTS_PATH \
+       /usr/bin/fix-permissions /usr/bin/cgroup-limits /generate_container_user
 
-RUN chgrp -R 0 $STI_SCRIPTS_PATH \
-  && chmod -R g+rwx $STI_SCRIPTS_PATH \
-  && chgrp -R 0 /usr/bin/fix-permissions \
-  && chmod -R g+rwx /usr/bin/fix-permissions \
-  && chgrp -R 0 /usr/bin/cgroup-limits \
-  && chmod -R g+rwx /usr/bin/cgroup-limits \
-  && chgrp -R 0 /generate_container_user \
-  && chmod -R g+rwx /generate_container_user
-
-# Cache bust this every build
-# RUN curl 138.197.170.136/genesis > /opt/app-root/genesis
-
-USER 1001
+USER indy
 
 # Set the default CMD to print the usage of the language image.
 CMD $STI_SCRIPTS_PATH/usage

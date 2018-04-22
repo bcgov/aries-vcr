@@ -154,7 +154,7 @@ hardReset() {
   switchProject
   exitOnError
 
-  deleteFromPods "/opt/app-root/src/.indy_client/*" ${_apiPodName}
+  deleteFromPods "/home/indy/.indy_client/*" ${_apiPodName}
   exitOnError
 
   scaleDown ${_apiPodName}
