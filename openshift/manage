@@ -107,9 +107,7 @@ fi
 resetDatabase() {
   _apiPodName=${1}
   _dbPodName=${2}
-  _dbName=${3}
-  _dbUsername=${4}
-  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ] || [ -z "${_dbName}" ] || [ -z "${_dbUsername}" ]; then
+  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ]; then
     echo -e \\n"resetDatabase; Missing parameter!"\\n
     exit 1
   fi
@@ -117,23 +115,8 @@ resetDatabase() {
   switchProject
   exitOnError
 
-  scaleDown ${_apiPodName}
-  exitOnError
-  
-  printAndWait "Wait for the ${_apiPodName} pod to completely shut down before continuing."
-
-  dropAndRecreateDatabase.sh "" "${_dbPodName}" "${_dbName}" "${_dbUsername}"
-  exitOnError
-  
-  scaleUp ${_apiPodName}
-  exitOnError
-
-  printAndWait "Wait for the ${_apiPodName} pod to completely start up before continuing."
-
-  echoWarning "\nRebuilding the search index ..."
-  echoWarning "The command may start interactively in the pod.  Please answer 'y' to the question if you are prompted."
-  runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
-  exitOnError
+  dropAndRecreateDatabaseWithMigrations ${_apiPodName} ${_dbPodName}
+  rebuildSearchIndex ${_apiPodName}
 
   echoWarning "\nThe project's database has been reset."
   echoWarning "You can now use the Permitify manage script to recycle the Permitify pods."  
@@ -142,9 +125,9 @@ resetDatabase() {
 hardReset() {
   _apiPodName=${1}
   _dbPodName=${2}
-  _dbName=${3}
-  _dbUsername=${4}
-  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ] || [ -z "${_dbName}" ] || [ -z "${_dbUsername}" ]; then
+  _walletApiPodName=${3}
+  _walletDbPodName=${4}
+  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ] || [ -z "${_walletApiPodName}" ] || [ -z "${_walletDbPodName}" ]; then
     echo -e \\n"resetDatabase; Missing parameter!"\\n
     exit 1
   fi
@@ -154,26 +137,9 @@ hardReset() {
   switchProject
   exitOnError
 
-  deleteFromPods "/home/indy/.indy_client/*" ${_apiPodName}
-  exitOnError
-
-  scaleDown ${_apiPodName}
-  exitOnError
-  
-  printAndWait "Wait for the ${_apiPodName} pod to completely shut down before continuing."
-
-  dropAndRecreateDatabase.sh "" "${_dbPodName}" "${_dbName}" "${_dbUsername}"
-  exitOnError
-  
-  scaleUp ${_apiPodName}
-  exitOnError
-
-  printAndWait "Wait for the ${_apiPodName} pod to completely start up before continuing."
-
-  echoWarning "\nRebuilding the search index ..."
-  echoWarning "The command may start interactively in the pod.  Please answer 'y' to the question if you are prompted."
-  runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
-  exitOnError
+  dropAndRecreateDatabaseWithMigrations ${_walletApiPodName} ${_walletDbPodName}
+  dropAndRecreateDatabaseWithMigrations ${_apiPodName} ${_dbPodName}
+  rebuildSearchIndex ${_apiPodName}
 
   printAndWait "If you are resetting the ledger, wait for the ledger to completely start up before continuing."
 
@@ -181,6 +147,18 @@ hardReset() {
 
   echoWarning "\nThe project's database and indy wallets have been reset."  
   echoWarning "You can now use the Permitify manage script to scale the Permitify pods up."  
+}
+
+rebuildSearchIndex() {
+  _apiPodName=${1}
+  if [ -z "${_apiPodName}" ]; then
+    echo -e \\n"rebuildSearchIndex; Missing parameter!"\\n
+    exit 1
+  fi
+  echoWarning "\nRebuilding the search index ..."
+  echoWarning "The command may start interactively in the pod.  Please answer 'y' to the question if you are prompted."
+  runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
+  exitOnError
 }
 
 getDidNames() {
@@ -216,19 +194,15 @@ case "${_cmd}" in
     # Allow all of the other parameters to be overridden ...
     apiPodName=${1:-django}
     dbPodName=${2:-postgresql}
-    dbName=${3:-TheOrgBook_Database}
-    dbUsername=${4:-TheOrgBook_User}
-
-    resetDatabase "${apiPodName}" "${dbPodName}" "${dbName}" "${dbUsername}"
+    resetDatabase "${apiPodName}" "${dbPodName}"
     ;;
   hardreset)
     # Allow all of the other parameters to be overridden ...
     apiPodName=${1:-django}
     dbPodName=${2:-postgresql}
-    dbName=${3:-TheOrgBook_Database}
-    dbUsername=${4:-TheOrgBook_User}
-
-    hardReset "${apiPodName}" "${dbPodName}" "${dbName}" "${dbUsername}"
+    walletApiPodName=${3:-wallet}
+    walletDbPodName=${4:-wallet-db}
+    hardReset "${apiPodName}" "${dbPodName}" "${walletApiPodName}" "${walletDbPodName}"
     ;;
   registerdids)
     registerDids $(getDidNames)
