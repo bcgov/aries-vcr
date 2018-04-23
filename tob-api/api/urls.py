@@ -55,8 +55,6 @@ urlpatterns = [
     url(r'^admin/records/counts', views_custom.recordCounts.as_view()),
     url(r'^quickload$', views_custom.quickLoad.as_view()),
 
-    url(r'^users/current$', views_custom.usersCurrentGet.as_view()),
-
     url(r'^doingbusinessas/bulk$', views.doingbusinessasBulkPost.as_view()),
     url(r'^doingbusinessas$', views.doingbusinessasGet.as_view()),
     url(r'^doingbusinessas/(?P<id>[0-9]+)/delete$', views.doingbusinessasIdDeletePost.as_view()),
@@ -87,35 +85,6 @@ urlpatterns = [
     url(r'^locationtypes/(?P<id>[0-9]+)/delete$', views.locationtypesIdDeletePost.as_view()),
     url(r'^locationtypes/(?P<id>[0-9]+)$', views.locationtypesIdGet.as_view()),
 
-    url(r'^permissions/bulk$', views.permissionsBulkPost.as_view()),
-    url(r'^permissions$', views.permissionsGet.as_view()),
-    url(r'^permissions/(?P<id>[0-9]+)/delete$', views.permissionsIdDeletePost.as_view()),
-    url(r'^permissions/(?P<id>[0-9]+)$', views.permissionsIdGet.as_view()),
-    
-    url(r'^roles/bulk$', views.rolesBulkPost.as_view()),
-    url(r'^roles$', views.rolesGet.as_view()),
-    url(r'^roles/(?P<id>[0-9]+)/delete$', views.rolesIdDeletePost.as_view()),
-    url(r'^roles/(?P<id>[0-9]+)$', views.rolesIdGet.as_view()),
-    url(r'^roles/(?P<id>[0-9]+)/permissions$', views_custom.rolesIdPermissionsGet.as_view()),
-    url(r'^roles/(?P<id>[0-9]+)/users$', views_custom.rolesIdUsersGet.as_view()),
-    
-    url(r'^rolepermissions/bulk$', views.rolepermissionsBulkPost.as_view()),
-    url(r'^rolepermissions$', views.rolepermissionsGet.as_view()),
-    url(r'^rolepermissions/(?P<id>[0-9]+)/delete$', views.rolepermissionsIdDeletePost.as_view()),
-    url(r'^rolepermissions/(?P<id>[0-9]+)$', views.rolepermissionsIdGet.as_view()),
-    
-    url(r'^users/bulk$', views.usersBulkPost.as_view()),
-    url(r'^users$', views.usersGet.as_view()),
-    url(r'^users/(?P<id>[0-9]+)/delete$', views.usersIdDeletePost.as_view()),
-    url(r'^users/(?P<id>[0-9]+)$', views.usersIdGet.as_view()),
-    url(r'^users/(?P<id>[0-9]+)/permissions$', views_custom.usersIdPermissionsGet.as_view()),
-    url(r'^users/(?P<id>[0-9]+)/roles$', views_custom.usersIdRolesGet.as_view()),
-    
-    url(r'^userroles/bulk$', views.userrolesBulkPost.as_view()),
-    url(r'^userroles$', views.userrolesGet.as_view()),
-    url(r'^userroles/(?P<id>[0-9]+)/delete$', views.userrolesIdDeletePost.as_view()),
-    url(r'^userroles/(?P<id>[0-9]+)$', views.userrolesIdGet.as_view()),
-    
     url(r'^verifiableclaims/bulk$', views.verifiableclaimsBulkPost.as_view()),
     url(r'^verifiableclaims$', views.verifiableclaimsGet.as_view()),
     url(r'^verifiableclaims/(?P<id>[0-9]+)/delete$', views.verifiableclaimsIdDeletePost.as_view()),
@@ -144,7 +113,6 @@ urlpatterns = [
     url(r'^search/locations$', search_views.LocationSearchView.as_view()),
     url(r'^search/name$', search_views.NameSearchView.as_view()),
     url(r'^search/organization$', search_views.OrganizationSearchView.as_view()),
-    url(r'^search/users$', views_custom.usersSearchGet.as_view()),
     url(r'^search/verifiableorgs$', search_views.VerifiableOrgSearchView.as_view()),
 
     url(r'^bcovrin/generate-claim-request$', indy_views.bcovrinGenerateClaimRequest.as_view()),

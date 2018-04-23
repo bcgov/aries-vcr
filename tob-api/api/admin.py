@@ -27,22 +27,10 @@ from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
 from .models.Location import Location
 from .models.LocationType import LocationType
-from .models.Permission import Permission
-
-from .models.Role import Role
-from .models.RolePermission import RolePermission
-
-
-from .models.User import User
-
-from .models.UserRole import UserRole
-
-
 from .models.VerifiableClaim import VerifiableClaim
 from .models.VerifiableClaimType import VerifiableClaimType
 from .models.VerifiableOrg import VerifiableOrg
 from .models.VerifiableOrgType import VerifiableOrgType
-
 
 
 admin.site.register(DoingBusinessAs)
@@ -51,11 +39,6 @@ admin.site.register(IssuerService)
 admin.site.register(Jurisdiction)
 admin.site.register(Location)
 admin.site.register(LocationType)
-admin.site.register(Permission)
-admin.site.register(Role)
-admin.site.register(RolePermission)
-admin.site.register(User)
-admin.site.register(UserRole)
 admin.site.register(VerifiableClaim)
 admin.site.register(VerifiableClaimType)
 admin.site.register(VerifiableOrg)

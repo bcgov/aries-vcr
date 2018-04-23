@@ -21,33 +21,16 @@
 
 from rest_framework import serializers
 
-from .models.CurrentUserViewModel import CurrentUserViewModel
 from .models.DoingBusinessAs import DoingBusinessAs
 from .models.InactiveClaimReason import InactiveClaimReason
 from .models.IssuerService import IssuerService
 from .models.Jurisdiction import Jurisdiction
 from .models.Location import Location
 from .models.LocationType import LocationType
-from .models.Permission import Permission
-from .models.PermissionViewModel import PermissionViewModel
-from .models.Role import Role
-from .models.RolePermission import RolePermission
-from .models.RolePermissionViewModel import RolePermissionViewModel
-from .models.RoleViewModel import RoleViewModel
-from .models.User import User
-from .models.UserDetailsViewModel import UserDetailsViewModel
-from .models.UserRole import UserRole
-from .models.UserRoleViewModel import UserRoleViewModel
-from .models.UserViewModel import UserViewModel
 from .models.VerifiableClaim import VerifiableClaim
 from .models.VerifiableClaimType import VerifiableClaimType
 from .models.VerifiableOrg import VerifiableOrg
 from .models.VerifiableOrgType import VerifiableOrgType
-
-class CurrentUserViewModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = CurrentUserViewModel
-    fields = ('id','givenName','surname','email','active','userRoles','smUserId','smAuthorizationDirectory')
 
 class DoingBusinessAsSerializer(serializers.ModelSerializer):
   class Meta:
@@ -78,61 +61,6 @@ class LocationTypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = LocationType
     fields = ('id','locType','description','effectiveDate','endDate','displayOrder')
-
-class PermissionSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Permission
-    fields = ('id','code','name','description')
-
-class PermissionViewModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = PermissionViewModel
-    fields = ('id','code','name','description')
-
-class RoleSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Role
-    fields = ('id','name','description')
-
-class RolePermissionSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = RolePermission
-    fields = ('id','roleId','permissionId')
-
-class RolePermissionViewModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = RolePermissionViewModel
-    fields = ('id','roleId','permissionId')
-
-class RoleViewModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = RoleViewModel
-    fields = ('id','name','description')
-
-class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ('id','givenName','surname','email','userId','guid','authorizationDirectory','effectiveDate','endDate')
-
-class UserDetailsViewModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = UserDetailsViewModel
-    fields = ('id','givenName','surname','email','active','permissions')
-
-class UserRoleSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = UserRole
-    fields = ('id','userId','roleId','effectiveDate','endDate')
-
-class UserRoleViewModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = UserRoleViewModel
-    fields = ('id','effectiveDate','expiryDate','roleId','userId')
-
-class UserViewModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = UserViewModel
-    fields = ('id','givenName','surname','email','active','smUserId','userRoles')
 
 class VerifiableClaimSerializer(serializers.ModelSerializer):
   class Meta:
