@@ -149,7 +149,7 @@ build-api() {
   #
   # tob-api
   #
-  # Build von-indy image used as a base
+  # Build von-image base docker image
   if [ -n "$INDY_RELEASE" ]; then
     INDY_BUILD_FLAGS="--build-arg indy_build_flags=--release"
   fi

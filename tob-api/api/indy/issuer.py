@@ -4,6 +4,8 @@ import logging
 from api.models.IssuerService import IssuerService
 from api.models.Jurisdiction import Jurisdiction
 from api.models.VerifiableClaimType import VerifiableClaimType
+from api.auth import User, generate_random_username, get_issuers_group, \
+  verify_signature, VerifierException
 
 
 ISSUER_JSON_SCHEMA = {
@@ -16,7 +18,8 @@ ISSUER_JSON_SCHEMA = {
         'did': {'type': 'string', 'minLength': 1}, # check length + valid characters?
         'name': {'type': 'string', 'minLength': 1},
         'abbreviation': {'type': 'string'},
-        'endpoint': {'type': 'string'}
+        'email': {'type': 'string', 'minLength': 1},
+        'url': {'type': 'string'}
       },
       'required': ['did', 'name']
     },
@@ -46,6 +49,10 @@ ISSUER_JSON_SCHEMA = {
 }
 
 
+class IssuerException(Exception):
+  pass
+
+
 class IssuerManager:
   """
   Handle registration of issuer services, taking the JSON definition
@@ -56,9 +63,21 @@ class IssuerManager:
     self.__logger = logging.getLogger(__name__)
   
 
-  def registerIssuer(self, spec):
-    jsonschema.validate(spec, ISSUER_JSON_SCHEMA)
+  def registerIssuer(self, request, spec):
+    try:
+      jsonschema.validate(spec, ISSUER_JSON_SCHEMA)
+    except jsonschema.ValidationError as e:
+      raise IssuerException('Schema validation error: {}'.format(e))
 
+    try:
+      verified = verify_signature(request)
+    except VerifierException as e:
+      raise IssuerException('Signature validation error: {}'.format(e))
+    if not verified:
+      raise IssuerException('Missing HTTP Signature')
+    self.__logger.debug('DID signature verified: %s', verified)
+
+    user = self.checkUpdateUser(verified, spec['issuer'])
     jurisdiction = self.checkUpdateJurisdiction(spec['jurisdiction'])
     issuer = self.checkUpdateIssuerService(jurisdiction, spec['issuer'])
     ctypes = self.checkUpdateClaimTypes(issuer, spec.get('claim-types', []))
@@ -74,7 +93,8 @@ class IssuerManager:
         'did': issuer.DID,
         'name': issuer.name,
         'abbreviation': issuer.issuerOrgTLA,
-        'endpoint': issuer.issuerOrgURL
+        'email': user.email,
+        'url': issuer.issuerOrgURL
       },
       'claim-types': [
         {
@@ -101,21 +121,48 @@ class IssuerManager:
     return record
 
 
+  def checkUpdateUser(self, verified, issuer_def):
+    issuer_did = issuer_def['did'].strip()
+    display_name = issuer_def['name'].strip()
+    user_email = issuer_def['email'].strip()
+    assert 'did:sov:{}'.format(issuer_did) == verified['keyId']
+    
+    try:
+      user = User.objects.get(DID=issuer_did)
+    except User.DoesNotExist:
+      self.__logger.debug("Creating user for DID '{0}' ...".format(issuer_did))
+      user = User.objects.create_user(
+        generate_random_username(length=8, prefix='issuer-'),
+        email=user_email,
+        password=None,
+        DID=issuer_did,
+        last_name=display_name
+      )
+      user.groups.add(get_issuers_group())
+    else:
+      user = self.updateRecord(user, {
+        'DID': issuer_did,
+        'last_name': display_name,
+        'email': user_email
+      })
+    return user
+
+
   def checkUpdateJurisdiction(self, jurisd_def):
     jurisd_name = jurisd_def['name'].strip()
     jurisd_abbr = jurisd_def.get('abbreviation', '').strip() or None
-    jurisdiction = Jurisdiction.objects.filter(name=jurisd_name)
-    if not jurisdiction:
+    try:
+      jurisdiction = Jurisdiction.objects.get(name=jurisd_name)
+    except Jurisdiction.DoesNotExist:
       self.__logger.debug("Jurisdiction '{0}' does not exist.  Creating ...".format(jurisd_name))
-      jurisdiction = Jurisdiction(
+      jurisdiction = Jurisdiction.objects.create(
         abbrv=jurisd_abbr,
         name=jurisd_name,
         displayOrder=0,
         isOnCommonList=True
       )
-      jurisdiction.save()
     else:
-      jurisdiction = self.updateRecord(jurisdiction[0], {'abbrv': jurisd_abbr})
+      jurisdiction = self.updateRecord(jurisdiction, {'abbrv': jurisd_abbr})
     return jurisdiction
 
 
@@ -123,7 +170,7 @@ class IssuerManager:
     issuer_did = issuer_def['did'].strip()
     issuer_name = issuer_def['name'].strip()
     issuer_abbr = issuer_def.get('abbreviation', '').strip() or None
-    issuer_url = issuer_def.get('endpoint', '').strip() or None
+    issuer_url = issuer_def.get('url', '').strip() or None
     
     # search by DID
     issuer = IssuerService.objects.filter(DID=issuer_did)
@@ -132,14 +179,13 @@ class IssuerManager:
       issuer = IssuerService.objects.filter(name=issuer_name)
     if not issuer:
       self.__logger.debug("Issuer service '{0}' does not exist.  Creating ...".format(issuer_name))
-      issuer = IssuerService(
-                name=issuer_name,
-                DID=issuer_did,
-                issuerOrgTLA=issuer_abbr,
-                issuerOrgURL=issuer_url,
-                jurisdictionId=jurisdiction
+      issuer = IssuerService.objects.create(
+        name=issuer_name,
+        DID=issuer_did,
+        issuerOrgTLA=issuer_abbr,
+        issuerOrgURL=issuer_url,
+        jurisdictionId=jurisdiction
       )
-      issuer.save()
     else:
       issuer = self.updateRecord(issuer[0], {
         'name': issuer_name,
@@ -173,14 +219,13 @@ class IssuerManager:
         })
       else:
         self.__logger.debug("Claim type '{0}' does not exist.  Creating ...".format(type_name))
-        claimtype = VerifiableClaimType(
+        claimtype = VerifiableClaimType.objects.create(
           claimType=type_name,
           issuerServiceId=issuer,
           issuerURL=type_endpoint,
           schemaName=type_schema,
           schemaVersion=type_version
         )
-        claimtype.save()
       results.append(claimtype)
     
     # clean up existing records

@@ -20,7 +20,7 @@
 """
 
 from api.indy.proofRequestBuilder import ProofRequestBuilder
-from api.indy.issuer import IssuerManager
+from api.indy.issuer import IssuerManager, IssuerException
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers
@@ -222,7 +222,8 @@ class bcovrinRegisterIssuer(APIView):
             "did": "issuer DID",
             "name": "issuer name (english)",
             "abbreviation": "issuer TLA (english)",
-            "endpoint": "url for issuer details"
+            "email": "administrator email",
+            "url": "url for issuer details"
         },
         "jurisdiction": {
             "name": "name of jurisdiction (english)",
@@ -245,7 +246,12 @@ class bcovrinRegisterIssuer(APIView):
     __logger.warn('>>> Register issuer')
     issuerDef = request.body.decode('utf-8')
     issuerJson = json.loads(issuerDef)
-    issuerManager = IssuerManager()
-    updated = issuerManager.registerIssuer(issuerJson)
-    __logger.warn('<<< Registered issuer')
-    return JsonResponse({'success': True, 'result': updated})
+    try:
+      issuerManager = IssuerManager()
+      updated = issuerManager.registerIssuer(request, issuerJson)
+      response = {'success': True, 'result': updated}
+    except IssuerException as e:
+      __logger.exception('Issuer request not accepted:')
+      response = {'success': False, 'result': str(e)}
+    __logger.warn('<<< Register issuer')
+    return JsonResponse(response)
