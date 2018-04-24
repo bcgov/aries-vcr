@@ -125,23 +125,26 @@ class IssuerManager:
     issuer_did = issuer_def['did'].strip()
     display_name = issuer_def['name'].strip()
     user_email = issuer_def['email'].strip()
-    assert 'did:sov:{}'.format(issuer_did) == verified['keyId']
+    verified_did = verified['keyId']
+    assert 'did:sov:{}'.format(issuer_did) == verified_did
     
     try:
-      user = User.objects.get(DID=issuer_did)
+      user = User.objects.get(DID=verified_did)
     except User.DoesNotExist:
-      self.__logger.debug("Creating user for DID '{0}' ...".format(issuer_did))
+      self.__logger.debug("Creating user for DID '{0}' ...".format(verified_did))
       user = User.objects.create_user(
-        generate_random_username(length=8, prefix='issuer-'),
+        generate_random_username(length=12, prefix='issuer-', split=None),
         email=user_email,
         password=None,
-        DID=issuer_did,
+        DID=verified_did,
+        verkey=verified['key'],
         last_name=display_name
       )
       user.groups.add(get_issuers_group())
     else:
       user = self.updateRecord(user, {
-        'DID': issuer_did,
+        'DID': verified_did,
+        'verkey': verified['key'],
         'last_name': display_name,
         'email': user_email
       })
