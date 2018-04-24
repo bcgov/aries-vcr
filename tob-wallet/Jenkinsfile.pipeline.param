@@ -1,8 +1,8 @@
-#=========================================================
+#==========================================================
 # OpenShift Jenkins pipeline template parameters for:
 # Jenkinsfile: ./tob-wallet/Jenkinsfile
 # JSON Template File: https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/provisioning/pipeline/resources/pipeline-build.json
-#=========================================================
+#==========================================================
 NAME=tob-wallet
 # GITHUB_WEBHOOK_SECRET=[a-zA-Z0-9]{40}
 SOURCE_REPOSITORY_URL=https://github.com/bcgov/TheOrgBook.git
