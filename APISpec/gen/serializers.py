@@ -72,7 +72,7 @@ class JurisdictionSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Location
-    fields = ('id','verifiableOrgId','doingBusinessAsId','locationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
+    fields = ('verifiableOrgId','doingBusinessAsId','locationTypeId')#'addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
 
 class LocationTypeSerializer(serializers.ModelSerializer):
   class Meta:

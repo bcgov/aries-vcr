@@ -30,9 +30,20 @@ from .LocationType import LocationType
 from auditable.models import Auditable
 
 class LocationManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         print("INSIDE THE MANAGER!!!!!!!!!!!!!!!!!!!!")
-        return super().get_queryset().values('verifiableOrgId', 'doingBusinessAsId', 'locationTypeId', 'municipality', 'province')
+        _queryset = super(LocationManager, self).get_queryset()
+        
+        _value_queryset = .values('id','verifiableOrgId','doingBusinessAsId','locationTypeId')
+        #.update(municipality="CA", streetAddress="CA", latLong="CA")
+        #for key in _queryset:
+        #result = list(_queryset)
+            
+        print(_queryset)
+        print(_value_queryset)
+        
+        return _queryset
+      
 
 
 class Location(Auditable, models.Model):	    
