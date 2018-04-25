@@ -43,7 +43,7 @@ usage () {
     registerDids
       - Register/re-register the services's DIDs with the ledger.
 
-    rebuildsearchindex
+    rebuildSearchIndex
       - Rebuild the search index for a given environment.
 
 
