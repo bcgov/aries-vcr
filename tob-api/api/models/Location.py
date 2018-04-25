@@ -29,24 +29,7 @@ from .LocationType import LocationType
 
 from auditable.models import Auditable
 
-class LocationManager(models.Manager):
-    def get_queryset(self):
-        print("INSIDE THE MANAGER!!!!!!!!!!!!!!!!!!!!")
-        _queryset = super(LocationManager, self).get_queryset()
-        
-        _value_queryset = .values('id','verifiableOrgId','doingBusinessAsId','locationTypeId')
-        #.update(municipality="CA", streetAddress="CA", latLong="CA")
-        #for key in _queryset:
-        #result = list(_queryset)
-            
-        print(_queryset)
-        print(_value_queryset)
-        
-        return _queryset
-      
-
-
-class Location(Auditable, models.Model):	    
+class Location(Auditable):	    
     verifiableOrgId = models.ForeignKey('VerifiableOrg', related_name='locations', default=0)
     doingBusinessAsId = models.ForeignKey('DoingBusinessAs', related_name='locations', blank=True, null=True)   
     locationTypeId = models.ForeignKey('LocationType', related_name='locationTypes')   
@@ -59,10 +42,6 @@ class Location(Auditable, models.Model):
     postalCode = models.CharField(max_length=255, blank=True, null=True)   
     latLong = models.CharField(max_length=255, blank=True, null=True)   
     effectiveDate = models.DateField(default=timezone.now)   
-    endDate = models.DateField(blank=True, null=True)  
-    print("INSIDE THE LOCATION!!!!!!!!!!!!!!!!!!!!")
-    objects = LocationManager() # The custom manager. 
-
+    endDate = models.DateField(blank=True, null=True)   
     class Meta:
         db_table = 'LOCATION'
-
