@@ -204,6 +204,12 @@ case "${_cmd}" in
     walletDbPodName=${4:-wallet-db}
     hardReset "${apiPodName}" "${dbPodName}" "${walletApiPodName}" "${walletDbPodName}"
     ;;
+  rebuildsearchindex)
+    apiPodName=${1:-django}
+    switchProject
+    exitOnError
+    rebuildSearchIndex "${apiPodName}"
+    ;;
   registerdids)
     registerDids $(getDidNames)
     ;;
