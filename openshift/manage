@@ -42,6 +42,11 @@ usage () {
 
     registerDids
       - Register/re-register the services's DIDs with the ledger.
+
+    rebuildsearchindex
+      - Rebuild the search index for a given environment.
+
+
 EOF
 exit 1
 }
