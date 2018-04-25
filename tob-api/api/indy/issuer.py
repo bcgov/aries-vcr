@@ -4,8 +4,7 @@ import logging
 from api.models.IssuerService import IssuerService
 from api.models.Jurisdiction import Jurisdiction
 from api.models.VerifiableClaimType import VerifiableClaimType
-from api.auth import User, generate_random_username, get_issuers_group, \
-  verify_signature, VerifierException
+from api.auth import create_issuer_user, verify_signature, VerifierException
 
 
 ISSUER_JSON_SCHEMA = {
@@ -126,29 +125,9 @@ class IssuerManager:
     display_name = issuer_def['name'].strip()
     user_email = issuer_def['email'].strip()
     verified_did = verified['keyId']
-    assert 'did:sov:{}'.format(issuer_did) == verified_did
-    
-    try:
-      user = User.objects.get(DID=verified_did)
-    except User.DoesNotExist:
-      self.__logger.debug("Creating user for DID '{0}' ...".format(verified_did))
-      user = User.objects.create_user(
-        generate_random_username(length=12, prefix='issuer-', split=None),
-        email=user_email,
-        password=None,
-        DID=verified_did,
-        verkey=verified['key'],
-        last_name=display_name
-      )
-      user.groups.add(get_issuers_group())
-    else:
-      user = self.updateRecord(user, {
-        'DID': verified_did,
-        'verkey': verified['key'],
-        'last_name': display_name,
-        'email': user_email
-      })
-    return user
+    verkey = verified['key']
+    assert 'did:sov:{}'.format(issuer_did) == verified_did   
+    return create_issuer_user(user_email, verified_did, last_name=display_name, verkey=verkey)
 
 
   def checkUpdateJurisdiction(self, jurisd_def):

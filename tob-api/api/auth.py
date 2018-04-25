@@ -4,21 +4,57 @@ import random
 from string import ascii_lowercase, digits
 
 import base58
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from didauth.base import KeyFinderBase, VerifierException
 from didauth.headers import HeaderVerifier
 from rest_framework import authentication, exceptions, permissions
 
 from api.indy.agent import Verifier
 from api.eventloop import do as run_loop
-from .models import User
+from api.models.User import User
+from api.models.VerifiableClaim import VerifiableClaim
 
 
 ISSUERS_GROUP_NAME = 'issuers'
 
 
+def create_issuer_user(email, issuer_did, username=None, password=None, first_name='', last_name='', verkey=None):
+    logger = logging.getLogger(__name__)
+    try:
+        user = User.objects.get(DID=issuer_did)
+    except User.DoesNotExist:
+        logger.debug("Creating user for DID '{0}' ...".format(issuer_did))
+        if not username:
+            username = generate_random_username(length=12, prefix='issuer-', split=None)
+        user = User.objects.create_user(
+            username,
+            email=email,
+            password=password,
+            DID=issuer_did,
+            verkey=verkey,
+            first_name=first_name,
+            last_name=last_name
+        )
+        user.groups.add(get_issuers_group())
+    else:
+        user.DID = issuer_did
+        user.verkey = verkey
+        user.email = email
+        if first_name != None:
+            user.first_name = first_name
+        if last_name != None:
+            user.last_name = last_name
+        user.save()
+    return user
+
+
 def get_issuers_group():
-    group, _created = Group.objects.get_or_create(name=ISSUERS_GROUP_NAME)
+    group, created = Group.objects.get_or_create(name=ISSUERS_GROUP_NAME)
+    if created:
+        claims_type = ContentType.objects.get_for_model(VerifiableClaim)
+        create_claims_perm = Permission.objects.get(content_type=claims_type, codename='add_verifiableclaim')
+        group.permissions.add(create_claims_perm)
     return group
 
 
@@ -36,10 +72,14 @@ def generate_random_username(length=16, chars=ascii_lowercase+digits, split=4, d
         return username
 
 
-# should probably be using user.has_perm instead of checking group name
 class IsRegisteredIssuer(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.groups.filter(name=ISSUERS_GROUP_NAME).exists()
+
+
+class CanStoreClaims(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.has_perm('api.add_verifiableclaim')
 
 
 class IsSignedRequest(permissions.BasePermission):
