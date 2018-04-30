@@ -1,4 +1,4 @@
-FROM andrewwhitehead/von-image:py36-indy1.3.1-dev-408
+FROM andrewwhitehead/von-image:py36-indy1.3.1-dev-441-ew
 
 WORKDIR $HOME
 EXPOSE 8080

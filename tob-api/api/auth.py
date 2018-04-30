@@ -180,5 +180,6 @@ def verify_signature(request, key_finder=None):
         request.META['SIGNATURE'] = False
         raise
     request.META['SIGNATURE'] = verified
-    request.META['VERIFIED_DID'] = verified['keyId']
+    if verified:
+        request.META['VERIFIED_DID'] = verified['keyId']
     return verified
