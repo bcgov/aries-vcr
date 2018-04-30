@@ -44,7 +44,8 @@ class bcovrinGenerateClaimRequest(APIView):
   """  
   Generate a claim request from a given claim definition.
   """
-  permission_classes = (IsSignedRequest,)  
+  #permission_classes = (IsSignedRequest,)  
+  permission_classes = (permissions.AllowAny,)
   
   def post(self, request, *args, **kwargs):
     """  
@@ -80,7 +81,8 @@ class bcovrinStoreClaim(APIView):
   """  
   Store a verifiable claim.
   """
-  permission_classes = (IsSignedRequest,)  # FIXME - change to IsRegisteredIssuer
+  #permission_classes = (IsSignedRequest,)  # FIXME - change to IsRegisteredIssuer
+  permission_classes = (permissions.AllowAny,)
   
   def post(self, request, *args, **kwargs):
     """  
