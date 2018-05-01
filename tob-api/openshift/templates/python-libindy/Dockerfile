@@ -53,7 +53,7 @@ RUN chown -R indy:0 $HOME $STI_SCRIPTS_PATH \
     chmod -R ug+rwx $STI_SCRIPTS_PATH \
        /usr/bin/fix-permissions /usr/bin/cgroup-limits /generate_container_user
 
-USER indy
+USER 1001
 
 # Set the default CMD to print the usage of the language image.
 CMD $STI_SCRIPTS_PATH/usage

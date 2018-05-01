@@ -130,21 +130,21 @@
       "displayName": "Source Image Kind",
       "description": "The 'kind' (type) of the  source image; typically ImageStreamTag, or DockerImage.",
       "required": true,
-      "value": "ImageStreamTag"
+      "value": "DockerImage"
     },
     {
       "name": "SOURCE_IMAGE_NAME",
       "displayName": "Source Image Name",
       "description": "The name of the source image.",
       "required": true,
-      "value": "libindy"
+      "value": "andrewwhitehead/von-image"
     },
     {
       "name": "SOURCE_IMAGE_TAG",
       "displayName": "Source Image Tag",
       "description": "The tag of the source image.",
       "required": true,
-      "value": "latest"
+      "value": "py36-indy1.3.1-dev-441-ew"
     },
     {
       "name": "CPU_LIMIT",
