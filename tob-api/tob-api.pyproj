@@ -33,10 +33,12 @@
   <ItemGroup>
     <Compile Include="api\admin.py" />
     <Compile Include="api\apps.py" />
+    <Compile Include="api\auth.py" />
     <Compile Include="api\claimDefProcesser.py" />
     <Compile Include="api\claimProcesser.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="api\eventloop.py" />
     <Compile Include="api\exceptions\OrganizationNotRegisteredException.py" />
     <Compile Include="api\exceptions\ClaimTypeNotRegisteredException.py">
       <SubType>Code</SubType>
@@ -51,6 +53,8 @@
     <Compile Include="api\indy\eventloop.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="api\indy\issuer.py" />
+    <Compile Include="api\indy\proofRequestBuilder.py" />
     <Compile Include="api\indy\__init__.py" />
     <Compile Include="api\indy_views.py">
       <SubType>Code</SubType>
@@ -65,41 +69,21 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="api\migrations\0001_initial.py" />
-    <Compile Include="api\migrations\0002_auto_20171013_0922.py" />
-    <Compile Include="api\migrations\0003_auto_20171016_0911.py" />
-    <Compile Include="api\migrations\0004_auto_20171018_0732.py" />
-    <Compile Include="api\migrations\0005_auto_20171031_1338.py" />
-    <Compile Include="api\migrations\0006_auto_20171108_0936.py" />
-    <Compile Include="api\migrations\0007_auto_20171109_1304.py" />
-    <Compile Include="api\migrations\0008_auto_20171109_1357.py" />
-    <Compile Include="api\migrations\0009_auto_20171110_0700.py" />
-    <Compile Include="api\migrations\0010_auto_20171130_1202.py" />
-    <Compile Include="api\migrations\0011_auto_20171222_1231.py" />
     <Compile Include="api\migrations\__init__.py" />
     <Compile Include="api\models.py" />
-    <Compile Include="api\models\CurrentUserViewModel.py" />
     <Compile Include="api\models\DoingBusinessAs.py" />
     <Compile Include="api\models\InactiveClaimReason.py" />
     <Compile Include="api\models\IssuerService.py" />
     <Compile Include="api\models\Jurisdiction.py" />
     <Compile Include="api\models\Location.py" />
     <Compile Include="api\models\LocationType.py" />
-    <Compile Include="api\models\Permission.py" />
-    <Compile Include="api\models\PermissionViewModel.py" />
-    <Compile Include="api\models\Role.py" />
-    <Compile Include="api\models\RolePermission.py" />
-    <Compile Include="api\models\RolePermissionViewModel.py" />
-    <Compile Include="api\models\RoleViewModel.py" />
     <Compile Include="api\models\User.py" />
-    <Compile Include="api\models\UserDetailsViewModel.py" />
-    <Compile Include="api\models\UserRole.py" />
-    <Compile Include="api\models\UserRoleViewModel.py" />
-    <Compile Include="api\models\UserViewModel.py" />
     <Compile Include="api\models\VerifiableClaim.py" />
     <Compile Include="api\models\VerifiableClaimType.py" />
     <Compile Include="api\models\VerifiableOrg.py" />
     <Compile Include="api\models\VerifiableOrgType.py" />
     <Compile Include="api\models\__init__.py" />
+    <Compile Include="api\proofRequestProcesser.py" />
     <Compile Include="api\search_indexes.py">
       <SubType>Code</SubType>
     </Compile>
