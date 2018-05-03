@@ -45,12 +45,7 @@
           "type": "Docker",
           "dockerStrategy":
           {
-            "dockerfilePath": "${DOCKER_FILE_PATH}",
-            "from":
-            {
-              "kind": "${SOURCE_IMAGE_KIND}",
-              "name": "${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
-            }
+            "dockerfilePath": "${DOCKER_FILE_PATH}"
           }
         },
         "output":
@@ -126,53 +121,32 @@
       "value": "Dockerfile"
     },
     {
-      "name": "SOURCE_IMAGE_KIND",
-      "displayName": "Source Image Kind",
-      "description": "The 'kind' (type) of the  source image; typically ImageStreamTag, or DockerImage.",
-      "required": true,
-      "value": "DockerImage"
-    },
-    {
-      "name": "SOURCE_IMAGE_NAME",
-      "displayName": "Source Image Name",
-      "description": "The name of the source image.",
-      "required": true,
-      "value": "andrewwhitehead/von-image"
-    },
-    {
-      "name": "SOURCE_IMAGE_TAG",
-      "displayName": "Source Image Tag",
-      "description": "The tag of the source image.",
-      "required": true,
-      "value": "py36-indy1.3.1-dev-441-ew"
-    },
-    {
       "name": "CPU_LIMIT",
       "displayName": "Resources CPU Limit",
       "description": "The resources CPU limit (in cores) for this build.",
       "required": true,
-      "value": "2"
+      "value": "0"
     },
     {
       "name": "MEMORY_LIMIT",
       "displayName": "Resources Memory Limit",
       "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
       "required": true,
-      "value": "6Gi"
+      "value": "0Mi"
     },   
     {
       "name": "CPU_REQUEST",
       "displayName": "Resources CPU Request",
       "description": "The resources CPU request (in cores) for this build.",
       "required": true,
-      "value": "1"
+      "value": "0"
     },
     {
       "name": "MEMORY_REQUEST",
       "displayName": "Resources Memory Request",
       "description": "The resources Memory request (in Mi, Gi, etc) for this build.",
       "required": true,
-      "value": "2Gi"
+      "value": "0Mi"
     }        
   ]
 }
