@@ -152,10 +152,10 @@ services:
     depends_on:
       - tob-db
     command: >
-      /bin/bash -c "
+      /bin/sh -c "
         echo sleeping ...;
         sleep 20;
-        exec npm start;"
+        ./start.sh;"
     
   # 
   # tob-solr
