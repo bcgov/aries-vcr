@@ -1,8 +1,7 @@
 {
   "kind": "Template",
   "apiVersion": "v1",
-  "metadata":
-  {
+  "metadata": {
     "name": "${NAME}-build-template",
     "creationTimestamp": null
   },
@@ -10,48 +9,38 @@
     {
       "kind": "ImageStream",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${NAME}"
       }
     },
     {
       "kind": "BuildConfig",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${NAME}",
         "creationTimestamp": null,
-        "labels":
-        {
+        "labels": {
           "app": "${NAME}"
         }
       },
-      "spec":
-      {
+      "spec": {
         "runPolicy": "Serial",
-        "source":
-        {
+        "source": {
           "type": "Git",
-          "git":
-          {
+          "git": {
             "ref": "${GIT_REF}",
             "uri": "${GIT_REPO_URL}"
           },
           "contextDir": "${SOURCE_CONTEXT_DIR}"
         },
-        "strategy":
-        {
+        "strategy": {
           "type": "Docker",
-          "dockerStrategy":
-          {
+          "dockerStrategy": {
             "dockerfilePath": "${DOCKER_FILE_PATH}"
           }
         },
-        "output":
-        {
-          "to":
-          {
+        "output": {
+          "to": {
             "kind": "ImageStreamTag",
             "name": "${NAME}:${OUTPUT_IMAGE_TAG}"
           }
@@ -133,7 +122,7 @@
       "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
       "required": true,
       "value": "0Mi"
-    },   
+    },
     {
       "name": "CPU_REQUEST",
       "displayName": "Resources CPU Request",
@@ -147,6 +136,6 @@
       "description": "The resources Memory request (in Mi, Gi, etc) for this build.",
       "required": true,
       "value": "0Mi"
-    }        
+    }
   ]
 }
