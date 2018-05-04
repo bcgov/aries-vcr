@@ -39,7 +39,7 @@
           "type": "Source",
           "sourceStrategy": {
             "from": {
-              "kind": "${KIND_OF_IMAGE}",
+              "kind": "${SOURCE_IMAGE_KIND}",
               "name": "${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
             },
             "env": [
@@ -94,25 +94,25 @@
       "value": "tob-api/django/"
     },
     {
-      "name": "KIND_OF_IMAGE",
-      "displayName": "Kind of the Source Image",
+      "name": "SOURCE_IMAGE_KIND",
+      "displayName": "Source Image Kind",
       "required": true,
-      "description": "The kind of the source image.",
-      "value": "ImageStreamTag"
+      "description": "The 'kind' (type) of the  source image; typically ImageStreamTag, or DockerImage.",
+      "value": "DockerImage"
     },
     {
       "name": "SOURCE_IMAGE_NAME",
       "displayName": "Source Image Name",
       "required": true,
       "description": "The name of the source image.",
-      "value": "python-libindy"
+      "value": "andrewwhitehead/von-image"
     },
     {
       "name": "SOURCE_IMAGE_TAG",
       "displayName": "Source Image Tag",
       "required": true,
       "description": "The tag of the source image.",
-      "value": "latest"
+      "value": "py36-indy1.3.1-dev-441-ew-s2i"
     },
     {
       "name": "PIP_INDEX_URL",
