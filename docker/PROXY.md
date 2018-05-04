@@ -45,15 +45,6 @@ export https_proxy=http://proxy-server-ip:port
 export no_proxy=localhost,127.0.0.0/8,*.local,*.domain
 ```
 
-## Configure npm proxy settings
-
-Execute the following commands a terminal to set npm proxies.
-
-```
-npm config set proxy http://proxy-server-ip:port
-npm config set https-proxy http://proxy-server-ip:port
-```
-
 ## Running on Windows
 
 To be continued.
