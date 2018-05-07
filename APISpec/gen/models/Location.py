@@ -24,6 +24,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from .VerifiableOrg import VerifiableOrg
+from .DoingBusinessAs import DoingBusinessAs
 from .LocationType import LocationType
 
 from auditable.models import Auditable
@@ -57,3 +58,6 @@ class Location(Auditable):
     verifiableOrgId = models.ForeignKey('VerifiableOrg', related_name='LocationverifiableOrgId')   
     doingBusinessAsId = models.ForeignKey('DoingBusinessAs', related_name='LocationdoingBusinessAsId', blank=True, null=True)   
     locationTypeId = models.ForeignKey('LocationType', related_name='LocationlocationTypeId')   
+from .VerifiableOrg import VerifiableOrg
+from .DoingBusinessAs import DoingBusinessAs
+from .LocationType import LocationType

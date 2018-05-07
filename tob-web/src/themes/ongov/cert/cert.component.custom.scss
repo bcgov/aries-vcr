@@ -1,0 +1,39 @@
+// replace this file in your theme to override standard styles
+.cert-badge {
+    width: 200px;
+}
+
+.btn {
+    background-color: #006b3f;
+    color: whitesmoke; 
+  }
+
+.cert-title {
+    color:   #595959;
+}
+
+.business-panel {
+    background: transparent;
+    border: 2px solid #e0e3e9;
+    border-radius: 5px;
+    overflow: hidden;
+    text-decoration: none;
+    margin-left: 25px;
+
+    .panel-heading {
+      background-color:#595959;
+      color: white;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+  }
+
+  .business-title{
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  .cert-info {
+    margin-left: 35px;
+  }

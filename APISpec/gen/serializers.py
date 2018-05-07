@@ -70,6 +70,16 @@ class JurisdictionSerializer(serializers.ModelSerializer):
     fields = ('id','jurisdictionAbbrv','jurisdictionName','displayOrder','isOnCommonList','effectiveDate','endDate')
 
 class LocationSerializer(serializers.ModelSerializer):
+
+  def to_representation(self, obj):
+        # get the original representation
+        ret = super(ModelSerializer, self).to_representation(obj)
+        ret.pop("municipality")
+        ret.pop("addressee")
+        ret.pop("addlDeliveryInfo")
+        #unitNumber','streetAddress','municipality
+        return ret
+
   class Meta:
     model = Location
     fields = ('id','verifiableOrgId','doingBusinessAsId','locationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')

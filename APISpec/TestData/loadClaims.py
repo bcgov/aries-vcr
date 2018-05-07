@@ -109,7 +109,10 @@ URLS = {
         # city_of_surrey
         'City': 'https://city-of-surrey-devex-von-permitify-test.pathfinder.gov.bc.ca',
         # liquor_control_and_licensing_branch
-        'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-test.pathfinder.gov.bc.ca'
+        'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-test.pathfinder.gov.bc.ca',
+         # onbis
+        'OntarioReg': 'https://onbis-devex-von-permitify-test.pathfinder.gov.bc.ca'
+
     },
     'wallet': {
         # if we're just dumping data into the wallet it all goes into the same url
@@ -118,7 +121,8 @@ URLS = {
         'Finance': 'http://localhost:6000/api/v1/keyval/',
         'Health': 'http://localhost:6000/api/v1/keyval/',
         'City': 'http://localhost:6000/api/v1/keyval/',
-        'Liquor': 'http://localhost:6000/api/v1/keyval/'
+        'Liquor': 'http://localhost:6000/api/v1/keyval/',
+        'OntarioReg': 'http://localhost:6000/api/v1/keyval/'
     }
 }
 

@@ -32,6 +32,15 @@ from .models.VerifiableClaimType import VerifiableClaimType
 from .models.VerifiableOrg import VerifiableOrg
 from .models.VerifiableOrgType import VerifiableOrgType
 
+import os
+from django.conf import settings
+import utils
+
+class CurrentUserViewModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CurrentUserViewModel
+    fields = ('id','givenName','surname','email','active','userRoles','smUserId','smAuthorizationDirectory')
+
 class DoingBusinessAsSerializer(serializers.ModelSerializer):
   class Meta:
     model = DoingBusinessAs
@@ -55,8 +64,20 @@ class JurisdictionSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Location
-    fields = ('id','verifiableOrgId','doingBusinessAsId','locationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate')
 
+    all_fields = ['id','verifiableOrgId','doingBusinessAsId','locationTypeId','addressee','addlDeliveryInfo','unitNumber','streetAddress','municipality','province','postalCode','latLong','effectiveDate','endDate']
+   
+    exclude_fields = []
+    if os.environ.get('TOB_THEME'):
+       _theme = os.environ.get('TOB_THEME')
+       if _theme in settings.CUSTOMIZATIONS:
+          if "serializers" in settings.CUSTOMIZATIONS[_theme]:
+            if "Location" in settings.CUSTOMIZATIONS[_theme]["serializers"]:
+              if "excludeFields" in settings.CUSTOMIZATIONS[_theme]["serializers"]["Location"]:
+                exclude_fields = settings.CUSTOMIZATIONS[os.environ.get('TOB_THEME')]["serializers"]["Location"]["excludeFields"]
+
+    fields  =  list(set(all_fields) - set(exclude_fields)) 
+   
 class LocationTypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = LocationType

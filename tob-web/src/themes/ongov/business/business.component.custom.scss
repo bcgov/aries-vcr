@@ -1,0 +1,58 @@
+// replace this file in your theme to override standard styles
+.business-panel {
+    background: transparent;
+    border: 2px solid #e0e3e9;
+    border-radius: 5px;
+    overflow: hidden;
+    text-decoration: none;
+    margin-left: 25px;
+
+    .panel-heading {
+      background-color:#595959;
+      color: white;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+  }
+
+.business-title {
+    font-size: 2rem;
+    margin-top: 15px;
+    margin-left: 15px;
+    font-weight: bold;
+}
+.form-horizontal .control-label {
+    text-align: left;
+ }
+
+ .form-horizontal .form-field {
+    text-align: left;
+    padding-top: 10px;
+ }
+
+ .form-horizontal .form-group {
+    margin-left: 15px;
+    margin-bottom: 0px;
+}
+
+.cert-panel .panel-title a {
+    color: white;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.disclaimer {
+    margin-left: 25px;
+    margin-top: 25px;
+    padding: 5px;
+}
+.cert-panel .panel-heading {
+    background-color: #595959;
+  }
+
+.business-certs{
+    margin-left: 0px;
+}
+
+  

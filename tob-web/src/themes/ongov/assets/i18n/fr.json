@@ -60,6 +60,9 @@
   },
   "org": {
     "breadcrumb": "Organization Info",
+    "top-panel-title": "TBD",
+    "issuer": "TBD",
+    "issuer-text": "TBD",
     "certs-title": "Permis et Licences",
     "dba": "Doing Business As",
     "effective-date": "Effective Date",
@@ -67,7 +70,16 @@
     "location": "Location",
     "locations": "Locations",
     "return-link": "Back to Organization Info",
-    "type": "Organization Type"
+    "type": "Organization Type",
+    "corporation-type": "Ontario Business Corporation",
+    "registration-date": "Registration Date",
+    "org-status": "Status",
+    "status-effective": "Status Effective",
+    "municipality": "Municipality",
+    "jurisdiction": "Jurisdiction",
+    "note": "Note:",
+    "disclaimer": "TBD",
+    "click-here": "click here"
   },
   "recipe": {
     "breadcrumb": "Recipe",

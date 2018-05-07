@@ -15,7 +15,7 @@
     }
   },
   "cert": {
-    "breadcrumb": "Permit and Licence Info",
+    "breadcrumb": "Verifiable Records",
     "effective-date": "Effective Date",
     "expiry-date": "Expiry Date",
     "inactive-message": "This credential is inactive:",
@@ -23,8 +23,8 @@
     "issuer-website": "Issuer Website",
     "related-certs": "Related Credentials",
     "requesting-proof": "Requesting proof of credential ...",
-    "return-link": "Back to Permit and Licence Info",
-    "verify-button-label": "Verify Credential",
+    "return-link": "Back to Verifiable Records",
+    "verify-button-label": "Verify Record",
     "whats-this-link": "What's this?",
     "verify-status": "Verification Status:"
   },
@@ -57,14 +57,26 @@
   },
   "org": {
     "breadcrumb": "Organization Info",
-    "certs-title": "Permits and Licences",
+    "top-panel-title": "Foundational Business Registration Information",
+    "issuer": "Issuer",
+    "issuer-text": "Ministry of Government and Consumer Services",
+    "certs-title": "Verifiable Records",
     "dba": "Doing Business As",
-    "effective-date": "Effective Date",
-    "identifier": "Organization Identifier",
+    "effective-date": "Status Effective",
+    "identifier": "Unique Identifier",
     "location": "Location",
     "locations": "Locations",
     "return-link": "Back to Organization Info",
-    "type": "Organization Type"
+    "type": "Business Type",
+    "corporation-type": "Ontario Business Corporation",
+    "registration-date": "Registration Date",
+    "org-status": "Status",
+    "status-effective": "Status Effective",
+    "municipality": "Municipality",
+    "jurisdiction": "Jurisdiction",
+    "note": "Note:",
+    "disclaimer": "The business information above is not real-time, and not a substitute for a Ministry of Government and Consumer Services generated report. Ministry of Government and Consumer Services make no warranty, expressed or implied regarding the accuracy of the business information contained on this page. To find out how to search the official Public Record,",
+    "click-here": "click here"
   },
   "recipe": {
     "breadcrumb": "Recipe",
@@ -80,7 +92,7 @@
     "by-name": "Search by Name",
     "by-location": "Search by Location",
     "no-results": "No results",
-    "placeholder": "search",
+    "placeholder": "Enter Business Name",
     "results-title": "Search Results",
     "return-link": "Back to Search"
   }

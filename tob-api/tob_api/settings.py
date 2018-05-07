@@ -214,10 +214,9 @@ LOGGING = {
     },
 }
 
-EXCLUDED_FIELDS = {
-    'ongov':
-      {'Location': 
-           {'streetAddress', 'municipality'}
-      },
-     'default': {}
-}
+import custom_settings_$TOB_THEME.py
+
+ }
+      }
+   custom_settings_bcgov.py   : {full set of fields}
+    }

@@ -1,4 +1,4 @@
-#!/c/Python3/python
+#! /usr/bin/python
 
 import sys, csv, json
 import os, os.path
