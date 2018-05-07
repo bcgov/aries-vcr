@@ -91,6 +91,7 @@ services:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DEBUG=${DEBUG}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
       - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
@@ -116,6 +117,7 @@ services:
       - tob
     ports:
       - "${API_HTTP_PORT}:8080"
+      - 3000:3000
     depends_on:
       - tob-db
       - tob-wallet
@@ -124,7 +126,11 @@ services:
       /bin/bash -c "
         echo sleeping ...;
         sleep 20;
-        ${STI_SCRIPTS_PATH}/run;"
+        if [ "$DEBUG" == "true" ]; then
+          python manage.py runserver --noreload --nothreading 0.0.0.0:8080;
+        else
+          ${STI_SCRIPTS_PATH}/run;
+        fi"
 
   # 
   # schema-spy

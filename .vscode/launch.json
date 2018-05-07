@@ -1,0 +1,21 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Experimental: Attach",
+      "type": "pythonExperimental",
+      "request": "attach",
+      "port": 3000,
+      "host": "localhost",
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/tob-api/api",
+          "remoteRoot": "/home/indy/api"
+        }
+      ]
+    }
+  ]
+}

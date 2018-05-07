@@ -33,3 +33,6 @@ von-agent==0.6.5
 asyncio>=3.4.3,<4
 git+https://github.com/PSPC-SPAC-buyandsell/didauth.git#v1.0
 # ==================================================================
+
+# Debugging
+ptvsd==4.1.1a1
