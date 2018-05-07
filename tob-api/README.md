@@ -35,6 +35,12 @@ Local node pool and a wallet database will be created.  Due to limitations with 
 ToDo:
 * Delete the folders in `C:\Users\<UserName>\.indy_client` between debug sessions automatically, since the agent cannot reuse the files at the moment (time of writing).
 
+### Debugging
+
+TheOrgBook is configured for debugging while running in its Docker environment using [Visual Studio Code](http://code.visualstudio.com). Currently, only code under the directory `/tob-api/api` is configured for debugging.
+
+To run in debug mode, append DEBUG=true to your run command. For example, `./manage start seed=the_org_book_0000000000000000000 DEBUG=true`. This will start Django's development server instead of running Gunicorn. It will also start the debugger software to allow a remote debugger to be attached. Using Visual Studio Code's debugging feature, you can connect to application running in docker by navigating to the debug tab and running the "Python Experimental: Attach" debug configuration.
+
 ## Development Deployment Environment
 
 To deploy TheOrgBook on an instance of OpenShift, see [the instructions](../RunningLocal.md) in the file RunningLocal.md.
