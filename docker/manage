@@ -409,18 +409,10 @@ case "${COMMAND}" in
        buildImages
     esac
     ;;
-  build-api)
-    build-api
-    ;;
-  build-wallet)
-    build-wallet
-    ;;
-  build-solr)
-    build-solr
-    ;;
-  build-web)
-  	configureEnvironment $@
-    build-web
+  shell)
+    _startupParams=$(getStartupParams $@)
+    configureEnvironment $@
+    docker-compose run tob-api bash
     ;;
   *)
     usage

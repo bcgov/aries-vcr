@@ -112,7 +112,7 @@ services:
       - RUST_BACKTRACE=${RUST_BACKTRACE}
       - TOB_THEME=${TOB_THEME}
     volumes:
-      - ../tob-api/api:/home/indy/src/api
+      - ../tob-api/api:/home/indy/api
     networks:
       - wallet-tob
       - tob
@@ -127,8 +127,11 @@ services:
         /bin/bash -c "
         echo sleeping ...;
         sleep 20;
-        python manage.py migrate &&
-        RUST_LOG=debug && RUST_BACKTRACE=full && python manage.py runserver 0.0.0.0:8080;"
+        if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
+          python manage.py runserver --noreload --nothreading 0.0.0.0:8080;
+        else
+          ${STI_SCRIPTS_PATH}/run;
+        fi"
 
   # 
   # schema-spy

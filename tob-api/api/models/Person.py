@@ -1,11 +1,9 @@
-# coding: utf-8
-
 """
     REST API Documentation for TheOrgBook
 
     TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
-    OpenAPI spec version: v1
+    OpenAPI spec version: v2
         
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +19,20 @@
     limitations under the License.
 """
 
-from .User import User
+import datetime
 
-from .Address import Address
-from .Claim import Claim
-from .Contact import Contact
-from .Credential import Credential
-from .CredentialType import CredentialType
-from .Name import Name
-from .Person import Person
-from .Schema import Schema
-from .Subject import Subject
+from django.db import models
+from django.utils import timezone
+
+from auditable.models import Auditable
+
+
+class Person(Auditable):
+    credential = models.ManyToManyField('Credential', related_name='people')
+    fullName = models.TextField()
+    type = models.TextField()
+    startDate = models.DateField(default=timezone.now)
+    endDate = models.DateField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'PERSON'
