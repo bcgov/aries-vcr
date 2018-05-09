@@ -46,7 +46,6 @@ usage() {
 
             $0 build
 
-
   start - Creates the application containers from the built images
           and starts the services based on the docker-compose.yml file.
 
@@ -253,13 +252,13 @@ configureEnvironment () {
   export SOLR_CORE_NAME=${CORE_NAME}
   export LEDGER_URL=${LEDGER_URL-http://$DOCKERHOST:9000}
 
-  # wallet type a command-line parameter (like seed) default to "virtual" if not specified
+  # wallet type a command-line parameter (like seed) default to "remote" if not specified
   export INDY_WALLET_URL=http://tob-wallet:8080/api/v1/
   export INDY_WALLET_TYPE=${wallet}
 
   if [ "$COMMAND" == "start" ]; then
     if [ -z "$wallet" ]; then
-      export INDY_WALLET_TYPE="virtual"
+      export INDY_WALLET_TYPE="remote"
     fi
   fi
 
