@@ -35,7 +35,15 @@ Local node pool and a wallet database will be created.  Due to limitations with 
 ToDo:
 * Delete the folders in `C:\Users\<UserName>\.indy_client` between debug sessions automatically, since the agent cannot reuse the files at the moment (time of writing).
 
-### Debugging
+### Debugging - Visual Studio
+
+Using the Visual Studio 2017 solution you can launch and debug the **entire** `tob-api` project right from Visual Studio.
+
+Open the [tob-api Solution](./tob-api.sln), and press F5.
+
+Visual Studio allows you to do things such as create and run migration right from the IDE, run and debug unit tests, set breakpoints, inspect variables, and step through code (including asynchronous calls).
+
+### Debugging - Visual Studio Code
 
 TheOrgBook is configured for debugging while running in its Docker environment using [Visual Studio Code](http://code.visualstudio.com). Currently, only code under the directory `/tob-api/api` is configured for debugging.
 
