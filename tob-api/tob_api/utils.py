@@ -6,26 +6,23 @@ A collection of utility classes for TOB
 import os
 from django.conf import settings
 
-
 #
 # Read settings from a custom settings file 
 # based on the path provided as an input parameter
-# The choice of the custom settings file is drived by the value of the TOB_THEME env
-# variables (i.e. ongov)
+# The choice of the custom settings file is driven by the value of the TOB_THEME env
+# variable (i.e. ongov)
 #
-def fetch_custom_settings(*settings):
-    _fields = ()
+
+def fetch_custom_settings(*args):
+    _values = {}
+
     if not settings.CUSTOMIZATIONS:
-        return _fields
+        return _values
 
-    _dict = settings.CUSTOMIZATIONS.items()
-    for key, value in _dict:
-        _dict = value;
-        if not value is dict:
-            _fields = value
-            break
+    _dict = settings.CUSTOMIZATIONS
+    for arg in args:
+        if not _dict[arg]:
+            return _values
+        _dict = _dict[arg]
 
-    
-    return _fields
-         
-
+    return _dict
