@@ -108,10 +108,12 @@ class ProofRequestProcesser(object):
         self.__logger.debug(self.__filters)
         if 'legal_entity_id' in self.__filters:
             legal_entity_id = self.__filters['legal_entity_id']
-            self.__logger.debug('Proof request for legal_entity_id: %s' % legal_entity_id)
+            self.__logger.debug(
+                'Proof request for legal_entity_id: %s' % legal_entity_id)
         else:
             legal_entity_id = None
-            self.__logger.debug('Proof request for legal_entity_id: None found')
+            self.__logger.debug(
+                'Proof request for legal_entity_id: None found')
 
         # Get claims for proof request from wallet
         async with Holder(legal_entity_id) as holder:
@@ -119,7 +121,7 @@ class ProofRequestProcesser(object):
                 json.dumps(self.__proof_request))
             claims = json.loads(claims[1])
 
-        #self.__logger.debug(
+        # self.__logger.debug(
         #    'Wallet returned the following claims for proof request: %s' %
         #    json.dumps(claims))
 
@@ -214,14 +216,27 @@ class ProofRequestProcesser(object):
 
         self.__logger.debug("Creating proof ...")
 
+        # A shim to remove unrelated claims from
+        # response from wallet.
+        for attr in requested_claims['requested_attrs']:
+            claim_uuid = requested_claims['requested_attrs'][attr][0]
+            claim_attrs = claims['attrs'][attr]
+
+            # We iterate through claims and remove
+            # any claims we don't want
+            for claim_attr in claim_attrs:
+                if claim_attr['referent'] == claim_uuid:
+                    claims['attrs'][attr] = [claim_attr]
+
         async with Holder(legal_entity_id) as holder:
             proof = await holder.create_proof(
-                    self.__proof_request,
-                    claims,
-                    requested_claims
-                )
+                self.__proof_request,
+                claims,
+                requested_claims
+            )
             elapsed_time = time.time() - start_time
-            self.__logger.debug('Proof elapsed time >>> {}'.format(elapsed_time))
+            self.__logger.debug(
+                'Proof elapsed time >>> {}'.format(elapsed_time))
 
         self.__logger.debug(
             'Created proof: %s' %
