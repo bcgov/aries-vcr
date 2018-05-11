@@ -17,7 +17,7 @@ CUSTOMIZATIONS  = {
                        'postalCode',
                        'latLong',
                        'effectiveDate',
-                       'endDate']
+                       'endDate'
                     }
               }
           }
