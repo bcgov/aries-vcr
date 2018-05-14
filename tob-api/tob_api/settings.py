@@ -220,3 +220,6 @@ import custom_settings_$TOB_THEME.py
       }
    custom_settings_bcgov.py   : {full set of fields}
     }
+
+with open(os.path.join(BASE_DIR, 'custom_settings_' + os.getenv('TOB_THEME').lower() + '.py')) as source_file:
+    exec(source_file.read())
