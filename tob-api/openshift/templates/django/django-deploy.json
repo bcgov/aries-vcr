@@ -213,6 +213,10 @@
                         "key": "wallet-password"
                       }
                     }
+                  },
+                  {
+                    "name": "TOB_THEME ",
+                    "value": "${TOB_THEME }"
                   }
                 ],
                 "resources": {
@@ -373,6 +377,13 @@
       "description": "The name associated to the wallet deployment resources.  In particular, this is used to wire up the credentials associated to the wallet.",
       "required": true,
       "value": "wallet"
+    },
+    {
+      "name": "TOB_THEME",
+      "displayName": "TheOrgBook Theme",
+      "description": "The theme to use for the tob-api.  This defines which customizations to load for the application.",
+      "required": true,
+      "value": "bcgov"
     },
     {
       "name": "CPU_LIMIT",
