@@ -22,9 +22,9 @@
       "apiVersion": "v1",
       "metadata": {
         "name": "${NAME}",
-		"labels": {
-		  "app": "${NAME}"
-		}
+        "labels": {
+          "app": "${NAME}"
+        }
       },
       "spec": {
         "source": {
@@ -44,8 +44,8 @@
             },
             "env": [
               {
-                  "name": "PIP_INDEX_URL",
-                  "value": "${PIP_INDEX_URL}"
+                "name": "PIP_INDEX_URL",
+                "value": "${PIP_INDEX_URL}"
               }
             ]
           }
@@ -78,7 +78,7 @@
       "description": "The URL to your GIT repo, don't use the this default unless your just experimenting.",
       "required": true,
       "value": "https://github.com/bcgov/TheOrgBook"
-	},
+    },
     {
       "name": "GIT_REF",
       "displayName": "Git Reference",
@@ -105,7 +105,7 @@
       "displayName": "Source Image Name",
       "required": true,
       "description": "The name of the source image.",
-      "value": "andrewwhitehead/von-image"
+      "value": "bcgovimages/von-image"
     },
     {
       "name": "SOURCE_IMAGE_TAG",
