@@ -25,9 +25,11 @@ pysolr>=3.6.0,<4
 
 # ==================================================================
 # Von Agent
-python3-indy==1.3.1-dev-489
-git+https://github.com/ianco/von_agent.git#von-agent
-# von-agent==0.5.0
+# ------------------------------------------------------------------
+# Here for development purposes.
+# ------------------------------------------------------------------
+# python3-indy==1.3.1-dev-441
+# von-agent==0.6.5
 asyncio>=3.4.3,<4
 git+https://github.com/PSPC-SPAC-buyandsell/didauth.git#v1.0
 # ==================================================================

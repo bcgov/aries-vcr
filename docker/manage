@@ -151,7 +151,7 @@ build-api() {
   echo -e "\nBuilding django image ..."
   ${S2I_EXE} build \
     '../tob-api' \
-    'andrewwhitehead/von-image:py35-1.0rc1' \
+    'andrewwhitehead/von-image:py36-1.0rc1-s2i' \
     'django'
 }
 
