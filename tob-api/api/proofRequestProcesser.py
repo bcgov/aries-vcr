@@ -117,13 +117,13 @@ class ProofRequestProcesser(object):
 
         # Get claims for proof request from wallet
         async with Holder(legal_entity_id) as holder:
-            claims = await holder.get_claims(
+            claims = await holder.get_creds(
                 json.dumps(self.__proof_request))
             claims = json.loads(claims[1])
 
-        # self.__logger.debug(
-        #    'Wallet returned the following claims for proof request: %s' %
-        #    json.dumps(claims))
+        self.__logger.debug(
+            'Wallet returned the following claims for proof request: %s' %
+            json.dumps(claims))
 
         # If any of the claims for proof are empty, we cannot construct a proof
         for attr in claims['attrs']:

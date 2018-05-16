@@ -180,7 +180,10 @@ class bcovrinVerifyCredential(APIView):
         verifiableClaimId = self.kwargs.get('id')
         if verifiableClaimId is not None:
             verifiableClaim = VerifiableClaim.objects.get(id=verifiableClaimId)
+
             claimType = verifiableClaim.claimType
+
+            issuerService = claimType.issuerServiceId
 
             proofRequestBuilder = ProofRequestBuilder(
                 claimType.schemaName,
@@ -190,13 +193,14 @@ class bcovrinVerifyCredential(APIView):
             proofRequestBuilder.matchCredential(
                 verifiableClaim.claimJSON,
                 claimType.schemaName,
-                claimType.schemaVersion
+                claimType.schemaVersion,
+                issuerService.DID
             )
 
             legal_entity_id = None
             try:
                 legal_entity_id = json.loads(verifiableClaim.claimJSON)[
-                    'values']['legal_entity_id'][0]
+                    'values']['legal_entity_id']['raw']
                 __logger.debug('Claim for legal_entity_id: %s' %
                                legal_entity_id)
             except Error as e:

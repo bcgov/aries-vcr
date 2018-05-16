@@ -258,7 +258,7 @@ configureEnvironment () {
 
   if [ "$COMMAND" == "start" ]; then
     if [ -z "$wallet" ]; then
-      export INDY_WALLET_TYPE="remote"
+      export INDY_WALLET_TYPE="virtual"
     fi
   fi
 
