@@ -1,5 +1,7 @@
 import os
 import json
+
+from indy import anoncreds
 from api.indy.agent import Holder
 import logging
 from api.indy import eventloop
@@ -117,8 +119,12 @@ class ProofRequestProcesser(object):
 
         # Get claims for proof request from wallet
         async with Holder(legal_entity_id) as holder:
+            # claims = await anoncreds.prover_get_credentials_for_proof_req(holder.wallet.handle, json.dumps(self.__proof_request))
             claims = await holder.get_creds(
                 json.dumps(self.__proof_request))
+
+            self.__logger.debug(
+                '\n\nholder.get_creds result:\n\n {}'.format(claims))
             claims = json.loads(claims[1])
 
         self.__logger.debug(
@@ -132,7 +138,7 @@ class ProofRequestProcesser(object):
 
         def get_claim_by_filter(clms, key, value):
             for clm in clms:
-                if clm["attrs"][key] == value:
+                if clm["cred_info"]["attrs"][key] == value:
                     return clm
             raise NotAcceptable(
                 'No claims found for filter %s = %s' % (
@@ -141,19 +147,17 @@ class ProofRequestProcesser(object):
         # TODO: rework to support other filters other than legal_entity_id
         requested_claims = {
             'self_attested_attributes': {},
-            'requested_attrs': {
-                attr: [
-                    # Either we get the first claim found
-                    # by the provided filter
-                    get_claim_by_filter(
+            'requested_attributes': {
+                attr: {
+                    'cred_id': get_claim_by_filter(
                         claims["attrs"][attr],
                         'legal_entity_id',
-                        self.__filters['legal_entity_id'])["referent"]
+                        self.__filters['legal_entity_id'])["cred_info"]["referent"]
                     # Or we use the first claim found
                     if 'legal_entity_id' in self.__filters
-                    else claims["attrs"][attr][0]["referent"],
-                    True
-                ]
+                    else claims["attrs"][attr][0]["cred_info"]["referent"],
+                    'revealed': True
+                }
                 for attr in claims["attrs"]
             },
             'requested_predicates': {}
@@ -218,15 +222,20 @@ class ProofRequestProcesser(object):
 
         # A shim to remove unrelated claims from
         # response from wallet.
-        for attr in requested_claims['requested_attrs']:
-            claim_uuid = requested_claims['requested_attrs'][attr][0]
-            claim_attrs = claims['attrs'][attr]
+        # for attr in requested_claims['requested_attributes']:
+        #     claim_uuid = requested_claims['requested_attributes'][attr][0]
+        #     claim_attrs = claims['attrs'][attr]
 
-            # We iterate through claims and remove
-            # any claims we don't want
-            for claim_attr in claim_attrs:
-                if claim_attr['referent'] == claim_uuid:
-                    claims['attrs'][attr] = [claim_attr]
+        #     # We iterate through claims and remove
+        #     # any claims we don't want
+        #     for claim_attr in claim_attrs:
+        #         if claim_attr["cred_info"]['referent'] == claim_uuid:
+        #             claims['attrs'][attr] = [claim_attr]
+
+        self.__logger.debug('-=-=-=-=-=-==-\n\n\n\n')
+        self.__logger.debug(json.dumps(claims, indent=2))
+        self.__logger.debug(json.dumps(requested_claims, indent=2))
+        self.__logger.debug('-=-=-=-=-=-==-\n\n\n\n')
 
         async with Holder(legal_entity_id) as holder:
             proof = await holder.create_proof(

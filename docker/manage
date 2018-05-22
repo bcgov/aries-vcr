@@ -153,7 +153,7 @@ build-api() {
   echo -e "\nBuilding django image ..."
   ${S2I_EXE} build \
     '../tob-api' \
-    'andrewwhitehead/von-image:py36-1.0rc1-s2i' \
+    'bcgovimages/von-image:py36-1.0rc2-s2i' \
     'django'
 }
 
@@ -260,7 +260,7 @@ configureEnvironment () {
 
   if [ "$COMMAND" == "start" ]; then
     if [ -z "$wallet" ]; then
-      export INDY_WALLET_TYPE="virtual"
+      export INDY_WALLET_TYPE="remote"
     fi
   fi
 
