@@ -222,15 +222,15 @@ class ProofRequestProcesser(object):
 
         # A shim to remove unrelated claims from
         # response from wallet.
-        # for attr in requested_claims['requested_attributes']:
-        #     claim_uuid = requested_claims['requested_attributes'][attr][0]
-        #     claim_attrs = claims['attrs'][attr]
+        for attr in requested_claims['requested_attributes']:
+            claim_uuid = requested_claims['requested_attributes'][attr]["cred_id"]
+            claim_attrs = claims['attrs'][attr]
 
-        #     # We iterate through claims and remove
-        #     # any claims we don't want
-        #     for claim_attr in claim_attrs:
-        #         if claim_attr["cred_info"]['referent'] == claim_uuid:
-        #             claims['attrs'][attr] = [claim_attr]
+            # We iterate through claims and remove
+            # any claims we don't want
+            for claim_attr in claim_attrs:
+                if claim_attr["cred_info"]['referent'] == claim_uuid:
+                    claims['attrs'][attr] = [claim_attr]
 
         self.__logger.debug('-=-=-=-=-=-==-\n\n\n\n')
         self.__logger.debug(json.dumps(claims, indent=2))

@@ -17,6 +17,16 @@ class ClaimDefProcesser(object):
 
     async def __StoreClaimRequest(self):
         self.__logger.debug(">>> Storing claim request ...")
+
+        self.__logger.debug(
+            "\n============================================================================\n" +
+            "Creating credential request:\n" +
+            "----------------------------------------------------------------------------\n" +
+            "{0}\n".format(json.dumps(json.loads(self.__claimDefParser.claimOffer), indent=2)) +
+            "----------------------------------------------------------------------------\n" +
+            "{0}\n".format(json.dumps(json.loads(self.__claimDefParser.claimDefinition), indent=2)) +
+            "============================================================================\n")
+
         async with Holder() as holder:
             (credential_request, credential_request_metadata_json) = await holder.create_cred_req(
                 self.__claimDefParser.claimOffer,

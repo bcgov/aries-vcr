@@ -312,7 +312,7 @@ class ClaimProcesser(object):
                 "{0}\n".format(json.dumps(claim.credDefMeta, indent=2)) +
                 "============================================================================\n")
 
-            await holder.store_cred(json.dumps(claim.credDef), claim.json, json.dumps(claim.credDefMeta))
+            await holder.store_cred(claim.json, json.dumps(claim.credDefMeta))
 
     def SaveClaim(self, claimJson):
         claim = ClaimParser(claimJson)

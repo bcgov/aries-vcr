@@ -29,7 +29,7 @@ pysolr>=3.6.0,<4
 # Override versions here
 # ------------------------------------------------------------------
 # python3-indy==1.3.1-dev-441
-# von-agent==0.6.5
+von-agent==1.1.2
 
 asyncio>=3.4.3,<4
 git+https://github.com/PSPC-SPAC-buyandsell/didauth.git#v1.0

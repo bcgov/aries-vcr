@@ -151,7 +151,7 @@ class Holder:
         await self.instance.wallet.create()
         instance = await self.instance.open()
         # TODO should only create this once, and only in the root wallet (virtual_wallet == None)
-        await self.instance.create_master_secret('secret')
+        await self.instance.create_link_secret('secret')
         return instance
 
     async def __aexit__(self, exc_type, exc_value, traceback):
