@@ -98,7 +98,7 @@ build-web() {
   echo -e "\nBuilding angular-app image ..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
-	-e "HTTPS_PROXY=${HTTPS_PROXY}" \
+	  -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
     -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
     -e "TOB_THEME=${TOB_THEME}" \
@@ -123,6 +123,8 @@ build-solr() {
 
   echo -e "\nBuilding solr image ..."
   ${S2I_EXE} build \
+    -e "HTTP_PROXY=${HTTP_PROXY}" \
+	  -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../tob-solr/cores' \
     'solr-base' \
     'solr'
@@ -152,6 +154,8 @@ build-api() {
   #
   echo -e "\nBuilding django image ..."
   ${S2I_EXE} build \
+    -e "HTTP_PROXY=${HTTP_PROXY}" \
+	  -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../tob-api' \
     'bcgovimages/von-image:py36-1.0rc2-s2i' \
     'django'
@@ -163,6 +167,8 @@ build-wallet() {
   #
   echo -e "\nBuilding tob-wallet image ..."
   ${S2I_EXE} build \
+    -e "HTTP_PROXY=${HTTP_PROXY}" \
+	  -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../tob-wallet' \
     'registry.access.redhat.com/rhscl/python-35-rhel7:3.5' \
     'tob-wallet'
