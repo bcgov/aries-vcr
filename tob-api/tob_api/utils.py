@@ -16,7 +16,7 @@ from django.conf import settings
 def fetch_custom_settings(*args):
     _values = {}
 
-    if not settings.CUSTOMIZATIONS:
+    if not hasattr(settings, 'CUSTOMIZATIONS'):
         return _values
 
     _dict = settings.CUSTOMIZATIONS

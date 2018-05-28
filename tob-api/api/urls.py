@@ -54,6 +54,7 @@ urlpatterns = [
 
     url(r'^admin/records/counts', views_custom.recordCounts.as_view()),
     url(r'^quickload$', views_custom.quickLoad.as_view()),
+    url(r'^settings$', views_custom.custom_settings.as_view()),
 
     url(r'^doingbusinessas/bulk$', views.doingbusinessasBulkPost.as_view()),
     url(r'^doingbusinessas$', views.doingbusinessasGet.as_view()),

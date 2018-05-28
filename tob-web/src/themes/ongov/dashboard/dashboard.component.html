@@ -39,7 +39,16 @@
           <div class="row" *ngFor="let record of results">
             <div class="col-sm-6">
               <a href="" [routerLink]="['/org', record.id] | localize">{{record.legalName}}</a><br>
-              <small>{{record.type.description}}</small>
+              <small>
+                <div ng-switch on="record.type.description">
+                  <div ng-switch-when="CO" translate>
+                      org.corporation-type
+                  </div>
+                <div ng-switch-default>
+                    {{record.typeName}}!!!!!
+                </div>
+             </div>
+              </small>
             </div>
             <div class="col-sm-6">
               {{record.primaryLocation.street}}<br>

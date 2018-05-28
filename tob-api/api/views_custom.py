@@ -41,6 +41,10 @@ from .models.VerifiableOrg import VerifiableOrg
 from .models.VerifiableOrgType import VerifiableOrgType
 
 from django.db.models import Count
+from pathlib import Path
+import os
+import os.path
+from django.conf import settings
 
 # Custom views.  This file is hand edited.
 
@@ -130,3 +134,18 @@ class recordCounts(APIView):
     }
     
     return JsonResponse(response)
+
+class custom_settings(APIView):
+  """  
+    Returns contents of an active custom DJANGO settings file as raw JSON
+    """
+  def get(self, request):
+
+    data = {}
+    if not hasattr(settings, 'CUSTOMIZATIONS'):
+        return data
+
+    data = settings.CUSTOMIZATIONS
+
+    return JsonResponse(json.loads(str(data).replace("'", '"')))
+
