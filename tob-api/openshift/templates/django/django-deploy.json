@@ -215,8 +215,8 @@
                     }
                   },
                   {
-                    "name": "TOB_THEME ",
-                    "value": "${TOB_THEME }"
+                    "name": "TOB_THEME",
+                    "value": "${TOB_THEME}"
                   }
                 ],
                 "resources": {
