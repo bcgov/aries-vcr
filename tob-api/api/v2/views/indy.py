@@ -21,7 +21,7 @@
 
 from api.auth import IsSignedRequest
 from api.indy.proofRequestBuilder import ProofRequestBuilder
-from api.indy.issuer import IssuerManager, IssuerException
+from api.v2.indy.issuer import IssuerManager, IssuerException
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers
@@ -56,7 +56,7 @@ class bcovrinGenerateClaimRequest(APIView):
 
         ```json
         {
-          'claim_offer': <schema offer json>,
+          'credential_offer': <credential offer json>,
           'claim_def': <claim definition json>
         }
         ```
@@ -89,6 +89,7 @@ class bcovrinStoreClaim(APIView):
     """  
     Store a verifiable claim.
     """
+
     # permission_classes = (IsSignedRequest,)  # FIXME - change to IsRegisteredIssuer
     permission_classes = (permissions.AllowAny,)
 
@@ -255,12 +256,52 @@ class bcovrinRegisterIssuer(APIView):
                 "name": "name of jurisdiction (english)",
                 "abbreviation": "jurisdiction TLA (english)"
             },
-            "claim-types": [
+            "credential-types": [
                 {
                     "name": "claim type name (english)",
                     "endpoint": "url for issuing claims",
                     "schema": "schema name",
-                    "version": "schema version"
+                    "version": "schema version",
+                    "mapping": {
+                        "src-id-key": "org_registry_ID",
+                        "models": [
+                            {
+                                // Model names are validated
+                                "name": "Name",
+                                // Each field in model required (defined by TOB)
+                                "fields": {
+                                    "name": {
+                                        "from": "claim",
+                                        "input": "org_name"
+                                    },
+                                    "language_code": {
+                                        "from": "value",
+                                        "input": "en"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "Person",
+                                "fields": {
+                                    "full_name": {
+                                        "from": "claim",
+                                        "input": "org_name"
+                                    },
+                                    "name_type": {
+                                        "from": "value",
+                                        "input": "good"
+                                    },
+                                    "start_date": {
+                                        "from": "claim",
+                                        "input": "effective_date",
+                                        "processor": [
+                                            "parseDate"
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 }
             ]
         }
@@ -272,6 +313,10 @@ class bcovrinRegisterIssuer(APIView):
         __logger.warn(">>> Register issuer")
         issuerDef = request.body.decode("utf-8")
         issuerJson = json.loads(issuerDef)
+        __logger.info(
+            'Issuer registration definition: \n' +
+            json.dumps(issuerJson, indent=2)
+        )
         try:
             issuerManager = IssuerManager()
             updated = issuerManager.registerIssuer(request, issuerJson)
