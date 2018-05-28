@@ -6,15 +6,14 @@ CUSTOMIZATIONS  = {
           {
               "Location":
               {
-                  "includeFields":{
+                  "includeFields":[
                         "id",
                         "verifiableOrgId",
                         "doingBusinessAsId",
                         "locationTypeId",
                         "municipality",
                         "province"
-                    }
+                  ]
               }
           }
 }
-         
