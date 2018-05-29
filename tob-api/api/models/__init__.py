@@ -22,5 +22,3 @@
 """
 
 from .User import User
-
-from api.v2.models import *

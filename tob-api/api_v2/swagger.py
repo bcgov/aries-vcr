@@ -9,6 +9,7 @@ class SwaggerSchemaView(APIView):
     """
     Utility class for rendering swagger documentation
     """
+
     permission_classes = [AllowAny]
     renderer_classes = [renderers.OpenAPIRenderer, renderers.SwaggerUIRenderer]
     _ignore_model_permissions = True

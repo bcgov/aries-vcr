@@ -1,6 +1,6 @@
 from api.auth import IsSignedRequest
 from api.indy.proofRequestBuilder import ProofRequestBuilder
-from api.v2.indy.issuer import IssuerManager, IssuerException
+from api_v2.indy.issuer import IssuerManager, IssuerException
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers

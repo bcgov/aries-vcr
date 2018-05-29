@@ -113,6 +113,7 @@ services:
       - TOB_THEME=${TOB_THEME}
     volumes:
       - ../tob-api/api:/home/indy/api
+      - ../tob-api/api_v2:/home/indy/api_v2
     networks:
       - wallet-tob
       - tob
