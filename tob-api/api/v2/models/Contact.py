@@ -5,6 +5,7 @@
 
     OpenAPI spec version: v2
         
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -25,18 +26,13 @@ from django.utils import timezone
 
 from auditable.models import Auditable
 
-from .Schema import Schema
-from .Issuer import Issuer
 
-
-class CredentialType(Auditable):
-    schema = models.ForeignKey('Schema', related_name='credential_types')
-    issuer = models.ForeignKey('Issuer', related_name='credential_types')
-    description = models.TextField(blank=True, null=True)
-    processorConfig = models.TextField()
-
+class Contact(Auditable):
+    credential = models.ManyToManyField("Credential", related_name="contacts")
+    text = models.TextField()
+    type = models.TextField()
     startDate = models.DateField(default=timezone.now)
     endDate = models.DateField(blank=True, null=True)
 
     class Meta:
-        db_table = 'CREDENTIAL_TYPE'
+        db_table = "CONTACT"

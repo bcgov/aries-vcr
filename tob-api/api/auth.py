@@ -26,7 +26,8 @@ def create_issuer_user(email, issuer_did, username=None, password=None, first_na
     except User.DoesNotExist:
         logger.debug("Creating user for DID '{0}' ...".format(issuer_did))
         if not username:
-            username = generate_random_username(length=12, prefix='issuer-', split=None)
+            username = generate_random_username(
+                length=12, prefix='issuer-', split=None)
         user = User.objects.create_user(
             username,
             email=email,
@@ -53,18 +54,20 @@ def get_issuers_group():
     group, created = Group.objects.get_or_create(name=ISSUERS_GROUP_NAME)
     if created:
         claims_type = ContentType.objects.get_for_model(VerifiableClaim)
-        create_claims_perm = Permission.objects.get(content_type=claims_type, codename='add_verifiableclaim')
+        create_claims_perm = Permission.objects.get(
+            content_type=claims_type, codename='add_verifiableclaim')
         group.permissions.add(create_claims_perm)
     return group
 
 
 def generate_random_username(length=16, chars=ascii_lowercase+digits, split=4, delimiter='-', prefix=''):
     username = ''.join([random.choice(chars) for i in range(length)])
-    
+
     if split:
-        username = delimiter.join([username[start:start+split] for start in range(0, len(username), split)])
+        username = delimiter.join([username[start:start+split]
+                                   for start in range(0, len(username), split)])
     username = prefix + username
-    
+
     try:
         User.objects.get(username=username)
         return generate_random_username(length=length, chars=chars, split=split, delimiter=delimiter)
@@ -93,6 +96,7 @@ class DidAuthKeyFinder(KeyFinderBase):
     """
     Look up the public key for an issuer, first in the Users table then in the ledger
     """
+
     def __init__(self):
         self.__logger = logging.getLogger(__name__)
 
@@ -107,12 +111,15 @@ class DidAuthKeyFinder(KeyFinderBase):
             user = User.objects.get(DID=key_id)
             if user.verkey:
                 verkey = bytes(user.verkey)
-                self.__logger.debug("Found verkey for DID '{}' in users table: '{}'".format(key_id, verkey))
+                self.__logger.debug(
+                    "Found verkey for DID '{}' in users table: '{}'".format(key_id, verkey))
                 return verkey
         except User.DoesNotExist:
             pass
+
         async def fetch_key():
-            self.__logger.debug("Fetching verkey for DID '{}' from ledger".format(key_id))
+            self.__logger.debug(
+                "Fetching verkey for DID '{}' from ledger".format(key_id))
             async with Verifier() as verifier:
                 nym = await verifier.get_nym(short_key_id)
                 nym = json.loads(nym) if nym else None
@@ -127,6 +134,7 @@ class DidAuthentication(authentication.BaseAuthentication):
     rest_framework authentication backend
     Authenticate a user based on the DID-Auth HTTP Signature
     """
+
     def __init__(self):
         self.__logger = logging.getLogger(__name__)
 
@@ -138,14 +146,17 @@ class DidAuthentication(authentication.BaseAuthentication):
         except VerifierException as e:
             # bad signature present - fail explicitly
             verified = None
-            self.__logger.warn('Exception when authorizing DID signature: %s', e)
-            raise exceptions.AuthenticationFailed('Exception when authorizing DID signature: %s' % (e,))
+            self.__logger.warn(
+                'Exception when authorizing DID signature: %s', e)
+            raise exceptions.AuthenticationFailed(
+                'Exception when authorizing DID signature: %s' % (e,))
         if verified:
             try:
                 user = User.objects.get(DID=verified['keyId'])
                 result = (user, verified)
             except User.DoesNotExist:
-                self.__logger.warn('DID authenticated but user not found: %s', verified['keyId'])
+                self.__logger.warn(
+                    'DID authenticated but user not found: %s', verified['keyId'])
                 # may be in the process of registering
         else:
             self.__logger.warn('No DID signature')
@@ -165,7 +176,7 @@ def verify_signature(request, key_finder=None):
     if verified is not None:
         return verified
     raw_headers = {}
-    for (key,val) in request.META.items():
+    for (key, val) in request.META.items():
         target = revert_header_name(key)
         if target:
             raw_headers[target] = val
@@ -175,7 +186,8 @@ def verify_signature(request, key_finder=None):
     if qs:
         path += '?' + qs
     try:
-        verified = verifier.verify(raw_headers, path=path, method=request.method)
+        verified = verifier.verify(
+            raw_headers, path=path, method=request.method)
     except VerifierException:
         request.META['SIGNATURE'] = False
         raise
