@@ -1,4 +1,4 @@
 {{ object.orgId }}
 {{ object.legalName }}
-Created: {{ object.CREATE_TIMESTAMP }}
-Last modified: {{ object.UPDATE_TIMESTAMP }}
+Created: {{ object.create_timestamp }}
+Last modified: {{ object.update_timestamp }}

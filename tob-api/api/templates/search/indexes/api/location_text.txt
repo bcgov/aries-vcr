@@ -3,5 +3,5 @@
 {{ object.postalCode }}
 {{ object.province }}
 {{ object.streetAddress }}
-Created: {{ object.CREATE_TIMESTAMP }}
-Last modified: {{ object.UPDATE_TIMESTAMP }}
+Created: {{ object.create_timestamp }}
+Last modified: {{ object.update_timestamp }}

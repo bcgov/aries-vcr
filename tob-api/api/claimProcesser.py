@@ -51,7 +51,7 @@ class ClaimProcesser(object):
         #   raise Exception('Could not retrieve schema from ledger.')
 
         verifiableClaimType = VerifiableClaimType.objects.filter(
-            **filter).order_by('CREATE_TIMESTAMP')
+            **filter).order_by('create_timestamp')
 
         if not verifiableClaimType:
             self.__logger.warn(

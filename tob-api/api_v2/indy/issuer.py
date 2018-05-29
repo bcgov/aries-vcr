@@ -8,45 +8,45 @@ from api.auth import create_issuer_user, verify_signature, VerifierException
 
 
 ISSUER_JSON_SCHEMA = {
-    '$schema': 'http://json-schema.org/draft-04/schema',
-    'type': 'object',
-    'properties': {
-        'issuer': {
-            'type': 'object',
-            'properties': {
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "type": "object",
+    "properties": {
+        "issuer": {
+            "type": "object",
+            "properties": {
                 # check length + valid characters?
-                'did': {'type': 'string', 'minLength': 1},
-                'name': {'type': 'string', 'minLength': 1},
-                'abbreviation': {'type': 'string'},
-                'email': {'type': 'string', 'minLength': 1},
-                'url': {'type': 'string'}
+                "did": {"type": "string", "minLength": 1},
+                "name": {"type": "string", "minLength": 1},
+                "abbreviation": {"type": "string"},
+                "email": {"type": "string", "minLength": 1},
+                "url": {"type": "string"},
             },
-            'required': ['did', 'name']
+            "required": ["did", "name"],
         },
-        'jurisdiction': {
-            'type': 'object',
-            'properties': {
-                'name': {'type': 'string', 'minLength': 1},
-                'abbreviation': {'type': 'string'}
+        "jurisdiction": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "minLength": 1},
+                "abbreviation": {"type": "string"},
             },
-            'required': ['name']
+            "required": ["name"],
         },
-        'credential-types': {
-            'type': 'array',
-            'items': {
-                'type': 'object',
-                'properties': {
-                    'name': {'type': 'string', 'minLength': 1},
-                    'schema': {'type': 'string', 'minLength': 1},
-                    'version': {'type': 'string', 'minLength': 1},
-                    'endpoint': {'type': 'string'},
-                    'mapping': {'type': 'object'}
+        "credential-types": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "minLength": 1},
+                    "schema": {"type": "string", "minLength": 1},
+                    "version": {"type": "string", "minLength": 1},
+                    "endpoint": {"type": "string"},
+                    "mapping": {"type": "object"},
                 },
-                'required': ['name', 'schema', 'version']
-            }
-        }
+                "required": ["name", "schema", "version"],
+            },
+        },
     },
-    'required': ['issuer', 'jurisdiction']
+    "required": ["issuer", "jurisdiction"],
 }
 
 
@@ -67,47 +67,47 @@ class IssuerManager:
         try:
             jsonschema.validate(spec, ISSUER_JSON_SCHEMA)
         except jsonschema.ValidationError as e:
-            raise IssuerException('Schema validation error: {}'.format(e))
+            raise IssuerException("Schema validation error: {}".format(e))
 
         try:
             verified = verify_signature(request)
         except VerifierException as e:
-            raise IssuerException('Signature validation error: {}'.format(e))
+            raise IssuerException("Signature validation error: {}".format(e))
         if not verified:
-            raise IssuerException('Missing HTTP Signature')
-        self.__logger.debug('DID signature verified: %s', verified)
+            raise IssuerException("Missing HTTP Signature")
+        self.__logger.debug("DID signature verified: %s", verified)
 
-        user = self.update_user(verified, spec['issuer'])
-        issuer = self.update_issuer(spec['issuer'])
+        user = self.update_user(verified, spec["issuer"])
+        issuer = self.update_issuer(spec["issuer"])
 
-        jurisdiction = self.checkUpdateJurisdiction(spec['jurisdiction'])
+        jurisdiction = self.checkUpdateJurisdiction(spec["jurisdiction"])
 
-        ctypes = self.checkUpdateClaimTypes(
-            issuer, spec.get('claim-types', []))
+        ctypes = self.checkUpdateClaimTypes(issuer, spec.get("claim-types", []))
 
         result = {
-            'jurisdiction': {
-                'id': jurisdiction.id,
-                'name': jurisdiction.name,
-                'abbreviation': jurisdiction.abbrv
+            "jurisdiction": {
+                "id": jurisdiction.id,
+                "name": jurisdiction.name,
+                "abbreviation": jurisdiction.abbrv,
             },
-            'issuer': {
-                'id': issuer.id,
-                'did': issuer.DID,
-                'name': issuer.name,
-                'abbreviation': issuer.issuerOrgTLA,
-                'email': user.email,
-                'url': issuer.issuerOrgURL
+            "issuer": {
+                "id": issuer.id,
+                "did": issuer.DID,
+                "name": issuer.name,
+                "abbreviation": issuer.issuerOrgTLA,
+                "email": user.email,
+                "url": issuer.issuerOrgURL,
             },
-            'claim-types': [
+            "claim-types": [
                 {
-                    'id': ctype.id,
-                    'name': ctype.claimType,
-                    'schema': ctype.schemaName,
-                    'version': ctype.schemaVersion,
-                    'endpoint': ctype.issuerURL
-                } for ctype in ctypes
-            ]
+                    "id": ctype.id,
+                    "name": ctype.claimType,
+                    "schema": ctype.schemaName,
+                    "version": ctype.schemaVersion,
+                    "endpoint": ctype.issuerURL,
+                }
+                for ctype in ctypes
+            ],
         }
         return result
 
@@ -129,14 +129,15 @@ class IssuerManager:
         """
         Update Django user with incoming issuer data.
         """
-        issuer_did = issuer_def['did'].strip()
-        display_name = issuer_def['name'].strip()
-        user_email = issuer_def['email'].strip()
-        verified_did = verified['keyId']
-        verkey = verified['key']
-        assert 'did:sov:{}'.format(issuer_did) == verified_did
+        issuer_did = issuer_def["did"].strip()
+        display_name = issuer_def["name"].strip()
+        user_email = issuer_def["email"].strip()
+        verified_did = verified["keyId"]
+        verkey = verified["key"]
+        assert "did:sov:{}".format(issuer_did) == verified_did
         return create_issuer_user(
-            user_email, verified_did, last_name=display_name, verkey=verkey)
+            user_email, verified_did, last_name=display_name, verkey=verkey
+        )
 
     def update_issuer(self):
         """

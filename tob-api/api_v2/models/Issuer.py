@@ -6,6 +6,9 @@ from auditable.models import Auditable
 
 class Issuer(Auditable):
     did = models.TextField()
+    name = models.TextField()
+    abbreviation = models.TextField()
+    email = models.TextField()
     url = models.TextField()
 
     start_date = models.DateField(default=timezone.now)
