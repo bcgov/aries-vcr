@@ -15,3 +15,6 @@ class Subject(Auditable):
 
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        db_table = "subject"
