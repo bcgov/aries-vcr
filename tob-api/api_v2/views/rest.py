@@ -5,10 +5,24 @@ from api_v2.serializers import (
     IssuerSerializer,
     SchemaSerializer,
     CredentialTypeSerializer,
+    SubjectSerializer,
+    CredentialSerializer,
+    AddressSerializer,
+    ClaimSerializer,
+    ContactSerializer,
+    NameSerializer,
+    PersonSerializer,
 )
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.CredentialType import CredentialType
+from api_v2.models.Subject import Subject
+from api_v2.models.Credential import Credential
+from api_v2.models.Address import Address
+from api_v2.models.Claim import Claim
+from api_v2.models.Contact import Contact
+from api_v2.models.Name import Name
+from api_v2.models.Person import Person
 
 
 class IssuerViewSet(ViewSet):
@@ -47,4 +61,95 @@ class CredentialTypeViewSet(ViewSet):
         queryset = CredentialType.objects.all()
         item = get_object_or_404(queryset, pk=pk)
         serializer = CredentialTypeSerializer(item)
+        return Response(serializer.data)
+
+
+class SubjectViewSet(ViewSet):
+    def list(self, request):
+        queryset = Subject.objects.all()
+        serializer = SubjectSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Subject.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = SubjectSerializer(item)
+        return Response(serializer.data)
+
+
+class CredentialViewSet(ViewSet):
+    def list(self, request):
+        queryset = Credential.objects.all()
+        serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Credential.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = CredentialSerializer(item)
+        return Response(serializer.data)
+
+
+class AddressViewSet(ViewSet):
+    def list(self, request):
+        queryset = Address.objects.all()
+        serializer = AddressSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Address.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = AddressSerializer(item)
+        return Response(serializer.data)
+
+
+class ClaimViewSet(ViewSet):
+    def list(self, request):
+        queryset = Claim.objects.all()
+        serializer = ClaimSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Claim.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = ClaimSerializer(item)
+        return Response(serializer.data)
+
+
+class ContactViewSet(ViewSet):
+    def list(self, request):
+        queryset = Contact.objects.all()
+        serializer = ContactSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Contact.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = ContactSerializer(item)
+        return Response(serializer.data)
+
+
+class NameViewSet(ViewSet):
+    def list(self, request):
+        queryset = Name.objects.all()
+        serializer = NameSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Name.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = NameSerializer(item)
+        return Response(serializer.data)
+
+
+class PersonViewSet(ViewSet):
+    def list(self, request):
+        queryset = Person.objects.all()
+        serializer = PersonSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Person.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = PersonSerializer(item)
         return Response(serializer.data)
