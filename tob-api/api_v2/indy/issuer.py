@@ -9,6 +9,8 @@ from api.auth import create_issuer_user, verify_signature, VerifierException
 
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 
+logger = logging.getLogger(__name__)
+
 
 class IssuerException(Exception):
     pass
@@ -19,9 +21,6 @@ class IssuerManager:
     Handle registration of issuer services, taking the JSON definition
     of the issuer and updating the related tables.
     """
-
-    def __init__(self):
-        self.__logger = logging.getLogger(__name__)
 
     def register_issuer(self, request, spec):
         try:
@@ -36,12 +35,12 @@ class IssuerManager:
             raise IssuerException("Signature validation error: {}".format(e))
         if not verified:
             raise IssuerException("Missing HTTP Signature")
-        self.__logger.debug("DID signature verified: %s", verified)
+        logger.debug("DID signature verified: %s", verified)
 
         user = self.update_user(verified, spec["issuer"])
         issuer = self.update_issuer(spec["issuer"])
         schemas, credential_types = self.update_schemas_and_ctypes(
-            spec["issuer"], spec.get("credential-types", [])
+            issuer, spec.get("credential-types", [])
         )
 
         result = {
@@ -62,11 +61,11 @@ class IssuerManager:
                 }
                 for schema in schemas
             ],
-            "credential_types": [
+            "credential-types": [
                 {
                     "id": credential_type.id,
-                    "schema": credential_type.schema.id,
-                    "issuer": credential_type.issuer.id,
+                    "schema-id": credential_type.schema.id,
+                    "issuer-id": credential_type.issuer.id,
                     "description": credential_type.description,
                     "processor_config": credential_type.processor_config,
                 }
@@ -79,9 +78,9 @@ class IssuerManager:
         """
         Update Django user with incoming issuer data.
         """
-        issuer_did = issuer_def["did"].strip()
-        display_name = issuer_def["name"].strip()
-        user_email = issuer_def["email"].strip()
+        issuer_did = issuer_def["did"]
+        display_name = issuer_def["name"]
+        user_email = issuer_def["email"]
         verified_did = verified["keyId"]
         verkey = verified["key"]
         assert "did:sov:{}".format(issuer_did) == verified_did
@@ -93,11 +92,11 @@ class IssuerManager:
         """
         Update issuer record if exists, otherwise create.
         """
-        issuer_did = issuer_def["did"].strip()
-        issuer_name = issuer_def["name"].strip()
-        issuer_abbreviation = issuer_def["abbreviation"].strip() or None
-        issuer_email = issuer_def["email"].strip() or None
-        issuer_url = issuer_def["url"].strip() or None
+        issuer_did = issuer_def.get("did")
+        issuer_name = issuer_def.get("name")
+        issuer_abbreviation = issuer_def.get("abbreviation")
+        issuer_email = issuer_def.get("email")
+        issuer_url = issuer_def.get("url")
 
         issuer, created = Issuer.objects.get_or_create(did=issuer_did)
         issuer.name = issuer_name
@@ -119,8 +118,8 @@ class IssuerManager:
 
         for credential_type_def in credential_type_defs:
             # Get or create schema
-            schema_name = credential_type_def["name"].strip()
-            schema_version = credential_type_def["version"].strip()
+            schema_name = credential_type_def.get("schema")
+            schema_version = credential_type_def.get("version")
             schema_publisher_did = issuer.did
 
             schema, _ = Schema.objects.get_or_create(
@@ -132,13 +131,13 @@ class IssuerManager:
             schemas.append(schema)
 
             # Get or create credential type
+            credential_type_description = credential_type_def.get(
+                "description"
+            )
+            credential_type_processor_config = credential_type_def.get(
+                "mapping"
+            )
 
-            credential_type_description = (
-                credential_type_def["description"].strip() or None
-            )
-            credential_type_processor_config = (
-                credential_type_def["mapping"].strip() or None
-            )
             credential_type, _ = CredentialType.objects.get_or_create(
                 schema=schema, issuer=issuer
             )

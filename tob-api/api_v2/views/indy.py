@@ -299,6 +299,10 @@ class register_issuer(APIView):
         try:
             issuer_manager = IssuerManager()
             updated = issuer_manager.register_issuer(request, issuer_json)
+            logger.info(
+                "Issuer registration response: \n"
+                + json.dumps(updated, indent=2)
+            )
             response = {"success": True, "result": updated}
         except IssuerException as e:
             logger.exception("Issuer request not accepted:")
