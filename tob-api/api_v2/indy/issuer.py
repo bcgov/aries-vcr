@@ -1,53 +1,13 @@
 import jsonschema
 import logging
 
-# from api.models.IssuerService import IssuerService
-# from api.models.Jurisdiction import Jurisdiction
-# from api.models.VerifiableClaimType import VerifiableClaimType
+from api_v2.models.CredentialType import CredentialType
+from api_v2.models.Issuer import Issuer
+from api_v2.models.Schema import Schema
+
 from api.auth import create_issuer_user, verify_signature, VerifierException
 
-
-ISSUER_JSON_SCHEMA = {
-    "$schema": "http://json-schema.org/draft-04/schema",
-    "type": "object",
-    "properties": {
-        "issuer": {
-            "type": "object",
-            "properties": {
-                # check length + valid characters?
-                "did": {"type": "string", "minLength": 1},
-                "name": {"type": "string", "minLength": 1},
-                "abbreviation": {"type": "string"},
-                "email": {"type": "string", "minLength": 1},
-                "url": {"type": "string"},
-            },
-            "required": ["did", "name"],
-        },
-        "jurisdiction": {
-            "type": "object",
-            "properties": {
-                "name": {"type": "string", "minLength": 1},
-                "abbreviation": {"type": "string"},
-            },
-            "required": ["name"],
-        },
-        "credential-types": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string", "minLength": 1},
-                    "schema": {"type": "string", "minLength": 1},
-                    "version": {"type": "string", "minLength": 1},
-                    "endpoint": {"type": "string"},
-                    "mapping": {"type": "object"},
-                },
-                "required": ["name", "schema", "version"],
-            },
-        },
-    },
-    "required": ["issuer", "jurisdiction"],
-}
+from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 
 
 class IssuerException(Exception):
@@ -69,6 +29,7 @@ class IssuerManager:
         except jsonschema.ValidationError as e:
             raise IssuerException("Schema validation error: {}".format(e))
 
+        # TODO: move sig verification into middleware – decorator?
         try:
             verified = verify_signature(request)
         except VerifierException as e:
@@ -79,51 +40,40 @@ class IssuerManager:
 
         user = self.update_user(verified, spec["issuer"])
         issuer = self.update_issuer(spec["issuer"])
-
-        jurisdiction = self.checkUpdateJurisdiction(spec["jurisdiction"])
-
-        ctypes = self.checkUpdateClaimTypes(issuer, spec.get("claim-types", []))
+        schemas, credential_types = self.update_schemas_and_ctypes(
+            spec["issuer"], spec.get("credential-types", [])
+        )
 
         result = {
-            "jurisdiction": {
-                "id": jurisdiction.id,
-                "name": jurisdiction.name,
-                "abbreviation": jurisdiction.abbrv,
-            },
             "issuer": {
                 "id": issuer.id,
-                "did": issuer.DID,
+                "did": issuer.did,
                 "name": issuer.name,
-                "abbreviation": issuer.issuerOrgTLA,
+                "abbreviation": issuer.abbreviation,
                 "email": user.email,
-                "url": issuer.issuerOrgURL,
+                "url": issuer.url,
             },
-            "claim-types": [
+            "schemas": [
                 {
-                    "id": ctype.id,
-                    "name": ctype.claimType,
-                    "schema": ctype.schemaName,
-                    "version": ctype.schemaVersion,
-                    "endpoint": ctype.issuerURL,
+                    "id": schema.id,
+                    "name": schema.name,
+                    "version": schema.version,
+                    "publisher_did": schema.publisher_did,
                 }
-                for ctype in ctypes
+                for schema in schemas
+            ],
+            "credential_types": [
+                {
+                    "id": credential_type.id,
+                    "schema": credential_type.schema.id,
+                    "issuer": credential_type.issuer.id,
+                    "description": credential_type.description,
+                    "processor_config": credential_type.processor_config,
+                }
+                for credential_type in credential_types
             ],
         }
         return result
-
-    def update_record(self, record, spec):
-        """
-        Update record if incoming data is different.
-        """
-        update = False
-        for field, value in spec.items():
-            old = getattr(record, field, None)
-            if old != value:
-                setattr(record, field, value)
-                update = True
-        if update:
-            record.save()
-        return record
 
     def update_user(self, verified, issuer_def):
         """
@@ -139,97 +89,63 @@ class IssuerManager:
             user_email, verified_did, last_name=display_name, verkey=verkey
         )
 
-    def update_issuer(self):
+    def update_issuer(self, issuer_def):
         """
         Update issuer record if exists, otherwise create.
         """
+        issuer_did = issuer_def["did"].strip()
+        issuer_name = issuer_def["name"].strip()
+        issuer_abbreviation = issuer_def["abbreviation"].strip() or None
+        issuer_email = issuer_def["email"].strip() or None
+        issuer_url = issuer_def["url"].strip() or None
 
-        # def checkUpdateJurisdiction(self, jurisd_def):
-        #     jurisd_name = jurisd_def['name'].strip()
-        #     jurisd_abbr = jurisd_def.get('abbreviation', '').strip() or None
-        #     try:
-        #         jurisdiction = Jurisdiction.objects.get(name=jurisd_name)
-        #     except Jurisdiction.DoesNotExist:
-        #         self.__logger.debug(
-        #             "Jurisdiction '{0}' does not exist.  Creating ...".format(jurisd_name))
-        #         jurisdiction = Jurisdiction.objects.create(
-        #             abbrv=jurisd_abbr,
-        #             name=jurisd_name,
-        #             displayOrder=0,
-        #             isOnCommonList=True
-        #         )
-        #     else:
-        #         jurisdiction = self.updateRecord(
-        #             jurisdiction, {'abbrv': jurisd_abbr})
-        #     return jurisdiction
+        issuer, created = Issuer.objects.get_or_create(did=issuer_did)
+        issuer.name = issuer_name
+        issuer.abbreviation = issuer_abbreviation
+        issuer.email = issuer_email
+        issuer.url = issuer_url
+        issuer.save()
 
-        # def checkUpdateIssuerService(self, jurisdiction, issuer_def):
-        #     issuer_did = issuer_def['did'].strip()
-        #     issuer_name = issuer_def['name'].strip()
-        #     issuer_abbr = issuer_def.get('abbreviation', '').strip() or None
-        #     issuer_url = issuer_def.get('url', '').strip() or None
+        return issuer
 
-        #     # search by DID
-        #     issuer = IssuerService.objects.filter(DID=issuer_did)
-        #     if not issuer:
-        #         # search by name
-        #         issuer = IssuerService.objects.filter(name=issuer_name)
-        #     if not issuer:
-        #         self.__logger.debug(
-        #             "Issuer service '{0}' does not exist.  Creating ...".format(issuer_name))
-        #         issuer = IssuerService.objects.create(
-        #             name=issuer_name,
-        #             DID=issuer_did,
-        #             issuerOrgTLA=issuer_abbr,
-        #             issuerOrgURL=issuer_url,
-        #             jurisdictionId=jurisdiction
-        #         )
-        #     else:
-        #         issuer = self.updateRecord(issuer[0], {
-        #             'name': issuer_name,
-        #             'DID': issuer_did,
-        #             'issuerOrgTLA': issuer_abbr,
-        #             'issuerOrgURL': issuer_url,
-        #             'jurisdictionId': jurisdiction
-        #         })
-        #     return issuer
+    def update_schemas_and_ctypes(self, issuer, credential_type_defs):
+        """
+        Update schema records if they exist, otherwise create.
+        Create related CredentialType records.
+        """
 
-        # def checkUpdateClaimTypes(self, issuer, type_defs):
-        #     claim_types = VerifiableClaimType.objects.filter(
-        #         issuerServiceId=issuer)
-        #     exist_by_schema = {}
-        #     for ctype in claim_types:
-        #         skey = '{}:{}'.format(ctype.schemaName, ctype.schemaVersion)
-        #         exist_by_schema[skey] = ctype
-        #     results = []
+        schemas = []
+        credential_types = []
 
-        #     for type_def in type_defs:
-        #         type_name = type_def['name']
-        #         type_schema = type_def['schema']
-        #         type_version = type_def['version']
-        #         type_endpoint = type_def.get('endpoint', '').strip() or None
+        for credential_type_def in credential_type_defs:
+            # Get or create schema
+            schema_name = credential_type_def["name"].strip()
+            schema_version = credential_type_def["version"].strip()
+            schema_publisher_did = issuer.did
 
-        #         skey = '{}:{}'.format(type_schema, type_version)
-        #         if skey in exist_by_schema:
-        #             claimtype = self.updateRecord(exist_by_schema[skey], {
-        #                 'claimType': type_name,
-        #                 'issuerURL': type_endpoint
-        #             })
-        #         else:
-        #             self.__logger.debug(
-        #                 "Claim type '{0}' does not exist.  Creating ...".format(type_name))
-        #             claimtype = VerifiableClaimType.objects.create(
-        #                 claimType=type_name,
-        #                 issuerServiceId=issuer,
-        #                 issuerURL=type_endpoint,
-        #                 schemaName=type_schema,
-        #                 schemaVersion=type_version
-        #             )
-        #         results.append(claimtype)
+            schema, _ = Schema.objects.get_or_create(
+                name=schema_name,
+                version=schema_version,
+                publisher_did=schema_publisher_did,
+            )
+            schema.save()
+            schemas.append(schema)
 
-        #     # clean up existing records
-        #     for ctype in exist_by_schema.values():
-        #         if ctype not in results:
-        #             ctype.delete()
+            # Get or create credential type
 
-        #     return results
+            credential_type_description = (
+                credential_type_def["description"].strip() or None
+            )
+            credential_type_processor_config = (
+                credential_type_def["mapping"].strip() or None
+            )
+            credential_type, _ = CredentialType.objects.get_or_create(
+                schema=schema, issuer=issuer
+            )
+
+            credential_type.description = credential_type_description
+            credential_type.processor_config = credential_type_processor_config
+            credential_type.save()
+            credential_types.append(credential_type)
+
+        return schemas, credential_types

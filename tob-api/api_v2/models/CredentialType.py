@@ -11,10 +11,11 @@ class CredentialType(Auditable):
     schema = models.ForeignKey(Schema, related_name="credential_types")
     issuer = models.ForeignKey(Issuer, related_name="credential_types")
     description = models.TextField(blank=True, null=True)
-    processor_config = models.TextField()
+    processor_config = models.TextField(blank=True, null=True)
 
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(blank=True, null=True)
 
     class Meta:
         db_table = "credential_type"
+        unique_together = (("schema", "issuer"),)

@@ -210,16 +210,18 @@ logger = logging.getLogger(__name__)
 
 class register_issuer(APIView):
     """
-    Register an issuer (like permitify), creating or updating the necessary records
+    Register an issuer, creating or updating the necessary records
     """
+
     # performs its own header verification
     authentication_classes = ()
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         """  
-        Processes an issuer definition and creates or updates the corresponding records.
-        Responds with the updated issuer definition including record IDs.
+        Processes an issuer definition and creates or updates the
+        corresponding records. Responds with the updated issuer
+        definition including record IDs.
 
         Example request payload:
 
@@ -232,23 +234,16 @@ class register_issuer(APIView):
                 "email": "administrator email",
                 "url": "url for issuer details"
             },
-            "jurisdiction": {
-                "name": "name of jurisdiction (english)",
-                "abbreviation": "jurisdiction TLA (english)"
-            },
-            "credential-types": [
+            "credential_types": [
                 {
-                    "name": "claim type name (english)",
-                    "endpoint": "url for issuing claims",
                     "schema": "schema name",
                     "version": "schema version",
+                    "name": "schema display name (english)",
                     "mapping": {
-                        "src-id-key": "org_registry_ID",
+                        "source_id_key": "org_registry_ID",
                         "models": [
                             {
-                                // Model names are validated
                                 "name": "Name",
-                                // Each field in model required (defined by TOB)
                                 "fields": {
                                     "name": {
                                         "from": "claim",
@@ -287,14 +282,19 @@ class register_issuer(APIView):
         }
         ```
 
-        returns: `{"success": boolean, "result": updated issuer definition}`
+        returns:
+        
+        ```
+        {"success": boolean, "result": updated issuer definition}
+        ```
         """
 
         logger.warn(">>> Register issuer")
         issuer_def = request.body.decode("utf-8")
         issuer_json = json.loads(issuer_def)
-        logger.debug(
-            "Issuer registration definition: \n" + json.dumps(issuer_json, indent=2)
+        logger.info(
+            "Issuer registration definition: \n"
+            + json.dumps(issuer_json, indent=2)
         )
         try:
             issuer_manager = IssuerManager()
