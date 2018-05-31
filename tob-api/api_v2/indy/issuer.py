@@ -1,4 +1,3 @@
-import jsonschema
 import logging
 
 from api_v2.models.CredentialType import CredentialType
@@ -6,8 +5,6 @@ from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 
 from api.auth import create_issuer_user, verify_signature, VerifierException
-
-from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +20,6 @@ class IssuerManager:
     """
 
     def register_issuer(self, request, spec):
-        try:
-            jsonschema.validate(spec, ISSUER_JSON_SCHEMA)
-        except jsonschema.ValidationError as e:
-            raise IssuerException("Schema validation error: {}".format(e))
-
         # TODO: move sig verification into middleware – decorator?
         try:
             verified = verify_signature(request)
@@ -131,9 +123,7 @@ class IssuerManager:
             schemas.append(schema)
 
             # Get or create credential type
-            credential_type_description = credential_type_def.get(
-                "description"
-            )
+            credential_type_description = credential_type_def.get("name")
             credential_type_processor_config = credential_type_def.get(
                 "mapping"
             )

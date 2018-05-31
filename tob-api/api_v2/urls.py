@@ -24,11 +24,12 @@ router.register(r"person", rest.PersonViewSet, "Person")
 # Indy endpoints
 urlpatterns = [
     url(r"^$", SwaggerSchemaView.as_view()),
-    # url(r"^indy/generate-claim-request$", indy.bcovrinGenerateClaimRequest.as_view()),
-    # url(r"^indy/store-claim$", indy.bcovrinStoreClaim.as_view()),
-    # url(r"^indy/construct-proof$", indy.bcovrinConstructProof.as_view()),
-    url(r"^indy/register-issuer$", indy.register_issuer.as_view()),
+    url(
+        r"^indy/generate-credential-request$", indy.generate_credential_request
+    ),
+    # url(r"^indy/store-claim$", indy.store_claim.as_view()),
+    # url(r"^indy/construct-proof$", indy.construct_proof.as_view()),
+    url(r"^indy/register-issuer$", indy.register_issuer),
 ] + router.urls
-
 
 urlpatterns = format_suffix_patterns(urlpatterns)

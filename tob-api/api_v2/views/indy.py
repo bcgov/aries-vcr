@@ -1,3 +1,6 @@
+import logging
+import json
+
 from api.auth import IsSignedRequest
 from api.indy.proofRequestBuilder import ProofRequestBuilder
 from api_v2.indy.issuer import IssuerManager, IssuerException
@@ -5,25 +8,33 @@ from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers
 from api.proofRequestProcesser import ProofRequestProcesser
-import logging
-import json
+
+
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+
+from api_v2.decorators.jsonschema import validate
+from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
+from api_v2.jsonschema.credential_request import CREDENTIAL_REQUEST_JSON_SCHEMA
+
 from rest_framework import permissions
 from api.claimProcesser import ClaimProcesser
 from django.http import JsonResponse
 from rest_framework.views import APIView
+
 from api.models.VerifiableClaim import VerifiableClaim
 
 logger = logging.getLogger(__name__)
 
-# # ToDo:
-# # * Refactor the saving process to use serializers, etc.
-# # ** Make it work with generics.GenericAPIView
-# # ** Using APIView for the moment so a serializer_class does not need to be defined;
-# #    as we manually processing things for the moment.
-# class bcovrinGenerateClaimRequest(APIView):
+
+# class generate_claim_request(APIView):
 #     """
-#     Generate a claim request from a given claim definition.
+#     Generate a credential request from a given credential definition.
 #     """
+
 #     # permission_classes = (IsSignedRequest,)
 #     permission_classes = (permissions.AllowAny,)
 
@@ -46,18 +57,19 @@ logger = logging.getLogger(__name__)
 #         __logger = logging.getLogger(__name__)
 #         __logger.warn(">>> Generate a claim request")
 #         claimDef = request.body.decode("utf-8")
-#         claimDefProcesser = ClaimDefProcesser(claimDef)
-#         (
-#             credential_request,
-#             credential_request_metadata,
-#         ) = claimDefProcesser.GenerateClaimRequest()
-#         __logger.warn("<<< Generated claim request")
-#         return JsonResponse(
-#             {
-#                 "credential_request": credential_request,
-#                 "credential_request_metadata_json": credential_request_metadata,
-#             }
-#         )
+#         __logger.warn(json.dumps(claimDef, indent=2))
+#         # claimDefProcesser = ClaimDefProcesser(claimDef)
+#         # (
+#         #     credential_request,
+#         #     credential_request_metadata,
+#         # ) = claimDefProcesser.GenerateClaimRequest()
+#         # __logger.warn("<<< Generated claim request")
+#         # return JsonResponse(
+#         #     {
+#         #         "credential_request": credential_request,
+#         #         "credential_request_metadata_json": credential_request_metadata,
+#         #     }
+#         # )
 
 
 # # ToDo:
@@ -208,104 +220,161 @@ logger = logging.getLogger(__name__)
 #         return JsonResponse({"success": False})
 
 
-class register_issuer(APIView):
+@api_view(["POST"])
+@authentication_classes(())
+@permission_classes((permissions.AllowAny,))
+# @permission_classes((IsSignedRequest,))
+@validate(CREDENTIAL_REQUEST_JSON_SCHEMA)
+def generate_credential_request(request, *args, **kwargs):
     """
-    Register an issuer, creating or updating the necessary records
+    Processes a credential definition and responds with a credential request
+    which can then be used to submit a credential.
+
+    Example request payload:
+
+    ```json
+    {
+        'credential-offer': <credential offer json>,
+        'credential-definition': <credential definition json>
+    }
+    ```
+
+    returns: indy sdk credential request json
     """
 
-    # performs its own header verification
-    authentication_classes = ()
-    permission_classes = (permissions.AllowAny,)
+    logger.warn(">>> Generate a credential request")
+    logger.warn(json.dumps(request.data, indent=2))
+    return JsonResponse({})
 
-    def post(self, request, *args, **kwargs):
-        """  
-        Processes an issuer definition and creates or updates the
-        corresponding records. Responds with the updated issuer
-        definition including record IDs.
 
-        Example request payload:
+@api_view(["POST"])
+@authentication_classes(())
+@permission_classes((permissions.AllowAny,))
+@validate(ISSUER_JSON_SCHEMA)
+def register_issuer(request, *args, **kwargs):
+    """  
+    Processes an issuer definition and creates or updates the
+    corresponding records. Responds with the updated issuer
+    definition including record IDs.
 
-        ```json
-        {
-            "issuer": {
-                "did": "issuer DID",
-                "name": "issuer name (english)",
-                "abbreviation": "issuer TLA (english)",
-                "email": "administrator email",
-                "url": "url for issuer details"
-            },
-            "credential_types": [
-                {
-                    "schema": "schema name",
-                    "version": "schema version",
-                    "name": "schema display name (english)",
-                    "mapping": {
-                        "source_id_key": "org_registry_ID",
-                        "models": [
-                            {
-                                "name": "Name",
-                                "fields": {
-                                    "name": {
-                                        "from": "claim",
-                                        "input": "org_name"
-                                    },
-                                    "language_code": {
-                                        "from": "value",
-                                        "input": "en"
-                                    }
-                                }
-                            },
-                            {
-                                "name": "Person",
-                                "fields": {
-                                    "full_name": {
-                                        "from": "claim",
-                                        "input": "org_name"
-                                    },
-                                    "name_type": {
-                                        "from": "value",
-                                        "input": "good"
-                                    },
-                                    "start_date": {
-                                        "from": "claim",
-                                        "input": "effective_date",
-                                        "processor": [
-                                            "parseDate"
-                                        ]
-                                    }
+    Example request payload:
+
+    ```json
+    {
+        "issuer": {
+            "did": "issuer DID",
+            "name": "issuer name (english)",
+            "abbreviation": "issuer TLA (english)",
+            "email": "administrator email",
+            "url": "url for issuer details"
+        },
+        "credential-types": [
+            {
+                "schema": "schema name",
+                "version": "schema version",
+                "name": "schema display name (english)",
+                "mapping": {
+                    "source-id-key": "org_registry_ID",
+                    "models": [
+                        {
+                            "name": "Name",
+                            "fields": {
+                                "name": {
+                                    "from": "claim",
+                                    "input": "org_name"
+                                },
+                                "language-code": {
+                                    "from": "value",
+                                    "input": "en"
                                 }
                             }
-                        ]
-                    }
+                        },
+                        {
+                            "name": "Person",
+                            "fields": {
+                                "full_name": {
+                                    "from": "claim",
+                                    "input": "org_name"
+                                },
+                                "name-type": {
+                                    "from": "value",
+                                    "input": "good"
+                                },
+                                "start-date": {
+                                    "from": "claim",
+                                    "input": "effective_date",
+                                    "processor": [
+                                        "parseDate"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+    ```
+
+    returns:
+    
+    ```
+    {
+        "success": true,
+        "result": {
+            "issuer": {
+                "id": 1,
+                "did": "6qnvgJtqwK44D8LFYnV5Yf",
+                "name": "BC Corporate Registry",
+                "abbreviation": "BCReg",
+                "email": "bcreg.test.issuer@example.ca",
+                "url": "http://localhost:5000"
+            },
+            "schemas": [
+                {
+                    "id": 1,
+                    "name": "incorporation.bc_registries",
+                    "version": "1.0.31",
+                    "publisher_did": "6qnvgJtqwK44D8LFYnV5Yf"
+                },
+                {
+                    "id": 2,
+                    "name": "doing_business_as.bc_registries",
+                    "version": "1.0.31",
+                    "publisher_did": "6qnvgJtqwK44D8LFYnV5Yf"
+                }
+            ],
+            "credential-types": [
+                {
+                    "id": 1,
+                    "schema-id": 1,
+                    "issuer-id": 1,
+                    "description": "Incorporation",
+                    "processor_config": null
+                },
+                {
+                    "id": 2,
+                    "schema-id": 2,
+                    "issuer-id": 1,
+                    "description": "Doing Business As",
+                    "processor_config": null
                 }
             ]
         }
-        ```
+    }
+    ```
+    """
 
-        returns:
-        
-        ```
-        {"success": boolean, "result": updated issuer definition}
-        ```
-        """
-
-        logger.warn(">>> Register issuer")
-        issuer_def = request.body.decode("utf-8")
-        issuer_json = json.loads(issuer_def)
+    logger.warn(">>> Register issuer")
+    try:
+        issuer_manager = IssuerManager()
+        updated = issuer_manager.register_issuer(request, request.data)
         logger.info(
-            "Issuer registration definition: \n"
-            + json.dumps(issuer_json, indent=2)
+            "Issuer registration response: \n" + json.dumps(updated, indent=2)
         )
-        try:
-            issuer_manager = IssuerManager()
-            updated = issuer_manager.register_issuer(request, issuer_json)
-            logger.info(
-                "Issuer registration response: \n"
-                + json.dumps(updated, indent=2)
-            )
-            response = {"success": True, "result": updated}
-        except IssuerException as e:
-            logger.exception("Issuer request not accepted:")
-            response = {"success": False, "result": str(e)}
-        logger.warn("<<< Register issuer")
-        return JsonResponse(response)
+        response = {"success": True, "result": updated}
+    except IssuerException as e:
+        logger.exception("Issuer request not accepted:")
+        response = {"success": False, "result": str(e)}
+    logger.warn("<<< Register issuer")
+    return JsonResponse(response)
