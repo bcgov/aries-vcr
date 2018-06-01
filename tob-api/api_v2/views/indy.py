@@ -11,6 +11,7 @@ from api.proofRequestProcesser import ProofRequestProcesser
 
 from api_v2.indy.issuer import IssuerManager, IssuerException
 from api_v2.indy.credential_offer import CredentialOfferManager
+from api_v2.indy.credential import Credential, CredentialManager
 
 from rest_framework.decorators import (
     api_view,
@@ -21,6 +22,7 @@ from rest_framework.decorators import (
 from api_v2.decorators.jsonschema import validate
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
+from api_v2.jsonschema.credential import CREDENTIAL_JSON_SCHEMA
 
 from rest_framework import permissions
 from api.claimProcesser import ClaimProcesser
@@ -86,15 +88,51 @@ def generate_credential_request(request, *args, **kwargs):
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
 # @permission_classes((IsSignedRequest,))
-@validate(CREDENTIAL_OFFER_JSON_SCHEMA)
+@validate(CREDENTIAL_JSON_SCHEMA)
 def store_credential(request, *args, **kwargs):
-    pass
+    """  
+    Stores a verifiable credential in wallet.
+
+    The data in the credential is parsed and stored in the database
+    for search/display purposes based on the issuer's processor config.
+    The data is then made available through a REST API as well as a 
+    search API.
+
+    Example request payload:
+
+    ```json
+    {
+        "credential_type": <credential type>,
+        "credential_data": <credential data>,
+        "issuer_did": <issuer did>,
+        "credential_definition": <credential definition>,
+        "credential_request_metadata": <credential request metadata>
+    }
+    ```
+
+    returns: created verifiableClaim model
+    """
+    logger.warn(">>> Store claim")
+
+    credential_data = request.data["credential_data"]
+    credential_request_metadata = request.data["credential_request_metadata"]
+
+    credential = Credential(credential_data)
+    credential_manager = CredentialManager(
+        credential, credential_request_metadata
+    )
+
+    credential_manager.process()
+
+    return Response({})
 
 
 @api_view(["POST"])
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
 @validate(ISSUER_JSON_SCHEMA)
+# TODO: Clean up abstraction. IssuerManager writes only –
+#       use serializer in view to return created models?
 def register_issuer(request, *args, **kwargs):
     """  
     Processes an issuer definition and creates or updates the
@@ -178,13 +216,13 @@ def register_issuer(request, *args, **kwargs):
                     "id": 1,
                     "name": "incorporation.bc_registries",
                     "version": "1.0.31",
-                    "publisher_did": "6qnvgJtqwK44D8LFYnV5Yf"
+                    "origin_did": "6qnvgJtqwK44D8LFYnV5Yf"
                 },
                 {
                     "id": 2,
                     "name": "doing_business_as.bc_registries",
                     "version": "1.0.31",
-                    "publisher_did": "6qnvgJtqwK44D8LFYnV5Yf"
+                    "origin_did": "6qnvgJtqwK44D8LFYnV5Yf"
                 }
             ],
             "credential_types": [
@@ -209,6 +247,7 @@ def register_issuer(request, *args, **kwargs):
     """
 
     logger.warn(">>> Register issuer")
+    # logger.warn(json.dumps(request.data, indent=2))
     try:
         issuer_manager = IssuerManager()
         updated = issuer_manager.register_issuer(request, request.data)

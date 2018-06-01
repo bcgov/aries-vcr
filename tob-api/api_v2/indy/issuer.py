@@ -37,6 +37,8 @@ class IssuerManager:
             issuer, spec.get("credential_types", [])
         )
 
+        # TODO: use a serializer to return consistent data with REST API?
+        #       Do this at the view layer instead of this manager?
         result = {
             "issuer": {
                 "id": issuer.id,
@@ -51,7 +53,7 @@ class IssuerManager:
                     "id": schema.id,
                     "name": schema.name,
                     "version": schema.version,
-                    "publisher_did": schema.publisher_did,
+                    "origin_did": schema.origin_did,
                 }
                 for schema in schemas
             ],
@@ -119,7 +121,7 @@ class IssuerManager:
             schema, _ = Schema.objects.get_or_create(
                 name=schema_name,
                 version=schema_version,
-                publisher_did=schema_publisher_did,
+                origin_did=schema_publisher_did,
             )
             schema.save()
             schemas.append(schema)

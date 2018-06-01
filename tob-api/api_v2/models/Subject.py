@@ -9,9 +9,6 @@ from auditable.models import Auditable
 
 class Subject(Auditable):
     source_id = models.TextField(blank=True, null=True)
-    initial_credential = models.OneToOneField(
-        "Credential", related_name="subjects"
-    )
 
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(blank=True, null=True)
