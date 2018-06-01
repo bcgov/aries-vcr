@@ -3,12 +3,14 @@ import json
 
 from api.auth import IsSignedRequest
 from api.indy.proofRequestBuilder import ProofRequestBuilder
-from api_v2.indy.issuer import IssuerManager, IssuerException
+
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers
 from api.proofRequestProcesser import ProofRequestProcesser
 
+from api_v2.indy.issuer import IssuerManager, IssuerException
+from api_v2.indy.credential_offer import CredentialOfferManager
 
 from rest_framework.decorators import (
     api_view,
@@ -18,7 +20,7 @@ from rest_framework.decorators import (
 
 from api_v2.decorators.jsonschema import validate
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
-from api_v2.jsonschema.credential_request import CREDENTIAL_REQUEST_JSON_SCHEMA
+from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
 
 from rest_framework import permissions
 from api.claimProcesser import ClaimProcesser
@@ -224,7 +226,7 @@ logger = logging.getLogger(__name__)
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
 # @permission_classes((IsSignedRequest,))
-@validate(CREDENTIAL_REQUEST_JSON_SCHEMA)
+@validate(CREDENTIAL_OFFER_JSON_SCHEMA)
 def generate_credential_request(request, *args, **kwargs):
     """
     Processes a credential definition and responds with a credential request
@@ -239,12 +241,35 @@ def generate_credential_request(request, *args, **kwargs):
     }
     ```
 
-    returns: indy sdk credential request json
+    returns:
+
+    ```
+    {
+        "credential-request": <credential request json>,
+        "credential-request-metadata-json": <credential request metadata json>
+    }
+    ```
     """
 
-    logger.warn(">>> Generate a credential request")
-    logger.warn(json.dumps(request.data, indent=2))
-    return JsonResponse({})
+    logger.warn(">>> Generate credential request")
+
+    credential_offer = request.data["credential-offer"]
+    credential_definition = request.data["credential-definition"]
+    credential_request_manager = CredentialOfferManager(
+        credential_offer, credential_definition
+    )
+
+    credential_request, credential_request_metadata_json = (
+        credential_request_manager.generate_credential_request()
+    )
+
+    response = {
+        "credential-request": credential_request,
+        "credential-definition": credential_definition,
+    }
+
+    logger.warn("<<< Generate credential request")
+    return JsonResponse(response)
 
 
 @api_view(["POST"])
@@ -317,7 +342,6 @@ def register_issuer(request, *args, **kwargs):
     ```
 
     returns:
-    
     ```
     {
         "success": true,

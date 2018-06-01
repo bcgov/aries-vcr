@@ -1,4 +1,4 @@
-CREDENTIAL_REQUEST_JSON_SCHEMA = {
+CREDENTIAL_OFFER_JSON_SCHEMA = {
     # TODO: use newer draft of spec?
     "$schema": "http://json-schema.org/draft-04/schema",
     "type": "object",
