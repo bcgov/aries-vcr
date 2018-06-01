@@ -14,7 +14,7 @@ ISSUER_JSON_SCHEMA = {
             },
             "required": ["did", "name"],
         },
-        "credential-types": {
+        "credential_types": {
             "type": "array",
             "items": {
                 "type": "object",

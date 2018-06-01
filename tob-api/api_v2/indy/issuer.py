@@ -21,6 +21,8 @@ class IssuerManager:
 
     def register_issuer(self, request, spec):
         # TODO: move sig verification into middleware – decorator?
+        # TODO: accept required params instead of spec (schema
+        # validated in view)
         try:
             verified = verify_signature(request)
         except VerifierException as e:
@@ -32,7 +34,7 @@ class IssuerManager:
         user = self.update_user(verified, spec["issuer"])
         issuer = self.update_issuer(spec["issuer"])
         schemas, credential_types = self.update_schemas_and_ctypes(
-            issuer, spec.get("credential-types", [])
+            issuer, spec.get("credential_types", [])
         )
 
         result = {
@@ -53,11 +55,11 @@ class IssuerManager:
                 }
                 for schema in schemas
             ],
-            "credential-types": [
+            "credential_types": [
                 {
                     "id": credential_type.id,
-                    "schema-id": credential_type.schema.id,
-                    "issuer-id": credential_type.issuer.id,
+                    "schema_id": credential_type.schema.id,
+                    "issuer_id": credential_type.issuer.id,
                     "description": credential_type.description,
                     "processor_config": credential_type.processor_config,
                 }
