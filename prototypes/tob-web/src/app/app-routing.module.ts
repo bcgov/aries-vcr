@@ -69,6 +69,13 @@ export const routes: Routes = [
       breadcrumb: 'recipe.breadcrumb'
     }
   },
+
+  //
+  {
+    path: 'v2',
+    loadChildren: 'app/v2/v2.module#v2Module',
+  },
+
   {
     path: '**',
     component: NotFoundComponent,

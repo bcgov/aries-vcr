@@ -215,3 +215,9 @@ export function blankOrgType(): VerifiableOrgType {
     displayOrder: null,
   };
 }
+
+
+export class Subject {
+  id: number;
+}
+

@@ -26,6 +26,7 @@ import { AdminModule } from 'app/admin/admin.module';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
+
 const ROUTE_PREFIX : string = 'ROUTES.';
 
 export function createTranslateLoader(http: Http) {
@@ -49,6 +50,10 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
 }
 
 
+// v2 interface
+import { v2Module } from './v2/v2.module';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,7 +67,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     RoadmapComponent,
     RoadmapTreeComponent,
     BreadcrumbComponent,
-    NotFoundComponent
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,11 +89,15 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
         useFactory: createLocalizeLoader,
         deps: [TranslateService, Location, LocalizeRouterSettings, Http]
       }
-    })
+    }),
+
+    // v2 interface
+    v2Module,
+
   ],
   providers: [
     GeneralDataService,
-    {provide: MissingTranslationHandler, useClass: MyMissingTranslationHandler}
+    {provide: MissingTranslationHandler, useClass: MyMissingTranslationHandler},
   ],
   bootstrap: [AppComponent]
 })

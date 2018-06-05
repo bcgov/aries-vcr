@@ -1,0 +1,120 @@
+<section id="home">
+
+  <div class="row mrgn-tp-lg" *ngIf="!inited">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <h1 class="dashboard-title text-center" translate *ngIf="inited">dashboard.title</h1>
+
+  <div class="row" *ngIf="inited">
+    <div class="col-sm-12">
+
+      <div class="text-center">
+        <ul class="stats">
+          <li class="stat"><span class="numbers">{{recordCounts.orgs | number}}</span> {{'dashboard.title-orgs' | translate}}</li>
+          <li class="stat"><span class="numbers">{{recordCounts.certs | number}}</span> {{'dashboard.title-certs' | translate}}</li>
+        </ul>
+        <div class="search-title">
+          <h2>Find an organization</h2>
+          <div class="search-types">
+            <a href="#" class="search-type active">Names</a>
+            <a href="#" class="search-type">Locations</a>
+          </div>
+        </div>
+        <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
+      </div>
+
+      <div class="row results mrgn-tp-lg">
+        <div class="col-sm-3 facets">
+          <label class="control-label">Refine search</label>
+          <div class="facet">
+            <label class="control-label">Status</label>
+            <ul>
+              <li><strong>Current</strong></li>
+              <li><a href="#">Historical</a></li>
+            </ul>
+          </div>
+          <div class="facet">
+            <label class="control-label">Issuers</label>
+            <ul>
+              <li><a href="#">BC Registries</a></li>
+            </ul>
+          </div>
+          <div class="facet">
+            <label class="control-label">Credential Types</label>
+            <ul>
+              <li><a href="#">Incorporation</a></li>
+              <li><a href="#">Doing Business As</a></li>
+            </ul>
+          </div>
+          <div class="facet">
+            <label class="control-label">Year</label>
+            <ul>
+              <li><a href="#">2018</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-9 rows">
+          <label class="control-label" translate>search.results-title</label>
+          <div class="row">
+            <div class="col-sm-7">
+              <small>Legal Name:</small> <a href="#"><span class="fa fa-tag"></span> 246801234 British Columbia Inc.</a><br>
+              <small>Issuer: <a href="#"><span class="fa fa-university"></span> BC Registries</a></small><br>
+              <small>Last Updated: <span class="fa fa-calendar"></span> 2018-04-20</small>
+            </div>
+            <div class="col-sm-5">
+              <small>
+              <label class="control-label">Registered Office</label>
+              <div class="claim-info location">
+                123 Fake St<br>
+                Campbell River<br>
+                British Columbia, Canada<br>
+                V4H 1B1
+              </div>
+              </small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-7">
+              <small>Doing Business As:</small> <a href="#"><span class="fa fa-tag"></span> Iverson Kitchens</a><br>
+              <small>Issuer: <a href="#"><span class="fa fa-university"></span> BC Registries</a></small><br>
+              <small>Last Updated: <span class="fa fa-calendar"></span> 2018-04-20</small>
+            </div>
+            <div class="col-sm-5">
+              <small>
+              <label class="control-label">Registered Office</label>
+              <div class="claim-info location">
+                123 Fake St<br>
+                Campbell River<br>
+                British Columbia, Canada<br>
+                V4H 1B1
+              </div>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row results-nav">
+        <div class="col-sm-12 text-right">
+          <ul class="pager">
+            <li *ngIf="less">
+              <a href="#" (click)="prev(); $event.preventDefault();">&lt;&lt; {{'general.prev-link' | translate}}</a>
+            </li>
+            <li *ngIf="more">
+              <a href="#" (click)="next(); $event.preventDefault();">{{'general.next-link' | translate}} &gt;&gt;</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="map mrgn-tp-lg hidden">
+        <label class="control-label">Search by Location</label>
+        <div class="map-image"></div>
+      </div>
+    </div>
+  </div>
+
+</section>
