@@ -1,0 +1,58 @@
+<div class="panel name-panel" *ngIf="record">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{record.type | translate}}: <span class="fa fa-tag"></span> <strong>{{record.text}}</strong></h3>
+  </div>
+  <div class="panel-body">
+    <div class="row form-group">
+      <div class="col-sm-7">
+        <label class="control-label" translate>cred.issuer</label>
+        <div class="form-field">
+          <a [href]="issuer.url" target="_blank" rel="external" class="issuer-link">{{issuer.name}}</a>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <label class="control-label" translate>cred.start-date</label>
+        <div class="form-field">
+          <span class="claim-info date">{{record.startDate}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row form-group" *ngIf="cred.haveContacts || cred.haveAddresses">
+      <div class="col-sm-7" *ngIf="cred.haveContacts">
+        <label class="control-label" translate>cred.contact</label>
+        <div class="form-field">
+          <ul class="claim-list">
+            <li *ngFor="let contact of cred.contacts">
+              <label translate>{{contact.type}}</label>
+              <span class="claim-info {{contact.typeClass}}">{{contact.text}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-5" *ngIf="cred.haveAddresses">
+        <div class="form-field address-list" *ngFor="let address of cred.addresses">
+          <label class="control-label" translate>{{address.addressType}}</label>
+          <address [record]="address"></address>
+        </div>
+      </div>
+    </div>
+    <div class="row form-group" *ngIf="cred.havePeople">
+      <div class="col-sm-7">
+        <label class="control-label" translate>cred.people</label>
+        <div class="form-field">
+          <ul class="claim-list">
+            <li *ngFor="let person of cred.people">
+              <label translate>{{person.type}}</label>
+              <span class="claim-info person">{{person.fullName}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-footer text-right">
+    <span class="fa fa-certificate"></span> <a class="util-link" href="#">View credential</a>
+    &nbsp;
+    <span class="fa fa-history"></span> <a href="#" class="util-link">See history (1)</a>
+  </div>
+</div>

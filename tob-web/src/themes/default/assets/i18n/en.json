@@ -82,5 +82,31 @@
     "placeholder": "search",
     "results-title": "Search Results",
     "return-link": "Back to Search"
+  },
+
+  "address": {
+    "registered-office": "Registered Office"
+  },
+  "contact": {
+    "email": "Email Address",
+    "phone": "Phone",
+    "phone-business": "Business Phone",
+    "skype": "Skype Address",
+    "website": "Website Address"
+  },
+  "cred": {
+    "addresses": "Addresses",
+    "contact": "Contact",
+    "issuer": "Issuer",
+    "last-updated": "Last Updated",
+    "people": "People",
+    "start-date": "Effective Date"
+  },
+  "name": {
+    "doing-business-as": "Doing Business As",
+    "legal-name": "Legal Name"
+  },
+  "person": {
+    "director": "Director"
   }
 }

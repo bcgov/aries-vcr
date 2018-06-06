@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/observable/fromPromise';
 
 import { GeneralDataService } from 'app/general-data.service';
 import { SearchInfo, SearchResults } from './results.model';
@@ -18,24 +19,34 @@ export class SearchService {
   ) {
   }
 
-  performSearch(query: string, params?: { [key: string]: string }): Observable<SearchResults<any>> {
-    const data: any[] = [
-      { 'name': 'value' },
-    ];
-    const info = new SearchInfo();
-    info.pageNum = 1;
-    const results = new SearchResults(info, data);
-    return Observable.of(results);
+  performSearch(params?: { [key: string]: string }): Observable<SearchResults<any>> {
+    if(! params) params = {};
+
+    let promise = new Promise((resolve) => {
+      function returnResult(rows: any[]) {
+        const info = new SearchInfo();
+        info.pageNum = 1;
+        info.firstIndex = 1;
+        info.lastIndex = rows.length;
+        info.totalCount = rows.length;
+        setTimeout(() => {
+          resolve(new SearchResults(info, rows));
+        }, 500);
+      }
+
+      if(params.method === 'names' || params.method === 'creds') {
+        this._dataService.loadJson('assets/testdata/' + params.method + '.json', {t: new Date().getTime()})
+          .subscribe((rows: any[]) => {
+            setTimeout
+            returnResult(rows);
+          });
+      }
+      else {
+        returnResult([]);
+      }
+    });
+    return Observable.fromPromise(promise);
   }
 
-  realPerformSearch(query: string, params?: { [key: string]: string }) {
-    /*return this.http.get<Item[]>(`${this.apiUrl}/view/projects`, this.options)
-      .map( (response: HttpResponse<Item[]>) => {
-        var result = response.body.map( (item:Item) =>
-          Object.assign(new Item(),item) );
-        console.log( result );
-        return result;
-      });*/
-  }
 }
 

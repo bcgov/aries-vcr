@@ -18,6 +18,7 @@ export class SearchInputComponent implements AfterViewInit {
   protected _focused: boolean = false;
   protected _inputTimer;
   protected _loading: boolean = false;
+  protected _lastQuery: string;
   protected _query: string;
 
   constructor(
@@ -80,7 +81,7 @@ export class SearchInputComponent implements AfterViewInit {
   }
 
   protected updateQuery(value: string, live?: boolean) {
-    let old = this._query;
+    let old = this._lastQuery;
     if(value === undefined || value === null) {
       value = '';
     }
@@ -96,6 +97,9 @@ export class SearchInputComponent implements AfterViewInit {
   }
 
   protected updated() {
-    this.queryChange.emit(this._query);
+    if(this._lastQuery !== this._query) {
+      this._lastQuery = this._query;
+      this.queryChange.emit(this._lastQuery);
+    }
   }
 }

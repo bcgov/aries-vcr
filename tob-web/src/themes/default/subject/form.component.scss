@@ -1,0 +1,119 @@
+.business-title {
+  font-size: 3rem;
+  margin-top: 0;
+}
+.title-back-link {
+  display: block;
+  font-size: 110%;
+  text-decoration: none;
+}
+
+.field-value + .field-value {
+  margin-top: 0.7em;
+}
+
+.field-list {
+  padding-left: 1em;
+}
+
+
+.creds-panel {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column nowrap;
+  max-height: 40em;
+  overflow: hidden;
+  > .panel-heading {
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    flex: none;
+    padding: 1rem 1.2rem 0.8rem;
+    .panel-title {
+      font-size: 2rem;
+    }
+  }
+  .filters {
+    background-color: #eee;
+    font-size: 1.4rem;
+  }
+  .columns {
+    background-color: #eee;
+    border-bottom: 3px double #bbb;
+    border-top: 1px solid #bbb;
+    font-size: 1.5rem;
+    a {
+      border-bottom: 1px solid #999;
+      color: #555;
+      text-decoration: none;
+    }
+  }
+  > .panel-body {
+    background-color: #fff;
+    flex: auto;
+    font-size: 15px;
+    overflow: auto;
+    padding-bottom: 0;
+    padding-top: 0;
+    word-wrap: break-word;
+    .loading {
+      padding: 0.5em 0;
+    }
+  }
+}
+
+
+.timeline-panel {
+  background: none;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: 16px;
+  max-height: 40em;
+  padding: 0.8rem 1.2rem 0.2rem;
+  > .panel-heading {
+    border-bottom: 1px solid #ccc;
+    flex: none;
+    display: flex;
+    .panel-title {
+      flex: auto;
+      font-size: 2rem;
+    }
+    .util-link {
+      font-size: 1.3rem;
+    }
+  }
+  > .panel-body {
+    flex: auto;
+    overflow: auto;
+    word-wrap: break-word;
+  }
+}
+
+.timeline-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  > li {
+    time {
+      color: #666;
+      font-style: italic;
+      white-space: nowrap;
+    }
+    + li {
+      margin-top: 10px;
+    }
+    .issuer-link {
+      display: inline-block;
+      padding-left: 0.1em;
+      padding-right: 0.1em;
+      text-decoration: none;
+    }
+    .cred-link {
+      display: inline-block;
+      font-weight: 600;
+      padding-left: 0.1em;
+      padding-right: 0.1em;
+      text-decoration: none;
+    }
+  }
+}

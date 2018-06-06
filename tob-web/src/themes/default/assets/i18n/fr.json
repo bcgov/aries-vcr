@@ -85,5 +85,10 @@
     "placeholder": "recherche",
     "results-title": "Résultats de la recherche",
     "return-link": "Back to Search"
+  },
+
+  "cred": {
+    "issuer": "Issuer",
+    "start-date": "Effective Date"
   }
 }

@@ -1,3 +1,4 @@
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import { SearchResults } from './results.model';
 import { SearchService } from './search.service';
@@ -7,21 +8,19 @@ export abstract class SearchClient<T> {
 
   public results: SearchResults<T>;
   public error: any;
+  public method;
 
-  private _query: string;
+  private _loading: boolean = false;
   private _params: { [key: string]: any } = {};
   private _search: Subscription;
+  private _statusUpdate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     protected _service : SearchService,
   ) {}
 
-  get query() {
-    return this._query;
-  }
-
-  set query(val: string) {
-    this._query = val;
+  get loading(): boolean {
+    return this._loading;
   }
 
   get params() {
@@ -40,6 +39,11 @@ export abstract class SearchClient<T> {
     this._params['page'] = val || 0;
   }
 
+  init() {
+    this._params = {};
+    this.results = null;
+  }
+
   updateParams(params: { [key: string]: any }) {
     this._params = Object.assign({}, this._params, params);
   }
@@ -51,17 +55,33 @@ export abstract class SearchClient<T> {
 
   updateSearch() {
     this.cancelSearch();
-    this._search = this._service.performSearch(this._query, this._params)
+    this._loading = true;
+    this._searchUpdated();
+    this._search = this._service.performSearch(this.searchParams)
       .subscribe(
-        this.returnResults.bind(this),
-        this.returnError.bind(this),
-        this.searchUpdated.bind(this));
+        this._returnResults.bind(this),
+        this._returnError.bind(this),
+        this._searchUpdated.bind(this));
+  }
+
+  clearSearch() {
+    this.cancelSearch();
+    this.results = null;
+    this._searchUpdated();
+  }
+
+  get searchParams(): any {
+    let p = Object.assign({}, this._params);
+    if(! p.method && this.method) p.method = this.method;
+    return p;
   }
 
   cancelSearch() {
     if(this._search) {
       this._search.unsubscribe();
       this._search = null;
+      this._loading = false;
+      this._searchUpdated();
     }
   }
 
@@ -71,10 +91,11 @@ export abstract class SearchClient<T> {
   previousPage() {
   }
 
-  private returnResults(results: SearchResults<any>) {
+  private _returnResults(results: SearchResults<any>) {
     this.results = new SearchResults(
       results.info,
       this.loadResults(results.rows));
+    this._loading = false;
   }
 
   loadResults(results: any[]): T[] {
@@ -83,12 +104,17 @@ export abstract class SearchClient<T> {
 
   abstract loadResult(result: any): T;
 
-  private returnError(err: any) {
+  private _returnError(err: any) {
     console.error('got error: ', err);
+    this._loading = false;
   }
 
-  private searchUpdated() {
+  private _searchUpdated() {
     console.log('results updated');
+    this._statusUpdate.next(this._loading);
   }
 
+  subscribe(proc) {
+    return this._statusUpdate.subscribe(proc);
+  }
 }

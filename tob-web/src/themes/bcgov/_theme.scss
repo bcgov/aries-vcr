@@ -2,6 +2,13 @@
   letter-spacing: 0.05em;
 }
 
+.page-header {
+  margin-bottom: 0;
+  .breadcrumb {
+    margin-bottom: 0;
+  }
+}
+
 .btn-group > .btn {
   // why is this necessary??
   margin-right: 0;

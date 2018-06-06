@@ -1,0 +1,20 @@
+.cred-row {
+  padding-bottom: 0.5em;
+  padding-top: 0.5em;
+  .cred-link {
+    font-size: 110%;
+    margin-left: 0.25em;
+  }
+  .cred-date {
+    padding-top: 0.25em;
+  }
+  &:nth-child(even) {
+    background-color: #eee;
+  }
+}
+
+.claim-list label {
+  font-size: 95%;
+  font-weight: 600;
+}
+

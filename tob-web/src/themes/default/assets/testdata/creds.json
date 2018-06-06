@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "subject": null,
+    "credentialType": {
+      "id": 1,
+      "issuer": {
+        "id": 1,
+        "name": "BC Registries",
+        "url": "",
+        "startDate": "",
+        "endDate": null
+      },
+      "description": "Incorporation",
+      "startDate": "",
+      "endDate": null
+    },
+    "startDate": "2018-04-01",
+    "endDate": null
+  },
+  {
+    "id": 2,
+    "subject": null,
+    "credentialType": {
+      "id": 2,
+      "issuer": {
+        "id": 1,
+        "name": "BC Registries",
+        "url": "",
+        "startDate": "",
+        "endDate": null
+      },
+      "description": "Doing Business As",
+      "startDate": "",
+      "endDate": null
+    },
+    "startDate": "2018-05-01",
+    "endDate": null
+  }
+]

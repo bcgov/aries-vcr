@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SubjectSearchClient } from './subject-search.client';
 import { SearchResults } from './results.model';
-import { Subject } from '../data-types';
+import { SubjectResult } from '../data-types';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class SubjectSearchComponent implements OnInit, AfterViewInit {
     private _client: SubjectSearchClient,
   ) {}
 
-  get results() : SearchResults<Subject> {
+  get results() : SearchResults<SubjectResult> {
     return this._client.results;
   }
 

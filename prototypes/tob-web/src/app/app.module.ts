@@ -95,6 +95,9 @@ import { v2Module } from './v2/v2.module';
     v2Module,
 
   ],
+  exports: [
+    TranslateModule,
+  ],
   providers: [
     GeneralDataService,
     {provide: MissingTranslationHandler, useClass: MyMissingTranslationHandler},

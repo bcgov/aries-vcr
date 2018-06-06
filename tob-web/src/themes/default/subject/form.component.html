@@ -1,0 +1,142 @@
+<section id="subject-form">
+  <div class="row" *ngIf="error">
+    <div class="col-sm-12">
+      {{error}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!loaded && !error">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="loaded">
+    <div class="col-md-8 col-sm-7">
+      <h1 class="subject-name">246801234 British Columbia Inc.</h1>
+
+      <a [routerLink]="'/' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
+
+      <div class="row">
+        <div class="col-sm-12 name-info">
+          <name-panel *ngFor="let name of record.names" [record]="name"></name-panel>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-4 col-sm-5">
+      <div class="panel timeline-panel">
+        <div class="panel-heading">
+          <h3 class="panel-title">Timeline</h3>
+          <a class="util-link" href="#"><span class="fa fa-expand"></span> Expand</a>
+        </div>
+        <div class="panel-body">
+          <ul class="timeline-list">
+            <li>
+              <a href="#" class="issuer-link">Fraser Valley Health Authority</a> issued <a href="#" class="cert-link">Health Inspection</a>
+              <time>10 days ago</time>
+            </li>
+            <li>
+              Added <em>Director</em> <a href="#" class="cert-link person">Bob Terwilliger</a>
+              <time>3 months ago</time>
+            </li>
+            <li>
+              Added <em>Business Phone</em> contact <a href="#" class="cert-link phone">+1-800-411-4111</a>
+              <time>3 months ago</time>
+            </li>
+            <li>
+              Added <em>Skype Address</em> contact <a href="#" class="cert-link contact">iverson.example</a>
+              <time>3 months ago</time>
+            </li>
+            <li>
+              Added <em>Email Address</em> contact <a href="#" class="cert-link email">sales@iverson.example.ca</a>
+              <time>3 months ago</time>
+            </li>
+            <li>
+              Added <em>Website Address</em> contact <a href="#" class="cert-link url">https://iverson.example.ca</a>
+              <time>3 months ago</time>
+            </li>
+            <li>
+              Added <em>Registered Office</em> location <a href="#" class="cert-link location">123 Fake St, Campbell River BC, Canada V4H 1B1</a>
+              <time>3 months ago</time>
+            </li>
+            <li>
+              <a href="#" class="issuer-link">BC Registries</a> issued <em>Doing Business As</em> <a href="#" class="cert-link name">Iverson Kitchen</a>
+              <time>3 months ago</time>
+            </li>
+            <li>
+              <a href="#" class="issuer-link">BC Registries</a> issued <em>Incorporation</em> <a href="#" class="cert-link name">246801234 British Columbia Inc.</a>
+              <time>4 months ago</time>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row creds-outer" *ngIf="loaded">
+    <div class="col-sm-12">
+      <div class="panel creds-panel">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="panel-title">Other Credentials</h3>
+            </div>
+            <div class="col-sm-6 form-inline text-right">
+              <div class="btn-group">
+                <label class="btn btn-default btn-radio active">
+                  <input type="radio" name="search_active" value="true" checked style="display: none"><span class="fa fa-bell"></span> Current
+                </label>
+                <label class="btn btn-default btn-radio">
+                  <input type="radio" name="search_active" value="false" style="display: none"><span class="fa fa-history"></span> Historical
+                </label>
+              </div>
+              <div class="btn btn-default active" style="margin-left: 1em">
+                <span class="fa fa-filter"></span> Hide Filters <span class="fa fa-angle-double-up"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-heading filters">
+          <div class="row">
+            <div class="col-sm-3">
+              <label class="control-label">Credential Type</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
+            </div>
+            <div class="col-sm-3">
+              <label class="control-label">Issuer</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
+            </div>
+            <div class="col-sm-3">
+              <label class="control-label">Before Date</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
+            </div>
+            <div class="col-sm-3">
+              <label class="control-label">After Date</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
+            </div>
+          </div>
+        </div>
+        <div class="panel-heading columns">
+          <div class="row">
+            <div class="col-sm-4">
+              <a href="#">Credential Type</a> / <a href="#"><strong>Start Date</strong> <span class="fa fa-arrow-down"></span></a>
+            </div>
+            <div class="col-sm-4">
+              <a href="#">Issuer</a>
+            </div>
+            <div class="col-sm-4">
+              Details
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row loading" *ngIf="credsLoading">
+            <div class="col-sm-12 page-load">
+              <div class="loading-indicator"></div>
+            </div>
+          </div>
+          <cred-list [records]="creds" *ngIf="! credLoading"></cred-list>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

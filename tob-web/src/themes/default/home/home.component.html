@@ -13,17 +13,21 @@
 
       <div class="text-center">
         <ul class="stats">
-          <li class="stat"><span class="numbers">{{recordCounts.orgs | number}}</span> {{'dashboard.title-orgs' | translate}}</li>
-          <li class="stat"><span class="numbers">{{recordCounts.certs | number}}</span> {{'dashboard.title-certs' | translate}}</li>
+          <li class="stat"><span class="numbers">{{recordCounts.orgs | number}}</span> <span class="desc">{{'dashboard.title-orgs' | translate}}</span></li>
+          <li class="stat"><span class="numbers">{{recordCounts.certs | number}}</span> <span class="desc">{{'dashboard.title-certs' | translate}}</span></li>
         </ul>
-        <div class="search-title">
-          <h2>Find an organization</h2>
-          <div class="search-types">
-            <a href="#" class="search-type active">Names</a>
-            <a href="#" class="search-type">Locations</a>
+        <div class="search-outer">
+          <div class="search-inner">
+            <div class="search-title">
+              <h2>Find an organization</h2>
+              <div class="search-types">
+                <a href="#" class="search-type active">Names</a>
+                <a href="#" class="search-type">Locations</a>
+              </div>
+            </div>
+            <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
           </div>
         </div>
-        <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
       </div>
 
       <div class="row results mrgn-tp-lg">
@@ -58,55 +62,8 @@
         </div>
         <div class="col-sm-9 rows">
           <label class="control-label" translate>search.results-title</label>
-          <div class="row">
-            <div class="col-sm-7">
-              <small>Legal Name:</small> <a href="#"><span class="fa fa-tag"></span> 246801234 British Columbia Inc.</a><br>
-              <small>Issuer: <a href="#"><span class="fa fa-university"></span> BC Registries</a></small><br>
-              <small>Last Updated: <span class="fa fa-calendar"></span> 2018-04-20</small>
-            </div>
-            <div class="col-sm-5">
-              <small>
-              <label class="control-label">Registered Office</label>
-              <div class="claim-info location">
-                123 Fake St<br>
-                Campbell River<br>
-                British Columbia, Canada<br>
-                V4H 1B1
-              </div>
-              </small>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-7">
-              <small>Doing Business As:</small> <a href="#"><span class="fa fa-tag"></span> Iverson Kitchens</a><br>
-              <small>Issuer: <a href="#"><span class="fa fa-university"></span> BC Registries</a></small><br>
-              <small>Last Updated: <span class="fa fa-calendar"></span> 2018-04-20</small>
-            </div>
-            <div class="col-sm-5">
-              <small>
-              <label class="control-label">Registered Office</label>
-              <div class="claim-info location">
-                123 Fake St<br>
-                Campbell River<br>
-                British Columbia, Canada<br>
-                V4H 1B1
-              </div>
-              </small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row results-nav">
-        <div class="col-sm-12 text-right">
-          <ul class="pager">
-            <li *ngIf="less">
-              <a href="#" (click)="prev(); $event.preventDefault();">&lt;&lt; {{'general.prev-link' | translate}}</a>
-            </li>
-            <li *ngIf="more">
-              <a href="#" (click)="next(); $event.preventDefault();">{{'general.next-link' | translate}} &gt;&gt;</a>
-            </li>
-          </ul>
+          <name-list [records]="names"></name-list>
+          <search-nav [info]="results && results.info"></search-nav>
         </div>
       </div>
 

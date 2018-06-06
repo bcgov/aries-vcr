@@ -4,8 +4,18 @@ export class SearchInfo {
   public pageCount: number = 0;
   public resultCount: number = 0;
   public totalCount: number = 0;
+  public firstIndex = 0;
+  public lastIndex = 0;
   public timing: number = 0;
   public params: {[key: string]: any};
+
+  get havePrevious() {
+    return this.pageNum > 1;
+  }
+
+  get haveNext() {
+    return this.pageNum > 0 && this.pageCount > this.pageNum;
+  }
 }
 
 export class SearchResults<T> {

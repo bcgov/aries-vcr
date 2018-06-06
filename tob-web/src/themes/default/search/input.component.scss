@@ -1,4 +1,5 @@
 $input-border: rgba(128, 173, 210, 0.9);
+$input-border-active: #5c8de6;
 
 .large-search {
   align-items: center;
@@ -7,6 +8,7 @@ $input-border: rgba(128, 173, 210, 0.9);
   border-radius: 10px;
   box-shadow: inset 0 1px 2px 2px rgba(0, 10, 30, 0.05);
   display: inline-flex;
+  flex-flow: row nowrap;
   max-width: 100%;
   overflow: hidden;
   .fa {
@@ -15,14 +17,11 @@ $input-border: rgba(128, 173, 210, 0.9);
   }
   .fa, .load {
     flex: 0 0 46px;
-    font-size: 32px;
-    height: 40px;
-    line-height: 40px;
+    font-size: 30px;
+    height: 32px;
+    line-height: normal;
     text-align: center;
-    width: 46px;
-  }
-  .load {
-    padding-top: 4px;
+    width: 42px;
   }
   .loading-indicator {
     border-top-color: rgba(#fff, 0.8);
@@ -34,25 +33,30 @@ $input-border: rgba(128, 173, 210, 0.9);
     background: transparent;
     border: none;
     flex: 1 1 auto;
-    font-size: 28px;
-    line-height: 32px;
+    font-size: 22px;
+    line-height: normal;
     outline: none;
-    padding: 5px 0 5px 14px;
+    padding: 3px 0 3px 10px;
     margin: 0;
   }
   button {
     background-color: #8ac;
     border: 0;
+    border-left: 2px solid lighten($input-border, 20%);
+    border-right: 2px solid transparent;
     border-radius: 0;
     display: flex;
     margin-right: 0;
   }
   &.active {
-    border-color: #5c8de6;
+    border-color: $input-border-active;
     box-shadow: 0 2px 4px 2px rgba(0, 10, 30, 0.1);
     .fa {
       //color: #7290e9;
       color: #fff;
+    }
+    button {
+      border-left-color: $input-border-active;
     }
   }
 }
