@@ -12,6 +12,7 @@
             "issuer": {
               "id": 1,
               "name": "BC Registries",
+              "abbreviation": null,
               "url": "",
               "startDate": "",
               "endDate": null
@@ -99,6 +100,7 @@
             "issuer": {
               "id": 1,
               "name": "BC Registries",
+              "abbreviation": null,
               "url": "",
               "startDate": "",
               "endDate": null

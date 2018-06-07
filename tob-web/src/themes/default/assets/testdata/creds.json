@@ -7,6 +7,7 @@
       "issuer": {
         "id": 1,
         "name": "BC Registries",
+        "abbreviation": null,
         "url": "",
         "startDate": "",
         "endDate": null
@@ -26,6 +27,7 @@
       "issuer": {
         "id": 1,
         "name": "BC Registries",
+        "abbreviation": null,
         "url": "",
         "startDate": "",
         "endDate": null
@@ -45,6 +47,7 @@
       "issuer": {
         "id": 2,
         "name": "Fraser Valley Health Authority",
+        "abbreviation": null,
         "url": "",
         "startDate": "",
         "endDate": null
@@ -63,7 +66,8 @@
       "id": 4,
       "issuer": {
         "id": 3,
-        "name": "Public Services and Procurement Canada (PSPC)",
+        "name": "Public Services and Procurement Canada",
+        "abbreviation": "PSPC",
         "url": "",
         "startDate": "",
         "endDate": null
@@ -83,6 +87,7 @@
       "issuer": {
         "id": 3,
         "name": "Public Services and Procurement Canada (PSPC)",
+        "abbreviation": "PSPC",
         "url": "",
         "startDate": "",
         "endDate": null
@@ -102,6 +107,7 @@
       "issuer": {
         "id": 3,
         "name": "Public Services and Procurement Canada (PSPC)",
+        "abbreviation": "PSPC",
         "url": "",
         "startDate": "",
         "endDate": null
