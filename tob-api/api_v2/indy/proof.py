@@ -14,7 +14,7 @@ Filter = namedtuple("Filter", "claim_name claim_value")
 
 
 class ProofManager(object):
-    def __init__(self, proof_request: ProofRequest, source_id: str) -> None:
+    def __init__(self, proof_request: dict, source_id: str) -> None:
         self.source_id = source_id
         self.proof_request = proof_request
         self.filters = []
@@ -27,9 +27,8 @@ class ProofManager(object):
 
     async def construct_proof_async(self):
         async with Holder(self.source_id) as holder:
-            logger.info(self.proof_request.json)
             referents, credentials_for_proof_request = await holder.get_creds(
-                self.proof_request.json
+                json.dumps(self.proof_request)
             )
 
             credentials_for_proof_request = json.loads(
@@ -56,7 +55,7 @@ class ProofManager(object):
                 ]
 
             proof = await holder.create_proof(
-                self.proof_request.dict,
+                self.proof_request,
                 credentials_for_proof_request,
                 requested_credentials,
             )

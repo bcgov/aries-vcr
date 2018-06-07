@@ -31,6 +31,7 @@ from api_v2.decorators.jsonschema import validate
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
 from api_v2.jsonschema.credential import CREDENTIAL_JSON_SCHEMA
+from api_v2.jsonschema.construct_proof import CONSTRUCT_PROOF_JSON_SCHEMA
 
 from rest_framework import permissions
 from api.claimProcesser import ClaimProcesser
@@ -266,6 +267,21 @@ def register_issuer(request, *args, **kwargs):
     return JsonResponse(response)
 
 
+@api_view(["POST"])
+@authentication_classes(())
+@permission_classes((permissions.AllowAny,))
+@validate(CONSTRUCT_PROOF_JSON_SCHEMA)
+def construct_proof(request, *args, **kwargs):
+    logger.warn(">>> Construct Proof")
+    source_id = request.data["source_id"]
+    proof_request = request.data["proof_request"]
+
+    proof_manager = ProofManager(proof_request, source_id)
+    proof = proof_manager.construct_proof()
+
+    return JsonResponse({"success": True, "result": proof})
+
+
 @api_view(["GET"])
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
@@ -284,7 +300,9 @@ def verify_credential(request, *args, **kwargs):
     proof_request = ProofRequest(name="the-org-book", version="1.0.0")
     proof_request.build_from_credential(credential)
 
-    proof_manager = ProofManager(proof_request, credential.subject.source_id)
+    proof_manager = ProofManager(
+        proof_request.dict, credential.subject.source_id
+    )
     proof = proof_manager.construct_proof()
 
     async def verify():
@@ -292,6 +310,14 @@ def verify_credential(request, *args, **kwargs):
             return await verifier.verify_proof(proof_request.dict, proof)
 
     verified = eventloop.do(verify())
-    logger.info(verified)
 
-    return JsonResponse({"success": True})
+    return JsonResponse(
+        {
+            "success": verified,
+            "result": {
+                "verified": verified,
+                "proof": proof,
+                "proof_request": proof_request.dict,
+            },
+        }
+    )

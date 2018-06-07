@@ -28,8 +28,9 @@ urlpatterns = [
         r"^indy/generate-credential-request$", indy.generate_credential_request
     ),
     url(r"^indy/store-credential$", indy.store_credential),
-    url(r"^credential/(?P<id>[0-9]+)/verify$", indy.verify_credential),
     url(r"^indy/register-issuer$", indy.register_issuer),
+    url(r"^indy/construct-proof$", indy.construct_proof),
+    url(r"^credential/(?P<id>[0-9]+)/verify$", indy.verify_credential),
 ] + router.urls
 
 urlpatterns = format_suffix_patterns(urlpatterns)
