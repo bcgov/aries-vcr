@@ -1,8 +1,12 @@
 import logging
 import json
 
+from django.http import Http404
+
 from api.auth import IsSignedRequest
 from api.indy.proofRequestBuilder import ProofRequestBuilder
+
+from api_v2.models.Credential import Credential as CredentialModel
 
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
@@ -12,6 +16,7 @@ from api.proofRequestProcesser import ProofRequestProcesser
 from api_v2.indy.issuer import IssuerManager, IssuerException
 from api_v2.indy.credential_offer import CredentialOfferManager
 from api_v2.indy.credential import Credential, CredentialManager
+from api_v2.indy.proof_request import ProofRequestManager
 
 from rest_framework.decorators import (
     api_view,
@@ -247,16 +252,38 @@ def register_issuer(request, *args, **kwargs):
     """
 
     logger.warn(">>> Register issuer")
-    # logger.warn(json.dumps(request.data, indent=2))
     try:
         issuer_manager = IssuerManager()
         updated = issuer_manager.register_issuer(request, request.data)
-        logger.info(
-            "Issuer registration response: \n" + json.dumps(updated, indent=2)
-        )
         response = {"success": True, "result": updated}
     except IssuerException as e:
         logger.exception("Issuer request not accepted:")
         response = {"success": False, "result": str(e)}
     logger.warn("<<< Register issuer")
     return JsonResponse(response)
+
+
+@api_view(["GET"])
+@authentication_classes(())
+@permission_classes((permissions.AllowAny,))
+# @validate(ISSUER_JSON_SCHEMA)
+def verify_credential(request, *args, **kwargs):
+    logger.warn(">>> Verify Credential")
+    credential_id = kwargs.get("id")
+    if not credential_id:
+        raise Http404
+
+    credential = CredentialModel.objects.get(id=credential_id)
+    if not credential:
+        raise Http404
+
+    proof_request_manager = ProofRequestManager(
+        name="the-org-book", version="1.0.0"
+    )
+
+    proof_request_manager.build_from_credential(credential)
+
+    # proof = proof_manager.construct(proof_request)
+    # return JsonResponse({"success": True, "proof": proof})
+
+    return JsonResponse({"success": True})

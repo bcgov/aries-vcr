@@ -21,7 +21,7 @@ class CredentialException(Exception):
 
 
 class Credential(object):
-    """An python-idiomatic representation of an indy credential
+    """A python-idiomatic representation of an indy credential
     
     Claim values are made available as class members.
 

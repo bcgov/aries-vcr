@@ -28,7 +28,7 @@ urlpatterns = [
         r"^indy/generate-credential-request$", indy.generate_credential_request
     ),
     url(r"^indy/store-credential$", indy.store_credential),
-    # url(r"^indy/construct-proof$", indy.construct_proof.as_view()),
+    url(r"^credential/(?P<id>[0-9]+)/verify$", indy.verify_credential),
     url(r"^indy/register-issuer$", indy.register_issuer),
 ] + router.urls
 
