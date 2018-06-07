@@ -44,11 +44,15 @@ class Restriction(object):
         return _dict
 
 
-class ProofRequestManager(object):
+class ProofRequest(object):
     def __init__(self, name: str, version: str) -> None:
         self.name = name
         self.version = version
-        self.nonce = str(randrange(10000000000000000))
+
+        self.nonce = ""
+        while len(self.nonce) < 16:
+            self.nonce += str(randrange(10))
+
         self.requested_attributes = []
 
     @property
@@ -58,6 +62,7 @@ class ProofRequestManager(object):
         _dict["version"] = self.version
         _dict["nonce"] = self.nonce
         _dict["requested_attributes"] = {}
+        _dict["requested_predicates"] = {}
         for requested_attribute in self.requested_attributes:
             _dict["requested_attributes"][
                 requested_attribute["name"]
