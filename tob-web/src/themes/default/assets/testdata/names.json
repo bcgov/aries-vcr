@@ -3,7 +3,7 @@
     "id": 1,
     "credential": {
       "id": 1,
-      "subject": null,
+      "subjectId": 1,
       "credentialType": {
         "id": 1,
         "issuer": {
@@ -43,7 +43,7 @@
     "id": 2,
     "credential": {
       "id": 2,
-      "subject": null,
+      "subjectId": 1,
       "credentialType": {
         "id": 2,
         "issuer": {
