@@ -6,14 +6,12 @@ import { SearchService } from './search.service';
 import { SubjectSearchClient } from './subject-search.client';
 import { SearchInputComponent } from './input.component';
 import { SearchNavComponent } from './nav.component';
-import { SubjectSearchComponent } from './subject-search.component';
 
 
 @NgModule({
   declarations: [
     SearchInputComponent,
     SearchNavComponent,
-    SubjectSearchComponent,
   ],
   providers: [
     CredSearchClient,
@@ -27,7 +25,6 @@ import { SubjectSearchComponent } from './subject-search.component';
   exports: [
     SearchInputComponent,
     SearchNavComponent,
-    SubjectSearchComponent,
   ]
 })
 export class SearchModule {}
