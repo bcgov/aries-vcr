@@ -40,30 +40,6 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
           this._credSearch.updateParams({subjectId: this.id});
           this._credSearch.performSearch();
         });
-
-      /*
-Health Inspection
-2018-07-20
-Fraser Valley Health Authority
-Inspection Status Passed
-Inspection ID HI2982528-18
-Women-Owned Supplier
-2018-07-20
-Public Services and Procurement Canada (PSPC)
-Status Active
-Security Screening
-2018-07-20
-Public Services and Procurement Canada (PSPC)
-Screening Level Personnel Assigned (PA)
-Screening Expiry 2018-12-31
-Facility Clearance —
-Facility Clearance Expiry —
-Vendor Performance Rating
-2018-07-20
-Public Services and Procurement Canada (PSPC)
-Performance Score 5
-Last Updated 2018-06-20
-*/
     });
   }
 
