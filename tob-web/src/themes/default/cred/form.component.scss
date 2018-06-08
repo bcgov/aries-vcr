@@ -1,0 +1,54 @@
+.cred-title {
+  font-size: 3rem;
+  margin-top: 0;
+}
+.title-back-link {
+  display: block;
+  font-size: 110%;
+  text-decoration: none;
+}
+
+.field-value + .field-value {
+  margin-top: 0.7em;
+}
+
+.field-list {
+  padding-left: 1em;
+}
+
+.meta-panel {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column nowrap;
+  max-height: 40em;
+  overflow: hidden;
+  > .panel-heading {
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex: none;
+    padding: 1rem 1.2rem 0.8rem;
+    .panel-title {
+      flex: auto;
+      font-size: 2rem;
+    }
+    .util-link {
+      font-size: 1.3rem;
+    }
+  }
+  > .panel-body {
+    background-color: #fff;
+    flex: auto;
+    font-size: 15px;
+    overflow: auto;
+    word-wrap: break-word;
+
+    > .form-group:last-child {
+      margin-bottom: 0;
+    }
+  }
+  > .panel-footer {
+    border-top: 1px solid #ccc;
+  }
+}

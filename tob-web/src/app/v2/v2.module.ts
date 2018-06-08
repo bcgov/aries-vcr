@@ -4,6 +4,7 @@ import { LocalizeRouterModule } from 'localize-router';
 import { Routes, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CredModule } from '../cred/cred.module';
+import { CredFormComponent } from '../cred/form.component';
 import { SearchModule } from '../search/search.module';
 
 import { HomeComponent } from '../home/home.component';
@@ -24,10 +25,22 @@ export const ROUTES: Routes = [
   },
   {
     path: 'v2/subject/:subjId',
-    component: SubjectFormComponent,
     data: {
-      breadcrumb: 'org.breadcrumb'
-    }
+      breadcrumb: 'subject.breadcrumb'
+    },
+    children: [
+      {
+        path: '',
+        component: SubjectFormComponent,
+      },
+      {
+        path: 'cred/:credId',
+        component: CredFormComponent,
+        data: {
+          breadcrumb: 'cred.breadcrumb'
+        }
+      }
+    ]
   }
 ];
 

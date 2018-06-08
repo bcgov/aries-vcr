@@ -31,7 +31,7 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
     this._credSearch.init();
     this._credSub = this._credSearch.subscribe(this._credsUpdate.bind(this));
     this._idSub = this._route.params.subscribe(params => {
-      this.id = +params['orgId'];
+      this.id = +params['subjId'];
       this._dataService.loadJson('assets/testdata/subjects.json', {t: new Date().getTime()})
         .subscribe((result) => {
           this.record = (new SubjectResult()).load(result[0]);

@@ -20,7 +20,4 @@ export class NamePanelComponent {
     return this.record ? this.record.credential.credentialType.issuer: null;
   }
 
-  ngOnInit() {
-  }
-
 }

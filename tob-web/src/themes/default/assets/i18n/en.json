@@ -96,11 +96,18 @@
   },
   "cred": {
     "addresses": "Addresses",
+    "breadcrumb": "Credential Information",
     "contact": "Contact",
+    "history-link": "See history",
     "issuer": "Issuer",
     "last-updated": "Last Updated",
+    "names": "Names",
     "people": "People",
-    "start-date": "Effective Date"
+    "start-date": "Effective Date",
+    "verify-button-label": "Verify Credential",
+    "view-link": "View credential",
+    "whats-this-link": "What's this?",
+    "verify-status": "Verification Status:"
   },
   "name": {
     "doing-business-as": "Doing Business As",
@@ -108,5 +115,9 @@
   },
   "person": {
     "director": "Director"
+  },
+  "subject": {
+    "breadcrumb": "Subject Information",
+    "return-link": "Back to Subject"
   }
 }

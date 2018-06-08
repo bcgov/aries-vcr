@@ -110,7 +110,6 @@ export abstract class SearchClient<T> {
   }
 
   private _searchUpdated() {
-    console.log('results updated');
     this._statusUpdate.next(this._loading);
   }
 

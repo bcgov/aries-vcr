@@ -1,7 +1,7 @@
 <div class="row cred-row" *ngFor="let cred of records">
   <div class="col-sm-4">
     <div class="cred-title">
-      <a class="cred-link" href="#">{{cred.credentialType.description}}</a>
+      <a class="cred-link" [href]="'en/v2/subject/' + subjectId + '/cred/' + cred.id">{{cred.credentialType.description}}</a>
     </div>
     <div class="cred-date" *ngIf="cred.startDate">
       <span class="claim-info date">{{cred.startDate}}</span>

@@ -15,7 +15,7 @@
     <div class="col-md-8 col-sm-7">
       <h1 class="subject-name">246801234 British Columbia Inc.</h1>
 
-      <a [routerLink]="'/' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
+      <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
 
       <div class="row">
         <div class="col-sm-12 name-info">
@@ -133,7 +133,7 @@
               <div class="loading-indicator"></div>
             </div>
           </div>
-          <cred-list [records]="creds" *ngIf="! credLoading"></cred-list>
+          <cred-list [subjectId]="id" [records]="creds" *ngIf="! credLoading"></cred-list>
         </div>
       </div>
     </div>

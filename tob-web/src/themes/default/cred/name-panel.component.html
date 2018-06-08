@@ -51,8 +51,8 @@
     </div>
   </div>
   <div class="panel-footer text-right">
-    <span class="fa fa-certificate"></span> <a class="util-link" href="#">View credential</a>
+    <span class="fa fa-certificate"></span> <a class="util-link" [href]="'en/v2/subject/' + cred.subjectId + '/cred/' + cred.id" translate>cred.view-link</a>
     &nbsp;
-    <span class="fa fa-history"></span> <a href="#" class="util-link">See history (1)</a>
+    <span class="fa fa-history"></span> <a href="#" class="util-link"><span translate>cred.history-link</span> (1)</a>
   </div>
 </div>

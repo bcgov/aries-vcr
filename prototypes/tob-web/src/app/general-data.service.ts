@@ -306,5 +306,11 @@ export class GeneralDataService {
     });
   }
 
+  verifyCred (credId: string) {
+    return new Promise((resolve, reject) => {
+      reject('Not implemented')
+    });
+  }
+
 }
 

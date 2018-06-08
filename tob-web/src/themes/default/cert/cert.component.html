@@ -77,27 +77,6 @@
     </div>
   </div>
 
-  <div class="row cert-verify" *ngIf="verifyResult || verifying">
-    <div class="col-sm-12" *ngIf="verifying">
-      <section class="alert alert-info">
-        <p translate>cert.requesting-proof</p>
-      </section>
-    </div>
-    <div class="col-sm-12" *ngIf="! verifying">
-      <div [class]="'verify-result panel panel-' + (verifyStatus == 'success' ? 'success' : 'warning')" *ngIf="verifyStatus && verifyStatus !== 'error'">
-        <div class="panel-heading">
-          {{'cert.verify-status' | translate}} {{verifyStatus}}
-        </div>
-        <div class="panel-body">
-          <code>{{verifyResult}}</code>
-        </div>
-      </div>
-      <section class="alert alert-danger" *ngIf="verifyStatus === 'error'">
-        <p>{{verifyResult}}</p>
-      </section>
-    </div>
-  </div>
-
   <!-- http://certificates-bootcamp.mit.edu/57b5085663e25800096f99b4 -->
   <div class="row cert-verify-old" style="display: none">
     <div class="col-sm-12">
