@@ -17,7 +17,6 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
   record: SubjectResult;
   error: string;
   private _creds: SearchResults<CredResult>;
-  private _credsLoaded: boolean;
   private _credsLoading: boolean;
   private _credSub: Subscription;
   private _idSub: Subscription;

@@ -46,7 +46,12 @@
     "cert-types": "Permit and Licence Types",
     "effective-date": "Effective Date",
     "expiry-date": "Expiry Date",
-    "website": "Issuer Website"
+    "website": "Issuer Website",
+
+    "cred-types": "Credential Types",
+    "end-date": "End Date",
+    "start-date": "Effective Date",
+    "url": "Issuer Website"
   },
   "not-found": {
     "breadcrumb": "Not Found",
@@ -98,6 +103,7 @@
     "addresses": "Addresses",
     "breadcrumb": "Credential Information",
     "contact": "Contact",
+    "end-date": "End Date",
     "history-link": "See history",
     "issuer": "Issuer",
     "last-updated": "Last Updated",

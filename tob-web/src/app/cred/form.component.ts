@@ -28,13 +28,13 @@ export class CredFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._idSub = this._route.params.subscribe(params => {
-      this.id = +params['orgId'];
+      this.id = +params['credId'];
       this._dataService.loadJson('assets/testdata/subjects.json', {t: new Date().getTime()})
         .subscribe((result) => {
           let name = (new NameResult()).load(result[0]['names'][0]);
           name.credential.names.push(name);
           this.record = name.credential;
-          this.loaded = true;console.log(this.record);
+          this.loaded = true;
         });
     });
   }

@@ -6,6 +6,7 @@ import { LocalizeRouterModule } from 'localize-router';
 import { AddressComponent } from '../address/address.component';
 import { CredFormComponent } from './form.component';
 import { CredListComponent } from './list.component';
+import { CredTypeListComponent } from './type-list.component';
 import { NameListComponent } from './name-list.component';
 import { NamePanelComponent } from './name-panel.component';
 
@@ -16,6 +17,7 @@ const ROUTES = [];
     AddressComponent,
     CredFormComponent,
     CredListComponent,
+    CredTypeListComponent,
     NameListComponent,
     NamePanelComponent,
   ],
@@ -31,6 +33,7 @@ const ROUTES = [];
     AddressComponent,
     CredFormComponent,
     CredListComponent,
+    CredTypeListComponent,
     NameListComponent,
     NamePanelComponent,
   ]

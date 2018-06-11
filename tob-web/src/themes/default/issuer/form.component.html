@@ -1,0 +1,57 @@
+<section id="issuer">
+  <div class="row" *ngIf="error">
+    <div class="col-sm-12">
+      {{error}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!loaded && !error">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="loaded">
+    <div class="col-md-8 col-sm-7">
+      <h1 class="issuer-title">{{record.name}}
+        <span *ngIf="record.abbreviation">({{record.abbreviation}})</span></h1>
+
+      <div class="row">
+        <div class="col-md-12 issuer-info">
+          <div class="row form-group" *ngIf="record.url">
+            <label class="col-sm-4 control-label" translate>issuer.website</label>
+            <div class="col-sm-8 form-field">
+              <a [href]="record.url" rel="external">
+                {{record.url}}</a>
+              <small><span class="fa fa-external-link"></span></small>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-sm-4 control-label" translate>issuer.start-date</label>
+            <div class="col-sm-8 form-field">
+              {{record.startDate || '-'}}
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-sm-4 control-label" translate>issuer.end-date</label>
+            <div class="col-sm-8 form-field">
+              {{record.endDate || '-'}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mrgn-tp-md mrgn-bttm-lg issuer-creds" *ngIf="loaded">
+    <div class="col-sm-12">
+      <label class="control-label"><span class="field-name" translate>issuer.cred-types</span></label>
+      <div class="row loading" *ngIf="credTypesLoading">
+        <div class="col-sm-12 page-load">
+          <div class="loading-indicator"></div>
+        </div>
+      </div>
+      <cred-type-list [records]="credTypes" *ngIf="! credTypesLoading"></cred-type-list>
+    </div>
+  </div>
+</section>

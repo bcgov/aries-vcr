@@ -34,7 +34,7 @@ export class SearchService {
         }, 500);
       }
 
-      if(params.method === 'names' || params.method === 'creds') {
+      if(params.method === 'names' || params.method === 'creds' || params.method == 'credtypes') {
         this._dataService.loadJson('assets/testdata/' + params.method + '.json', {t: new Date().getTime()})
           .subscribe((rows: any[]) => {
             setTimeout

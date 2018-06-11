@@ -1,0 +1,14 @@
+<div class="row type-row" *ngFor="let type of records">
+  <div class="col-sm-4">
+    <div class="type-title">
+      {{type.description}}
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="type-date" *ngIf="type.startDate">
+      <span class="claim-info date">{{type.startDate}}</span>
+    </div>
+  </div>
+  <div class="col-sm-4">
+  </div>
+</div>
