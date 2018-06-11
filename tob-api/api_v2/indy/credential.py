@@ -164,8 +164,9 @@ class CredentialManager(object):
                 "Credential does not contain a claim named 'legal_entity_id'"
             )
 
-        self.populate_application_database(legal_entity_id)
+        credential = self.populate_application_database(legal_entity_id)
         eventloop.do(self.store(legal_entity_id))
+        return credential
 
     def populate_application_database(self, legal_entity_id):
         # Obtain required models from database
@@ -219,51 +220,6 @@ class CredentialManager(object):
             return
 
         processor_config = _json.loads(processor_config)
-
-        processor_config = [
-            {
-                "model": "name",
-                "fields": {
-                    "text": {"input": "legal_name", "from": "claim"},
-                    "type": {"input": "legal_name", "from": "value"}
-                }
-            },
-            {
-                "model": "address",
-                "fields": {
-                    "addressee": {"input": "addressee", "from": "claim"},
-                    "civic_address": {
-                        "input": "address_line_1",
-                        "from": "claim"
-                    },
-                    "city": {"input": "city", "from": "claim"},
-                    "province": {"input": "province", "from": "claim"},
-                    "postal_code": {"input": "postal_code", "from": "claim"},
-                    "country": {"input": "country", "from": "claim"},
-                    "address_type": {"input": "operating", "from": "value"}
-                }
-            },
-            {
-                "model": "address",
-                "fields": {
-                    "addressee": {"input": "addressee", "from": "claim"},
-                    "civic_address": {
-                        "input": "address_line_1",
-                        "from": "claim",
-                        "processor": [
-                            "string_helpers.uppercase",
-                            "string_helpers.to_string",
-                            "string_helper.lowercase"
-                        ]
-                    },
-                    "city": {"input": "city", "from": "claim"},
-                    "province": {"input": "province", "from": "claim"},
-                    "postal_code": {"input": "postal_code", "from": "claim"},
-                    "country": {"input": "country", "from": "claim"},
-                    "address_type": {"input": "operating", "from": "value"}
-                }
-            }
-        ]
 
         # Iterate model types in processor mapping
         for i, model_mapper in enumerate(processor_config):
@@ -356,6 +312,7 @@ class CredentialManager(object):
                 setattr(model, field, field_value)
 
             model.save()
+            return credential
 
     async def store(self, legal_entity_id):
 

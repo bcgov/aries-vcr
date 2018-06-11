@@ -72,13 +72,13 @@ def generate_credential_request(request, *args, **kwargs):
         credential_offer_manager.generate_credential_request()
     )
 
-    response = {
+    result = {
         "credential_request": credential_request,
         "credential_request_metadata": credential_request_metadata,
     }
 
     logger.warn("<<< Generate credential request")
-    return JsonResponse(response)
+    return JsonResponse({"success": True, "result": result})
 
 
 @api_view(["POST"])
@@ -104,7 +104,7 @@ def store_credential(request, *args, **kwargs):
     }
     ```
 
-    returns: created verifiableClaim model
+    returns: created verified credential model
     """
     logger.warn(">>> Store claim")
 
@@ -116,9 +116,9 @@ def store_credential(request, *args, **kwargs):
         credential, credential_request_metadata
     )
 
-    credential_manager.process()
+    credential = credential_manager.process()
 
-    return Response({})
+    return Response({"success": True, "result": credential})
 
 
 @api_view(["POST"])
@@ -148,45 +148,94 @@ def register_issuer(request, *args, **kwargs):
             {
                 "schema": "schema name",
                 "version": "schema version",
-                "name": "schema display name (english)",
-                "mapping": {
-                    "source-id-key": "org_registry_ID",
-                    "models": [
-                        {
-                            "name": "Name",
-                            "fields": {
-                                "name": {
-                                    "from": "claim",
-                                    "input": "org_name"
-                                },
-                                "language-code": {
-                                    "from": "value",
-                                    "input": "en"
-                                }
-                            }
-                        },
-                        {
-                            "name": "Person",
-                            "fields": {
-                                "full_name": {
-                                    "from": "claim",
-                                    "input": "org_name"
-                                },
-                                "name-type": {
-                                    "from": "value",
-                                    "input": "good"
-                                },
-                                "start-date": {
-                                    "from": "claim",
-                                    "input": "effective_date",
-                                    "processor": [
-                                        "parseDate"
-                                    ]
-                                }
+                "description": "schema display name (english)",
+                "endpoint": "url for issuing claims",
+                "source_claim": "name of claim to obtain source_id from",
+                "mapping": [
+                    {
+                        "model": "name",
+                        "fields": {
+                            "text": {
+                                "input": "legal_name",
+                                "from": "claim"
+                            },
+                            "type": {
+                                "input": "legal_name",
+                                "from": "value"
                             }
                         }
-                    ]
-                }
+                    },
+                    {
+                        "model": "address",
+                        "fields": {
+                            "addressee": {
+                                "input": "addressee",
+                                "from": "claim"
+                            },
+                            "civic_address": {
+                                "input": "address_line_1",
+                                "from": "claim"
+                            },
+                            "city": {
+                                "input": "city",
+                                "from": "claim"
+                            },
+                            "province": {
+                                "input": "province",
+                                "from": "claim"
+                            },
+                            "postal_code": {
+                                "input": "postal_code",
+                                "from": "claim"
+                            },
+                            "country": {
+                                "input": "country",
+                                "from": "claim"
+                            },
+                            "address_type": {
+                                "input": "operating",
+                                "from": "value"
+                            }
+                        }
+                    },
+                    {
+                        "model": "address",
+                        "fields": {
+                            "addressee": {
+                                "input": "addressee",
+                                "from": "claim"
+                            },
+                            "civic_address": {
+                                "input": "address_line_1",
+                                "from": "claim",
+                                "processor": [
+                                    "string_helpers.uppercase",
+                                    "string_helper.lowercase"
+                                ]
+                            },
+                            "city": {
+                                "input": "city",
+                                "from": "claim"
+                            },
+                            "province": {
+                                "input": "province",
+                                "from": "claim"
+                            },
+                            "postal_code": {
+                                "input": "postal_code",
+                                "from": "claim"
+                            },
+                            "country": {
+                                "input": "country",
+                                "from": "claim"
+                            },
+                            "address_type": {
+                                "input": "operating",
+                                "from": "value"
+                            }
+                        }
+                    }
+                ]
             }
         ]
     }
@@ -258,6 +307,18 @@ def register_issuer(request, *args, **kwargs):
 @permission_classes((permissions.AllowAny,))
 @validate(CONSTRUCT_PROOF_JSON_SCHEMA)
 def construct_proof(request, *args, **kwargs):
+    """  
+    Constructs a proof given a proof request and source_id
+
+    ```json
+    {
+        "proof_request": <HL Indy proof request>,
+        "source_id": <source if of subject>
+    }
+    ```
+
+    returns: HL Indy proof data
+    """
     logger.warn(">>> Construct Proof")
     source_id = request.data["source_id"]
     proof_request = request.data["proof_request"]
@@ -272,6 +333,21 @@ def construct_proof(request, *args, **kwargs):
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
 def verify_credential(request, *args, **kwargs):
+    """  
+    Constructs a proof request for a credential stored in the
+    application database, constructs a proof for that proof 
+    request, and then verifies it.
+
+    returns: 
+
+    ```json
+    {
+        "verified": <verification successful boolean>,
+        "proof": <proof json>,
+        "proof_request": <proof_request json>,
+    }
+    ```
+    """
     logger.warn(">>> Verify Credential")
     credential_id = kwargs.get("id")
     if not credential_id:
