@@ -1,18 +1,19 @@
-import logging
 import json
+import logging
 
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+from rest_framework import permissions
+from rest_framework.response import Response
+from django.http import JsonResponse
 from django.http import Http404
-
-from api.auth import IsSignedRequest
-from api.indy.proofRequestBuilder import ProofRequestBuilder
 
 from api_v2.models.Credential import Credential as CredentialModel
 
-from api.claimDefProcesser import ClaimDefProcesser
-from rest_framework.response import Response
-
 from api.indy import eventloop
-
 from api.indy.agent import Verifier
 
 from api_v2.indy.issuer import IssuerManager, IssuerException
@@ -21,24 +22,11 @@ from api_v2.indy.credential import Credential, CredentialManager
 from api_v2.indy.proof_request import ProofRequest
 from api_v2.indy.proof import ProofManager
 
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
-
 from api_v2.decorators.jsonschema import validate
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
 from api_v2.jsonschema.credential import CREDENTIAL_JSON_SCHEMA
 from api_v2.jsonschema.construct_proof import CONSTRUCT_PROOF_JSON_SCHEMA
-
-from rest_framework import permissions
-from api.claimProcesser import ClaimProcesser
-from django.http import JsonResponse
-from rest_framework.views import APIView
-
-from api.models.VerifiableClaim import VerifiableClaim
 
 logger = logging.getLogger(__name__)
 
@@ -111,10 +99,7 @@ def store_credential(request, *args, **kwargs):
 
     ```json
     {
-        "credential_type": <credential type>,
         "credential_data": <credential data>,
-        "issuer_did": <issuer did>,
-        "credential_definition": <credential definition>,
         "credential_request_metadata": <credential request metadata>
     }
     ```
@@ -258,6 +243,7 @@ def register_issuer(request, *args, **kwargs):
     logger.warn(">>> Register issuer")
     try:
         issuer_manager = IssuerManager()
+        logger.info(json.dumps(request.data, indent=2))
         updated = issuer_manager.register_issuer(request, request.data)
         response = {"success": True, "result": updated}
     except IssuerException as e:

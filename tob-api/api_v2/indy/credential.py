@@ -1,5 +1,6 @@
 import json as _json
 import logging
+from importlib import import_module
 
 from api.indy.agent import Holder
 from api.indy import eventloop
@@ -13,7 +14,21 @@ from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Claim import Claim
 
+from api_v2.models.Name import Name
+from api_v2.models.Address import Address
+from api_v2.models.Person import Person
+from api_v2.models.Contact import Contact
+
 logger = logging.getLogger(__name__)
+
+PROCESSOR_FUNCTION_BASE_PATH = "api_v2.processor"
+
+SUPPORTED_MODELS_MAPPING = {
+    "name": Name,
+    "address": Address,
+    "person": Person,
+    "contact": Contact,
+}
 
 
 class CredentialException(Exception):
@@ -150,11 +165,10 @@ class CredentialManager(object):
             )
 
         self.populate_application_database(legal_entity_id)
-        # TODO: use credential processor mapping to populate search
-        #       database further
         eventloop.do(self.store(legal_entity_id))
 
     def populate_application_database(self, legal_entity_id):
+        # Obtain required models from database
         try:
             issuer = Issuer.objects.get(did=self.credential.origin_did)
             schema = Schema.objects.get(
@@ -183,6 +197,7 @@ class CredentialManager(object):
             schema=schema, issuer=issuer
         )
 
+        # Create subject, credential, claim models
         subject, created = Subject.objects.get_or_create(
             source_id=legal_entity_id
         )
@@ -197,6 +212,150 @@ class CredentialManager(object):
             Claim.objects.create(
                 credential=credential, name=claim_attribute, value=claim_value
             )
+
+        # Update optional models based on processor config
+        processor_config = credential_type.processor_config
+        if not processor_config:
+            return
+
+        processor_config = _json.loads(processor_config)
+
+        processor_config = [
+            {
+                "model": "name",
+                "fields": {
+                    "text": {"input": "legal_name", "from": "claim"},
+                    "type": {"input": "legal_name", "from": "value"}
+                }
+            },
+            {
+                "model": "address",
+                "fields": {
+                    "addressee": {"input": "addressee", "from": "claim"},
+                    "civic_address": {
+                        "input": "address_line_1",
+                        "from": "claim"
+                    },
+                    "city": {"input": "city", "from": "claim"},
+                    "province": {"input": "province", "from": "claim"},
+                    "postal_code": {"input": "postal_code", "from": "claim"},
+                    "country": {"input": "country", "from": "claim"},
+                    "address_type": {"input": "operating", "from": "value"}
+                }
+            },
+            {
+                "model": "address",
+                "fields": {
+                    "addressee": {"input": "addressee", "from": "claim"},
+                    "civic_address": {
+                        "input": "address_line_1",
+                        "from": "claim",
+                        "processor": [
+                            "string_helpers.uppercase",
+                            "string_helpers.to_string",
+                            "string_helper.lowercase"
+                        ]
+                    },
+                    "city": {"input": "city", "from": "claim"},
+                    "province": {"input": "province", "from": "claim"},
+                    "postal_code": {"input": "postal_code", "from": "claim"},
+                    "country": {"input": "country", "from": "claim"},
+                    "address_type": {"input": "operating", "from": "value"}
+                }
+            }
+        ]
+
+        # Iterate model types in processor mapping
+        for i, model_mapper in enumerate(processor_config):
+            model_name = model_mapper["model"]
+
+            # We currently support 4 model types
+            # see SUPPORTED_MODELS_MAPPING
+            try:
+                Model = SUPPORTED_MODELS_MAPPING[model_name]
+            except KeyError as error:
+                raise CredentialException(
+                    "Unsupported model type '{}'".format(model_name)
+                )
+
+            model = Model()
+
+            # Iterate fields on model mapping config
+            for field in processor_config[i]["fields"]:
+                field_data = processor_config[i]["fields"][field]
+
+                # Get required values from config
+                try:
+                    _input = field_data["input"]
+                    _from = field_data["from"]
+                except KeyError as error:
+                    raise CredentialException(
+                        "Every field must specify 'input' and 'from' values."
+                    )
+
+                # Pocessor is optional
+                try:
+                    processor = field_data["processor"]
+                except KeyError as error:
+                    processor = None
+
+                # Get model field value from string literal or claim value
+                if _from == "value":
+                    field_value = _input
+                elif _from == "claim":
+                    field_value = getattr(self.credential, _input)
+                else:
+                    raise CredentialException(
+                        "Supported field from values are 'value' and 'claim'"
+                        + " but received '{}'".format(_from)
+                    )
+
+                # If we have a processor config, build pipeline of functions
+                # and run field value through pipeline
+                if processor is not None:
+                    pipeline = []
+                    # Construct pipeline
+                    for function_path_with_name in processor:
+                        function_path, function_name = function_path_with_name.rsplit(
+                            ".", 1
+                        )
+
+                        try:
+                            function_module = import_module(
+                                "{}.{}".format(
+                                    PROCESSOR_FUNCTION_BASE_PATH, function_path
+                                )
+                            )
+                        except ModuleNotFoundError as error:
+                            raise CredentialException(
+                                "No processor module named '{}'".format(
+                                    function_path
+                                )
+                            )
+
+                        try:
+                            function = getattr(function_module, function_name)
+                        except AttributeError as error:
+                            raise CredentialException(
+                                "Module '{}' has no function '{}'.".format(
+                                    function_path, function_name
+                                )
+                            )
+
+                        pipeline.append(function)
+
+                    # We want to run the pipeline in logical order
+                    pipeline.reverse()
+
+                    # Run pipeline
+                    while len(pipeline) > 0:
+                        function = pipeline.pop()
+                        field_value = function(field_value)
+
+                # Set value on model field
+                setattr(model, field, field_value)
+
+            model.save()
 
     async def store(self, legal_entity_id):
 

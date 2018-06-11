@@ -23,8 +23,26 @@ ISSUER_JSON_SCHEMA = {
                     "version": {"type": "string", "minLength": 1},
                     "description": {"type": "string", "minLength": 1},
                     "endpoint": {"type": "string"},
-                    # TODO: flesh out mapping object schema
-                    "mapping": {"type": "object"},
+                    "mapping": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "from": {
+                                    "type": "string",
+                                    "enum": ["claim", "value"],
+                                },
+                                "input": {"type": "string"},
+                                "processor": {
+                                    "type": "array",
+                                    # TODO: dynamically set restrictions on
+                                    # available functions based on contents
+                                    # of processor directory?
+                                    "items": {"type": "string"},
+                                },
+                            },
+                        },
+                    },
                 },
                 "required": ["name", "schema", "version"],
             },
