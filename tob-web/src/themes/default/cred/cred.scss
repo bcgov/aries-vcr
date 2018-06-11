@@ -7,7 +7,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+.util-link, .cred-link, .issuer-link {
   border-bottom: 1px solid rgba(#1a5a96, 0.8);
   margin-bottom: -1px;
   text-decoration: none;
