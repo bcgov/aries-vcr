@@ -16,3 +16,4 @@ class Person(Auditable):
 
     class Meta:
         db_table = "person"
+        unique_together = (("full_name", "type"),)

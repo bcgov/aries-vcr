@@ -16,3 +16,4 @@ class Contact(Auditable):
 
     class Meta:
         db_table = "contact"
+        unique_together = (("text", "type"),)

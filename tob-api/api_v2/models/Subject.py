@@ -3,9 +3,6 @@ from django.utils import timezone
 
 from auditable.models import Auditable
 
-# Circular dependency, reference by string instead
-# from .Credential import Credential
-
 
 class Subject(Auditable):
     source_id = models.TextField(blank=True, null=True)
