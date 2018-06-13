@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres import fields as contrib
 
 from auditable.models import Auditable
 
@@ -13,8 +13,7 @@ class CredentialType(Auditable):
     issuer = models.ForeignKey(Issuer, related_name="credential_types")
     description = models.TextField(blank=True, null=True)
     source_claim = models.TextField()
-    cardinality_fields = ArrayField(models.TextField(), null=True)
-    processor_config = models.TextField(blank=True, null=True)
+    processor_config = contrib.JSONField(blank=True, null=True)
 
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(blank=True, null=True)

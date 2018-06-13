@@ -131,9 +131,6 @@ class IssuerManager:
             credential_type_source_claim = credential_type_def.get(
                 "source_claim"
             )
-            credential_type_cardinality_fields = credential_type_def.get(
-                "cardinality_fields"
-            )
             credential_type_processor_config = credential_type_def.get(
                 "mapping"
             )
@@ -144,11 +141,8 @@ class IssuerManager:
 
             credential_type.description = credential_type_description
             credential_type.source_claim = credential_type_source_claim
-            credential_type.credential_type_cardinality_fields = (
-                credential_type_cardinality_fields
-            )
             credential_type.processor_config = credential_type_processor_config
-            
+
             credential_type.save()
             credential_types.append(credential_type)
 

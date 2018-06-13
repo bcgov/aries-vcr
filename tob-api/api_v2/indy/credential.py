@@ -219,8 +219,6 @@ class CredentialManager(object):
         if not processor_config:
             return
 
-        processor_config = _json.loads(processor_config)
-
         # Iterate model types in processor mapping
         for i, model_mapper in enumerate(processor_config):
             model_name = model_mapper["model"]
