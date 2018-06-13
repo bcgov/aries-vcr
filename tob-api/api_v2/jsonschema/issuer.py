@@ -24,32 +24,23 @@ ISSUER_JSON_SCHEMA = {
                     "description": {"type": "string", "minLength": 1},
                     "endpoint": {"type": "string"},
                     "source_claim": {"type": "string"},
-                    "cardinality_fields": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                    },
                     "mapping": {
                         "type": "array",
                         "items": {
                             "type": "object",
                             "properties": {
-                                "from": {
-                                    "type": "string",
-                                    "enum": ["claim", "value"],
-                                },
-                                "input": {"type": "string"},
-                                "processor": {
+                                "model": {"type": "string", "minLength": 1},
+                                "cardinality_fields": {
                                     "type": "array",
-                                    # TODO: dynamically set restrictions on
-                                    # available functions based on contents
-                                    # of processor directory?
                                     "items": {"type": "string"},
                                 },
+                                # TODO: validate field structure?
+                                "fields": {"type": "object"},
                             },
                         },
                     },
                 },
-                "required": ["name", "schema", "version"],
+                "required": ["name", "schema", "version", "source_claim"],
             },
         },
     },
