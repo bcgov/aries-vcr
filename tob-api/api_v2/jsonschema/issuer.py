@@ -23,6 +23,11 @@ ISSUER_JSON_SCHEMA = {
                     "version": {"type": "string", "minLength": 1},
                     "description": {"type": "string", "minLength": 1},
                     "endpoint": {"type": "string"},
+                    "source_claim": {"type": "string"},
+                    "cardinality_fields": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
                     "mapping": {
                         "type": "array",
                         "items": {

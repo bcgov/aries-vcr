@@ -8,12 +8,11 @@ from .Credential import Credential
 
 class Person(Auditable):
     credential = models.ManyToManyField(Credential, related_name="people")
-    full_name = models.TextField()
-    type = models.TextField()
+    full_name = models.TextField(null=True)
+    type = models.TextField(null=True)
 
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(blank=True, null=True)
 
     class Meta:
         db_table = "person"
-        unique_together = (("full_name", "type"),)
