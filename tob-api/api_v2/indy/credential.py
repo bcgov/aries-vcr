@@ -221,50 +221,6 @@ class CredentialManager(object):
 
         processor_config = _json.loads(processor_config)
 
-        processor_config = [
-            {
-                "model": "name",
-                "fields": {
-                    "text": {"input": "legal_name", "from": "claim"},
-                    "type": {"input": "legal_name", "from": "value"},
-                },
-            },
-            {
-                "model": "address",
-                "fields": {
-                    "addressee": {"input": "addressee", "from": "claim"},
-                    "civic_address": {
-                        "input": "address_line_1",
-                        "from": "claim",
-                    },
-                    "city": {"input": "city", "from": "claim"},
-                    "province": {"input": "province", "from": "claim"},
-                    "postal_code": {"input": "postal_code", "from": "claim"},
-                    "country": {"input": "country", "from": "claim"},
-                    "address_type": {"input": "operating", "from": "value"},
-                },
-            },
-            {
-                "model": "address",
-                "fields": {
-                    "addressee": {"input": "addressee", "from": "claim"},
-                    "civic_address": {
-                        "input": "address_line_1",
-                        "from": "claim",
-                        "processor": [
-                            "string_helpers.uppercase",
-                            "string_helpers.lowercase",
-                        ],
-                    },
-                    "city": {"input": "city", "from": "claim"},
-                    "province": {"input": "province", "from": "claim"},
-                    "postal_code": {"input": "postal_code", "from": "claim"},
-                    "country": {"input": "country", "from": "claim"},
-                    "address_type": {"input": "operating", "from": "value"},
-                },
-            },
-        ]
-
         # Iterate model types in processor mapping
         for i, model_mapper in enumerate(processor_config):
             model_name = model_mapper["model"]
