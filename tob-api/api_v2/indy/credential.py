@@ -217,7 +217,7 @@ class CredentialManager(object):
         # Update optional models based on processor config
         processor_config = credential_type.processor_config
         if not processor_config:
-            return
+            return credential.id
 
         # Iterate model types in processor mapping
         for i, model_mapper in enumerate(processor_config):
@@ -310,7 +310,7 @@ class CredentialManager(object):
                 setattr(model, field, field_value)
 
             model.save()
-            return credential
+            return credential.id
 
     async def store(self, legal_entity_id):
 

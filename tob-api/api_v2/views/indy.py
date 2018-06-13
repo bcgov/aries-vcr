@@ -13,6 +13,8 @@ from django.http import Http404
 
 from api_v2.models.Credential import Credential as CredentialModel
 
+from api_v2.serializers import CredentialSerializer
+
 from api.indy import eventloop
 from api.indy.agent import Verifier
 
@@ -116,9 +118,12 @@ def store_credential(request, *args, **kwargs):
         credential, credential_request_metadata
     )
 
-    credential = credential_manager.process()
+    credential_id = credential_manager.process()
 
-    return Response({"success": True, "result": credential})
+    credential = CredentialModel.objects.get(pk=credential_id)
+    credential_serializer = CredentialSerializer(credential)
+
+    return Response({"success": True, "result": credential_serializer.data})
 
 
 @api_view(["POST"])
