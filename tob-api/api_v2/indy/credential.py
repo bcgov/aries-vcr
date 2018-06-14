@@ -2,6 +2,8 @@ import json as _json
 import logging
 from importlib import import_module
 
+from django.utils import timezone
+
 from api.indy.agent import Holder
 from api.indy import eventloop
 
@@ -189,14 +191,14 @@ class CredentialManager(object):
                 "Credential does not contain the configured source_claim "
                 + "'{}'. Claims are: {}".format(
                     credential_type.source_claim,
-                    " ".join(self.credential.claim_attributes),
+                    ", ".join(self.credential.claim_attributes),
                 )
             )
 
         credential = self.populate_application_database(
-            credential_type, source_id
+            credential_type, "source_id"
         )
-        eventloop.do(self.store(source_id))
+        eventloop.do(self.store("source_id"))
         return credential
 
     def populate_application_database(self, credential_type, source_id):
@@ -315,13 +317,21 @@ class CredentialManager(object):
 
                 processed_values[field] = field_value
 
+                # This is ugly. von-agent currently serializes null values
+                # to the string 'None'
+                if processed_values[field] == "None":
+                    processed_values[field] = None
+
             model = None
             # Try to get an existing model based on cardinality_fields.
             # We always limit query by this subject and without an end_date.
-            kws = {"credentials__subject__id": subject.id, "end_date": None}
+            model_args = {
+                "credentials__subject__id": subject.id,
+                "end_date": None,
+            }
             for cardinality_field in cardinality_fields:
                 try:
-                    kws[cardinality_field] = processed_values[
+                    model_args[cardinality_field] = processed_values[
                         cardinality_field
                     ]
                 except KeyError as error:
@@ -331,7 +341,7 @@ class CredentialManager(object):
                         )
                         + "in cardinality_fields value does not exist in "
                         + "credential processor. Values are: {}".format(
-                            " ".join(list(processed_values.keys()))
+                            ", ".join(list(processed_values.keys()))
                         )
                     )
 
@@ -341,10 +351,24 @@ class CredentialManager(object):
             # To handle this, we always get the _last created_ record for this
             # subject, with no end_date, and with values in
             # `cardinality_fields` equal to their resulting values after
-            # running through the function pipeline.
+            # running through the function pipeline. We update the most
+            # recently created record and we implicitly set the end_date
+            # for `now` for all other returned records.
             try:
-                model = Model.objects.filter(**kws).latest("create_timestamp")
-            except Model.DoesNotExist as error:
+                query = (
+                    Model.objects.filter(**model_args)
+                    .order_by("-create_timestamp")
+                    .distinct()
+                )
+
+                # We care about the most recent model if there
+                # are more than one
+                model = query[0]
+                # If there are other records for this query, then the issuer
+                # changed its `cardinality_fields` to something less specific
+                # than it was previously.
+                query.exclude(pk=model.id).update(end_date=timezone.now())
+            except IndexError as error:
                 logger.warn(error)
 
             # If it doesn't exist, we create a new one

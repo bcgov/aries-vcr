@@ -73,7 +73,7 @@ def generate_credential_request(request, *args, **kwargs):
     credential_request, credential_request_metadata = (
         credential_offer_manager.generate_credential_request()
     )
-
+    
     result = {
         "credential_request": credential_request,
         "credential_request_metadata": credential_request_metadata,
@@ -108,10 +108,12 @@ def store_credential(request, *args, **kwargs):
 
     returns: created verified credential model
     """
-    logger.warn(">>> Store claim")
+    logger.warn(">>> Store Credential")
 
     credential_data = request.data["credential_data"]
     credential_request_metadata = request.data["credential_request_metadata"]
+
+    logger.info(credential_data)
 
     credential = Credential(credential_data)
     credential_manager = CredentialManager(

@@ -12,7 +12,7 @@ class Name(Auditable):
     type = models.TextField(null=True)
     language = models.TextField(null=True)
     source_id = models.TextField(null=True)
-    is_legal = models.BooleanField(null=True)
+    is_legal = models.NullBooleanField(null=True)
     
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(blank=True, null=True)
