@@ -189,7 +189,7 @@ class CredentialManager(object):
                 "Credential does not contain the configured source_claim "
                 + "'{}'. Claims are: {}".format(
                     credential_type.source_claim,
-                    ' '.join(self.credential.claim_attributes),
+                    " ".join(self.credential.claim_attributes),
                 )
             )
 
@@ -320,7 +320,20 @@ class CredentialManager(object):
             # We always limit query by this subject and without an end_date.
             kws = {"credentials__subject__id": subject.id, "end_date": None}
             for cardinality_field in cardinality_fields:
-                kws[cardinality_field] = processed_values[cardinality_field]
+                try:
+                    kws[cardinality_field] = processed_values[
+                        cardinality_field
+                    ]
+                except KeyError as error:
+                    raise CredentialException(
+                        "Issuer configuration specifies field '{}' ".format(
+                            cardinality_field
+                        )
+                        + "in cardinality_fields value does not exist in "
+                        + "credential processor. Values are: {}".format(
+                            " ".join(list(processed_values.keys()))
+                        )
+                    )
 
             # If the issuer changes its `cardinality_fields` it's possible for
             # this query to return multiple records.
