@@ -10,7 +10,6 @@ from von_agent.util import schema_key
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.Subject import Subject
-from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Claim import Claim
 
@@ -154,22 +153,7 @@ class CredentialManager(object):
         self.credential_definition_metadata = credential_definition_metadata
 
     def process(self):
-        # Legal entity id is required
-        # TODO: Allow issuer to specify source id claim attribute name
-        #       for now, we expect legal_entity_id
-        try:
-            legal_entity_id = self.credential.legal_entity_id
-        except AttributeError as e:
-            raise CredentialException(
-                "Credential does not contain a claim named 'legal_entity_id'"
-            )
-
-        credential = self.populate_application_database(legal_entity_id)
-        eventloop.do(self.store(legal_entity_id))
-        return credential
-
-    def populate_application_database(self, legal_entity_id):
-        # Obtain required models from database
+        # Get context for this credential if it exists
         try:
             issuer = Issuer.objects.get(did=self.credential.origin_did)
             schema = Schema.objects.get(
@@ -198,12 +182,30 @@ class CredentialManager(object):
             schema=schema, issuer=issuer
         )
 
-        # Create subject, credential, claim models
-        subject, created = Subject.objects.get_or_create(
-            source_id=legal_entity_id
-        )
+        try:
+            source_id = getattr(self.credential, credential_type.source_claim)
+        except AttributeError as error:
+            raise CredentialException(
+                "Credential does not contain the configured source_claim "
+                + "'{}'. Claims are: {}".format(
+                    credential_type.source_claim,
+                    ' '.join(self.credential.claim_attributes),
+                )
+            )
 
-        credential = CredentialModel.objects.create(
+        credential = self.populate_application_database(
+            credential_type, source_id
+        )
+        eventloop.do(self.store(source_id))
+        return credential
+
+    def populate_application_database(self, credential_type, source_id):
+        # Obtain required models from database
+
+        # Create subject, credential, claim models
+        subject, created = Subject.objects.get_or_create(source_id=source_id)
+
+        credential = subject.credentials.create(
             subject=subject, credential_type=credential_type
         )
 
@@ -222,6 +224,7 @@ class CredentialManager(object):
         # Iterate model types in processor mapping
         for i, model_mapper in enumerate(processor_config):
             model_name = model_mapper["model"]
+            cardinality_fields = model_mapper.get("cardinality_fields") or []
 
             # We currently support 4 model types
             # see SUPPORTED_MODELS_MAPPING
@@ -232,9 +235,8 @@ class CredentialManager(object):
                     "Unsupported model type '{}'".format(model_name)
                 )
 
-            model = Model()
-
             # Iterate fields on model mapping config
+            processed_values = {}
             for field in processor_config[i]["fields"]:
                 field_data = processor_config[i]["fields"][field]
 
@@ -268,12 +270,15 @@ class CredentialManager(object):
                 # and run field value through pipeline
                 if processor is not None:
                     pipeline = []
-                    # Construct pipeline
+                    # Construct pipeline by dot notation. Last token is the function name
+                    # and all preceeding dots denote path of module starting from
+                    # `PROCESSOR_FUNCTION_BASE_PATH``
                     for function_path_with_name in processor:
                         function_path, function_name = function_path_with_name.rsplit(
                             ".", 1
                         )
 
+                        # Does the file exist?
                         try:
                             function_module = import_module(
                                 "{}.{}".format(
@@ -287,6 +292,7 @@ class CredentialManager(object):
                                 )
                             )
 
+                        # Does the function exist?
                         try:
                             function = getattr(function_module, function_name)
                         except AttributeError as error:
@@ -296,6 +302,7 @@ class CredentialManager(object):
                                 )
                             )
 
+                        # Build up a list of functions to call
                         pipeline.append(function)
 
                     # We want to run the pipeline in logical order
@@ -306,10 +313,40 @@ class CredentialManager(object):
                         function = pipeline.pop()
                         field_value = function(field_value)
 
-                # Set value on model field
-                setattr(model, field, field_value)
+                processed_values[field] = field_value
 
+            model = None
+            # Try to get an existing model based on cardinality_fields.
+            # We always limit query by this subject and without an end_date.
+            kws = {"credentials__subject__id": subject.id, "end_date": None}
+            for cardinality_field in cardinality_fields:
+                kws[cardinality_field] = processed_values[cardinality_field]
+
+            # If the issuer changes its `cardinality_fields` it's possible for
+            # this query to return multiple records.
+            #
+            # To handle this, we always get the _last created_ record for this
+            # subject, with no end_date, and with values in
+            # `cardinality_fields` equal to their resulting values after
+            # running through the function pipeline.
+            try:
+                model = Model.objects.filter(**kws).latest("create_timestamp")
+            except Model.DoesNotExist as error:
+                logger.warn(error)
+
+            # If it doesn't exist, we create a new one
+            if not model:
+                model = Model()
+
+            # Either way, we update the fields based on results of
+            # mapping and processor
+            for value in processed_values:
+                setattr(model, value, processed_values[value])
+
+            # Save and associate with credential
             model.save()
+            model.credentials.add(credential)
+
             return credential.id
 
     async def store(self, legal_entity_id):

@@ -7,7 +7,7 @@ from .Credential import Credential
 
 
 class Address(Auditable):
-    credential = models.ManyToManyField(Credential, related_name="addresses")
+    credentials = models.ManyToManyField(Credential, related_name="addresses")
     addressee = models.TextField(null=True)
     civic_address = models.TextField(null=True)
     city = models.TextField(null=True)

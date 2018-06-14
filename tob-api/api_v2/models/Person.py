@@ -7,7 +7,7 @@ from .Credential import Credential
 
 
 class Person(Auditable):
-    credential = models.ManyToManyField(Credential, related_name="people")
+    credentials = models.ManyToManyField(Credential, related_name="people")
     full_name = models.TextField(null=True)
     type = models.TextField(null=True)
 
