@@ -384,7 +384,7 @@ class CredentialManager(object):
             model.save()
             model.credentials.add(credential)
 
-            return credential.id
+        return credential.id
 
     async def store(self, legal_entity_id):
 

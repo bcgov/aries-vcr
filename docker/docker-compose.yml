@@ -129,7 +129,7 @@ services:
         echo sleeping ...;
         sleep 20;
         if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
-          python manage.py runserver --nothreading 0.0.0.0:8080;
+          python manage.py migrate && python manage.py runserver --nothreading 0.0.0.0:8080;
         else
           ${STI_SCRIPTS_PATH}/run;
         fi"
