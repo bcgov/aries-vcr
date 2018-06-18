@@ -40,7 +40,8 @@ export class SearchNavComponent {
     return ! this._loading && this.info;
   }
 
-  performNav(nav: string) {
+  performNav(evt, nav: string) {
+    if(evt) evt.preventDefault();
     this.nav.emit(nav);
   }
 }

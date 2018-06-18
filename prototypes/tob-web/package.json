@@ -27,7 +27,7 @@
     "@ngx-translate/core": "~8.0.0",
     "@ngx-translate/http-loader": "0.1.0",
     "bootstrap-sass": "~3.3.7",
-    "compare-versions": "^3.1.0",
+    "compare-versions": "~3.1.0",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "localize-router": "git+https://github.com/cywolf/localize-router.git",
