@@ -196,9 +196,9 @@ class CredentialManager(object):
             )
 
         credential = self.populate_application_database(
-            credential_type, "source_id"
+            credential_type, source_id
         )
-        eventloop.do(self.store("source_id"))
+        eventloop.do(self.store(source_id))
         return credential
 
     def populate_application_database(self, credential_type, source_id):
