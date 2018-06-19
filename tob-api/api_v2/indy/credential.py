@@ -261,7 +261,19 @@ class CredentialManager(object):
                 if _from == "value":
                     field_value = _input
                 elif _from == "claim":
-                    field_value = getattr(self.credential, _input)
+                    try:
+                        field_value = getattr(self.credential, _input)
+                    except AttributeError as error:
+
+                        raise CredentialException(
+                            "Credential does not contain the configured claim "
+                            + "'{}' which is mapped to field '{}'. ".format(
+                                _input, field
+                            )
+                            + "Claims are: {}".format(
+                                ", ".join(self.credential.claim_attributes)
+                            )
+                        )
                 else:
                     raise CredentialException(
                         "Supported field from values are 'value' and 'claim'"
