@@ -8,13 +8,14 @@ logger = logging.getLogger(__name__)
 
 
 def validate(schema):
+
     def decorator(func):
         @wraps(func)
         def wrapper(request, *args, **kwargs):
             try:
                 jsonschema.validate(request.data, schema)
             except jsonschema.ValidationError as e:
-                logger.exception("Issuer request not accepted:")
+                logger.exception(e)
                 response = {
                     "success": False,
                     "result": "Schema validation error: {}".format(e),
