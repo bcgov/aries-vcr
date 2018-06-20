@@ -1,0 +1,203 @@
+@startuml
+
+entity "address" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  addressee
+  civic_address
+  city
+  province
+  postal_code
+  country
+  type
+  start_date
+  end_date
+}
+
+entity "address_credentials" {
+  + id [PK]
+  --
+  address_id
+  credential_id
+}
+
+entity "claim" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  name
+  value
+  start_date
+  end_date
+  credential_id
+}
+
+entity "contact" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  text
+  type
+  start_date
+  end_date
+}
+
+entity "contact_credentials" {
+  + id [PK]
+  --
+  contact_id
+  credential_id
+}
+
+entity "credential" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  start_date
+  end_date
+  credential_type_id
+  subject_id
+}
+
+entity "credential_type" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  description
+  source_claim
+  processor_config
+  start_date
+  end_date
+  issuer_id
+  schema_id
+}
+
+entity "issuer" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  did
+  name
+  abbreviation
+  email
+  url
+  start_date
+  end_date
+}
+
+entity "name" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  text
+  type
+  language
+  source_id
+  is_legal
+  start_date
+  end_date
+}
+
+entity "name_credentials" {
+  + id [PK]
+  --
+  name_id
+  credential_id
+}
+
+entity "person" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  full_name
+  type
+  start_date
+  end_date
+}
+
+entity "person_credentials" {
+  + id [PK]
+  --
+  person_id
+  credential_id
+}
+
+entity "schema" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  name
+  version
+  origin_did
+  start_date
+  end_date
+}
+
+entity "subject" {
+  + id [PK]
+  --
+  create_timestamp
+  update_timestamp
+  source_id
+  start_date
+  end_date
+}
+
+ address_credentials }-- address
+
+ address_credentials }-- address
+
+ address_credentials }-- credential
+
+ address_credentials }-- credential
+
+ claim }-- credential
+
+ contact_credentials }-- contact
+
+ contact_credentials }-- contact
+
+ contact_credentials }-- credential
+
+ contact_credentials }-- credential
+
+ credential }-- credential_type
+
+ credential }-- subject
+
+ credential_type }-- issuer
+
+ credential_type }-- issuer
+
+ credential_type }-- schema
+
+ credential_type }-- schema
+
+ name_credentials }-- credential
+
+ name_credentials }-- credential
+
+ name_credentials }-- name
+
+ name_credentials }-- name
+
+ person_credentials }-- credential
+
+ person_credentials }-- credential
+
+ person_credentials }-- person
+
+ person_credentials }-- person
+
+@enduml
+
