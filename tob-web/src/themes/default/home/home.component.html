@@ -6,15 +6,15 @@
     </div>
   </div>
 
-  <h1 class="dashboard-title text-center" translate *ngIf="inited">dashboard.title</h1>
+  <h1 class="home-title text-center" translate *ngIf="inited">home.title</h1>
 
   <div class="row" *ngIf="inited">
     <div class="col-sm-12">
 
       <div class="text-center">
         <ul class="stats">
-          <li class="stat"><span class="numbers">{{recordCounts.orgs | number}}</span> <span class="desc">{{'dashboard.title-orgs' | translate}}</span></li>
-          <li class="stat"><span class="numbers">{{recordCounts.certs | number}}</span> <span class="desc">{{'dashboard.title-certs' | translate}}</span></li>
+          <li class="stat"><span class="numbers">{{recordCounts.orgs | number}}</span> <span class="desc">{{'home.title-orgs' | translate}}</span></li>
+          <li class="stat"><span class="numbers">{{recordCounts.certs | number}}</span> <span class="desc">{{'home.title-certs' | translate}}</span></li>
         </ul>
         <div class="search-outer">
           <div class="search-inner">

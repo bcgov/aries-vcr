@@ -17,21 +17,7 @@
       "contact": "Contactez-nous"
     }
   },
-  "cert": {
-    "breadcrumb": "Permit and License Info",
-    "effective-date": "Effective Date",
-    "expiry-date": "Expiry Date",
-    "inactive-message": "This credential is inactive:",
-    "issuer": "Issuer",
-    "issuer-website": "Issuer Website",
-    "related-certs": "Related Credentials",
-    "requesting-proof": "Requesting proof of credential ...",
-    "return-link": "Back to Permit and License Info",
-    "verify-button-label": "Verify Credential",
-    "whats-this-link": "What's this?",
-    "verify-status": "Verification Status:"
-  },
-  "dashboard": {
+  "home": {
     "breadcrumb": "Recherche",
     "title": "Bienvenue aux Organisations vérifiables de la Colombie-Britannique",
     "title-orgs": "organisations",
@@ -46,9 +32,9 @@
   },
   "issuer": {
     "breadcrumb": "Issuer Service",
-    "cert-types": "Permit and License Types",
-    "effective-date": "Effective Date",
-    "expiry-date": "Expiry Date",
+    "cred-types": "Credential Types",
+    "end-date": "Expiry Date",
+    "start-date": "Effective Date",
     "website": "Issuer Website"
   },
   "not-found": {
@@ -56,17 +42,6 @@
     "title": "Page non trouvée",
     "error": "Cette page a été déplacée.",
     "return-link-title": "Retournez sur la page d'accueil"
-  },
-  "org": {
-    "breadcrumb": "Organization Info",
-    "certs-title": "Permis et Licences",
-    "dba": "Doing Business As",
-    "effective-date": "Effective Date",
-    "identifier": "Organization Identifier",
-    "location": "Location",
-    "locations": "Locations",
-    "return-link": "Back to Organization Info",
-    "type": "Organization Type"
   },
   "recipe": {
     "breadcrumb": "Recipe",
@@ -85,10 +60,5 @@
     "placeholder": "recherche",
     "results-title": "Résultats de la recherche",
     "return-link": "Back to Search"
-  },
-
-  "cred": {
-    "issuer": "Issuer",
-    "start-date": "Effective Date"
   }
 }

@@ -12,7 +12,8 @@ if (THEME_NAME === '_active')
     throw 'Invalid theme name';
 TARGET_DIR = 'src/themes/_active';
 THEMES_ROOT = 'src/themes';
-RESOLVE_LINKS = ['favicon.ico', 'styles.scss']
+LANG_ROOT = 'assets/i18n';
+RESOLVE_LINKS = ['favicon.ico', 'styles.scss', LANG_ROOT];
 
 
 if(! fs.copyFileSync) {
@@ -78,7 +79,7 @@ function populateLinksSync(source_dir, target_dir) {
 }
 
 function copyThemeDir(theme_name, target_dir) {
-    theme_dir = path.join(THEMES_ROOT, theme_name)
+    var theme_dir = path.join(THEMES_ROOT, theme_name)
     try {
         fs.accessSync(theme_dir, fs.constants.R_OK);
     } catch (err) {
@@ -87,8 +88,7 @@ function copyThemeDir(theme_name, target_dir) {
     if (! fs.statSync(theme_dir).isDirectory()) {
         throw 'Theme path is not a directory: ' + theme_dir
     }
-    populateLinksSync(theme_dir, target_dir)
-
+    populateLinksSync(theme_dir, target_dir);
 }
 
 function cleanTargetDir(target_dir, root, depth) {
@@ -109,7 +109,16 @@ function cleanTargetDir(target_dir, root, depth) {
         } else if(stat.isSymbolicLink()) {
             fs.unlinkSync(target_path);
         } else {
-            if (!depth && RESOLVE_LINKS && ~RESOLVE_LINKS.indexOf(file)) {
+            var del = false;
+            if (!depth && ~RESOLVE_LINKS.indexOf(file)) {
+                del = true;
+            } else {
+                var lang_path = path.join(TARGET_DIR, LANG_ROOT);
+                if (target_path.startsWith(lang_path) && target_path.endsWith('.json')) {
+                    del = true;
+                }
+            }
+            if (del) {
                 fs.unlinkSync(target_path);
             } else {
                 throw 'Non-symlinked file found in deployment directory, ' +
@@ -123,7 +132,7 @@ function resolveLinks(target_dir, paths) {
     // replace particular files that need to be copied, not symlinked
     if (!paths) return;
     for (var file of paths) {
-        target_path = path.join(target_dir, file);
+        var target_path = path.join(target_dir, file);
         try {
             target_stats = fs.lstatSync(target_path);
         } catch (err) {
@@ -133,6 +142,78 @@ function resolveLinks(target_dir, paths) {
             real_path = fs.realpathSync(target_path);
             fs.unlinkSync(target_path);
             fs.copyFileSync(real_path, target_path);
+        }
+    }
+}
+
+function findLanguages(target_dir) {
+    var ret = [];
+    var lang_path = path.join(target_dir, LANG_ROOT);
+    if (fs.existsSync(lang_path)) {
+      fs.readdirSync(lang_path).forEach(function(file, index) {
+          if(file.endsWith('.json')) {
+              ret.push(file.substring(0, file.length - 5));
+          }
+      });
+    }
+    return ret;
+}
+
+function resolveLangPaths(theme_name, language) {
+    var ret = [];
+    var lang_path = path.join(THEMES_ROOT, theme_name, LANG_ROOT, language + '.json');
+    if (fs.existsSync(lang_path)) {
+        ret.push(lang_path);
+    }
+    if (theme_name !== 'default') {
+        var def_path = path.join(THEMES_ROOT, 'default', LANG_ROOT, language + '.json');
+        if (fs.existsSync(def_path)) {
+            ret.push(def_path);
+        }
+    }
+    if (language !== 'en') {
+        ret = ret.concat(resolveLangPaths(theme_name, 'en'));
+    }
+    return ret;
+}
+
+function mergeDeep(target, ...sources) {
+    if (!sources.length) return target;
+    const source = sources.shift();
+    if (typeof(target) === 'object' && typeof(source) === 'object') {
+        for (const key in source) {
+            if (typeof(source[key]) === 'object') {
+                if (!target[key]) Object.assign(target, { [key]: {} });
+                mergeDeep(target[key], source[key]);
+            } else {
+                Object.assign(target, { [key]: source[key] });
+            }
+        }
+    }
+    return mergeDeep(target, ...sources);
+}
+
+function combineLanguage(theme_name, target_dir) {
+    var langs = findLanguages(target_dir);
+    for (var lang of langs) {
+        var paths = resolveLangPaths(theme_name, lang);
+        if (paths.length) {
+            paths.reverse();
+            var input = [];
+            for (var lang_path of paths) {
+                input.push(require('./' + lang_path));
+            }
+            var data = mergeDeep(...input);
+            var target_path = path.join(target_dir, LANG_ROOT, lang + '.json');
+            try {
+                target_stats = fs.lstatSync(target_path);
+            } catch (err) {
+                target_stats = null;
+            }
+            if (target_stats && target_stats.isSymbolicLink()) {
+                fs.unlinkSync(target_path);
+            }
+            fs.writeFileSync(target_path, JSON.stringify(data));
         }
     }
 }
@@ -147,6 +228,7 @@ if (THEME_NAME !== 'default') {
     copyThemeDir(THEME_NAME, TARGET_DIR)
 }
 
+combineLanguage(THEME_NAME, TARGET_DIR);
 resolveLinks(TARGET_DIR, RESOLVE_LINKS);
 
 console.log('Done.\n');
