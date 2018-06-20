@@ -1,4 +1,7 @@
 {
+  "ROUTES": {
+    "home": "home"
+  },
   "app": {
     "breadcrumb": "Home",
     "title": "TheOrgBook Demo",

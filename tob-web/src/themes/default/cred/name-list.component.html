@@ -1,7 +1,7 @@
 <div class="row name-row" *ngFor="let name of records">
   <div class="col-sm-7">
-    <label>{{name.credential.credentialType.description}}:</label> <a routerLink="../subject/1" class="cred-link name">{{name.text}}</a><br>
-    <small><label><span translate>cred.issuer</span>:</label> <a [routerLink]="'../issuer/' + name.issuer.id" class="issuer-link">{{name.issuer.name}}</a></small><br>
+    <label>{{name.credential.credentialType.description}}:</label> <a [routerLink]="['/subject', name.credential.subjectId] | localize" class="body-link cred-link name">{{name.text}}</a><br>
+    <small><label><span translate>cred.issuer</span>:</label> <a [routerLink]="['/issuer', name.issuer.id] | localize" class="body-link issuer-link">{{name.issuer.name}}</a></small><br>
     <small><label><span translate>cred.last-updated</span>:</label> <span class="claim-info date">{{name.startDate}}</span></small>
   </div>
   <div class="col-sm-5">

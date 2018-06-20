@@ -1,20 +1,4 @@
 
-.color-red {
-	filter: sepia() hue-rotate(300deg) saturate(180%)
-}
-.color-blue {
-	filter: sepia() hue-rotate(155deg) saturate(160%);
-}
-.color-green {
-	filter: sepia() hue-rotate(50deg) saturate(160%);
-}
-.color-purple {
-	filter: sepia() hue-rotate(200deg) saturate(160%);
-}
-.color-orange {
-	filter: sepia() hue-rotate(330deg) saturate(160%);
-}
-
 .mrgn-tp-0 {
   margin-top: 0;
 }
@@ -110,3 +94,8 @@ $indicator-thickness: 0.2em;
   }
 }
 
+.form-body {
+  > .form-group:last-child {
+    margin-bottom: 0;
+  }
+}

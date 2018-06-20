@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule, Http } from '@angular/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule, routes } from './app-routing.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -14,25 +14,25 @@ import { MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx
 import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppFooterComponent } from './app-footer/app-footer.component';
-import { BusinessComponent } from './business/business.component';
-import { CertComponent } from './cert/cert.component';
-import { SearchBoxDirective } from './search-box/search-box.directive';
-import { GeneralDataService } from 'app/general-data.service';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { IssuerComponent } from './issuer/issuer.component';
-import { RoadmapComponent } from './roadmap/roadmap.component';
-import { RoadmapTreeComponent } from './roadmap/tree.component';
-import { AdminModule } from 'app/admin/admin.module';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { GeneralDataService } from 'app/general-data.service';
+import { AdminModule } from './admin/admin.module';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { SearchBoxDirective } from './search-box/search-box.directive';
+
+import { HomeComponent } from './home/home.component';
+import { IssuerFormComponent } from './issuer/form.component';
+//import { RoadmapComponent } from './roadmap/roadmap.component';
+//import { RoadmapTreeComponent } from './roadmap/tree.component';
+import { SubjectFormComponent } from './subject/form.component';
 
 
 const ROUTE_PREFIX : string = 'ROUTES.';
 
-export function createTranslateLoader(http: Http) {
+export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-export function createLocalizeLoader(translate: TranslateService, location: Location, settings: LocalizeRouterSettings, http: Http) {
+export function createLocalizeLoader(translate: TranslateService, location: Location, settings: LocalizeRouterSettings, http: HttpClient) {
   // list of locales could be loaded from an external file, ie. locales.json
   //return new ManualParserLoader(translate, location, settings, ['en', 'fr'], ROUTE_PREFIX);
   return new LocalizeRouterHttpLoader(translate, location, settings, http, './assets/locales.json');
@@ -42,16 +42,13 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     // used to highlight missing translation strings - otherwise they will be blank
     // FIXME - disable in production
     // params: {key, translateService}
-    if(params.key.substring(0, ROUTE_PREFIX.length) === ROUTE_PREFIX)
-      return;
+    if(params.key.substring(0, ROUTE_PREFIX.length) === ROUTE_PREFIX) {
+      return params.key.substring(ROUTE_PREFIX.length);
+    }
     console.warn("missing translation: " + params.key);
     return '??' + params.key + '??';
   }
 }
-
-
-// v2 interface
-import { v2Module } from './v2/v2.module';
 
 
 @NgModule({
@@ -59,20 +56,20 @@ import { v2Module } from './v2/v2.module';
     AppComponent,
     AppHeaderComponent,
     AppFooterComponent,
-    BusinessComponent,
-    CertComponent,
     SearchBoxDirective,
-    DashboardComponent,
-    IssuerComponent,
-    RoadmapComponent,
-    RoadmapTreeComponent,
     BreadcrumbComponent,
     NotFoundComponent,
+
+    HomeComponent,
+    IssuerFormComponent,
+    //RoadmapComponent,
+    //RoadmapTreeComponent,
+    SubjectFormComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     AppRoutingModule,
     NgbModule,
     AdminModule,
@@ -80,20 +77,16 @@ import { v2Module } from './v2/v2.module';
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [Http]
+        deps: [HttpClient]
       }
     }),
     LocalizeRouterModule.forRoot(routes, {
       parser: {
         provide: LocalizeParser,
         useFactory: createLocalizeLoader,
-        deps: [TranslateService, Location, LocalizeRouterSettings, Http]
+        deps: [TranslateService, Location, LocalizeRouterSettings, HttpClient]
       }
     }),
-
-    // v2 interface
-    v2Module,
-
   ],
   exports: [
     TranslateModule,

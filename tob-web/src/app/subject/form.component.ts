@@ -42,6 +42,12 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  get title(): string {
+    if(this.record && this.record.names && this.record.names.length) {
+      return this.record.names[0].text;
+    }
+  }
+
   get creds(): CredResult[] {
     return this._creds && this._creds.rows;
   }

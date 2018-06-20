@@ -7,15 +7,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.util-link, .cred-link, .issuer-link {
-  border-bottom: 1px solid rgba(#1a5a96, 0.8);
-  margin-bottom: -1px;
-  text-decoration: none;
-  :hover {
-    border-bottom-color: #0f3355;
-  }
-}
-
 .cred-link {
   &::before {
     @extend %fa-base;
@@ -113,3 +104,6 @@ div.claim-info {
 .cred-info {
   font-size: 1.5rem;
 }
+
+//place all overrides for a specific theme in this file inside your theme/cred directory
+@import "../../_active/cred/cred.custom";

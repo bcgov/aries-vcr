@@ -2,12 +2,12 @@
   <div class="panel-heading">
     <h3 class="panel-title">{{record.type | translate}}: <span class="fa fa-tag"></span> <strong>{{record.text}}</strong></h3>
   </div>
-  <div class="panel-body">
+  <div class="panel-body form-body">
     <div class="row form-group">
       <div class="col-sm-7">
         <label class="control-label" translate>cred.issuer</label>
         <div class="form-field">
-          <a [href]="'en/v2/issuer/' + issuer.id" class="issuer-link">{{issuer.name}}</a>
+          <a [routerLink]="['/issuer', issuer.id] | localize" class="body-link issuer-link">{{issuer.name}}</a>
         </div>
       </div>
       <div class="col-sm-5">
@@ -51,8 +51,8 @@
     </div>
   </div>
   <div class="panel-footer text-right">
-    <a class="util-link" [href]="'en/v2/subject/' + cred.subjectId + '/cred/' + cred.id"><span class="fa fa-certificate"></span> <span translate>cred.view-link</span></a>
+    <a class="body-link util-link" [routerLink]="['/subject', cred.subjectId, 'cred', cred.id] | localize"><span class="fa fa-certificate"></span> <span translate>cred.view-link</span></a>
     &nbsp;
-    <a href="#" class="util-link"><span class="fa fa-history"></span> <span translate>cred.history-link</span> (1)</a>
+    <a href="#" class="body-link util-link"><span class="fa fa-history"></span> <span translate>cred.history-link</span> (1)</a>
   </div>
 </div>

@@ -21,7 +21,7 @@
           <div class="row form-group" *ngIf="record.url">
             <label class="col-sm-4 control-label" translate>issuer.website</label>
             <div class="col-sm-8 form-field">
-              <a [href]="record.url" rel="external">
+              <a class="body-link" [href]="record.url" rel="external">
                 {{record.url}}</a>
               <small><span class="fa fa-external-link"></span></small>
             </div>

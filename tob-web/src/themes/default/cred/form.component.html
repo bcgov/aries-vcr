@@ -75,16 +75,14 @@
     </div>
 
     <div class="col-md-5 col-sm-6">
-      <div class="panel meta-panel">
-        <div class="panel-heading">
-          <h3 class="panel-title">Credential Info</h3>
-        </div>
-        <div class="panel-body">
+      <div class="meta-info well">
+        <h3 class="well-title">Credential Info</h3>
+        <div class="meta-body form-body">
           <div class="row form-group" *ngIf="issuer">
             <div class="col-sm-12">
               <label class="control-label" translate>cred.issuer</label>
               <div class="form-field">
-                <a [href]="'en/v2/issuer/' + issuer.id" class="issuer-link">{{issuer.name}}</a>
+                <a class="body-link issuer-link" [routerLink]="['/issuer', issuer.id] | localize">{{issuer.name}}</a>
               </div>
             </div>
           </div>
@@ -101,7 +99,7 @@
               <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)"><span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
             </div>
             <div class="col-sm-6 mrgn-tp-sm">
-              <a class="verify-help" href="#" translate>cred.whats-this-link</a>
+              <a class="body-link verify-help" href="#"><span class="fa fa-question-circle"></span> <span translate>cred.whats-this-link</span></a>
             </div>
           </div>
           <div class="row cred-verify" *ngIf="verifyResult || verifying">

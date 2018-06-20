@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { BusinessComponent } from 'app/business/business.component';
-import { CertComponent } from 'app/cert/cert.component';
-import { IssuerComponent } from 'app/issuer/issuer.component';
-import { DashboardComponent } from 'app/dashboard/dashboard.component';
-import { RoadmapComponent } from 'app/roadmap/roadmap.component';
-import { NotFoundComponent } from 'app/not-found/not-found.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+
+import { CredFormComponent } from './cred/form.component';
+import { CredModule } from './cred/cred.module';
+import { HomeComponent } from './home/home.component';
+import { IssuerFormComponent } from './issuer/form.component';
+//import { RoadmapComponent } from './roadmap/roadmap.component';
+import { SubjectFormComponent } from './subject/form.component';
+import { SearchModule } from './search/search.module';
 
 export const routes: Routes = [
   {
@@ -15,50 +18,38 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    component: DashboardComponent,
+    component: HomeComponent,
     data: {
       breadcrumb: 'dashboard.breadcrumb'
     }
   },
   {
-    path: 'org/:orgId',
+    path: 'subject/:subjId',
     data: {
-      breadcrumb: 'org.breadcrumb'
+      breadcrumb: 'subject.breadcrumb'
     },
     children: [
       {
         path: '',
-        component: BusinessComponent
+        component: SubjectFormComponent,
       },
       {
-        path: 'cert/:certId',
+        path: 'cred/:credId',
+        component: CredFormComponent,
         data: {
-          breadcrumb: 'cert.breadcrumb'
-        },
-        children: [
-          {
-            path: '',
-            component: CertComponent,
-          },
-          {
-            path: 'issuer',
-            component: IssuerComponent,
-            data: {
-              breadcrumb: 'issuer.breadcrumb'
-            }
-          }
-        ]
+          breadcrumb: 'cred.breadcrumb'
+        }
       }
     ]
   },
   {
     path: 'issuer/:issuerId',
-    component: IssuerComponent,
+    component: IssuerFormComponent,
     data: {
-      breadcrumb: 'issuer.breadcrumb'
+      breadcrumb: 'issuer.breadcrumb',
     }
   },
-  {
+  /*{
     path: 'recipe',
     redirectTo: 'recipe/start_a_restaurant'
   },
@@ -68,14 +59,7 @@ export const routes: Routes = [
     data: {
       breadcrumb: 'recipe.breadcrumb'
     }
-  },
-
-  //
-  {
-    path: 'v2',
-    loadChildren: 'app/v2/v2.module#v2Module',
-  },
-
+  },*/
   {
     path: '**',
     component: NotFoundComponent,
@@ -86,7 +70,15 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes),
+    CredModule,
+    SearchModule,
+  ],
+  exports: [
+    RouterModule,
+    CredModule,
+    SearchModule,
+  ]
 })
 export class AppRoutingModule { }
