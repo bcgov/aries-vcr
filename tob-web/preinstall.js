@@ -194,8 +194,11 @@ function mergeDeep(target, ...sources) {
 }
 
 function combineLanguage(theme_name, target_dir) {
-    var langs = findLanguages(target_dir);
-    for (var lang of langs) {
+    var langs = findLanguages(path.join(THEMES_ROOT, theme_name));
+    if (theme_name !== 'default')
+        langs = langs.concat(findLanguages(path.join(THEMES_ROOT, 'default')));
+    var lang_dir = path.join(target_dir, LANG_ROOT);
+    for (var lang of new Set(langs)) {
         var paths = resolveLangPaths(theme_name, lang);
         if (paths.length) {
             paths.reverse();
@@ -204,7 +207,7 @@ function combineLanguage(theme_name, target_dir) {
                 input.push(require('./' + lang_path));
             }
             var data = mergeDeep(...input);
-            var target_path = path.join(target_dir, LANG_ROOT, lang + '.json');
+            var target_path = path.join(lang_dir, lang + '.json');
             try {
                 target_stats = fs.lstatSync(target_path);
             } catch (err) {
@@ -228,7 +231,7 @@ if (THEME_NAME !== 'default') {
     copyThemeDir(THEME_NAME, TARGET_DIR)
 }
 
-combineLanguage(THEME_NAME, TARGET_DIR);
 resolveLinks(TARGET_DIR, RESOLVE_LINKS);
+combineLanguage(THEME_NAME, TARGET_DIR);
 
 console.log('Done.\n');
