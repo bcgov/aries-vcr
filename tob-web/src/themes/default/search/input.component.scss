@@ -1,25 +1,26 @@
-$input-border: rgba(128, 173, 210, 0.9);
+$input-border-color: rgba(128, 173, 210, 0.9);
 $input-border-active: #5c8de6;
 $input-border-radius: 10px;
+$input-button-color: #8ac;
 
 .large-search {
   align-items: center;
-  border: 2px solid $input-border;
-  border-bottom-color: rgba($input-border, 0.7);
+  border: 2px solid $input-border-color;
+  border-bottom-color: rgba($input-border-color, 0.7);
   border-radius: $input-border-radius;
   box-shadow: inset 0 1px 2px 2px rgba(0, 10, 30, 0.05);
-  display: inline-flex;
+  display: flex;
   flex-flow: row nowrap;
   max-width: 100%;
   overflow: hidden;
   .fa {
-    //color: darken($input-border, 10%);
+    //color: darken($input-border-color, 10%);
     color: #fff;
   }
   .fa, .load {
     flex: 0 0 46px;
-    font-size: 30px;
-    height: 32px;
+    font-size: 26px;
+    height: 28px;
     line-height: normal;
     text-align: center;
     width: 42px;
@@ -33,19 +34,27 @@ $input-border-radius: 10px;
   input {
     background: transparent;
     border: none;
+    display: block;
     flex: 1 1 auto;
     font-size: 22px;
     line-height: normal;
+    margin: 0;
     outline: none;
     padding: 3px 0 3px 10px;
-    margin: 0;
+    width: 100%;
   }
   button {
-    background-color: #8ac;
-    border: 2px solid lighten($input-border, 20%);
-    border-radius: ($input-border-radius - 2);
+    background-color: $input-button-color;
+    border: 2px solid transparent;
+    border-radius: ($input-border-radius - 4);
     display: flex;
-    margin-right: 0;
+    flex: none;
+    margin: 2px;
+    &:hover, &:focus {
+      background-color: darken($input-button-color, 5%);
+      border-color: $input-border-active;
+      outline: none;
+    }
   }
   &.active {
     border-color: $input-border-active;
@@ -59,3 +68,6 @@ $input-border-radius: 10px;
     }
   }
 }
+
+//place all overrides for a specific theme in this file inside your theme/search directory
+@import "../../_active/search/input.component.custom";

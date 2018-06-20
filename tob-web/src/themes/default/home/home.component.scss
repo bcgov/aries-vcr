@@ -3,23 +3,6 @@
   min-height: 50vh;
 }
 
-/*.stats {
-  color: #036;
-  font-size: 20px;
-  list-style-type: none;
-  padding: 0.4em;
-  .stat {
-    display: inline-block;
-    padding: 0.1em 1em;
-  }
-  .numbers {
-    color: #fcba19;
-    font-size: 2.4rem;
-    padding-right: 0.25em;
-    text-shadow: 0 1px 1px rgba(0, 20, 50, 0.25);
-  }
-}*/
-
 .stats {
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -60,13 +43,15 @@
 .search-title {
   display: flex;
   margin: 0 auto;
-  padding-left: 60px;
-  padding-bottom: 1rem;
+  h2 {
+    font-size: 22px;
+    padding: 0 2rem 1rem;
+  }
 }
 
 .search-types {
-  flex: auto;
-  padding: 16px 60px;
+  flex: 1 1 50%;
+  padding: 2rem 1rem 10px;
   text-align: right;
 }
 
@@ -118,3 +103,7 @@ label + .facet {
     width: 100%;
   }
 }
+
+
+//place all overrides for a specific theme in this file inside your theme/home directory
+@import "../../_active/home/home.component.custom";
