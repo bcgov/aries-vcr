@@ -136,12 +136,20 @@ function resolveLinks(target_dir, paths) {
         try {
             target_stats = fs.lstatSync(target_path);
         } catch (err) {
-            return;
+            continue;
         }
         if (target_stats.isSymbolicLink()) {
             real_path = fs.realpathSync(target_path);
             fs.unlinkSync(target_path);
-            fs.copyFileSync(real_path, target_path);
+            try {
+                real_stats = fs.lstatSync(real_path);
+            } catch (err) {
+                continue;
+            }
+            if(real_stats.isDirectory())
+                fs.mkdirSync(target_path);
+            else
+                fs.copyFileSync(real_path, target_path);
         }
     }
 }
