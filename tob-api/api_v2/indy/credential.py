@@ -153,7 +153,6 @@ class CredentialManager(object):
     database based on rules provided by issuer are registration.
     """
 
-    
     def __init__(
         self, credential: Credential, credential_definition_metadata: dict
     ) -> None:
@@ -224,7 +223,6 @@ class CredentialManager(object):
         Returns:
             Credential -- Newly created credential
         """
-        # Obtain required models from database
 
         # Create subject, credential, claim models
         subject, created = Subject.objects.get_or_create(source_id=source_id)
@@ -306,9 +304,9 @@ class CredentialManager(object):
                 # and run field value through pipeline
                 if processor is not None:
                     pipeline = []
-                    # Construct pipeline by dot notation. Last token is the function name
-                    # and all preceeding dots denote path of module starting from
-                    # `PROCESSOR_FUNCTION_BASE_PATH``
+                    # Construct pipeline by dot notation. Last token is the
+                    # function name and all preceeding dots denote path of
+                    # module starting from `PROCESSOR_FUNCTION_BASE_PATH``
                     for function_path_with_name in processor:
                         function_path, function_name = function_path_with_name.rsplit(
                             ".", 1
@@ -400,7 +398,7 @@ class CredentialManager(object):
                 model = query[0]
                 # If there are other records for this query, then the issuer
                 # changed its `cardinality_fields` to something less specific
-                # than it was previously.
+                # than it was previously so we add an end_date to them.
                 query.exclude(pk=model.id).update(end_date=timezone.now())
             except IndexError as error:
                 logger.warn(error)

@@ -50,12 +50,10 @@ Issuers must register themselves with TheOrgBook before they can begin issuing c
       "version": "1.0.31", // required
       "source_claim": "legal_entity_id", // required
       "endpoint": "http://localhost:5000/bcreg/incorporation",
-      "mapping": [
-        {
-          "model": "name",
-          "cardinality_fields": [
-            "type"
-          ],
+      "mapping": {
+        // topic is required if mapping exists
+        "topic": {
+          "cardinality_fields": ["type"],
           "fields": {
             "text": {
               "input": "legal_name",
@@ -67,47 +65,61 @@ Issuers must register themselves with TheOrgBook before they can begin issuing c
             }
           }
         },
-        {
-          "model": "address",
-          "cardinality_fields": [
-            "type"
-          ],
-          "fields": {
-            "addressee": {
-              "input": "addressee",
-              "from": "claim"
-            },
-            "civic_address": {
-              "input": "address_line_1",
-              "from": "claim"
-            },
-            "city": {
-              "input": "city",
-              "from": "claim"
-            },
-            "province": {
-              "input": "province",
-              "from": "claim"
-            },
-            "postal_code": {
-              "input": "postal_code",
-              "from": "claim"
-            },
-            "country": {
-              "input": "country",
-              "from": "claim"
-            },
-            "type": {
-              "input": "operating",
-              "from": "value"
-            },
-            "end_date": {
-              "input": "2018-06-06",
-              "from": "value"
+        "models": [
+          {
+            "model": "name",
+            "cardinality_fields": ["type"],
+            "fields": {
+              "text": {
+                "input": "legal_name",
+                "from": "claim"
+              },
+              "type": {
+                "input": "dogs",
+                "from": "value"
+              }
+            }
+          },
+          {
+            "model": "address",
+            "cardinality_fields": ["type"],
+            "fields": {
+              "addressee": {
+                "input": "addressee",
+                "from": "claim"
+              },
+              "civic_address": {
+                "input": "address_line_1",
+                "from": "claim"
+              },
+              "city": {
+                "input": "city",
+                "from": "claim"
+              },
+              "province": {
+                "input": "province",
+                "from": "claim"
+              },
+              "postal_code": {
+                "input": "postal_code",
+                "from": "claim"
+              },
+              "country": {
+                "input": "country",
+                "from": "claim"
+              },
+              "type": {
+                "input": "operating",
+                "from": "value"
+              },
+              "end_date": {
+                "input": "2018-06-06",
+                "from": "value"
+              }
             }
           }
-        }
-      ]
+        ]
+      }
     },
     {
       "name": "Doing Business As",
@@ -145,9 +157,7 @@ Take the following `credential_type` for example:
   "mapping": [
     {
       "model": "name",
-      "cardinality_fields": [
-        "type"
-      ],
+      "cardinality_fields": ["type"],
       "fields": {
         "text": {
           "input": "legal_name",
@@ -161,17 +171,15 @@ Take the following `credential_type` for example:
     },
     {
       "model": "address",
-      "cardinality_fields": [
-        "type"
-      ],
+      "cardinality_fields": ["type"],
       "fields": {
         "addressee": {
           "input": "addressee",
           "from": "claim",
           "processor": [
-              "string_helpers.uppercase",
-              "string_helpers.lowercase",
-              "example.module.path.function"
+            "string_helpers.uppercase",
+            "string_helpers.lowercase",
+            "example.module.path.function"
           ]
         },
         "civic_address": {
@@ -212,45 +220,42 @@ Each `mapping` requires a `model` key. This key is used to identify the model it
 
 The fields key represents the fields on each model that can be populated from claim data. The available fields on each model are as follows:
 
-| *address*       |
+| _address_     |
 | ------------- |
-| addressee |
+| addressee     |
 | civic_address |
-| city |
-| province |
-| postal_code |
-| country |
-| type |
+| city          |
+| province      |
+| postal_code   |
+| country       |
+| type          |
+| start_date    |
+| end_date      |
+
+| _contact_  |
+| ---------- |
+| text       |
+| type       |
 | start_date |
-| end_date |
+| end_date   |
 
-
-| *contact* |
-|---------|
-| text |
-| type |
+| _name_     |
+| ---------- |
+| text       |
+| type       |
+| language   |
+| source_id  |
+| is_legal   |
 | start_date |
-| end_date |
+| end_date   |
 
-
-| *name* |
-|--------|
-|text|
-|type|
-|language|
-|source_id|
-|is_legal|
-|start_date|
-|end_date|
-
-
-| *person* |
-|----------|
-| full_name |
-| type |
+| _person_   |
+| ---------- |
+| full_name  |
+| type       |
 | start_date |
-| end_date |
+| end_date   |
 
 Each field must have an `input` and a `from`. If `from` is set to 'value', then the value of that field on that model will always be set to the string literal provided in `input`. If `from` is set to 'claim', then it will retrieve the value of the claim on each each incoming credential. `processor` allows you to run the resulting value from either of the two cases through a series of functions. The input of each function is the output of the last. If you need to add new functions to be made available to the processor, you can make a pull request to TheOrgBook. See more information [here](./processor).
 
-`cardinality_fields` is optional and allows the issuer to specify the cardinality of 
+`cardinality_fields` is optional and allows the issuer to specify the cardinality of
