@@ -11,15 +11,6 @@ entity "address" {
   province
   postal_code
   country
-  type
-  start_date
-  end_date
-}
-
-entity "address_credentials" {
-  + id [PK]
-  --
-  address_id
   credential_id
 }
 
@@ -30,8 +21,6 @@ entity "claim" {
   update_timestamp
   name
   value
-  start_date
-  end_date
   credential_id
 }
 
@@ -42,14 +31,6 @@ entity "contact" {
   update_timestamp
   text
   type
-  start_date
-  end_date
-}
-
-entity "contact_credentials" {
-  + id [PK]
-  --
-  contact_id
   credential_id
 }
 
@@ -61,7 +42,13 @@ entity "credential" {
   start_date
   end_date
   credential_type_id
-  subject_id
+}
+
+entity "credential_topics" {
+  + id [PK]
+  --
+  credential_id
+  topic_id
 }
 
 entity "credential_type" {
@@ -72,8 +59,6 @@ entity "credential_type" {
   description
   source_claim
   processor_config
-  start_date
-  end_date
   issuer_id
   schema_id
 }
@@ -88,8 +73,6 @@ entity "issuer" {
   abbreviation
   email
   url
-  start_date
-  end_date
 }
 
 entity "name" {
@@ -97,19 +80,8 @@ entity "name" {
   --
   create_timestamp
   update_timestamp
-  text
-  type
+  name
   language
-  source_id
-  is_legal
-  start_date
-  end_date
-}
-
-entity "name_credentials" {
-  + id [PK]
-  --
-  name_id
   credential_id
 }
 
@@ -119,15 +91,6 @@ entity "person" {
   create_timestamp
   update_timestamp
   full_name
-  type
-  start_date
-  end_date
-}
-
-entity "person_credentials" {
-  + id [PK]
-  --
-  person_id
   credential_id
 }
 
@@ -139,65 +102,33 @@ entity "schema" {
   name
   version
   origin_did
-  start_date
-  end_date
 }
 
-entity "subject" {
+entity "topic" {
   + id [PK]
   --
   create_timestamp
   update_timestamp
   source_id
-  start_date
-  end_date
 }
 
- address_credentials }-- address
-
- address_credentials }-- address
-
- address_credentials }-- credential
-
- address_credentials }-- credential
+ address }-- credential
 
  claim }-- credential
 
- contact_credentials }-- contact
-
- contact_credentials }-- contact
-
- contact_credentials }-- credential
-
- contact_credentials }-- credential
+ contact }-- credential
 
  credential }-- credential_type
 
- credential }-- subject
+ credential_topics }-- credential
 
- credential_type }-- issuer
+ credential_topics }-- topic
 
  credential_type }-- issuer
 
  credential_type }-- schema
 
- credential_type }-- schema
+ name }-- credential
 
- name_credentials }-- credential
-
- name_credentials }-- credential
-
- name_credentials }-- name
-
- name_credentials }-- name
-
- person_credentials }-- credential
-
- person_credentials }-- credential
-
- person_credentials }-- person
-
- person_credentials }-- person
-
+ person }-- credential
 @enduml
-

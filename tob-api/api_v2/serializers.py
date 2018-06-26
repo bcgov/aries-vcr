@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Subject import Subject
+from api_v2.models.Topic import Topic
 from api_v2.models.Credential import Credential
 from api_v2.models.Address import Address
 from api_v2.models.Claim import Claim
@@ -32,9 +32,9 @@ class CredentialTypeSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class SubjectSerializer(ModelSerializer):
+class TopicSerializer(ModelSerializer):
     class Meta:
-        model = Subject
+        model = Topic
         depth = 2
         fields = "__all__"
 

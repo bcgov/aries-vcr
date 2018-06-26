@@ -11,7 +11,7 @@ from von_agent.util import schema_key
 
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
-from api_v2.models.Subject import Subject
+from api_v2.models.Topic import Topic
 from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Claim import Claim
 

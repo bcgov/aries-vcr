@@ -5,7 +5,7 @@ from api_v2.serializers import (
     IssuerSerializer,
     SchemaSerializer,
     CredentialTypeSerializer,
-    SubjectSerializer,
+    TopicSerializer,
     CredentialSerializer,
     AddressSerializer,
     ClaimSerializer,
@@ -16,7 +16,7 @@ from api_v2.serializers import (
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Subject import Subject
+from api_v2.models.Topic import Topic
 from api_v2.models.Credential import Credential
 from api_v2.models.Address import Address
 from api_v2.models.Claim import Claim
@@ -64,16 +64,16 @@ class CredentialTypeViewSet(ViewSet):
         return Response(serializer.data)
 
 
-class SubjectViewSet(ViewSet):
+class TopicViewSet(ViewSet):
     def list(self, request):
-        queryset = Subject.objects.all()
-        serializer = SubjectSerializer(queryset, many=True)
+        queryset = Topic.objects.all()
+        serializer = TopicSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        queryset = Subject.objects.all()
+        queryset = Topic.objects.all()
         item = get_object_or_404(queryset, pk=pk)
-        serializer = SubjectSerializer(item)
+        serializer = TopicSerializer(item)
         return Response(serializer.data)
 
 
