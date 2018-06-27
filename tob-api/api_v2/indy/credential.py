@@ -13,6 +13,7 @@ from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.Topic import Topic
 from api_v2.models.CredentialType import CredentialType
+from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.Claim import Claim
 
 from api_v2.models.Name import Name
@@ -213,6 +214,181 @@ class CredentialManager(object):
         return credential
 
     def populate_application_database(self, credential_type, source_id):
+
+        # Takes our mapping rules and returns a value from credential
+        def process_mapping(rules):
+            # Get required values from config
+            try:
+                _input = rules["input"]
+                _from = rules["from"]
+            except KeyError as error:
+                raise CredentialException(
+                    "Every mapping must specify 'input' and 'from' values."
+                )
+
+            # Pocessor is optional
+            try:
+                processor = rules["processor"]
+            except KeyError as error:
+                processor = None
+
+            # Get model field value from string literal or claim value
+            if _from == "value":
+                mapped_value = _input
+            elif _from == "claim":
+                try:
+                    mapped_value = getattr(self.credential, _input)
+                except AttributeError as error:
+                    raise CredentialException(
+                        "Credential does not contain the configured claim '{}'".format(
+                            _input
+                        )
+                        + "Claims are: {}".format(
+                            ", ".join(self.credential.claim_attributes)
+                        )
+                    )
+            else:
+                raise CredentialException(
+                    "Supported field from values are 'value' and 'claim'"
+                    + " but received '{}'".format(_from)
+                )
+
+            # If we have a processor config, build pipeline of functions
+            # and run field value through pipeline
+            if processor is not None:
+                pipeline = []
+                # Construct pipeline by dot notation. Last token is the
+                # function name and all preceeding dots denote path of
+                # module starting from `PROCESSOR_FUNCTION_BASE_PATH``
+                for function_path_with_name in processor:
+                    function_path, function_name = function_path_with_name.rsplit(
+                        ".", 1
+                    )
+
+                    # Does the file exist?
+                    try:
+                        function_module = import_module(
+                            "{}.{}".format(
+                                PROCESSOR_FUNCTION_BASE_PATH, function_path
+                            )
+                        )
+                    except ModuleNotFoundError as error:
+                        raise CredentialException(
+                            "No processor module named '{}'".format(
+                                function_path
+                            )
+                        )
+
+                    # Does the function exist?
+                    try:
+                        function = getattr(function_module, function_name)
+                    except AttributeError as error:
+                        raise CredentialException(
+                            "Module '{}' has no function '{}'.".format(
+                                function_path, function_name
+                            )
+                        )
+
+                    # Build up a list of functions to call
+                    pipeline.append(function)
+
+                # We want to run the pipeline in logical order
+                pipeline.reverse()
+
+                # Run pipeline
+                while len(pipeline) > 0:
+                    function = pipeline.pop()
+                    mapped_value = function(mapped_value)
+
+            # This is ugly. von-agent currently serializes null values
+            # to the string 'None'
+            if mapped_value == "None":
+                mapped_value = None
+
+            return mapped_value
+
+        processor_config = credential_type.processor_config
+        topic_def = processor_config["topic"]
+        cardinality_fields = processor_config.get("cardinality_fields") or []
+
+        parent_topic_name = topic_def.get("parent_topic_name")
+        parent_topic_source_id = topic_def.get("parent_topic_source_id")
+        parent_topic_type = topic_def.get("parent_topic_type")
+
+        topic_name = topic_def.get("topic_name")
+        topic_source_id = topic_def.get("topic_source_id")
+        topic_type = topic_def.get("topic_type")
+
+        # Get parent topic if possible
+        if parent_topic_name:
+            parent_topic = Topic.objects.get(
+                credentials__names__text=parent_topic_name
+            )
+        elif parent_topic_source_id and parent_topic_type:
+            parent_topic = Topic.objects.get(
+                source_id=parent_topic_source_id, type=parent_topic_type
+            )
+
+        # Get parent topic if possible
+        if topic_name:
+            topic = Topic.objects.get(credentials__names__text=topic_name)
+        elif topic_source_id and topic_type:
+            topic = Topic.objects.get(
+                source_id=topic_source_id, type=topic_type
+            )
+        else:
+            raise CredentialException(
+                "Issuer registration 'topic' must specify topic_type OR topic_name and topic_source_id"
+            )
+
+        existing_credential_query = {"topics__id": topic.id, "end_date": None}
+        for cardinality_field in cardinality_fields:
+            try:
+                existing_credential_query[cardinality_field] = getattr(
+                    self.credential, cardinality_field
+                )
+            except KeyError as error:
+                raise CredentialException(
+                    "Issuer configuration specifies field '{}' ".format(
+                        cardinality_field
+                    )
+                    + "in cardinality_fields value does not exist in "
+                    + "credential. Values are: {}".format(
+                        ", ".join(list(self.credential.claim_attributes))
+                    )
+                )
+
+        try:
+            existing_credential = CredentialModel.objects.get(
+                existing_credential_query
+            )
+            existing_credential.end_date = timezone.now
+            existing_credential.save()
+        except CredentialModel.DoesNotExist as error:
+            # No record to implicitly expire
+            pass
+
+        credential = topic.credentials.create(credential_type=credential_type)
+
+        for claim_attribute in self.credential.claim_attributes:
+            claim_value = getattr(self.credential, claim_attribute)
+            Claim.objects.create(
+                credential=credential, name=claim_attribute, value=claim_value
+            )
+
+        # Recurisvely associate parent topic and all of it's related topics
+        # (all related credentials' topics)
+        def associate_related_topics(topic):
+            credential.topics.add(topic)
+            for related_credential in topic.credentials:
+                for credential_topic in related_credential.topics:
+                    credential.topics.add(credential_topic)
+                    associate_related_topics(credential_topic)
+
+        if parent_topic is not None:
+            associate_related_topics(parent_topic)
+
+    def _populate_application_database(self, credential_type, source_id):
         """[summary]
         
         Arguments:

@@ -23,7 +23,8 @@ ISSUER_JSON_SCHEMA = {
                     "version": {"type": "string", "minLength": 1},
                     "description": {"type": "string", "minLength": 1},
                     "endpoint": {"type": "string"},
-                    "source_claim": {"type": "string"},
+                    # TODO: validate name OR type/srcid
+                    "topic": {"type": "object"},
                     "mapping": {
                         "type": "array",
                         "items": {
@@ -40,7 +41,7 @@ ISSUER_JSON_SCHEMA = {
                         },
                     },
                 },
-                "required": ["name", "schema", "version", "source_claim"],
+                "required": ["name", "schema", "version", "topic"],
             },
         },
     },

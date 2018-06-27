@@ -48,85 +48,124 @@ Issuers must register themselves with TheOrgBook before they can begin issuing c
       "name": "Incorporation", // required
       "schema": "incorporation.bc_registries", // required
       "version": "1.0.31", // required
-      "source_claim": "legal_entity_id", // required
       "endpoint": "http://localhost:5000/bcreg/incorporation",
-      "mapping": {
-        // topic is required if mapping exists
-        "topic": {
-          "cardinality_fields": ["type"],
+      "topic": {
+        // Required
+        "parent_source_id_claim": "parent_source_id",
+        "parent_source_name_claim": "parent_source_name",
+        "source_id_claim": "parent_source_id",
+        "parent_source_id_claim": "parent_source_id"
+      },
+      "models": [
+        {
+          "model": "name", // Required
           "fields": {
             "text": {
               "input": "legal_name",
               "from": "claim"
             },
+            "language": {
+              "input": "language",
+              "from": "claim"
+            },
+            "end_date": {
+              "input": "end_date",
+              "from": "claim"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Address",
+      "endpoint": "http://localhost:5000/bcreg/dba",
+      "schema": "address.bc_registries",
+      "version": "1.0.31",
+      "topic": {
+        // Required
+        "parent_source_id_claim": "parent_source_id",
+        "parent_source_name_claim": "parent_source_name",
+        "source_id_claim": "parent_source_id",
+        "parent_source_id_claim": "parent_source_id"
+      },
+      "cardinality_fields": ["type"],
+      "models": [
+        {
+          "model": "address", // Required
+          "fields": {
+            "addressee": {
+              "input": "addressee",
+              "from": "claim"
+            },
+            "civic_address": {
+              "input": "address_line_1",
+              "from": "claim"
+            },
+            "city": {
+              "input": "city",
+              "from": "claim"
+            },
+            "province": {
+              "input": "province",
+              "from": "claim"
+            },
+            "postal_code": {
+              "input": "postal_code",
+              "from": "claim"
+            },
+            "country": {
+              "input": "country",
+              "from": "claim"
+            },
             "type": {
-              "input": "dogs",
-              "from": "value"
+              "input": "type",
+              "from": "claim"
+            },
+            "end_date": {
+              "input": "end_date",
+              "from": "claim"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Person",
+      "endpoint": "http://localhost:5000/bcreg/dba",
+      "schema": "person.bc_registries",
+      "version": "1.0.31",
+      "topic": {
+        // Required
+        "parent_source_id_claim": "parent_source_id",
+        "parent_source_name_claim": "parent_source_name",
+        "source_id_claim": "parent_source_id",
+        "parent_source_id_claim": "parent_source_id"
+      },
+      "cardinality_fields": ["contact_type"],
+      "models": [
+        {
+          "model": "person", // Required
+          "fields": {
+            "full_name": {
+              "input": "addressee",
+              "from": "claim"
             }
           }
         },
-        "models": [
-          {
-            "model": "name",
-            "cardinality_fields": ["type"],
-            "fields": {
-              "text": {
-                "input": "legal_name",
-                "from": "claim"
-              },
-              "type": {
-                "input": "dogs",
-                "from": "value"
-              }
-            }
-          },
-          {
-            "model": "address",
-            "cardinality_fields": ["type"],
-            "fields": {
-              "addressee": {
-                "input": "addressee",
-                "from": "claim"
-              },
-              "civic_address": {
-                "input": "address_line_1",
-                "from": "claim"
-              },
-              "city": {
-                "input": "city",
-                "from": "claim"
-              },
-              "province": {
-                "input": "province",
-                "from": "claim"
-              },
-              "postal_code": {
-                "input": "postal_code",
-                "from": "claim"
-              },
-              "country": {
-                "input": "country",
-                "from": "claim"
-              },
-              "type": {
-                "input": "operating",
-                "from": "value"
-              },
-              "end_date": {
-                "input": "2018-06-06",
-                "from": "value"
-              }
+        {
+          "model": "contact", // Required
+          "fields": {
+            "text": {
+              "input": "contact",
+              "from": "claim"
+            },
+            "type": {
+              "input": "contact_type",
+              "from": "claim"
             }
           }
-        ]
-      }
-    },
-    {
-      "name": "Doing Business As",
-      "endpoint": "http://localhost:5000/bcreg/dba",
-      "schema": "doing_business_as.bc_registries",
-      "version": "1.0.31",
-      "source_claim": "legal_entity_id"
+        }
+      ]
     }
   ]
 }

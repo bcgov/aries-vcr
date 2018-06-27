@@ -73,7 +73,7 @@ def generate_credential_request(request, *args, **kwargs):
     credential_request, credential_request_metadata = (
         credential_offer_manager.generate_credential_request()
     )
-    
+
     result = {
         "credential_request": credential_request,
         "credential_request_metadata": credential_request_metadata,
@@ -157,7 +157,12 @@ def register_issuer(request, *args, **kwargs):
                 "version": "schema version",
                 "description": "schema display name (english)",
                 "endpoint": "url for issuing claims",
-                "source_claim": "name of claim to obtain source_id from",
+                "topic": {
+                    "parent_source_id_claim": "parent_source_id",
+                    "parent_source_name_claim": "parent_source_name",
+                    "source_id_claim": "parent_source_id",
+                    "parent_source_id_claim": "parent_source_id"
+                },
                 "mapping": [
                     {
                         "model": "name",

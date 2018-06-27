@@ -7,7 +7,7 @@ from .Credential import Credential
 
 class Name(Auditable):
     credential = models.ForeignKey(Credential, related_name="names")
-    name = models.TextField(null=True)
+    text = models.TextField(null=True)
     language = models.TextField(null=True)
 
     class Meta:
