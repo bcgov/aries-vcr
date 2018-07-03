@@ -340,7 +340,7 @@ def construct_proof(request, *args, **kwargs):
     return JsonResponse({"success": True, "result": proof})
 
 
-@api_view(["Get"])
+@api_view(["GET"])
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
 @schema(

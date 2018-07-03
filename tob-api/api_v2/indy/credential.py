@@ -359,7 +359,11 @@ class CredentialManager(object):
             )
 
         # We search for existing credentials by cardinality_fields to apply end_date
-        existing_credential_query = {"topics__id": topic.id, "end_date": None}
+        existing_credential_query = {
+            "credential_type__id": credential_type.id,
+            "topics__id": topic.id,
+            "end_date": None,
+        }
         for cardinality_field in cardinality_fields:
             try:
                 existing_credential_query["claims__name"] = cardinality_field
@@ -434,3 +438,11 @@ class CredentialManager(object):
             model.save()
 
         return topic
+
+    async def store(self, legal_entity_id):
+        # Store credential in wallet
+        async with Holder(legal_entity_id) as holder:
+            return await holder.store_cred(
+                self.credential.json,
+                _json.dumps(self.credential_definition_metadata),
+            )

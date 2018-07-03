@@ -57,7 +57,6 @@ entity "credential_type" {
   create_timestamp
   update_timestamp
   description
-  source_claim
   processor_config
   issuer_id
   schema_id
@@ -80,7 +79,7 @@ entity "name" {
   --
   create_timestamp
   update_timestamp
-  name
+  text
   language
   credential_id
 }
@@ -110,6 +109,7 @@ entity "topic" {
   create_timestamp
   update_timestamp
   source_id
+  type
 }
 
  address }-- credential
