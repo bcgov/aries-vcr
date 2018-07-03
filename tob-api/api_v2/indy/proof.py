@@ -5,8 +5,6 @@ from collections import namedtuple
 from api.indy.agent import Holder
 from api.indy import eventloop
 
-from api_v2.indy.proof_request import ProofRequest
-
 logger = logging.getLogger(__name__)
 
 
@@ -17,6 +15,7 @@ class ProofManager(object):
     """
     Class to manage creation of indy proofs.
     """
+
     def __init__(self, proof_request: dict, source_id: str) -> None:
         """Constructor
         

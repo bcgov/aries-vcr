@@ -13,6 +13,7 @@ class Restriction(object):
     """
     Class representing a proof request restriction
     """
+
     def __init__(
         self,
         schema_id: str = None,
@@ -51,7 +52,7 @@ class ProofRequest(object):
     """
     Class to manage creation of proof requests
     """
-    
+
     def __init__(self, name: str, version: str) -> None:
         self.name = name
         self.version = version

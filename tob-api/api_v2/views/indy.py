@@ -1,19 +1,22 @@
-import json
 import logging
+
+import coreapi
 
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
+    schema,
 )
 from rest_framework import permissions
+from rest_framework.schemas import AutoSchema
+
 from rest_framework.response import Response
 from django.http import JsonResponse
 from django.http import Http404
 
 from api_v2.models.Credential import Credential as CredentialModel
-
-from api_v2.serializers import CredentialSerializer
+from api_v2.models.Topic import Topic
 
 from api.indy import eventloop
 from api.indy.agent import Verifier
@@ -301,7 +304,6 @@ def register_issuer(request, *args, **kwargs):
     logger.warn(">>> Register issuer")
     try:
         issuer_manager = IssuerManager()
-        logger.info(json.dumps(request.data, indent=2))
         updated = issuer_manager.register_issuer(request, request.data)
         response = {"success": True, "result": updated}
     except IssuerException as e:
@@ -338,9 +340,21 @@ def construct_proof(request, *args, **kwargs):
     return JsonResponse({"success": True, "result": proof})
 
 
-@api_view(["GET"])
+@api_view(["Get"])
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
+@schema(
+    AutoSchema(
+        manual_fields=[
+            coreapi.Field(
+                "topic_type",
+                required=True,
+                location="query",
+                description="The topic type to retrieve for this credential. e.g., 'incorporation'",
+            )
+        ]
+    )
+)
 def verify_credential(request, *args, **kwargs):
     """  
     Constructs a proof request for a credential stored in the
@@ -359,8 +373,17 @@ def verify_credential(request, *args, **kwargs):
     """
     logger.warn(">>> Verify Credential")
     credential_id = kwargs.get("id")
+    topic_type = request.query_params.get("topic_type")
     if not credential_id:
         raise Http404
+
+    if not topic_type:
+        return JsonResponse(
+            {
+                "success": False,
+                "result": "Request must include topic_type query parameter",
+            }
+        )
 
     try:
         credential = CredentialModel.objects.get(id=credential_id)
@@ -371,9 +394,9 @@ def verify_credential(request, *args, **kwargs):
     proof_request = ProofRequest(name="the-org-book", version="1.0.0")
     proof_request.build_from_credential(credential)
 
-    proof_manager = ProofManager(
-        proof_request.dict, credential.subject.source_id
-    )
+    topic = Topic.objects.get(credentials=credential, type=topic_type)
+
+    proof_manager = ProofManager(proof_request.dict, topic.source_id)
     proof = proof_manager.construct_proof()
 
     async def verify():
