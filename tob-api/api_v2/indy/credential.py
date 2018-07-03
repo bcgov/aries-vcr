@@ -196,27 +196,17 @@ class CredentialManager(object):
             schema=schema, issuer=issuer
         )
 
-        try:
-            source_id = getattr(self.credential, credential_type.source_claim)
-        except AttributeError as error:
-            raise CredentialException(
-                "Credential does not contain the configured source_claim "
-                + "'{}'. Claims are: {}".format(
-                    credential_type.source_claim,
-                    ", ".join(self.credential.claim_attributes),
-                )
-            )
+        topic = self.populate_application_database(credential_type)
+        credential_wallet_id = eventloop.do(self.store(topic.source_id))
+        return credential_wallet_id
 
-        credential = self.populate_application_database(
-            credential_type, source_id
-        )
-        eventloop.do(self.store(source_id))
-        return credential
-
-    def populate_application_database(self, credential_type, source_id):
+    def populate_application_database(self, credential_type):
 
         # Takes our mapping rules and returns a value from credential
         def process_mapping(rules):
+            if not rules:
+                return None
+
             # Get required values from config
             try:
                 _input = rules["input"]
@@ -308,46 +298,75 @@ class CredentialManager(object):
             return mapped_value
 
         processor_config = credential_type.processor_config
-        topic_def = processor_config["topic"]
+        topic_defs = processor_config["topic"]
+
+        # We accept object or array for topic def
+        if type(topic_defs) is dict:
+            topic_defs = [topic_defs]
+
         cardinality_fields = processor_config.get("cardinality_fields") or []
+        mapping = processor_config.get("mapping") or []
 
-        parent_topic_name = topic_def.get("parent_topic_name")
-        parent_topic_source_id = topic_def.get("parent_topic_source_id")
-        parent_topic_type = topic_def.get("parent_topic_type")
+        # Issuer can register multiple topic selectors to fall back on
+        # We use the first valid topic and related parent if applicable
+        for topic_def in topic_defs:
+            parent_topic = None
+            topic = None
 
-        topic_name = topic_def.get("topic_name")
-        topic_source_id = topic_def.get("topic_source_id")
-        topic_type = topic_def.get("topic_type")
-
-        # Get parent topic if possible
-        if parent_topic_name:
-            parent_topic = Topic.objects.get(
-                credentials__names__text=parent_topic_name
+            parent_topic_name = process_mapping(topic_def.get("parent_name"))
+            parent_topic_source_id = process_mapping(
+                topic_def.get("parent_source_id")
             )
-        elif parent_topic_source_id and parent_topic_type:
-            parent_topic = Topic.objects.get(
-                source_id=parent_topic_source_id, type=parent_topic_type
-            )
+            parent_topic_type = process_mapping(topic_def.get("parent_type"))
 
-        # Get parent topic if possible
-        if topic_name:
-            topic = Topic.objects.get(credentials__names__text=topic_name)
-        elif topic_source_id and topic_type:
-            topic = Topic.objects.get(
-                source_id=topic_source_id, type=topic_type
-            )
-        else:
+            topic_name = process_mapping(topic_def.get("name"))
+            topic_source_id = process_mapping(topic_def.get("source_id"))
+            topic_type = process_mapping(topic_def.get("type"))
+
+            # Get parent topic if possible
+            if parent_topic_name:
+                parent_topic = Topic.objects.get(
+                    credentials__names__text=parent_topic_name
+                )
+            elif parent_topic_source_id and parent_topic_type:
+                parent_topic = Topic.objects.get(
+                    source_id=parent_topic_source_id, type=parent_topic_type
+                )
+
+            # Current topic if possible
+            if topic_name:
+                topic = Topic.objects.get(credentials__names__text=topic_name)
+            elif topic_source_id and topic_type:
+                try:
+                    topic = Topic.objects.get(
+                        source_id=topic_source_id, type=topic_type
+                    )
+                except Topic.DoesNotExist as error:
+                    # Create a new topic if our query comes up empty
+                    topic = Topic.objects.create(
+                        source_id=topic_source_id, type=topic_type
+                    )
+
+            # We stick with the first topic that we resolve
+            if topic:
+                break
+
+        # If we couldn't resolve _any_ topics from the configuration,
+        # we can't continue
+        if not topic:
             raise CredentialException(
-                "Issuer registration 'topic' must specify topic_type OR topic_name and topic_source_id"
+                "Issuer registration 'topic' must specify at least one valid topic name OR topic type and topic source_id"
             )
 
+        # We search for existing credentials by cardinality_fields to apply end_date
         existing_credential_query = {"topics__id": topic.id, "end_date": None}
         for cardinality_field in cardinality_fields:
             try:
-                existing_credential_query[cardinality_field] = getattr(
+                existing_credential_query["claims__name"] = cardinality_field
+                existing_credential_query["claims__value"] = getattr(
                     self.credential, cardinality_field
                 )
-            except KeyError as error:
+            except AttributeError as error:
                 raise CredentialException(
                     "Issuer configuration specifies field '{}' ".format(
                         cardinality_field
@@ -357,19 +376,20 @@ class CredentialManager(object):
                         ", ".join(list(self.credential.claim_attributes))
                     )
                 )
-
         try:
             existing_credential = CredentialModel.objects.get(
-                existing_credential_query
+                **existing_credential_query
             )
-            existing_credential.end_date = timezone.now
+            existing_credential.end_date = timezone.now()
             existing_credential.save()
         except CredentialModel.DoesNotExist as error:
             # No record to implicitly expire
             pass
 
+        # We always create a new credential model to represent the current credential
         credential = topic.credentials.create(credential_type=credential_type)
 
+        # Create and associate claims for this credential
         for claim_attribute in self.credential.claim_attributes:
             claim_value = getattr(self.credential, claim_attribute)
             Claim.objects.create(
@@ -378,15 +398,43 @@ class CredentialManager(object):
 
         # Recurisvely associate parent topic and all of it's related topics
         # (all related credentials' topics)
+        related_topic_ids = []
+
         def associate_related_topics(topic):
             credential.topics.add(topic)
-            for related_credential in topic.credentials:
-                for credential_topic in related_credential.topics:
-                    credential.topics.add(credential_topic)
-                    associate_related_topics(credential_topic)
+            for related_credential in topic.credentials.all():
+                for credential_topic in related_credential.topics.distinct():
+                    # Don't traverse known relationships
+                    if credential_topic.id not in related_topic_ids:
+                        related_topic_ids.append(credential_topic.id)
+                        credential.topics.add(credential_topic)
+                        associate_related_topics(credential_topic)
 
         if parent_topic is not None:
             associate_related_topics(parent_topic)
+
+        # Create search models using mapping from issuer config
+        for model_mapper in mapping:
+            model_name = model_mapper["model"]
+
+            # We currently support 4 model types
+            # see SUPPORTED_MODELS_MAPPING
+            try:
+                Model = SUPPORTED_MODELS_MAPPING[model_name]
+                model = Model()
+            except KeyError as error:
+                raise CredentialException(
+                    "Unsupported model type '{}'".format(model_name)
+                )
+
+            for field, field_mapper in model_mapper["fields"].items():
+                setattr(model, field, process_mapping(field_mapper))
+
+            model.credential = credential
+            model.save()
+            
+
+        return topic
 
     def _populate_application_database(self, credential_type, source_id):
         """[summary]
@@ -595,10 +643,9 @@ class CredentialManager(object):
         return credential.id
 
     async def store(self, legal_entity_id):
-
         # Store credential in wallet
         async with Holder(legal_entity_id) as holder:
-            await holder.store_cred(
+            return await holder.store_cred(
                 self.credential.json,
                 _json.dumps(self.credential_definition_metadata),
             )

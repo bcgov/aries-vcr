@@ -120,12 +120,9 @@ def store_credential(request, *args, **kwargs):
         credential, credential_request_metadata
     )
 
-    credential_id = credential_manager.process()
+    credential_wallet_id = credential_manager.process()
 
-    credential = CredentialModel.objects.get(pk=credential_id)
-    credential_serializer = CredentialSerializer(credential)
-
-    return Response({"success": True, "result": credential_serializer.data})
+    return Response({"success": True, "result": credential_wallet_id})
 
 
 @api_view(["POST"])

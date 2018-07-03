@@ -128,17 +128,22 @@ class IssuerManager:
 
             # Get or create credential type
             credential_type_description = credential_type_def.get("name")
-            credential_type_topic = credential_type_def.get("topic")
-            credential_type_processor_config = credential_type_def.get(
+            credential_type_processor_config = {}
+            credential_type_processor_config[
                 "mapping"
-            )
+            ] = credential_type_def.get("mapping")
+            credential_type_processor_config[
+                "topic"
+            ] = credential_type_def.get("topic")
+            credential_type_processor_config[
+                "cardinality_fields"
+            ] = credential_type_def.get("cardinality_fields")
 
             credential_type, _ = CredentialType.objects.get_or_create(
                 schema=schema, issuer=issuer
             )
 
             credential_type.description = credential_type_description
-            credential_type.topic = credential_type_topic
             credential_type.processor_config = credential_type_processor_config
 
             credential_type.save()
