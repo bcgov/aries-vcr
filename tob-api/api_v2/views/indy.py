@@ -1,3 +1,4 @@
+import json
 import logging
 
 import coreapi
@@ -145,112 +146,162 @@ def register_issuer(request, *args, **kwargs):
     ```json
     {
         "issuer": {
-            "did": "issuer DID",
-            "name": "issuer name (english)",
-            "abbreviation": "issuer TLA (english)",
-            "email": "administrator email",
-            "url": "url for issuer details"
+            "did": "6qnvgJtqwK44D8LFYnV5Yf", // required
+            "name": "BC Corporate Registry", // required
+            "abbreviation": "BCReg",
+            "email": "bcreg.test.issuer@example.ca",
+            "url": "http://localhost:5000"
         },
         "credential_types": [
             {
-                "schema": "schema name",
-                "version": "schema version",
-                "description": "schema display name (english)",
-                "endpoint": "url for issuing claims",
-                "topic": {
-                    "parent_source_id_claim": "parent_source_id",
-                    "parent_source_name_claim": "parent_source_name",
-                    "source_id_claim": "parent_source_id",
-                    "parent_source_id_claim": "parent_source_id"
+            "name": "Incorporation",
+            "schema": "incorporation.bc_registries",
+            "version": "1.0.31",
+            "endpoint": "http://localhost:5000/bcreg/incorporation",
+            "topic": {
+                "source_id": {
+                    "input": "corp_num",
+                    "from": "claim"
                 },
-                "mapping": [
-                    {
-                        "model": "name",
-                        "fields": {
-                            "text": {
-                                "input": "legal_name",
-                                "from": "claim"
-                            },
-                            "type": {
-                                "input": "legal_name",
-                                "from": "value"
-                            }
-                        }
+                "type": {
+                    "input": "incorporation",
+                    "from": "value"
+                }
+            },
+            "mapping": [
+                {
+                "model": "name",
+                "fields": {
+                    "text": {
+                        "input": "legal_name",
+                        "from": "claim"
                     },
-                    {
-                        "model": "address",
-                        "fields": {
-                            "addressee": {
-                                "input": "addressee",
-                                "from": "claim"
-                            },
-                            "civic_address": {
-                                "input": "address_line_1",
-                                "from": "claim"
-                            },
-                            "city": {
-                                "input": "city",
-                                "from": "claim"
-                            },
-                            "province": {
-                                "input": "province",
-                                "from": "claim"
-                            },
-                            "postal_code": {
-                                "input": "postal_code",
-                                "from": "claim"
-                            },
-                            "country": {
-                                "input": "country",
-                                "from": "claim"
-                            },
-                            "address_type": {
-                                "input": "operating",
-                                "from": "value"
-                            }
-                        }
+                    "type": {
+                        "input": "legal_name",
+                        "from": "value"
+                    }
+                }
+                }
+            ]
+            },
+            {
+            "name": "Doing Business As",
+            "schema": "doing_business_as.bc_registries",
+            "version": "1.0.31",
+            "endpoint": "http://localhost:5000/bcreg/dba",
+            "topic": {
+                "parent_source_id": {
+                    "input": "org_registry_id",
+                    "from": "claim"
+                },
+                "parent_type": {
+                    "input": "incorporation",
+                    "from": "value"
+                },
+                "source_id": {
+                    "input": "dba_corp_num",
+                    "from": "claim"
+                },
+                "type": {
+                    "input": "doing_business_as",
+                    "from": "value"
+                }
+            },
+            "mapping": [
+                {
+                "model": "name",
+                "fields": {
+                    "text": {
+                        "input": "dba_name",
+                        "from": "claim"
                     },
-                    {
-                        "model": "address",
-                        "fields": {
-                            "addressee": {
-                                "input": "addressee",
-                                "from": "claim"
-                            },
-                            "civic_address": {
-                                "input": "address_line_1",
-                                "from": "claim",
-                                "processor": [
-                                    "string_helpers.uppercase",
-                                    "string_helper.lowercase"
-                                ]
-                            },
-                            "city": {
-                                "input": "city",
-                                "from": "claim"
-                            },
-                            "province": {
-                                "input": "province",
-                                "from": "claim"
-                            },
-                            "postal_code": {
-                                "input": "postal_code",
-                                "from": "claim"
-                            },
-                            "country": {
-                                "input": "country",
-                                "from": "claim"
-                            },
-                            "address_type": {
-                                "input": "operating",
-                                "from": "value"
-                            }
+                    "type": {
+                        "input": "dba_name",
+                        "from": "value"
+                    }
+                }
+                }
+            ]
+            },
+            {
+            "name": "Corporate Address",
+            "schema": "address.bc_registries",
+            "version": "1.0.31",
+            "endpoint": "http://localhost:5000/bcreg/address",
+            "topic": [
+                {
+                    "parent_source_id": {
+                        "input": "org_registry_id",
+                        "from": "claim"
+                    },
+                    "parent_type": {
+                        "input": "incorporation",
+                        "from": "value"
+                    },
+                    "source_id": {
+                        "input": "dba_corp_num",
+                        "from": "claim"
+                    },
+                    "type": {
+                        "input": "doing_business_as",
+                        "from": "value"
+                    }
+                },
+                {
+                    "source_id": {
+                        "input": "org_registry_id",
+                        "from": "claim"
+                    },
+                    "type": {
+                        "input": "incorporation",
+                        "from": "value"
+                    }
+                }
+            ],
+            "cardinality_fields": ["addr_type"],
+            "mapping": [
+                {
+                    "model": "address",
+                    "fields": {
+                        "addressee": {
+                            "input": "addressee",
+                            "from": "claim"
+                        },
+                        "civic_address": {
+                            "input": "local_address",
+                            "from": "claim"
+                        },
+                        "city": {
+                            "input": "municipality",
+                            "from": "claim"
+                        },
+                        "province": {
+                            "input": "province",
+                            "from": "claim"
+                        },
+                        "postal_code": {
+                            "input": "postal_code",
+                            "from": "claim",
+                            "processor": ["string_helpers.uppercase"]
+                        },
+                        "country": {
+                            "input": "country",
+                            "from": "claim"
+                        },
+                        "type": {
+                            "input": "addr_type",
+                            "from": "claim"
+                        },
+                        "end_date": {
+                            "input": "end_date",
+                            "from": "claim"
                         }
                     }
-                ]
+                }
+            ]
             }
         ]
-    }
+        }
     ```
 
     returns:
@@ -306,6 +357,7 @@ def register_issuer(request, *args, **kwargs):
         issuer_manager = IssuerManager()
         updated = issuer_manager.register_issuer(request, request.data)
         response = {"success": True, "result": updated}
+        logger.info(json.dumps(response, indent=2))
     except IssuerException as e:
         logger.exception("Issuer request not accepted:")
         response = {"success": False, "result": str(e)}
