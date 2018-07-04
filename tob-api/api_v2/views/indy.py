@@ -357,7 +357,6 @@ def register_issuer(request, *args, **kwargs):
         issuer_manager = IssuerManager()
         updated = issuer_manager.register_issuer(request, request.data)
         response = {"success": True, "result": updated}
-        logger.info(json.dumps(response, indent=2))
     except IssuerException as e:
         logger.exception("Issuer request not accepted:")
         response = {"success": False, "result": str(e)}
