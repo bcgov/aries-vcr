@@ -207,7 +207,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console_handler"],
-        "level": "INFO",
+        "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
         "propagate": False,
     },
 }
