@@ -11,20 +11,22 @@ logger = logging.getLogger(__name__)
 Filter = namedtuple("Filter", "claim_name claim_value")
 
 
+class ProofException(Exception):
+    pass
+
+
 class ProofManager(object):
     """
     Class to manage creation of indy proofs.
     """
 
-    def __init__(self, proof_request: dict, source_id: str) -> None:
+    def __init__(self, proof_request: dict) -> None:
         """Constructor
         
         Arguments:
             proof_request {dict} -- valid indy proof request
-            source_id {str} -- unique identifier for subject
         """
 
-        self.source_id = source_id
         self.proof_request = proof_request
         self.filters = []
 
@@ -35,10 +37,33 @@ class ProofManager(object):
         return eventloop.do(self.construct_proof_async())
 
     async def construct_proof_async(self):
-        async with Holder(self.source_id) as holder:
-            referents, credentials_for_proof_request = await holder.get_creds(
-                json.dumps(self.proof_request)
+        async with Holder() as holder:
+
+            try:
+                credential_ids = set(
+                    [
+                        self.proof_request["requested_attributes"][attribute][
+                            "credential_id"
+                        ]
+                        for attribute in self.proof_request[
+                            "requested_attributes"
+                        ]
+                    ]
+                )
+            except KeyError as error:
+                raise ProofException(
+                    "Proof requests must specify credential_id"
+                )
+
+            credentials_for_proof_request = await holder.get_creds_by_id(
+                json.dumps(self.proof_request), credential_ids
             )
+
+            # We get creds by id for now instead of by restrictions key
+
+            # referents, credentials_for_proof_request = await holder.get_creds(
+            #     json.dumps(self.proof_request)
+            # )
 
             credentials_for_proof_request = json.loads(
                 credentials_for_proof_request
@@ -55,13 +80,20 @@ class ProofManager(object):
                 requested_credentials["requested_attributes"][claim_name][
                     "revealed"
                 ] = True
+
+                # Get the credential_id for this claim from proof request
+                (credential_id,) = [
+                    self.proof_request["requested_attributes"][attr][
+                        "credential_id"
+                    ]
+                    for attr in self.proof_request["requested_attributes"]
+                    if self.proof_request["requested_attributes"][attr]["name"]
+                    == claim_name
+                ]
+
                 requested_credentials["requested_attributes"][claim_name][
                     "cred_id"
-                ] = credentials_for_proof_request["attrs"][claim_name][0][
-                    "cred_info"
-                ][
-                    "referent"
-                ]
+                ] = credential_id
 
             proof = await holder.create_proof(
                 self.proof_request,

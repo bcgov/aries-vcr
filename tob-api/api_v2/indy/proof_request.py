@@ -102,8 +102,8 @@ class ProofRequest(object):
 
     def build_from_credential(self, credential: Credential) -> None:
         claims = credential.claims.all()
-        credential_type = credential.credential_type
-        schema = credential_type.schema
+        # credential_type = credential.credential_type
+        # schema = credential_type.schema
         for claim in claims:
             # Instead of using restrictions, we will use a credential ID.
             # This is not part of the proof request format spec but
