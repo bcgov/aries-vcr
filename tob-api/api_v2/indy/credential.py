@@ -196,11 +196,16 @@ class CredentialManager(object):
             schema=schema, issuer=issuer
         )
 
-        topic = self.populate_application_database(credential_type)
-        credential_wallet_id = eventloop.do(self.store(topic.source_id))
+        credential_wallet_id = eventloop.do(self.store())
+        self.populate_application_database(
+            credential_type, credential_wallet_id
+        )
+
         return credential_wallet_id
 
-    def populate_application_database(self, credential_type):
+    def populate_application_database(
+        self, credential_type, credential_wallet_id
+    ):
 
         # Takes our mapping rules and returns a value from credential
         def process_mapping(rules):
@@ -391,7 +396,9 @@ class CredentialManager(object):
             pass
 
         # We always create a new credential model to represent the current credential
-        credential = topic.credentials.create(credential_type=credential_type)
+        credential = topic.credentials.create(
+            credential_type=credential_type, wallet_id=credential_wallet_id
+        )
 
         # Create and associate claims for this credential
         for claim_attribute in self.credential.claim_attributes:
@@ -439,9 +446,9 @@ class CredentialManager(object):
 
         return topic
 
-    async def store(self, legal_entity_id):
+    async def store(self):
         # Store credential in wallet
-        async with Holder(legal_entity_id) as holder:
+        async with Holder() as holder:
             return await holder.store_cred(
                 self.credential.json,
                 _json.dumps(self.credential_definition_metadata),

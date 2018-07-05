@@ -12,6 +12,7 @@ class Credential(Auditable):
     credential_type = models.ForeignKey(
         CredentialType, related_name="credentials"
     )
+    wallet_id = models.TextField()
 
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(blank=True, null=True)
