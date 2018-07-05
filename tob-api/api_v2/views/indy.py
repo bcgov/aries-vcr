@@ -445,6 +445,8 @@ def verify_credential(request, *args, **kwargs):
     proof_request = ProofRequest(name="the-org-book", version="1.0.0")
     proof_request.build_from_credential(credential)
 
+    logger.info(json.dumps(proof_request.dict))
+
     topic = Topic.objects.get(credentials=credential, type=topic_type)
 
     proof_manager = ProofManager(proof_request.dict, topic.source_id)
