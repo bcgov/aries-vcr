@@ -1,3 +1,6 @@
+# TODO: Figure out how to configure haystack to register indices in
+#       ./indices/<IndexName> instead of this default file...
+
 from haystack import indexes
 from django.utils import timezone
 
@@ -12,7 +15,7 @@ class NameIndex(indexes.SearchIndex, indexes.Indexable):
 
     @staticmethod
     def prepare_autocomplete(obj):
-        return " ".join((obj.name))
+        return " ".join((obj.text))
 
     def get_model(self):
         return NameModel

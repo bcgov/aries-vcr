@@ -1,10 +1,10 @@
 from drf_haystack.serializers import (
     HaystackSerializerMixin,
-    HaystackSerializer
+    HaystackSerializer,
 )
 
 from api_v2.serializers.rest import NameSerializer
-from api_v2.indices import Name as NameIndex
+from api_v2.search_indexes import NameIndex
 
 
 class NameSearchSerializer(HaystackSerializerMixin, NameSerializer):
