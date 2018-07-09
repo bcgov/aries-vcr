@@ -1,0 +1,3 @@
+{{ object.name }}
+Created: {{ object.create_timestamp }}
+Last modified: {{ object.update_timestamp }}

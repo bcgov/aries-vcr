@@ -6,7 +6,7 @@ from api_v2.models.Schema import Schema
 
 from api.auth import create_issuer_user, verify_signature, VerifierException
 
-from api_v2.serializers import (
+from api_v2.serializers.rest import (
     IssuerSerializer,
     SchemaSerializer,
     CredentialTypeSerializer,

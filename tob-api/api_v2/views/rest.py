@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from api_v2.serializers import (
+from api_v2.serializers.rest import (
     IssuerSerializer,
     SchemaSerializer,
     CredentialTypeSerializer,
