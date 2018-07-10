@@ -6,7 +6,7 @@
 # NAME=schema-spy
 # IMAGE_NAMESPACE=devex-von-tools
 # MEMORY_LIMIT=512Mi
-APPLICATION_DOMAIN=schema-spy-devex-von-test.pathfinder.gov.bc.ca
+APPLICATION_DOMAIN=schema-spy-devex-von-bc-tob-test.pathfinder.gov.bc.ca
 # DATABASE_SERVICE_NAME=postgresql
 # DATABASE_NAME=TheOrgBook_Database
 TAG_NAME=test

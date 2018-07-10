@@ -6,7 +6,7 @@
 # NAME=solr
 # IMAGE_NAMESPACE=devex-von-tools
 TAG_NAME=prod
-APPLICATION_DOMAIN=solr-devex-von-prod.pathfinder.gov.bc.ca
+APPLICATION_DOMAIN=solr-devex-von-bc-tob-prod.pathfinder.gov.bc.ca
 # PERSISTENT_VOLUME_SIZE=1Gi
 # MOUNT_PATH=/opt/solr/server/solr/mycores
 # CORE_NAME=the_org_book
