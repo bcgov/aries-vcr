@@ -1,0 +1,28 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-api
+# JSON Template File: templates/django/django-deploy.json
+#=========================================================
+# NAME=django
+# IMAGE_NAMESPACE=devex-von-tools
+APPLICATION_DOMAIN=django-devex-von-prod.pathfinder.gov.bc.ca
+# DATABASE_SERVICE_NAME=postgresql
+# DATABASE_ENGINE=postgresql
+# DATABASE_NAME=TheOrgBook_Database
+# APP_CONFIG=
+# #DJANGO_SECRET_KEY=[\w]{50}
+DJANGO_DEBUG=False
+# SOLR_SERVICE_NAME=solr
+# SOLR_CORE_NAME=the_org_book
+TAG_NAME=prod
+# DATABASE_DEPLOYMENT_NAME=postgresql
+INDY_WALLET_SEED=the_org_book_prod_00000000000000
+LEDGER_URL=http://159.89.125.134
+# INDY_WALLET_TYPE=remote
+# INDY_WALLET_URL=http://wallet:8080/api/v1/
+# WALLET_DEPLOYMENT_NAME=wallet
+# TOB_THEME=bcgov
+# CPU_LIMIT=1
+# MEMORY_LIMIT=1.5Gi
+# CPU_REQUEST=250m
+# MEMORY_REQUEST=512Mi
