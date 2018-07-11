@@ -21,7 +21,8 @@ generatePassword() {
 
 _userName=$(generateUsername)
 _password=$(generatePassword)
+_adminPassword=$(generatePassword)
 
-SPECIALDEPLOYPARMS="-p POSTGRESQL_USER=${_userName} -p POSTGRESQL_PASSWORD=${_password}"
+SPECIALDEPLOYPARMS="-p POSTGRESQL_USER=${_userName} -p POSTGRESQL_PASSWORD=${_password} -p POSTGRESQL_ADMIN_PASSWORD=${_adminPassword}"
 echo ${SPECIALDEPLOYPARMS}
 
