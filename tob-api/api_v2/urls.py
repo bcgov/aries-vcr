@@ -21,7 +21,7 @@ router.register(r"name", rest.NameViewSet, "Name")
 router.register(r"person", rest.PersonViewSet, "Person")
 
 # Search endpoints
-searchPatterns = [url(r"^search/topics$", search.TopicSearchView.as_view())]
+searchPatterns = [url(r"^search/name$", search.NameSearchView.as_view())]
 
 # Indy endpoints
 indyPatterns = [
@@ -35,4 +35,6 @@ indyPatterns = [
     url(r"^credential/(?P<id>[0-9]+)/verify$", indy.verify_credential),
 ]
 
-urlpatterns = format_suffix_patterns(router.urls + searchPatterns + indyPatterns)
+urlpatterns = format_suffix_patterns(
+    router.urls + searchPatterns + indyPatterns
+)
