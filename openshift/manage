@@ -34,6 +34,10 @@ usage () {
       - Drop and recreate the database.
       - Rebuild search indexes.
 
+    deleteDatabase
+      - Delete and recreate the database.
+      - Useful when database credentials change.
+
     hardReset
       - Delete the persistent indy wallet information.
       - Drop and recreate the database.
@@ -127,6 +131,24 @@ resetDatabase() {
   echoWarning "You can now use the Permitify manage script to recycle the Permitify pods."  
 }
 
+deleteDatabase() {
+  _apiPodName=${1}
+  _dbPodName=${2}
+  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ]; then
+    echo -e \\n"resetDatabase; Missing parameter!"\\n
+    exit 1
+  fi
+
+  printAndAskToContinue "If you contiune the database will be deleted.  All data will be lost."
+
+  switchProject
+  exitOnError
+
+  deleteAndRecreateDatabaseWithMigrations ${_apiPodName} ${_dbPodName}
+
+  echoWarning "\nThe project's database has been deleted and recreated."
+}
+
 hardReset() {
   _apiPodName=${1}
   _dbPodName=${2}
@@ -200,6 +222,12 @@ case "${_cmd}" in
     apiPodName=${1:-django}
     dbPodName=${2:-postgresql}
     resetDatabase "${apiPodName}" "${dbPodName}"
+    ;;
+  deletedatabase)    
+    # Allow all of the other parameters to be overridden ...
+    apiPodName=${1:-django}
+    dbPodName=${2:-postgresql}
+    deleteDatabase "${apiPodName}" "${dbPodName}"
     ;;
   hardreset)
     # Allow all of the other parameters to be overridden ...
