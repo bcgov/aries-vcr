@@ -37,34 +37,6 @@
       }
     },
     {
-      "kind": "Route",
-      "apiVersion": "v1",
-      "metadata":
-      {
-        "name": "${NAME}"
-      },
-      "spec":
-      {
-        "host": "${APPLICATION_DOMAIN}",
-        "tls":
-        {
-          "insecureEdgeTerminationPolicy": "Redirect",
-          "termination": "edge"
-        },
-        "to":
-        {
-          "kind": "Service",
-          "name": "${NAME}",
-          "weight": 100
-        },
-        "port":
-        {
-          "targetPort": "8983-tcp"
-        },
-        "wildcardPolicy": "None"
-      }
-    },
-    {
       "kind": "PersistentVolumeClaim",
       "apiVersion": "v1",
       "metadata":
@@ -223,12 +195,6 @@
       "description": "The TAG name for this environment, e.g., dev, test, prod",
       "value": "dev",
       "required": true
-    },
-    {
-      "name": "APPLICATION_DOMAIN",
-      "displayName": "Application Hostname",
-      "description": "The exposed hostname that will route to the application service, if left blank a value will be defaulted.",
-      "value": ""
     },
     {
       "name": "PERSISTENT_VOLUME_SIZE",
