@@ -12,6 +12,7 @@ getApiProxyConfigSection (){
 read -r -d '' _CONFIG_SECTION << EOF
 # proxy requests to the API
         location /api/ {
+            ${2}
             proxy_pass ${1};
         }
 EOF
@@ -101,7 +102,7 @@ if [ ! -z "${API_URL}" ]; then
 	# Otherwise leave things undefined so the placeholder in the template gets
 	# replaced with a blank string.
 	# ================================================================================
-	API_CONFIG_SECTION=$(getApiProxyConfigSection ${API_URL})
+	API_CONFIG_SECTION=$(getApiProxyConfigSection ${API_URL} ${HTTP_BASIC})
 	API_CONFIG_SECTION="$(echo "${API_CONFIG_SECTION}" | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/\$/\\$/g')"
 fi
 
