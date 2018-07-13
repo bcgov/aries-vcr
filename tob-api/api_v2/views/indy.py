@@ -33,9 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
-@authentication_classes(())
-@permission_classes((permissions.AllowAny,))
-# @permission_classes((IsSignedRequest,))
+#@permission_classes((IsSignedRequest,))
 @validate(CREDENTIAL_OFFER_JSON_SCHEMA)
 def generate_credential_request(request, *args, **kwargs):
     """
@@ -83,9 +81,7 @@ def generate_credential_request(request, *args, **kwargs):
 
 
 @api_view(["POST"])
-@authentication_classes(())
-@permission_classes((permissions.AllowAny,))
-# @permission_classes((IsSignedRequest,))
+#@permission_classes((IsSignedRequest,))
 @validate(CREDENTIAL_JSON_SCHEMA)
 def store_credential(request, *args, **kwargs):
     """  
@@ -125,8 +121,7 @@ def store_credential(request, *args, **kwargs):
 
 
 @api_view(["POST"])
-@authentication_classes(())
-@permission_classes((permissions.AllowAny,))
+#@permission_classes((IsSignedRequest,))
 @validate(ISSUER_JSON_SCHEMA)
 # TODO: Clean up abstraction. IssuerManager writes only –
 #       use serializer in view to return created models?
@@ -360,8 +355,7 @@ def register_issuer(request, *args, **kwargs):
 
 
 @api_view(["POST"])
-@authentication_classes(())
-@permission_classes((permissions.AllowAny,))
+#@permission_classes((IsSignedRequest,))
 @validate(CONSTRUCT_PROOF_JSON_SCHEMA)
 def construct_proof(request, *args, **kwargs):
     """  
@@ -387,8 +381,7 @@ def construct_proof(request, *args, **kwargs):
 
 
 @api_view(["GET"])
-@authentication_classes(())
-@permission_classes((permissions.AllowAny,))
+#@permission_classes((IsSignedRequest,))
 def verify_credential(request, *args, **kwargs):
     """  
     Constructs a proof request for a credential stored in the

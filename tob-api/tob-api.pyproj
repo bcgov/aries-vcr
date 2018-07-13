@@ -5,6 +5,8 @@
     <RootNamespace>tob-api</RootNamespace>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <WebBrowserPort>56325</WebBrowserPort>
+    <Environment>
+    </Environment>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -103,6 +105,40 @@
     <Compile Include="api\views.py" />
     <Compile Include="api\views_custom.py" />
     <Compile Include="api\__init__.py" />
+    <Compile Include="api_v2\decorators\jsonschema.py" />
+    <Compile Include="api_v2\indy\credential.py" />
+    <Compile Include="api_v2\indy\credential_offer.py" />
+    <Compile Include="api_v2\indy\issuer.py" />
+    <Compile Include="api_v2\indy\proof.py" />
+    <Compile Include="api_v2\indy\proof_request.py" />
+    <Compile Include="api_v2\indy\verifier.py" />
+    <Compile Include="api_v2\indy\__init__.py" />
+    <Compile Include="api_v2\jsonschema\construct_proof.py" />
+    <Compile Include="api_v2\jsonschema\credential.py" />
+    <Compile Include="api_v2\jsonschema\credential_offer.py" />
+    <Compile Include="api_v2\jsonschema\issuer.py" />
+    <Compile Include="api_v2\migrations\0001_initial.py" />
+    <Compile Include="api_v2\migrations\__init__.py" />
+    <Compile Include="api_v2\models\Address.py" />
+    <Compile Include="api_v2\models\Claim.py" />
+    <Compile Include="api_v2\models\Contact.py" />
+    <Compile Include="api_v2\models\Credential.py" />
+    <Compile Include="api_v2\models\CredentialType.py" />
+    <Compile Include="api_v2\models\Issuer.py" />
+    <Compile Include="api_v2\models\Name.py" />
+    <Compile Include="api_v2\models\Person.py" />
+    <Compile Include="api_v2\models\Schema.py" />
+    <Compile Include="api_v2\models\Topic.py" />
+    <Compile Include="api_v2\models\__init__.py" />
+    <Compile Include="api_v2\processor\string_helpers.py" />
+    <Compile Include="api_v2\processor\__init__.py" />
+    <Compile Include="api_v2\serializers.py" />
+    <Compile Include="api_v2\swagger.py" />
+    <Compile Include="api_v2\urls.py" />
+    <Compile Include="api_v2\views\indy.py" />
+    <Compile Include="api_v2\views\rest.py" />
+    <Compile Include="api_v2\views\__init__.py" />
+    <Compile Include="api_v2\__init__.py" />
     <Compile Include="auditable\admin.py" />
     <Compile Include="auditable\apps.py" />
     <Compile Include="auditable\migrations\__init__.py" />
@@ -111,6 +147,10 @@
     <Compile Include="auditable\views.py" />
     <Compile Include="auditable\__init__.py" />
     <Compile Include="manage.py" />
+    <Compile Include="tob_api\custom_settings_bcgov.py" />
+    <Compile Include="tob_api\custom_settings_ongov.py" />
+    <Compile Include="tob_api\authentication.py" />
+    <Compile Include="tob_api\permissions.py" />
     <Compile Include="tob_api\database.py" />
     <Compile Include="tob_api\haystack.py">
       <SubType>Code</SubType>
@@ -131,6 +171,10 @@
     <Content Include="api\templates\search\indexes\api\location_text.txt" />
     <Content Include="api\templates\search\indexes\api\verifiableorg_text.txt" />
     <Content Include="api\templates\search\indexes\api\doingbusinessas_text.txt" />
+    <Content Include="api_v2\docs\images\tob.png" />
+    <Content Include="api_v2\docs\images\tob.uml" />
+    <Content Include="api_v2\processor\README.md" />
+    <Content Include="api_v2\README.md" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +189,16 @@
     <Folder Include="api\templates\search\" />
     <Folder Include="api\templates\search\indexes\" />
     <Folder Include="api\templates\search\indexes\api\" />
+    <Folder Include="api_v2\" />
+    <Folder Include="api_v2\decorators\" />
+    <Folder Include="api_v2\docs\" />
+    <Folder Include="api_v2\docs\images\" />
+    <Folder Include="api_v2\indy\" />
+    <Folder Include="api_v2\jsonschema\" />
+    <Folder Include="api_v2\migrations\" />
+    <Folder Include="api_v2\models\" />
+    <Folder Include="api_v2\processor\" />
+    <Folder Include="api_v2\views\" />
     <Folder Include="auditable\" />
     <Folder Include="auditable\migrations\" />
     <Folder Include="tob_api\" />

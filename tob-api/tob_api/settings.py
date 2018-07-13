@@ -15,7 +15,11 @@ import posixpath
 import logging.config
 import os.path
 import glob
+
 from pathlib import Path
+
+from . import permissions
+from . import authentication
 
 try:
     from . import database
@@ -65,11 +69,6 @@ INSTALLED_APPS = [
     "api_v2",
     "corsheaders",
 ]
-
-REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
-}
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 
@@ -125,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {   "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
     },
@@ -137,12 +136,23 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = "api.User"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "api.auth.DidAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    )
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
+    "DEFAULT_PERMISSION_CLASSES": permissions.defaults()
 }
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "basic": {
+            "type": "basic"
+        }        
+    },
+    "USE_SESSION_AUTH": True,
+}
+
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

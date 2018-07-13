@@ -45,7 +45,6 @@ class bcovrinGenerateClaimRequest(APIView):
     Generate a claim request from a given claim definition.
     """
     # permission_classes = (IsSignedRequest,)
-    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         """  
@@ -90,7 +89,6 @@ class bcovrinStoreClaim(APIView):
     Store a verifiable claim.
     """
     # permission_classes = (IsSignedRequest,)  # FIXME - change to IsRegisteredIssuer
-    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         """  
@@ -125,7 +123,6 @@ class bcovrinConstructProof(APIView):
     """  
     Generates a proof based on a set of filters.
     """
-    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         """  
@@ -174,7 +171,6 @@ class bcovrinVerifyCredential(APIView):
     """  
     Verifies a verifiable claim
     """
-    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, *args, **kwargs):
         """
@@ -233,7 +229,6 @@ class bcovrinRegisterIssuer(APIView):
     """
     # performs its own header verification
     authentication_classes = ()
-    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         """  
