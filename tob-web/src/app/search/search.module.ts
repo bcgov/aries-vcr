@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { LocalizeRouterModule } from 'localize-router';
 import { CredSearchClient } from './cred-search.client';
 import { CredTypeSearchClient } from './cred-type-search.client';
 import { NameSearchClient } from './name-search.client';
@@ -8,6 +11,7 @@ import { SubjectSearchClient } from './subject-search.client';
 import { SearchInputComponent } from './input.component';
 import { SearchNavComponent } from './nav.component';
 
+const ROUTES = [];
 
 @NgModule({
   declarations: [
@@ -23,6 +27,9 @@ import { SearchNavComponent } from './nav.component';
   ],
   imports: [
     CommonModule,
+    TranslateModule.forChild(),
+    RouterModule.forChild(ROUTES),
+    LocalizeRouterModule.forChild(ROUTES),
   ],
   exports: [
     SearchInputComponent,
