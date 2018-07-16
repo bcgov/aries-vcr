@@ -103,6 +103,10 @@
     
     <field name="legalName" type="text_en" indexed="true" stored="true" multiValued="false" />
     
+    <field name="location" type="text_en" indexed="true" stored="true" multiValued="false" />
+    
+    <field name="historical" type="boolean" indexed="true" stored="true" multiValued="false" />
+    
     <uniqueKey>id</uniqueKey>
 
     <!--

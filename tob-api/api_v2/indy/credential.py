@@ -32,6 +32,11 @@ SUPPORTED_MODELS_MAPPING = {
     "contact": Contact,
 }
 
+# TODO: Allow issuer to dynamically register topic types
+# Currently we only support 2 topic types. We only understand
+# a predefined relationship: incorporation --< doing_business_as
+SUPPORTED_TOPIC_TYPES = ["incorporation", "doing_business_as"]
+
 
 class CredentialException(Exception):
     pass
@@ -327,6 +332,20 @@ class CredentialManager(object):
             topic_name = process_mapping(topic_def.get("name"))
             topic_source_id = process_mapping(topic_def.get("source_id"))
             topic_type = process_mapping(topic_def.get("type"))
+
+            if topic_type not in SUPPORTED_TOPIC_TYPES:
+                raise CredentialException(
+                    "Supported topic types are 'incorporation' and 'doing_business_as' but received topic '{}'".format(
+                        topic_type
+                    )
+                )
+
+            if parent_topic_type not in SUPPORTED_TOPIC_TYPES:
+                raise CredentialException(
+                    "Supported topic types are 'incorporation' and 'doing_business_as' but received parent topic '{}'".format(
+                        parent_topic_type
+                    )
+                )
 
             # Get parent topic if possible
             if parent_topic_name:

@@ -9,3 +9,6 @@ class Topic(Auditable):
 
     class Meta:
         db_table = "topic"
+
+    def __repr__ (self):
+        return '<Topic %d %s>' % (self.id, self.type)
