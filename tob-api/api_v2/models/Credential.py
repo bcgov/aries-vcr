@@ -4,11 +4,11 @@ from django.utils import timezone
 from auditable.models import Auditable
 
 from .CredentialType import CredentialType
-from .Topic import Topic
+# from .Topic import Topic
 
 
 class Credential(Auditable):
-    topics = models.ManyToManyField(Topic, related_name="credentials")
+    topics = models.ManyToManyField('Topic', related_name="credentials")
     credential_type = models.ForeignKey(
         CredentialType, related_name="credentials"
     )
