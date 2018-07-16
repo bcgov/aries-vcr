@@ -30,13 +30,14 @@ class Command(migrate.Command):
       self.__initialize_user()
 
     def __initialize_user(self):
-      USER_ID = os.environ.get('USER_ID', 'api-user')
-      USER_PASSWORD = os.environ.get('USER_PASSWORD', 'password')
+      USER_ID = os.environ.get('USER_ID')
+      USER_PASSWORD = os.environ.get('USER_PASSWORD')
       
       # ToDo - Generate these automatically.
       # Refer to ...\theorgbook\tob-api\env\lib\site-packages\von_agent\wallet.py 
       # for information on how to get a did and verkey from a seed.
-      # For now we're not using did auth for these api accounts at the moment so it's not critical.
+      # For now we're not using did auth for these api accounts, so it's not critical.
+      # We just need these variables to create the account.
       USER_SEED = os.environ.get('USER_SEED', 'tob_api_user_0000000000000000000')
       USER_DID = os.environ.get('USER_DID', 'TQDrf89hBWzcCiLu4FLP91')
       USER_VERKEY = os.environ.get('USER_VERKEY', 'FPZwF913VqgMfXyKxdquR4i9GmSUqCnUd9RJVQAjFhRj')
@@ -53,7 +54,7 @@ class Command(migrate.Command):
 
     def __initialize_superuser(self):
       ADMIN_USER_ID = os.environ.get('ADMIN_USER_ID', 'api-admin')
-      ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin-password')
+      ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
       
       if ADMIN_USER_ID and ADMIN_PASSWORD:
         if User.objects.filter(Q(is_superuser=True)).count() <= 0:
