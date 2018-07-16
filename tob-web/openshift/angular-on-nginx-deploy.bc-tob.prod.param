@@ -12,6 +12,6 @@
 # AdditionalRealIpFromRules=
 # IpFilterRules=
 APPLICATION_DOMAIN=angular-on-nginx-devex-von-bc-tob-prod.pathfinder.gov.bc.ca
-TAG_NAME=prod
+TAG_NAME=bc-tob-prod
 # HTTP_BASIC=auth_basic 'restricted';
 # TOB_THEME=bcgov

@@ -9,5 +9,5 @@
 APPLICATION_DOMAIN=schema-spy-devex-von-bc-tob-prod.pathfinder.gov.bc.ca
 # DATABASE_SERVICE_NAME=postgresql
 # DATABASE_NAME=TheOrgBook_Database
-TAG_NAME=prod
+TAG_NAME=bc-tob-prod
 # DATABASE_DEPLOYMENT_NAME=postgresql

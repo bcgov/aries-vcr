@@ -6,7 +6,7 @@
 # NAME=wallet-db
 # IMAGE_NAMESPACE=devex-von-tools
 # SOURCE_IMAGE_NAME=postgresql
-TAG_NAME=test
+TAG_NAME=bc-tob-test
 # POSTGRESQL_DATABASE_NAME=TheOrgBook_Database
 # POSTGRESQL_USER=[a-zA-Z_][a-zA-Z0-9_]{10}
 # POSTGRESQL_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
