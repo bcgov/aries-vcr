@@ -11,7 +11,9 @@ def getGenesisData():
     """
     Get a copy of the genesis transaction file from the web.
     """
-    ledgerUrl = os.getenv('LEDGER_URL').lower()
+
+    # Use the BCovrin DEV ledger by default.
+    ledgerUrl = os.getenv('LEDGER_URL', 'http://159.89.115.24').lower()
     if not ledgerUrl:
         raise Exception('LEDGER_URL must be set.')
     logger.info('Using genesis transaction file from {}/genesis'.format(ledgerUrl))
