@@ -10,21 +10,6 @@
   },
   "objects": [
     {
-      "kind": "Secret",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "${NAME}",
-        "labels": {
-          "app": "${NAME}"
-        }
-      },
-      "data": {
-        "password": "${HTTP_BASIC_PASSWORD}",
-        "user": "${HTTP_BASIC_USERNAME}"
-      },
-      "type": "Opaque"
-    },
-    {
       "apiVersion": "v1",
       "kind": "DeploymentConfig",
       "metadata": {
@@ -103,8 +88,8 @@
                     "name": "HTTP_BASIC_USERNAME",
                     "valueFrom": {
                       "secretKeyRef": {
-                        "name": "${NAME}",
-                        "key": "user"
+                        "name": "${API_SERVICE_NAME}",
+                        "key": "api-user"
                       }
                     }
                   },
@@ -112,8 +97,8 @@
                     "name": "HTTP_BASIC_PASSWORD",
                     "valueFrom": {
                       "secretKeyRef": {
-                        "name": "${NAME}",
-                        "key": "password"
+                        "name": "${API_SERVICE_NAME}",
+                        "key": "api-password"
                       }
                     }
                   },
@@ -325,26 +310,10 @@
       "value": "dev"
     },
     {
-      "description": "For very simple HTTP Basic authentication, use %HTTP_BASIC% in your nginx config and provide the value here that you want in nginx config, e.g., auth_basic 'restricted';",
+      "description": "For very simple HTTP Basic authentication, use %HTTP_BASIC% in your nginx config and provide the value here that you want in nginx config, e.g., `auth_basic 'restricted';`",
       "displayName": "HTTP Basic Nginx Config Line",
       "name": "HTTP_BASIC",
       "value": ""
-    },
-    {
-      "description": "For very simple HTTP Basic authentication, the username of the ONE user",
-      "displayName": "HTTP Basic Username",
-      "name": "HTTP_BASIC_USERNAME",
-      "required": true,
-      "generate": "expression",
-      "from": "[a-zA-Z_][a-zA-Z0-9_]{10}"
-    },
-    {
-      "description": "For very simple HTTP Basic authentication, the password of the ONE user",
-      "displayName": "HTTP Basic Password",
-      "name": "HTTP_BASIC_PASSWORD",
-      "required": true,
-      "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
       "name": "TOB_THEME",

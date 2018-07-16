@@ -22,6 +22,11 @@ INDY_WALLET_TYPE=remote
 INDY_WALLET_URL=http://wallet:8080/api/v1/
 WALLET_DEPLOYMENT_NAME=wallet
 TOB_THEME=bcgov
+USE_AUTHENTICATION=True
+# USER_ID=[a-zA-Z_][a-zA-Z0-9_]{10}
+# USER_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# ADMIN_USER_ID=[a-zA-Z_][a-zA-Z0-9_]{10}
+# ADMIN_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 CPU_LIMIT=1
 MEMORY_LIMIT=1.5Gi
 CPU_REQUEST=250m

@@ -11,6 +11,23 @@
   },
   "objects": [
     {
+      "kind": "Secret",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}",
+        "labels": {
+          "app": "${NAME}"
+        }
+      },
+      "data": {
+        "api-user": "${USER_ID}",
+        "api-password": "${USER_PASSWORD}",
+        "admin-user": "${ADMIN_USER_ID}",
+        "admin-password": "${ADMIN_PASSWORD}"
+      },
+      "type": "Opaque"
+    },
+    {
       "kind": "Service",
       "apiVersion": "v1",
       "metadata": {
@@ -215,6 +232,46 @@
                     }
                   },
                   {
+                    "name": "USE_AUTHENTICATION",
+                    "value": "${USE_AUTHENTICATION}"
+                  },
+                  {
+                    "name": "USER_ID",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "api-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "USER_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "api-password"
+                      }
+                    }
+                  },
+                  {
+                    "name": "ADMIN_USER_ID",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "admin-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "ADMIN_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "admin-password"
+                      }
+                    }
+                  },
+                  {
                     "name": "TOB_THEME",
                     "value": "${TOB_THEME}"
                   }
@@ -384,6 +441,45 @@
       "description": "The theme to use for the tob-api.  This defines which customizations to load for the application.",
       "required": true,
       "value": "bcgov"
+    },
+    {
+      "name": "USE_AUTHENTICATION",
+      "displayName": "Use Authentication",
+      "description": "Enable or disable the use of authentication on the API.  When set to `False` the API will be unprotected.",
+      "required": true,
+      "value": "False"
+    },
+    {
+      "name": "USER_ID",
+      "displayName": "API Username",
+      "description": "Username for the account that will be used for accessing the API.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z_][a-zA-Z0-9_]{10}"
+    },
+    {
+      "name": "USER_PASSWORD",
+      "displayName": "API Password",
+      "description": "Password for the account that will be used for accessing the API.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "ADMIN_USER_ID",
+      "displayName": "API Admin Username",
+      "description": "Username for the API superuser account.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z_][a-zA-Z0-9_]{10}"
+    },
+    {
+      "name": "ADMIN_PASSWORD",
+      "displayName": "API Admin Password",
+      "description": "Password for the API superuser account.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
       "name": "CPU_LIMIT",

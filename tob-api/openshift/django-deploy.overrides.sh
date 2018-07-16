@@ -1,9 +1,9 @@
-# =========================================================
-# Special Deployment Parameters needed for Nginx Deployment
-# ---------------------------------------------------------
+# ======================================================
+# Special Deployment Parameters for basic authentication
+# ------------------------------------------------------
 # The results need to be encoded as OpenShift template
 # parameters for use with oc process.
-# =========================================================
+# ======================================================
 
 generateUsername() {
   # Generate a random username and Base64 encode the result ...
@@ -21,7 +21,9 @@ generatePassword() {
 
 _userName=$(generateUsername)
 _password=$(generatePassword)
+_adminUserName=$(generateUsername)
+_adminPassword=$(generatePassword)
 
-SPECIALDEPLOYPARMS="-p HTTP_BASIC_USERNAME=${_userName} -p HTTP_BASIC_PASSWORD=${_password}"
+SPECIALDEPLOYPARMS="-p USER_ID=${_userName} -p USER_PASSWORD=${_password} -p ADMIN_USER_ID=${_adminUserName} -p ADMIN_PASSWORD=${_adminPassword}"
 echo ${SPECIALDEPLOYPARMS}
 
