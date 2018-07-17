@@ -1,6 +1,6 @@
 <div class="row name-row" *ngFor="let topic of records">
-  {{type.id}}
-  <!-- <div class="col-sm-7">
+  <div class="col-sm-7">
+    <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
     <label>{{topic.type}}:</label>
     <a [routerLink]="['/subject', topic.id] | localize"
       class="body-link cred-link name">{{topic.names[0].text}}</a>
@@ -8,19 +8,19 @@
     <small>
       <label>
         <span translate>cred.issuer</span>:</label>
-      <a [routerLink]="['/issuer', name.issuer.id] | localize" class="body-link issuer-link">{{name.issuer.name}}</a>
+      <a [routerLink]="['/issuer', topic.names[0].issuer.id] | localize" class="body-link issuer-link">{{topic.names[0].issuer.name}}</a>
     </small>
     <br>
     <small>
       <label>
         <span translate>cred.last-updated</span>:</label>
-      <span class="claim-info date">{{name.startDate}}</span>
+      <span class="claim-info date">{{topic.names[0].last_updated}}</span>
     </small>
   </div>
   <div class="col-sm-5">
-    <small *ngIf="name.address">
-      <label class="control-label" translate>{{name.address.addressType}}</label>
-      <address [record]="name.address"></address>
+    <small *ngIf="topic.addresses.length > 0">
+      <label class="control-label" translate>{{topic.addresses[0].type}}</label>
+      <address [record]="topic.addresses[0]"></address>
     </small>
-  </div> -->
+  </div>
 </div>
