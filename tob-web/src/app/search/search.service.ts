@@ -35,7 +35,14 @@ export class SearchService {
         }, 500);
       }
 
-      if(params.method === 'topics' || params.method === 'creds' || params.method == 'credtypes') {
+      if (params.method === 'topics') {
+        this._dataService.loadFromApi(`api/v2/search/topic?name=${params.query}`).subscribe(
+          (rows: any[]) => {
+            setTimeout
+            returnResult(rows)
+          }
+        )
+      } else if(params.method === 'creds' || params.method == 'credtypes') {
         this._dataService.loadJson('assets/testdata/' + params.method + '.json', {t: new Date().getTime()})
           .subscribe((rows: any[]) => {
             setTimeout
