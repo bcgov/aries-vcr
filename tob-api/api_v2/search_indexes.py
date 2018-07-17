@@ -33,7 +33,7 @@ class TopicIndex(indexes.SearchIndex, indexes.Indexable):
                 locations.append(address.addressee)
                 locations.append(address.civic_address)
 
-        return " "
+        return " ".join((locations))
 
     # @staticmethod
     # def prepare_historical(obj):
