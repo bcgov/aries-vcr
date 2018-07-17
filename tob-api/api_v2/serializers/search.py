@@ -179,6 +179,6 @@ class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
 class TopicSearchResultsSerializer(HaystackSerializer):
     class Meta:
         # index_classes = [TopicIndex]
-        list_serializer_class = SearchResultsListSerializer
+        # list_serializer_class = SearchResultsListSerializer
         search_fields = ("name", "location")
         serializers = {TopicIndex: TopicSearchSerializer}

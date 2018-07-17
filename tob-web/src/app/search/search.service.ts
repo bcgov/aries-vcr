@@ -24,6 +24,7 @@ export class SearchService {
 
     let promise = new Promise((resolve) => {
       function returnResult(rows: any[]) {
+        console.log(rows)
         const info = new SearchInfo();
         info.pageNum = 1;
         info.firstIndex = 1;
@@ -34,7 +35,7 @@ export class SearchService {
         }, 500);
       }
 
-      if(params.method === 'names' || params.method === 'creds' || params.method == 'credtypes') {
+      if(params.method === 'topics' || params.method === 'creds' || params.method == 'credtypes') {
         this._dataService.loadJson('assets/testdata/' + params.method + '.json', {t: new Date().getTime()})
           .subscribe((rows: any[]) => {
             setTimeout

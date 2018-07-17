@@ -1,8 +1,8 @@
 import { Component, AfterViewInit, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { SearchInputComponent } from '../search/input.component';
-import { NameListComponent } from '../cred/name-list.component';
-import { NameResult } from '../data-types';
-import { NameSearchClient } from '../search/name-search.client';
+import { TopicListComponent } from '../cred/topic-list.component';
+import { TopicResult } from '../data-types';
+import { TopicSearchClient } from '../search/topic-search.client';
 import { SearchResults } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -14,15 +14,15 @@ import { Subscription } from 'rxjs/Subscription';
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('searchInput') search: SearchInputComponent;
-  @ViewChild('nameList') nameList: NameListComponent;
-  protected _results: SearchResults<NameResult>;
+  @ViewChild('topicList') nameList: TopicListComponent;
+  protected _results: SearchResults<TopicResult>;
   protected _searching = false;
   protected _sub: Subscription;
   public inited = true;
   public recordCounts = {orgs: 100, certs: 900};
 
   constructor(
-    private _searchClient: NameSearchClient,
+    private _searchClient: TopicSearchClient,
   ) {}
 
   ngOnInit() {
@@ -38,11 +38,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sub.unsubscribe();
   }
 
-  get names(): NameResult[] {
+  get topics(): TopicResult[] {
     return this._results && this._results.rows;
   }
 
-  get results(): SearchResults<NameResult> {
+  get results(): SearchResults<TopicResult> {
     return this._results;
   }
 

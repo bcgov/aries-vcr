@@ -1,8 +1,9 @@
-<div class="row name-row" *ngFor="let name of records">
-  <div class="col-sm-7">
-    <label>{{name.credential.credentialType.description}}:</label>
-    <a [routerLink]="['/subject', name.credential.subjectId] | localize"
-      class="body-link cred-link name">{{name.text}}</a>
+<div class="row name-row" *ngFor="let topic of records">
+  {{type.id}}
+  <!-- <div class="col-sm-7">
+    <label>{{topic.type}}:</label>
+    <a [routerLink]="['/subject', topic.id] | localize"
+      class="body-link cred-link name">{{topic.names[0].text}}</a>
     <br>
     <small>
       <label>
@@ -21,5 +22,5 @@
       <label class="control-label" translate>{{name.address.addressType}}</label>
       <address [record]="name.address"></address>
     </small>
-  </div>
+  </div> -->
 </div>

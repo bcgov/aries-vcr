@@ -8,6 +8,7 @@ import { CredFormComponent } from './form.component';
 import { CredListComponent } from './list.component';
 import { CredTypeListComponent } from './type-list.component';
 import { NameListComponent } from './name-list.component';
+import { TopicListComponent } from './topic-list.component';
 import { NamePanelComponent } from './name-panel.component';
 
 const ROUTES = [];
@@ -19,6 +20,7 @@ const ROUTES = [];
     CredListComponent,
     CredTypeListComponent,
     NameListComponent,
+    TopicListComponent,
     NamePanelComponent,
   ],
   providers: [
@@ -35,6 +37,7 @@ const ROUTES = [];
     CredListComponent,
     CredTypeListComponent,
     NameListComponent,
+    TopicListComponent,
     NamePanelComponent,
   ]
 })

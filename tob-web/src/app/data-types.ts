@@ -190,3 +190,15 @@ export class SubjectResult {
   }
 }
 
+
+export class TopicResult {
+  id: number;
+  source_id: string;
+  type: string;
+
+
+  load(result: any) {
+    return load_data(this, result, {});
+  }
+
+}
