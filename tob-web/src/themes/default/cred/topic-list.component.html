@@ -19,7 +19,8 @@
   </div>
   <div class="col-sm-5">
     <small *ngIf="topic.addresses.length > 0">
-      <label class="control-label" translate>{{topic.addresses[0].type}}</label>
+      <!-- TODO: Add notion of 'type' to address model? -->
+      <!-- <label class="control-label" translate>{{topic.addresses[0].type}}</label> -->
       <address [record]="topic.addresses[0]"></address>
     </small>
   </div>
