@@ -20,6 +20,9 @@ router.register(r"contact", rest.ContactViewSet, "Contact")
 router.register(r"name", rest.NameViewSet, "Name")
 router.register(r"person", rest.PersonViewSet, "Person")
 
+# Search endpoints
+searchPatterns = [url(r"^search/topic$", search.TopicSearchView.as_view())]
+
 # Indy endpoints
 indyPatterns = [
     url(r"^$", SwaggerSchemaView.as_view()),

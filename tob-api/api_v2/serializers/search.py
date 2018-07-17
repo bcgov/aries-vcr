@@ -3,18 +3,28 @@ from drf_haystack.serializers import (
     HaystackSerializer,
 )
 
+from rest_framework.serializers import ListSerializer, SerializerMethodField
+
 from django.db.models.manager import Manager
-from rest_framework.serializers import ListSerializer
+
 from collections import OrderedDict
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 from api_v2.serializers.rest import (
+    AddressSerializer,
     NameSerializer,
+    ContactSerializer,
+    PersonSerializer,
     TopicSerializer,
     CredentialSerializer,
 )
 
-from api_v2.search_indexes import NameIndex
+from api_v2.search_indexes import TopicIndex
+
+from api_v2.models.Name import Name
+from api_v2.models.Address import Address
+from api_v2.models.Person import Person
+from api_v2.models.Contact import Contact
 
 
 class SearchResultsListSerializer(ListSerializer):
@@ -44,37 +54,131 @@ class SearchResultsListSerializer(ListSerializer):
         return results
 
 
-class CustomTopicSerializer(TopicSerializer):
-    class Meta(TopicSerializer.Meta):
-        depth = 1
-        fields = ("id", "source_id", "type")
-
-
 class CustomCredentialSerializer(CredentialSerializer):
-    topics = CustomTopicSerializer(read_only=True, many=True)
+    # topics = CustomTopicSerializer(read_only=True, many=True)
 
     class Meta(CredentialSerializer.Meta):
         depth = 1
-        fields = ("id", "start_date", "end_date", "topics")
+        fields = ("id", "start_date", "end_date")
+
+
+class CustomAddressSerializer(AddressSerializer):
+    last_updated = SerializerMethodField()
+
+    class Meta(AddressSerializer.Meta):
+        fields = (
+            "id",
+            "credential",
+            "last_updated",
+            "addressee",
+            "civic_address",
+            "city",
+            "province",
+            "postal_code",
+            "country",
+        )
+
+    def get_last_updated(self, obj):
+        return obj.credential.start_date
 
 
 class CustomNameSerializer(NameSerializer):
-    credential = CustomCredentialSerializer(read_only=True)
+    last_updated = SerializerMethodField()
 
     class Meta(NameSerializer.Meta):
+        fields = ("id", "credential", "last_updated", "text", "language")
+
+    def get_last_updated(self, obj):
+        return obj.credential.start_date
+
+
+class CustomContactSerializer(ContactSerializer):
+    last_updated = SerializerMethodField()
+
+    class Meta(ContactSerializer.Meta):
+        fields = ("id", "credential", "last_updated", "text", "type")
+
+    def get_last_updated(self, obj):
+        return obj.credential.start_date
+
+
+class CustomPersonSerializer(PersonSerializer):
+    last_updated = SerializerMethodField()
+
+    class Meta(PersonSerializer.Meta):
+        fields = ("id", "credential", "last_updated", "full_name")
+
+    def get_last_updated(self, obj):
+        return obj.credential.start_date
+
+
+class CustomTopicSerializer(TopicSerializer):
+    names = SerializerMethodField()
+    addresses = SerializerMethodField()
+    contacts = SerializerMethodField()
+    people = SerializerMethodField()
+
+    class Meta(TopicSerializer.Meta):
         depth = 1
-        fields = ("id", "text", "language", "credential")
+        fields = (
+            "id",
+            "source_id",
+            "type",
+            "names",
+            "addresses",
+            "contacts",
+            "people",
+        )
+
+    def get_names(self, obj):
+        credential_ids = (
+            obj.direct_credentials()
+            .filter(end_date=None)
+            .values_list("id", flat=True)
+        )
+        names = Name.objects.filter(credential__id__in=credential_ids)
+        serializer = CustomNameSerializer(instance=names, many=True)
+        return serializer.data
+
+    def get_addresses(self, obj):
+        credential_ids = (
+            obj.direct_credentials()
+            .filter(end_date=None)
+            .values_list("id", flat=True)
+        )
+        addresses = Address.objects.filter(credential__id__in=credential_ids)
+        serializer = CustomAddressSerializer(instance=addresses, many=True)
+        return serializer.data
+
+    def get_contacts(self, obj):
+        credential_ids = (
+            obj.direct_credentials()
+            .filter(end_date=None)
+            .values_list("id", flat=True)
+        )
+        contacts = Contact.objects.filter(credential__id__in=credential_ids)
+        serializer = CustomContactSerializer(instance=contacts, many=True)
+        return serializer.data
+
+    def get_people(self, obj):
+        credential_ids = (
+            obj.direct_credentials()
+            .filter(end_date=None)
+            .values_list("id", flat=True)
+        )
+        people = Person.objects.filter(credential__id__in=credential_ids)
+        serializer = CustomPersonSerializer(instance=people, many=True)
+        return serializer.data
 
 
-class NameSearchSerializer(HaystackSerializerMixin, CustomNameSerializer):
-    class Meta(CustomNameSerializer.Meta):
+class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
+    class Meta(CustomTopicSerializer.Meta):
         pass
 
 
-class NameSearchResultsSerializer(HaystackSerializer):
+class TopicSearchResultsSerializer(HaystackSerializer):
     class Meta:
+        # index_classes = [TopicIndex]
         list_serializer_class = SearchResultsListSerializer
-        search_fields = ("name",)
-        field_aliases = {}
-        exclude = tuple()
-        serializers = {NameIndex: NameSearchSerializer}
+        search_fields = ("name", "location")
+        serializers = {TopicIndex: TopicSearchSerializer}

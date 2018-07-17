@@ -333,14 +333,20 @@ class CredentialManager(object):
             topic_source_id = process_mapping(topic_def.get("source_id"))
             topic_type = process_mapping(topic_def.get("type"))
 
-            if topic_type not in SUPPORTED_TOPIC_TYPES:
+            if (
+                topic_type is not None
+                and topic_type not in SUPPORTED_TOPIC_TYPES
+            ):
                 raise CredentialException(
                     "Supported topic types are 'incorporation' and 'doing_business_as' but received topic '{}'".format(
                         topic_type
                     )
                 )
 
-            if parent_topic_type not in SUPPORTED_TOPIC_TYPES:
+            if (
+                parent_topic_type is not None
+                and parent_topic_type not in SUPPORTED_TOPIC_TYPES
+            ):
                 raise CredentialException(
                     "Supported topic types are 'incorporation' and 'doing_business_as' but received parent topic '{}'".format(
                         parent_topic_type
