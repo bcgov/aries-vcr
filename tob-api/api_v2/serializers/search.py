@@ -83,6 +83,7 @@ class CustomAddressSerializer(AddressSerializer):
             "province",
             "postal_code",
             "country",
+            "type"
             # "issuer"
         )
 

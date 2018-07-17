@@ -12,11 +12,14 @@ export class AddressComponent {
 
   get formatted(): string {
     let addr = this.record;
+
+    console.log(addr)
+
     if(! addr) return '';
     let lines = [
-      addr.civicAddress,
+      addr.civic_address,
       this.haveCity && this.haveProvince ? addr.city + ', ' + addr.province : addr.city || addr.province,
-      this.haveCountry && this.havePostalCode ? addr.country + '&nbsp; ' + addr.postalCode : addr.country || addr.postalCode,
+      this.haveCountry && this.havePostalCode ? addr.country + '&nbsp; ' + addr.postal_code : addr.country || addr.postal_code,
     ];
     return lines.filter((line) => line !== null).join('<br>');
   }
@@ -34,7 +37,7 @@ export class AddressComponent {
   }
 
   get havePostalCode(): boolean {
-    return this.record && this.record.postalCode !== null && this.record.postalCode.trim().length > 0;
+    return this.record && this.record.postal_code !== null && this.record.postal_code.trim().length > 0;
   }
 
   ngOnInit() {

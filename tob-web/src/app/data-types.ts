@@ -22,21 +22,19 @@ function load_data<T>(
   return obj;
 }
 
+// TODO: convert response format to camelCase?
 export class AddressResult {
   id: number;
-  credential: CredResult;
   addressee: string;
-  civicAddress: string;
+  civic_address: string;
   city: string;
   province: string;
-  postalCode: string;
+  postal_code: string;
   country: string;
-  addressType: string;
-  startDate: string;
-  endDate: string;
+  address_type: string;
 
   load(result: any) {
-    return load_data(this, result, {credential: CredResult});
+    return load_data(this, result, {});
   }
 }
 
@@ -196,9 +194,12 @@ export class TopicResult {
   source_id: string;
   type: string;
 
+  address: AddressResult;
 
   load(result: any) {
-    return load_data(this, result, {});
+    return load_data(this, result, {
+      address: AddressResult,
+    });
   }
 
 }
