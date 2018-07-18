@@ -60,6 +60,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterType = filter;
     this._searchClient.clearSearch();
     this._searchClient.updateParams({filter});
+    this.search.value = '';
     return false;
   }
 
