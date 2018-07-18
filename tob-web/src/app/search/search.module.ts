@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from 'localize-router';
 import { CredSearchClient } from './cred-search.client';
-import { CredTypeSearchClient } from './cred-type-search.client';
+import { IssuerClient } from './issuer.client';
 import { NameSearchClient } from './name-search.client';
 import { TopicSearchClient } from './topic-search.client';
 import { SearchService } from './search.service';
@@ -21,7 +21,7 @@ const ROUTES = [];
   ],
   providers: [
     CredSearchClient,
-    CredTypeSearchClient,
+    IssuerClient,
     NameSearchClient,
     TopicSearchClient,
     SearchService,

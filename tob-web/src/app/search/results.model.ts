@@ -38,3 +38,24 @@ export class SearchResults<T> {
     this._rows = [...vals];
   }
 }
+
+export class SearchResult<T> {
+  public info: SearchInfo;
+  private _data: T = null;
+
+  constructor(
+    info: SearchInfo,
+    data: T
+  ) {
+    this.info = info;
+    this._data = data;
+  }
+
+  get data() : T {
+    return this._data;
+  }
+
+  set rows(data: T) {
+    this._data = data;
+  }
+}

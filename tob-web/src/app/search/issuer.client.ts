@@ -1,20 +1,20 @@
 import { Injectable, Inject } from '@angular/core';
 import { SearchClient } from './search.client';
 import { SearchService } from './search.service';
-import { CredTypeResult } from '../data-types';
+import { IssuerResult } from '../data-types';
 
 
 @Injectable()
-export class CredTypeSearchClient extends SearchClient<CredTypeResult> {
+export class IssuerClient extends SearchClient<IssuerResult> {
 
-  public method = 'credtypes';
+  public method = 'issuer';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);
   }
 
-  loadResult(result: any): CredTypeResult {
-    return (new CredTypeResult()).load(result);
+  loadResult(result: any): IssuerResult {
+    return (new IssuerResult()).load(result);
   }
 
 }

@@ -1,11 +1,12 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
-import { SearchResults } from './results.model';
+import { SearchResults, SearchResult } from './results.model';
 import { SearchService } from './search.service';
 
-
+// TODO: Make this generic TOB client?
+//      Neesd refactor
 export abstract class SearchClient<T> {
-
+  public result: SearchResult<T>;
   public results: SearchResults<T>;
   public error: any;
   public method;
@@ -46,6 +47,16 @@ export abstract class SearchClient<T> {
 
   updateParams(params: { [key: string]: any }) {
     this._params = Object.assign({}, this._params, params);
+  }
+
+  // TODO: This is weird here. We should have a better interface.
+  getById(id: number) {
+    this._loading = true;
+    this._service.getById(this.method, id)
+      .subscribe(
+        this._returnResult.bind(this),
+        this._returnError.bind(this),
+        this._searchUpdated.bind(this));
   }
 
   performSearch() {
@@ -98,8 +109,19 @@ export abstract class SearchClient<T> {
     this._loading = false;
   }
 
+  private _returnResult(result: SearchResult<any>) {
+    this.result = new SearchResult(
+      result.info,
+      this.loadSingleResult(result.data));
+    this._loading = false;
+  }
+
   loadResults(results: any[]): T[] {
     return results.map(this.loadResult, this);
+  }
+
+  loadSingleResult(result: any): T {
+    return this.loadResult(result)
   }
 
   abstract loadResult(result: any): T;

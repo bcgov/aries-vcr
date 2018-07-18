@@ -119,11 +119,11 @@ export class CredTypeResult {
 
 export class IssuerResult {
   id: number;
-  // did: string;
+  did: string;
   name: string;
+  abbreviation: string;
+  email: string;
   url: string;
-  startDate: string;
-  endDate: string;
 
   load(result: any) {
     return load_data(this, result);

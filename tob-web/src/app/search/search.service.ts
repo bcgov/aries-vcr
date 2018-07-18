@@ -7,7 +7,7 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/fromPromise';
 
 import { GeneralDataService } from 'app/general-data.service';
-import { SearchInfo, SearchResults } from './results.model';
+import { SearchInfo, SearchResults, SearchResult } from './results.model';
 
 
 @Injectable()
@@ -18,8 +18,19 @@ export class SearchService {
       private _http: HttpClient,
   ) {
   }
+  
+  getById(resource: string, id: number): Observable<SearchResult<any>> {
+    const promise = new Promise((resolve) => {
+      this._dataService.loadFromApi(`api/v2/${resource}/${id}`).subscribe(
+        (data: any) => {
+          const info = new SearchInfo();
+          resolve(new SearchResult(info, data))
+        }
+      )
+    });
+    return Observable.fromPromise(promise);
+  }
 
-  // TODO: be smarter
   performSearch(params?: { [key: string]: string }): Observable<SearchResults<any>> {
     if(! params) params = {};
 
@@ -36,6 +47,7 @@ export class SearchService {
         }, 500);
       }
 
+      // TODO: Refactor this into something better
       if (params.method === 'topics') {
         this._dataService.loadFromApi(`api/v2/search/topic?${params.filter}=${params.query}`).subscribe(
           (rows: any[]) => {
@@ -43,7 +55,14 @@ export class SearchService {
             returnResult(rows)
           }
         )
-      } else if(params.method === 'creds' || params.method == 'credtypes') {
+      } else if (params.method === 'issuer') {
+        this._dataService.loadFromApi(`api/v2/`).subscribe(
+          (rows: any[]) => {
+            setTimeout
+            returnResult(rows)
+          }
+        )
+      } else if (params.method === 'creds' || params.method == 'credtypes') {
         this._dataService.loadJson('assets/testdata/' + params.method + '.json', {t: new Date().getTime()})
           .subscribe((rows: any[]) => {
             setTimeout
