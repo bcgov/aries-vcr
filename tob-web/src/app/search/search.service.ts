@@ -19,6 +19,7 @@ export class SearchService {
   ) {
   }
 
+  // TODO: be smarter
   performSearch(params?: { [key: string]: string }): Observable<SearchResults<any>> {
     if(! params) params = {};
 
@@ -36,7 +37,7 @@ export class SearchService {
       }
 
       if (params.method === 'topics') {
-        this._dataService.loadFromApi(`api/v2/search/topic?name=${params.query}`).subscribe(
+        this._dataService.loadFromApi(`api/v2/search/topic?${params.filter}=${params.query}`).subscribe(
           (rows: any[]) => {
             setTimeout
             returnResult(rows)

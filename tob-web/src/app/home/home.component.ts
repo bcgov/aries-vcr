@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _sub: Subscription;
   public inited = true;
   public recordCounts = {orgs: 100, certs: 900};
+  public filterType = 'name';
 
   constructor(
     private _searchClient: TopicSearchClient,
@@ -53,6 +54,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _receiveStatus(loading: boolean) {
     this._results = this._searchClient.results;
     this._searching = loading;
+  }
+
+  setFilterType(filter: string) {
+    this.filterType = filter;
+    this._searchClient.clearSearch();
+    this._searchClient.updateParams({filter});
+    return false;
   }
 
   updateQuery(value: string) {
