@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { GeneralDataService } from 'app/general-data.service';
 import { ActivatedRoute } from '@angular/router';
-import { CredResult, SubjectResult } from '../data-types';
-import { CredSearchClient } from '../search/cred-search.client';
-import { SearchResults } from '../search/results.model';
+import { CredResult, TopicResult, NameResult } from '../data-types';
+import { TopicClient } from '../search/topic.client';
+import { SearchResult, SearchResults } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -14,38 +13,45 @@ import { Subscription } from 'rxjs/Subscription';
 export class SubjectFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
-  record: SubjectResult;
   error: string;
+
+  private _topic: SearchResult<TopicResult>;
+  private _topicLoading: boolean;
+
   private _creds: SearchResults<CredResult>;
   private _credsLoading: boolean;
-  private _credSub: Subscription;
+
   private _idSub: Subscription;
+  private _topicSub: Subscription;
 
   constructor(
-    private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
-    private _credSearch: CredSearchClient) { }
+    private _topicClient: TopicClient) { }
 
   ngOnInit() {
-    this._credSearch.init();
-    this._credSub = this._credSearch.subscribe(this._credsUpdate.bind(this));
     this._idSub = this._route.params.subscribe(params => {
-      this.id = +params['subjId'];
-      this._dataService.loadJson('assets/testdata/subjects.json', {t: new Date().getTime()})
-        .subscribe((result) => {
-          this.record = (new SubjectResult()).load(result[0]);
-          this.loaded = true;
-
-          this._credSearch.updateParams({subjectId: this.id});
-          this._credSearch.performSearch();
-        });
+      this.id = +params['topicId'];
+      this._topicSub = this._topicClient.subscribe(this._receiveTopic.bind(this))
+      this._topicClient.getRelatedById(this.id);
     });
   }
 
   get title(): string {
-    if(this.record && this.record.names && this.record.names.length) {
-      return this.record.names[0].text;
+    if(this._topic && this._topic.data.names && this._topic.data.names) {
+      return this._topic.data.names[0].text;
     }
+  }
+
+  get names(): NameResult[] {
+    return this._topic && this._topic.data.names;
+  }
+
+  get topic(): TopicResult {
+    return this._topic && this._topic.data;
+  }
+
+  get topicLoading(): boolean {
+    return this._topicLoading;
   }
 
   get creds(): CredResult[] {
@@ -56,13 +62,21 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
     return this._credsLoading;
   }
 
-  protected _credsUpdate(loading: boolean) {
-    this._credsLoading = loading;
-    this._creds = this._credSearch.results;
+  protected _receiveTopic(loading: boolean) {
+    console.log(this._topicClient.result)
+    this._topicLoading = loading;
+    // console.log(this.topic)
+    this._topic = this._topicClient.result;
+    this.loaded = true;
   }
 
+  // protected _credsUpdate(loading: boolean) {
+  //   this._credsLoading = loading;
+  //   this._creds = this._credSearch.results;
+  // }
+
   ngOnDestroy() {
-    this._credSub.unsubscribe();
+    this._topicSub.unsubscribe();
     this._idSub.unsubscribe();
   }
 }

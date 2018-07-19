@@ -17,7 +17,7 @@ export class NamePanelComponent {
   }
 
   get issuer(): IssuerResult {
-    return this.record ? this.record.credential.credentialType.issuer: null;
+    return this.record ? this.record.issuer: null;
   }
 
 }

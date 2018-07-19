@@ -24,9 +24,9 @@ export const routes: Routes = [
     }
   },
   {
-    path: 'subject/:subjId',
+    path: 'topic/:topicId',
     data: {
-      breadcrumb: 'subject.breadcrumb'
+      breadcrumb: 'topic.breadcrumb'
     },
     children: [
       {

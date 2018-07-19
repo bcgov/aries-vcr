@@ -31,6 +31,8 @@
     "verified": "Verified"
   },
   "issuer": {
+    "did": "did",
+    "email": "email",
     "breadcrumb": "Issuer Service",
     "cred-types": "Credential Types",
     "end-date": "Expiry Date",

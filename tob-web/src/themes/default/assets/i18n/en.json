@@ -57,6 +57,8 @@
     "title-certs": "permits and licences"
   },
   "issuer": {
+    "did": "did",
+    "email": "email",
     "breadcrumb": "Issuer Service",
     "cred-types": "Credential Types",
     "end-date": "End Date",
@@ -86,9 +88,9 @@
     "register-link": "Register your Organization",
     "title": "Recipe"
   },
-  "subject": {
-    "breadcrumb": "Subject Information",
-    "return-link": "Back to Subject"
+  "topic": {
+    "breadcrumb": "Topic Information",
+    "return-link": "Back to Topic"
   },
   "search": {
     "by-name": "Search by Name",

@@ -194,7 +194,10 @@ export class TopicResult {
   source_id: string;
   type: string;
 
-  address: AddressResult;
+  addresses: AddressResult[];
+  names: NameResult[];
+  contacts: ContactResult[];
+  people: PersonResult[];
 
   load(result: any) {
     return load_data(this, result, {

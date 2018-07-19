@@ -36,13 +36,23 @@ export class SearchService {
   getRelatedById(resource: string, id: number, childResource: string): Observable<SearchResults<any>> {
     const promise = new Promise((resolve) => {
       this._dataService.loadFromApi(`api/v2/${resource}/${id}/${childResource}`).subscribe(
-        (rows: any[]) => {
-          const info = new SearchInfo();
-          info.pageNum = 1;
-          info.firstIndex = 1;
-          info.lastIndex = rows.length;
-          info.totalCount = rows.length;
-          resolve(new SearchResults(info, rows))
+        (rows: any[] | any) => {
+
+          // Sometimes this is an array of results.
+          // Sometimes it's a single result.
+          // More weirdness – needs refactor.
+          if (rows instanceof Array) {
+            const info = new SearchInfo();
+            info.pageNum = 1;
+            info.firstIndex = 1;
+            info.lastIndex = rows.length;
+            info.totalCount = rows.length;
+            resolve(new SearchResults(info, rows))
+          } else {
+            // Single result
+            const info = new SearchInfo();
+            resolve(new SearchResult(info, rows))
+          }
         }
       )
     });

@@ -66,12 +66,12 @@ export abstract class SearchClient<T> {
         this._returnError.bind(this),
         this._searchUpdated.bind(this));
   }
-  
+
   getRelatedById(id: number) {
     this._loading = true;
     this._service.getRelatedById(this.resource, id, this.childResource)
       .subscribe(
-        this._returnResults.bind(this),
+        this._determineAndReturnResults.bind(this),
         this._returnError.bind(this),
         this._searchUpdated.bind(this));
   }
@@ -119,6 +119,22 @@ export abstract class SearchClient<T> {
   }
 
   previousPage() {
+  }
+
+  private _isSearchResult(obj: any): obj is SearchResult<any> {
+    return obj.data !== undefined;
+  }
+
+  private _isSearchResults(obj: any): obj is SearchResults<any> {
+    return obj.rows !== undefined;
+  }
+
+  private _determineAndReturnResults(results: SearchResults<any> | SearchResult<any>) {
+    if (this._isSearchResults(results)) {
+      this._returnResults(results)
+    } else if (this._isSearchResult(results)) {
+      this._returnResult(results)
+    }
   }
 
   private _returnResults(results: SearchResults<any>) {
