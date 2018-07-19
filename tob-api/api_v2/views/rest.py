@@ -1,6 +1,10 @@
 from django.shortcuts import get_object_or_404
+
+from rest_framework.decorators import detail_route
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
+
+
 from api_v2.serializers.rest import (
     IssuerSerializer,
     SchemaSerializer,
@@ -35,6 +39,12 @@ class IssuerViewSet(ViewSet):
         queryset = Issuer.objects.all()
         item = get_object_or_404(queryset, pk=pk)
         serializer = IssuerSerializer(item)
+        return Response(serializer.data)
+
+    @detail_route(url_path='credentialtype')
+    def list_credential_types(self, request, pk=None):
+        queryset = CredentialType.objects.filter(issuer__id=pk)
+        serializer = CredentialTypeSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
