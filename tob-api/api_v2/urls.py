@@ -23,6 +23,9 @@ router.register(r"person", rest.PersonViewSet, "Person")
 # Search endpoints
 searchPatterns = [url(r"^search/topic$", search.TopicSearchView.as_view())]
 
+# Misc endpoints
+searchPatterns = [url(r"^quickload$", indy.quickload)]
+
 # Indy endpoints
 indyPatterns = [
     url(r"^$", SwaggerSchemaView.as_view()),
