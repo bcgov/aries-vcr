@@ -10,6 +10,8 @@ import { GeneralDataService } from 'app/general-data.service';
 import { SearchInfo, SearchResults, SearchResult } from './results.model';
 
 
+// TODO: Refactor this into a more generic APIservice with
+//       search being one of its capabilities.
 @Injectable()
 export class SearchService {
 
@@ -25,6 +27,22 @@ export class SearchService {
         (data: any) => {
           const info = new SearchInfo();
           resolve(new SearchResult(info, data))
+        }
+      )
+    });
+    return Observable.fromPromise(promise);
+  }
+
+  getRelatedById(resource: string, id: number, childResource: string): Observable<SearchResults<any>> {
+    const promise = new Promise((resolve) => {
+      this._dataService.loadFromApi(`api/v2/${resource}/${id}/${childResource}`).subscribe(
+        (rows: any[]) => {
+          const info = new SearchInfo();
+          info.pageNum = 1;
+          info.firstIndex = 1;
+          info.lastIndex = rows.length;
+          info.totalCount = rows.length;
+          resolve(new SearchResults(info, rows))
         }
       )
     });

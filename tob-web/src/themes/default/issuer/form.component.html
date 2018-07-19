@@ -48,12 +48,12 @@
   <div class="row mrgn-tp-md mrgn-bttm-lg issuer-creds" *ngIf="loaded">
     <div class="col-sm-12">
       <label class="control-label"><span class="field-name" translate>issuer.cred-types</span></label>
-      <div class="row loading" *ngIf="credTypesLoading">
+      <div class="row loading" *ngIf="!credentialTypesLoaded">
         <div class="col-sm-12 page-load">
           <div class="loading-indicator"></div>
         </div>
       </div>
-      <cred-type-list [records]="credTypes" *ngIf="! credTypesLoading"></cred-type-list>
+      <cred-type-list [records]="credentialTypeRecords" *ngIf="credentialTypesLoaded"></cred-type-list>
     </div>
   </div>
 </section>

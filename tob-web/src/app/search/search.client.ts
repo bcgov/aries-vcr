@@ -3,14 +3,17 @@ import { Subscription } from 'rxjs/Subscription';
 import { SearchResults, SearchResult } from './results.model';
 import { SearchService } from './search.service';
 
-// TODO: Make this generic TOB client?
-//      Neesd refactor
+// TODO: This class needs to be refactored into a more general TOB client.
+//       For now, we shove in some non-search things to save time.
+
 export abstract class SearchClient<T> {
   public result: SearchResult<T>;
   public results: SearchResults<T>;
   public error: any;
-  public method;
+  public resource;
+  public childResource;
   public filter;
+
 
   private _loading: boolean = false;
   private _params: { [key: string]: any } = {};
@@ -50,12 +53,25 @@ export abstract class SearchClient<T> {
     this._params = Object.assign({}, this._params, params);
   }
 
-  // TODO: This is weird here. We should have a better interface.
+  // TODO: These non-search functions are weird here. We should have a better interface.
+  getAll() {
+    throw new Error('Not Implemented')
+  }
+
   getById(id: number) {
     this._loading = true;
-    this._service.getById(this.method, id)
+    this._service.getById(this.resource, id)
       .subscribe(
         this._returnResult.bind(this),
+        this._returnError.bind(this),
+        this._searchUpdated.bind(this));
+  }
+  
+  getRelatedById(id: number) {
+    this._loading = true;
+    this._service.getRelatedById(this.resource, id, this.childResource)
+      .subscribe(
+        this._returnResults.bind(this),
         this._returnError.bind(this),
         this._searchUpdated.bind(this));
   }
@@ -85,7 +101,8 @@ export abstract class SearchClient<T> {
 
   get searchParams(): any {
     let p = Object.assign({}, this._params);
-    if(! p.method && this.method) p.method = this.method;
+    if(! p.resource && this.resource) p.resource = this.resource;
+    if(! p.childResource && this.childResource) p.childResource = this.childResource;
     if(! p.filter && this.filter) p.filter = this.filter;
     return p;
   }

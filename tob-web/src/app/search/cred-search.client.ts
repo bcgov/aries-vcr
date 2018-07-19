@@ -7,7 +7,7 @@ import { CredResult } from '../data-types';
 @Injectable()
 export class CredSearchClient extends SearchClient<CredResult> {
 
-  public method = 'creds';
+  public resource = 'creds';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);

@@ -7,7 +7,7 @@ import { NameResult } from '../data-types';
 @Injectable()
 export class NameSearchClient extends SearchClient<NameResult> {
 
-  public method = 'names';
+  public resource = 'names';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);

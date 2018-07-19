@@ -7,7 +7,7 @@ import { IssuerResult } from '../data-types';
 @Injectable()
 export class IssuerClient extends SearchClient<IssuerResult> {
 
-  public method = 'issuer';
+  public resource = 'issuer';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);

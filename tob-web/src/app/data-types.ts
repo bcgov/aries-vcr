@@ -203,3 +203,13 @@ export class TopicResult {
   }
 
 }
+
+export class CredentialTypeResult {
+  id: number;
+  description: string;
+  create_timestamp: string;
+
+  load(result: any) {
+    return load_data(this, result, {});
+  }
+}

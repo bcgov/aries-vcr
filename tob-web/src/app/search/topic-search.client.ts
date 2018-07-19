@@ -7,7 +7,7 @@ import { TopicResult } from '../data-types';
 @Injectable()
 export class TopicSearchClient extends SearchClient<TopicResult> {
 
-  public method = 'topics';
+  public resource = 'topics';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);
