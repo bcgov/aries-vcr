@@ -13,8 +13,6 @@ export class AddressComponent {
   get formatted(): string {
     let addr = this.record;
 
-    console.log(addr)
-
     if(! addr) return '';
     let lines = [
       addr.civic_address,

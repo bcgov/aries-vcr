@@ -10,6 +10,7 @@ export abstract class SearchClient<T> {
   public results: SearchResults<T>;
   public error: any;
   public method;
+  public filter;
 
   private _loading: boolean = false;
   private _params: { [key: string]: any } = {};
@@ -68,6 +69,7 @@ export abstract class SearchClient<T> {
     this.cancelSearch();
     this._loading = true;
     this._searchUpdated();
+    console.log(this.searchParams)
     this._search = this._service.performSearch(this.searchParams)
       .subscribe(
         this._returnResults.bind(this),
@@ -84,6 +86,7 @@ export abstract class SearchClient<T> {
   get searchParams(): any {
     let p = Object.assign({}, this._params);
     if(! p.method && this.method) p.method = this.method;
+    if(! p.filter && this.filter) p.filter = this.filter;
     return p;
   }
 

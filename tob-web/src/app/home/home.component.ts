@@ -59,14 +59,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   setFilterType(filter: string) {
     this.filterType = filter;
     this._searchClient.clearSearch();
-    this._searchClient.updateParams({filter});
     this.search.value = '';
     return false;
   }
 
   updateQuery(value: string) {
     if(value !== null && value.length) {
-      this._searchClient.updateParams({query: value});
+      this._searchClient.updateParams({query: value, filter: this.filterType});
       this._searchClient.performSearch();
     } else {
       this._searchClient.clearSearch();

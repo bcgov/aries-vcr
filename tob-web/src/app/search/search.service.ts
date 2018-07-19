@@ -36,7 +36,6 @@ export class SearchService {
 
     let promise = new Promise((resolve) => {
       function returnResult(rows: any[]) {
-        console.log(rows)
         const info = new SearchInfo();
         info.pageNum = 1;
         info.firstIndex = 1;
