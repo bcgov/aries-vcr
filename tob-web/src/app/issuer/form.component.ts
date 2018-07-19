@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class IssuerFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
-  record: SearchResult<IssuerResult>;
+  record: IssuerResult;
   error: string;
   private _credTypes: SearchResult<CredTypeResult>;
   private _credTypesLoading: boolean = false;
@@ -49,6 +49,11 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
     this._issuerSub.unsubscribe();
   }
 
+  get issuerLoading(): boolean {
+    // return this._credTypesLoading;
+    return true;
+  }
+
   get credTypesLoading(): boolean {
     // return this._credTypesLoading;
     return true;
@@ -60,9 +65,11 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
   // }
 
   protected _receiveIssuer(loading: boolean) {
+    if (!this._issuerClient.result) return;
+    console.log(this._issuerClient.result.data)
+    this.record = this._issuerClient.result.data;
+    this.loaded = true;
     
-    this.record = this._issuerClient.result;
-    console.log(this.record)
   }
 
 }
