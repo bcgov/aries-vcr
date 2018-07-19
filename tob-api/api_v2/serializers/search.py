@@ -1,3 +1,5 @@
+# TODO: migrate most of these serializers to a UI specific serializer module
+
 from drf_haystack.serializers import (
     HaystackSerializerMixin,
     HaystackSerializer,

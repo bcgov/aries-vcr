@@ -4,7 +4,6 @@ from rest_framework.decorators import detail_route
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
-
 from api_v2.serializers.rest import (
     IssuerSerializer,
     SchemaSerializer,
@@ -17,6 +16,9 @@ from api_v2.serializers.rest import (
     NameSerializer,
     PersonSerializer,
 )
+
+from api_v2.serializers.search import CustomTopicSerializer
+
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.CredentialType import CredentialType
@@ -44,6 +46,7 @@ class IssuerViewSet(ViewSet):
     @detail_route(url_path='credentialtype')
     def list_credential_types(self, request, pk=None):
         queryset = CredentialType.objects.filter(issuer__id=pk)
+        get_object_or_404(queryset, pk=pk)
         serializer = CredentialTypeSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -84,6 +87,21 @@ class TopicViewSet(ViewSet):
         queryset = Topic.objects.all()
         item = get_object_or_404(queryset, pk=pk)
         serializer = TopicSerializer(item)
+        return Response(serializer.data)
+
+    @detail_route(url_path='formatted')
+    def retrieve_formatted(self, request, pk=None):
+        queryset = Topic.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = CustomTopicSerializer(item)
+        return Response(serializer.data)
+
+    @detail_route(url_path='credential')
+    def list_credentials(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.direct_credentials()
+        serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
