@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { SearchInputComponent } from '../search/input.component';
+import { GeneralDataService } from 'app/general-data.service';
 import { TopicListComponent } from '../cred/topic-list.component';
 import { TopicResult } from '../data-types';
 import { TopicSearchClient } from '../search/topic-search.client';
@@ -19,16 +20,21 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _searching = false;
   protected _sub: Subscription;
   public inited = true;
-  public recordCounts = {orgs: 100, certs: 900};
+  public recordCounts = {orgs: 0, certs: 0};
   public filterType = 'name';
 
   constructor(
     private _searchClient: TopicSearchClient,
+    private _dataService: GeneralDataService
   ) {}
 
   ngOnInit() {
     this._searchClient.init();
     this._sub = this._searchClient.subscribe(this._receiveStatus.bind(this));
+    this._dataService.quickLoad().then(() => {
+      this.recordCounts.orgs = this._dataService.getRecordCount('topic')
+      this.recordCounts.certs = this._dataService.getRecordCount('credential')
+    })
   }
 
   ngAfterViewInit() {

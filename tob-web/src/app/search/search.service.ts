@@ -52,6 +52,8 @@ export class SearchService {
   performSearch(params?: { [key: string]: string }): Observable<SearchResults<any>> {
     if(! params) params = {};
 
+    console.log(params)
+
     let promise = new Promise((resolve) => {
       function returnResult(rows: any[]) {
         const info = new SearchInfo();
@@ -65,22 +67,22 @@ export class SearchService {
       }
 
       // TODO: Refactor this into something better
-      if (params.method === 'topics') {
+      if (params.resource === 'topics') {
         this._dataService.loadFromApi(`api/v2/search/topic?${params.filter}=${params.query}`).subscribe(
           (rows: any[]) => {
             setTimeout
             returnResult(rows)
           }
         )
-      } else if (params.method === 'issuer') {
+      } else if (params.resource === 'issuer') {
         this._dataService.loadFromApi(`api/v2/`).subscribe(
           (rows: any[]) => {
             setTimeout
             returnResult(rows)
           }
         )
-      } else if (params.method === 'creds' || params.method == 'credtypes') {
-        this._dataService.loadJson('assets/testdata/' + params.method + '.json', {t: new Date().getTime()})
+      } else if (params.resource === 'creds' || params.resource == 'credtypes') {
+        this._dataService.loadJson('assets/testdata/' + params.resource + '.json', {t: new Date().getTime()})
           .subscribe((rows: any[]) => {
             setTimeout
             returnResult(rows);

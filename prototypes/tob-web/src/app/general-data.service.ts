@@ -50,7 +50,7 @@ export class GeneralDataService {
         resolve(0);
         return;
       }
-      let req = this._http.get(baseurl + 'quickload')
+      let req = this._http.get(baseurl + 'api/v2/quickload')
         .catch(error => {
           console.error(error);
           resolve(1);

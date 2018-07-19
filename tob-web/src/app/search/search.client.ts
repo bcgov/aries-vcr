@@ -85,7 +85,6 @@ export abstract class SearchClient<T> {
     this.cancelSearch();
     this._loading = true;
     this._searchUpdated();
-    console.log(this.searchParams)
     this._search = this._service.performSearch(this.searchParams)
       .subscribe(
         this._returnResults.bind(this),
