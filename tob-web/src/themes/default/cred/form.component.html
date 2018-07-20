@@ -13,17 +13,18 @@
 
   <div class="row" *ngIf="loaded">
     <div class="col-md-7 col-sm-6">
-      <h1 class="cred-title">{{record.credentialType.description}}</h1>
+      <h1 class="cred-title">{{record.credential_type.description}}</h1>
 
-      <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'subject.return-link' | translate}}</a>
+      <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
+        <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
 
       <div class="cred-info">
-        <div class="row form-group" *ngIf="record.haveNames">
+        <div class="row form-group" *ngIf="names.length">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.names</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let name of record.names">
+                <li *ngFor="let name of names">
                   <label translate>{{name.type}}</label>
                   <span class="claim-info name">{{name.text}}</span>
                 </li>
@@ -31,12 +32,12 @@
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="record.haveContacts">
+        <div class="row form-group" *ngIf="contacts.length">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.contact</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let contact of record.contacts">
+                <li *ngFor="let contact of contacts">
                   <label translate>{{contact.type}}</label>
                   <span class="claim-info {{contact.typeClass}}">{{contact.text}}</span>
                 </li>
@@ -44,26 +45,26 @@
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="record.havePeople">
+        <div class="row form-group" *ngIf="people.length">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.people</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let person of record.people">
+                <li *ngFor="let person of people">
                   <label translate>{{person.type}}</label>
-                  <span class="claim-info person">{{person.fullName}}</span>
+                  <span class="claim-info person">{{person.full_name}}</span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="record.haveAddresses">
+        <div class="row form-group" *ngIf="addresses.length">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.addresses</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let address of record.addresses">
-                  <label translate>{{address.addressType}}</label>
+                <li *ngFor="let address of addresses">
+                  <label translate>{{address.type}}</label>
                   <address [record]="address"></address>
                 </li>
               </ul>
@@ -90,16 +91,20 @@
             <div class="col-sm-12">
               <label class="control-label" translate>cred.start-date</label>
               <div class="form-field">
-                <span class="claim-info date" *ngIf="record.startDate">{{record.startDate}}</span>
+                <span class="claim-info date" *ngIf="record.start_date">{{record.start_date}}</span>
               </div>
             </div>
           </div>
           <div class="row form-group mrgn-tp-lg">
             <div class="col-sm-6">
-              <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)"><span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
+              <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)">
+                <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
             </div>
             <div class="col-sm-6 mrgn-tp-sm">
-              <a class="body-link verify-help" href="#"><span class="fa fa-question-circle"></span> <span translate>cred.whats-this-link</span></a>
+              <a class="body-link verify-help" href="#">
+                <span class="fa fa-question-circle"></span>
+                <span translate>cred.whats-this-link</span>
+              </a>
             </div>
           </div>
           <div class="row cred-verify" *ngIf="verifyResult || verifying">

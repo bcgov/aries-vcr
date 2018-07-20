@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GeneralDataService } from 'app/general-data.service';
 import { ActivatedRoute } from '@angular/router';
-import { CredResult, IssuerResult, NameResult } from '../data-types';
+import { CredResult, IssuerResult, NameResult, PersonResult, ContactResult, AddressResult, CredentialResult } from '../data-types';
 import { CredentialClient } from '../search/cred.client';
-import { SearchResults } from '../search/results.model';
+import { SearchResult } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -16,11 +16,13 @@ import { Subscription } from 'rxjs/Subscription';
 export class CredFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
-  record: CredResult;
+  // record: CredResult;
   error: string;
   verifyStatus: string;
   verifyResult: any;
   verifying: boolean = false;
+
+  private _cred: SearchResult<CredentialResult>;
 
   private _idSub: Subscription;
   private _credSub: Subscription;
@@ -48,8 +50,35 @@ export class CredFormComponent implements OnInit, OnDestroy {
   //   return this.record && this.record.credentialType && this.record.credentialType.issuer;
   // }
 
+
+  get record(): CredentialResult {
+    return this._cred && this._cred.data;
+  }
+
+  get people(): PersonResult[] {
+    return this.record && this.record.people && this.record.people.length ? this.record.people : [];
+  }
+
+  get contacts(): ContactResult[] {
+    return this.record && this.record.contacts && this.record.contacts.length ? this.record.contacts : [];
+  }
+
+  get addresses(): AddressResult[] {
+    return this.record && this.record.addresses && this.record.addresses.length ? this.record.addresses : [];
+  }
+
+  get names(): NameResult[] {
+    return this.record && this.record.names && this.record.names.length ? this.record.names : [];
+  }
+
+  get issuer(): IssuerResult {
+    return this.record && this.record.issuer ? this.record.issuer : null;
+  }
+
   protected _receiveCred(loading: boolean) {
     console.log(this._credClient.result)
+    this._cred = this._credClient.result;
+    if (this._cred) this.loaded = true;
   }
 
   showVerify() {

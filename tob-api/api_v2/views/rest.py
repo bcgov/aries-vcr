@@ -85,7 +85,18 @@ class ExpandedCredentialSerializer(CredentialSerializer):
     issuer = SerializerMethodField()
 
     class Meta(CredentialSerializer.Meta):
-        fields = ("id", "start_date", "end_date", "credential_type", "issuer")
+        depth = 1
+        fields = (
+            "id",
+            "start_date",
+            "end_date",
+            "credential_type",
+            "issuer",
+            "addresses",
+            "names",
+            "contacts",
+            "people",
+        )
 
     def get_credential_type(self, obj):
         qs = obj.credential_type
@@ -178,6 +189,13 @@ class CredentialViewSet(ViewSet):
         queryset = Credential.objects.all()
         item = get_object_or_404(queryset, pk=pk)
         serializer = CredentialSerializer(item)
+        return Response(serializer.data)
+
+    @detail_route(url_path="formatted")
+    def retrieve_formatted(self, request, pk=None):
+        queryset = Credential.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = ExpandedCredentialSerializer(item)
         return Response(serializer.data)
 
     @list_route(url_path="active")

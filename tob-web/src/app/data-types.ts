@@ -62,14 +62,24 @@ export class ContactResult {
 export class CredentialResult {
   id: number;
   credential_type: CredTypeResult;
-  issuer_result: IssuerResult;
+  issuer: IssuerResult;
   start_date: string;
   end_date: string;
+
+  addresses: AddressResult[];
+  contacts: ContactResult[];
+  names: NameResult[];
+  people: PersonResult[];
 
   load(result: any) {
     return load_data(this, result, {
       credential_type: CredTypeResult,
-      issuer_result: IssuerResult,
+      issuer: IssuerResult,
+    }, {
+      addresses: AddressResult,
+      contacts: ContactResult,
+      names: NameResult,
+      people: PersonResult,
     });
   }
 }
