@@ -1,13 +1,13 @@
 {
     "OntarioReg": [
         {
-            "address_line_1": "738 Silver St",
+            "address_line_1": "986 OUELLETTE AVENUE",
             "address_line_2": "",
-            "addressee": "Jonathan McConville",
-            "city": "Haileybury",
+            "addressee": "",
+            "city": "WINDSOR",
             "country": "CA",
-            "legal_name": "McConville Dive",
-            "postal_code": "P0J 1K0",
+            "legal_name": "THE BORDER MASONIC TEMPLE ASSOCIATION",
+            "postal_code": "N9A 1C6",
             "province": "ON",
             "schema": "incorporation.onbis"
         }

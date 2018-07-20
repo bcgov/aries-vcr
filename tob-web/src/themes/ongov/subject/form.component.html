@@ -1,0 +1,45 @@
+<section id="subject-form">
+  <div class="row" *ngIf="error">
+    <div class="col-sm-12">
+      {{error}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!loaded && !error">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="loaded">
+    <div class="col-sm-12">
+
+      <a [routerLink]="'/home' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
+
+    </div>
+
+  </div>
+  <div class="row" *ngIf="loaded">
+    <div class="panel creds-panel">
+      <div class="panel-heading" translate >subject.top-panel-title</div>
+
+      <div class="row">
+        <div class="col-sm-12 name-info">
+          <name-panel *ngFor="let name of record.names" [record]="name"></name-panel>
+        </div>
+      </div>
+        
+      
+
+
+            <div class="disclaimer" translate>
+                <b translate>subject.note</b>
+                subject.disclaimer
+                <a href='' style="text-decoration: underline;" translate >subject.click-here</a>
+            </div>
+     
+    </div>
+  </div>
+
+
+</section>

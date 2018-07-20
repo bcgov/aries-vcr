@@ -1,0 +1,63 @@
+<section id="home">
+
+  <div class="row mrgn-tp-lg" *ngIf="!inited">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <h1 class="home-title text-left" translate *ngIf="inited">home.title</h1>
+
+  <div class="row" *ngIf="inited">
+    <div class="col-sm-12">
+
+      <div class="text-left">
+        <p translate *ngIf="inited">home.message</p>
+        <div class="search-outer">
+          <div class="search-inner">
+            <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
+          </div>
+        </div>
+      </div>
+
+      <div class="row results mrgn-tp-lg" *ngIf="results">
+        <!-- div class="col-sm-3 facets">
+          <label class="control-label">Refine search</label>
+          <div class="facet">
+            <label class="control-label">Status</label>
+            <ul>
+              <li><strong>Current</strong></li>
+              <li><a href="#">Historical</a></li>
+            </ul>
+          </div>
+          <div class="facet">
+            <label class="control-label">Issuers</label>
+            <ul>
+              <li><a href="#">BC Registries</a></li>
+            </ul>
+          </div>
+          <div class="facet">
+            <label class="control-label">Credential Types</label>
+            <ul>
+              <li><a href="#">Incorporation</a></li>
+              <li><a href="#">Doing Business As</a></li>
+            </ul>
+          </div>
+          <div class="facet">
+            <label class="control-label">Year</label>
+            <ul>
+              <li><a href="#">2018</a></li>
+            </ul>
+          </div>
+        </div -->
+
+        <div class="col-sm-10 col-sm-offset-1 rows">
+          <label class="control-label" translate *ngIf="inited">search.results-title</label>
+          <name-list [records]="names"></name-list>
+          <search-nav [info]="results && results.info"></search-nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

@@ -1,13 +1,13 @@
 {
     "OntarioReg": [
         {
-            "address_line_1": "2305 Tycos Dr",
+            "address_line_1": "1205 EXMOUTH STREET",
             "address_line_2": "",
-            "addressee": "Paul Hildreth",
-            "city": "Toronto",
+            "addressee": "",
+            "city": "SARNIA",
             "country": "CA",
-            "legal_name": "Hildreth Diner",
-            "postal_code": "M5T 1T4",
+            "legal_name": "SOUTHWEST REGIONAL CREDIT UNION LTD.",
+            "postal_code": "N7S 1W7",
             "province": "ON",
             "schema": "incorporation.onbis"
         }

@@ -1,13 +1,13 @@
 {
     "OntarioReg": [
         {
-            "address_line_1": "3988 Davis Drive",
+            "address_line_1": "333 BAY STREET",
             "address_line_2": "",
-            "addressee": "OntarioRegina Etheredge",
-            "city": "Welland",
+            "addressee": "",
+            "city": "TORONTO",
             "country": "CA",
-            "legal_name": "Etheredge Luncheon",
-            "postal_code": "L3B 3Z6",
+            "legal_name": "CANADIAN MILLERS' MUTUAL INSURANCE COMPANY",
+            "postal_code": "M5H 2S5",
             "province": "ON",
             "schema": "incorporation.onbis"
         }

@@ -2,12 +2,13 @@ import {
   Component, AfterViewInit, ElementRef, EventEmitter,
   Input, Output, Renderer2, ViewChild } from '@angular/core';
 
-
 @Component({
   selector: 'search-input',
   templateUrl: '../../themes/_active/search/input.component.html',
   styleUrls: ['../../themes/_active/search/input.component.scss']
 })
+
+
 export class SearchInputComponent implements AfterViewInit {
 
   @ViewChild('queryInput') private _input : ElementRef;
