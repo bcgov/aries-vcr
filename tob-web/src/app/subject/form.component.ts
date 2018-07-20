@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CredResult, TopicResult, NameResult } from '../data-types';
+import { CredResult, TopicResult, NameResult, CredentialResult } from '../data-types';
 import { TopicClient } from '../search/topic.client';
+import { TopicCredClient } from '../search/topic-cred.client';
 import { SearchResult, SearchResults } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -18,21 +19,26 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
   private _topic: SearchResult<TopicResult>;
   private _topicLoading: boolean;
 
-  private _creds: SearchResults<CredResult>;
+  private _creds: SearchResults<CredentialResult>;
   private _credsLoading: boolean;
 
   private _idSub: Subscription;
   private _topicSub: Subscription;
+  private _topicCredsSub: Subscription;
 
   constructor(
     private _route: ActivatedRoute,
-    private _topicClient: TopicClient) { }
+    private _topicClient: TopicClient,
+    private _topicCredClient: TopicCredClient) { }
 
   ngOnInit() {
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['topicId'];
       this._topicSub = this._topicClient.subscribe(this._receiveTopic.bind(this))
       this._topicClient.getRelatedById(this.id);
+
+      this._topicCredsSub = this._topicCredClient.subscribe(this._receiveCreds.bind(this))
+      this._topicCredClient.getRelatedById(this.id);
     });
   }
 
@@ -54,7 +60,7 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
     return this._topicLoading;
   }
 
-  get creds(): CredResult[] {
+  get creds(): CredentialResult[] {
     return this._creds && this._creds.rows;
   }
 
@@ -63,11 +69,15 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
   }
 
   protected _receiveTopic(loading: boolean) {
-    console.log(this._topicClient.result)
     this._topicLoading = loading;
     // console.log(this.topic)
     this._topic = this._topicClient.result;
     this.loaded = true;
+  }
+
+  protected _receiveCreds(loading: boolean) {
+    this._credsLoading = loading;
+    this._creds = this._topicCredClient.results;
   }
 
   // protected _credsUpdate(loading: boolean) {
@@ -78,5 +88,6 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._topicSub.unsubscribe();
     this._idSub.unsubscribe();
+    this._topicCredsSub.unsubscribe();
   }
 }

@@ -29,7 +29,6 @@ export class NamePanelComponent {
   }
 
   get name(): NameResult {
-    console.log(this.record && this.record.names && this.record.names.length ? this.record.names[0] : null)
     return this.record && this.record.names && this.record.names.length ? this.record.names[0] : null;
   }
 

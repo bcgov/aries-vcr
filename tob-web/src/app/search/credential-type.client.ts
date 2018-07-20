@@ -8,7 +8,7 @@ import { CredentialTypeResult } from '../data-types';
 export class IssuerCredentialTypeClient extends SearchClient<CredentialTypeResult> {
 
   public resource = 'issuer';
-  public childResource = 'credentialtype';
+  public childPath = 'credentialtype';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);

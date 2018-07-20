@@ -43,9 +43,9 @@ export class CredFormComponent implements OnInit, OnDestroy {
     this._idSub.unsubscribe();
   }
 
-  get issuer(): IssuerResult {
-    return this.record && this.record.credentialType && this.record.credentialType.issuer;
-  }
+  // get issuer(): IssuerResult {
+  //   return this.record && this.record.credentialType && this.record.credentialType.issuer;
+  // }
 
   showVerify() {
     let div = document.getElementsByClassName('cred-verify');

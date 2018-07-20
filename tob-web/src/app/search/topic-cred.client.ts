@@ -1,21 +1,21 @@
 import { Injectable, Inject } from '@angular/core';
 import { SearchClient } from './search.client';
 import { SearchService } from './search.service';
-import { TopicResult } from '../data-types';
+import { CredentialResult } from '../data-types';
 
 
 @Injectable()
-export class TopicClient extends SearchClient<TopicResult> {
+export class TopicCredClient extends SearchClient<CredentialResult> {
 
   public resource = 'topic';
-  public childPath = 'formatted';
+  public childPath = 'directcredential/active';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);
   }
 
-  loadResult(result: any): TopicResult {
-    return (new TopicResult()).load(result);
+  loadResult(result: any): CredentialResult {
+    return (new CredentialResult()).load(result);
   }
 
 }

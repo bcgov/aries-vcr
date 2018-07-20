@@ -53,7 +53,6 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
 
   protected _receiveCredentialTypes(loading: boolean) {
     if (!this._issuerCredentialTypeClient.results) return;
-    console.log(this._issuerCredentialTypeClient.results.rows)
     this.credentialTypeRecords = this._issuerCredentialTypeClient.results.rows;
     this.credentialTypesLoaded = true;
   }

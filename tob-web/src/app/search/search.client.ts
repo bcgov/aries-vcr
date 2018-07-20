@@ -11,7 +11,7 @@ export abstract class SearchClient<T> {
   public results: SearchResults<T>;
   public error: any;
   public resource;
-  public childResource;
+  public childPath;
   public filter;
 
 
@@ -69,7 +69,7 @@ export abstract class SearchClient<T> {
 
   getRelatedById(id: number) {
     this._loading = true;
-    this._service.getRelatedById(this.resource, id, this.childResource)
+    this._service.getRelatedById(this.resource, id, this.childPath)
       .subscribe(
         this._determineAndReturnResults.bind(this),
         this._returnError.bind(this),
@@ -101,7 +101,7 @@ export abstract class SearchClient<T> {
   get searchParams(): any {
     let p = Object.assign({}, this._params);
     if(! p.resource && this.resource) p.resource = this.resource;
-    if(! p.childResource && this.childResource) p.childResource = this.childResource;
+    if(! p.childResource && this.childPath) p.childResource = this.childPath;
     if(! p.filter && this.filter) p.filter = this.filter;
     return p;
   }

@@ -59,6 +59,21 @@ export class ContactResult {
   }
 }
 
+export class CredentialResult {
+  id: number;
+  credential_type: CredTypeResult;
+  issuer_result: IssuerResult;
+  start_date: string;
+  end_date: string;
+
+  load(result: any) {
+    return load_data(this, result, {
+      credential_type: CredTypeResult,
+      issuer_result: IssuerResult,
+    });
+  }
+}
+
 export class CredResult {
   id: number;
   subject: SubjectResult;
@@ -84,9 +99,9 @@ export class CredResult {
     });
   }
 
-  get issuer(): IssuerResult {
-    return this.credentialType && this.credentialType.issuer;
-  }
+  // get issuer(): IssuerResult {
+  //   return this.credentialType && this.credentialType.issuer;
+  // }
   get haveAddresses() {
     return this.addresses && this.addresses.length;
   }
@@ -139,19 +154,20 @@ export class NameResult {
   endDate: string;
 
   // extra API fields
-  address: AddressResult;
+  // address: AddressResult;
+  issuer: IssuerResult;
 
   load(result: any) {
     return load_data(this, result, {
-      address: AddressResult,
+      issuer: IssuerResult,
       credential: CredResult,
     });
   }
 
-  get issuer(): IssuerResult {
-    return this.credential && this.credential.credentialType &&
-      this.credential.credentialType.issuer;
-  }
+  // get issuer(): IssuerResult {
+  //   return this.credential && this.credential.credentialType &&
+  //     this.credential.credentialType.issuer;
+  // }
 }
 
 export class PersonResult {
