@@ -2,7 +2,7 @@
   <div class="col-sm-7">
     <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
     <label>{{topic.type}}:</label>
-    <a [routerLink]="['/subject', topic.id] | localize"
+    <a [routerLink]="['/topic', topic.id] | localize"
       class="body-link cred-link name">{{topic.names[0].text}}</a>
     <br>
     <small>
