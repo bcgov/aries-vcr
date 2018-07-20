@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
@@ -159,13 +159,13 @@ class CredentialViewSet(ViewSet):
         serializer = CredentialSerializer(item)
         return Response(serializer.data)
 
-    @detail_route(url_path="active")
+    @list_route(url_path="active")
     def list_active(self, request, pk=None):
         queryset = Credential.objects.filter(end_date=None)
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @detail_route(url_path="historical")
+    @list_route(url_path="historical")
     def list_historical(self, request, pk=None):
         queryset = Credential.objects.filter(~Q(end_date=None))
         serializer = CredentialSerializer(queryset, many=True)
