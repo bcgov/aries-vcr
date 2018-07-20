@@ -62,9 +62,9 @@ export class ContactResult {
 export class CredResult {
   id: number;
   subject: SubjectResult;
-  credentialType: CredTypeResult;
-  startDate: string;
-  endDate: string;
+  credential_type: CredTypeResult;
+  start_date: string;
+  end_date: string;
 
   // extra API fields
   addresses: AddressResult[];
