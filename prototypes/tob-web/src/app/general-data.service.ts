@@ -105,7 +105,7 @@ export class GeneralDataService {
 
   verifyCred (credId: string) {
     return new Promise((resolve, reject) => {
-      reject('Not implemented')
+      return resolve(this.loadFromApi(`api/v2/credential/${credId}/verify`).toPromise());
     });
   }
 
