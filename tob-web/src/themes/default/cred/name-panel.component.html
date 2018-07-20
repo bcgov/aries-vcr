@@ -1,6 +1,6 @@
 <div class="panel name-panel" *ngIf="record">
   <div class="panel-heading">
-    <h3 class="panel-title">{{record.type | translate}}: <span class="fa fa-tag"></span> <strong>{{record.text}}</strong></h3>
+    <h3 class="panel-title">{{name.type | translate}}: <span class="fa fa-tag"></span> <strong>{{name.text}}</strong></h3>
   </div>
   <div class="panel-body form-body">
     <div class="row form-group">
@@ -17,33 +17,33 @@
         </div>
       </div>
     </div>
-    <div class="row form-group" *ngIf="cred.haveContacts || cred.haveAddresses">
-      <div class="col-sm-7" *ngIf="cred.haveContacts">
+    <div class="row form-group" *ngIf="contacts.length || contacts.length">
+      <div class="col-sm-7" *ngIf="contacts.length">
         <label class="control-label" translate>cred.contact</label>
         <div class="form-field">
           <ul class="claim-list">
-            <li *ngFor="let contact of cred.contacts">
+            <li *ngFor="let contact of contacts">
               <label translate>{{contact.type}}</label>
               <span class="claim-info {{contact.typeClass}}">{{contact.text}}</span>
             </li>
           </ul>
         </div>
       </div>
-      <div class="col-sm-5" *ngIf="cred.haveAddresses">
-        <div class="form-field address-list" *ngFor="let address of cred.addresses">
+      <div class="col-sm-5" *ngIf="addresses.length">
+        <div class="form-field address-list" *ngFor="let address of addresses">
           <label class="control-label" translate>{{address.addressType}}</label>
           <address [record]="address"></address>
         </div>
       </div>
     </div>
-    <div class="row form-group" *ngIf="cred.havePeople">
+    <div class="row form-group" *ngIf="people.length">
       <div class="col-sm-7">
         <label class="control-label" translate>cred.people</label>
         <div class="form-field">
           <ul class="claim-list">
-            <li *ngFor="let person of cred.people">
+            <li *ngFor="let person of people">
               <label translate>{{person.type}}</label>
-              <span class="claim-info person">{{person.fullName}}</span>
+              <span class="claim-info person">{{person.full_name}}</span>
             </li>
           </ul>
         </div>
