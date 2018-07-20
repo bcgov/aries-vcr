@@ -6,6 +6,7 @@ import { LocalizeRouterModule } from 'localize-router';
 import { CredSearchClient } from './cred-search.client';
 import { IssuerClient } from './issuer.client';
 import { TopicClient } from './topic.client';
+import { CredentialClient } from './cred.client';
 import { TopicCredClient } from './topic-cred.client';
 import { IssuerCredentialTypeClient } from './credential-type.client';
 import { NameSearchClient } from './name-search.client';
@@ -26,6 +27,7 @@ const ROUTES = [];
     CredSearchClient,
     IssuerClient,
     TopicClient,
+    CredentialClient,
     TopicCredClient,
     IssuerCredentialTypeClient,
     NameSearchClient,

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GeneralDataService } from 'app/general-data.service';
 import { ActivatedRoute } from '@angular/router';
 import { CredResult, IssuerResult, NameResult } from '../data-types';
+import { CredentialClient } from '../search/cred.client';
 import { SearchResults } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,32 +21,36 @@ export class CredFormComponent implements OnInit, OnDestroy {
   verifyStatus: string;
   verifyResult: any;
   verifying: boolean = false;
+
   private _idSub: Subscription;
+  private _credSub: Subscription;
 
   constructor(
     private _dataService: GeneralDataService,
-    private _route: ActivatedRoute) { }
+    private _route: ActivatedRoute,
+    private _credClient: CredentialClient) { }
 
   ngOnInit() {
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['credId'];
-      this._dataService.loadJson('assets/testdata/subjects.json', {t: new Date().getTime()})
-        .subscribe((result) => {
-          let name = (new NameResult()).load(result[0]['names'][0]);
-          name.credential.names.push(name);
-          this.record = name.credential;
-          this.loaded = true;
-        });
+
+      this._credSub = this._credClient.subscribe(this._receiveCred.bind(this))
+      this._credClient.getRelatedById(this.id);
     });
   }
 
   ngOnDestroy() {
     this._idSub.unsubscribe();
+    this._credSub.unsubscribe();
   }
 
   // get issuer(): IssuerResult {
   //   return this.record && this.record.credentialType && this.record.credentialType.issuer;
   // }
+
+  protected _receiveCred(loading: boolean) {
+    console.log(this._credClient.result)
+  }
 
   showVerify() {
     let div = document.getElementsByClassName('cred-verify');
