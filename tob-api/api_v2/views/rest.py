@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from rest_framework.decorators import detail_route
 from rest_framework.viewsets import ViewSet
@@ -43,7 +44,7 @@ class IssuerViewSet(ViewSet):
         serializer = IssuerSerializer(item)
         return Response(serializer.data)
 
-    @detail_route(url_path='credentialtype')
+    @detail_route(url_path="credentialtype")
     def list_credential_types(self, request, pk=None):
         queryset = CredentialType.objects.filter(issuer__id=pk)
         get_object_or_404(queryset, pk=pk)
@@ -89,18 +90,59 @@ class TopicViewSet(ViewSet):
         serializer = TopicSerializer(item)
         return Response(serializer.data)
 
-    @detail_route(url_path='formatted')
+    @detail_route(url_path="formatted")
     def retrieve_formatted(self, request, pk=None):
         queryset = Topic.objects.all()
         item = get_object_or_404(queryset, pk=pk)
         serializer = CustomTopicSerializer(item)
         return Response(serializer.data)
 
-    @detail_route(url_path='credential')
+    @detail_route(url_path="credential")
     def list_credentials(self, request, pk=None):
         parent_queryset = Topic.objects.all()
         item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.credentials
+        serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="credential/active")
+    def list_active_credentials(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.credentials.filter(end_date=None)
+        serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="credential/historical")
+    def list_historical_credentials(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        # End date not null
+        queryset = item.credentials.filter(~Q(end_date=None))
+        serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="directcredential")
+    def list_direct_credentials(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
         queryset = item.direct_credentials()
+        serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="directcredential/active")
+    def list_active_direct_credentials(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.direct_credentials().filter(end_date=None)
+        serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="directcredential/historical")
+    def list_historical_direct_credentials(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.direct_credentials().filter(~Q(end_date=None))
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -115,6 +157,18 @@ class CredentialViewSet(ViewSet):
         queryset = Credential.objects.all()
         item = get_object_or_404(queryset, pk=pk)
         serializer = CredentialSerializer(item)
+        return Response(serializer.data)
+
+    @detail_route(url_path="active")
+    def list_active(self, request, pk=None):
+        queryset = Credential.objects.filter(end_date=None)
+        serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="historical")
+    def list_historical(self, request, pk=None):
+        queryset = Credential.objects.filter(~Q(end_date=None))
+        serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
