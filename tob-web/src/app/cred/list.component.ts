@@ -11,6 +11,6 @@ import { CredentialResult } from '../data-types';
 export class CredListComponent {
 
   @Input() records: CredentialResult[];
-  @Input() subjectId: string;
+  @Input() topicId: string;
 
 }

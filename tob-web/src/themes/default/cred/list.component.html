@@ -1,7 +1,7 @@
 <div class="row cred-row" *ngFor="let cred of records">
   <div class="col-sm-4">
     <div class="cred-title">
-      <a class="body-link cred-link" [routerLink]="['/subject', subjectId, 'cred', cred.id] | localize">{{cred.credential_type.description}}</a>
+      <a class="body-link cred-link" [routerLink]="['/topic', topicId, 'cred', cred.id] | localize">{{cred.credential_type.description}}</a>
     </div>
     <div class="cred-date" *ngIf="cred.start_date">
       <span class="claim-info date">{{cred.start_date}}</span>
