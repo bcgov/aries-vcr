@@ -11,7 +11,7 @@ from . import views
 # admin.autodiscover()
 
 urlpatterns = [
-    url(r"^$", RedirectView.as_view(url="api/v1/")),
+    url(r"^$", RedirectView.as_view(url="api/v2/")),
     url(r"^api/v1/", include("api.urls")),
     url(r"^api/v2/", include("api_v2.urls")),
     url(r"^health$", views.health),

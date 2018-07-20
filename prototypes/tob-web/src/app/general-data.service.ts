@@ -19,8 +19,8 @@ export class GeneralDataService {
   }
 
   getRequestUrl(path: string) : string {
-    // let root = (<any>window).testApiUrl || this.apiUrl;
-    let root = 'http://localhost:8081'
+    let root = (<any>window).testApiUrl || this.apiUrl;
+    // let root = 'http://localhost:8081'
     if(root) {
       if(! root.endsWith('/')) root += '/';
       return root + path;
@@ -50,7 +50,7 @@ export class GeneralDataService {
         resolve(0);
         return;
       }
-      let req = this._http.get(baseurl + 'api/v2/quickload')
+      let req = this._http.get(baseurl + 'quickload')
         .catch(error => {
           console.error(error);
           resolve(1);
@@ -105,7 +105,7 @@ export class GeneralDataService {
 
   verifyCred (credId: string) {
     return new Promise((resolve, reject) => {
-      return resolve(this.loadFromApi(`api/v2/credential/${credId}/verify`).toPromise());
+      return resolve(this.loadFromApi(`credential/${credId}/verify`).toPromise());
     });
   }
 
