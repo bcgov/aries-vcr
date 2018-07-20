@@ -79,9 +79,9 @@ export class SearchService {
       // TODO: Refactor this into something better
       if (params.resource === 'topics') {
         this._dataService.loadFromApi(`search/topic?${params.filter}=${params.query}`).subscribe(
-          (rows: any[]) => {
+          (rows: any) => {
             setTimeout
-            returnResult(rows)
+            returnResult(rows.results)
           }
         )
       } else if (params.resource === 'issuer') {
