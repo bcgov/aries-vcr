@@ -284,7 +284,7 @@
       "displayName": "API Path",
       "name": "API_PATH",
       "required": true,
-      "value": "/api/v1/"
+      "value": "/api/v2/"
     },
     {
       "description": "Additional known and trusted reverse proxy ips conforming to nginx set_real_ip_from directive syntax. Multiple directives are allowed, separated by semicolon.",
