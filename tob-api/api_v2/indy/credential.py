@@ -355,24 +355,34 @@ class CredentialManager(object):
 
             # Get parent topic if possible
             if parent_topic_name:
-                parent_topic = Topic.objects.get(
-                    credentials__names__text=parent_topic_name
-                )
+                try:
+                    parent_topic = Topic.objects.get(
+                        credentials__names__text=parent_topic_name
+                    )
+                except Topic.DoesNotExist:
+                    pass
             elif parent_topic_source_id and parent_topic_type:
-                parent_topic = Topic.objects.get(
-                    source_id=parent_topic_source_id, type=parent_topic_type
-                )
+                try:
+                    parent_topic = Topic.objects.get(
+                        source_id=parent_topic_source_id, type=parent_topic_type
+                    )
+                except Topic.DoesNotExist:
+                    pass
 
             # Current topic if possible
             if topic_name:
-                topic = Topic.objects.get(credentials__names__text=topic_name)
+                try:
+                    topic = Topic.objects.get(credentials__names__text=topic_name)
+                except Topic.DoesNotExist:
+                    pass
             elif topic_source_id and topic_type:
+                # Special Case:
+                # Create a new topic if our query comes up empty
                 try:
                     topic = Topic.objects.get(
                         source_id=topic_source_id, type=topic_type
                     )
                 except Topic.DoesNotExist as error:
-                    # Create a new topic if our query comes up empty
                     topic = Topic.objects.create(
                         source_id=topic_source_id, type=topic_type
                     )

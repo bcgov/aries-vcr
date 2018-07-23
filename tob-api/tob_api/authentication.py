@@ -17,7 +17,7 @@ def defaults():
 
     authentication = []
 
-    authentication.append("api.auth.DidAuthentication")
+    # authentication.append("api.auth.DidAuthentication")
     authentication.append("rest_framework.authentication.BasicAuthentication")
     authentication.append("rest_framework.authentication.SessionAuthentication")
 

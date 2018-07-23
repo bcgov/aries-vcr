@@ -1,382 +1,151 @@
-#! /usr/bin/python3
-
+#!/usr/bin/env python3
 #
-# "requests" must be installed - pip3 install requests
+# Copyright 2017-2018 Government of Canada
+# Public Services and Procurement Canada - buyandsell.gc.ca
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 
+
+import asyncio
 import argparse
 import json
 import os
-import sys
-from glob import glob
-from os.path import dirname, join
-import threading
 import time
-import requests
-from requests.auth import HTTPBasicAuth
 
-import string
-from random import *
+import aiohttp
 
+DEFAULT_AGENT_URL = os.environ.get("AGENT_URL", "http://localhost:5000/bcreg")
 
-parser = argparse.ArgumentParser(description='A TheOrgBook Claim loader.  Supports randomization for test data and threading for fast loading')
-parser.add_argument('--random', action='store_true', required=False,
-                    help='If data is to be randomized before loading (useful for test data)')
-parser.add_argument('--proofs', action='store_true', required=False,
-                    help='If calculate proofs as claims are loaded')
-parser.add_argument('--env', metavar='env', type=str, default='local',
-                    help='Permitify and TheOrgBook services are on local/dev/test host')
-parser.add_argument('--inputdir', metavar='inputdir', type=str, default="Claims",
-                    help='The directory containing JSON claims to be loaded')
-parser.add_argument('--prefix', metavar='prefix', type=str, default="",
-                    help='Prefix = Ont for Ontario')
-parser.add_argument('--threads', metavar='threads', type=int, default=1,
-                    help='The number of threads to run for concurrent loading')
-parser.add_argument('--loops', metavar='loops', type=int, default=1,
-                    help='The number of times to loop through the list')
+parser = argparse.ArgumentParser(
+    description="Issue one or more credentials via von-x"
+)
+parser.add_argument(
+    "dir", default="v2_creds", help="the path to a credential directory"
+)
+parser.add_argument(
+    "-u",
+    "--url",
+    default=DEFAULT_AGENT_URL,
+    help="the URL of the von-x service",
+)
+parser.add_argument(
+    "-p",
+    "--parallel",
+    action="store_true",
+    help="submit the credentials in parallel",
+)
 
 args = parser.parse_args()
 
-print('Environment = \'%s\'' % args.env)
-if os.path.exists(args.inputdir):
-    print('Processing input directory \'%s\'' % args.inputdir)
-else:
-    print('Directory not found \'%s\'' % args.inputdir)
-my_prefix = ""
-if os.path.exists(args.prefix + args.inputdir):
-    print('Processing prefix \'%s\'' % args.prefix)
-    my_prefix = args.prefix
+AGENT_URL = args.url
+DATA_DIR = args.dir
+PARALLEL = args.parallel
 
-print('Threads = {}'.format(args.threads))
 
-if args.random or args.threads > 1 or args.loops > 1:
-    print('Randomizing!')
-else:
-    print('NOT Randomizing.')
-
-loop_locks = {
-    'Reg': threading.Semaphore(),
-    'Worksafe': threading.Semaphore(),
-    'Finance': threading.Semaphore(),
-    'Health': threading.Semaphore(),
-    'City': threading.Semaphore(),
-    'Liquor': threading.Semaphore(),
-    'OntarioReg': threading.Semaphore()
-}
-
-URLS = {
-  'local': {
-        # bc_registries (needs to be first)
-        'Reg': 'http://localhost:5000',
-        # worksafe_bc
-        'Worksafe': 'http://localhost:5001',
-        # ministry_of_finance
-        'Finance': 'http://localhost:5002',
-        # fraser_valley_health_authority
-        'Health': 'http://localhost:5003',
-        # city_of_surrey
-        'City': 'http://localhost:5004',
-        # liquor_control_and_licensing_branch
-        'Liquor': 'http://localhost:5005',
-        # onbis
-        'OntarioReg': 'http://localhost:5006'
-    },
-  'dev': {
-        # bc_registries (needs to be first)
-        'Reg': 'https://bc-registries-devex-von-permitify-dev.pathfinder.gov.bc.ca',
-        # worksafe_bc
-        'Worksafe': 'https://worksafe-bc-devex-von-permitify-dev.pathfinder.gov.bc.ca',
-        # ministry_of_finance
-        'Finance': 'https://ministry-of-finance-devex-von-permitify-dev.pathfinder.gov.bc.ca',
-        # fraser_valley_health_authority
-        'Health': 'https://fraser-valley-health-authority-devex-von-permitify-dev.pathfinder.gov.bc.ca',
-        # city_of_surrey
-        'City': 'https://city-of-surrey-devex-von-permitify-dev.pathfinder.gov.bc.ca',
-        # liquor_control_and_licensing_branch
-        'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-dev.pathfinder.gov.bc.ca',
-         # onbis
-        'OntarioReg': 'https://onbis-devex-von-permitify-dev.pathfinder.gov.bc.ca'
-    },
-  'test': {
-        # bc_registries (needs to be first)
-        'Reg': 'https://bc-registries-devex-von-permitify-test.pathfinder.gov.bc.ca',
-        # worksafe_bc
-        'Worksafe': 'https://worksafe-bc-devex-von-permitify-test.pathfinder.gov.bc.ca',
-        # ministry_of_finance
-        'Finance': 'https://ministry-of-finance-devex-von-permitify-test.pathfinder.gov.bc.ca',
-        # fraser_valley_health_authority
-        'Health': 'https://fraser-valley-health-authority-devex-von-permitify-test.pathfinder.gov.bc.ca',
-        # city_of_surrey
-        'City': 'https://city-of-surrey-devex-von-permitify-test.pathfinder.gov.bc.ca',
-        # liquor_control_and_licensing_branch
-        'Liquor': 'https://liquor-control-and-licensing-branch-devex-von-permitify-test.pathfinder.gov.bc.ca',
-         # onbis
-        'OntarioReg': 'https://onbis-devex-von-permitify-test.pathfinder.gov.bc.ca'
-
-    },
-    'wallet': {
-        # if we're just dumping data into the wallet it all goes into the same url
-        'Reg': 'http://localhost:6000/api/v1/keyval/',
-        'Worksafe': 'http://localhost:6000/api/v1/keyval/',
-        'Finance': 'http://localhost:6000/api/v1/keyval/',
-        'Health': 'http://localhost:6000/api/v1/keyval/',
-        'City': 'http://localhost:6000/api/v1/keyval/',
-        'Liquor': 'http://localhost:6000/api/v1/keyval/',
-        'OntarioReg': 'http://localhost:6000/api/v1/keyval/'
-    }
-}
-
-this_dir = dirname(__file__)
-
-#claim_files = glob(join(this_dir, 'Claims', 'Claims_*'))
-
-do_it_random = (args.random or args.threads > 1 or args.loops > 1)
-num_loops = args.loops
-use_env = args.env
-
-def main(env, data_dir):
-    # Each filename is a full permitify recipe
-    claim_files = glob(join(this_dir, data_dir + 'Claims', data_dir + 'Claims_*'))
-    for filename in claim_files:
-        with open(filename, 'r') as file:
-            content = file.read()
-            permitify_services = json.loads(content)
-            legal_entity_id = None
-            for service_name in URLS[env]:
-                if service_name not in permitify_services:
-                    continue
-                for claim in permitify_services[service_name]:
-                    if 'Reg' not in service_name:
-                        claim['legal_entity_id'] = legal_entity_id
-                        print('\n\n')
-                        print('Issuing permit: {}'.format(
-                            claim['schema']
-                        ))
-                    else:
-                        print('\n\n')
-                        print('==============================================')
-                        print('Registering new business: {}'.format(
-                            claim['legal_name']
-                        ))
-                        print('==============================================')
-
-# generate a short random string
-def random_string(i):
-    r_str = "-" + str(i) + "-" + "".join(choice(allchar) for x in range(randint(min_char, max_char)))
-    return r_str
-
-# check if field is a candidate for randomization
-def should_we_randomify(key, value):
-    # if value is all numeric, don't randomize
-    if value.isdigit():
-        return False
-
-                    try:
-                        response = requests.post(
-                            '{}/submit_claim'.format(
-                                URLS[env][service_name]),
-                            json=claim
-                        )
-                        result_json = response.json()
-                        print(result_json)
-                    except:
-                        raise Exception(
-                            'Could not submit claim. '
-                            'Are Permitify and Docker running?')
-
-    # key like "type" probably a pick-list
-    if "_type" in key.lower():
-        return False;
-
-                    if 'Reg' in service_name:
-                        legal_entity_id = result_json['result']['orgId']
-
-    # postal code or province
-    if key.lower() == "city" or key.lower() == "province" or key.lower() == "postal_code" or key.lower() == "country":
-        return False
-
-    # one more!
-    if key.lower() == "coverage_description":
-        return False
-
-    # ok go for it!
-    return True
-
-# randomize our test data so we can re-use it
-def randomify(claim, i):
-    for key in claim:
-        if should_we_randomify(key, claim[key]):
-            claim[key] = claim[key] + random_string(i)
-    return claim
-
-class myThread (threading.Thread):
-   def __init__(self, threadID, name, counter):
-      threading.Thread.__init__(self)
-      self.threadID = threadID
-      self.name = name
-      self.counter = counter
-   def run(self):
-      print("Starting " + self.name)
-      main_load(use_env, do_it_random, num_loops, self.counter)
-      print("Exiting " + self.name)
-
-def main_load(env, do_it_random, num_loops, thread_id):
-    # login to wallet
-    if env == 'wallet':
-        try:
-            my_url = "http://localhost:6000/api/v1/api-token-auth/"
-            response = requests.post(my_url, data = {"username":"wall-e", "password":"pass1234"})
-
-            print("Getting token from {} ...".format(response.url))
-            json_data = response.json()
-
-            remote_token = 'Token ' + json_data["token"]
-            print("Authenticated remote wallet server: " + remote_token)
-        except:
-            raise Exception(
-                'Could not login to wallet. '
-                'Is the Wallet Service running?')
-
-    # Create new threads
-    loop_start_time = time.time()
-    loop_claims = 0
-    loop_proofs = 0
-    claim_elapsed_time = 0
-    proof_elapsed_time = 0
-    for _ in range(0, num_loops):
-        # Each filename is a full permitify recipe
-        claim_files = glob(join(this_dir, my_prefix + args.inputdir, my_prefix + 'Claims_*'))
-
-        # Each filename is a full permitify recipe
-        for filename in claim_files:
-            with open(filename, 'r') as file:
-                print('==============================================')
-                print('FileName: {}'.format(filename))
-                content = file.read()
-                permitify_services = json.loads(content)
-                legal_entity_id = None
-                for service_name in URLS[env]:
-                    if service_name not in permitify_services:
-                        continue
-                    for claim in permitify_services[service_name]:
-                        if do_it_random:
-                            claim = randomify(claim, thread_id)
-
-                        if 'Reg' not in service_name:
-                            claim['legal_entity_id'] = legal_entity_id
-                            print('\n\n')
-                            print('Issuing permit: {}'.format(
-                                claim['schema']
-                            ))
-                        else:
-                            print('\n\n')
-                            print('==============================================')
-                            print('Registering new business: {}'.format(
-                                claim['legal_name']
-                            ))
-                            print('==============================================')
-
-                        claim['address_line_2'] = ""
-
-                        print('\n\nSubmitting Claim:\n\n{}'.format(claim))
-
-                        if env == 'wallet':
-                            legal_entity_id = "da0" + random_string(thread_id) + random_string(thread_id) + random_string(thread_id)
-                            claim['legal_entity_id'] = legal_entity_id
-                            wallet_item = {
-                                # 'wallet_name':legal_entity_id,
-                                'wallet_name':'TheOrgBook_Holder_Wallet::' + legal_entity_id,
-                                'item_type':'claim',
-                                'item_id':legal_entity_id,
-                                'item_value':json.dumps(claim)
-                            }
-                            print(json.dumps(wallet_item))
-                            # post to the wallet service
-                            try:
-                                response = requests.post(
-                                    '{}'.format(
-                                        URLS[env][service_name]),
-                                    headers={'Authorization': remote_token},
-                                    json=wallet_item
-                                )
-
-                                print("Submitting claim to {} ...".format(response.url))
-                                result_json = response.json()
-                            except:
-                                raise Exception(
-                                    'Could not submit claim. '
-                                    'Is the Wallet Service running?')
-                        else:
-                            try:
-                                start_time = time.time()
-                                loop_locks[service_name].acquire()
-                                response = requests.post(
-                                    '{}/submit_claim'.format(
-                                        URLS[env][service_name]),
-                                    json=claim
-                                )
-                                loop_locks[service_name].release()
-                                
-                                print("Submitting claim to {} ...".format(response.url))
-                                result_json = response.json()
-
-                                elapsed_time = time.time() - start_time
-                                claim_elapsed_time = claim_elapsed_time + elapsed_time
-                                print('Timing,Claim elapsed time,{},secs'.format(elapsed_time))
-                            except:
-                                loop_locks[service_name].release()
-                                raise Exception(
-                                    'Could not submit claim. '
-                                    'Are Permitify and Docker running?')
-                            print('\n\n Response from permitify:\n\n{}'.format(result_json))
-                            if 'Reg' in service_name:
-                                legal_entity_id = result_json['result']['orgId']
-                        loop_claims = loop_claims + 1
-
-                        if args.proofs:
-                            # "submit_claim" returns the id of the org, not the claim, so fake it pick any random claim
-                            my_id = randint(1, 6*(result_json['result']['id']-1))
-                            print('\n\nRequesting Proof:\n\n{}'.format(my_id))
-                            try:
-                                start_time = time.time()
-                                response = requests.get(
-                                    '{}/{}/verify'.format(
-                                        "http://localhost:8081/api/v1/verifiableclaims", str(my_id))
-                                )
-                                elapsed_time = time.time() - start_time
-                                proof_elapsed_time = proof_elapsed_time + elapsed_time
-                                print('Proof elapsed time >>> {}'.format(elapsed_time))
-
-                                print("Requesting proof from {} ...".format(response.url))
-                                result_json = response.json()
-                                loop_proofs = loop_proofs + 1
-                            except:
-                                # raise Exception(
-                                #     'Could not submit proof request. '
-                                #     'Are Permitify and Docker running?')
-                                print('Could not submit proof request. Are Permitify and Docker running?')
-                            print('\n\n Response from TOB:\n\n')
-
-    print('Timing,Claim elapsed time,{},{},claims'.format(claim_elapsed_time, loop_claims))
-    if args.proofs:
-        print('Timing,Proof elapsed time,{},{},claims'.format(proof_elapsed_time, loop_proofs))
-
-if __name__ == '__main__':
+def get_dir_dirs(dir_path):
     try:
-        URLS[use_env]
-    except KeyError:
-        print('{} --env <local|dev|test>'.format(sys.argv[0]))
-    else:
-        execution_start = time.time()
-        my_threads = []
-        for i in range(0, args.threads):
-            thread = myThread(i, "Thread-{}".format(i), i)
-            # Start new Threads
-            thread.start()
-            my_threads.append(thread)
-            time.sleep(1)
-        for i in range(0, args.threads):
-            my_threads[i].join()
-        execution_elapsed = time.time() - execution_start
-        print("Timing,Exiting Main Thread,time,{},secs".format(execution_elapsed))
+        return next(os.walk(dir_path))[1]
+    except StopIteration:
+        return []
 
+
+def get_dir_files(dir_path):
+    try:
+        return next(os.walk(dir_path))[2]
+    except StopIteration:
+        return []
+
+
+async def issue_cred(
+    http_client, cred_path, schema_name, schema_version, ident
+):
+    try:
+        with open(cred_path) as cred_file:
+            cred = json.load(cred_file)
+    except json.decoder.JSONDecodeError:
+        print("Credential could not be parsed, skipping")
+        return
+
+    # Shim to accept single item array from test data output
+    if type(cred) is list:
+        cred = cred[0]
+
+    print("Submitting credential {} {}".format(ident, cred_path))
+
+    start = time.time()
+    try:
+        response = await http_client.post(
+            "{}/issue-credential".format(AGENT_URL),
+            params={"schema": schema_name, "version": schema_version},
+            json=cred,
+        )
+        if response.status != 200:
+            raise RuntimeError(
+                "Credential could not be processed: {}".format(
+                    await response.text()
+                )
+            )
+        result_json = await response.json()
+    except Exception as exc:
+        raise Exception(
+            "Could not issue credential. " "Are von-x and TheOrgBook running?"
+        ) from exc
+
+    elapsed = time.time() - start
+    print(
+        "Response to {} from von-x ({:.2f}s):\n\n{}\n".format(
+            ident, elapsed, result_json
+        )
+    )
+
+
+async def submit_all(data_dir, parallel=True):
+    schema_type_paths = get_dir_dirs(data_dir)
+    start = time.time()
+
+    all = []
+    idx = 1
+
+    for schema_type_path in schema_type_paths:
+
+        # We expect path convention <schema_name>::<schema_version>
+        schema_name = schema_type_path.split("::")[0]
+        schema_version = schema_type_path.split("::")[1]
+
+        cred_paths = get_dir_files("{}/{}".format(data_dir, schema_type_path))
+
+        async with aiohttp.ClientSession() as http_client:
+
+            for cred_path in cred_paths:
+                req = issue_cred(
+                    http_client,
+                    "{}/{}/{}".format(data_dir, schema_type_path, cred_path),
+                    schema_name,
+                    schema_version,
+                    idx,
+                )
+                if parallel:
+                    all.append(req)
+                else:
+                    await req
+                idx += 1
+
+            if all:
+                await asyncio.gather(*all)
+
+    elapsed = time.time() - start
+    print("Total time: {:.2f}s".format(elapsed))
+
+
+asyncio.get_event_loop().run_until_complete(submit_all(DATA_DIR, PARALLEL))
