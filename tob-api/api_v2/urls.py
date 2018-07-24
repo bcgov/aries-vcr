@@ -5,7 +5,7 @@ from rest_framework.routers import SimpleRouter
 from .swagger import SwaggerSchemaView
 from api_v2.views import indy, rest, search
 
-router = SimpleRouter()
+router = SimpleRouter(trailing_slash=False)
 
 router.register(r"issuer", rest.IssuerViewSet, "Issuer")
 router.register(r"schema", rest.SchemaViewSet, "Schema")
