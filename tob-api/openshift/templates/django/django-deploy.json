@@ -446,8 +446,8 @@
       "name": "USE_AUTHENTICATION",
       "displayName": "Use Authentication",
       "description": "Enable or disable the use of authentication on the API.  When set to `False` the API will be unprotected.",
-      "required": true,
-      "value": "False"
+      "required": false,
+      "value": ""
     },
     {
       "name": "USER_ID",
