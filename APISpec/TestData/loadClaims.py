@@ -120,8 +120,8 @@ async def submit_all(data_dir, parallel=True):
     for schema_type_path in schema_type_paths:
 
         # We expect path convention <schema_name>::<schema_version>
-        schema_name = schema_type_path.split("::")[0]
-        schema_version = schema_type_path.split("::")[1]
+        schema_name = schema_type_path.split("__")[0]
+        schema_version = schema_type_path.split("__")[1]
 
         cred_paths = get_dir_files("{}/{}".format(data_dir, schema_type_path))
 
