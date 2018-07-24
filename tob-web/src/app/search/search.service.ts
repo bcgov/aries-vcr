@@ -23,7 +23,7 @@ export class SearchService {
   
   getById(resource: string, id: number): Observable<SearchResult<any>> {
     const promise = new Promise((resolve) => {
-      this._dataService.loadFromApi(`${resource}/${id}`).subscribe(
+      this._dataService.loadFromApi(`${resource}/${id}/`).subscribe(
         (data: any) => {
           const info = new SearchInfo();
           resolve(new SearchResult(info, data))
@@ -35,7 +35,7 @@ export class SearchService {
 
   getRelatedById(resource: string, id: number, childResource: string): Observable<SearchResults<any>> {
     const promise = new Promise((resolve) => {
-      this._dataService.loadFromApi(`${resource}/${id}/${childResource}`).subscribe(
+      this._dataService.loadFromApi(`${resource}/${id}/${childResource}/`).subscribe(
         (rows: any[] | any) => {
 
           // Sometimes this is an array of results.
@@ -78,7 +78,7 @@ export class SearchService {
 
       // TODO: Refactor this into something better
       if (params.resource === 'topics') {
-        this._dataService.loadFromApi(`search/topic?${params.filter}=${params.query}`).subscribe(
+        this._dataService.loadFromApi(`search/topic/?${params.filter}=${params.query}`).subscribe(
           (rows: any) => {
             setTimeout
             returnResult(rows.results)
