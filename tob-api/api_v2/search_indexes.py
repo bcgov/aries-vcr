@@ -32,6 +32,10 @@ class TopicIndex(indexes.SearchIndex, indexes.Indexable):
             for address in credential.addresses.all():
                 locations.append(address.addressee)
                 locations.append(address.civic_address)
+                locations.append(address.city)
+                locations.append(address.province)
+                locations.append(address.postal_code)
+                locations.append(address.country)
 
         return " ".join((locations))
 
