@@ -43,7 +43,7 @@ export class SubjectFormComponent implements OnInit, OnDestroy {
   }
 
   get title(): string {
-    if(this._topic && this._topic.data.names && this._topic.data.names) {
+    if(this._topic && this._topic.data.names && this._topic.data.names.length) {
       return this._topic.data.names[0].text;
     }
   }

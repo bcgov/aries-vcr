@@ -1,10 +1,10 @@
-<div class="panel name-panel" *ngIf="record">
+<div class="panel name-panel" *ngIf="record && name">
   <div class="panel-heading">
     <h3 class="panel-title">{{name.type | translate}}: <span class="fa fa-tag"></span> <strong>{{name.text}}</strong></h3>
   </div>
   <div class="panel-body form-body">
     <div class="row form-group">
-      <div class="col-sm-7">
+      <div class="col-sm-7" *ngIf="issuer">
         <label class="control-label" translate>cred.issuer</label>
         <div class="form-field">
           <a [routerLink]="['/issuer', issuer.id] | localize" class="body-link issuer-link">{{issuer.name}}</a>
