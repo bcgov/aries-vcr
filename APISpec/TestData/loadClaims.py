@@ -68,7 +68,7 @@ def get_dir_files(dir_path):
 
 
 async def issue_cred(
-    http_client, cred_path, schema_name, schema_version, ident
+    http_client, cred_path, schema_name, ident
 ):
     try:
         with open(cred_path) as cred_file:
@@ -87,7 +87,7 @@ async def issue_cred(
     try:
         response = await http_client.post(
             "{}/issue-credential".format(AGENT_URL),
-            params={"schema": schema_name, "version": schema_version},
+            params={"schema": schema_name, "version": ""},
             json=cred,
         )
         if response.status != 200:
@@ -119,10 +119,6 @@ async def submit_all(data_dir, parallel=True):
 
     for schema_type_path in schema_type_paths:
 
-        # We expect path convention <schema_name>::<schema_version>
-        schema_name = schema_type_path.split("__")[0]
-        schema_version = schema_type_path.split("__")[1]
-
         cred_paths = get_dir_files("{}/{}".format(data_dir, schema_type_path))
 
         async with aiohttp.ClientSession() as http_client:
@@ -131,8 +127,7 @@ async def submit_all(data_dir, parallel=True):
                 req = issue_cred(
                     http_client,
                     "{}/{}/{}".format(data_dir, schema_type_path, cred_path),
-                    schema_name,
-                    schema_version,
+                    schema_type_path,
                     idx,
                 )
                 if parallel:
