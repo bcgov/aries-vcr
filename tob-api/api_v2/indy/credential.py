@@ -20,6 +20,7 @@ from api_v2.models.Name import Name
 from api_v2.models.Address import Address
 from api_v2.models.Person import Person
 from api_v2.models.Contact import Contact
+from api_v2.models.Category import Category
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,10 @@ SUPPORTED_MODELS_MAPPING = {
     "address": Address,
     "person": Person,
     "contact": Contact,
+    "category": Category,
 }
+
+SUPPORTED_CATEGORIES = ["topic_status", "topic_type"]
 
 # TODO: Allow issuer to dynamically register topic types
 # Currently we only support 2 topic types. We only understand
@@ -364,7 +368,8 @@ class CredentialManager(object):
             elif parent_topic_source_id and parent_topic_type:
                 try:
                     parent_topic = Topic.objects.get(
-                        source_id=parent_topic_source_id, type=parent_topic_type
+                        source_id=parent_topic_source_id,
+                        type=parent_topic_type,
                     )
                 except Topic.DoesNotExist:
                     pass
@@ -372,7 +377,9 @@ class CredentialManager(object):
             # Current topic if possible
             if topic_name:
                 try:
-                    topic = Topic.objects.get(credentials__names__text=topic_name)
+                    topic = Topic.objects.get(
+                        credentials__names__text=topic_name
+                    )
                 except Topic.DoesNotExist:
                     pass
             elif topic_source_id and topic_type:
@@ -475,6 +482,18 @@ class CredentialManager(object):
 
             for field, field_mapper in model_mapper["fields"].items():
                 setattr(model, field, process_mapping(field_mapper))
+
+            # Validate category type
+            if (
+                model_name == "category"
+                and model.type not in SUPPORTED_CATEGORIES
+            ):
+                raise CredentialException(
+                    "Invalid category type '{}'. ".format(model.type)
+                    + "Valid categories are: {}".format(
+                        ", ".join(list(SUPPORTED_CATEGORIES))
+                    )
+                )
 
             model.credential = credential
             model.save()
