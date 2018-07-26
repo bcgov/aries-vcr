@@ -7,3 +7,4 @@ from .Name import Name
 from .Person import Person
 from .Schema import Schema
 from .Topic import Topic
+from .Category import Category
