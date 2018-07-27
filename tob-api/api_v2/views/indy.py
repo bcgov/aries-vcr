@@ -367,22 +367,21 @@ def register_issuer(request, *args, **kwargs):
 @validate(CONSTRUCT_PROOF_JSON_SCHEMA)
 def construct_proof(request, *args, **kwargs):
     """  
-    Constructs a proof given a proof request and source_id
+    Constructs a proof given a proof request
 
     ```json
     {
-        "proof_request": <HL Indy proof request>,
-        "source_id": <source if of subject>
+        "proof_request": <HL Indy proof request>
     }
     ```
 
     returns: HL Indy proof data
     """
     logger.warn(">>> Construct Proof")
-    source_id = request.data["source_id"]
+    
     proof_request = request.data["proof_request"]
 
-    proof_manager = ProofManager(proof_request, source_id)
+    proof_manager = ProofManager(proof_request)
     proof = proof_manager.construct_proof()
 
     return JsonResponse({"success": True, "result": proof})
