@@ -1,70 +1,46 @@
-<div class="panel name-panel" *ngIf="record">
-    <h3 class="panel-title"><strong>{{record.text}}</strong></h3>
-  
-  <div class="panel-body form-body form-horizontal">
+<div class="panel name-panel" *ngIf="record && name">
+    <div class="panel-heading" translate >topic.top-panel-title</div>
+    <h3 class="panel-title"> <strong>{{name.text | titlecase  }}</strong></h3>
 
-    <div class="form-group">
-      <div class="col-sm-3">
-        <label class="" translate>cred.type</label>
-      </div>
-        <div class="form-field">
-          <span class="claim-info date">{{record.credential.credentialType.description}}</span>
-        </div>
-    </div>
+  <div class="panel-body form-body">
 
-    <div class="form-group">
-      <div class="col-sm-3">
-          <label class="" translate >cred.status</label>
-      </div>
-      <div class="form-field">TBD
-         <!-- <div ng-if="record.credential.endDate == null">
-            <div translate>
-                cred.active-status
-            </div>
+      <div class="row form-group">
+          <label class="col-sm-3 control-label" translate>cred.type</label>
+          <div class="form-field">
+             {{record.type | titlecase }}
           </div>
-          <div ng-if="false">
-              <div >
-                  cred.inactive-status
-              </div>
-              {{record.credential.endDate != null}}
-              {{record.credential.endDate == null}}
-          </div>-->
-      </div>
-    </div>
-
-    <div class="row form-group">
-      <div class="col-sm-3">
-        <label class="" translate>cred.municipality</label>
-      </div>
-      <div class="form-field">
-          <span class="claim-info">TBD</span>
-      </div>
-    </div>
-
-
-    <div class="row form-group">
-        <div class="col-sm-3">
-          <label class="" translate>cred.jurisdiction</label>
-        </div>
-        <div class="form-field">
-            <span class="claim-info">TBD</span>
-        </div>
       </div>
 
 
-
-    <div class="row form-group">
-      <div class="col-lg-11" translate >
-          <b translate>subject.note</b>
-          subject.disclaimer
-          <a href='' style="text-decoration: underline;" translate>subject.click-here</a>
+      <div class="row form-group">
+            <label class="col-sm-3 control-label" translate>cred.status</label>
+            <div class="form-field">
+               TBD
+            </div>
       </div>
-    </div>
+
+      <div class="row form-group">
+          <label class="col-sm-3 control-label" translate>cred.municipality</label>
+          <div class="form-field">
+             {{addresses[0].city | titlecase }}
+          </div>
+      </div>
+
+      <div class="row form-group">
+          <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
+          <div class="form-field">
+              {{addresses[0].province}}
+          </div>
+      </div>
+
+      <div class="disclaimer" translate>
+          <b translate>topic.note</b>
+          topic.disclaimer
+          <a href='' style="text-decoration: underline;" translate>topic.click-here</a>
+      </div>
+    
     
   </div>
-  <div class="panel-footer text-right">
-    <a class="body-link util-link" [routerLink]="['/subject', cred.subjectId, 'cred', cred.id] | localize"><span class="fa fa-certificate"></span> <span translate>cred.view-link</span></a>
-    &nbsp;
-    <a href="#" class="body-link util-link"><span class="fa fa-history"></span> <span translate>cred.history-link</span> (1)</a>
-  </div>
+
+  
 </div>

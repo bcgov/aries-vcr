@@ -1,0 +1,13 @@
+<div class="row name-row" *ngFor="let topic of records">
+  <div class="col-sm-7">
+    <a [routerLink]="['/topic', topic.id] | localize"
+      class="body-link  name">{{topic.names[0].text | titlecase}}</a>
+    <br>
+    <label>{{topic.type | titlecase }}</label>
+  </div>
+ <div class="col-sm-5">
+      <small *ngIf="topic.addresses.length > 0">
+          <address [record]="topic.addresses[0]"></address>
+      </small>
+    </div>
+</div>

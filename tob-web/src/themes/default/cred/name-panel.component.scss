@@ -30,3 +30,6 @@
     border-top: 1px solid #ccc;
   }
 }
+
+//place all overrides for a specific theme in this file inside your theme/cred directory
+@import "../../_active/cred/cred.custom";

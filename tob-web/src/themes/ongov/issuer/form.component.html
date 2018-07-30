@@ -1,0 +1,41 @@
+<section id="issuer">
+  <div class="row" *ngIf="error">
+    <div class="col-sm-12">
+      {{error}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!loaded && !error">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="loaded">
+    <div class="panel name-panel" >
+        <div class="panel-heading" translate >issuer.breadcrumb</div>
+        <h3 class="panel-title"> <strong>{{record.name}}
+            <span *ngIf="record.abbreviation">({{record.abbreviation}})</span></strong></h3>
+
+        <div class="panel-body form-body">
+
+            <div class="row form-group">
+                <label class="col-sm-3 control-label" translate>issuer.website</label>
+                <div class="form-field">
+                    <a class="body-link" [href]="record.url" rel="external">
+                        {{record.url}}</a>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-sm-3 control-label" translate>issuer.email</label>
+                <div class="form-field">
+                    <a class="body-link" [href]="record.url" rel="external">
+                        {{record.email}}</a>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+            
+      
+</section>

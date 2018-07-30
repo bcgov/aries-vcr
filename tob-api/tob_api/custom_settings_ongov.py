@@ -7,7 +7,10 @@ CUSTOMIZATIONS  = {
               "Location":
               {
                   "includeFields":[
-                        "id"
+                        "id",
+                        "last_updated",
+                        "city",
+                        "province"
                   ]
               }
           }

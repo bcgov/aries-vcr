@@ -1,0 +1,67 @@
+.cred-link {
+    &::before {
+      padding-right: 0.3em;
+    }
+    &.location {
+      content: "";
+    }
+    &.name::before {
+      content: "";
+    }
+}
+
+.panel-title {
+  font-size: 2rem;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+.name-panel {
+  border: 1px solid #ccc;
+  > .panel-heading {
+    background-color:#595959;
+    color: white;
+    text-align: center;
+    display: block;
+    > .issuer-link {
+      color: white;
+    }
+  }
+
+}
+
+.claim-info {
+  &.location::before {
+    content: "";
+  }
+}
+.disclaimer {
+  margin-top: 25px;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.cred {
+  max-width: 50%;
+}
+
+.cert-image {
+  display: block;
+  height: auto;
+  margin: 0 auto;
+  width: 25%;
+  flex: 0 0 10%;
+  float: right;
+  padding-right: 15px;
+}
+
+.btn-verify{
+  background-color: #006b3f;
+  color: #f5f5f5;
+  font-size: 1.7rem;
+  line-height: 1.5;
+  padding: .5rem 1.3rem .4rem;
+  vertical-align: baseline;
+}

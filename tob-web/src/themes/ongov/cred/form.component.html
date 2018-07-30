@@ -1,0 +1,79 @@
+<section id="cred-form">
+  <div class="row" *ngIf="error">
+    <div class="col-sm-12">
+      {{error}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!loaded && !error">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="loaded">
+    <div class="col-md-12">
+        <div class="col-sm-12">
+            <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
+              <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
+           
+           
+              <div class="panel name-panel">
+                  <div class="panel-heading"  >
+                    {{record.credential_type.description}}
+                    <font translate>cred.verify-info</font>
+                  </div>
+                  <h3 class="panel-title"> <strong>{{names[0].text }}</strong></h3>
+              
+                <div class="panel-body form-body">
+              
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" translate>cred.issuer</label>
+                        <div class="form-field">
+                            <a class="body-link issuer-link" [routerLink]="['/issuer', issuer.id] | localize">{{issuer.name}}</a>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" translate>cred.start-date</label>
+                        <div class="form-field">
+                            <span *ngIf="record.start_date">{{record.start_date | date }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                      <div class="col-sm-6">
+                          <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)">
+                            <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
+                        </div>
+                      </div>  
+
+                      <div class="row cred-verify" *ngIf="verifyResult || verifying">
+                          <div class="col-sm-12" *ngIf="verifying">
+                            <section class="alert alert-info">
+                              <p translate>cred.verifying-record</p>
+                            </section>
+                          </div>
+                          <div class="col-sm-12" *ngIf="! verifying">
+                            <div [class]="'verify-result panel panel-' + (verifyStatus == 'success' ? 'success' : 'warning')" *ngIf="verifyStatus && verifyStatus !== 'error'">
+                              <div class="panel-heading">
+                                {{'cred.verify-status' | translate}} {{verifyStatus}}!!!
+                              </div>
+                              <div class="panel-body">
+                                <code>{{verifyResult}}!!</code>
+                              </div>
+                            </div>
+                            <section class="alert alert-danger" *ngIf="verifyStatus === 'error'">
+                              <p translate>cred.error</p>
+                            </section>
+                          </div>
+                        </div>
+                </div>
+            </div>
+
+       </div>
+  </div>
+</div>
+
+
+</section>

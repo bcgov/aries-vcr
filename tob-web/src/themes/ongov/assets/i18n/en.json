@@ -29,7 +29,7 @@
   },
   "cred": {
     "addresses": "Addresses",
-    "breadcrumb": "Credential Information",
+    "breadcrumb": "Verifiable Records",
     "contact": "Contact",
     "end-date": "End Date",
     "history-link": "See history",
@@ -38,16 +38,17 @@
     "names": "Names",
     "people": "People",
     "start-date": "Effective Date",
-    "verify-button-label": "Verify Credential",
+    "verify-button-label": "Verify Record",
     "view-link": "View credential",
     "whats-this-link": "What's this?",
     "verify-status": "Verification Status:",
     "status": "Status",
-    "active-status": "Active",
-    "inactive-status" : "Inactive",
     "type": "Business Type",
     "municipality": "Municipality",
-    "jurisdiction": "Jurisdiction"
+    "jurisdiction": "Jurisdiction",
+    "verifying-record": "Verifying Record",
+    "verify-info": "Verifiable Information",
+    "error": ""
   },
   "general": {
     "none": "None",
@@ -62,7 +63,7 @@
     "title-certs": "permits and licences",
     "title": "Ontario's Verifiable Businesses",
     "message":
-      "This service allows you to search for registrations, certificates, licenses, or permits that an Ontario business may have, and verify authenticity of each using Distributed Ledger Technology (blockchain). The service is currently offered in beta mode, with all the records sourced from Ontario Business Information System (ONBIS), Ontario's official record of information on business entities and not-for-profit organizations operating in Ontario.",
+      "This service allows you to search for registrations, certificates, licenses, or permits that an Ontario business may have, and verify authenticity of each using Distributed Ledger Technology (blockchain). The service is currently offered in beta mode, with all the records sourced from Ontario Business Registration System, Ontario's official record of information on business entities and not-for-profit organizations operating in Ontario.",
     "search-input": "Enter Business Name"
   },
   "issuer": {
@@ -70,7 +71,8 @@
     "cred-types": "Credential Types",
     "end-date": "End Date",
     "start-date": "Effective Date",
-    "website": "Issuer Website"
+    "website": "Issuer Website",
+    "email": "Email"
   },
   "name": {
     "doing-business-as": "Doing Business As",
@@ -95,12 +97,12 @@
     "register-link": "Register your Organization",
     "title": "Recipe"
   },
-  "subject": {
+  "topic": {
     "breadcrumb": "Organization Information",
-    "return-link": "Back to Organization Informatio",
+    "return-link": "Back to Organization Information",  
     "top-panel-title": "Foundational Business Registration Information",
     "note": "Note:",
-    "disclaimer": "The business information above is not real-time, and not a substitute for a Ministry of Government and Consumer Services generated report. Ministry of Government and Consumer Services make no warranty, expressed or implied regarding the accuracy of the business information contained on this page. To find out how to search the official Public Record,",
+    "disclaimer": "The business information above is not real-time and intended for informational purposes only.  This is not a substitute for an official report from the Public Record maintained by the Ministry of Government and Consumer Services. To find out how to search the official Public Record,",
     "click-here": "click here"
   },
   "search": {

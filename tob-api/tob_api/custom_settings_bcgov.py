@@ -7,20 +7,18 @@ CUSTOMIZATIONS  = {
               "Location":
               {
                   "includeFields":[
-                       "id",
-                       "verifiableOrgId",
-                       "doingBusinessAsId",
-                       "locationTypeId",
-                       "addressee",
-                       "addlDeliveryInfo",
-                       "unitNumber",
-                       "streetAddress",
-                       "municipality",
-                       "province",
-                       "postalCode",
-                       "latLong",
-                       "effectiveDate",
-                       "endDate"
+                        "id",
+                        "last_updated",
+                        "credential",
+                        "last_updated",
+                        "addressee",
+                        "civic_address",
+                        "city",
+                        "province",
+                        "postal_code",
+                        "country",
+                        "type",
+                        "issuer"
                     ]
               }
           }
