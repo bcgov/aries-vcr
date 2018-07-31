@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import { SearchResults, SearchResult } from './results.model';
 import { SearchService } from './search.service';
+import 'rxjs/add/operator/finally';
 
 // TODO: This class needs to be refactored into a more general TOB client.
 //       For now, we shove in some non-search things to save time.
@@ -61,19 +62,19 @@ export abstract class SearchClient<T> {
   getById(id: number) {
     this._loading = true;
     this._service.getById(this.resource, id)
+      .finally(this._searchUpdated.bind(this))
       .subscribe(
         this._returnResult.bind(this),
-        this._returnError.bind(this),
-        this._searchUpdated.bind(this));
+        this._returnError.bind(this));
   }
 
   getRelatedById(id: number) {
     this._loading = true;
     this._service.getRelatedById(this.resource, id, this.childPath)
+      .finally(this._searchUpdated.bind(this))
       .subscribe(
         this._determineAndReturnResults.bind(this),
-        this._returnError.bind(this),
-        this._searchUpdated.bind(this));
+        this._returnError.bind(this));
   }
 
   performSearch() {
@@ -86,10 +87,10 @@ export abstract class SearchClient<T> {
     this._loading = true;
     this._searchUpdated();
     this._search = this._service.performSearch(this.searchParams)
+      .finally(this._searchUpdated.bind(this))
       .subscribe(
         this._returnResults.bind(this),
-        this._returnError.bind(this),
-        this._searchUpdated.bind(this));
+        this._returnError.bind(this));
   }
 
   clearSearch() {
@@ -162,7 +163,7 @@ export abstract class SearchClient<T> {
   abstract loadResult(result: any): T;
 
   private _returnError(err: any) {
-    console.error('got error: ', err);
+    this.error = err;
     this._loading = false;
   }
 

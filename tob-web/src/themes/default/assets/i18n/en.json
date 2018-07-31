@@ -51,7 +51,7 @@
     "verified": "Verified"
   },
   "home": {
-    "breadcrumb": "Search",
+    "breadcrumb": "Home",
     "title": "Welcome to British Columbia's Verifiable Organizations",
     "title-orgs": "organizations",
     "title-certs": "permits and licences"
@@ -93,11 +93,14 @@
     "return-link": "Back to Topic"
   },
   "search": {
+    "breadcrumb": "Search",
     "by-name": "Search by Name",
     "by-location": "Search by Location",
     "no-results": "No results",
     "placeholder": "search",
+    "results-error": "Your query could not be completed at this time.",
     "results-title": "Search Results",
-    "return-link": "Back to Search"
+    "return-link": "Back to Search",
+    "title": "Find an Organization"
   }
 }

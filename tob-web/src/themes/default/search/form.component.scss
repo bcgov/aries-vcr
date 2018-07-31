@@ -1,0 +1,60 @@
+.search-head {
+  max-width: 36em;
+}
+
+.search-types {
+  padding: 2rem 1rem 10px;
+}
+
+.search-type {
+  font-size: 16px;
+  padding: 10px;
+  text-decoration: none;
+  &.active {
+    border-bottom: 2px solid #8ac;
+    font-weight: bold;
+  }
+}
+
+.results {
+  //border-bottom: 1px solid #ddd;
+  font-size: 1.6rem;
+  margin-top: 4rem;
+}
+
+.facet {
+  label {
+    display: block;
+  }
+  margin-bottom: 0.25em;
+}
+label + .facet {
+  border-top: 1px solid #ddd;
+  padding-top: 0.5em;
+}
+
+.results-nav {
+  font-size: 1.6rem;
+  padding: 1rem;
+}
+
+.results-none {
+  font-size: 1.8rem;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+.map {
+  font-size: 1.6rem;
+  .map-image {
+    border: 1px solid #ddd;
+    background: url(/assets/map.png);
+    background-size: cover;
+    height: 40vw;
+    width: 100%;
+  }
+}
+
+
+//place all overrides for a specific theme in this file inside your theme/search directory
+@import "../../_active/search/form.component.custom";

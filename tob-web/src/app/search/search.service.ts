@@ -20,7 +20,7 @@ export class SearchService {
       private _http: HttpClient,
   ) {
   }
-  
+
   getById(resource: string, id: number): Observable<SearchResult<any>> {
     const promise = new Promise((resolve) => {
       this._dataService.loadFromApi(`${resource}/${id}`).subscribe(
@@ -64,39 +64,34 @@ export class SearchService {
 
     console.log(params)
 
-    let promise = new Promise((resolve) => {
+    let promise = new Promise((resolve, reject) => {
       function returnResult(rows: any[]) {
         const info = new SearchInfo();
         info.pageNum = 1;
         info.firstIndex = 1;
         info.lastIndex = rows.length;
         info.totalCount = rows.length;
-        setTimeout(() => {
-          resolve(new SearchResults(info, rows));
-        }, 500);
+        resolve(new SearchResults(info, rows));
+      }
+      function handle(request) {
+        request.subscribe(
+          (rows: any) => {
+            returnResult(rows.results);
+          },
+          (err: any) => {
+            reject(err);
+          });
       }
 
       // TODO: Refactor this into something better
       if (params.resource === 'topics') {
-        this._dataService.loadFromApi(`search/topic?${params.filter}=${params.query}`).subscribe(
-          (rows: any) => {
-            setTimeout
-            returnResult(rows.results)
-          }
-        )
+        handle(this._dataService.loadFromApi(`search/topic?${params.filter}=${params.query}`));
       } else if (params.resource === 'issuer') {
-        this._dataService.loadFromApi(``).subscribe(
-          (rows: any[]) => {
-            setTimeout
-            returnResult(rows)
-          }
-        )
+        handle(this._dataService.loadFromApi(``));
       } else if (params.resource === 'creds' || params.resource == 'credtypes') {
-        this._dataService.loadJson('assets/testdata/' + params.resource + '.json', {t: new Date().getTime()})
-          .subscribe((rows: any[]) => {
-            setTimeout
-            returnResult(rows);
-          });
+        handle(
+          this._dataService.loadJson('assets/testdata/' + params.resource + '.json', {t: new Date().getTime()})
+        );
       }
       else {
         returnResult([]);

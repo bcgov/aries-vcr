@@ -24,6 +24,7 @@ import { HomeComponent } from './home/home.component';
 import { IssuerFormComponent } from './issuer/form.component';
 //import { RoadmapComponent } from './roadmap/roadmap.component';
 //import { RoadmapTreeComponent } from './roadmap/tree.component';
+import { SearchComponent } from './search/form.component';
 import { SubjectFormComponent } from './subject/form.component';
 
 
@@ -64,6 +65,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     IssuerFormComponent,
     //RoadmapComponent,
     //RoadmapTreeComponent,
+    SearchComponent,
     SubjectFormComponent,
   ],
   imports: [

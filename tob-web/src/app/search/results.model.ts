@@ -24,7 +24,7 @@ export class SearchResults<T> {
 
   constructor(
     info: SearchInfo,
-    rows: T[]
+    rows: T[],
   ) {
     this.info = info;
     this.rows = rows;
@@ -45,7 +45,7 @@ export class SearchResult<T> {
 
   constructor(
     info: SearchInfo,
-    data: T
+    data: T,
   ) {
     this.info = info;
     this._data = data;

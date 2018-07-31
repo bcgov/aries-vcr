@@ -26,7 +26,8 @@ export class SearchInputComponent implements AfterViewInit {
     private _renderer: Renderer2,
   ) {}
 
-  get value() {
+  get value(): string {
+    if(typeof this._query !== 'string') return '';
     return this._query;
   }
 
