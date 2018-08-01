@@ -12,4 +12,9 @@ export class TopicListComponent {
 
   @Input() public records: TopicResult[];
 
+  typeLabel(val: string): string {
+    if(val) return ('name.'+val).replace(/_/g, '-');
+    return '';
+  }
+
 }

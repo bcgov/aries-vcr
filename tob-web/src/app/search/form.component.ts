@@ -14,8 +14,8 @@ import { TopicSearchClient } from './topic-search.client';
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('searchInput') search: SearchInputComponent;
-  @ViewChild('topicList') nameList: TopicListComponent;
+  @ViewChild('searchInput') _searchInput: SearchInputComponent;
+  @ViewChild('topicList') _nameList: TopicListComponent;
   protected _curQuery: string;
   protected _filterType: string;
   protected _results: SearchResults<TopicResult>;
@@ -40,8 +40,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this._route.queryParams.subscribe(params => {
-      this._curQuery = this.search.value = params['query'];
-      //this.search.focus();
+      this._searchInput.value = params['query'];
+      this._curQuery = this._searchInput.value;
+      if(! this._curQuery.length) {
+        this._searchInput.focus();
+      }
       setTimeout(this.updateQuery.bind(this), 50);
     });
   }
@@ -61,7 +64,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() set filterType(filter: string) {
     this._filterType = filter;
-    //this.search.value = '';
+    //this._searchInput.value = '';
     this.updateQuery();
   }
 
@@ -87,8 +90,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }*/
 
   public updateQuery() {
-    if(! this.search) return;
-    let value = this.search.value;
+    if(! this._searchInput) return;
+    let value = this._searchInput.value;
     if(this._curQuery !== value) {
       this._router.navigate([], { relativeTo: this._route, queryParams: {query: value}, queryParamsHandling: 'merge' });
       return;

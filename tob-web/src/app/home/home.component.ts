@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SearchInputComponent } from '../search/input.component';
 import { GeneralDataService } from 'app/general-data.service';
 import { TopicListComponent } from '../cred/topic-list.component';
@@ -14,7 +15,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('searchInput') search: SearchInputComponent;
+  @ViewChild('searchInput') _searchInput: SearchInputComponent;
   @ViewChild('topicList') nameList: TopicListComponent;
   protected _results: SearchResults<TopicResult>;
   protected _searching = false;
@@ -25,7 +26,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private _searchClient: TopicSearchClient,
-    private _dataService: GeneralDataService
+    private _dataService: GeneralDataService,
+    private _route: ActivatedRoute,
+    private _router: Router,
   ) {}
 
   ngOnInit() {
@@ -38,7 +41,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.search.focus();
+    this._searchInput.focus();
   }
 
   ngOnDestroy() {
@@ -65,7 +68,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   setFilterType(filter: string) {
     this.filterType = filter;
     this._searchClient.clearSearch();
-    this.search.value = '';
+    this._searchInput.value = '';
     return false;
   }
 
@@ -76,6 +79,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this._searchClient.clearSearch();
     }
+  }
+
+  performSearch(value: string) {
+    value = this._searchInput.value;
+    this._router.navigate(['../search/name'], {relativeTo: this._route, queryParams: {query: value}});
   }
 
 }

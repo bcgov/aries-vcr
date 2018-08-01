@@ -1,7 +1,8 @@
 <div class="row name-row" *ngFor="let topic of records">
+<ng-container *ngIf="topic.names.length > 0"> <!-- temp issue with search returning blank topics -->
   <div class="col-sm-7">
     <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
-    <label>{{topic.type}}:</label>
+    <label>{{typeLabel(topic.type) | translate}}:</label>
     <a [routerLink]="['/topic', topic.id] | localize"
       class="body-link cred-link name">{{topic.names[0].text}}</a>
     <br>
@@ -24,4 +25,5 @@
       <address [record]="topic.addresses[0]"></address>
     </small>
   </div>
+</ng-container>
 </div>

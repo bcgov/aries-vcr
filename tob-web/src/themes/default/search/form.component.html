@@ -18,11 +18,13 @@
         <div class="search-types">
           <a routerLink="../name" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='name'}">Names</a>
           <a routerLink="../location" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='location'}">Locations</a>
+          <a routerLink="../issuer" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='issuer'}">Issuers</a>
+          <a routerLink="../map" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='map'}">Map</a>
         </div>
       </div>
 
-      <div class="alert alert-danger mrgn-tp-lg" *ngIf="error">
-        {{'search.results-error' | translate}}
+      <div class="alert alert-danger mrgn-tp-lg" *ngIf="error" translate>
+        search.results-error
       </div>
 
       <div class="row results mrgn-tp-lg" *ngIf="results && !error">
@@ -58,8 +60,13 @@
 
         <div class="col-sm-10 col-sm-offset-1 rows">
           <label class="control-label" translate>search.results-title</label>
-          <topic-list [records]="topics"></topic-list>
-          <search-nav [info]="results && results.info"></search-nav>
+          <ng-container *ngIf="topics.length">
+            <topic-list [records]="topics"></topic-list>
+            <search-nav [info]="results && results.info"></search-nav>
+          </ng-container>
+          <div class="alert alert-info" *ngIf="!topics.length" translate>
+            search.no-results
+          </div>
         </div>
       </div>
 

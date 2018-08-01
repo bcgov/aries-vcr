@@ -20,12 +20,8 @@
           <div class="search-inner">
             <div class="search-title">
               <h2>Find an organization</h2>
-              <div class="search-types">
-                <a href="#" class="search-type" [ngClass]="{active: filterType==='name'}" (click)="setFilterType('name')">Names</a>
-                <a href="#" class="search-type" [ngClass]="{active: filterType==='location'}" (click)="setFilterType('location')">Locations</a>
-              </div>
             </div>
-            <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
+            <search-input #searchInput (accepted)="performSearch($event)"></search-input>
           </div>
         </div>
       </div>

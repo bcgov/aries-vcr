@@ -12,26 +12,28 @@ import {
 export class SearchInputComponent implements AfterViewInit {
 
   @ViewChild('queryInput') private _input : ElementRef;
+  @ViewChild('queryButton') private _button : ElementRef;
+  @Output() accepted = new EventEmitter<any>();
   @Output() queryChange = new EventEmitter<string>();
   @Output() focusChange = new EventEmitter<boolean>();
 
   protected _delay: number = 150;
   protected _focused: boolean = false;
   protected _inputTimer;
-  protected _loading: boolean = false;
   protected _lastQuery: string;
-  protected _query: string;
+  protected _loading: boolean = false;
+  protected _query: string = '';
 
   constructor(
     private _renderer: Renderer2,
   ) {}
 
   get value(): string {
-    if(typeof this._query !== 'string') return '';
     return this._query;
   }
 
   set value(val: string) {
+    if(typeof val !== 'string') val = '';
     this._query = val;
     if(this._input) this._input.nativeElement.value = val;
   }
@@ -80,6 +82,19 @@ export class SearchInputComponent implements AfterViewInit {
     this._renderer.listen(this._input.nativeElement, 'change', (event) => {
       this.updateQuery(event.target.value);
     });
+    this._renderer.listen(this._input.nativeElement, 'keydown', (event) => {
+      if(event.keyCode === 13) {
+        event.preventDefault();
+        this.acceptInput();
+      }
+    });
+    this._renderer.listen(this._button.nativeElement, 'click', (event) => {
+      this.acceptInput();
+    });
+  }
+
+  protected acceptInput() {
+    this.accepted.emit(null);
   }
 
   protected updateQuery(value: string, live?: boolean) {
