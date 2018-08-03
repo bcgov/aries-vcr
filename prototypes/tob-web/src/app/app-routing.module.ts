@@ -8,8 +8,8 @@ import { HomeComponent } from './home/home.component';
 import { IssuerFormComponent } from './issuer/form.component';
 //import { RoadmapComponent } from './roadmap/roadmap.component';
 import { SearchComponent } from './search/form.component';
-import { SubjectFormComponent } from './subject/form.component';
 import { SearchModule } from './search/search.module';
+import { TopicFormComponent } from './topic/form.component';
 
 export const routes: Routes = [
   {
@@ -41,7 +41,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: SubjectFormComponent,
+        component: TopicFormComponent,
       },
       {
         path: 'cred/:credId',

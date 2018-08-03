@@ -12,7 +12,6 @@ import { IssuerCredentialTypeClient } from './credential-type.client';
 import { NameSearchClient } from './name-search.client';
 import { TopicSearchClient } from './topic-search.client';
 import { SearchService } from './search.service';
-import { SubjectSearchClient } from './subject-search.client';
 import { SearchInputComponent } from './input.component';
 import { SearchNavComponent } from './nav.component';
 
@@ -33,7 +32,6 @@ const ROUTES = [];
     NameSearchClient,
     TopicSearchClient,
     SearchService,
-    SubjectSearchClient,
   ],
   imports: [
     CommonModule,

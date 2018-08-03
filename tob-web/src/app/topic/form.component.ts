@@ -7,11 +7,11 @@ import { SearchResult, SearchResults } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-  selector: 'subject-form',
-  templateUrl: '../../themes/_active/subject/form.component.html',
-  styleUrls: ['../../themes/_active/subject/form.component.scss']
+  selector: 'topic-form',
+  templateUrl: '../../themes/_active/topic/form.component.html',
+  styleUrls: ['../../themes/_active/topic/form.component.scss']
 })
-export class SubjectFormComponent implements OnInit, OnDestroy {
+export class TopicFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
   error: string;

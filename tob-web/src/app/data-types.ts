@@ -86,7 +86,6 @@ export class CredentialResult {
 
 export class CredResult {
   id: number;
-  subject: SubjectResult;
   credential_type: CredTypeResult;
   start_date: string;
   end_date: string;
@@ -100,7 +99,6 @@ export class CredResult {
   load(result: any) {
     return load_data(this, result, {
       credentialType: CredTypeResult,
-      subject: SubjectResult,
     }, {
       addresses: AddressResult,
       contacts: ContactResult,
@@ -194,26 +192,6 @@ export class PersonResult {
     });
   }
 }
-
-export class SubjectResult {
-  id: number;
-  sourceId: string;
-  initialCredential: CredResult;
-  startDate: string;
-  endDate: string;
-
-  // extra API fields
-  names: NameResult[];
-
-  load(result: any) {
-    return load_data(this, result, {
-      initialCredential: CredResult
-    }, {
-      names: NameResult
-    });
-  }
-}
-
 
 export class TopicResult {
   id: number;
