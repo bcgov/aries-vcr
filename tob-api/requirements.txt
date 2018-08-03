@@ -35,7 +35,7 @@ drf-generators>=0.3.0
 von-agent==1.1.2
 
 asyncio>=3.4.3,<4
-git+https://github.com/PSPC-SPAC-buyandsell/didauth.git#v1.0
+git+https://github.com/PSPC-SPAC-buyandsell/didauth.git@v1.1
 # ==================================================================
 
 # Debugging

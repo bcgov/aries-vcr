@@ -185,6 +185,8 @@ def verify_signature(request, key_finder=None):
     qs = request.META['QUERY_STRING']
     if qs:
         path += '?' + qs
+    log = logging.getLogger(__name__)
+    log.debug("didauth %s '%s', headers: %r", request.method, path, raw_headers)
     try:
         verified = verifier.verify(
             raw_headers, path=path, method=request.method)
