@@ -27,16 +27,16 @@ header {
 
 
 
-  .header-logo {
-    height: 45px;
-    margin-right: 18px;
+.header-logo {
+  height: 45px;
+  margin-right: 18px;
 
-    @media (max-width: 767px) {
-      width: 110px;
-      height: 30px;
-    }
-
+  @media (max-width: 767px) {
+    width: 110px;
+    height: 30px;
   }
+
+}
 
 // Headers
 .page-header {
@@ -77,10 +77,10 @@ a {
 }
 
 .btn-default {
-    margin-right: 15px;
+    //margin-right: 15px;
 
     @media screen and (max-width:768px) {
-        margin-top:15px;
+        //margin-top:15px;
     }
 }
 
