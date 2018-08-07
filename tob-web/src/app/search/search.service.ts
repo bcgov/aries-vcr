@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -16,17 +17,21 @@ import { SearchInfo, SearchResults, SearchResult } from './results.model';
 export class SearchService {
 
   constructor(
-      private _dataService: GeneralDataService,
-      private _http: HttpClient,
+    private _dataService: GeneralDataService,
+    private _http: HttpClient,
+    private _translate: TranslateService,
   ) {
   }
 
   getById(resource: string, id: number): Observable<SearchResult<any>> {
-    const promise = new Promise((resolve) => {
+    const promise = new Promise((resolve, reject) => {
       this._dataService.loadFromApi(`${resource}/${id}`).subscribe(
         (data: any) => {
           const info = new SearchInfo();
           resolve(new SearchResult(info, data))
+        },
+        (err: any) => {
+          reject(err);
         }
       )
     });
@@ -34,7 +39,7 @@ export class SearchService {
   }
 
   getRelatedById(resource: string, id: number, childResource: string): Observable<SearchResults<any>> {
-    const promise = new Promise((resolve) => {
+    const promise = new Promise((resolve, reject) => {
       this._dataService.loadFromApi(`${resource}/${id}/${childResource}`).subscribe(
         (rows: any[] | any) => {
 
@@ -53,6 +58,9 @@ export class SearchService {
             const info = new SearchInfo();
             resolve(new SearchResult(info, rows))
           }
+        },
+        (err: any) => {
+          reject(err);
         }
       )
     });
@@ -98,6 +106,14 @@ export class SearchService {
       }
     });
     return Observable.fromPromise(promise);
+  }
+
+  translateError(err: any): Observable<string> {
+    if(! err) return Observable.create(null);
+    if(err.status === 404) {
+      return this._translate.get('general.not-found');
+    }
+    return this._translate.get('general.other-error');
   }
 
 }

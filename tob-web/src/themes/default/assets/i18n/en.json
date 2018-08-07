@@ -38,15 +38,23 @@
     "names": "Names",
     "people": "People",
     "start-date": "Effective Date",
+    "topic-title": "Other Credentials",
     "verify-button-label": "Verify Credential",
     "view-link": "View credential",
     "whats-this-link": "What's this?",
     "verify-status": "Verification Status:"
   },
   "general": {
+    "display-list": "List",
+    "display-cards": "Cards",
+    "other-error": "An unknown error occurred.",
+    "hide-filters": "Hide Filters",
     "none": "None",
     "map-link": "Show on map",
     "next-link": "Next",
+    "not-found": "This record could not be located.",
+    "period-current": "Current",
+    "period-historical": "Historical",
     "prev-link": "Previous",
     "verified": "Verified"
   },

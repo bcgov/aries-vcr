@@ -9,7 +9,7 @@
   }
 }
 
-.btn-group > .btn {
+.btn-group > .btn, .btn-default {
   // why is this necessary??
   margin-right: 0;
 }

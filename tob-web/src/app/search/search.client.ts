@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { SearchResults, SearchResult } from './results.model';
 import { SearchService } from './search.service';
@@ -10,13 +11,14 @@ import 'rxjs/add/operator/finally';
 export abstract class SearchClient<T> {
   public result: SearchResult<T>;
   public results: SearchResults<T>;
-  public error: any;
   public resource;
   public childPath;
+  public error: any;
   public filter;
 
-
   private _loading: boolean = false;
+  private _errorObj: any;
+  private _errorSub: Subscription;
   private _params: { [key: string]: any } = {};
   private _search: Subscription;
   private _statusUpdate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -163,7 +165,18 @@ export abstract class SearchClient<T> {
   abstract loadResult(result: any): T;
 
   private _returnError(err: any) {
-    this.error = err;
+    this._errorObj = err;
+    if(this._errorSub) this._errorSub.unsubscribe();
+    this.error = {
+      obj: this._errorObj,
+      display: '',
+    };
+    this._errorSub = this.translateError(err).subscribe((val) => {
+      this.error = {
+        obj: this._errorObj,
+        display: val,
+      };
+    });
     this._loading = false;
   }
 
@@ -173,5 +186,9 @@ export abstract class SearchClient<T> {
 
   subscribe(proc) {
     return this._statusUpdate.subscribe(proc);
+  }
+
+  translateError(err: any): Observable<string> {
+    return this._service.translateError(err);
   }
 }

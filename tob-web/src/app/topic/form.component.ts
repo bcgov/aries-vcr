@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CredResult, TopicResult, NameResult, CredentialResult } from '../data-types';
 import { TopicClient } from '../search/topic.client';
 import { TopicCredClient } from '../search/topic-cred.client';
@@ -14,12 +14,14 @@ import { Subscription } from 'rxjs/Subscription';
 export class TopicFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
-  error: string;
+  loading: boolean;
 
   private _topic: SearchResult<TopicResult>;
+  private _topicError: any;
   private _topicLoading: boolean;
 
   private _creds: SearchResults<CredentialResult>;
+  private _credsError: any;
   private _credsLoading: boolean;
 
   private _idSub: Subscription;
@@ -28,16 +30,17 @@ export class TopicFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private _route: ActivatedRoute,
+    private _router: Router,
     private _topicClient: TopicClient,
     private _topicCredClient: TopicCredClient) { }
 
   ngOnInit() {
+    this._topicSub = this._topicClient.subscribe(this._receiveTopic.bind(this))
+    this._topicCredsSub = this._topicCredClient.subscribe(this._receiveCreds.bind(this))
     this._idSub = this._route.params.subscribe(params => {
+      this.loading = true;
       this.id = +params['topicId'];
-      this._topicSub = this._topicClient.subscribe(this._receiveTopic.bind(this))
       this._topicClient.getRelatedById(this.id);
-
-      this._topicCredsSub = this._topicCredClient.subscribe(this._receiveCreds.bind(this))
       this._topicCredClient.getRelatedById(this.id);
     });
   }
@@ -56,34 +59,33 @@ export class TopicFormComponent implements OnInit, OnDestroy {
     return this._topic && this._topic.data;
   }
 
-  get topicLoading(): boolean {
-    return this._topicLoading;
+  get error(): string {
+    if(this._topicError && ! this.notFound) {
+      return this._topicError.display;
+    }
+  }
+
+  get notFound(): boolean {
+    return (this._topicError && this._topicError.obj.status === 404);
   }
 
   get creds(): CredentialResult[] {
     return this._creds && this._creds.rows;
   }
 
-  get credsLoading(): boolean {
-    return this._credsLoading;
-  }
-
   protected _receiveTopic(loading: boolean) {
-    this._topicLoading = loading;
-    // console.log(this.topic)
     this._topic = this._topicClient.result;
-    this.loaded = true;
+    this._topicError = this._topicClient.error;
+    this._topicLoading = loading;
+    this.loaded = !! this._topic;
+    this.loading = false;
   }
 
   protected _receiveCreds(loading: boolean) {
-    this._credsLoading = loading;
     this._creds = this._topicCredClient.results;
+    this._credsError = this._topicCredClient.error;
+    this._credsLoading = loading;
   }
-
-  // protected _credsUpdate(loading: boolean) {
-  //   this._credsLoading = loading;
-  //   this._creds = this._credSearch.results;
-  // }
 
   ngOnDestroy() {
     this._topicSub.unsubscribe();
