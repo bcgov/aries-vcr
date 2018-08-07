@@ -6,7 +6,8 @@ from string import ascii_lowercase, digits
 import base58
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from didauth.base import KeyFinderBase, VerifierException
+from didauth.base import KeyFinderBase
+from didauth.error import VerifierException
 from didauth.headers import HeaderVerifier
 from rest_framework import authentication, exceptions, permissions
 
