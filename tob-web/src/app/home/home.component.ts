@@ -20,7 +20,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _results: SearchResults<TopicResult>;
   protected _searching = false;
   protected _sub: Subscription;
-  public inited = true;
+  public inited = false;
+  public loadError = null;
   public recordCounts = {orgs: 0, certs: 0};
   public filterType = 'name';
 
@@ -34,18 +35,30 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this._searchClient.init();
     this._sub = this._searchClient.subscribe(this._receiveStatus.bind(this));
-    this._dataService.quickLoad().then(() => {
-      this.recordCounts.orgs = this._dataService.getRecordCount('topic')
-      this.recordCounts.certs = this._dataService.getRecordCount('credential')
-    })
+    this._dataService.quickLoad().catch(err => {
+      console.log('?');
+      this.loadError = err;
+      this.inited = true;
+    }).then((loaded) => {
+      if(loaded) {
+        this.recordCounts.orgs = this._dataService.getRecordCount('topic');
+        this.recordCounts.certs = this._dataService.getRecordCount('credential');
+      }
+      this.inited = true;
+      setTimeout(() => this.focus(), 50);
+    });
   }
 
   ngAfterViewInit() {
-    this._searchInput.focus();
+    this.focus();
   }
 
   ngOnDestroy() {
     this._sub.unsubscribe();
+  }
+
+  focus() {
+    if(this._searchInput) this._searchInput.focus();
   }
 
   get topics(): TopicResult[] {

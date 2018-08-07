@@ -39,7 +39,7 @@ export class GeneralDataService {
   }
 
   quickLoad(force?) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       if(this.quickLoaded && !force) {
         resolve(1);
         return;
@@ -47,13 +47,12 @@ export class GeneralDataService {
       let baseurl = this.getRequestUrl('');
       console.log('base url: ' + baseurl);
       if(! baseurl) {
-        resolve(0);
+        reject("Base URL not defined");
         return;
       }
       let req = this._http.get(baseurl + 'quickload')
         .catch(error => {
           console.error(error);
-          resolve(1);
           return Observable.throw(error);
         });
       req.subscribe(data => {
@@ -70,6 +69,8 @@ export class GeneralDataService {
         }
         this.quickLoaded = true;
         resolve(1);
+      }, err => {
+        reject(err);
       });
     });
   }
