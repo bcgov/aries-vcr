@@ -16,14 +16,13 @@
         <div class="col-sm-12">
             <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
               <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
-           
+             {{record.claims}}
            
               <div class="panel name-panel">
-                  <div class="panel-heading"  >
-                    {{record.credential_type.description}}
-                    <font translate>cred.verify-info</font>
+                  <div class="panel-heading" translate >
+                      cred.business_registration
                   </div>
-                  <h3 class="panel-title"> <strong>{{names[0].text }}</strong></h3>
+                  <h3 class="panel-title"> <strong>{{record.names[0].text}}</strong></h3>
               
                 <div class="panel-body form-body">
               
@@ -32,12 +31,56 @@
                         <div class="form-field">
                             <a class="body-link issuer-link" [routerLink]="['/issuer', issuer.id] | localize">{{issuer.name}}</a>
                         </div>
+                        <br/>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" translate>cred.type</label>
+                        <div  *ngFor="let category of categories">
+                            <div  *ngIf="category.type === 'topic_type'">
+                                <div *ngIf="category.value" >
+                                    {{('business_type.' + category.value) | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" translate>cred.corp-num</label>
+                        <div class="form-field">
+                           {{record.topics[0].source_id}}
+                        </div>
                     </div>
 
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.start-date</label>
                         <div class="form-field">
                             <span *ngIf="record.start_date">{{record.start_date | date }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" translate>cred.status</label>
+                        <div  *ngFor="let category of categories">
+                            <div  *ngIf="category.type === 'topic_status'">
+                                <div *ngIf="category.value" >
+                                    {{('business_status.' + category.value) | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" translate>cred.effective-date</label>
+                        <div class="form-field">
+                            <span *ngIf="record.start_date">{{record.start_date | date }}</span>
+                        </div>
+                    </div>
+                   
+                    <div class="row form-group"  *ngIf="record.addresses.length > 0">
+                        <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
+                        <div class="form-field">
+                            <span *ngIf="record.start_date">{{ record.addresses[0].province }}</span>
                         </div>
                     </div>
 
@@ -57,10 +100,10 @@
                           <div class="col-sm-12" *ngIf="! verifying">
                             <div [class]="'verify-result panel panel-' + (verifyStatus == 'success' ? 'success' : 'warning')" *ngIf="verifyStatus && verifyStatus !== 'error'">
                               <div class="panel-heading">
-                                {{'cred.verify-status' | translate}} {{verifyStatus}}!!!
+                                {{'cred.verify-status' | translate}} 
                               </div>
                               <div class="panel-body">
-                                <code>{{verifyResult}}!!</code>
+                                {{'cred.success' | translate }} 
                               </div>
                             </div>
                             <section class="alert alert-danger" *ngIf="verifyStatus === 'error'">

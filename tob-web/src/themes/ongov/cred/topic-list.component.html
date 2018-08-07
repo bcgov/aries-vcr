@@ -1,9 +1,18 @@
 <div class="row name-row" *ngFor="let topic of records">
   <div class="col-sm-7">
     <a [routerLink]="['/topic', topic.id] | localize"
-      class="body-link  name">{{topic.names[0].text | titlecase}}</a>
+      class="body-link  name">{{topic.names[0].text}}</a>
     <br>
-    <label>{{topic.type | titlecase }}</label>
+   
+    <label *ngIf="topic.categories.length > 0">
+       <div  *ngFor="let category of topic.categories">
+          <div  *ngIf="category.type === 'topic_type'">
+             <div *ngIf="category.value" >
+              {{('business_type.' + category.value) | translate}}
+            </div>
+          </div>
+        </div>
+    </label>
   </div>
  <div class="col-sm-5">
       <small *ngIf="topic.addresses.length > 0">

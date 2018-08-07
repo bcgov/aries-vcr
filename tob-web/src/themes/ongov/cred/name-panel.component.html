@@ -1,32 +1,49 @@
 <div class="panel name-panel" *ngIf="record && name">
-    <div class="panel-heading" translate >topic.top-panel-title</div>
-    <h3 class="panel-title"> <strong>{{name.text | titlecase  }}</strong></h3>
+    <h3 class="panel-title"> <strong>{{name.text }}</strong></h3>
 
   <div class="panel-body form-body">
 
       <div class="row form-group">
           <label class="col-sm-3 control-label" translate>cred.type</label>
           <div class="form-field">
-             {{record.type | titlecase }}
+                <div  *ngFor="let category of categories">
+                        <div  *ngIf="category.type === 'topic_type'">
+                                <div *ngIf="category.value" >
+                                        {{('business_type.' + category.value) | translate}}
+                                </div>
+                        </div>
+                </div>
           </div>
       </div>
 
-
       <div class="row form-group">
-            <label class="col-sm-3 control-label" translate>cred.status</label>
+            <label class="col-sm-3 control-label" translate>cred.corp-num</label>
             <div class="form-field">
-               TBD
+               {{record.source_id}}
             </div>
       </div>
 
       <div class="row form-group">
+            <label class="col-sm-3 control-label" translate>cred.status</label>
+            <div class="form-field">
+                    <div  *ngFor="let category of categories">
+                            <div  *ngIf="category.type === 'topic_status'">
+                                <div *ngIf="category.value" >
+                                    {{('business_status.' + category.value) | translate}}
+                                </div>
+                            </div>
+                    </div>
+            </div>
+      </div>
+
+      <div class="row form-group" *ngIf="addresses.length > 0">
           <label class="col-sm-3 control-label" translate>cred.municipality</label>
           <div class="form-field">
              {{addresses[0].city | titlecase }}
           </div>
       </div>
 
-      <div class="row form-group">
+      <div class="row form-group" *ngIf="addresses.length > 0">
           <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
           <div class="form-field">
               {{addresses[0].province}}

@@ -15,6 +15,7 @@ from api_v2.serializers.rest import (
     ClaimSerializer,
     ContactSerializer,
     NameSerializer,
+    CategorySerializer,
     PersonSerializer,
 )
 
@@ -32,6 +33,7 @@ from api_v2.models.Claim import Claim
 from api_v2.models.Contact import Contact
 from api_v2.models.Name import Name
 from api_v2.models.Person import Person
+from api_v2.models.Category import Category
 
 
 class IssuerViewSet(ViewSet):
@@ -93,9 +95,11 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "credential_type",
             "issuer",
             "addresses",
+            "categories",
             "names",
             "contacts",
             "people",
+            "topics"
         )
 
     def get_credential_type(self, obj):
@@ -273,4 +277,16 @@ class PersonViewSet(ViewSet):
         queryset = Person.objects.all()
         item = get_object_or_404(queryset, pk=pk)
         serializer = PersonSerializer(item)
+        return Response(serializer.data)
+
+class CategoryViewSet(ViewSet):
+    def list(self, request):
+        queryset = Category.objects.all()
+        serializer = CategorySerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Category.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = CategorySerializer(item)
         return Response(serializer.data)

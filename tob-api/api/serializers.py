@@ -56,7 +56,7 @@ class JurisdictionSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Location
-    fields = list(utils.fetch_custom_settings('serializers', 'Location', 'includeFields'))
+    fields = ('id', 'create_timestamp', 'update_timestamp', 'addressee','addlDeliveryInfo', 'unitNumber', 'streetAddress', 'municipality', 'province', 'postalCode', 'latLong', 'effectiveDate', 'endDate')
    
 class LocationTypeSerializer(serializers.ModelSerializer):
   class Meta:

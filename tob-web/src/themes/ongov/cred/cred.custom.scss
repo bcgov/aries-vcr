@@ -33,6 +33,7 @@
 }
 
 .claim-info {
+  float: right;
   &.location::before {
     content: "";
   }
@@ -65,3 +66,12 @@
   padding: .5rem 1.3rem .4rem;
   vertical-align: baseline;
 }
+
+.header-link {
+  color: white;
+}
+
+.panel-success > .panel-body {
+  color: #3c763d;
+}
+

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CredResult, IssuerResult, NameResult, TopicResult, AddressResult, ContactResult, PersonResult } from '../data-types';
+import { CredResult, IssuerResult, NameResult, TopicResult, CategoryResult, AddressResult, ContactResult, PersonResult } from '../data-types';
 
 @Component({
   selector: 'name-panel',
@@ -30,6 +30,10 @@ export class NamePanelComponent {
 
   get name(): NameResult {
     return this.record && this.record.names && this.record.names.length ? this.record.names[0] : null;
+  }
+
+  get categories(): CategoryResult[] {
+    return this.record && this.record.categories && this.record.categories.length ? this.record.categories : [];
   }
 
   get issuer(): IssuerResult {

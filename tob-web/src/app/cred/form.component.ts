@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GeneralDataService } from 'app/general-data.service';
 import { ActivatedRoute } from '@angular/router';
-import { CredResult, IssuerResult, NameResult, PersonResult, ContactResult, AddressResult, CredentialResult } from '../data-types';
+import { CredResult, IssuerResult, NameResult, PersonResult, ContactResult, CategoryResult, AddressResult, TopicResult, CredentialResult } from '../data-types';
 import { CredentialClient } from '../search/cred.client';
 import { SearchResult } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
@@ -65,6 +65,13 @@ export class CredFormComponent implements OnInit, OnDestroy {
 
   get addresses(): AddressResult[] {
     return this.record && this.record.addresses && this.record.addresses.length ? this.record.addresses : [];
+  }
+  get topics(): TopicResult[] {
+    return this.record && this.record.topics && this.record.topics.length ? this.record.topics : [];
+  }
+
+  get categories(): CategoryResult[] {
+    return this.record && this.record.categories && this.record.categories.length ? this.record.categories : [];
   }
 
   get names(): NameResult[] {

@@ -20,6 +20,7 @@ from api_v2.serializers.rest import (
     TopicSerializer,
     CredentialSerializer,
     IssuerSerializer,
+    CategorySerializer
 )
 
 from api_v2.search_indexes import TopicIndex
@@ -28,6 +29,7 @@ from api_v2.models.Name import Name
 from api_v2.models.Address import Address
 from api_v2.models.Person import Person
 from api_v2.models.Contact import Contact
+from api_v2.models.Category import Category
 from api_v2 import utils
 
 
@@ -76,20 +78,8 @@ class CustomAddressSerializer(AddressSerializer):
     # issuer = SerializerMethodField()
 
     class Meta(AddressSerializer.Meta):
-        fields = list(utils.fetch_custom_settings('serializers', 'Location', 'includeFields'))
-        # (
-        #    "id",
-        #    "credential",
-        #    "last_updated",
-        #    "addressee",
-        #    "civic_address",
-        #    "city",
-        #    "province",
-        #    "postal_code",
-        #    "country",
-            # "type"
-            # "issuer"
-        #)
+        fields = list(utils.fetch_custom_settings('serializers', 'Address', 'includeFields'))
+        fields.append('last_updated') 
 
     def get_last_updated(self, obj):
         return obj.credential.start_date
@@ -158,12 +148,29 @@ class CustomPersonSerializer(PersonSerializer):
         )
         return serializer.data
 
+class CustomCategorySerializer(CategorySerializer):
+    last_updated = SerializerMethodField()
+
+    class Meta(CategorySerializer.Meta):
+        fields = (
+            "id",
+            "credential",
+            "last_updated",
+            "type",
+            "value"
+        )
+
+    def get_last_updated(self, obj):
+        return obj.credential.start_date
+
+   
 
 class CustomTopicSerializer(TopicSerializer):
     names = SerializerMethodField()
     addresses = SerializerMethodField()
     contacts = SerializerMethodField()
     people = SerializerMethodField()
+    categories = SerializerMethodField()
 
     class Meta(TopicSerializer.Meta):
         depth = 1
@@ -175,6 +182,7 @@ class CustomTopicSerializer(TopicSerializer):
             "addresses",
             "contacts",
             "people",
+            "categories"
         )
 
     def get_names(self, obj):
@@ -217,6 +225,15 @@ class CustomTopicSerializer(TopicSerializer):
         serializer = CustomPersonSerializer(instance=people, many=True)
         return serializer.data
 
+    def get_categories(self, obj):
+        credential_ids = (
+            obj.direct_credentials()
+            .filter(end_date=None)
+            .values_list("id", flat=True)
+        )
+        categories = Category.objects.filter(credential__id__in=credential_ids)
+        serializer = CustomCategorySerializer(instance=categories, many=True)
+        return serializer.data
 
 class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
     class Meta(CustomTopicSerializer.Meta):

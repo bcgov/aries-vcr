@@ -38,6 +38,16 @@ export class AddressResult {
   }
 }
 
+export class CategoryResult {
+  id: number;
+  type: string;
+  value: string;
+
+  load(result: any) {
+    return load_data(this, result, {});
+  }
+}
+
 export class ContactResult {
   id: number;
   credential: CredResult;
@@ -65,21 +75,25 @@ export class CredentialResult {
   issuer: IssuerResult;
   start_date: string;
   end_date: string;
-
+  
+  topics: TopicResult[];
   addresses: AddressResult[];
   contacts: ContactResult[];
   names: NameResult[];
   people: PersonResult[];
+  categories: CategoryResult[];
 
   load(result: any) {
     return load_data(this, result, {
       credential_type: CredTypeResult,
-      issuer: IssuerResult,
+      issuer: IssuerResult
     }, {
       addresses: AddressResult,
       contacts: ContactResult,
       names: NameResult,
       people: PersonResult,
+      categories: CategoryResult,
+      topics: TopicResult
     });
   }
 }
@@ -95,6 +109,7 @@ export class CredResult {
   contacts: ContactResult[];
   names: NameResult[];
   people: PersonResult[];
+  categories: CategoryResult[];
 
   load(result: any) {
     return load_data(this, result, {
@@ -104,6 +119,7 @@ export class CredResult {
       contacts: ContactResult,
       names: NameResult,
       people: PersonResult,
+      categories: CategoryResult
     });
   }
 
@@ -121,6 +137,9 @@ export class CredResult {
   }
   get havePeople() {
     return this.people && this.people.length;
+  }
+  get haveCategories() {
+    return this.categories && this.categories.length;
   }
 }
 
@@ -171,12 +190,14 @@ export class NameResult {
       credential: CredResult,
     });
   }
+}
+
 
   // get issuer(): IssuerResult {
   //   return this.credential && this.credential.credentialType &&
   //     this.credential.credentialType.issuer;
   // }
-}
+
 
 export class PersonResult {
   id: number;
@@ -202,10 +223,12 @@ export class TopicResult {
   names: NameResult[];
   contacts: ContactResult[];
   people: PersonResult[];
+  categories: CategoryResult[];
 
   load(result: any) {
     return load_data(this, result, {
       address: AddressResult,
+      category: CategoryResult
     });
   }
 

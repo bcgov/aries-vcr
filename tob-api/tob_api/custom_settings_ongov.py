@@ -4,11 +4,10 @@ Enclose property names in double quotes in order to JSON serialize the contents 
 CUSTOMIZATIONS  = {
           "serializers":
           {
-              "Location":
+              "Address":
               {
                   "includeFields":[
                         "id",
-                        "last_updated",
                         "city",
                         "province"
                   ]
