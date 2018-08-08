@@ -8,6 +8,8 @@ from .CredentialType import CredentialType
 
 
 class Credential(Auditable):
+    reindex_related = ['topics']
+
     topics = models.ManyToManyField('Topic', related_name="credentials")
     credential_type = models.ForeignKey(
         CredentialType, related_name="credentials"

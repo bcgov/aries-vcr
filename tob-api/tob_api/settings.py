@@ -72,7 +72,7 @@ INSTALLED_APPS = [
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 
-HAYSTACK_SIGNAL_PROCESSOR = "haystack.signals.RealtimeSignalProcessor"
+HAYSTACK_SIGNAL_PROCESSOR = "api_v2.signals.RelatedRealtimeSignalProcessor"
 
 MIDDLEWARE_CLASSES = [
     "django.middleware.security.SecurityMiddleware",

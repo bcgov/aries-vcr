@@ -6,6 +6,8 @@ from .Credential import Credential
 
 
 class Name(Auditable):
+    reindex_related = ['credential']
+
     credential = models.ForeignKey(Credential, related_name="names")
     text = models.TextField(null=True)
     language = models.TextField(null=True)

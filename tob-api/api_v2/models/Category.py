@@ -6,6 +6,8 @@ from .Credential import Credential
 
 
 class Category(Auditable):
+    reindex_related = ['credential']
+    
     credential = models.ForeignKey(Credential, related_name="categories")
     type = models.TextField(null=True)
     value = models.TextField(null=True)
