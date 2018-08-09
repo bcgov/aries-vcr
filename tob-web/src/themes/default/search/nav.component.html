@@ -6,7 +6,7 @@
     </button>
   </div>
   <div class="col-sm-4 text-center col-center">
-    <span *ngIf="loaded">Records {{info.firstIndex}}-{{info.lastIndex}} of {{info.totalCount}}</span>
+    <span *ngIf="loaded"><span translate>search.records</span> {{info.firstIndex}}-{{info.lastIndex}} of {{info.totalCount}}</span>
   </div>
   <div class="col-sm-4 text-right col-right">
     <button type="button" class="btn btn-default btn-md nav-button nav-next" [disabled]="!haveNext" (click)="performNav($event, 'next')">

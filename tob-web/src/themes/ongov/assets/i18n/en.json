@@ -3,7 +3,7 @@
     "home": "home"
   },
   "app": {
-    "title": "TheOrgBook Demo",
+    "title": "Ontario's TheOrgBook",
     "breadcrumb": "Home",
     "header": {
       "title": "TheOrgBook",
@@ -116,7 +116,8 @@
     "no-results": "No results",
     "placeholder": "search",
     "results-title": "Search Results",
-    "return-link": "Back to Search"
+    "return-link": "Back to Search",
+    "records": "Records"
   },
   "business_type": {
     "ONBIS_BUSINESS_TYPE_A": "Ontario Business Corporation",

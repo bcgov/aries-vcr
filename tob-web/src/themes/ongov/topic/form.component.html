@@ -1,0 +1,36 @@
+<section id="topic-form">
+
+    <app-not-found *ngIf="notFound"></app-not-found>
+    <div class="alert alert-danger" *ngIf="error">
+      {{error}}
+    </div>
+  
+    <div class="row" *ngIf="loading">
+      <div class="col-sm-12 page-load">
+        <div class="loading-indicator"></div>
+      </div>
+    </div>
+  
+    <div class="row" *ngIf="loaded">
+      <div class="col-sm-12">
+        <a [routerLink]="'/home' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
+  
+        <div class="row">
+          <div class="col-sm-12 name-info">
+            <!-- <name-panel *ngFor="let name of names" [record]="name"></name-panel> -->
+            <name-panel [record]="topic"></name-panel>
+          </div>
+        </div>
+  
+      </div>
+  
+      
+    </div>
+  
+    <div class="row" *ngIf="loaded">
+      <div class="col-sm-12">
+            <cred-list [topicId]="id" [records]="creds" *ngIf="! credsLoading"></cred-list>
+      </div>
+    </div>
+  
+  </section>
