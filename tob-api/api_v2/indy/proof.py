@@ -44,51 +44,6 @@ class ProofManager(object):
         return eventloop.do(self.construct_proof_async())
 
     async def construct_proof_async(self):
-
-        # Shim for permitify:
-        # convert indy schema restrictions
-        # to credential wallet id
-        try:
-            for requested_attribute in self.proof_request[
-                "requested_attributes"
-            ]:
-                restrictions = self.proof_request["requested_attributes"][
-                    requested_attribute
-                ]["restrictions"]
-
-                # We make an assumption here, fail otherwise
-                schema_id = restrictions[0]["schema_id"]
-                schema_key = von_agent_util.schema_key(schema_id)
-
-                schema = Schema.objects.get(
-                    name=schema_key.name,
-                    version=schema_key.version,
-                    origin_did=schema_key.origin_did,
-                )
-
-                issuer = Issuer.objects.get(did=schema_key.origin_did)
-
-                # cred type unique on issuer/schema
-                credential_type = CredentialType.objects.get(
-                    schema=schema, issuer=issuer
-                )
-
-                credential = credential_type.credentials.filter(
-                    end_date=None
-                ).first()
-
-                # Delete restrictions array
-                del self.proof_request["requested_attributes"][
-                    requested_attribute
-                ]["restrictions"]
-
-                # Use TOB specific credential_id instead
-                self.proof_request["requested_attributes"][
-                    requested_attribute
-                ]["credential_id"] = credential.wallet_id
-        except KeyError:
-            pass
-        
         async with Holder() as holder:
             try:
                 credential_ids = set(
