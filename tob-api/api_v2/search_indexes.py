@@ -21,7 +21,7 @@ class TopicIndex(indexes.SearchIndex, indexes.Indexable):
         names = []
         for credential in obj.credentials.filter(end_date=None):
             for name in credential.names.all():
-                names.append(name.text)
+                names.append(name.text or "")
 
         return " ".join((names))
 
@@ -30,12 +30,12 @@ class TopicIndex(indexes.SearchIndex, indexes.Indexable):
         locations = []
         for credential in obj.credentials.filter(end_date=None):
             for address in credential.addresses.all():
-                locations.append(address.addressee)
-                locations.append(address.civic_address)
-                locations.append(address.city)
-                locations.append(address.province)
-                locations.append(address.postal_code)
-                locations.append(address.country)
+                locations.append(address.addressee or "")
+                locations.append(address.civic_address or "")
+                locations.append(address.city or "")
+                locations.append(address.province or "")
+                locations.append(address.postal_code or "")
+                locations.append(address.country or "")
 
         return " ".join((locations))
 
