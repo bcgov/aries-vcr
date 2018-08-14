@@ -65,7 +65,7 @@
               <ul class="claim-list">
                 <li *ngFor="let address of addresses">
                   <label translate>{{address.type}}</label>
-                  <address [record]="address"></address>
+                  <address-view [record]="address"></address-view>
                 </li>
               </ul>
             </div>

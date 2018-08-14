@@ -4,28 +4,28 @@
     <div class="alert alert-danger" *ngIf="error">
       {{error}}
     </div>
-  
+
     <div class="row" *ngIf="loading">
       <div class="col-sm-12 page-load">
         <div class="loading-indicator"></div>
       </div>
     </div>
-  
+
     <div class="row" *ngIf="loaded">
       <div class="col-sm-12">
         <h1 class="topic-name">{{title}}</h1>
-  
+
         <a [routerLink]="'/home' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
-  
+
         <div class="row">
           <div class="col-sm-12 name-info">
             <!-- <name-panel *ngFor="let name of names" [record]="name"></name-panel> -->
             <name-panel [record]="topic"></name-panel>
           </div>
         </div>
-  
+
       </div>
-  
+
       <!-- div class="col-md-4 col-sm-5">
         <div class="panel timeline-panel">
           <div class="panel-heading">
@@ -74,9 +74,9 @@
           </div>
         </div>
       </div -->
-  
+
     </div>
-  
+
     <div class="row creds-outer" *ngIf="loaded">
       <div class="col-sm-12">
         <div class="panel creds-panel">
@@ -87,28 +87,32 @@
               </div>
               <div class="col-sm-8 col-md-6 form-inline text-right">
                 <div class="btn-group filter-entry">
-                  <label class="btn btn-default btn-radio active">
-                    <input type="radio" name="search_active" value="true" checked class="hidden"><span class="fa fa-bell"></span> <span translate>general.period-current</span>
+                  <label [class]="'btn btn-default btn-radio' + (filterActive === 'true' ? ' active' : '')">
+                    <input type="radio" name="search_active" value="true" checked class="hidden" [(ngModel)]="filterActive"><span class="fa fa-bell"></span> <span translate>general.period-current</span>
                   </label>
-                  <label class="btn btn-default btn-radio">
-                    <input type="radio" name="search_active" value="false" class="hidden"><span class="fa fa-history"></span> <span translate>general.period-historical</span>
+                  <label [class]="'btn btn-default btn-radio' + (filterActive === 'false' ? ' active' : '')">
+                    <input type="radio" name="search_active" value="false" class="hidden" [(ngModel)]="filterActive"><span class="fa fa-history"></span> <span translate>general.period-historical</span>
                   </label>
                 </div>
-                <div class="btn btn-default active filter-entry">
-                  <span class="fa fa-filter"></span> <span translate>general.hide-filters</span> <span class="fa fa-angle-double-up"></span>
-                </div>
+                <label class="btn btn-default btn-radio filter-entry">
+                  <input type="checkbox" name="show_filters" value="1" class="hidden" [(ngModel)]="showFilters">
+                  <span class="fa fa-filter"></span>
+                  <span translate *ngIf="showFilters">general.hide-filters</span>
+                  <span translate *ngIf="!showFilters">general.show-filters</span>
+                  <span [class]="'fa ' + (showFilters ? 'fa-angle-double-up' : 'fa-angle-double-down')"></span>
+                </label>
                 <div class="btn-group filter-entry">
-                  <label class="btn btn-default btn-radio active">
-                    <input type="radio" name="display_format" value="list" checked class="hidden"><span class="fa fa-list"></span> <span class="hidden" translate>general.display-list</span>
+                  <label [class]="'btn btn-default btn-radio' + (credsFormat === 'rows' ? ' active' : '')">
+                    <input type="radio" name="display_format" value="rows" checked class="hidden" [(ngModel)]="credsFormat"><span class="fa fa-list"></span> <span class="hidden" translate>general.display-list</span>
                   </label>
-                  <label class="btn btn-default btn-radio">
-                    <input type="radio" name="display_format" value="cards" style class="hidden"><span class="fa fa-th-large"></span> <span class="hidden" translate>general.display-cards</span>
+                  <label [class]="'btn btn-default btn-radio' + (credsFormat === 'cards' ? ' active' : '')">
+                    <input type="radio" name="display_format" value="cards" class="hidden" [(ngModel)]="credsFormat"><span class="fa fa-th-large"></span> <span class="hidden" translate>general.display-cards</span>
                   </label>
                 </div>
               </div>
             </div>
           </div>
-          <div class="panel-heading filters">
+          <div class="panel-heading filters" *ngIf="showFilters">
             <div class="row">
               <div class="col-sm-3">
                 <label class="control-label">Credential Type</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
@@ -143,10 +147,10 @@
                 <div class="loading-indicator"></div>
               </div>
             </div>
-            <cred-list [topicId]="id" [records]="creds" *ngIf="! credsLoading"></cred-list>
+            <cred-list [topicId]="id" [records]="creds" [format]="credsFormat" *ngIf="! credsLoading"></cred-list>
           </div>
         </div>
       </div>
     </div>
-  
+
   </section>

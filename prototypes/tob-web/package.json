@@ -6,6 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node preinstall.js && ng serve -o --base-href ${NG_BASE_HREF:-/} --deploy-url ${NG_DEPLOY_URL:-/} --env ${NG_ENV:-dev}",
+    "start:local": "NG_ENV=local npm start",
     "build": "ng build --prod --base-href ${NG_BASE_HREF:-/} --deploy-url ${NG_DEPLOY_URL:-/} ${NG_BUILD_FLAGS:-}",
     "test": "ng test",
     "lint": "ng lint",

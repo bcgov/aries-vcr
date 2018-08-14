@@ -22,7 +22,7 @@
     <small *ngIf="topic.addresses.length > 0">
       <!-- TODO: Add notion of 'type' to address model? -->
       <!-- <label class="control-label" translate>{{topic.addresses[0].type}}</label> -->
-      <address [record]="topic.addresses[0]"></address>
+      <address-view [record]="topic.addresses[0]"></address-view>
     </small>
   </div>
 </ng-container>

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { NotFoundComponent } from './not-found/not-found.component';
+import { NotFoundComponent } from './util/not-found.component';
 
 import { CredFormComponent } from './cred/form.component';
 import { CredModule } from './cred/cred.module';

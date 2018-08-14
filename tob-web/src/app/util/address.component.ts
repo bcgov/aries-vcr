@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { AddressResult } from '../data-types';
 
 @Component({
-  selector: 'address',
+  selector: 'address-view',
   template: `<div *ngIf="record" class="claim-info location" [innerHTML]="formatted"></div>`,
   styleUrls: ['../../themes/_active/cred/cred.scss']
 })

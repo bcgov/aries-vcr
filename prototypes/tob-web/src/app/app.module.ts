@@ -17,15 +17,15 @@ import { AppFooterComponent } from './app-footer/app-footer.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { GeneralDataService } from 'app/general-data.service';
 import { AdminModule } from './admin/admin.module';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { SearchBoxDirective } from './search-box/search-box.directive';
 
 import { HomeComponent } from './home/home.component';
 import { IssuerFormComponent } from './issuer/form.component';
-//import { RoadmapComponent } from './roadmap/roadmap.component';
-//import { RoadmapTreeComponent } from './roadmap/tree.component';
-import { SearchComponent } from './search/form.component';
-import { TopicFormComponent } from './topic/form.component';
+
+import { CredModule } from './cred/cred.module';
+import { SearchModule } from './search/search.module';
+import { TopicModule } from './topic/topic.module';
+import { UtilModule } from './util/util.module';
 
 
 const ROUTE_PREFIX : string = 'ROUTES.';
@@ -59,14 +59,9 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     AppFooterComponent,
     SearchBoxDirective,
     BreadcrumbComponent,
-    NotFoundComponent,
 
     HomeComponent,
     IssuerFormComponent,
-    //RoadmapComponent,
-    //RoadmapTreeComponent,
-    SearchComponent,
-    TopicFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -75,6 +70,9 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     AppRoutingModule,
     NgbModule,
     AdminModule,
+    CredModule,
+    SearchModule,
+    TopicModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -91,7 +89,11 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     }),
   ],
   exports: [
+    CredModule,
+    SearchModule,
+    TopicModule,
     TranslateModule,
+    UtilModule,
   ],
   providers: [
     GeneralDataService,

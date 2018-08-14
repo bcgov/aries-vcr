@@ -12,13 +12,17 @@ import { IssuerCredentialTypeClient } from './credential-type.client';
 import { NameSearchClient } from './name-search.client';
 import { TopicSearchClient } from './topic-search.client';
 import { SearchService } from './search.service';
+
+import { SearchComponent } from './form.component';
 import { SearchInputComponent } from './input.component';
 import { SearchNavComponent } from './nav.component';
+import { TopicModule } from '../topic/topic.module';
 
 const ROUTES = [];
 
 @NgModule({
   declarations: [
+    SearchComponent,
     SearchInputComponent,
     SearchNavComponent,
   ],
@@ -38,8 +42,10 @@ const ROUTES = [];
     TranslateModule.forChild(),
     RouterModule.forChild(ROUTES),
     LocalizeRouterModule.forChild(ROUTES),
+    TopicModule,
   ],
   exports: [
+    SearchComponent,
     SearchInputComponent,
     SearchNavComponent,
   ]

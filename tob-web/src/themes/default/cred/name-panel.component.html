@@ -32,7 +32,7 @@
       <div class="col-sm-5" *ngIf="addresses.length">
         <div class="form-field address-list" *ngFor="let address of addresses">
           <label class="control-label" translate>{{address.addressType}}</label>
-          <address [record]="address"></address>
+          <address-view [record]="address"></address-view>
         </div>
       </div>
     </div>

@@ -3,10 +3,10 @@ import { TopicResult } from '../data-types';
 
 @Component({
   selector: 'topic-list',
-  templateUrl: '../../themes/_active/cred/topic-list.component.html',
+  templateUrl: '../../themes/_active/topic/list.component.html',
   styleUrls: [
     '../../themes/_active/cred/cred.scss',
-    '../../themes/_active/cred/name-list.component.scss']
+    '../../themes/_active/topic/list.component.scss']
 })
 export class TopicListComponent {
 

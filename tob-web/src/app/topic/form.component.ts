@@ -15,6 +15,9 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
   loading: boolean;
+  credsFormat: string = 'rows';
+  filterActive: string = 'true';
+  showFilters: string = '1';
 
   private _topic: SearchResult<TopicResult>;
   private _topicError: any;

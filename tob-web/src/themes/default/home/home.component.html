@@ -29,49 +29,6 @@
           </div>
         </div>
       </div>
-
-      <div class="row results mrgn-tp-lg" *ngIf="results">
-        <!-- div class="col-sm-3 facets">
-          <label class="control-label">Refine search</label>
-          <div class="facet">
-            <label class="control-label">Status</label>
-            <ul>
-              <li><strong>Current</strong></li>
-              <li><a href="#">Historical</a></li>
-            </ul>
-          </div>
-          <div class="facet">
-            <label class="control-label">Issuers</label>
-            <ul>
-              <li><a href="#">BC Registries</a></li>
-            </ul>
-          </div>
-          <div class="facet">
-            <label class="control-label">Credential Types</label>
-            <ul>
-              <li><a href="#">Incorporation</a></li>
-              <li><a href="#">Doing Business As</a></li>
-            </ul>
-          </div>
-          <div class="facet">
-            <label class="control-label">Year</label>
-            <ul>
-              <li><a href="#">2018</a></li>
-            </ul>
-          </div>
-        </div -->
-
-        <div class="col-sm-10 col-sm-offset-1 rows">
-          <label class="control-label" translate>search.results-title</label>
-          <topic-list [records]="topics"></topic-list>
-          <search-nav [info]="results && results.info"></search-nav>
-        </div>
-      </div>
-
-      <div class="map mrgn-tp-lg hidden">
-        <label class="control-label">Search by Location</label>
-        <div class="map-image"></div>
-      </div>
     </div>
   </div>
 

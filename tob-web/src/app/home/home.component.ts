@@ -2,7 +2,6 @@ import { Component, AfterViewInit, OnInit, OnDestroy, ViewChild } from '@angular
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchInputComponent } from '../search/input.component';
 import { GeneralDataService } from 'app/general-data.service';
-import { TopicListComponent } from '../cred/topic-list.component';
 import { TopicResult } from '../data-types';
 import { TopicSearchClient } from '../search/topic-search.client';
 import { SearchResults } from '../search/results.model';
@@ -16,7 +15,6 @@ import { Subscription } from 'rxjs/Subscription';
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('searchInput') _searchInput: SearchInputComponent;
-  @ViewChild('topicList') nameList: TopicListComponent;
   protected _results: SearchResults<TopicResult>;
   protected _searching = false;
   protected _sub: Subscription;

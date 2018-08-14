@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SearchInputComponent } from './input.component';
 import { SearchResults } from './results.model';
 import { Subscription } from 'rxjs/Subscription';
-import { TopicListComponent } from '../cred/topic-list.component';
+import { TopicListComponent } from '../topic/list.component';
 import { TopicResult } from '../data-types';
 import { TopicSearchClient } from './topic-search.client';
 

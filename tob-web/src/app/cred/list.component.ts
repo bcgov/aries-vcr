@@ -12,5 +12,14 @@ export class CredListComponent {
 
   @Input() records: CredentialResult[];
   @Input() topicId: string;
+  protected _format = 'cards';
+
+  @Input() set format(fmt: string) {
+    this._format = fmt;
+  }
+
+  get format(): string {
+    return this._format;
+  }
 
 }

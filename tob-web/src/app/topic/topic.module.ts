@@ -1,39 +1,36 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from 'localize-router';
-import { CredFormComponent } from './form.component';
-import { CredListComponent } from './list.component';
-import { CredTypeListComponent } from './type-list.component';
-import { NamePanelComponent } from './name-panel.component';
+import { CredModule } from '../cred/cred.module';
 import { UtilModule } from '../util/util.module';
-
+import { TopicFormComponent } from '../topic/form.component';
+import { TopicListComponent } from '../topic/list.component';
 
 const ROUTES = [];
 
 @NgModule({
   declarations: [
-    CredFormComponent,
-    CredListComponent,
-    CredTypeListComponent,
-    NamePanelComponent,
+    TopicFormComponent,
+    TopicListComponent,
   ],
   providers: [
   ],
   imports: [
     CommonModule,
+    FormsModule,
     TranslateModule.forChild(),
     RouterModule.forChild(ROUTES),
     LocalizeRouterModule.forChild(ROUTES),
+    CredModule,
     UtilModule,
   ],
   exports: [
-    CredFormComponent,
-    CredListComponent,
-    CredTypeListComponent,
-    NamePanelComponent,
+    TopicFormComponent,
+    TopicListComponent,
   ]
 })
-export class CredModule {}
+export class TopicModule {}
 
