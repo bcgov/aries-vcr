@@ -6,9 +6,9 @@
 # NAME=angular-on-nginx
 # IMAGE_NAMESPACE=devex-von-tools
 # REAL_IP_FROM=172.51.0.0/16
-# API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/
+# API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/V2/
 # API_SERVICE_NAME=django
-# API_PATH=/api/v1/
+# API_PATH=/api/V2/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
 APPLICATION_DOMAIN=angular-on-nginx-devex-von-test.pathfinder.gov.bc.ca
