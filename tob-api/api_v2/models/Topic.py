@@ -25,7 +25,7 @@ class Topic(Auditable):
         # TODO: allow an issuer to register its topic
         #       formation and make this dynamic
         if self.type == "doing_business_as":
-            credentials = self.credentials.all().prefetch_related("topics")
+            credentials = self.credentials.all()
             topic_ids = set()
             for credential in credentials:
                 topic_ids.update(
