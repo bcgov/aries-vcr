@@ -108,6 +108,7 @@
     "by-location": "Search by Location",
     "no-results": "No results",
     "placeholder": "search",
+    "records-prefix": "Records ",
     "results-error": "Your query could not be completed at this time.",
     "results-title": "Search Results",
     "return-link": "Back to Search",
