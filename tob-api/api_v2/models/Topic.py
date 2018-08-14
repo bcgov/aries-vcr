@@ -42,13 +42,13 @@ class Topic(Auditable):
         for _id in topic_ids:
             query = query.filter(**{"topics": _id})
 
-        query = query.prefetch_related(
-            Prefetch(
-                "topics",
-                queryset=query,
-                to_attr="topics",
-            )
-        )
+        # query = query.prefetch_related(
+        #     Prefetch(
+        #         "topics",
+        #         queryset=query,
+        #         to_attr="topics",
+        #     )
+        # )
 
         return query
 

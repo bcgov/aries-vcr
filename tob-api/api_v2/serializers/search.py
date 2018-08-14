@@ -168,6 +168,7 @@ class CustomCategorySerializer(CategorySerializer):
 
 
 class CustomTopicSerializer(TopicSerializer):
+    credential_ids = None
     names = SerializerMethodField()
     addresses = SerializerMethodField()
     contacts = SerializerMethodField()
@@ -186,6 +187,16 @@ class CustomTopicSerializer(TopicSerializer):
             "people",
             "categories",
         )
+
+    def get_credential_ids(self, obj):
+        if not self.credential_ids:
+            self.credential_ids = list(
+                obj.direct_credentials()
+                .filter(end_date=None)
+                .values_list("id", flat=True)
+            )
+
+        return self.credential_ids
 
     def get_names(self, obj):
         credential_ids = self.get_credential_ids(obj)
