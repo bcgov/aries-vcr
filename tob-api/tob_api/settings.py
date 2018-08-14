@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {   "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
     },
@@ -139,20 +139,16 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
-    "DEFAULT_PERMISSION_CLASSES": permissions.defaults()
+    "DEFAULT_PERMISSION_CLASSES": permissions.defaults(),
 }
 
 SWAGGER_SETTINGS = {
-    "SECURITY_DEFINITIONS": {
-        "basic": {
-            "type": "basic"
-        }        
-    },
+    "SECURITY_DEFINITIONS": {"basic": {"type": "basic"}},
     "USE_SESSION_AUTH": True,
 }
 
-LOGIN_URL = 'rest_framework:login'
-LOGOUT_URL = 'rest_framework:logout'
+LOGIN_URL = "rest_framework:login"
+LOGOUT_URL = "rest_framework:logout"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -221,6 +217,21 @@ LOGGING = {
         "propagate": False,
     },
 }
+
+
+if os.getenv("SQL_DEBUG"):
+    LOGGING["filters"]["require_debug_true"] = {
+        "()": "django.utils.log.RequireDebugTrue"
+    }
+    LOGGING["handlers"]["console"] = {
+        "level": "DEBUG",
+        "filters": ["require_debug_true"],
+        "class": "logging.StreamHandler",
+    }
+    LOGGING["loggers"]["django.db.backends"] = {
+        "level": "DEBUG",
+        "handlers": ["console"],
+    }
 
 custom_settings_file = Path(
     os.path.join(
