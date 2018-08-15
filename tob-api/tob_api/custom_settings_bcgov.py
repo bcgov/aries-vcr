@@ -14,6 +14,7 @@ CUSTOMIZATIONS = {
                 "province",
                 "postal_code",
                 "country",
+                "credential"
             ]
         }
     }
