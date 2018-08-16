@@ -54,6 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this._typeSub.unsubscribe();
   }
 
+  
   get error(): string {
     return this._searchClient && this._searchClient.error;
   }
@@ -89,11 +90,25 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this._router.navigate(['../', filter]);
   }*/
 
+  public handleNav(nav: string) {
+    this._searchClient.clearSearch();
+    if (nav === 'previous') {
+      this._searchClient.previousPage();
+    } else if (nav == 'next') {
+      this._searchClient.nextPage();
+    } else {
+      console.warn(`Invalid nav '${nav}' received`);
+      this._searchClient.clearSearch();
+    }
+    this._searchClient.performSearch();
+  }
+
   public updateQuery() {
     if(! this._searchInput) return;
+    this._searchClient.pageNum = 1;
     let value = this._searchInput.value;
     if(this._curQuery !== value) {
-      this._router.navigate([], { relativeTo: this._route, queryParams: {query: value}, queryParamsHandling: 'merge' });
+      this._router.navigate([], { relativeTo: this._route, queryParams: {query: value }, queryParamsHandling: 'merge' });
       return;
     }
     if(value !== null && value.length) {

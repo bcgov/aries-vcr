@@ -1,20 +1,22 @@
 
 export class SearchInfo {
-  public pageNum: number = 0;
+  public pageNum: number = 1;
   public pageCount: number = 0;
   public resultCount: number = 0;
   public totalCount: number = 0;
   public firstIndex = 0;
   public lastIndex = 0;
   public timing: number = 0;
+  public previous: string = null;
+  public next: string = null;
   public params: {[key: string]: any};
 
   get havePrevious() {
-    return this.pageNum > 1;
+    return this.previous != null;
   }
 
   get haveNext() {
-    return this.pageNum > 0 && this.pageCount > this.pageNum;
+    return this.next != null;
   }
 }
 

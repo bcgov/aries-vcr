@@ -70,21 +70,35 @@ export class SearchService {
   performSearch(params?: { [key: string]: string }): Observable<SearchResults<any>> {
     if(! params) params = {};
 
-    console.log(params)
-
     let promise = new Promise((resolve, reject) => {
-      function returnResult(rows: any[]) {
-        const info = new SearchInfo();
-        info.pageNum = 1;
-        info.firstIndex = 1;
-        info.lastIndex = rows.length;
-        info.totalCount = rows.length;
-        resolve(new SearchResults(info, rows));
+      function returnResult(
+          rows: any[],
+          info: any
+      ) {
+        const searchInfo = new SearchInfo();
+        searchInfo.pageNum = info.page || null;
+        searchInfo.firstIndex = info.firstIndex || null;
+        searchInfo.lastIndex = info.lastIndex || null;
+        searchInfo.totalCount = info.total || null;
+        searchInfo.next = info.next || null;
+        searchInfo.previous = info.previous || null;
+        resolve(new SearchResults(searchInfo, rows));
       }
       function handle(request) {
         request.subscribe(
           (rows: any) => {
-            returnResult(rows.results);
+            returnResult(
+              rows.results,
+              {
+                total: rows.total,
+                // page_size: // rows.page_size,
+                page: rows.page,
+                firstIndex: rows.first_index,
+                lastIndex: rows.last_index,
+                next: rows.next,
+                previous: rows.previous
+              }
+            );
           },
           (err: any) => {
             reject(err);
@@ -93,7 +107,8 @@ export class SearchService {
 
       // TODO: Refactor this into something better
       if (params.resource === 'topics') {
-        handle(this._dataService.loadFromApi(`search/topic?${params.filter}=${params.query}`));
+        handle(this._dataService.loadFromApi(
+          `search/topic?${params.filter}=${params.query}&page=${params.pageNum}`));
       } else if (params.resource === 'issuer') {
         handle(this._dataService.loadFromApi(``));
       } else if (params.resource === 'creds' || params.resource == 'credtypes') {
@@ -102,7 +117,7 @@ export class SearchService {
         );
       }
       else {
-        returnResult([]);
+        returnResult([], {});
       }
     });
     return Observable.fromPromise(promise);

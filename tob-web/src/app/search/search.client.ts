@@ -40,11 +40,11 @@ export abstract class SearchClient<T> {
   }
 
   get pageNum() {
-    return parseInt(this._params['page']) || 0;
+    return parseInt(this._params['page']) || 1;
   }
 
   set pageNum(val: number) {
-    this._params['page'] = val || 0;
+    this._params['page'] = val || 1;
   }
 
   init() {
@@ -80,7 +80,6 @@ export abstract class SearchClient<T> {
   }
 
   performSearch() {
-    this.pageNum = 0;
     this.updateSearch();
   }
 
@@ -106,6 +105,7 @@ export abstract class SearchClient<T> {
     if(! p.resource && this.resource) p.resource = this.resource;
     if(! p.childResource && this.childPath) p.childResource = this.childPath;
     if(! p.filter && this.filter) p.filter = this.filter;
+    if(! p.pageNum && this.pageNum) p.pageNum = this.pageNum;
     return p;
   }
 
@@ -119,9 +119,11 @@ export abstract class SearchClient<T> {
   }
 
   nextPage() {
+    this.pageNum++;
   }
 
   previousPage() {
+    this.pageNum--;
   }
 
   private _isSearchResult(obj: any): obj is SearchResult<any> {
