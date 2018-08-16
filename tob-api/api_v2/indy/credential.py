@@ -39,7 +39,7 @@ SUPPORTED_CATEGORIES = ["topic_status", "topic_type"]
 # TODO: Allow issuer to dynamically register topic types
 # Currently we only support 2 topic types. We only understand
 # a predefined relationship: incorporation --< doing_business_as
-SUPPORTED_TOPIC_TYPES = ["incorporation", "doing_business_as"]
+SUPPORTED_TOPIC_TYPES = ["incorporation", "doing_business_as", "registration"]
 
 
 class CredentialException(Exception):
