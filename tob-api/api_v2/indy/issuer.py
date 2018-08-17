@@ -66,7 +66,7 @@ class IssuerManager:
         verkey = verified["key"]
         assert "did:sov:{}".format(issuer_did) == verified_did
         return create_issuer_user(
-            user_email, verified_did, last_name=display_name, verkey=verkey
+            user_email, verified_did, display_name=display_name, verkey=verkey
         )
 
     def update_issuer(self, issuer_def):

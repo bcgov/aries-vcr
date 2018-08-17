@@ -17,10 +17,19 @@ from api.models.User import User
 from api.models.VerifiableClaim import VerifiableClaim
 
 
-ISSUERS_GROUP_NAME = 'issuers'
+ISSUERS_GROUP_NAME = "issuers"
 
 
-def create_issuer_user(email, issuer_did, username=None, password=None, first_name='', last_name='', verkey=None):
+def create_issuer_user(
+    email,
+    issuer_did,
+    username=None,
+    password=None,
+    display_name="",
+    first_name="",
+    last_name="",
+    verkey=None,
+):
     logger = logging.getLogger(__name__)
     try:
         user = User.objects.get(DID=issuer_did)
@@ -28,21 +37,24 @@ def create_issuer_user(email, issuer_did, username=None, password=None, first_na
         logger.debug("Creating user for DID '{0}' ...".format(issuer_did))
         if not username:
             username = generate_random_username(
-                length=12, prefix='issuer-', split=None)
+                length=12, prefix="issuer-", split=None
+            )
         user = User.objects.create_user(
             username,
             email=email,
             password=password,
             DID=issuer_did,
             verkey=verkey,
+            display_name=display_name,
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
         )
         user.groups.add(get_issuers_group())
     else:
         user.DID = issuer_did
         user.verkey = verkey
         user.email = email
+        user.display_name = display_name
         if first_name != None:
             user.first_name = first_name
         if last_name != None:
@@ -56,34 +68,52 @@ def get_issuers_group():
     if created:
         claims_type = ContentType.objects.get_for_model(VerifiableClaim)
         create_claims_perm = Permission.objects.get(
-            content_type=claims_type, codename='add_verifiableclaim')
+            content_type=claims_type, codename="add_verifiableclaim"
+        )
         group.permissions.add(create_claims_perm)
     return group
 
 
-def generate_random_username(length=16, chars=ascii_lowercase+digits, split=4, delimiter='-', prefix=''):
-    username = ''.join([random.choice(chars) for i in range(length)])
+def generate_random_username(
+    length=16,
+    chars=ascii_lowercase + digits,
+    split=4,
+    delimiter="-",
+    prefix="",
+):
+    username = "".join([random.choice(chars) for i in range(length)])
 
     if split:
-        username = delimiter.join([username[start:start+split]
-                                   for start in range(0, len(username), split)])
+        username = delimiter.join(
+            [
+                username[start : start + split]
+                for start in range(0, len(username), split)
+            ]
+        )
     username = prefix + username
 
     try:
         User.objects.get(username=username)
-        return generate_random_username(length=length, chars=chars, split=split, delimiter=delimiter)
+        return generate_random_username(
+            length=length, chars=chars, split=split, delimiter=delimiter
+        )
     except User.DoesNotExist:
         return username
 
 
 class IsRegisteredIssuer(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user and request.user.groups.filter(name=ISSUERS_GROUP_NAME).exists()
+        return (
+            request.user
+            and request.user.groups.filter(name=ISSUERS_GROUP_NAME).exists()
+        )
 
 
 class CanStoreClaims(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user and request.user.has_perm('api.add_verifiableclaim')
+        return request.user and request.user.has_perm(
+            "api.add_verifiableclaim"
+        )
 
 
 class IsSignedRequest(permissions.BasePermission):
@@ -102,31 +132,36 @@ class DidAuthKeyFinder(KeyFinderBase):
         self.__logger = logging.getLogger(__name__)
 
     def find_key(self, key_id: str, key_type: str):
-        assert key_type == 'ed25519'
-        if key_id.startswith('did:sov:'):
+        assert key_type == "ed25519"
+        if key_id.startswith("did:sov:"):
             short_key_id = key_id[8:]
         else:
             short_key_id = key_id
-            key_id = 'did:sov:' + short_key_id
+            key_id = "did:sov:" + short_key_id
         try:
             user = User.objects.get(DID=key_id)
             if user.verkey:
                 verkey = bytes(user.verkey)
                 self.__logger.debug(
-                    "Found verkey for DID '{}' in users table: '{}'".format(key_id, verkey))
+                    "Found verkey for DID '{}' in users table: '{}'".format(
+                        key_id, verkey
+                    )
+                )
                 return verkey
         except User.DoesNotExist:
             pass
 
         async def fetch_key():
             self.__logger.debug(
-                "Fetching verkey for DID '{}' from ledger".format(key_id))
+                "Fetching verkey for DID '{}' from ledger".format(key_id)
+            )
             async with Verifier() as verifier:
                 nym = await verifier.get_nym(short_key_id)
                 nym = json.loads(nym) if nym else None
                 if not nym:
                     return None
-                return base58.b58decode(nym['verkey'])
+                return base58.b58decode(nym["verkey"])
+
         return run_loop(fetch_key())
 
 
@@ -140,7 +175,7 @@ class DidAuthentication(authentication.BaseAuthentication):
         self.__logger = logging.getLogger(__name__)
 
     def authenticate(self, request):
-        self.__logger.info('Authenticating DID...')
+        self.__logger.info("Authenticating DID...")
         result = None
         try:
             verified = verify_signature(request)
@@ -148,32 +183,36 @@ class DidAuthentication(authentication.BaseAuthentication):
             # bad signature present - fail explicitly
             verified = None
             self.__logger.warn(
-                'Exception when authorizing DID signature: %s', e)
+                "Exception when authorizing DID signature: %s", e
+            )
             raise exceptions.AuthenticationFailed(
-                'Exception when authorizing DID signature: %s' % (e,))
+                "Exception when authorizing DID signature: %s" % (e,)
+            )
         if verified:
             try:
-                user = User.objects.get(DID=verified['keyId'])
+                user = User.objects.get(DID=verified["keyId"])
                 result = (user, verified)
             except User.DoesNotExist:
                 self.__logger.warn(
-                    'DID authenticated but user not found: %s', verified['keyId'])
+                    "DID authenticated but user not found: %s",
+                    verified["keyId"],
+                )
                 # may be in the process of registering
         else:
-            self.__logger.warn('No DID signature')
+            self.__logger.warn("No DID signature")
         return result
 
 
 def revert_header_name(hdr):
-    if hdr.startswith('HTTP_'):
+    if hdr.startswith("HTTP_"):
         hdr = hdr[5:]
-    elif hdr != 'CONTENT_LENGTH' and hdr != 'CONTENT_TYPE':
+    elif hdr != "CONTENT_LENGTH" and hdr != "CONTENT_TYPE":
         return None
-    return hdr.lower().replace('_', '-')
+    return hdr.lower().replace("_", "-")
 
 
 def verify_signature(request, key_finder=None):
-    verified = request.META.get('SIGNATURE')
+    verified = request.META.get("SIGNATURE")
     if verified is not None:
         return verified
     raw_headers = {}
@@ -183,18 +222,21 @@ def verify_signature(request, key_finder=None):
             raw_headers[target] = val
     verifier = HeaderVerifier(key_finder or DidAuthKeyFinder())
     path = request.path  # maybe prefer request.META['RAW_URI']
-    qs = request.META['QUERY_STRING']
+    qs = request.META["QUERY_STRING"]
     if qs:
-        path += '?' + qs
+        path += "?" + qs
     log = logging.getLogger(__name__)
-    log.debug("didauth %s '%s', headers: %r", request.method, path, raw_headers)
+    log.debug(
+        "didauth %s '%s', headers: %r", request.method, path, raw_headers
+    )
     try:
         verified = verifier.verify(
-            raw_headers, path=path, method=request.method)
+            raw_headers, path=path, method=request.method
+        )
     except VerifierException:
-        request.META['SIGNATURE'] = False
+        request.META["SIGNATURE"] = False
         raise
-    request.META['SIGNATURE'] = verified
+    request.META["SIGNATURE"] = verified
     if verified:
-        request.META['VERIFIED_DID'] = verified['keyId']
+        request.META["VERIFIED_DID"] = verified["keyId"]
     return verified
