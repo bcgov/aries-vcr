@@ -14,6 +14,7 @@ framework.
 
 """
 
+import asyncio
 import os
 
 # -- gunicorn settings -- #
@@ -47,6 +48,14 @@ def when_ready(server):
     server.log.debug('Starting von-x services: pid %s', os.getpid())
     from tob_anchor.boot import pre_init
     pre_init()
+
+def post_fork(server, worker):
+    # server.log.debug('Post-fork worker: pid %s', os.getpid())
+    # this is necessary to avoid deadlocks due to the same asyncio loop ID being
+    # shared by multiple processes
+    asyncio.get_event_loop().close()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
 def on_exit(server):
     from tob_anchor.boot import shutdown
