@@ -117,7 +117,8 @@ class ProofRequest(object):
 
             requested_attribute = {
                 "name": claim.name,
-                "credential_id": credential.wallet_id,
+                "restrictions": [],
+                #"credential_id": credential.wallet_id,
             }
 
             self.requested_attributes.append(requested_attribute)

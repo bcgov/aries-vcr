@@ -22,7 +22,6 @@ from api_v2.models.Person import Person
 from api_v2.models.Schema import Schema
 from api_v2.models.Topic import Topic
 
-from api.indy import eventloop
 from api.indy.agent import Verifier
 
 from api_v2.indy.issuer import IssuerManager, IssuerException
@@ -36,6 +35,12 @@ from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
 from api_v2.jsonschema.credential import CREDENTIAL_JSON_SCHEMA
 from api_v2.jsonschema.construct_proof import CONSTRUCT_PROOF_JSON_SCHEMA
+
+from tob_anchor.boot import indy_client, indy_verifier_id
+from vonx.common.eventloop import run_coro
+from vonx.indy.messages import \
+    ProofRequest as VonxProofRequest, \
+    ConstructedProof as VonxConstructedProof
 
 logger = logging.getLogger(__name__)
 
@@ -70,9 +75,9 @@ def generate_credential_request(request, *args, **kwargs):
     logger.warn(">>> Generate credential request")
 
     credential_offer = request.data["credential_offer"]
-    credential_definition = request.data["credential_definition"]
+    credential_definition_id = request.data["credential_definition_id"]
     credential_offer_manager = CredentialOfferManager(
-        credential_offer, credential_definition
+        credential_offer, credential_definition_id
     )
 
     credential_request, credential_request_metadata = (
@@ -92,12 +97,12 @@ def generate_credential_request(request, *args, **kwargs):
 #@permission_classes((IsSignedRequest,))
 @validate(CREDENTIAL_JSON_SCHEMA)
 def store_credential(request, *args, **kwargs):
-    """  
+    """
     Stores a verifiable credential in wallet.
 
     The data in the credential is parsed and stored in the database
     for search/display purposes based on the issuer's processor config.
-    The data is then made available through a REST API as well as a 
+    The data is then made available through a REST API as well as a
     search API.
 
     Example request payload:
@@ -134,7 +139,7 @@ def store_credential(request, *args, **kwargs):
 # TODO: Clean up abstraction. IssuerManager writes only –
 #       use serializer in view to return created models?
 def register_issuer(request, *args, **kwargs):
-    """  
+    """
     Processes an issuer definition and creates or updates the
     corresponding records. Responds with the updated issuer
     definition including record IDs.
@@ -366,7 +371,7 @@ def register_issuer(request, *args, **kwargs):
 #@permission_classes((IsSignedRequest,))
 @validate(CONSTRUCT_PROOF_JSON_SCHEMA)
 def construct_proof(request, *args, **kwargs):
-    """  
+    """
     Constructs a proof given a proof request
 
     ```json
@@ -378,10 +383,18 @@ def construct_proof(request, *args, **kwargs):
     returns: HL Indy proof data
     """
     logger.warn(">>> Construct Proof")
-    
-    proof_request = request.data["proof_request"]
 
-    proof_manager = ProofManager(proof_request)
+    proof_request = request.data.get("proof_request")
+    cred_ids = request.data.get("credential_ids")
+
+    if isinstance(cred_ids, str):
+        cred_ids = (c.strip() for c in 'a, b'.split(','))
+    if isinstance(cred_ids, list):
+        cred_ids = set(filter(None, cred_ids))
+    else:
+        cred_ids = None
+
+    proof_manager = ProofManager(proof_request, cred_ids)
     proof = proof_manager.construct_proof()
 
     return JsonResponse({"success": True, "result": proof})
@@ -390,12 +403,12 @@ def construct_proof(request, *args, **kwargs):
 @api_view(["GET"])
 #@permission_classes((IsSignedRequest,))
 def verify_credential(request, *args, **kwargs):
-    """  
+    """
     Constructs a proof request for a credential stored in the
-    application database, constructs a proof for that proof 
+    application database, constructs a proof for that proof
     request, and then verifies it.
 
-    returns: 
+    returns:
 
     ```json
     {
@@ -420,14 +433,17 @@ def verify_credential(request, *args, **kwargs):
     proof_request = ProofRequest(name="the-org-book", version="1.0.0")
     proof_request.build_from_credential(credential)
 
-    proof_manager = ProofManager(proof_request.dict)
+    proof_manager = ProofManager(proof_request.dict, {credential.wallet_id})
     proof = proof_manager.construct_proof()
 
     async def verify():
-        async with Verifier() as verifier:
-            return await verifier.verify_proof(proof_request.dict, proof)
+        return await indy_client().verify_proof(
+            indy_verifier_id(),
+            VonxProofRequest(proof_request.dict),
+            VonxConstructedProof(proof))
+    verified = run_coro(verify())
 
-    verified = eventloop.do(verify())
+    verified = verified.verified
 
     return JsonResponse(
         {
@@ -461,3 +477,9 @@ def quickload(request, *args, **kwargs):
             }
         }
     )
+
+@api_view(["GET"])
+def status(request, *args, **kwargs):
+    async def get_status():
+        return await indy_client().get_status()
+    return JsonResponse(run_coro(get_status()))

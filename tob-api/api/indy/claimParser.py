@@ -29,7 +29,7 @@ class ClaimParser(object):
 
         data = json.loads(self.__orgData)
         self.__claim_type = data["claim_type"]
-        self.__claim = data["claim_data"]
+        self.__data = data["claim_data"]
         self.__issuer_did = data["issuer_did"]
         self.__cred_def = data["cred_def"]
         self.__cred_req_metadata = data["cred_req_metadata"]
@@ -37,11 +37,15 @@ class ClaimParser(object):
     def getField(self, field):
         value = None
         try:
-            value = self.__claim["values"][field]["raw"]
+            value = self.__data["values"][field]["raw"]
         except Exception:
             pass
 
         return value
+
+    @property
+    def data(self) -> dict:
+        return self.__data
 
     @property
     def schemaName(self) -> str:
@@ -56,9 +60,9 @@ class ClaimParser(object):
         return self.__cred_def
 
     @property
-    def credDefMeta(self) -> str:
+    def credReqMeta(self) -> str:
         return self.__cred_req_metadata
 
     @property
     def json(self) -> str:
-        return json.dumps(self.__claim)
+        return json.dumps(self.__data)

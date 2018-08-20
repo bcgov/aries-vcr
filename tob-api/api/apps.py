@@ -1,52 +1,17 @@
-import json
-from datetime import datetime
-import os
-
-import requests
-
-from api.indy.agent import Holder
-from . import eventloop
+import logging
 
 from django.apps import AppConfig
+#from tob_anchor.boot import MANAGER
 
-import logging
-logger = logging.getLogger(__name__)
+from . import eventloop
 
-# TODO fix this global variable, badly implemented :-(
-def get_remote_wallet_token():
-    return remote_wallet_token
-remote_wallet_token = None
+LOGGER = logging.getLogger(__name__)
 
 class apiConfig(AppConfig):
     name = 'api'
 
     def ready(self):
-        now = datetime.now().strftime("%Y-%m-%d")
+        pass
 
-        async def run():
-            # If wallet type is "remote" then login to get  token
-            WALLET_TYPE = os.environ.get('INDY_WALLET_TYPE')
-            if WALLET_TYPE == 'remote':
-                WALLET_USER_ID = os.environ.get('WALLET_USER_ID', 'wall-e')
-                WALLET_PASSWORD = os.environ.get('WALLET_PASSWORD', 'pass1234')
-                WALLET_BASE_URL = os.environ.get('INDY_WALLET_URL')
-                logger.debug("Wallet URL: " + WALLET_BASE_URL)
-
-                try:
-                    my_url = WALLET_BASE_URL + "api-token-auth/"
-                    response = requests.post(my_url, data = {"username":WALLET_USER_ID, "password":WALLET_PASSWORD})
-                    json_data = response.json()
-                    remote_token = json_data["token"]
-                    logger.debug("Authenticated remote wallet server: " + remote_token)
-                except:
-                    raise Exception(
-                        'Could not login to wallet. '
-                        'Is the Wallet Service running?')
-            else:
-                remote_token = None
-
-            return remote_token
-
-        # TODO fix must be a better way
-        global remote_wallet_token
-        remote_wallet_token = eventloop.do(run())
+        # eventloop.do(MANAGER.get_client().sync())
+        # LOGGER.info("synced worker")

@@ -213,7 +213,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console_handler"],
-        "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        "level": str(os.getenv("DJANGO_LOG_LEVEL", "INFO")).upper(),
         "propagate": False,
     },
 }
@@ -233,18 +233,16 @@ if os.getenv("SQL_DEBUG"):
         "handlers": ["console"],
     }
 
+INDY_HOLDER_ID = "TheOrgBook_Holder"
+INDY_VERIFIER_ID = "TheOrgBook_Verifier"
+
 custom_settings_file = Path(
-    os.path.join(
-        BASE_DIR,
-        "custom_settings_" + str(os.getenv("TOB_THEME")).lower() + ".py",
-    )
+    BASE_DIR,
+    "custom_settings_" + str(os.getenv("TOB_THEME")).lower() + ".py",
 )
 if custom_settings_file.exists():
     with open(custom_settings_file) as source_file:
         print(
-            "Loading custom settings file: "
-            + "custom_settings_"
-            + str(os.getenv("TOB_THEME")).lower()
-            + ".py"
+            "Loading custom settings file: {}".format(custom_settings_file.name)
         )
         exec(source_file.read())

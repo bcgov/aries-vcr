@@ -12,10 +12,11 @@ from didauth.headers import HeaderVerifier
 from rest_framework import authentication, exceptions, permissions
 
 from api.indy.agent import Verifier
-from api.eventloop import do as run_loop
 from api.models.User import User
 from api.models.VerifiableClaim import VerifiableClaim
 
+from tob_anchor.boot import indy_client, indy_verifier_id
+from vonx.common.eventloop import run_coro
 
 ISSUERS_GROUP_NAME = "issuers"
 
@@ -153,16 +154,12 @@ class DidAuthKeyFinder(KeyFinderBase):
 
         async def fetch_key():
             self.__logger.debug(
-                "Fetching verkey for DID '{}' from ledger".format(key_id)
-            )
-            async with Verifier() as verifier:
-                nym = await verifier.get_nym(short_key_id)
-                nym = json.loads(nym) if nym else None
-                if not nym:
-                    return None
-                return base58.b58decode(nym["verkey"])
-
-        return run_loop(fetch_key())
+                "Fetching verkey for DID '{}' from ledger".format(key_id))
+            nym_info = await indy_client().resolve_nym(short_key_id, indy_verifier_id())
+            if not nym_info.data:
+                return None
+            return base58.b58decode(nym_info.data['verkey'])
+        return run_coro(fetch_key())
 
 
 class DidAuthentication(authentication.BaseAuthentication):

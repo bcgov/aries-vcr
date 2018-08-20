@@ -34,6 +34,7 @@ indyPatterns = [
     url(r"^indy/store-credential$", indy.store_credential),
     url(r"^indy/register-issuer$", indy.register_issuer),
     url(r"^indy/construct-proof$", indy.construct_proof),
+    url(r"^indy/status$", indy.status),
     url(r"^credential/(?P<id>[0-9]+)/verify$", indy.verify_credential),
 ]
 

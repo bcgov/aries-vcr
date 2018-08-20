@@ -21,54 +21,6 @@ services:
     # command: npm start
 
   # 
-  # tob-wallet
-  #-------------------------------------------------
-  # The Wallet provides the backend storage for the 
-  # TheOrgBook Indy SDK wallet.
-  #
-  # We are using a simple sleep command to do this 
-  # for the moment; refer to the `command` section 
-  # of the configuration for details.  It would be 
-  # nice to implement a more deterministic solution.
-  #
-  tob-wallet:
-    image: tob-wallet
-    environment:
-      - DATABASE_SERVICE_NAME=${WALLET_DB_SERVICE_NAME}
-      #- DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
-      - DATABASE_ENGINE=${DATABASE_ENGINE}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_USER=${DATABASE_USER}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - TOB_WALLET_DB_SERVICE_HOST=${WALLET_DB_SERVICE_NAME}
-      - TOB_WALLET_DB_SERVICE_PORT=5432
-      #- TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
-      #- TOB_DB_SERVICE_PORT=5432
-      - WALLET_USER_ID=${WALLET_USER_ID}
-      - WALLET_USER_PASSWORD=${WALLET_USER_PASSWORD}
-      - WALLET_ADMIN_USER_ID=${WALLET_ADMIN_USER_ID}
-      - WALLET_ADMIN_PASSWORD=${WALLET_ADMIN_PASSWORD}
-      - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
-      - WEB_CONCURRENCY=${WEB_CONCURRENCY}
-      - RUST_LOG=${RUST_LOG}
-      - RUST_BACKTRACE=${RUST_BACKTRACE}
-    volumes:
-      - ../tob-wallet/api:/opt/app-root/src/api
-    networks:
-      - wallet-tob
-      - wallet-db
-    ports:
-      - "${WALLET_HTTP_PORT}:8080"
-    depends_on:
-      - tob-db
-      - tob-wallet-db
-    command: >
-      /bin/bash -c "
-        echo sleeping ...;
-        sleep 12;
-        ${STI_SCRIPTS_PATH}/run;"
-
-  # 
   # tob-api
   #-------------------------------------------------
   # The API performs the migrations on the database
@@ -86,6 +38,7 @@ services:
   tob-api:
     image: django
     environment:
+      - APP_CONFIG=${APP_CONFIG}
       - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
       - DATABASE_ENGINE=${DATABASE_ENGINE}
       - DATABASE_NAME=${DATABASE_NAME}
@@ -109,27 +62,26 @@ services:
       - WALLET_USER_ID=${WALLET_USER_ID}
       - WALLET_PASSWORD=${WALLET_USER_PASSWORD}
       - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
-      - WEB_CONCURRENCY=${WEB_CONCURRENCY}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-1}
       - RUST_LOG=${RUST_LOG}
       - RUST_BACKTRACE=${RUST_BACKTRACE}
       - TOB_THEME=${TOB_THEME}
     volumes:
       - ../tob-api/api:/home/indy/api
       - ../tob-api/api_v2:/home/indy/api_v2
+      - tob-wallet:/home/indy/.indy_client/wallet
     networks:
-      - wallet-tob
       - tob
     ports:
       - "${API_HTTP_PORT}:8080"
       - 3000:3000
     depends_on:
       - tob-db
-      - tob-wallet
       - tob-solr
     command: >
         /bin/bash -c "
         echo sleeping ...;
-        sleep 20;
+        sleep 10;
         if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
           python manage.py migrate && python manage.py runserver --nothreading 0.0.0.0:8080;
         else
@@ -195,27 +147,9 @@ services:
     volumes:
       - tob-data:/var/lib/pgsql/data     
 
-  # 
-  # tob-wallet-db
-  # 
-  tob-wallet-db:
-    image: registry.access.redhat.com/rhscl/postgresql-95-rhel7:9.5
-    environment:
-      - POSTGRESQL_USER=${POSTGRESQL_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
-      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
-    networks:
-      - wallet-db
-    ports:
-      - "8032:5432"
-    volumes:
-      - tob-wallet-data:/var/lib/pgsql/data     
-
 networks:
   tob:
-  wallet-db:
-  wallet-tob:
 
 volumes:
   tob-data:
-  tob-wallet-data:
+  tob-wallet:

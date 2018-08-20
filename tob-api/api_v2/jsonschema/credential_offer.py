@@ -5,7 +5,7 @@ CREDENTIAL_OFFER_JSON_SCHEMA = {
     # TODO: Flesh out definitions further?
     "properties": {
         "credential_offer": {"type": "object"},
-        "credential_definition": {"type": "object"},
+        "credential_definition_id": {"type": "string"},
     },
-    "required": ["credential_offer", "credential_definition"],
+    "required": ["credential_offer", "credential_definition_id"],
 }
