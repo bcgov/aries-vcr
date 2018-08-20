@@ -1,0 +1,26 @@
+888<div class="row name-row" *ngFor="let topic of records">
+<ng-container *ngIf="topic.names.length > 0"> <!-- temp issue with search returning blank topics -->
+  <div class="col-sm-7">
+    <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
+    <a [routerLink]="['/topic', topic.id] | localize"
+      class="body-link cred-link name">{{topic.names[0].text}}</a>
+    <br>
+    <label *ngIf="topic.categories.length > 0">
+      <div  *ngFor="let category of topic.categories">
+         <div  *ngIf="category.type === 'topic_type'">
+            <div *ngIf="category.value" >
+             {{('business_type.' + category.value) | translate}}
+           </div>
+         </div>
+       </div>
+   </label>
+  </div>
+  <div class="col-sm-5">
+    <small *ngIf="topic.addresses.length > 0">
+      <!-- TODO: Add notion of 'type' to address model? -->
+      <!-- <label class="control-label" translate>{{topic.addresses[0].type}}</label> -->
+      <address-view [record]="topic.addresses[0]"></address-view>
+    </small>
+  </div>
+</ng-container>
+</div>
