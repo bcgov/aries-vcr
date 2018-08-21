@@ -2,6 +2,7 @@ import json as _json
 import logging
 from importlib import import_module
 
+from django.db import transaction
 from django.utils import timezone
 
 from von_anchor.util import schema_key
@@ -207,9 +208,10 @@ class CredentialManager(object):
         )
 
         credential_wallet_id = run_coro(self.store())
-        self.populate_application_database(
-            credential_type, credential_wallet_id
-        )
+        with transaction.atomic():
+           self.populate_application_database(
+               credential_type, credential_wallet_id
+           )
 
         return credential_wallet_id
 
