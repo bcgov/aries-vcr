@@ -16,7 +16,7 @@ class Credential(Auditable):
     )
     wallet_id = models.TextField()
 
-    effective_date = models.DateField(default=timezone.now)
+    effective_date = models.DateTimeField(default=timezone.now)
     revoked = models.BooleanField(default=False)
 
     class Meta:

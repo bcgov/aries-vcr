@@ -408,45 +408,6 @@ class CredentialManager(object):
                 "Issuer registration 'topic' must specify at least one valid topic name OR topic type and topic source_id"
             )
 
-        # We search for existing credentials by cardinality_fields to apply end_date
-        existing_credential_query = {
-            "credential_type__id": credential_type.id,
-            "topics__id": topic.id,
-        }
-        for cardinality_field in cardinality_fields:
-            try:
-                existing_credential_query["claims__name"] = cardinality_field
-                existing_credential_query["claims__value"] = getattr(
-                    self.credential, cardinality_field
-                )
-            except AttributeError as error:
-                raise CredentialException(
-                    "Issuer configuration specifies field '{}' ".format(
-                        cardinality_field
-                    )
-                    + "in cardinality_fields value does not exist in "
-                    + "credential. Values are: {}".format(
-                        ", ".join(list(self.credential.claim_attributes))
-                    )
-                )
-        try:
-            existing_credentials = CredentialModel.objects.filter(
-                **existing_credential_query
-            )
-
-            latest = existing_credentials.latest("effective_date")
-            for existing_credential in existing_credentials.all():
-                if (
-                    existing_credential.effective_date
-                    < latest.effective_date
-                ):
-                    existing_credential.revoked = True
-                    existing_credential.save()
-
-        except CredentialModel.DoesNotExist as error:
-            # No record to implicitly expire
-            pass
-
         # We always create a new credential model to represent the current credential
         credential = topic.credentials.create(
             credential_type=credential_type, wallet_id=credential_wallet_id
@@ -481,6 +442,43 @@ class CredentialManager(object):
 
         if parent_topic is not None:
             associate_related_topics(parent_topic)
+
+        # We search for existing credentials by cardinality_fields to apply end_date
+        existing_credential_query = {
+            "credential_type__id": credential_type.id,
+            "topics__id": topic.id,
+        }
+        for cardinality_field in cardinality_fields:
+            try:
+                existing_credential_query["claims__name"] = cardinality_field
+                existing_credential_query["claims__value"] = getattr(
+                    self.credential, cardinality_field
+                )
+            except AttributeError as error:
+                raise CredentialException(
+                    "Issuer configuration specifies field '{}' ".format(
+                        cardinality_field
+                    )
+                    + "in cardinality_fields value does not exist in "
+                    + "credential. Values are: {}".format(
+                        ", ".join(list(self.credential.claim_attributes))
+                    )
+                )
+
+        try:
+            existing_credentials = CredentialModel.objects.filter(
+                **existing_credential_query
+            )
+
+            latest = existing_credentials.latest("effective_date")
+            for existing_credential in existing_credentials:
+                if existing_credential.effective_date < latest.effective_date:
+                    existing_credential.revoked = True
+                    existing_credential.save()
+
+        except CredentialModel.DoesNotExist as error:
+            # No records to implicitly revoke
+            pass
 
         # Create search models using mapping from issuer config
         for model_mapper in mapping:
