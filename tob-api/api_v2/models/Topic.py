@@ -1,5 +1,7 @@
 from django.db import models
-from django.db.models import Prefetch
+
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from auditable.models import Auditable
 
@@ -13,6 +15,14 @@ logger = logging.getLogger(__name__)
 class Topic(Auditable):
     source_id = models.TextField()
     type = models.TextField()
+
+    def save(self, *args, **kwargs):
+        """
+        Call full_clean to apply form validation on save.
+        We use this to prevent insertingtext fields with empty strings.
+        """
+        self.full_clean()
+        super(Topic, self).save(*args, **kwargs)
 
     def direct_credentials(self, filter_args={}):
         """
@@ -45,22 +55,6 @@ class Topic(Auditable):
             c_topic_ids = set(credential.topics.values_list("id", flat=True))
             if c_topic_ids == topic_ids:
                 direct_credential_ids.append(credential.id)
-
-        # Give me credentials that have exactly the set of topics `topic_ids``
-        # query = (
-        #     Credential.objects.annotate(count=models.Count("topics"))
-        #     .filter(count=len(topic_ids))
-        # )
-        # for _id in topic_ids:
-        #     query = query.filter(**{"topics": _id})
-
-        # query = query.prefetch_related(
-        #     Prefetch(
-        #         "topics",
-        #         queryset=query,
-        #         to_attr="topics",
-        #     )
-        # )
 
         return Credential.objects.filter(pk__in=direct_credential_ids)
 
