@@ -22,8 +22,6 @@ from api_v2.models.Person import Person
 from api_v2.models.Schema import Schema
 from api_v2.models.Topic import Topic
 
-from api.indy.agent import Verifier
-
 from api_v2.indy.issuer import IssuerManager, IssuerException
 from api_v2.indy.credential_offer import CredentialOfferManager
 from api_v2.indy.credential import Credential, CredentialManager

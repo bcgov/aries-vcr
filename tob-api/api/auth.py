@@ -11,7 +11,6 @@ from didauth.error import VerifierException
 from didauth.headers import HeaderVerifier
 from rest_framework import authentication, exceptions, permissions
 
-from api.indy.agent import Verifier
 from api.models.User import User
 from api.models.VerifiableClaim import VerifiableClaim
 

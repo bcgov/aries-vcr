@@ -32,7 +32,6 @@ from vonx.indy.manager import IndyManager
 
 LOGGER = logging.getLogger(__name__)
 
-LOGGER.info("BOOT IMPORTED")
 
 def get_genesis_path():
     if platform.system() == "Windows":
@@ -58,7 +57,8 @@ def indy_verifier_id():
     return settings.INDY_VERIFIER_ID
 
 def pre_init():
-    MANAGER.start_process()
+    #MANAGER.start_process()
+    MANAGER.start()
     run_coro(register_services())
 
 async def register_services():
@@ -83,6 +83,7 @@ async def register_services():
     })
     LOGGER.debug("holder id: %s", holder_id)
 
+    LOGGER.info("Registering verifier service")
     verifier_wallet_id = await client.register_wallet({
         "name": "TheOrgBook_Verifier_Wallet",
         "seed": "tob-verifier-wallet-000000000001",
