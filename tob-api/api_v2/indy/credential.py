@@ -412,7 +412,6 @@ class CredentialManager(object):
         existing_credential_query = {
             "credential_type__id": credential_type.id,
             "topics__id": topic.id,
-            "end_date": None,
         }
         for cardinality_field in cardinality_fields:
             try:
@@ -431,11 +430,19 @@ class CredentialManager(object):
                     )
                 )
         try:
-            existing_credential = CredentialModel.objects.get(
+            existing_credentials = CredentialModel.objects.filter(
                 **existing_credential_query
             )
-            existing_credential.end_date = timezone.now()
-            existing_credential.save()
+
+            latest = existing_credentials.latest("effective_date")
+            for existing_credential in existing_credentials.all():
+                if (
+                    existing_credential.effective_date
+                    < latest.effective_date
+                ):
+                    existing_credential.revoked = True
+                    existing_credential.save()
+
         except CredentialModel.DoesNotExist as error:
             # No record to implicitly expire
             pass
