@@ -19,7 +19,7 @@ class TopicIndex(indexes.SearchIndex, indexes.Indexable):
     @staticmethod
     def prepare_name(obj):
         names = []
-        for credential in obj.credentials.filter(end_date=None):
+        for credential in obj.credentials.filter(revoked=False):
             for name in credential.names.all():
                 names.append(name.text or "")
 
@@ -28,7 +28,7 @@ class TopicIndex(indexes.SearchIndex, indexes.Indexable):
     @staticmethod
     def prepare_location(obj):
         locations = []
-        for credential in obj.credentials.filter(end_date=None):
+        for credential in obj.credentials.filter(revoked=False):
             for address in credential.addresses.all():
                 locations.append(address.addressee or "")
                 locations.append(address.civic_address or "")
