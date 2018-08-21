@@ -56,7 +56,7 @@
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.start-date</label>
                         <div class="form-field">
-                            <span *ngIf="record.start_date">{{record.start_date | date }}</span>
+                            <span *ngIf="record.effective_date">{{record.effective_date | date }}</span>
                         </div>
                     </div>
 
@@ -74,14 +74,14 @@
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.effective-date</label>
                         <div class="form-field">
-                            <span *ngIf="record.start_date">{{record.start_date | date }}</span>
+                            <span *ngIf="record.effective_date">{{record.effective_date | date }}</span>
                         </div>
                     </div>
                    
                     <div class="row form-group"  *ngIf="record.addresses.length > 0">
                         <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
                         <div class="form-field">
-                            <span *ngIf="record.start_date">{{ record.addresses[0].province }}</span>
+                            <span *ngIf="record.effective_date">{{ record.addresses[0].province }}</span>
                         </div>
                     </div>
 

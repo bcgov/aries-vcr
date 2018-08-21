@@ -69,7 +69,7 @@ class CustomCredentialSerializer(CredentialSerializer):
 
     class Meta(CredentialSerializer.Meta):
         # depth =
-        fields = ("id", "start_date", "effective_date", "revoked")
+        fields = ("id", "effective_date", "revoked")
 
 
 class CustomIssuerSerializer(IssuerSerializer):
@@ -90,7 +90,7 @@ class CustomAddressSerializer(AddressSerializer):
         fields.append("last_updated")
 
     def get_last_updated(self, obj):
-        return obj.credential.start_date
+        return obj.credential.effective_date
 
     def get_issuer(self, obj):
         serializer = CustomIssuerSerializer(
@@ -114,7 +114,7 @@ class CustomNameSerializer(NameSerializer):
         )
 
     def get_last_updated(self, obj):
-        return obj.credential.start_date
+        return obj.credential.effective_date
 
     def get_issuer(self, obj):
         serializer = CustomIssuerSerializer(
@@ -131,7 +131,7 @@ class CustomContactSerializer(ContactSerializer):
         fields = ("id", "credential", "last_updated", "text", "type")
 
     def get_last_updated(self, obj):
-        return obj.credential.start_date
+        return obj.credential.effective_date
 
     def get_issuer(self, obj):
         serializer = CustomIssuerSerializer(
@@ -148,7 +148,7 @@ class CustomPersonSerializer(PersonSerializer):
         fields = ("id", "credential", "last_updated", "full_name")
 
     def get_last_updated(self, obj):
-        return obj.credential.start_date
+        return obj.credential.effective_date
 
     def get_issuer(self, obj):
         serializer = CustomIssuerSerializer(
@@ -164,7 +164,7 @@ class CustomCategorySerializer(CategorySerializer):
         fields = ("id", "credential", "last_updated", "type", "value")
 
     def get_last_updated(self, obj):
-        return obj.credential.start_date
+        return obj.credential.effective_date
 
 
 class CustomTopicSerializer(TopicSerializer):

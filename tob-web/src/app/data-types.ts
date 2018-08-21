@@ -73,7 +73,6 @@ export class CredentialResult {
   id: number;
   credential_type: CredTypeResult;
   issuer: IssuerResult;
-  start_date: string;
   effective_date: string;
   revoked: string;
   
@@ -102,8 +101,8 @@ export class CredentialResult {
 export class CredResult {
   id: number;
   credential_type: CredTypeResult;
-  start_date: string;
-  end_date: string;
+  effective_date: string;
+  revoked: string;
 
   // extra API fields
   addresses: AddressResult[];
