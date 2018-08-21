@@ -69,7 +69,7 @@ class CustomCredentialSerializer(CredentialSerializer):
 
     class Meta(CredentialSerializer.Meta):
         # depth =
-        fields = ("id", "start_date", "end_date")
+        fields = ("id", "start_date", "effective_date", "revoked")
 
 
 class CustomIssuerSerializer(IssuerSerializer):
@@ -192,7 +192,7 @@ class CustomTopicSerializer(TopicSerializer):
         if not self.credential_ids:
             self.credential_ids = list(
                 obj.direct_credentials()
-                .filter(end_date=None)
+                .filter(revoked=False)
                 .values_list("id", flat=True)
             )
 
@@ -239,7 +239,7 @@ class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
         if not self.credential_ids:
             self.credential_ids = list(
                 obj.direct_credentials()
-                .filter(end_date=None)
+                .filter(revoked=False)
                 .values_list("id", flat=True)
             )
 

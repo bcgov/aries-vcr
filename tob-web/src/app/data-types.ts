@@ -74,7 +74,8 @@ export class CredentialResult {
   credential_type: CredTypeResult;
   issuer: IssuerResult;
   start_date: string;
-  end_date: string;
+  effective_date: string;
+  revoked: string;
   
   topics: TopicResult[];
   addresses: AddressResult[];

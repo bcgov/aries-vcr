@@ -443,7 +443,8 @@ class CredentialManager(object):
         if parent_topic is not None:
             associate_related_topics(parent_topic)
 
-        # We search for existing credentials by cardinality_fields to apply end_date
+        # We search for existing credentials by cardinality_fields
+        # to revoke credentials occuring before latest credential 
         existing_credential_query = {
             "credential_type__id": credential_type.id,
             "topics__id": topic.id,
