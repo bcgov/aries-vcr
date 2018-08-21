@@ -24,8 +24,7 @@ daemon = False
 enable_stdio_inheritance = True
 preload_app = True
 workers = os.environ.setdefault('WEB_CONCURRENCY', 5)
-#worker_class =
-#worker_connections = 60
+worker_class = 'aiohttp.GunicornWebWorker'
 timeout = 90
 backlog = 100
 keepalive = 2
@@ -49,13 +48,13 @@ def when_ready(server):
     from tob_anchor.boot import pre_init
     pre_init()
 
-def post_fork(server, worker):
+#def post_fork(server, worker):
     # server.log.debug('Post-fork worker: pid %s', os.getpid())
     # this is necessary to avoid deadlocks due to the same asyncio loop ID being
     # shared by multiple processes
-    asyncio.get_event_loop().close()
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+#    asyncio.get_event_loop().close()
+#    loop = asyncio.new_event_loop()
+#    asyncio.set_event_loop(loop)
 
 def on_exit(server):
     from tob_anchor.boot import shutdown

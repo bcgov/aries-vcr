@@ -236,6 +236,7 @@ configureEnvironment () {
 
   # tob-api
   export APP_CONFIG=${APP_CONFIG:-}
+  export APP_MODULE=tob_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8081}
   export DATABASE_SERVICE_NAME="tob-db"
   export DATABASE_ENGINE="postgresql"

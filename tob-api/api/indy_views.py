@@ -4,7 +4,7 @@
     TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
-        
+
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@
     limitations under the License.
 """
 
-from api.auth import IsSignedRequest
+#from api.auth import IsSignedRequest
 from api.indy.proofRequestBuilder import ProofRequestBuilder
-from api.indy.issuer import IssuerManager, IssuerException
 from api.claimDefProcesser import ClaimDefProcesser
 from rest_framework.response import Response
 from api import serializers
@@ -30,7 +29,7 @@ import logging
 import json
 from rest_framework import permissions
 from api.claimProcesser import ClaimProcesser
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from rest_framework.views import APIView
 from api.models.VerifiableClaim import VerifiableClaim
 
@@ -41,13 +40,13 @@ from api.models.VerifiableClaim import VerifiableClaim
 # ** Using APIView for the moment so a serializer_class does not need to be defined;
 #    as we manually processing things for the moment.
 class bcovrinGenerateClaimRequest(APIView):
-    """  
+    """
     Generate a claim request from a given claim definition.
     """
     # permission_classes = (IsSignedRequest,)
 
     def post(self, request, *args, **kwargs):
-        """  
+        """
         Processes a claim definition and responds with a claim request which
         can then be used to submit a claim.
 
@@ -85,13 +84,13 @@ class bcovrinGenerateClaimRequest(APIView):
 # ** Using APIView for the moment so a serializer_class does not need to be defined;
 #    as we manually processing things for the moment.
 class bcovrinStoreClaim(APIView):
-    """  
+    """
     Store a verifiable claim.
     """
     # permission_classes = (IsSignedRequest,)  # FIXME - change to IsRegisteredIssuer
 
     def post(self, request, *args, **kwargs):
-        """  
+        """
         Stores a verifiable claim into a central wallet.
 
         The data in the claim is parsed and stored in the database
@@ -120,12 +119,12 @@ class bcovrinStoreClaim(APIView):
 
 
 class bcovrinConstructProof(APIView):
-    """  
+    """
     Generates a proof based on a set of filters.
     """
 
     def post(self, request, *args, **kwargs):
-        """  
+        """
         Generates a proof from a proof request and set of filters.
 
         Example request payload:
@@ -168,7 +167,7 @@ class bcovrinConstructProof(APIView):
 
 
 class bcovrinVerifyCredential(APIView):
-    """  
+    """
     Verifies a verifiable claim
     """
 
@@ -224,55 +223,5 @@ class bcovrinVerifyCredential(APIView):
 
 
 class bcovrinRegisterIssuer(APIView):
-    """
-    Register an issuer (like permitify), creating or updating the necessary records
-    """
-    # performs its own header verification
-    authentication_classes = ()
-
     def post(self, request, *args, **kwargs):
-        """  
-        Processes an issuer definition and creates or updates the corresponding records.
-        Responds with the updated issuer definition including record IDs.
-
-        Example request payload:
-
-        ```json
-        {
-            "issuer": {
-                "did": "issuer DID",
-                "name": "issuer name (english)",
-                "abbreviation": "issuer TLA (english)",
-                "email": "administrator email",
-                "url": "url for issuer details"
-            },
-            "jurisdiction": {
-                "name": "name of jurisdiction (english)",
-                "abbreviation": "jurisdiction TLA (english)"
-            },
-            "claim-types": [
-                {
-                    "name": "claim type name (english)",
-                    "endpoint": "url for issuing claims",
-                    "schema": "schema name",
-                    "version": "schema version"
-                }
-            ]
-        }
-        ```
-
-        returns: `{"success": boolean, "result": updated issuer definition}`
-        """
-        __logger = logging.getLogger(__name__)
-        __logger.warn(">>> Register issuer")
-        issuerDef = request.body.decode("utf-8")
-        issuerJson = json.loads(issuerDef)
-        try:
-            issuerManager = IssuerManager()
-            updated = issuerManager.registerIssuer(request, issuerJson)
-            response = {"success": True, "result": updated}
-        except IssuerException as e:
-            __logger.exception("Issuer request not accepted:")
-            response = {"success": False, "result": str(e)}
-        __logger.warn("<<< Register issuer")
-        return JsonResponse(response)
+        return HttpResponseForbidden

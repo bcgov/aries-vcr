@@ -39,6 +39,7 @@ services:
     image: django
     environment:
       - APP_CONFIG=${APP_CONFIG}
+      - APP_MODULE=${APP_MODULE}
       - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
       - DATABASE_ENGINE=${DATABASE_ENGINE}
       - DATABASE_NAME=${DATABASE_NAME}
@@ -78,7 +79,7 @@ services:
       - tob-solr
     command: >
         /bin/bash -c "
-        echo sleeping ...;
+        echo waiting for solr ...;
         sleep 10;
         if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
           python manage.py migrate && python manage.py runserver --nothreading 0.0.0.0:8080;

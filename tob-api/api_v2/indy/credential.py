@@ -171,7 +171,7 @@ class CredentialManager(object):
         self.credential = credential
         self.credential_request_metadata = request_metadata
 
-    def process(self):
+    def process(self, credential_wallet_id):
         """
         Processes incoming credential data and returns newly created credential
 
@@ -207,7 +207,7 @@ class CredentialManager(object):
             schema=schema, issuer=issuer
         )
 
-        credential_wallet_id = run_coro(self.store())
+        #credential_wallet_id = run_coro(self.store())
         with transaction.atomic():
            self.populate_application_database(
                credential_type, credential_wallet_id

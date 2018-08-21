@@ -25,6 +25,7 @@ import logging
 import os
 import platform
 
+from wsgi import application
 from django.conf import settings
 
 from vonx.common.eventloop import run_coro
@@ -56,9 +57,39 @@ def indy_holder_id():
 def indy_verifier_id():
     return settings.INDY_VERIFIER_ID
 
-def pre_init():
-    #MANAGER.start_process()
-    MANAGER.start()
+async def init_app():
+    from aiohttp.web import Application
+    from aiohttp_wsgi import WSGIHandler
+    import tob_anchor.views as views
+
+    wsgi_handler = WSGIHandler(application)
+    app = Application()
+    app["manager"] = MANAGER
+    app.router.add_route(
+        "POST", "/api/v2/indy/construct-proof", views.construct_proof)
+    app.router.add_route(
+        "POST", "/api/v2/indy/generate-credential-request", views.generate_credential_request)
+    app.router.add_route(
+        "POST", "/api/v2/indy/store-credential", views.store_credential)
+    app.router.add_route(
+        "POST", "/api/v2/indy/register-issuer", views.register_issuer)
+    app.router.add_route(
+        "GET", "/api/v2/indy/status", views.status)
+    app.router.add_route(
+        "GET", "/api/v2/credential/{id}/verify", views.verify_credential)
+    app.router.add_route(
+        "*", "/{path_info:.*}", wsgi_handler)
+    return app
+
+def run_migration():
+    from django.core.management import call_command
+    call_command("migrate")
+
+def pre_init(proc=False):
+    if proc:
+        MANAGER.start_process()
+    else:
+        MANAGER.start()
     run_coro(register_services())
 
 async def register_services():

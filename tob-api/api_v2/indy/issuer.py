@@ -4,7 +4,7 @@ from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 
-from api.auth import create_issuer_user, verify_signature, VerifierException
+from api.auth import create_issuer_user
 
 from api_v2.serializers.rest import (
     IssuerSerializer,
@@ -12,7 +12,7 @@ from api_v2.serializers.rest import (
     CredentialTypeSerializer,
 )
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class IssuerException(Exception):
@@ -25,19 +25,8 @@ class IssuerManager:
     of the issuer and updating the related tables.
     """
 
-    def register_issuer(self, request, spec):
-        # TODO: move sig verification into middleware – decorator?
-        # TODO: accept required params instead of spec (schema
-        # validated in view)
-        try:
-            verified = verify_signature(request)
-        except VerifierException as e:
-            raise IssuerException("Signature validation error: {}".format(e))
-        if not verified:
-            raise IssuerException("Missing HTTP Signature")
-        logger.debug("DID signature verified: %s", verified)
-
-        user = self.update_user(verified, spec["issuer"])
+    def register_issuer(self, didauth, spec):
+        user = self.update_user(didauth, spec["issuer"])
         issuer = self.update_issuer(spec["issuer"])
         schemas, credential_types = self.update_schemas_and_ctypes(
             issuer, spec.get("credential_types", [])
@@ -55,15 +44,15 @@ class IssuerManager:
         }
         return result
 
-    def update_user(self, verified, issuer_def):
+    def update_user(self, didauth, issuer_def):
         """
         Update Django user with incoming issuer data.
         """
         issuer_did = issuer_def["did"]
         display_name = issuer_def["name"]
         user_email = issuer_def["email"]
-        verified_did = verified["keyId"]
-        verkey = verified["key"]
+        verified_did = didauth["keyId"]
+        verkey = didauth["key"]
         assert "did:sov:{}".format(issuer_did) == verified_did
         return create_issuer_user(
             user_email, verified_did, display_name=display_name, verkey=verkey
