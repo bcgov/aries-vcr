@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from aiohttp import web
@@ -10,24 +11,13 @@ from tob_anchor.boot import indy_client, indy_holder_id, indy_verifier_id
 
 from api.models.User import User
 
-from api_v2.models.Address import Address
-from api_v2.models.Claim import Claim
-from api_v2.models.Contact import Contact
 from api_v2.models.Credential import Credential as CredentialModel
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Issuer import Issuer
-from api_v2.models.Name import Name
-from api_v2.models.Person import Person
-from api_v2.models.Schema import Schema
-from api_v2.models.Topic import Topic
 
 from api_v2.indy.issuer import IssuerManager, IssuerException
-from api_v2.indy.credential_offer import CredentialOfferManager
 from api_v2.indy.credential import Credential, CredentialManager
 from api_v2.indy.proof_request import ProofRequest
 from api_v2.indy.proof import ProofManager
 
-from api_v2.decorators.jsonschema import validate
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
 from api_v2.jsonschema.credential import CREDENTIAL_JSON_SCHEMA
@@ -131,12 +121,14 @@ async def store_credential(request):
     LOGGER.warn(">>> Store credential")
     result = await vonx_views.store_credential(request, indy_holder_id())
     if result["stored"]:
-        stored = result["stored"]
-        credential = Credential(stored.cred.cred_data)
-        credential_manager = CredentialManager(
-            credential, stored.cred.cred_req_metadata
-        )
-        credential_manager.process(stored.cred_id)
+        def process(stored):
+            credential = Credential(stored.cred.cred_data)
+            credential_manager = CredentialManager(
+                credential, stored.cred.cred_req_metadata
+            )
+            credential_manager.process(stored.cred_id)
+        # run in a separate thread to avoid blocking the async loop
+        await asyncio.get_event_loop().run_in_executor(None, process, result["stored"])
     LOGGER.warn("<<< Store credential")
 
     return result
