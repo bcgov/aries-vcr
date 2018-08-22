@@ -15,7 +15,7 @@
         <p translate *ngIf="inited">home.message</p>
         <div class="search-outer">
           <div class="search-inner">
-            <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
+            <search-input #searchInput (accepted)="performSearch($event)"></search-input>
           </div>
         </div>
       </div>
