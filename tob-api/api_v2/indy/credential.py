@@ -1,3 +1,4 @@
+from datetime import datetime
 import json as _json
 import logging
 from importlib import import_module
@@ -413,7 +414,7 @@ class CredentialManager(object):
 
         credential_args = {
             "credential_type": credential_type,
-            "wallet_id": credential_wallet_id
+            "wallet_id": credential_wallet_id,
         }
 
         credential_config = processor_config.get("credential")
@@ -421,6 +422,17 @@ class CredentialManager(object):
             effective_date = process_mapping(
                 credential_config.get("effective_date")
             )
+
+            try:
+                # effective_date could be seconds since epoch
+                effective_date = datetime.utcfromtimestamp(
+                    int(effective_date)
+                ).isoformat()
+            except ValueError:
+                # If it's not an int, assume it's already ISO8601 string.
+                # Fail later if it isn't
+                pass
+
             credential_args["effective_date"] = effective_date
 
         credential = topic.credentials.create(**credential_args)
@@ -485,7 +497,10 @@ class CredentialManager(object):
 
             latest = existing_credentials.latest("effective_date")
             for existing_credential in existing_credentials:
-                if existing_credential.effective_date < latest.effective_date:
+                if (
+                    existing_credential.effective_date <= latest.effective_date
+                    and existing_credential != latest
+                ):
                     existing_credential.revoked = True
                     existing_credential.save()
 
