@@ -409,9 +409,21 @@ class CredentialManager(object):
             )
 
         # We always create a new credential model to represent the current credential
-        credential = topic.credentials.create(
-            credential_type=credential_type, wallet_id=credential_wallet_id
-        )
+        # The issuer may specify an effective date from a claim. Otherwise, defaults to now.
+
+        credential_args = {
+            "credential_type": credential_type,
+            "wallet_id": credential_wallet_id
+        }
+
+        credential_config = processor_config.get("credential")
+        if credential_config:
+            effective_date = process_mapping(
+                credential_config.get("effective_date")
+            )
+            credential_args["effective_date"] = effective_date
+
+        credential = topic.credentials.create(**credential_args)
 
         # Create and associate claims for this credential
         for claim_attribute in self.credential.claim_attributes:
@@ -444,7 +456,7 @@ class CredentialManager(object):
             associate_related_topics(parent_topic)
 
         # We search for existing credentials by cardinality_fields
-        # to revoke credentials occuring before latest credential 
+        # to revoke credentials occuring before latest credential
         existing_credential_query = {
             "credential_type__id": credential_type.id,
             "topics__id": topic.id,
