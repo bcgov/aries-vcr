@@ -8,9 +8,9 @@ from aiohttp import web
 from tob_anchor.boot import MANAGER, init_app, pre_init, run_migration
 
 parser = argparse.ArgumentParser(description="aiohttp server example")
-parser.add_argument('--host')
-parser.add_argument('-p', '--port')
-parser.add_argument('-s', '--socket')
+parser.add_argument('--host', default=os.getenv('HTTP_HOST'))
+parser.add_argument('-p', '--port', default=os.getenv('HTTP_PORT'))
+parser.add_argument('-s', '--socket', default=os.getenv('SOCKET_PATH'))
 
 if __name__ == '__main__':
     if not os.getenv("DISABLE_MIGRATE"):
