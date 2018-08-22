@@ -110,6 +110,9 @@ class IssuerManager:
                 "topic"
             ] = credential_type_def.get("topic")
             credential_type_processor_config[
+                "credential"
+            ] = credential_type_def.get("credential")
+            credential_type_processor_config[
                 "cardinality_fields"
             ] = credential_type_def.get("cardinality_fields")
 

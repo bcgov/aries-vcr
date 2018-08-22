@@ -27,6 +27,7 @@ ISSUER_JSON_SCHEMA = {
                     "topic": {
                         "oneOf": [{"type": "object"}, {"type": "array"}]
                     },
+                    "credential": {"type": "object"},
                     "mapping": {
                         "type": "array",
                         "items": {
