@@ -60,25 +60,14 @@ def indy_verifier_id():
 async def init_app():
     from aiohttp.web import Application
     from aiohttp_wsgi import WSGIHandler
-    import tob_anchor.views as views
+    from tob_anchor.urls import get_routes
 
     wsgi_handler = WSGIHandler(application)
     app = Application()
     app["manager"] = MANAGER
-    app.router.add_route(
-        "POST", "/api/v2/indy/construct-proof", views.construct_proof)
-    app.router.add_route(
-        "POST", "/api/v2/indy/generate-credential-request", views.generate_credential_request)
-    app.router.add_route(
-        "POST", "/api/v2/indy/store-credential", views.store_credential)
-    app.router.add_route(
-        "POST", "/api/v2/indy/register-issuer", views.register_issuer)
-    app.router.add_route(
-        "GET", "/api/v2/indy/status", views.status)
-    app.router.add_route(
-        "GET", "/api/v2/credential/{id}/verify", views.verify_credential)
-    app.router.add_route(
-        "*", "/{path_info:.*}", wsgi_handler)
+    app.router.add_routes(get_routes())
+    # all other requests forwarded to django
+    app.router.add_route("*", "/{path_info:.*}", wsgi_handler)
     return app
 
 def run_migration():
