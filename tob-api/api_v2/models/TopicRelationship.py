@@ -9,7 +9,7 @@ from .Topic import Topic
 
 class TopicRelationship(Auditable):
     credential = models.ForeignKey("Credential", related_name="topic_relationships")
-    topic = models.ForeignKey(Topic, related_name="topic_relationships")
+    topic = models.OneToOneField(Topic, related_name="+")
     related_topic = models.ForeignKey(Topic, related_name="+")
 
     class Meta:

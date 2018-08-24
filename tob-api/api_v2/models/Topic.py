@@ -18,7 +18,7 @@ class Topic(Auditable):
     type = models.TextField()
     related_topics = models.ManyToManyField(
         "self",
-        related_name="relationships",
+        related_name="+",
         through="TopicRelationship",
         through_fields=("topic", "related_topic"),
         symmetrical=False,
