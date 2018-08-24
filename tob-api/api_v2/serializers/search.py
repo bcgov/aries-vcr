@@ -191,7 +191,7 @@ class CustomTopicSerializer(TopicSerializer):
     def get_credential_ids(self, obj):
         if not self.credential_ids:
             self.credential_ids = list(
-                obj.direct_credentials()
+                obj.credentials
                 .filter(revoked=False)
                 .values_list("id", flat=True)
             )
@@ -238,7 +238,7 @@ class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
     def get_credential_ids(self, obj):
         if not self.credential_ids:
             self.credential_ids = list(
-                obj.direct_credentials()
+                obj.credentials
                 .filter(revoked=False)
                 .values_list("id", flat=True)
             )

@@ -99,7 +99,7 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "names",
             "contacts",
             "people",
-            "topics"
+            "topics",
         )
 
     def get_credential_type(self, obj):
@@ -154,31 +154,6 @@ class TopicViewSet(ViewSet):
         item = get_object_or_404(parent_queryset, pk=pk)
         # End date not null
         queryset = item.credentials.filter(~Q(revoked=False))
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @detail_route(url_path="directcredential")
-    def list_direct_credentials(self, request, pk=None):
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
-        queryset = item.direct_credentials()
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @detail_route(url_path="directcredential/active")
-    def list_active_direct_credentials(self, request, pk=None):
-        depth = 2
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
-        queryset = item.direct_credentials().filter(revoked=False)
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @detail_route(url_path="directcredential/historical")
-    def list_historical_direct_credentials(self, request, pk=None):
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
-        queryset = item.direct_credentials().filter(~Q(revoked=False))
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -278,6 +253,7 @@ class PersonViewSet(ViewSet):
         item = get_object_or_404(queryset, pk=pk)
         serializer = PersonSerializer(item)
         return Response(serializer.data)
+
 
 class CategoryViewSet(ViewSet):
     def list(self, request):
