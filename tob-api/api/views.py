@@ -4,7 +4,7 @@
     TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
 
     OpenAPI spec version: v1
-        
+
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,10 +20,6 @@
 """
 
 import asyncio
-from api.claimDefProcesser import ClaimDefProcesser
-from api.proofRequestProcesser import ProofRequestProcesser
-from api.indy.claimDefParser import ClaimDefParser
-from api.claimProcesser import ClaimProcesser
 import json
 import os
 import random
@@ -36,7 +32,7 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import permissions 
+from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework_bulk import BulkCreateModelMixin
@@ -55,11 +51,11 @@ from .models.VerifiableOrgType import VerifiableOrgType
 
 
 class doingbusinessasBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of DoingBusinessAs object  
+  """
+  Bulk create / update a number of DoingBusinessAs object
   """
   lookup_field = 'id'
-  queryset = DoingBusinessAs.objects.all()  
+  queryset = DoingBusinessAs.objects.all()
   serializer_class = serializers.DoingBusinessAsSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -68,11 +64,11 @@ class doingbusinessasBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Gene
     return self.create(request, *args, **kwargs)
 
 class doingbusinessasGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available DoingBusinessAs objects  
+  """
+  Lists available DoingBusinessAs objects
   """
   lookup_field = 'id'
-  queryset = DoingBusinessAs.objects.all()  
+  queryset = DoingBusinessAs.objects.all()
   serializer_class = serializers.DoingBusinessAsSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -86,11 +82,11 @@ class doingbusinessasGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateMode
     return self.create(request, *args, **kwargs)
 
 class doingbusinessasIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific DoingBusinessAs object  
+  """
+  Deletes a specific DoingBusinessAs object
   """
   lookup_field = 'id'
-  queryset = DoingBusinessAs.objects.all()  
+  queryset = DoingBusinessAs.objects.all()
   serializer_class = serializers.DoingBusinessAsSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -100,11 +96,11 @@ class doingbusinessasIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, gener
 
 
 class doingbusinessasIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific DoingBusinessAs object  
+  """
+  Gets a specific DoingBusinessAs object
   """
   lookup_field = 'id'
-  queryset = DoingBusinessAs.objects.all()  
+  queryset = DoingBusinessAs.objects.all()
   serializer_class = serializers.DoingBusinessAsSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -118,11 +114,11 @@ class doingbusinessasIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Upda
     return self.update(request, *args, **kwargs)
 
 class inactiveclaimreasonsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of InactiveClaimReason object  
+  """
+  Bulk create / update a number of InactiveClaimReason object
   """
   lookup_field = 'id'
-  queryset = InactiveClaimReason.objects.all()  
+  queryset = InactiveClaimReason.objects.all()
   serializer_class = serializers.InactiveClaimReasonSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -131,11 +127,11 @@ class inactiveclaimreasonsBulkPost(AuditableMixin,BulkCreateModelMixin, generics
     return self.create(request, *args, **kwargs)
 
 class inactiveclaimreasonsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available InactiveClaimReason objects  
+  """
+  Lists available InactiveClaimReason objects
   """
   lookup_field = 'id'
-  queryset = InactiveClaimReason.objects.all()  
+  queryset = InactiveClaimReason.objects.all()
   serializer_class = serializers.InactiveClaimReasonSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -149,11 +145,11 @@ class inactiveclaimreasonsGet(AuditableMixin,mixins.ListModelMixin, mixins.Creat
     return self.create(request, *args, **kwargs)
 
 class inactiveclaimreasonsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific InactiveClaimReason object  
+  """
+  Deletes a specific InactiveClaimReason object
   """
   lookup_field = 'id'
-  queryset = InactiveClaimReason.objects.all()  
+  queryset = InactiveClaimReason.objects.all()
   serializer_class = serializers.InactiveClaimReasonSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -163,11 +159,11 @@ class inactiveclaimreasonsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, 
 
 
 class inactiveclaimreasonsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific InactiveClaimReason object  
+  """
+  Gets a specific InactiveClaimReason object
   """
   lookup_field = 'id'
-  queryset = InactiveClaimReason.objects.all()  
+  queryset = InactiveClaimReason.objects.all()
   serializer_class = serializers.InactiveClaimReasonSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -181,11 +177,11 @@ class inactiveclaimreasonsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins
     return self.update(request, *args, **kwargs)
 
 class issuerservicesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of IssuerService object  
+  """
+  Bulk create / update a number of IssuerService object
   """
   lookup_field = 'id'
-  queryset = IssuerService.objects.all()  
+  queryset = IssuerService.objects.all()
   serializer_class = serializers.IssuerServiceSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -194,11 +190,11 @@ class issuerservicesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Gener
     return self.create(request, *args, **kwargs)
 
 class issuerservicesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available IssuerService objects  
+  """
+  Lists available IssuerService objects
   """
   lookup_field = 'id'
-  queryset = IssuerService.objects.all()  
+  queryset = IssuerService.objects.all()
   serializer_class = serializers.IssuerServiceSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -212,11 +208,11 @@ class issuerservicesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModel
     return self.create(request, *args, **kwargs)
 
 class issuerservicesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific IssuerService object  
+  """
+  Deletes a specific IssuerService object
   """
   lookup_field = 'id'
-  queryset = IssuerService.objects.all()  
+  queryset = IssuerService.objects.all()
   serializer_class = serializers.IssuerServiceSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -226,11 +222,11 @@ class issuerservicesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generi
 
 
 class issuerservicesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific IssuerService object  
+  """
+  Gets a specific IssuerService object
   """
   lookup_field = 'id'
-  queryset = IssuerService.objects.all()  
+  queryset = IssuerService.objects.all()
   serializer_class = serializers.IssuerServiceSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -244,11 +240,11 @@ class issuerservicesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Updat
     return self.update(request, *args, **kwargs)
 
 class jurisdictionsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of Jurisdiction object  
+  """
+  Bulk create / update a number of Jurisdiction object
   """
   lookup_field = 'id'
-  queryset = Jurisdiction.objects.all()  
+  queryset = Jurisdiction.objects.all()
   serializer_class = serializers.JurisdictionSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -257,11 +253,11 @@ class jurisdictionsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Generi
     return self.create(request, *args, **kwargs)
 
 class jurisdictionsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available Jurisdiction objects  
+  """
+  Lists available Jurisdiction objects
   """
   lookup_field = 'id'
-  queryset = Jurisdiction.objects.all()  
+  queryset = Jurisdiction.objects.all()
   serializer_class = serializers.JurisdictionSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -275,11 +271,11 @@ class jurisdictionsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelM
     return self.create(request, *args, **kwargs)
 
 class jurisdictionsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific Jurisdiction object  
+  """
+  Deletes a specific Jurisdiction object
   """
   lookup_field = 'id'
-  queryset = Jurisdiction.objects.all()  
+  queryset = Jurisdiction.objects.all()
   serializer_class = serializers.JurisdictionSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -289,11 +285,11 @@ class jurisdictionsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generic
 
 
 class jurisdictionsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific Jurisdiction object  
+  """
+  Gets a specific Jurisdiction object
   """
   lookup_field = 'id'
-  queryset = Jurisdiction.objects.all()  
+  queryset = Jurisdiction.objects.all()
   serializer_class = serializers.JurisdictionSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -307,11 +303,11 @@ class jurisdictionsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Update
     return self.update(request, *args, **kwargs)
 
 class locationsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of Location object  
+  """
+  Bulk create / update a number of Location object
   """
   lookup_field = 'id'
-  queryset = Location.objects.all()  
+  queryset = Location.objects.all()
   serializer_class = serializers.LocationSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -320,11 +316,11 @@ class locationsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPI
     return self.create(request, *args, **kwargs)
 
 class locationsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available Location objects  
+  """
+  Lists available Location objects
   """
   lookup_field = 'id'
-  queryset = Location.objects.all()  
+  queryset = Location.objects.all()
   serializer_class = serializers.LocationSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -338,11 +334,11 @@ class locationsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin
     return self.create(request, *args, **kwargs)
 
 class locationsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific Location object  
+  """
+  Deletes a specific Location object
   """
   lookup_field = 'id'
-  queryset = Location.objects.all()  
+  queryset = Location.objects.all()
   serializer_class = serializers.LocationSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -352,11 +348,11 @@ class locationsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.Ge
 
 
 class locationsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific Location object  
+  """
+  Gets a specific Location object
   """
   lookup_field = 'id'
-  queryset = Location.objects.all()  
+  queryset = Location.objects.all()
   serializer_class = serializers.LocationSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -370,11 +366,11 @@ class locationsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateMode
     return self.update(request, *args, **kwargs)
 
 class locationtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of LocationType object  
+  """
+  Bulk create / update a number of LocationType object
   """
   lookup_field = 'id'
-  queryset = LocationType.objects.all()  
+  queryset = LocationType.objects.all()
   serializer_class = serializers.LocationTypeSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -383,11 +379,11 @@ class locationtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Generi
     return self.create(request, *args, **kwargs)
 
 class locationtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available LocationType objects  
+  """
+  Lists available LocationType objects
   """
   lookup_field = 'id'
-  queryset = LocationType.objects.all()  
+  queryset = LocationType.objects.all()
   serializer_class = serializers.LocationTypeSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -401,11 +397,11 @@ class locationtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelM
     return self.create(request, *args, **kwargs)
 
 class locationtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific LocationType object  
+  """
+  Deletes a specific LocationType object
   """
   lookup_field = 'id'
-  queryset = LocationType.objects.all()  
+  queryset = LocationType.objects.all()
   serializer_class = serializers.LocationTypeSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -415,11 +411,11 @@ class locationtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generic
 
 
 class locationtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific LocationType object  
+  """
+  Gets a specific LocationType object
   """
   lookup_field = 'id'
-  queryset = LocationType.objects.all()  
+  queryset = LocationType.objects.all()
   serializer_class = serializers.LocationTypeSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -433,11 +429,11 @@ class locationtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Update
     return self.update(request, *args, **kwargs)
 
 class verifiableclaimsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of VerifiableClaim object  
+  """
+  Bulk create / update a number of VerifiableClaim object
   """
   lookup_field = 'id'
-  queryset = VerifiableClaim.objects.all()  
+  queryset = VerifiableClaim.objects.all()
   serializer_class = serializers.VerifiableClaimSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -446,11 +442,11 @@ class verifiableclaimsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Gen
     return self.create(request, *args, **kwargs)
 
 class verifiableclaimsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available VerifiableClaim objects  
+  """
+  Lists available VerifiableClaim objects
   """
   lookup_field = 'id'
-  queryset = VerifiableClaim.objects.all()  
+  queryset = VerifiableClaim.objects.all()
   serializer_class = serializers.VerifiableClaimSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -464,11 +460,11 @@ class verifiableclaimsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateMod
     return self.create(request, *args, **kwargs)
 
 class verifiableclaimsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific VerifiableClaim object  
+  """
+  Deletes a specific VerifiableClaim object
   """
   lookup_field = 'id'
-  queryset = VerifiableClaim.objects.all()  
+  queryset = VerifiableClaim.objects.all()
   serializer_class = serializers.VerifiableClaimSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -478,11 +474,11 @@ class verifiableclaimsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, gene
 
 
 class verifiableclaimsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific VerifiableClaim object  
+  """
+  Gets a specific VerifiableClaim object
   """
   lookup_field = 'id'
-  queryset = VerifiableClaim.objects.all()  
+  queryset = VerifiableClaim.objects.all()
   serializer_class = serializers.VerifiableClaimSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -496,12 +492,12 @@ class verifiableclaimsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Upd
     return self.update(request, *args, **kwargs)
 
 class verifiableclaimtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of VerifiableClaimType object  
+  """
+  Bulk create / update a number of VerifiableClaimType object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableClaimType.objects.all()  
+  queryset = VerifiableClaimType.objects.all()
   serializer_class = serializers.VerifiableClaimTypeSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -510,14 +506,14 @@ class verifiableclaimtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics
     return self.create(request, *args, **kwargs)
 
 class verifiableclaimtypesGet(AuditableMixin, mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available VerifiableClaimType objects  
+  """
+  Lists available VerifiableClaimType objects
   """
   lookup_field = 'id'
 
-  queryset = VerifiableClaimType.objects.all()  
+  queryset = VerifiableClaimType.objects.all()
   serializer_class = serializers.VerifiableClaimTypeSerializer
-  
+
   def __init__(self) -> None:
     self.__logger = logging.getLogger(__name__)
 
@@ -536,12 +532,12 @@ class verifiableclaimtypesGet(AuditableMixin, mixins.ListModelMixin, mixins.Crea
     return self.create(request, *args, **kwargs)
 
 class verifiableclaimtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific VerifiableClaimType object  
+  """
+  Deletes a specific VerifiableClaimType object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableClaimType.objects.all()  
+  queryset = VerifiableClaimType.objects.all()
   serializer_class = serializers.VerifiableClaimTypeSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -551,12 +547,12 @@ class verifiableclaimtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, 
 
 
 class verifiableclaimtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific VerifiableClaimType object  
+  """
+  Gets a specific VerifiableClaimType object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableClaimType.objects.all()  
+  queryset = VerifiableClaimType.objects.all()
   serializer_class = serializers.VerifiableClaimTypeSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -570,12 +566,12 @@ class verifiableclaimtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins
     return self.update(request, *args, **kwargs)
 
 class verifiableorgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of VerifiableOrg object  
+  """
+  Bulk create / update a number of VerifiableOrg object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableOrg.objects.all()  
+  queryset = VerifiableOrg.objects.all()
   serializer_class = serializers.VerifiableOrgSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -584,12 +580,12 @@ class verifiableorgsBulkPost(AuditableMixin,BulkCreateModelMixin, generics.Gener
     return self.create(request, *args, **kwargs)
 
 class verifiableorgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available VerifiableOrg objects  
+  """
+  Lists available VerifiableOrg objects
   """
   lookup_field = 'id'
 
-  queryset = VerifiableOrg.objects.all()  
+  queryset = VerifiableOrg.objects.all()
   serializer_class = serializers.VerifiableOrgSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -603,12 +599,12 @@ class verifiableorgsGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModel
     return self.create(request, *args, **kwargs)
 
 class verifiableorgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific VerifiableOrg object  
+  """
+  Deletes a specific VerifiableOrg object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableOrg.objects.all()  
+  queryset = VerifiableOrg.objects.all()
   serializer_class = serializers.VerifiableOrgSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -618,8 +614,8 @@ class verifiableorgsIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generi
 
 
 class verifiableorgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific VerifiableOrg object  
+  """
+  Gets a specific VerifiableOrg object
   """
   lookup_field = 'id'
 
@@ -637,12 +633,12 @@ class verifiableorgsIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.Updat
     return self.update(request, *args, **kwargs)
 
 class verifiableorgtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.GenericAPIView):
-  """  
-  Bulk create / update a number of VerifiableOrgType object  
+  """
+  Bulk create / update a number of VerifiableOrgType object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableOrgType.objects.all()  
+  queryset = VerifiableOrgType.objects.all()
   serializer_class = serializers.VerifiableOrgTypeSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -651,12 +647,12 @@ class verifiableorgtypesBulkPost(AuditableMixin,BulkCreateModelMixin, generics.G
     return self.create(request, *args, **kwargs)
 
 class verifiableorgtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-  """  
-  Lists available VerifiableOrgType objects  
+  """
+  Lists available VerifiableOrgType objects
   """
   lookup_field = 'id'
 
-  queryset = VerifiableOrgType.objects.all()  
+  queryset = VerifiableOrgType.objects.all()
   serializer_class = serializers.VerifiableOrgTypeSerializer
   def get(self, request, *args, **kwargs):
     """
@@ -670,12 +666,12 @@ class verifiableorgtypesGet(AuditableMixin,mixins.ListModelMixin, mixins.CreateM
     return self.create(request, *args, **kwargs)
 
 class verifiableorgtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
-  """  
-  Deletes a specific VerifiableOrgType object  
+  """
+  Deletes a specific VerifiableOrgType object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableOrgType.objects.all()  
+  queryset = VerifiableOrgType.objects.all()
   serializer_class = serializers.VerifiableOrgTypeSerializer
   def post(self, request, *args, **kwargs):
     """
@@ -685,12 +681,12 @@ class verifiableorgtypesIdDeletePost(AuditableMixin,mixins.DestroyModelMixin, ge
 
 
 class verifiableorgtypesIdGet(AuditableMixin,mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
-  """  
-  Gets a specific VerifiableOrgType object  
+  """
+  Gets a specific VerifiableOrgType object
   """
   lookup_field = 'id'
 
-  queryset = VerifiableOrgType.objects.all()  
+  queryset = VerifiableOrgType.objects.all()
   serializer_class = serializers.VerifiableOrgTypeSerializer
   def get(self, request, *args, **kwargs):
     """
