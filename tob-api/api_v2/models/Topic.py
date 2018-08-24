@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 class Topic(Auditable):
     source_id = models.TextField()
     type = models.TextField()
+    
+    # AKA topic children
     related_topics = models.ManyToManyField(
         "self",
         related_name="+",

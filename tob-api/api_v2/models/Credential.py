@@ -10,14 +10,10 @@ from .TopicRelationship import TopicRelationship
 
 
 class Credential(Auditable):
-    reindex_related = ["topics"]
+    reindex_related = ["topic"]
 
-    topics = models.ManyToManyField(
-        "Topic",
-        related_name="credentials",
-        through=TopicRelationship,
-        through_fields=("credential", "topic"),
-    )
+    topic = models.ForeignKey("Topic", related_name="credentials")
+
     credential_type = models.ForeignKey(CredentialType, related_name="credentials")
     wallet_id = models.TextField()
 

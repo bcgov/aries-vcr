@@ -8,7 +8,7 @@ from .Topic import Topic
 
 
 class TopicRelationship(Auditable):
-    credential = models.ForeignKey("Credential", related_name="topic_relationships")
+    credential = models.ForeignKey("Credential", related_name="+")
     topic = models.OneToOneField(Topic, related_name="+")
     related_topic = models.ForeignKey(Topic, related_name="+")
 
