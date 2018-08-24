@@ -444,28 +444,8 @@ class CredentialManager(object):
                 credential=credential, name=claim_attribute, value=claim_value
             )
 
-        # Recurisvely associate parent topic and all of it's related topics
-        # (all related credentials' topics)
-        known_topic_ids = []
-
-        def associate_related_topics(topic):
-            if topic in known_topic_ids:
-                return
-
-            credential.topics.add(topic)
-            known_topic_ids.append(topic.id)
-            for related_topic in (
-                Topic.objects.filter(credentials__in=topic.credentials.all())
-                .exclude(
-                    # Don't traverse known relationships
-                    id__in=known_topic_ids
-                )
-                .distinct()
-            ):
-                associate_related_topics(related_topic)
-
-        if parent_topic is not None:
-            associate_related_topics(parent_topic)
+        if parent_topic:
+            topic.related_topics.add(parent_topic)
 
         # We search for existing credentials by cardinality_fields
         # to revoke credentials occuring before latest credential
