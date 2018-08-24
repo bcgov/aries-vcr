@@ -5,7 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from auditable.models import Auditable
 
-from .Credential import Credential
+# from .Credential import Credential
+# from .TopicRelationship import TopicRelationship
 
 import logging
 
@@ -15,6 +16,13 @@ logger = logging.getLogger(__name__)
 class Topic(Auditable):
     source_id = models.TextField()
     type = models.TextField()
+    related_topics = models.ManyToManyField(
+        "self",
+        related_name="relationships",
+        through="TopicRelationship",
+        through_fields=("topic", "related_topic"),
+        symmetrical=False,
+    )
 
     def save(self, *args, **kwargs):
         """
@@ -42,9 +50,7 @@ class Topic(Auditable):
             topic_ids = set()
             for credential in credentials:
                 # distinct
-                topic_ids.update(
-                    list(credential.topics.values_list("id", flat=True))
-                )
+                topic_ids.update(list(credential.topics.values_list("id", flat=True)))
         # type == incorporation
         else:
             topic_ids = {self.id}
