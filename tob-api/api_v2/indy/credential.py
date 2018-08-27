@@ -6,6 +6,8 @@ from importlib import import_module
 from django.db import transaction
 from django.utils import timezone
 
+from django.db.utils import IntegrityError
+
 from von_anchor.util import schema_key
 
 from tob_anchor.boot import indy_client, indy_holder_id
@@ -39,11 +41,6 @@ SUPPORTED_MODELS_MAPPING = {
 }
 
 SUPPORTED_CATEGORIES = ["topic_status", "topic_type"]
-
-# TODO: Allow issuer to dynamically register topic types
-# Currently we only support 2 topic types. We only understand
-# a predefined relationship: incorporation --< doing_business_as
-SUPPORTED_TOPIC_TYPES = ["incorporation", "doing_business_as", "registration"]
 
 
 class CredentialException(Exception):
@@ -321,29 +318,14 @@ class CredentialManager(object):
             topic = None
 
             related_topic_name = process_mapping(topic_def.get("related_name"))
-            related_topic_source_id = process_mapping(topic_def.get("related_source_id"))
+            related_topic_source_id = process_mapping(
+                topic_def.get("related_source_id")
+            )
             related_topic_type = process_mapping(topic_def.get("related_type"))
 
             topic_name = process_mapping(topic_def.get("name"))
             topic_source_id = process_mapping(topic_def.get("source_id"))
             topic_type = process_mapping(topic_def.get("type"))
-
-            if topic_type is not None and topic_type not in SUPPORTED_TOPIC_TYPES:
-                raise CredentialException(
-                    "Supported topic types are 'incorporation' and 'doing_business_as' but received topic '{}'".format(
-                        topic_type
-                    )
-                )
-
-            if (
-                related_topic_type is not None
-                and related_topic_type not in SUPPORTED_TOPIC_TYPES
-            ):
-                raise CredentialException(
-                    "Supported topic types are 'incorporation' and 'doing_business_as' but received parent topic '{}'".format(
-                        related_topic_type
-                    )
-                )
 
             # Get parent topic if possible
             if related_topic_name:
@@ -424,16 +406,20 @@ class CredentialManager(object):
             )
 
         if related_topic is not None:
-            TopicRelationship.objects.create(
-                credential=credential, topic=topic, related_topic=related_topic
-            )
+            try:
+                TopicRelationship.objects.create(
+                    credential=credential, topic=topic, related_topic=related_topic
+                )
+            except IntegrityError:
+                raise CredentialException(
+                    "Relationship between topics '{}' and '{}' already exist.".format(
+                        topic.id, related_topic.id
+                    )
+                )
 
         # We search for existing credentials by cardinality_fields
         # to revoke credentials occuring before latest credential
-        existing_credential_query = {
-            "credential_type": credential_type,
-            "topic": topic,
-        }
+        existing_credential_query = {"credential_type": credential_type, "topic": topic}
         for cardinality_field in cardinality_fields:
             try:
                 existing_credential_query["claims__name"] = cardinality_field
