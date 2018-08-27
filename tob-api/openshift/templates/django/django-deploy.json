@@ -245,28 +245,6 @@
                     "value": "${INDY_WALLET_TYPE}"
                   },
                   {
-                    "name": "INDY_WALLET_URL",
-                    "value": "${INDY_WALLET_URL}"
-                  },
-                  {
-                    "name": "WALLET_USER_ID",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "${WALLET_DEPLOYMENT_NAME}",
-                        "key": "wallet-user"
-                      }
-                    }
-                  },
-                  {
-                    "name": "WALLET_PASSWORD",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "${WALLET_DEPLOYMENT_NAME}",
-                        "key": "wallet-password"
-                      }
-                    }
-                  },
-                  {
                     "name": "USE_AUTHENTICATION",
                     "value": "${USE_AUTHENTICATION}"
                   },
@@ -468,21 +446,7 @@
       "displayName": "Indy Wallet Type",
       "description": "The wallet type to use; remote (enterprise) or virtual (local), defaults to virtual.",
       "required": true,
-      "value": "remote"
-    },
-    {
-      "name": "INDY_WALLET_URL",
-      "displayName": "Indy Wallet URL",
-      "description": "The URL to the wallet provider.  Used only when using a remote (enterprise) wallet.",
-      "required": true,
-      "value": "http://wallet:8080/api/v1/"
-    },
-    {
-      "name": "WALLET_DEPLOYMENT_NAME",
-      "displayName": "Wallet Deployment Name",
-      "description": "The name associated to the wallet deployment resources.  In particular, this is used to wire up the credentials associated to the wallet.",
-      "required": true,
-      "value": "wallet"
+      "value": "virtual"
     },
     {
       "name": "TOB_THEME",
