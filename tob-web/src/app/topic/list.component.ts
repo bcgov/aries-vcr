@@ -11,6 +11,15 @@ import { TopicResult } from '../data-types';
 export class TopicListComponent {
 
   @Input() public records: TopicResult[];
+  protected _format = 'rows';
+
+  @Input() set format(fmt: string) {
+    this._format = fmt;
+  }
+
+  get format(): string {
+    return this._format;
+  }
 
   typeLabel(val: string): string {
     if(val) return ('name.'+val).replace(/_/g, '-');

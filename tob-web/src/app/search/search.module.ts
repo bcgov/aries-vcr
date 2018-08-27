@@ -8,6 +8,7 @@ import { IssuerClient } from './issuer.client';
 import { TopicClient } from './topic.client';
 import { CredentialClient } from './cred.client';
 import { TopicCredClient } from './topic-cred.client';
+import { TopicRelatedClient } from './topic-related.client';
 import { IssuerCredentialTypeClient } from './credential-type.client';
 import { NameSearchClient } from './name-search.client';
 import { TopicSearchClient } from './topic-search.client';
@@ -32,6 +33,7 @@ const ROUTES = [];
     TopicClient,
     CredentialClient,
     TopicCredClient,
+    TopicRelatedClient,
     IssuerCredentialTypeClient,
     NameSearchClient,
     TopicSearchClient,

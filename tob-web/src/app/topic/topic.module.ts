@@ -8,6 +8,7 @@ import { CredModule } from '../cred/cred.module';
 import { UtilModule } from '../util/util.module';
 import { TopicFormComponent } from '../topic/form.component';
 import { TopicListComponent } from '../topic/list.component';
+import { TopicRelatedListComponent } from '../topic/related-list.component';
 
 const ROUTES = [];
 
@@ -15,6 +16,7 @@ const ROUTES = [];
   declarations: [
     TopicFormComponent,
     TopicListComponent,
+    TopicRelatedListComponent,
   ],
   providers: [
   ],
@@ -30,6 +32,7 @@ const ROUTES = [];
   exports: [
     TopicFormComponent,
     TopicListComponent,
+    TopicRelatedListComponent,
   ]
 })
 export class TopicModule {}

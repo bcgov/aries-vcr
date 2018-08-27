@@ -77,6 +77,8 @@
 
     </div>
 
+    <related-topics [topicId]="id" defaultFormat="cards" *ngIf="loaded" [title]="'name.doing-business-as' | translate"></related-topics>
+
     <div class="row creds-outer" *ngIf="loaded">
       <div class="col-sm-12">
         <div class="panel creds-panel">

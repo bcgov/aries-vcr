@@ -1,3 +1,4 @@
+<ng-container *ngIf="format === 'rows'">
 <div class="row name-row" *ngFor="let topic of records">
 <ng-container *ngIf="topic.names.length > 0"> <!-- temp issue with search returning blank topics -->
   <div class="col-sm-7">
@@ -26,4 +27,8 @@
     </small>
   </div>
 </ng-container>
+</div>
+</ng-container>
+<div class="topics-grid" *ngIf="format === 'cards'">
+  <name-panel [record]="topic" *ngFor="let topic of records"></name-panel>
 </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CredResult, TopicResult, NameResult, CredentialResult } from '../data-types';
+import { TopicResult, NameResult, CredentialResult } from '../data-types';
 import { TopicClient } from '../search/topic.client';
 import { TopicCredClient } from '../search/topic-cred.client';
 import { SearchResult, SearchResults } from '../search/results.model';
