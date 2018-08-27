@@ -158,6 +158,32 @@ class TopicViewSet(ViewSet):
         return Response(serializer.data)
 
 
+    @detail_route(url_path="directcredential/active")
+    def list_active_direct_credentials(self, request, pk=None):
+        depth = 2
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.direct_credentials().filter(revoked=False)
+        serializer = ExpandedCredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="directcredential/historical")
+    def list_historical_direct_credentials(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.direct_credentials().filter(~Q(revoked=False))
+        serializer = ExpandedCredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="related")
+    def list_related_topics(self, request, pk=None):
+        parent_queryset = Topic.objects.all()
+        item = get_object_or_404(parent_queryset, pk=pk)
+        queryset = item.related_topics()
+        serializer = CustomTopicSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class CredentialViewSet(ViewSet):
     def list(self, request):
         queryset = Credential.objects.all()
