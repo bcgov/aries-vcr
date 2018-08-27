@@ -99,7 +99,7 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "names",
             "contacts",
             "people",
-            "topics",
+            "topic",
         )
 
     def get_credential_type(self, obj):
