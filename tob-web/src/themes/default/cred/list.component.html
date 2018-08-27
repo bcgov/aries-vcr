@@ -18,7 +18,7 @@
         <a class="body-link cred-link" [routerLink]="['/topic', topicId, 'cred', cred.id] | localize">{{cred.credential_type.description}}</a>
       </div>
       <div class="cred-date" *ngIf="cred.effective_date">
-        <span class="claim-info date">{{cred.effective_date | date}}</span>
+        <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </div>
     </div>
     <div class="col-sm-4">

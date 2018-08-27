@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from 'localize-router';
 import { AddressComponent } from './address.component';
+import { DateFormatPipe } from './date-format.pipe';
 import { NotFoundComponent } from './not-found.component';
 
 const ROUTES = [];
@@ -11,6 +12,7 @@ const ROUTES = [];
 @NgModule({
   declarations: [
     AddressComponent,
+    DateFormatPipe,
     NotFoundComponent,
   ],
   providers: [
@@ -23,6 +25,7 @@ const ROUTES = [];
   ],
   exports: [
     AddressComponent,
+    DateFormatPipe,
     NotFoundComponent,
   ]
 })

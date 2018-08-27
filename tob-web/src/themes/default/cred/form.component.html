@@ -91,7 +91,7 @@
             <div class="col-sm-12">
               <label class="control-label" translate>cred.start-date</label>
               <div class="form-field">
-                <span class="claim-info date" *ngIf="record.effective_date">{{record.effective_date | date: 'medium'}}</span>
+                <span class="claim-info date" *ngIf="record.effective_date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
               </div>
             </div>
           </div>
