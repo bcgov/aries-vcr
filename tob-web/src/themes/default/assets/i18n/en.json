@@ -66,10 +66,9 @@
     "title-certs": "permits and licences"
   },
   "issuer": {
-    "did": "did",
-    "email": "email",
     "breadcrumb": "Issuer Service",
     "cred-types": "Credential Types",
+    "did": "DID",
     "end-date": "End Date",
     "start-date": "Effective Date",
     "website": "Issuer Website"
