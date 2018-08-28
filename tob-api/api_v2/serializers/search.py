@@ -199,32 +199,30 @@ class CustomTopicSerializer(TopicSerializer):
         return self.credential_ids
 
     def get_names(self, obj):
-        credential_ids = self.get_credential_ids(obj)
-        names = Name.objects.filter(credential__id__in=credential_ids)
+        names = Name.objects.filter(credential__topic=obj)
         serializer = CustomNameSerializer(instance=names, many=True)
         return serializer.data
 
     def get_addresses(self, obj):
-        credential_ids = self.get_credential_ids(obj)
-        addresses = Address.objects.filter(credential__id__in=credential_ids)
+        addresses = Address.objects.filter(credential__topic=obj)
         serializer = CustomAddressSerializer(instance=addresses, many=True)
         return serializer.data
 
     def get_contacts(self, obj):
         credential_ids = self.get_credential_ids(obj)
-        contacts = Contact.objects.filter(credential__id__in=credential_ids)
+        contacts = Contact.objects.filter(credential__topic=obj)
         serializer = CustomContactSerializer(instance=contacts, many=True)
         return serializer.data
 
     def get_people(self, obj):
         credential_ids = self.get_credential_ids(obj)
-        people = Person.objects.filter(credential__id__in=credential_ids)
+        people = Person.objects.filter(credential__topic=obj)
         serializer = CustomPersonSerializer(instance=people, many=True)
         return serializer.data
 
     def get_categories(self, obj):
         credential_ids = self.get_credential_ids(obj)
-        categories = Category.objects.filter(credential__id__in=credential_ids)
+        categories = Category.objects.filter(credential__topic=obj)
         serializer = CustomCategorySerializer(instance=categories, many=True)
         return serializer.data
 

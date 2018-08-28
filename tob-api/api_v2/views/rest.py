@@ -152,7 +152,6 @@ class TopicViewSet(ViewSet):
     def list_historical_credentials(self, request, pk=None):
         parent_queryset = Topic.objects.all()
         item = get_object_or_404(parent_queryset, pk=pk)
-        # End date not null
         queryset = item.credentials.filter(~Q(revoked=False))
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
