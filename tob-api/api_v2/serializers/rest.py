@@ -33,7 +33,8 @@ class CredentialTypeSerializer(ModelSerializer):
 class TopicSerializer(ModelSerializer):
     class Meta:
         model = Topic
-        fields = "__all__"
+        # fields = "__all__"
+        fields = list(utils.fetch_custom_settings('serializers', 'Topic', 'includeFields'))
 
 
 class CredentialSerializer(ModelSerializer):

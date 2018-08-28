@@ -7,16 +7,17 @@ import os
 from django.conf import settings
 
 #
-# Read settings from a custom settings file 
+# Read settings from a custom settings file
 # based on the path provided as an input parameter
 # The choice of the custom settings file is driven by the value of the TOB_THEME env
 # variable (i.e. ongov)
 #
 
+
 def fetch_custom_settings(*args):
     _values = {}
 
-    if not hasattr(settings, 'CUSTOMIZATIONS'):
+    if not hasattr(settings, "CUSTOMIZATIONS"):
         return _values
 
     _dict = settings.CUSTOMIZATIONS
@@ -26,3 +27,9 @@ def fetch_custom_settings(*args):
         _dict = _dict[arg]
 
     return _dict
+
+
+def apply_custom_methods(cls, *args):
+    functions = list(fetch_custom_settings(*args))
+    for function in functions:
+        setattr(cls, function.__name__, classmethod(function))

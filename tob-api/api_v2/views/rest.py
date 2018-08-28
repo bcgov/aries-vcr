@@ -35,6 +35,8 @@ from api_v2.models.Name import Name
 from api_v2.models.Person import Person
 from api_v2.models.Category import Category
 
+from api_v2 import utils
+
 
 class IssuerViewSet(ViewSet):
     def list(self, request):
@@ -85,6 +87,7 @@ class CredentialTypeViewSet(ViewSet):
 class ExpandedCredentialSerializer(CredentialSerializer):
     credential_type = SerializerMethodField()
     issuer = SerializerMethodField()
+    topic = TopicSerializer()
 
     class Meta(CredentialSerializer.Meta):
         depth = 1
@@ -154,32 +157,6 @@ class TopicViewSet(ViewSet):
         item = get_object_or_404(parent_queryset, pk=pk)
         queryset = item.credentials.filter(~Q(revoked=False))
         serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-    @detail_route(url_path="directcredential/active")
-    def list_active_direct_credentials(self, request, pk=None):
-        depth = 2
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
-        queryset = item.direct_credentials().filter(revoked=False)
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @detail_route(url_path="directcredential/historical")
-    def list_historical_direct_credentials(self, request, pk=None):
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
-        queryset = item.direct_credentials().filter(~Q(revoked=False))
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @detail_route(url_path="related")
-    def list_related_topics(self, request, pk=None):
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
-        queryset = item.related_topics()
-        serializer = CustomTopicSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -291,3 +268,10 @@ class CategoryViewSet(ViewSet):
         item = get_object_or_404(queryset, pk=pk)
         serializer = CategorySerializer(item)
         return Response(serializer.data)
+
+
+# Add environment specific endpoints
+try:
+    utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
+except:
+    pass
