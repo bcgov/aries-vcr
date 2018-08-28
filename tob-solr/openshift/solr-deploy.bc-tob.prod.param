@@ -6,6 +6,6 @@
 # NAME=solr
 # IMAGE_NAMESPACE=devex-von-tools
 TAG_NAME=bc-tob-prod
-# PERSISTENT_VOLUME_SIZE=1Gi
+PERSISTENT_VOLUME_SIZE=126Gi
 # MOUNT_PATH=/opt/solr/server/solr/mycores
 # CORE_NAME=the_org_book

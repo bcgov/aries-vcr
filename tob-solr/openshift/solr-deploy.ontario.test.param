@@ -6,6 +6,6 @@
 # NAME=solr
 # IMAGE_NAMESPACE=ontvon-von-tools
 TAG_NAME=test
-# PERSISTENT_VOLUME_SIZE=1Gi
+PERSISTENT_VOLUME_SIZE=97Gi
 # MOUNT_PATH=/opt/solr/server/solr/mycores
 # CORE_NAME=the_org_book
