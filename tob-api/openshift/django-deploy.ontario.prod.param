@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-api
-# JSON Template File: templates/django/django-deploy.json
+# Template File: templates/django/django-deploy.json
 #=========================================================
 # NAME=django
 # IMAGE_NAMESPACE=ontvon-von-tools
