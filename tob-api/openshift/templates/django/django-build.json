@@ -112,7 +112,7 @@
       "displayName": "Source Image Tag",
       "required": true,
       "description": "The tag of the source image.",
-      "value": "py36-indy1.3.1-dev-441-ew-s2i"
+      "value": "py36-1.6-0-s2i"
     },
     {
       "name": "PIP_INDEX_URL",
