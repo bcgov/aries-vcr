@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from aiohttp import web
+import jsonschema
 from vonx.indy.messages import \
     ProofRequest as VonxProofRequest, \
     ConstructedProof as VonxConstructedProof
@@ -14,7 +15,7 @@ from api.models.User import User
 from api_v2.models.Credential import Credential as CredentialModel
 
 from api_v2.indy.issuer import IssuerManager, IssuerException
-from api_v2.indy.credential import Credential, CredentialManager
+from api_v2.indy.credential import Credential, CredentialManager, CredentialException
 from api_v2.indy.proof_request import ProofRequest
 from api_v2.indy.proof import ProofManager
 
@@ -23,47 +24,76 @@ from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
 from api_v2.jsonschema.credential import CREDENTIAL_JSON_SCHEMA
 from api_v2.jsonschema.construct_proof import CONSTRUCT_PROOF_JSON_SCHEMA
 
+from vonx.indy.errors import IndyError
 from vonx.web.headers import (
+    KeyCache,
     KeyFinderBase,
     IndyKeyFinder,
-    VerifierException,
-    verify_headers,
+    verify_signature,
 )
 
 LOGGER = logging.getLogger(__name__)
 
 
 class DjangoKeyFinder(KeyFinderBase):
-    async def lookup_key(self, key_id: str, key_type: str) -> bytes:
+    """
+    Handle key lookup
+    """
+    async def _lookup_key(self, key_id: str, key_type: str) -> bytes:
+        if key_type == "ed25519":
+            return await _run_thread(self._db_lookup, key_id)
+
+    def _db_lookup(self, key_id: str) -> bytes:
         try:
             user = User.objects.get(DID=key_id)
             if user.verkey:
                 verkey = bytes(user.verkey)
-                LOGGER.debug(
-                    "Found verkey for DID '{}' in users table: '{}'".format(
-                        key_id, verkey
-                    )
-                )
+                LOGGER.info(
+                    "Found verkey for DID '%s' in users table: '%s'",
+                    key_id, verkey)
                 return verkey
         except User.DoesNotExist:
             pass
 
 
-VERIFIER = IndyKeyFinder(indy_client(), indy_verifier_id(), DjangoKeyFinder())
+INDY_KEYFINDER = IndyKeyFinder(indy_client(), indy_verifier_id())
+DJANGO_KEYFINDER = DjangoKeyFinder(INDY_KEYFINDER)
+KEY_CACHE = KeyCache(DJANGO_KEYFINDER)
 
 
 async def _check_signature(request, use_cache: bool = True):
+    if request.get("didauth"):
+        return True, request["didauth"]
     try:
-        result = await verify_headers(
-            request.headers, VERIFIER, request.method, request.path_qs, use_cache)
-    except VerifierException:
+        result = await verify_signature(
+            request.headers, KEY_CACHE if use_cache else INDY_KEYFINDER,
+            request.method, request.path_qs)
+        request["didauth"] = result
+        ok = True
+    except IndyError:
         LOGGER.exception("Signature validation error:")
-        result = None
-    request['didauth'] = result
-    return result
+        result = web.json_response({"success": False, "result": "Signature required"}, status=400)
+        request["didauth"] = None
+        ok = False
+    return ok, result
 
 def _run_thread(proc, *args) -> asyncio.Future:
     return asyncio.get_event_loop().run_in_executor(None, proc, *args)
+
+def _validate_schema(data, schema):
+    try:
+        jsonschema.validate(data, schema)
+        ok = True
+        result = None
+    except jsonschema.ValidationError as e:
+        LOGGER.exception("Error validating schema:")
+        response = {
+            "success": False,
+            "result": "Schema validation error: {}".format(e),
+        }
+        ok = False
+        result = web.json_response(response, status=400)
+    return ok, result
 
 
 #@validate(CREDENTIAL_OFFER_JSON_SCHEMA)
@@ -91,8 +121,9 @@ async def generate_credential_request(request):
     ```
     """
 
-    if not await _check_signature(request):
-        return web.Response(text="Signature required", status=400)
+    ok, result = await _check_signature(request)
+    if not ok:
+        return result
 
     LOGGER.warn(">>> Generate credential request")
     result = await vonx_views.generate_credential_request(request, indy_holder_id())
@@ -123,12 +154,13 @@ async def store_credential(request):
     returns: created verified credential model
     """
 
-    if not await _check_signature(request):
-        return web.Response(text="Signature required", status=400)
+    ok, result = await _check_signature(request)
+    if not ok:
+        return result
 
     LOGGER.warn(">>> Store credential")
     result = await vonx_views.store_credential(request, indy_holder_id())
-    if result["stored"]:
+    if result.get("stored"):
         def process(stored):
             credential = Credential(stored.cred.cred_data)
             credential_manager = CredentialManager(
@@ -136,13 +168,16 @@ async def store_credential(request):
             )
             credential_manager.process(stored.cred_id)
         # run in a separate thread to avoid blocking the async loop
-        await _run_thread(process, result["stored"])
+        try:
+            await _run_thread(process, result["stored"])
+        except CredentialException as e:
+            LOGGER.exception("Exception while processing credential")
+            result = web.json_response({"success": False, "result": str(e)})
     LOGGER.warn("<<< Store credential")
 
     return result
 
 
-#@validate(ISSUER_JSON_SCHEMA)
 # TODO: Clean up abstraction. IssuerManager writes only –
 #       use serializer in view to return created models?
 async def register_issuer(request):
@@ -363,23 +398,29 @@ async def register_issuer(request):
     """
 
     # not using lookup on users table
-    if not await _check_signature(request, False):
-        return web.Response(text="Signature required", status=400)
+    ok, didauth = await _check_signature(request, False)
+    if not ok:
+        return didauth
 
-    LOGGER.warn(">>> Register issuer")
     data = await request.json()
+    ok, result = _validate_schema(data, ISSUER_JSON_SCHEMA)
+    if not ok:
+        return result
 
     def process(request, data):
         try:
             issuer_manager = IssuerManager()
-            updated = issuer_manager.register_issuer(request['didauth'], data)
+            updated = issuer_manager.register_issuer(didauth, data)
+            KEY_CACHE._cache_invalidate(didauth["keyId"], didauth["algorithm"])
             return {"success": True, "result": updated}
         except IssuerException as e:
             LOGGER.exception("Issuer request not accepted:")
             return {"success": False, "result": str(e)}
-    response = await _run_thread(process, request, data)
 
+    LOGGER.warn(">>> Register issuer")
+    response = await _run_thread(process, request, data)
     LOGGER.warn("<<< Register issuer")
+
     return web.json_response(response)
 
 
@@ -397,8 +438,9 @@ async def construct_proof(request):
     returns: HL Indy proof data
     """
 
-    if not await _check_signature(request):
-        return web.Response(text="Signature required", status=400)
+    ok, result = await _check_signature(request)
+    if not ok:
+        return result
 
     LOGGER.warn(">>> Construct proof")
     result = await vonx_views.construct_proof(request, indy_holder_id())
@@ -427,7 +469,7 @@ async def verify_credential(request):
     credential_id = request.match_info.get("id")
 
     if not credential_id:
-        return web.Response(text="Credential ID not provided", status=404)
+        return web.json_response({"success": False, "result": "Credential ID not provided"}, status=400)
 
     def fetch_cred(credential_id):
         try:
@@ -437,7 +479,7 @@ async def verify_credential(request):
     credential = await _run_thread(fetch_cred, credential_id)
     if not credential:
         LOGGER.warn("Credential not found: %s", credential_id)
-        return web.Response(text="Credential not found", status=404)
+        return web.json_response({"success": False, "result": "Credential not found"}, status=404)
 
     proof_request = ProofRequest(name="the-org-book", version="1.0.0")
     proof_request.build_from_credential(credential)
@@ -449,7 +491,7 @@ async def verify_credential(request):
             indy_verifier_id(),
             VonxProofRequest(proof_request.dict),
             VonxConstructedProof(proof))
-    verified = verified.verified
+    verified = verified.verified == "true"
     LOGGER.warn("<<< Verify credential")
 
     return web.json_response(
