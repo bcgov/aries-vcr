@@ -80,7 +80,7 @@ async def _check_signature(request, use_cache: bool = True):
 
 def _run_django(proc, *args) -> asyncio.Future:
     def runner(proc, *args):
-        django.setup()
+        #django.setup()
         try:
             ret = proc(*args)
             return ret
