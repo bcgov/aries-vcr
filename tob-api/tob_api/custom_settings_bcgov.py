@@ -4,8 +4,8 @@ Enclose property names in double quotes in order to JSON serialize the contents 
 from rest_framework.decorators import detail_route
 
 
-@detail_route(url_path="related")
-def list_related_topics(self, request, pk=None):
+@detail_route(url_path="related_to")
+def list_related_to(self, request, pk=None):
     # We load most at runtime because ORM isn't loaded at setup time
     from django.shortcuts import get_object_or_404
     from api_v2.views.rest import CustomTopicSerializer
@@ -14,13 +14,13 @@ def list_related_topics(self, request, pk=None):
 
     parent_queryset = Topic.objects.all()
     item = get_object_or_404(parent_queryset, pk=pk)
-    queryset = item.related_topics.all()
+    queryset = item.related_to.all()
     serializer = CustomTopicSerializer(queryset, many=True)
     return Response(serializer.data)
 
 
-@detail_route(url_path="has_relation")
-def list_has_relation_topics(self, request, pk=None):
+@detail_route(url_path="related_from")
+def list_related_from(self, request, pk=None):
     # Secondary imports do not incur a cost
     from django.shortcuts import get_object_or_404
     from api_v2.views.rest import CustomTopicSerializer
@@ -29,7 +29,7 @@ def list_has_relation_topics(self, request, pk=None):
 
     parent_queryset = Topic.objects.all()
     item = get_object_or_404(parent_queryset, pk=pk)
-    queryset = item.has_relation_to.all()
+    queryset = item.related_from.all()
     serializer = CustomTopicSerializer(queryset, many=True)
     return Response(serializer.data)
 
@@ -57,14 +57,14 @@ CUSTOMIZATIONS = {
                 "update_timestamp",
                 "source_id",
                 "type",
-                "has_relation_to",
-                "related_topics",
+                "related_to",
+                "related_from",
             ]
         },
     },
     "views": {
         "TopicViewSet": {
-            "includeMethods": [list_related_topics, list_has_relation_topics]
+            "includeMethods": [list_related_to, list_related_from]
         }
     },
 }
