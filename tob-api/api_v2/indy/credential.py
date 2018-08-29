@@ -341,7 +341,7 @@ class CredentialManager(object):
                         source_id=related_topic_source_id, type=related_topic_type
                     )
                 except Topic.DoesNotExist:
-                    continue
+                    pass
 
             # Current topic if possible
             if topic_name:
@@ -363,6 +363,10 @@ class CredentialManager(object):
 
             # We stick with the first topic that we resolve
             if topic:
+                if not related_topic and related_topic_source_id and related_topic_type:
+                    related_topic = Topic.objects.create(
+                        source_id=related_topic_source_id, type=related_topic_type
+                    )
                 break
 
         # If we couldn't resolve _any_ topics from the configuration,
