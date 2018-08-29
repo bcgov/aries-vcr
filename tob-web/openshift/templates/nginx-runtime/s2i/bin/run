@@ -16,6 +16,7 @@ read -r -d '' _CONFIG_SECTION << EOF
         }
         location /api/ {
             ${HTTP_BASIC}
+            proxy_set_header Authorization "";
             proxy_pass ${1};
         }
 EOF
