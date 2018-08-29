@@ -16,10 +16,12 @@ logger = logging.getLogger(__name__)
 class Topic(Auditable):
     source_id = models.TextField()
     type = models.TextField()
-    
-    related_topics = models.ManyToManyField(
+
+    # Topics I have a verifiable relationship to
+    related_to = models.ManyToManyField(
         "self",
-        related_name="+",
+        # Topics that have a verifiable relationship to me
+        related_name="related_from",
         through="TopicRelationship",
         through_fields=("topic", "related_topic"),
         symmetrical=False,
