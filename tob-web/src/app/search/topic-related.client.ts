@@ -8,7 +8,7 @@ import { TopicResult } from '../data-types';
 export class TopicRelatedClient extends SearchClient<TopicResult> {
 
   public resource = 'topic';
-  public childPath = 'related';
+  public childPath = 'related_to';
 
   constructor(@Inject(SearchService) _service: SearchService) {
       super(_service);
