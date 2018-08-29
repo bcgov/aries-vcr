@@ -96,28 +96,28 @@ async def register_services():
         "name": "TheOrgBook_Holder_Wallet",
         "seed": wallet_seed,
     })
-    LOGGER.debug("holder wallet id: %s", holder_wallet_id)
+    LOGGER.debug("Indy holder wallet id: %s", holder_wallet_id)
     holder_id = await client.register_holder(holder_wallet_id, {
         "id": indy_holder_id(),
         "name": "TheOrgBook Holder",
     })
-    LOGGER.debug("holder id: %s", holder_id)
+    LOGGER.debug("Indy holder id: %s", holder_id)
 
     LOGGER.info("Registering verifier service")
     verifier_wallet_id = await client.register_wallet({
         "name": "TheOrgBook_Verifier_Wallet",
         "seed": "tob-verifier-wallet-000000000001",
     })
-    LOGGER.info("verifier wallet id: %s", verifier_wallet_id)
+    LOGGER.debug("Indy verifier wallet id: %s", verifier_wallet_id)
     verifier_id = await client.register_verifier(verifier_wallet_id, {
         "id": indy_verifier_id(),
         "name": "TheOrgBook Verifier",
     })
-    LOGGER.info("verifier id: %s", verifier_id)
+    LOGGER.info("Indy verifier id: %s", verifier_id)
 
     await client.sync()
-    LOGGER.info("synced")
-    LOGGER.info(await client.get_status())
+    LOGGER.debug("Indy client synced")
+    LOGGER.debug(await client.get_status())
 
 def shutdown():
     MANAGER.stop()
