@@ -420,7 +420,6 @@ async def register_issuer(request):
         try:
             issuer_manager = IssuerManager()
             updated = issuer_manager.register_issuer(didauth, data)
-            KEY_CACHE._cache_invalidate(didauth["keyId"], didauth["algorithm"])
             return {"success": True, "result": updated}
         except IssuerException as e:
             LOGGER.exception("Issuer request not accepted:")
@@ -428,6 +427,8 @@ async def register_issuer(request):
 
     LOGGER.warn(">>> Register issuer")
     response = await _run_django(process, request, data)
+    if response["success"]:
+        await KEY_CACHE._cache_invalidate(didauth["keyId"], didauth["algorithm"])
     LOGGER.warn("<<< Register issuer")
 
     return web.json_response(response)
