@@ -36,6 +36,9 @@ from vonx.web.headers import (
 
 LOGGER = logging.getLogger(__name__)
 
+INSTRUMENT = True
+STATS = {"min": {}, "max": {}, "total": {}, "count": {}}
+
 
 class DjangoKeyFinder(KeyFinderBase):
     """
@@ -64,6 +67,7 @@ KEY_CACHE = KeyCache(DJANGO_KEYFINDER)
 
 
 async def _check_signature(request, use_cache: bool = True):
+    perf = _time_start("check_signature")
     if request.get("didauth"):
         return True, request["didauth"]
     try:
@@ -77,6 +81,7 @@ async def _check_signature(request, use_cache: bool = True):
         result = web.json_response({"success": False, "result": "Signature required"}, status=400)
         request["didauth"] = None
         ok = False
+    _time_end(perf)
     return ok, result
 
 def _run_django(proc, *args) -> asyncio.Future:
@@ -105,8 +110,20 @@ def _validate_schema(data, schema):
         result = web.json_response(response, status=400)
     return ok, result
 
+def _time_start(*tasks):
+    return (tasks, time.perf_counter())
 
-#@validate(CREDENTIAL_OFFER_JSON_SCHEMA)
+def _time_end(timer):
+    (tasks, start) = timer
+    diff = time.perf_counter() - start
+    for task in tasks:
+        STATS["min"][task] = min(STATS["min"].get(task, diff), diff)
+        STATS["max"][task] = max(STATS["max"].get(task, 0), diff)
+        STATS["total"][task] = STATS["total"].get(task, 0) + diff
+        STATS["count"][task] = STATS["count"].get(task, 0) + 1
+    return diff
+
+
 async def generate_credential_request(request):
     """
     Processes a credential definition and responds with a credential request
@@ -136,14 +153,13 @@ async def generate_credential_request(request):
         return result
 
     LOGGER.warn(">>> Generate credential request")
-    start_time = time.perf_counter()
+    perf = _time_start("generate_credential_request")
     result = await vonx_views.generate_credential_request(request, indy_holder_id())
-    LOGGER.warn("<<< Generate credential request: " + str(time.perf_counter() - start_time))
+    LOGGER.warn("<<< Generate credential request: %s", _time_end(perf))
 
     return result
 
 
-#@validate(CREDENTIAL_JSON_SCHEMA)
 async def store_credential(request):
     """
     Stores a verifiable credential in wallet.
@@ -170,10 +186,10 @@ async def store_credential(request):
         return result
 
     LOGGER.warn(">>> Store credential")
-    start_time = time.perf_counter()
+    perf_store = _time_start("store_credential")
     result = await vonx_views.store_credential(request, indy_holder_id())
-    LOGGER.warn("<<< Store credential (wallet): " + str(time.perf_counter() - start_time))
-    start_time = time.perf_counter()
+    LOGGER.warn("<<< Store credential (wallet): %s", _time_end(perf_store))
+    perf_proc = _time_start("process_credential")
     if result.get("stored"):
         def process(stored):
             credential = Credential(stored.cred.cred_data)
@@ -187,13 +203,11 @@ async def store_credential(request):
         except CredentialException as e:
             LOGGER.exception("Exception while processing credential")
             result = web.json_response({"success": False, "result": str(e)})
-    LOGGER.warn("<<< Store credential: " + str(time.perf_counter() - start_time))
+    LOGGER.warn("<<< Store credential: %s", _time_end(perf_proc))
 
     return result
 
 
-# TODO: Clean up abstraction. IssuerManager writes only –
-#       use serializer in view to return created models?
 async def register_issuer(request):
     """
     Processes an issuer definition and creates or updates the
@@ -431,16 +445,15 @@ async def register_issuer(request):
             return {"success": False, "result": str(e)}
 
     LOGGER.warn(">>> Register issuer")
-    start_time = time.perf_counter()
+    perf = _time_start("register_issuer")
     response = await _run_django(process, request, data)
     if response["success"]:
         await KEY_CACHE._cache_invalidate(didauth["keyId"], didauth["algorithm"])
-    LOGGER.warn("<<< Register issuer: " + str(time.perf_counter() - start_time))
+    LOGGER.warn("<<< Register issuer: %s", _time_end(perf))
 
     return web.json_response(response)
 
 
-#@validate(CONSTRUCT_PROOF_JSON_SCHEMA)
 async def construct_proof(request):
     """
     Constructs a proof given a proof request
@@ -459,9 +472,9 @@ async def construct_proof(request):
         return result
 
     LOGGER.warn(">>> Construct proof")
-    start_time = time.perf_counter()
+    perf = _time_start("construct_proof")
     result = await vonx_views.construct_proof(request, indy_holder_id())
-    LOGGER.warn("<<< Construct proof: " + str(time.perf_counter() - start_time))
+    LOGGER.warn("<<< Construct proof: %s", _time_end(perf))
 
     return result
 
@@ -483,7 +496,7 @@ async def verify_credential(request):
     ```
     """
     LOGGER.warn(">>> Verify credential")
-    start_time = time.perf_counter()
+    perf = _time_start("verify_credential")
     credential_id = request.match_info.get("id")
 
     if not credential_id:
@@ -510,7 +523,7 @@ async def verify_credential(request):
             VonxProofRequest(proof_request.dict),
             VonxConstructedProof(proof))
     verified = verified.verified == "true"
-    LOGGER.warn("<<< Verify credential: " + str(time.perf_counter() - start_time))
+    LOGGER.warn("<<< Verify credential: %s", _time_end(perf))
 
     return web.json_response(
         {
@@ -526,4 +539,8 @@ async def verify_credential(request):
 
 async def status(request, *args, **kwargs):
     result = await indy_client().get_status()
+    if INSTRUMENT:
+        stats = STATS.copy()
+        stats["avg"] = {task: stats["total"][task] / stats["count"][task] for task in stats["count"]}
+        result["stats"] = stats
     return web.json_response(result)
