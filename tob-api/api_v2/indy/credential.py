@@ -1,6 +1,7 @@
 from datetime import datetime
 import json as _json
 import logging
+import time
 from importlib import import_module
 
 from django.db import transaction
@@ -176,6 +177,8 @@ class CredentialManager(object):
             Credential -- newly created credential in application database
         """
         # Get context for this credential if it exists
+        LOGGER.warn(">>> get credential context")
+        start_time = time.perf_counter()
         try:
             issuer = Issuer.objects.get(did=self.credential.origin_did)
             schema = Schema.objects.get(
@@ -201,6 +204,7 @@ class CredentialManager(object):
             )
 
         credential_type = CredentialType.objects.get(schema=schema, issuer=issuer)
+        LOGGER.warn("<<< get credential context: " + str(time.perf_counter() - start_time))
 
         # credential_wallet_id = run_coro(self.store())
         with transaction.atomic():
@@ -301,6 +305,8 @@ class CredentialManager(object):
 
             return mapped_value
 
+        LOGGER.warn(">>> store cred in local database")
+        start_time = time.perf_counter()
         processor_config = credential_type.processor_config
         topic_defs = processor_config["topic"]
 
@@ -487,6 +493,8 @@ class CredentialManager(object):
 
             model.credential = credential
             model.save()
+
+        LOGGER.warn("<<< store cred in local database: " + str(time.perf_counter() - start_time))
 
         return topic
 

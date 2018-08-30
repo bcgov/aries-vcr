@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 
 from aiohttp import web
 import django.db
@@ -135,8 +136,9 @@ async def generate_credential_request(request):
         return result
 
     LOGGER.warn(">>> Generate credential request")
+    start_time = time.perf_counter()
     result = await vonx_views.generate_credential_request(request, indy_holder_id())
-    LOGGER.warn("<<< Generate credential request")
+    LOGGER.warn("<<< Generate credential request: " + str(time.perf_counter() - start_time))
 
     return result
 
@@ -168,7 +170,10 @@ async def store_credential(request):
         return result
 
     LOGGER.warn(">>> Store credential")
+    start_time = time.perf_counter()
     result = await vonx_views.store_credential(request, indy_holder_id())
+    LOGGER.warn("<<< Store credential (wallet): " + str(time.perf_counter() - start_time))
+    start_time = time.perf_counter()
     if result.get("stored"):
         def process(stored):
             credential = Credential(stored.cred.cred_data)
@@ -182,7 +187,7 @@ async def store_credential(request):
         except CredentialException as e:
             LOGGER.exception("Exception while processing credential")
             result = web.json_response({"success": False, "result": str(e)})
-    LOGGER.warn("<<< Store credential")
+    LOGGER.warn("<<< Store credential: " + str(time.perf_counter() - start_time))
 
     return result
 
@@ -426,10 +431,11 @@ async def register_issuer(request):
             return {"success": False, "result": str(e)}
 
     LOGGER.warn(">>> Register issuer")
+    start_time = time.perf_counter()
     response = await _run_django(process, request, data)
     if response["success"]:
         await KEY_CACHE._cache_invalidate(didauth["keyId"], didauth["algorithm"])
-    LOGGER.warn("<<< Register issuer")
+    LOGGER.warn("<<< Register issuer: " + str(time.perf_counter() - start_time))
 
     return web.json_response(response)
 
@@ -453,8 +459,9 @@ async def construct_proof(request):
         return result
 
     LOGGER.warn(">>> Construct proof")
+    start_time = time.perf_counter()
     result = await vonx_views.construct_proof(request, indy_holder_id())
-    LOGGER.warn("<<< Construct proof")
+    LOGGER.warn("<<< Construct proof: " + str(time.perf_counter() - start_time))
 
     return result
 
@@ -476,6 +483,7 @@ async def verify_credential(request):
     ```
     """
     LOGGER.warn(">>> Verify credential")
+    start_time = time.perf_counter()
     credential_id = request.match_info.get("id")
 
     if not credential_id:
@@ -502,7 +510,7 @@ async def verify_credential(request):
             VonxProofRequest(proof_request.dict),
             VonxConstructedProof(proof))
     verified = verified.verified == "true"
-    LOGGER.warn("<<< Verify credential")
+    LOGGER.warn("<<< Verify credential: " + str(time.perf_counter() - start_time))
 
     return web.json_response(
         {
