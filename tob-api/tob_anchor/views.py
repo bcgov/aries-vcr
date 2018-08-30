@@ -42,7 +42,7 @@ STATS = {"min": {}, "max": {}, "total": {}, "count": {}}
 
 class DjangoKeyFinder(KeyFinderBase):
     """
-    Handle key lookup
+    Handle public key lookup for the issuer's DID
     """
     async def _lookup_key(self, key_id: str, key_type: str) -> bytes:
         if key_type == "ed25519":
@@ -67,6 +67,9 @@ KEY_CACHE = KeyCache(DJANGO_KEYFINDER)
 
 
 async def _check_signature(request, use_cache: bool = True):
+    """
+    Check the DID-auth signature on the incoming request
+    """
     perf = _time_start("check_signature")
     if request.get("didauth"):
         return True, request["didauth"]
@@ -537,7 +540,25 @@ async def verify_credential(request):
     )
 
 
-async def status(request, *args, **kwargs):
+async def reqInfo(request):
+    """
+    Used to debug API security
+    """
+    info = {
+        "forwarded": request.forwarded,
+        "headers": dict(request.headers),
+        "host": request.host,
+        "path_qs": request.path_qs,
+        "remote": request.remote,
+        "secure": request.secure,
+    }
+    return web.json_response(info)
+
+
+async def status(request):
+    """
+    Return status of the Indy service including statistics on the requests performed
+    """
     result = await indy_client().get_status()
     if INSTRUMENT:
         stats = STATS.copy()
