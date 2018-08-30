@@ -545,7 +545,7 @@ async def reqInfo(request):
     Used to debug API security
     """
     info = {
-        "forwarded": request.forwarded,
+        "forwarded": repr(request.forwarded),
         "headers": dict(request.headers),
         "host": request.host,
         "path_qs": request.path_qs,
