@@ -176,6 +176,7 @@
                 }
             },
             "spec": {
+                "storageClassName": "${PERSISTENT_VOLUME_CLASS}",
                 "accessModes": [
                     "ReadWriteOnce"
                 ],
@@ -306,6 +307,13 @@
             "description": "The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.",
             "required": true,
             "value": "1Gi"
+        },
+        {
+            "name": "PERSISTENT_VOLUME_CLASS",
+            "displayName": "Persistent Volume Class name",
+            "description": "The class of the volume; gluster-file, gluster-block, gluster-file-db",
+            "required": false,
+            "value": "gluster-file-db"
         },
         {
             "name": "MEMORY_LIMIT",
