@@ -21,8 +21,12 @@ class Command(migrate.Command):
       self.__initialize_user_accounts()
 
     def __update_search_indexes(self):
-      self.stdout.write("\nUpdating search indexes ...")
-      management.call_command('update_index', '--max-retries=5')
+      SKIP_INDEXING = os.environ.get('SKIP_INDEXING_ON_STARTUP', 'false')
+      if SKIP_INDEXING.lower() == 'false':
+        self.stdout.write("\nUpdating search indexes ...")
+        management.call_command('update_index', '--max-retries=5')
+      else:
+        self.stdout.write("\nSkipping search indexing ...")
 
     def __initialize_user_accounts(self):
       self.stdout.write("\nInitializing user accounts ...")
