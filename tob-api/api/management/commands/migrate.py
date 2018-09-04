@@ -22,7 +22,7 @@ class Command(migrate.Command):
 
     def __update_search_indexes(self):
       SKIP_INDEXING = os.environ.get('SKIP_INDEXING_ON_STARTUP', 'false')
-      if SKIP_INDEXING.lower() == 'false':
+      if not SKIP_INDEXING or SKIP_INDEXING.lower() == 'false':
         self.stdout.write("\nUpdating search indexes ...")
         management.call_command('update_index', '--max-retries=5')
       else:
@@ -36,16 +36,16 @@ class Command(migrate.Command):
     def __initialize_user(self):
       USER_ID = os.environ.get('USER_ID')
       USER_PASSWORD = os.environ.get('USER_PASSWORD')
-      
+
       # ToDo - Generate these automatically.
-      # Refer to ...\theorgbook\tob-api\env\lib\site-packages\von_agent\wallet.py 
+      # Refer to ...\theorgbook\tob-api\env\lib\site-packages\von_agent\wallet.py
       # for information on how to get a did and verkey from a seed.
       # For now we're not using did auth for these api accounts, so it's not critical.
       # We just need these variables to create the account.
       USER_SEED = os.environ.get('USER_SEED', 'tob_api_user_0000000000000000000')
       USER_DID = os.environ.get('USER_DID', 'TQDrf89hBWzcCiLu4FLP91')
       USER_VERKEY = os.environ.get('USER_VERKEY', 'FPZwF913VqgMfXyKxdquR4i9GmSUqCnUd9RJVQAjFhRj')
-      
+
       if USER_ID and USER_PASSWORD:
         if User.objects.filter(Q(is_superuser=False)).count() <= 0:
           self.stdout.write("Initializing API user account ...")
@@ -59,7 +59,7 @@ class Command(migrate.Command):
     def __initialize_superuser(self):
       ADMIN_USER_ID = os.environ.get('ADMIN_USER_ID', 'api-admin')
       ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
-      
+
       if ADMIN_USER_ID and ADMIN_PASSWORD:
         if User.objects.filter(Q(is_superuser=True)).count() <= 0:
           self.stdout.write("Initializing superuser account ...")
