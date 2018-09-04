@@ -1,31 +1,26 @@
 <section id="home">
 
-  <div class="row mrgn-tp-lg" *ngIf="!inited">
-    <div class="col-sm-12 page-load">
-      <div class="loading-indicator"></div>
-    </div>
-  </div>
+    <div class="row mrgn-tp-lg" *ngIf="!inited">
+        <div class="col-sm-12 page-load">
+          <div class="loading-indicator"></div>
+        </div>
+      </div>
+    
+      <div class="alert alert-danger" *ngIf="loadError">
+        {{'general.other-error' | translate}}
+      </div>
 
   <h1 class="home-title text-left" translate *ngIf="inited">home.title</h1>
 
-  <div class="row" *ngIf="inited">
+  <div class="row" *ngIf="inited && !loadError">
     <div class="col-sm-12">
 
       <div class="text-left">
         <p translate *ngIf="inited">home.message</p>
         <div class="search-outer">
           <div class="search-inner">
-            <search-input #searchInput (accepted)="performSearch($event)"></search-input>
-          </div>
-        </div>
-      </div>
-
-      <div class="row results mrgn-tp-lg" *ngIf="results">
-
-        <div class="col-sm-10 col-sm-offset-1 rows">
-          <label class="control-label" translate *ngIf="inited">search.results-title</label>
-          <topic-list [records]="topics"></topic-list>
-          <search-nav [info]="results && results.info"></search-nav>
+              <search-input #searchInput (accepted)="performSearch($event)"></search-input>
+            </div>
         </div>
       </div>
     </div>
