@@ -11,6 +11,7 @@ import { CredResult, IssuerResult, NameResult, TopicResult, CategoryResult, Addr
 export class NamePanelComponent {
 
   @Input() record: TopicResult;
+  @Input() link: boolean = false;
 
   // get cred(): CredResult {
   //   return this.record ? this.record.credential : null;

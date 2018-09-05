@@ -77,7 +77,8 @@
   "name": {
     "doing-business-as": "Doing Business As",
     "incorporation": "Incorporation",
-    "legal-name": "Legal Name"
+    "legal-name": "Legal Name",
+    "registration": "Registration"
   },
   "not-found": {
     "breadcrumb": "Not Found",
@@ -100,7 +101,8 @@
   },
   "topic": {
     "breadcrumb": "Topic Information",
-    "return-link": "Back to Topic"
+    "return-link": "Back to Topic",
+    "view-link": "View"
   },
   "search": {
     "breadcrumb": "Search",
