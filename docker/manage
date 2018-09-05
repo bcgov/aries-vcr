@@ -161,26 +161,12 @@ build-api() {
 		'django'
 }
 
-build-wallet() {
-	#
-	# tob-wallet
-	#
-	echo -e "\nBuilding tob-wallet image ..."
-	${S2I_EXE} build \
-		-e "HTTP_PROXY=${HTTP_PROXY}" \
-		-e "HTTPS_PROXY=${HTTPS_PROXY}" \
-		'../tob-wallet' \
-		'registry.access.redhat.com/rhscl/python-35-rhel7:3.5' \
-		'tob-wallet'
-}
-
 buildImages() {
 	build-web
 	build-solr
 	build-db
 	build-schema-spy
 	build-api
-	build-wallet
 }
 
 configureEnvironment() {
@@ -253,16 +239,6 @@ configureEnvironment() {
 	export LEDGER_URL=${LEDGER_URL-http://$DOCKERHOST:9000}
 	export SQL_DEBUG=${SQL_DEBUG:-}
 	export WEB_CONCURRENCY=${WEB_CONCURRENCY:-5}
-
-	# wallet type a command-line parameter (like seed) default to "remote" if not specified
-	export INDY_WALLET_URL=http://tob-wallet:8080/api/v1/
-	export INDY_WALLET_TYPE=${wallet}
-
-	if [ "$COMMAND" == "start" ]; then
-		if [ -z "$wallet" ]; then
-			export INDY_WALLET_TYPE="remote"
-		fi
-	fi
 
 	# tob-web
 	export TOB_THEME=${TOB_THEME:-bcgov}
@@ -401,9 +377,6 @@ build)
 	case "$@" in
 	tob-api)
 		build-api
-		;;
-	tob-wallet)
-		build-wallet
 		;;
 	tob-web)
 		build-web
