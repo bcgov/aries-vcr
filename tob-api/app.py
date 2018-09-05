@@ -22,4 +22,8 @@ if __name__ == '__main__':
 
     pre_init()
 
-    web.run_app(init_app(), host=args.host, port=args.port, path=args.socket)
+    web.run_app(
+        init_app(),
+        host=args.host, port=args.port, path=args.socket,
+        handle_signals=True
+    )
