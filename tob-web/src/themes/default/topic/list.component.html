@@ -30,5 +30,5 @@
 </div>
 </ng-container>
 <div class="topics-grid" *ngIf="format === 'cards'">
-  <name-panel [record]="topic" *ngFor="let topic of records"></name-panel>
+  <name-panel [record]="topic" *ngFor="let topic of records" :link="true"></name-panel>
 </div>

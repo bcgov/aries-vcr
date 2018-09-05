@@ -51,6 +51,6 @@
     </div>
   </div>
   <div class="panel-footer text-right" *ngIf="link">
-    <a [routerLink]="['/topic', record.id]" class="body-link util-link"><span class="fa fa-expand"></span> {{'topic.view-link' | translate}}</a>
+    <a [routerLink]="['/topic', record.id] | localize" class="body-link util-link"><span class="fa fa-info-circle"></span> {{'topic.view-link' | translate}}</a>
   </div>
 </div>

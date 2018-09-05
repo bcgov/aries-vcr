@@ -1,5 +1,5 @@
 <div class="related-topics">
   <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
   <h2 *ngIf="title && !loading && topics && topics.length">{{title}}</h2>
-  <topic-list [records]="topics" [format]="format" *ngIf="!loading" :link="true"></topic-list>
+  <topic-list [records]="topics" [format]="format" *ngIf="!loading"></topic-list>
 </div>
