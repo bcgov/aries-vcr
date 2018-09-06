@@ -24,10 +24,12 @@ if [ -z "${1}" ]; then
   usage
 fi
 
-if [[ ! -d ${ENV_DIR} ]]; then
-  PYTHON_EXE=python
-else
-  PYTHON_EXE=${ENV_DIR}/Scripts/python
+if [[ -z "$PYTHON_EXE" ]]; then
+	if [[ ! -d ${ENV_DIR} ]]; then
+	  PYTHON_EXE=python
+	else
+	  PYTHON_EXE=${ENV_DIR}/Scripts/python
+	fi
 fi
 # ==============================================================================================================================
 
