@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
+from rest_framework.exceptions import NotFound
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -168,7 +169,14 @@ class CredentialViewSet(ViewSet):
 
     def retrieve(self, request, pk=None):
         queryset = Credential.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
+        try:
+            # Overload to allow querying by wallet_id
+            item = Credential.objects.get(wallet_id=pk)
+        except Credential.DoesNotExist:
+            try:
+                item = get_object_or_404(queryset, pk=pk)
+            except ValueError:
+                raise NotFound()
         serializer = CredentialSerializer(item)
         return Response(serializer.data)
 
