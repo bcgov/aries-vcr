@@ -7,8 +7,8 @@ from .Credential import Credential
 
 class Address(Auditable):
     reindex_related = ['credential']
-    
-    credential = models.ForeignKey(Credential, related_name="addresses")
+
+    credential = models.ForeignKey(Credential, related_name="addresses", on_delete=models.CASCADE)
     addressee = models.TextField(null=True)
     civic_address = models.TextField(null=True)
     city = models.TextField(null=True)

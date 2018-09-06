@@ -7,8 +7,8 @@ from .Credential import Credential
 
 class Person(Auditable):
     reindex_related = ['credential']
-    
-    credential = models.ForeignKey(Credential, related_name="people")
+
+    credential = models.ForeignKey(Credential, related_name="people", on_delete=models.CASCADE)
     full_name = models.TextField(null=True)
 
     class Meta:

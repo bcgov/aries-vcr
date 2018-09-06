@@ -7,8 +7,8 @@ from .Credential import Credential
 
 class Contact(Auditable):
     reindex_related = ['credential']
-    
-    credential = models.ForeignKey(Credential, related_name="contacts")
+
+    credential = models.ForeignKey(Credential, related_name="contacts", on_delete=models.CASCADE)
     text = models.TextField(null=True)
     type = models.TextField(null=True)
 
