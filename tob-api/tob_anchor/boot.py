@@ -21,12 +21,14 @@ and a standard service manager to be created. This allows services
 to be properly initialized before the webserver process has forked.
 """
 
+import asyncio
 import logging
 import os
 import platform
 
-from wsgi import application
 from django.conf import settings
+import django.db
+from wsgi import application
 
 from vonx.common.eventloop import run_coro
 from vonx.indy.manager import IndyManager
@@ -57,7 +59,7 @@ def indy_holder_id():
 def indy_verifier_id():
     return settings.INDY_VERIFIER_ID
 
-async def init_app():
+async def init_app(on_startup=None, on_cleanup=None):
     from aiohttp.web import Application
     from aiohttp_wsgi import WSGIHandler
     from tob_anchor.urls import get_routes
@@ -68,7 +70,26 @@ async def init_app():
     app.router.add_routes(get_routes())
     # all other requests forwarded to django
     app.router.add_route("*", "/{path_info:.*}", wsgi_handler)
+
+    if on_startup:
+        app.on_startup.append(on_startup)
+    if on_cleanup:
+        app.on_cleanup.append(on_cleanup)
+
     return app
+
+def run_django(proc, *args) -> asyncio.Future:
+    def runner(proc, *args):
+        try:
+            ret = proc(*args)
+            return ret
+        finally:
+            django.db.connections.close_all()
+    return asyncio.get_event_loop().run_in_executor(None, runner, proc, *args)
+
+def run_reindex():
+    from django.core.management import call_command
+    call_command("update_index", "--max-retries=5")
 
 def run_migration():
     from django.core.management import call_command
