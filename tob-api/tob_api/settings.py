@@ -74,6 +74,8 @@ HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 
 HAYSTACK_SIGNAL_PROCESSOR = "api_v2.signals.RelatedRealtimeSignalProcessor"
 
+HAYSTACK_DOCUMENT_FIELD = "document"
+
 MIDDLEWARE_CLASSES = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

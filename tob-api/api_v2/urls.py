@@ -22,6 +22,7 @@ router.register(r"category", rest.CategoryViewSet, "Category")
 
 # Search endpoints
 searchPatterns = [
+    url(r"^search/autocomplete$", search.NameAutocompleteView.as_view()),
     url(r"^search/topic$", search.TopicSearchView.as_view()),
 ]
 

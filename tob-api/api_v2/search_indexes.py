@@ -13,7 +13,7 @@ from api_v2.models.Topic import Topic as TopicModel
 
 
 class TopicIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
+    document = indexes.CharField(document=True, use_template=True)
 
     #autocomplete = indexes.EdgeNgramField()
 
