@@ -273,6 +273,10 @@
                     "value": "${SOLR_CORE_NAME}"
                   },
                   {
+                    "name": "SKIP_INDEXING_ON_STARTUP",
+                    "value": "${SKIP_INDEXING_ON_STARTUP}"
+                  },
+                  {
                     "name": "INDY_WALLET_SEED",
                     "value": "${INDY_WALLET_SEED}"
                   },
@@ -448,6 +452,13 @@
       "description": "The name of the core to use when connecting with SOLR.",
       "required": false,
       "value": "the_org_book"
+    },
+    {
+      "name": "SKIP_INDEXING_ON_STARTUP",
+      "displayName": "Skip Indexing On Startup",
+      "description": "Set this flag to `true` to skip indexing on startup as part of the database migration; set to `false` otherwise.  When there are a large number of records to index, indexing at startup can cause startup delays and issues.",
+      "required": true,
+      "value": "true"
     },
     {
       "name": "TAG_NAME",
