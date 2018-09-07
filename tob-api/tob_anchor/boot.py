@@ -104,7 +104,6 @@ def pre_init(proc=False):
 
 async def register_services():
 
-    import asyncio
     await asyncio.sleep(2) # temp fix for messages being sent before exchange has started
 
     wallet_seed = os.environ.get('INDY_WALLET_SEED')
