@@ -50,7 +50,7 @@
     <!--
     ### Autocomplete support - added manually, not using the generator
     -->
-    <field name="name_suggest" type="keyword_tokens" indexed="true" stored="true" multiValued="false"/>
+    <field name="name_suggest" type="keyword_tokens" indexed="true" stored="true" multiValued="true"/>
 
     <copyField source="name" dest="name_suggest"/>
 
@@ -98,9 +98,9 @@
     
     <field name="document" type="text_en" indexed="true" stored="true" multiValued="false" />
     
-    <field name="location" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="location" type="text_en" indexed="true" stored="true" multiValued="true" />
     
-    <field name="name" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="name" type="text_en" indexed="true" stored="true" multiValued="true" />
     
     <uniqueKey>id</uniqueKey>
 
