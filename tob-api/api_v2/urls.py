@@ -27,11 +27,15 @@ searchPatterns = [
 ]
 
 # Misc endpoints
-miscPatterns = [url(r"^quickload$", misc.quickload)]
+miscPatterns = [
+    # Swagger documentation
+    url(r'^$', SwaggerSchemaView.as_view()),
+    # Stats and cacheable info for home page
+    url(r"^quickload$", misc.quickload),
+]
 
-# Indy endpoints
+# Indy endpoints (now handled elsewhere)
 #indyPatterns = [
-#    url(r"^$", SwaggerSchemaView.as_view()),
 #    url(
 #        r"^indy/generate-credential-request$", indy.generate_credential_request
 #    ),
