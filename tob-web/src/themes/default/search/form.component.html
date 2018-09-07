@@ -13,7 +13,7 @@
 
       <div class="search-head">
         <div class="search-wrap">
-          <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
+          <search-input #searchInput (accepted)="updateQuery($event)" [loading]="searching"></search-input>
         </div>
         <div class="search-types">
           <a routerLink="../name" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='name'}">Names</a>

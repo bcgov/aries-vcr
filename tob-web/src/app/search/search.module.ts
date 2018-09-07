@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from 'localize-router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CredSearchClient } from './cred-search.client';
 import { IssuerClient } from './issuer.client';
 import { TopicClient } from './topic.client';
@@ -45,6 +46,7 @@ const ROUTES = [];
     RouterModule.forChild(ROUTES),
     LocalizeRouterModule.forChild(ROUTES),
     TopicModule,
+    NgbModule,
   ],
   exports: [
     SearchComponent,

@@ -1,6 +1,9 @@
 import {
   Component, AfterViewInit, ElementRef, EventEmitter,
   Input, Output, Renderer2, ViewChild } from '@angular/core';
+import {Observable} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, map, tap, switchMap} from 'rxjs/operators';
+import {GeneralDataService} from 'app/general-data.service';
 
 @Component({
   selector: 'search-input',
@@ -26,6 +29,7 @@ export class SearchInputComponent implements AfterViewInit {
 
   constructor(
     private _renderer: Renderer2,
+    private _dataService: GeneralDataService,
   ) {}
 
   get value(): string {
@@ -119,4 +123,25 @@ export class SearchInputComponent implements AfterViewInit {
       this.queryChange.emit(this._lastQuery);
     }
   }
+
+  get typeaheadSearch() {
+    return (text$: Observable<string>) => {
+      return text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(term => this._dataService.autocomplete(term)),
+        map((result: any[]) =>
+          result.map((item) => item['term'].replace(/<[^>]*>/g, '')))
+      );
+    }
+  }
+
+  typeaheadSelected(evt) {
+    evt.preventDefault();
+    let val = evt.item;
+    this.value = val;
+    this.updateQuery(val);
+    this.acceptInput();
+  }
+
 }

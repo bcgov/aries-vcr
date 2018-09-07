@@ -68,7 +68,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    NgbModule,
+    NgbModule.forRoot(),
     AdminModule,
     CredModule,
     SearchModule,
