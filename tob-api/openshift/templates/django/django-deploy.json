@@ -545,30 +545,30 @@
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
-      "name": "CPU_LIMIT",
-      "displayName": "Resources CPU Limit",
-      "description": "The resources CPU limit (in cores) for this build.",
-      "required": true,
-      "value": "1"
-    },
-    {
-      "name": "MEMORY_LIMIT",
-      "displayName": "Resources Memory Limit",
-      "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
-      "required": true,
-      "value": "1.5Gi"
-    },   
-    {
       "name": "CPU_REQUEST",
       "displayName": "Resources CPU Request",
       "description": "The resources CPU request (in cores) for this build.",
       "required": true,
-      "value": "250m"
+      "value": "100m"
+    },
+    {
+      "name": "CPU_LIMIT",
+      "displayName": "Resources CPU Limit",
+      "description": "The resources CPU limit (in cores) for this build.",
+      "required": true,
+      "value": "500m"
     },
     {
       "name": "MEMORY_REQUEST",
       "displayName": "Resources Memory Request",
       "description": "The resources Memory request (in Mi, Gi, etc) for this build.",
+      "required": true,
+      "value": "256Mi"
+    },
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Resources Memory Limit",
+      "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
       "required": true,
       "value": "512Mi"
     }

@@ -1,24 +1,20 @@
 {
   "kind": "Template",
   "apiVersion": "v1",
-  "metadata":
-  {
+  "metadata": {
     "name": "${NAME}-deployment-template"
   },
   "objects": [
     {
       "kind": "Service",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${NAME}",
-        "labels":
-        {
+        "labels": {
           "app": "${NAME}"
         }
       },
-      "spec":
-      {
+      "spec": {
         "ports": [
           {
             "name": "8983-tcp",
@@ -27,8 +23,7 @@
             "targetPort": 8983
           }
         ],
-        "selector":
-        {
+        "selector": {
           "app": "${NAME}",
           "deploymentconfig": "${NAME}"
         },
@@ -39,24 +34,19 @@
     {
       "kind": "PersistentVolumeClaim",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${NAME}",
-        "labels":
-        {
+        "labels": {
           "app": "${NAME}",
           "template": "${NAME}-deployment-template"
         }
       },
-      "spec":
-      {
+      "spec": {
         "accessModes": [
           "ReadWriteOnce"
         ],
-        "resources":
-        {
-          "requests":
-          {
+        "resources": {
+          "requests": {
             "storage": "${PERSISTENT_VOLUME_SIZE}"
           }
         }
@@ -65,21 +55,16 @@
     {
       "kind": "DeploymentConfig",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${NAME}",
-        "labels":
-        {
+        "labels": {
           "app": "${NAME}"
         }
       },
-      "spec":
-      {
-        "strategy":
-        {
+      "spec": {
+        "strategy": {
           "type": "Rolling",
-          "rollingParams":
-          {
+          "rollingParams": {
             "updatePeriodSeconds": 1,
             "intervalSeconds": 1,
             "timeoutSeconds": 600,
@@ -94,14 +79,12 @@
           },
           {
             "type": "ImageChange",
-            "imageChangeParams":
-            {
+            "imageChangeParams": {
               "automatic": true,
               "containerNames": [
                 "${NAME}"
               ],
-              "from":
-              {
+              "from": {
                 "kind": "ImageStreamTag",
                 "namespace": "${IMAGE_NAMESPACE}",
                 "name": "${NAME}:${TAG_NAME}"
@@ -111,28 +94,22 @@
         ],
         "replicas": 1,
         "test": false,
-        "selector":
-        {
+        "selector": {
           "app": "${NAME}",
           "deploymentconfig": "${NAME}"
         },
-        "template":
-        {
-          "metadata":
-          {
-            "labels":
-            {
+        "template": {
+          "metadata": {
+            "labels": {
               "app": "${NAME}",
               "deploymentconfig": "${NAME}"
             }
           },
-          "spec":
-          {
+          "spec": {
             "volumes": [
               {
                 "name": "${NAME}-data",
-                "persistentVolumeClaim":
-                {
+                "persistentVolumeClaim": {
                   "claimName": "${NAME}"
                 }
               }
@@ -161,7 +138,17 @@
                 ],
                 "terminationMessagePath": "/dev/termination-log",
                 "terminationMessagePolicy": "File",
-                "imagePullPolicy": "Always"
+                "imagePullPolicy": "Always",
+                "resources": {
+                  "requests": {
+                    "cpu": "${CPU_REQUEST}",
+                    "memory": "${MEMORY_REQUEST}"
+                  },
+                  "limits": {
+                    "cpu": "${CPU_LIMIT}",
+                    "memory": "${MEMORY_LIMIT}"
+                  }
+                }
               }
             ],
             "restartPolicy": "Always",
@@ -216,6 +203,34 @@
       "description": "The name of the Solr core configuration to load.",
       "required": true,
       "value": "the_org_book"
+    },
+    {
+      "name": "CPU_REQUEST",
+      "displayName": "Resources CPU Request",
+      "description": "The resources CPU request (in cores) for this build.",
+      "required": true,
+      "value": "100m"
+    },
+    {
+      "name": "CPU_LIMIT",
+      "displayName": "Resources CPU Limit",
+      "description": "The resources CPU limit (in cores) for this build.",
+      "required": true,
+      "value": "250m"
+    },
+    {
+      "name": "MEMORY_REQUEST",
+      "displayName": "Resources Memory Request",
+      "description": "The resources Memory request (in Mi, Gi, etc) for this build.",
+      "required": true,
+      "value": "512Mi"
+    },
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Resources Memory Limit",
+      "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
+      "required": true,
+      "value": "1Gi"
     }
   ]
 }

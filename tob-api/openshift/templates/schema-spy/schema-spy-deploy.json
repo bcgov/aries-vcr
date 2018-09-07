@@ -193,7 +193,12 @@
                   }
                 },
                 "resources": {
+                  "requests": {
+                    "cpu": "${CPU_REQUEST}",
+                    "memory": "${MEMORY_REQUEST}"
+                  },
                   "limits": {
+                    "cpu": "${CPU_LIMIT}",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 },
@@ -241,13 +246,6 @@
       "value": "devex-von-tools"
     },
     {
-      "name": "MEMORY_LIMIT",
-      "displayName": "Memory Limit",
-      "required": true,
-      "description": "Maximum amount of memory the Django container can use.",
-      "value": "512Mi"
-    },
-    {
       "name": "APPLICATION_DOMAIN",
       "displayName": "Application Hostname",
       "description": "The exposed hostname that will route to the Django service, if left blank a value will be defaulted.",
@@ -272,7 +270,7 @@
       "required": true,
       "description": "The SchemSpy output path.",
       "value": "/var/www/html/doc"
-    },    
+    },
     {
       "name": "SCHEMASPY_USER",
       "displayName": "Username for the SchemaSpy Instance",
@@ -323,6 +321,34 @@
       "description": "The path to use to mount the config file.",
       "required": true,
       "value": "/etc/"
-    }    
+    },
+    {
+      "name": "CPU_REQUEST",
+      "displayName": "Resources CPU Request",
+      "description": "The resources CPU request (in cores) for this build.",
+      "required": true,
+      "value": "100m"
+    },
+    {
+      "name": "CPU_LIMIT",
+      "displayName": "Resources CPU Limit",
+      "description": "The resources CPU limit (in cores) for this build.",
+      "required": true,
+      "value": "250m"
+    },
+    {
+      "name": "MEMORY_REQUEST",
+      "displayName": "Resources Memory Request",
+      "description": "The resources Memory request (in Mi, Gi, etc) for this build.",
+      "required": true,
+      "value": "256Mi"
+    },
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Resources Memory Limit",
+      "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
+      "required": true,
+      "value": "512Mi"
+    }
   ]
 }
