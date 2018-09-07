@@ -15,7 +15,6 @@ router.register(
 router.register(r"topic", rest.TopicViewSet, "Topic")
 router.register(r"credential", rest.CredentialViewSet, "Credential")
 router.register(r"address", rest.AddressViewSet, "Address")
-router.register(r"claim", rest.ClaimViewSet, "Claim")
 router.register(r"contact", rest.ContactViewSet, "Contact")
 router.register(r"name", rest.NameViewSet, "Name")
 router.register(r"person", rest.PersonViewSet, "Person")
