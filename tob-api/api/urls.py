@@ -30,10 +30,6 @@ from rest_framework_swagger import renderers
 from . import views
 # custom views
 from . import views_custom
-# search views
-from . import search_views
-# indy views
-#from . import indy_views
 
 class SwaggerSchemaView(APIView):
     """
@@ -108,17 +104,6 @@ urlpatterns = [
     url(r'^verifiableorgtypes$', views.verifiableorgtypesGet.as_view()),
     url(r'^verifiableorgtypes/(?P<id>[0-9]+)/delete$', views.verifiableorgtypesIdDeletePost.as_view()),
     url(r'^verifiableorgtypes/(?P<id>[0-9]+)$', views.verifiableorgtypesIdGet.as_view()),
-
-    url(r'^search/doingbusinessas$', search_views.DoingBusinessAsSearchView.as_view()),
-    url(r'^search/locations$', search_views.LocationSearchView.as_view()),
-    url(r'^search/name$', search_views.NameSearchView.as_view()),
-    url(r'^search/organization$', search_views.OrganizationSearchView.as_view()),
-    url(r'^search/verifiableorgs$', search_views.VerifiableOrgSearchView.as_view()),
-
-    #url(r'^bcovrin/generate-claim-request$', indy_views.bcovrinGenerateClaimRequest.as_view()),
-    #url(r'^bcovrin/store-claim$', indy_views.bcovrinStoreClaim.as_view()),
-    #url(r'^bcovrin/construct-proof$', indy_views.bcovrinConstructProof.as_view()),
-    #url(r'^bcovrin/register-issuer$', indy_views.bcovrinRegisterIssuer.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
