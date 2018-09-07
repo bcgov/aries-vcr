@@ -76,7 +76,7 @@
     "end-date": "End Date",
     "start-date": "Effective Date",
     "website": "Issuer Website",
-    "email": "Email"
+    "email": "Address"
   },
   "name": {
     "doing-business-as": "Business Name registered by a corporation",
@@ -117,7 +117,7 @@
     "placeholder": "search",
     "results-title": "Search Results",
     "return-link": "Back to Search",
-    "records": "Records"
+    "records-prefix": "Records "
   },
   "business_type": {
     "ONBIS_BUSINESS_TYPE_A": "Ontario Business Corporation",

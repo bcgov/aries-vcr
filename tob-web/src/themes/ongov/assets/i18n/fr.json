@@ -117,7 +117,7 @@
     "placeholder": "recherche",
     "results-title": "Résultats de la recherche",
     "return-link": "Retour à la recherche",
-    "records": "Des dossiers"
+    "results-error": "Votre requête n'a pas pu être complétée pour le moment."
   },
   "business_type": {
     "ONBIS_BUSINESS_TYPE_A": "Sociétés par actions de l'Ontario",

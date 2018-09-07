@@ -1,6 +1,5 @@
-222
 <div *ngFor="let cred of records">
-    <div class="cred">
+    <div class="cred" *ngIf="cred.credential_type.description.indexOf('Registration') !== -1">
         <div class="panel name-panel" >
             <div class="panel-heading" >
                 <a class="header-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.name}} </a>

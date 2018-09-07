@@ -1,5 +1,5 @@
 <section id="cred-form">
-    111
+
   <div class="row" *ngIf="error">
     <div class="col-sm-12">
       {{error}}
@@ -17,8 +17,7 @@
         <div class="col-sm-12">
             <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
               <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
-             {{record.claims}}
-           
+            
               <div class="panel name-panel">
                   <div class="panel-heading" translate >
                       cred.business_registration
@@ -26,7 +25,6 @@
                   <h3 class="panel-title"> <strong>{{record.names[0].text}}</strong></h3>
               
                 <div class="panel-body form-body">
-              
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.issuer</label>
                         <div class="form-field">
@@ -49,15 +47,19 @@
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.corp-num</label>
                         <div class="form-field">
-                           {{record.topics[0].source_id}}
+                          {{record.topic.source_id}}
                         </div>
                     </div>
 
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.start-date</label>
-                        <div class="form-field">
-                            <span *ngIf="record.effective_date">{{record.effective_date | date }}</span>
-                        </div>
+                        <div  *ngFor="let category of categories">
+                                <div  *ngIf="category.type === 'topic_registration_date'">
+                                    <div *ngIf="category.value" >
+                                        {{category.value}}
+                                    </div>
+                                </div>
+                            </div>
                     </div>
 
                     <div class="row form-group">
@@ -73,15 +75,19 @@
 
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.effective-date</label>
-                        <div class="form-field">
-                            <span *ngIf="record.effective_date">{{record.effective_date | date }}</span>
+                        <div  *ngFor="let category of categories">
+                            <div  *ngIf="category.type === 'topic_status_effective_date'">
+                                    <div *ngIf="category.value" >
+                                        {{category.value}}
+                                    </div>
+                            </div>
                         </div>
                     </div>
                    
                     <div class="row form-group"  *ngIf="record.addresses.length > 0">
                         <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
                         <div class="form-field">
-                            <span *ngIf="record.effective_date">{{ record.addresses[0].province }}</span>
+                            <span *ngIf="record.effective_date"></span>
                         </div>
                     </div>
 

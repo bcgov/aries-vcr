@@ -1,0 +1,41 @@
+<section id="search">
+
+  <div class="row mrgn-tp-lg" *ngIf="!inited">
+    <div class="col-sm-12 page-load">
+      <div class="loading-indicator"></div>
+    </div>
+  </div>
+
+  <h1 class="search-title" translate *ngIf="inited">search.title</h1>
+
+  <div class="row" *ngIf="inited">
+    <div class="col-sm-12">
+
+      <div class="search-head">
+        <div class="search-wrap">
+          <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
+        </div>
+      </div>
+
+      <div class="alert alert-danger mrgn-tp-lg" *ngIf="error" translate>
+        search.results-error
+      </div>
+
+      <div class="row results mrgn-tp-lg" *ngIf="results && !error">
+
+        <div class="col-sm-12 rows">
+          <label class="control-label" translate>search.results-title</label>
+          <ng-container *ngIf="topics.length">
+            <search-nav (nav)="handleNav($event)" [info]="results && results.info"></search-nav>
+            <topic-list [records]="topics"></topic-list>
+            <search-nav (nav)="handleNav($event)" [info]="results && results.info"></search-nav>
+          </ng-container>
+          <div class="alert alert-info" *ngIf="!topics.length" translate>
+            search.no-results
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
