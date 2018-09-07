@@ -386,6 +386,7 @@ class CredentialManager(object):
         # The issuer may specify an effective date from a claim. Otherwise, defaults to now.
 
         credential_args = {
+            "credential_def_id": self._cred_def_id,
             "credential_type": credential_type,
             "wallet_id": credential_wallet_id,
         }
