@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-ghost
-# JSON Template File: templates/ghost-deploy.json
+# Template File: templates/ghost-deploy.json
 #=========================================================
 # NAME=ghost
 # SOURCE_IMAGE_NAME=ghost

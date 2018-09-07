@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift Jenkins pipeline template parameters for:
 # Jenkinsfile: ./tob-solr/Jenkinsfile
-# JSON Template File: https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/provisioning/pipeline/resources/pipeline-build.json
+# Template File: https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/provisioning/pipeline/resources/pipeline-build.json
 #=========================================================
 NAME=tob-solr
 # GITHUB_WEBHOOK_SECRET=[a-zA-Z0-9]{40}

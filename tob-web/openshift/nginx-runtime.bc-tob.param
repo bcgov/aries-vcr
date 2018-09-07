@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-web
-# JSON Template File: templates/nginx-runtime/nginx-runtime.json
+# Template File: templates/nginx-runtime/nginx-runtime.json
 #=========================================================
 NAME=nginx-runtime
 GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git

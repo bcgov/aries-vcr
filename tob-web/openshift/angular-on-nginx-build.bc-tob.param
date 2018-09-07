@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-web
-# JSON Template File: templates/angular-on-nginx/angular-on-nginx-build.json
+# Template File: templates/angular-on-nginx/angular-on-nginx-build.json
 #=========================================================
 NAME=angular-on-nginx
 SOURCE_IMAGE_NAMESPACE=devex-von-tools

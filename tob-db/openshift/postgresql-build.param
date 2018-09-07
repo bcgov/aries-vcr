@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-db
-# JSON Template File: templates/postgresql-build.json
+# Template File: templates/postgresql-build.json
 #=========================================================
 NAME=postgresql
 OUTPUT_IMAGE_TAG=latest

@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-ghost
-# JSON Template File: templates/ghost-build.json
+# Template File: templates/ghost-build.json
 #=========================================================
 NAME=ghost
 OUTPUT_IMAGE_TAG=latest

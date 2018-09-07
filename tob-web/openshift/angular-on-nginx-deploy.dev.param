@@ -1,7 +1,7 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: tob-web
-# JSON Template File: templates/angular-on-nginx/angular-on-nginx-deploy.json
+# Template File: templates/angular-on-nginx/angular-on-nginx-deploy.json
 #=========================================================
 # NAME=angular-on-nginx
 # IMAGE_NAMESPACE=devex-von-tools
@@ -11,7 +11,11 @@
 # API_PATH=/api/V2/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
-# APPLICATION_DOMAIN=angular-on-nginx-devex-von-dev.pathfinder.gov.bc.ca
-# TAG_NAME=dev
+APPLICATION_DOMAIN=angular-on-nginx-devex-von-dev.pathfinder.gov.bc.ca
+TAG_NAME=dev
 # HTTP_BASIC=
 # TOB_THEME=bcgov
+# CPU_REQUEST=10m
+# CPU_LIMIT=250m
+# MEMORY_REQUEST=100Mi
+# MEMORY_LIMIT=256Mi
