@@ -43,7 +43,7 @@ SUPPORTED_MODELS_MAPPING = {
     "category": Category,
 }
 
-SUPPORTED_CATEGORIES = ["topic_status", "topic_type"]
+SUPPORTED_CATEGORIES = ["topic_status", "topic_type", "topic_registration_date", "topic_status_effective_date"]
 
 
 class CredentialException(Exception):
