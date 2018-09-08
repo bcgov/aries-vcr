@@ -9,6 +9,7 @@ class Issuer(Auditable):
     abbreviation = models.TextField()
     email = models.TextField()
     url = models.TextField()
+    logo_b64 = models.TextField(null=True)
 
     class Meta:
         db_table = "issuer"

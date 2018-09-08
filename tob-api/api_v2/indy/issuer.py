@@ -67,12 +67,14 @@ class IssuerManager:
         issuer_abbreviation = issuer_def.get("abbreviation")
         issuer_email = issuer_def.get("email")
         issuer_url = issuer_def.get("url")
+        issuer_logo = issuer_def.get("logo_b64")
 
         issuer, created = Issuer.objects.get_or_create(did=issuer_did)
         issuer.name = issuer_name
         issuer.abbreviation = issuer_abbreviation
         issuer.email = issuer_email
         issuer.url = issuer_url
+        issuer.logo_b64 = issuer_logo
         issuer.save()
 
         return issuer
@@ -122,6 +124,7 @@ class IssuerManager:
 
             credential_type.description = credential_type_description
             credential_type.processor_config = credential_type_processor_config
+            credential_type.logo_b64 = credential_type_def.get("logo_b64")
 
             credential_type.save()
             credential_types.append(credential_type)

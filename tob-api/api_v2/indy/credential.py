@@ -1,5 +1,7 @@
+import base64
 from datetime import datetime
 import json as _json
+import hashlib
 import logging
 import time
 from importlib import import_module
@@ -158,6 +160,14 @@ class Credential(object):
         """
         return self._claim_attributes
 
+    @property
+    def cred_def_id(self) -> str:
+        """Accessor for credential definition ID
+
+        Returns:
+            str -- the cred def ID
+        """
+        return self._cred_def_id
 
 class CredentialManager(object):
     """
@@ -385,8 +395,35 @@ class CredentialManager(object):
         # We always create a new credential model to represent the current credential
         # The issuer may specify an effective date from a claim. Otherwise, defaults to now.
 
+        cardinality_values = {}
+        for cardinality_field in cardinality_fields:
+            try:
+                cardinality_values[cardinality_field] = \
+                    getattr(self.credential, cardinality_field)
+            except AttributeError as error:
+                raise CredentialException(
+                    "Issuer configuration specifies field '{}' ".format(
+                        cardinality_field
+                    )
+                    + "in cardinality_fields value does not exist in "
+                    + "credential. Values are: {}".format(
+                        ", ".join(list(self.credential.claim_attributes))
+                    )
+                )
+        if cardinality_values:
+            hash_fields = [
+                "{}::{}".format(k, cardinality_values[k])
+                for k in cardinality_values
+            ]
+            cardinality_hash = base64.b64encode(
+                hashlib.sha256(",".join(hash_fields).encode("utf-8")).digest()
+            )
+        else:
+            cardinality_hash = None
+
         credential_args = {
-            "credential_def_id": self._cred_def_id,
+            "cardinality_hash": cardinality_hash,
+            "credential_def_id": self.credential.cred_def_id,
             "credential_type": credential_type,
             "wallet_id": credential_wallet_id,
         }
@@ -430,37 +467,39 @@ class CredentialManager(object):
 
         # We search for existing credentials by cardinality_fields
         # to revoke credentials occuring before latest credential
-        existing_credential_query = {"credential_type": credential_type, "topic": topic}
-        for cardinality_field in cardinality_fields:
-            try:
-                existing_credential_query["claims__name"] = cardinality_field
-                existing_credential_query["claims__value"] = getattr(
-                    self.credential, cardinality_field
-                )
-            except AttributeError as error:
-                raise CredentialException(
-                    "Issuer configuration specifies field '{}' ".format(
-                        cardinality_field
-                    )
-                    + "in cardinality_fields value does not exist in "
-                    + "credential. Values are: {}".format(
-                        ", ".join(list(self.credential.claim_attributes))
-                    )
-                )
+        existing_credential_query = {
+            "credential_type": credential_type,
+            "revoked": False,
+            "topic": topic,
+        }
+        if cardinality_hash:
+            existing_credential_query["cardinality_hash"] = cardinality_hash
 
         try:
             existing_credentials = CredentialModel.objects.filter(
                 **existing_credential_query
             )
+            if cardinality_values:
+                existing_credentials = existing_credentials.prefetch_related("claims")
 
             latest = existing_credentials.latest("effective_date")
             for existing_credential in existing_credentials:
                 if (
-                    existing_credential.effective_date <= latest.effective_date
-                    and existing_credential != latest
+                    existing_credential.effective_date > latest.effective_date
+                    or existing_credential == latest
                 ):
-                    existing_credential.revoked = True
-                    existing_credential.save()
+                    continue
+                if cardinality_values:
+                    # we already checked the hash,
+                    # but check the claim values just to be sure
+                    existing_claims = {}
+                    for claim in existing_credential.claims.all():
+                        if claim.name in cardinality_values:
+                            existing_claims[claim.name] = claim.value
+                    if existing_claims != cardinality_values:
+                        continue
+                existing_credential.revoked = True
+                existing_credential.save()
 
         except CredentialModel.DoesNotExist as error:
             # No records to implicitly revoke
