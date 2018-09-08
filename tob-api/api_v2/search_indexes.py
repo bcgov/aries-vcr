@@ -21,13 +21,15 @@ class TopicIndex(indexes.SearchIndex, indexes.Indexable):
 
     @staticmethod
     def prepare_name(obj):
-        names = ((name.text for name in cred.names.all()) for cred in obj.nonrevoked)
+        creds = getattr(obj, 'nonrevoked', obj.credentials.filter(revoked=False))
+        names = ((name.text for name in cred.names.all()) for cred in creds)
         return list(chain.from_iterable(names))
 
     @staticmethod
     def prepare_location(obj):
+        creds = getattr(obj, 'nonrevoked', obj.credentials.filter(revoked=False))
         locations = []
-        for credential in obj.nonrevoked:
+        for credential in creds:
             for address in credential.addresses.all():
                 loc = " ".join(filter(None, (
                   address.addressee,
