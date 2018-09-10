@@ -1,35 +1,3 @@
-.name-panel {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  display: flex;
-  flex-flow: column nowrap;
-  max-height: 40em;
-  overflow: hidden;
-  > .panel-heading {
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    display: flex;
-    flex: none;
-    padding: 1rem 1.2rem 0.8rem;
-    .panel-title {
-      flex: auto;
-      font-size: 2rem;
-    }
-    .util-link {
-      font-size: 1.3rem;
-    }
-  }
-  > .panel-body {
-    background-color: #fff;
-    flex: auto;
-    font-size: 15px;
-    overflow: auto;
-    word-wrap: break-word;
-  }
-  > .panel-footer {
-    border-top: 1px solid #ccc;
-  }
-}
 
 //place all overrides for a specific theme in this file inside your theme/cred directory
 @import "../../_active/cred/cred.custom";

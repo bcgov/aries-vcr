@@ -1,5 +1,20 @@
-<div class="related-topics">
+<div class="related-topics mrgn-bttm-md" *ngIf="format != 'compact'">
   <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
   <h2 *ngIf="title && !loading && topics && topics.length">{{title}}</h2>
   <topic-list [records]="topics" [format]="format" *ngIf="!loading"></topic-list>
+</div>
+<div class="related-topics mrgn-bttm-md" *ngIf="format == 'compact'">
+  <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
+  <div class="row" *ngIf="!loading && topics && topics.length">
+    <div class="col-sm-12">
+      <div class="panel creds-panel">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{title}}</h3>
+        </div>
+        <div class="panel-body">
+          <topic-list [records]="topics" [format]="format"></topic-list>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

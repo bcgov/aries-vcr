@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TopicResult } from '../data-types';
 import { TopicRelatedClient } from '../search/topic-related.client';
+import { TopicRelatedFromClient } from '../search/topic-related-from.client';
 import { SearchResults } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -13,6 +14,7 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
   protected _topicId: number;
   protected _defaultFormat = 'cards';
   @Input() title: string;
+  @Input('related-from') relatedFrom: boolean;
   loaded: boolean;
   loading: boolean;
   filterActive: string = 'true';
@@ -21,14 +23,15 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
   private _resultError: any;
   private _resultLoading: boolean;
   private _resultSub: Subscription;
+  private _topicClient;
 
   constructor(
     private _route: ActivatedRoute,
     private _router: Router,
-    private _topicClient: TopicRelatedClient) { }
+    private _topicToClient: TopicRelatedClient,
+    private _topicFromClient: TopicRelatedFromClient) { }
 
   ngOnInit() {
-    this._resultSub = this._topicClient.subscribe(this._receiveTopics.bind(this))
   }
 
   @Input() set defaultFormat(fmt: string) {
@@ -68,6 +71,10 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
   }
 
   performSearch() {
+    if(! this._topicClient) {
+      this._topicClient = this.relatedFrom ? this._topicFromClient : this._topicToClient;
+      this._resultSub = this._topicClient.subscribe(this._receiveTopics.bind(this));
+    }
     if(this._topicId) {
       this._topicClient.getRelatedById(this._topicId);
     }

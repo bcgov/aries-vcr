@@ -28,7 +28,6 @@ export class GeneralDataService {
   }
 
   loadJson(url, params?) : Observable<Object> {
-    console.log(params);
     return this._http.get(url, {params: params})
       .catch(error => {
         console.error("JSON load error", error);

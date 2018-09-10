@@ -21,51 +21,6 @@
   margin-right: 5px;
 }
 
-.creds-panel {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  display: flex;
-  flex-flow: column nowrap;
-  max-height: 40em;
-  overflow: hidden;
-  > .panel-heading {
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    flex: none;
-    padding: 1rem 1.2rem 0.8rem;
-    .panel-title {
-      font-size: 2rem;
-    }
-  }
-  .filters {
-    background-color: #eee;
-    font-size: 1.4rem;
-  }
-  .columns {
-    background-color: #eee;
-    border-bottom: 3px double #bbb;
-    border-top: 1px solid #bbb;
-    font-size: 1.5rem;
-    a {
-      border-bottom: 1px solid #999;
-      color: #555;
-      text-decoration: none;
-    }
-  }
-  > .panel-body {
-    background-color: #fff;
-    flex: auto;
-    font-size: 15px;
-    overflow: auto;
-    padding-bottom: 0;
-    padding-top: 0;
-    word-wrap: break-word;
-    .loading {
-      padding: 0.5em 0;
-    }
-  }
-}
-
 
 .timeline-panel {
   background: none;
