@@ -104,6 +104,8 @@ class ProofRequest(object):
         claims = credential.claims.all()
         credential_type = credential.credential_type
         schema = credential_type.schema
+        visible_fields = credential_type.visible_fields
+        visible_fields = visible_fields.split(",") if visible_fields else None
 
         restrictions = []
         if credential.credential_def_id:
@@ -117,4 +119,5 @@ class ProofRequest(object):
             ))
 
         for claim in claims:
-            self.add_requested_attribute(claim.name, *restrictions)
+            if visible_fields is None or claim.name in visible_fields:
+                self.add_requested_attribute(claim.name, *restrictions)

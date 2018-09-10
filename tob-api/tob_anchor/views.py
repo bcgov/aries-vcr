@@ -496,7 +496,11 @@ async def verify_credential(request):
 
     def fetch_cred(credential_id):
         try:
-            return CredentialModel.objects.get(id=credential_id)
+            return CredentialModel.objects\
+                .prefetch_related('claims')\
+                .select_related('credential_type')\
+                .select_related('credential_type__schema')\
+                .get(id=credential_id)
         except CredentialModel.DoesNotExist:
             return None
     credential = await run_django(fetch_cred, credential_id)
