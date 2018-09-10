@@ -21,4 +21,9 @@
   padding-left: 1em;
 }
 
+.issuer-logo img {
+  max-height: 80px;
+  width: auto;
+}
+
 @import "../../_active/issuer/form.component.custom";

@@ -20,7 +20,9 @@
         <div class="col-md-12 issuer-info">
           <div class="row form-group" *ngIf="record.logo_b64">
             <div class="col-sm-8 form-field">
-                <img [src]="safeImg">
+              <div class="issuer-logo">
+                <img [src]="safeImg" [alt]="'issuer.logo-image' | translate">
+              </div>
             </div>
           </div>
           <div class="row form-group" *ngIf="record.did">
