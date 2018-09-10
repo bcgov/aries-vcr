@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { IssuerResult, CredentialTypeResult } from '../data-types';
 import { IssuerClient } from '../search/issuer.client';
@@ -24,7 +25,8 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
   constructor(
     private _route: ActivatedRoute,
     private _issuerClient: IssuerClient,
-    private _issuerCredentialTypeClient: IssuerCredentialTypeClient
+    private _issuerCredentialTypeClient: IssuerCredentialTypeClient,
+    private _sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
@@ -43,6 +45,13 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
     this._idSub.unsubscribe();
     this._issuerSub.unsubscribe();
     this._issuerCredentialTypeSub.unsubscribe();
+  }
+
+  get safeImg() {
+    if(this.record.logo_b64) {
+      let src = 'data:image/*;base64,' + this.record.logo_b64;
+      return this._sanitizer.bypassSecurityTrustUrl(src);
+    }
   }
 
   protected _receiveIssuer(loading: boolean) {

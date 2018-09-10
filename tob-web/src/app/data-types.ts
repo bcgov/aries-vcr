@@ -75,7 +75,7 @@ export class CredentialResult {
   issuer: IssuerResult;
   effective_date: string;
   revoked: string;
-  
+
   topics: TopicResult[];
   addresses: AddressResult[];
   contacts: ContactResult[];
@@ -166,6 +166,7 @@ export class IssuerResult {
   abbreviation: string;
   email: string;
   url: string;
+  logo_b64: string;
 
   load(result: any) {
     return load_data(this, result);
