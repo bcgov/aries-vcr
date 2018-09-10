@@ -125,6 +125,7 @@ class IssuerManager:
             credential_type.description = credential_type_description
             credential_type.processor_config = credential_type_processor_config
             credential_type.logo_b64 = credential_type_def.get("logo_b64")
+            credential_type.credential_def_id = credential_type_def.get("credential_def_id")
 
             credential_type.save()
             credential_types.append(credential_type)

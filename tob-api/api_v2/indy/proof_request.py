@@ -102,23 +102,19 @@ class ProofRequest(object):
 
     def build_from_credential(self, credential: Credential) -> None:
         claims = credential.claims.all()
-        # credential_type = credential.credential_type
-        # schema = credential_type.schema
+        credential_type = credential.credential_type
+        schema = credential_type.schema
+
+        restrictions = []
+        if credential.credential_def_id:
+            restrictions.append(Restriction(
+                cred_def_id=credential.credential_def_id,
+            ))
+        else:
+            schema = credential_type.schema
+            restrictions.append(Restriction(
+                schema_name=schema.name, schema_version=schema.version,
+            ))
+
         for claim in claims:
-            # Instead of using restrictions, we will use a credential ID.
-            # This is not part of the proof request format spec but
-            # we will use it in place of a wallet tagging system until
-            # that is available
-
-            # restriction = Restriction(
-            #     schema_name=schema.name, schema_version=schema.version
-            # )
-            # self.add_requested_attribute(claim.name, restriction)
-
-            requested_attribute = {
-                "name": claim.name,
-                "restrictions": [],
-                #"credential_id": credential.wallet_id,
-            }
-
-            self.requested_attributes.append(requested_attribute)
+            self.add_requested_attribute(claim.name, *restrictions)
