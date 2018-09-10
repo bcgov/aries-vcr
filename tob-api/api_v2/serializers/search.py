@@ -1,9 +1,6 @@
 # TODO: migrate most of these serializers to a UI specific serializer module
 
-from drf_haystack.serializers import (
-    HaystackSerializerMixin,
-    HaystackSerializer,
-)
+from drf_haystack.serializers import HaystackSerializerMixin, HaystackSerializer
 
 from rest_framework.serializers import ListSerializer, SerializerMethodField
 
@@ -83,9 +80,7 @@ class CustomAddressSerializer(AddressSerializer):
 
     class Meta(AddressSerializer.Meta):
         fields = list(
-            utils.fetch_custom_settings(
-                "serializers", "Address", "includeFields"
-            )
+            utils.fetch_custom_settings("serializers", "Address", "includeFields")
         )
         fields.append("last_updated")
 
@@ -104,14 +99,7 @@ class CustomNameSerializer(NameSerializer):
     issuer = SerializerMethodField()
 
     class Meta(NameSerializer.Meta):
-        fields = (
-            "id",
-            "credential",
-            "last_updated",
-            "text",
-            "language",
-            "issuer",
-        )
+        fields = ("id", "credential", "last_updated", "text", "language", "issuer")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
@@ -188,41 +176,34 @@ class CustomTopicSerializer(TopicSerializer):
             "categories",
         )
 
-    def get_credential_ids(self, obj):
-        if not self.credential_ids:
-            self.credential_ids = list(
-                obj.credentials
-                .filter(revoked=False)
-                .values_list("id", flat=True)
-            )
-
-        return self.credential_ids
-
     def get_names(self, obj):
-        names = Name.objects.filter(credential__topic=obj)
+        names = Name.objects.filter(credential__topic=obj, credential__revoked=False)
         serializer = CustomNameSerializer(instance=names, many=True)
         return serializer.data
 
     def get_addresses(self, obj):
-        addresses = Address.objects.filter(credential__topic=obj)
+        addresses = Address.objects.filter(
+            credential__topic=obj, credential__revoked=False
+        )
         serializer = CustomAddressSerializer(instance=addresses, many=True)
         return serializer.data
 
     def get_contacts(self, obj):
-        credential_ids = self.get_credential_ids(obj)
-        contacts = Contact.objects.filter(credential__topic=obj)
+        contacts = Contact.objects.filter(
+            credential__topic=obj, credential__revoked=False
+        )
         serializer = CustomContactSerializer(instance=contacts, many=True)
         return serializer.data
 
     def get_people(self, obj):
-        credential_ids = self.get_credential_ids(obj)
-        people = Person.objects.filter(credential__topic=obj)
+        people = Person.objects.filter(credential__topic=obj, credential__revoked=False)
         serializer = CustomPersonSerializer(instance=people, many=True)
         return serializer.data
 
     def get_categories(self, obj):
-        credential_ids = self.get_credential_ids(obj)
-        categories = Category.objects.filter(credential__topic=obj)
+        categories = Category.objects.filter(
+            credential__topic=obj, credential__revoked=False
+        )
         serializer = CustomCategorySerializer(instance=categories, many=True)
         return serializer.data
 
@@ -232,16 +213,6 @@ class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
 
     class Meta(CustomTopicSerializer.Meta):
         pass
-
-    def get_credential_ids(self, obj):
-        if not self.credential_ids:
-            self.credential_ids = list(
-                obj.credentials
-                .filter(revoked=False)
-                .values_list("id", flat=True)
-            )
-
-        return self.credential_ids
 
 
 class TopicSearchResultsSerializer(HaystackSerializer):

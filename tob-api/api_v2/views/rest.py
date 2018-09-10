@@ -210,6 +210,7 @@ class AddressViewSet(ViewSet):
         serializer = AddressSerializer(item)
         return Response(serializer.data)
 
+
 class ContactViewSet(ViewSet):
     def list(self, request):
         queryset = Contact.objects.all()
