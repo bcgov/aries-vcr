@@ -12,11 +12,23 @@ getApiProxyConfigSection (){
 read -r -d '' _CONFIG_SECTION << EOF
         # proxy requests to the API
         location /api/indy/ {
+            proxy_set_header X-Forwarded-Host \$host:\$server_port;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
             proxy_pass ${1}indy/;
+        }
+        location /api/static/ {
+            proxy_set_header X-Forwarded-Host \$host:\$server_port;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
+            proxy_pass ${1%v2/}static/;
         }
         location /api/ {
             ${HTTP_BASIC}
             proxy_set_header Authorization "";
+            proxy_set_header X-Forwarded-Host \$host:\$server_port;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
             proxy_pass ${1};
         }
 EOF
