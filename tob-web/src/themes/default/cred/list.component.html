@@ -4,9 +4,9 @@
       <a class="body-link cred-link" [routerLink]="['/topic', topicId, 'cred', cred.id] | localize">{{cred.credential_type.description}}</a>
     </div>
     <div class="cred-date" *ngIf="cred.effective_date">
-      <span class="claim-info date">{{cred.effective_date}}</span>
+      <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
     </div>
-    <div class="cred-issuer">
+    <div class="cred-issuer" *ngIf="cred.issuer">
       <a class="body-link issuer-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.name}}</a>
     </div>
   </div>
@@ -22,11 +22,41 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <div class="cred-issuer">
+      <div class="cred-issuer" *ngIf="cred.issuer">
         <a class="body-link issuer-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.name}}</a>
       </div>
     </div>
     <div class="col-sm-4">
+    </div>
+  </div>
+</div>
+<div class="creds-list creds-search" *ngIf="format==='search'">
+  <div class="row cred-row" *ngFor="let cred of records">
+    <div class="col-sm-7">
+      <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
+      <label>{{cred.topic.typeLabel | translate}}:</label>
+      <a [routerLink]="['/topic', cred.topic.id] | localize"
+        class="body-link cred-link name">{{cred.names[0].text}}</a>
+      <br>
+      <small *ngIf="cred.issuer">
+        <label>
+          <span translate>cred.issuer</span>:
+        </label>
+        <a [routerLink]="['/issuer', cred.issuer.id] | localize" class="body-link issuer-link">{{cred.issuer.name}}</a>
+      </small>
+      <br>
+      <small>
+        <label>
+          <span translate>cred.last-updated</span>:</label>
+        <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
+      </small>
+    </div>
+    <div class="col-sm-5">
+      <small *ngIf="cred.addresses && cred.addresses.length > 0">
+        <!-- TODO: Add notion of 'type' to address model? -->
+        <!-- <label class="control-label" translate>{{topic.addresses[0].type}}</label> -->
+        <address-view [record]="cred.addresses[0]"></address-view>
+      </small>
     </div>
   </div>
 </div>

@@ -13,13 +13,13 @@ import { TopicRelatedClient } from './topic-related.client';
 import { TopicRelatedFromClient } from './topic-related-from.client';
 import { IssuerCredentialTypeClient } from './credential-type.client';
 import { NameSearchClient } from './name-search.client';
-import { TopicSearchClient } from './topic-search.client';
 import { SearchService } from './search.service';
 
 import { SearchComponent } from './form.component';
 import { SearchInputComponent } from './input.component';
 import { SearchNavComponent } from './nav.component';
-import { TopicModule } from '../topic/topic.module';
+import { CredModule } from '../cred/cred.module';
+import { UtilModule } from '../util/util.module';
 
 const ROUTES = [];
 
@@ -39,7 +39,6 @@ const ROUTES = [];
     TopicRelatedFromClient,
     IssuerCredentialTypeClient,
     NameSearchClient,
-    TopicSearchClient,
     SearchService,
   ],
   imports: [
@@ -47,7 +46,8 @@ const ROUTES = [];
     TranslateModule.forChild(),
     RouterModule.forChild(ROUTES),
     LocalizeRouterModule.forChild(ROUTES),
-    TopicModule,
+    CredModule,
+    UtilModule,
     NgbModule,
   ],
   exports: [

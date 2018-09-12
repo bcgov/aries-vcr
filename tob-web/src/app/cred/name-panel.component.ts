@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CredResult, IssuerResult, NameResult, TopicResult, CategoryResult, AddressResult, ContactResult, PersonResult } from '../data-types';
+import { CredentialResult, IssuerResult, NameResult, TopicResult, CategoryResult, AddressResult, ContactResult, PersonResult } from '../data-types';
 
 @Component({
   selector: 'name-panel',
@@ -13,7 +13,7 @@ export class NamePanelComponent {
   @Input() record: TopicResult;
   @Input() link: boolean = false;
 
-  // get cred(): CredResult {
+  // get cred(): CredentialResult {
   //   return this.record ? this.record.credential : null;
   // }
 

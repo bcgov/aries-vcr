@@ -106,9 +106,9 @@ export class SearchService {
       }
 
       // TODO: Refactor this into something better
-      if (params.resource === 'topics') {
+      if (params.resource === 'credentials') {
         handle(this._dataService.loadFromApi(
-          `search/topic?${params.filter}=${params.query}&page=${params.pageNum}`));
+          `search/credential?${params.filter}=${params.query}&page=${params.pageNum}`));
       } else if (params.resource === 'issuer') {
         handle(this._dataService.loadFromApi(``));
       } else if (params.resource === 'creds' || params.resource == 'credtypes') {

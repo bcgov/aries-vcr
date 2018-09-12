@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GeneralDataService } from 'app/general-data.service';
 import { ActivatedRoute } from '@angular/router';
-import { CredResult, IssuerResult, NameResult, PersonResult, ContactResult, CategoryResult, AddressResult, TopicResult, CredentialResult } from '../data-types';
+import { CredentialResult, IssuerResult, NameResult, PersonResult, ContactResult, CategoryResult, AddressResult, TopicResult } from '../data-types';
 import { CredentialClient } from '../search/cred.client';
 import { SearchResult } from '../search/results.model';
 import { Subscription } from 'rxjs/Subscription';
@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class CredFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
-  // record: CredResult;
+  // record: CredentialResult;
   error: string;
   verifyStatus: string;
   verifyResult: any;
@@ -46,11 +46,6 @@ export class CredFormComponent implements OnInit, OnDestroy {
     this._credSub.unsubscribe();
   }
 
-  // get issuer(): IssuerResult {
-  //   return this.record && this.record.credentialType && this.record.credentialType.issuer;
-  // }
-
-
   get record(): CredentialResult {
     return this._cred && this._cred.data;
   }
@@ -66,9 +61,6 @@ export class CredFormComponent implements OnInit, OnDestroy {
   get addresses(): AddressResult[] {
     return this.record && this.record.addresses && this.record.addresses.length ? this.record.addresses : [];
   }
-  get topics(): TopicResult[] {
-    return this.record && this.record.topics && this.record.topics.length ? this.record.topics : [];
-  }
 
   get categories(): CategoryResult[] {
     return this.record && this.record.categories && this.record.categories.length ? this.record.categories : [];
@@ -82,8 +74,11 @@ export class CredFormComponent implements OnInit, OnDestroy {
     return this.record && this.record.issuer ? this.record.issuer : null;
   }
 
+  get topic(): TopicResult {
+    return this.record && this.record.topic;
+  }
+
   protected _receiveCred(loading: boolean) {
-    console.log(this._credClient.result)
     this._cred = this._credClient.result;
     if (this._cred) this.loaded = true;
   }

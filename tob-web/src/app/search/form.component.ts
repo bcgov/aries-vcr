@@ -1,11 +1,11 @@
 import { Component, AfterViewInit, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchInputComponent } from './input.component';
-import { SearchResults } from './results.model';
+import { SearchResults, SearchInfo } from './results.model';
 import { Subscription } from 'rxjs/Subscription';
-import { TopicListComponent } from '../topic/list.component';
-import { TopicResult } from '../data-types';
-import { TopicSearchClient } from './topic-search.client';
+import { CredListComponent } from '../cred/list.component';
+import { CredentialResult } from '../data-types';
+import { CredSearchClient } from './cred-search.client';
 
 @Component({
   selector: 'app-search',
@@ -15,17 +15,17 @@ import { TopicSearchClient } from './topic-search.client';
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('searchInput') _searchInput: SearchInputComponent;
-  @ViewChild('topicList') _nameList: TopicListComponent;
+  @ViewChild('credList') _nameList: CredListComponent;
   protected _curQuery: string;
   protected _filterType: string;
-  protected _results: SearchResults<TopicResult>;
+  protected _results: SearchResults<CredentialResult>;
   protected _searching = false;
   protected _searchSub: Subscription;
   protected _typeSub: Subscription;
   public inited = true;
 
   constructor(
-    private _searchClient: TopicSearchClient,
+    private _searchClient: CredSearchClient,
     private _route: ActivatedRoute,
     private _router: Router,
   ) {}
@@ -54,7 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this._typeSub.unsubscribe();
   }
 
-  
+
   get error(): string {
     return this._searchClient && this._searchClient.error;
   }
@@ -69,12 +69,16 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateQuery();
   }
 
-  get topics(): TopicResult[] {
+  get creds(): CredentialResult[] {
     return this._results && this._results.rows;
   }
 
-  get results(): SearchResults<TopicResult> {
+  get results(): SearchResults<CredentialResult> {
     return this._results;
+  }
+
+  get resultInfo(): SearchInfo {
+    return this._results && this._results.info;
   }
 
   get searching(): boolean {

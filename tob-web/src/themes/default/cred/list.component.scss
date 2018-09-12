@@ -8,8 +8,18 @@
   .cred-date {
     padding-top: 0.25em;
   }
-  &:nth-child(even) {
-    background-color: #eee;
+  &:nth-of-type(even) {
+    background-color: #f0f0f0;
+  }
+  .creds-search & {
+    border-top: 1px solid #ddd;
+    font-size: 1.8rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  label {
+    // font-size: 85%;
+    font-weight: normal;
   }
 }
 

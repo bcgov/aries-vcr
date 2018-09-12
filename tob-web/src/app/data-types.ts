@@ -50,14 +50,14 @@ export class CategoryResult {
 
 export class ContactResult {
   id: number;
-  credential: CredResult;
+  credential: CredentialResult;
   text: string;
   type: string;
   startDate: string;
   endDate: string;
 
   load(result: any) {
-    return load_data(this, result, {credential: CredResult});
+    return load_data(this, result, {credential: CredentialResult});
   }
 
   get typeClass(): string {
@@ -71,61 +71,35 @@ export class ContactResult {
 
 export class CredentialResult {
   id: number;
-  credential_type: CredTypeResult;
-  issuer: IssuerResult;
+  credential_type: CredentialTypeResult;
   effective_date: string;
   revoked: string;
 
-  topics: TopicResult[];
   addresses: AddressResult[];
+  categories: CategoryResult[];
   contacts: ContactResult[];
   names: NameResult[];
   people: PersonResult[];
-  categories: CategoryResult[];
+  topic: TopicResult;
 
   load(result: any) {
     return load_data(this, result, {
-      credential_type: CredTypeResult,
-      issuer: IssuerResult
+      credential_type: CredentialTypeResult,
+      topic: TopicResult,
     }, {
       addresses: AddressResult,
-      contacts: ContactResult,
-      names: NameResult,
-      people: PersonResult,
       categories: CategoryResult,
-      topics: TopicResult
-    });
-  }
-}
-
-export class CredResult {
-  id: number;
-  credential_type: CredTypeResult;
-  effective_date: string;
-  revoked: string;
-
-  // extra API fields
-  addresses: AddressResult[];
-  contacts: ContactResult[];
-  names: NameResult[];
-  people: PersonResult[];
-  categories: CategoryResult[];
-
-  load(result: any) {
-    return load_data(this, result, {
-      credentialType: CredTypeResult,
-    }, {
-      addresses: AddressResult,
       contacts: ContactResult,
       names: NameResult,
       people: PersonResult,
-      categories: CategoryResult
     });
   }
 
-  // get issuer(): IssuerResult {
-  //   return this.credentialType && this.credentialType.issuer;
-  // }
+  get issuer(): IssuerResult {
+    return this.credential_type && this.credential_type.issuer;
+  }
+  set issuer(val: IssuerResult) {
+  }
   get haveAddresses() {
     return this.addresses && this.addresses.length;
   }
@@ -143,14 +117,16 @@ export class CredResult {
   }
 }
 
-export class CredTypeResult {
+
+export class CredentialTypeResult {
   id: number;
-  // schema: SchemaResult
+  // schema: SchemaResult;
   issuer: IssuerResult;
   description: string;
   // processorConfig: string;
-  startDate: string;
-  endDate: string;
+  credential_def_id: string;
+  logo_b64: string;
+  // visible_fields: string;
 
   load(result: any) {
     return load_data(this, result, {
@@ -175,7 +151,7 @@ export class IssuerResult {
 
 export class NameResult {
   id: number;
-  credential: CredResult;
+  credential: CredentialResult;
   text: string;
   type: string;
   startDate: string;
@@ -188,7 +164,7 @@ export class NameResult {
   load(result: any) {
     return load_data(this, result, {
       issuer: IssuerResult,
-      credential: CredResult,
+      credential: CredentialResult,
     });
   }
 }
@@ -202,7 +178,7 @@ export class NameResult {
 
 export class PersonResult {
   id: number;
-  credential: CredResult;
+  credential: CredentialResult;
   fullName: string;
   type: string;
   startDate: string;
@@ -210,7 +186,7 @@ export class PersonResult {
 
   load(result: any) {
     return load_data(this, result, {
-      credential: CredResult
+      credential: CredentialResult
     });
   }
 }
@@ -233,14 +209,9 @@ export class TopicResult {
     });
   }
 
-}
-
-export class CredentialTypeResult {
-  id: number;
-  description: string;
-  create_timestamp: string;
-
-  load(result: any) {
-    return load_data(this, result, {});
+  get typeLabel(): string {
+    if(this.type) return ('name.'+this.type).replace(/_/g, '-');
+    return '';
   }
 }
+
