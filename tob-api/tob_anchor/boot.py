@@ -113,8 +113,11 @@ async def register_services():
     LOGGER.info("Registering holder service")
     client = indy_client()
     holder_wallet_id = await client.register_wallet({
-        "name": "TheOrgBook_Holder_Wallet",
+        "name": "tob_holder",
         "seed": wallet_seed,
+        "type": "postgres",
+        "params": {"storage_config": {"url": "wallet-db:5432"}},
+        "access_creds": {"key": "key", "storage_credentials": {"account": "postgres", "password": "mysecretpassword", "admin_account": "postgres", "admin_password": "mysecretpassword"}, "key_derivation_method": "ARGON2I_MOD"},
     })
     LOGGER.debug("Indy holder wallet id: %s", holder_wallet_id)
     holder_id = await client.register_holder(holder_wallet_id, {
