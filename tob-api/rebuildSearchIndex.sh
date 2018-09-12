@@ -1,6 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname $0)
 MANAGE_CMD=${SCRIPT_DIR}/runManageCmd.sh
+SOLR_BATCH_SIZE=${SOLR_BATCH_SIZE:-500}
 
 # ==============================================================================================================================
 usage() {
@@ -14,7 +15,7 @@ usage() {
   Options:
     -h Prints the usage for the script
     -x Enable debug output
-    -s The URL to the Solar search engine instance 
+    -s The URL to the Solr search engine instance 
   
   Example:
     ${0} -s http://localhost:8983/solr/the_org_book  
@@ -22,6 +23,7 @@ usage() {
 EOF
 exit
 }
+
 while getopts s:xh FLAG; do
   case $FLAG in
     s ) export SOLR_URL=$OPTARG
@@ -29,6 +31,8 @@ while getopts s:xh FLAG; do
     x ) export DEBUG=1
       ;;
     h ) usage
+      ;;
+    b ) SOLR_BATCH_SIZE=$OPTARG
       ;;
     \? ) #unrecognized option - show help
       echo -e \\n"Invalid script option: -${OPTARG}"\\n
@@ -40,4 +44,4 @@ done
 shift $((OPTIND-1))
 # ==============================================================================================================================
 
-${MANAGE_CMD} rebuild_index --noinput
+${MANAGE_CMD} rebuild_index --noinput --batch-size=$SOLR_BATCH_SIZE

@@ -25,7 +25,7 @@ if __name__ == '__main__':
     if not disable_migrate or disable_migrate == 'false':
         do_reindex = False
         if not skip_indexing or skip_indexing == 'false':
-            os.environ['SKIP_INDEXING_ON_STARTUP'] = 'true'
+            os.environ['SKIP_INDEXING_ON_STARTUP'] = 'active'
             do_reindex = True
         run_migration()
         if do_reindex:

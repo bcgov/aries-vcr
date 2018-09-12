@@ -24,7 +24,10 @@ class Command(migrate.Command):
       SKIP_INDEXING = os.environ.get('SKIP_INDEXING_ON_STARTUP', 'false')
       if not SKIP_INDEXING or SKIP_INDEXING.lower() == 'false':
         self.stdout.write("\nUpdating search indexes ...")
-        management.call_command('update_index', '--max-retries=5')
+        batch_size = os.getenv("SOLR_BATCH_SIZE", 500)
+        management.call_command("update_index", "--max-retries=5", "--batch-size={}".format(batch_size))
+      elif SKIP_INDEXING == 'active':
+        self.stdout.write("\nSearch indexing in progress ...")
       else:
         self.stdout.write("\nSkipping search indexing ...")
 
