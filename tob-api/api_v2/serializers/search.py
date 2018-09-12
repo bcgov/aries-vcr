@@ -1,13 +1,16 @@
 # TODO: migrate most of these serializers to a UI specific serializer module
 
-from drf_haystack.serializers import HaystackSerializerMixin, HaystackSerializer
-
-from rest_framework.serializers import ListSerializer, SerializerMethodField
+from collections import OrderedDict
+from datetime import datetime, timedelta
+import logging
 
 from django.db.models.manager import Manager
 
-from collections import OrderedDict
+from rest_framework.serializers import ListSerializer, SerializerMethodField
 from rest_framework.utils.serializer_helpers import ReturnDict
+from drf_haystack.serializers import (
+    HaystackSerializerMixin, HaystackSerializer, HaystackFacetSerializer,
+)
 
 from api_v2.serializers.rest import (
     AddressSerializer,
@@ -16,11 +19,10 @@ from api_v2.serializers.rest import (
     PersonSerializer,
     TopicSerializer,
     CredentialSerializer,
+    CredentialTypeSerializer,
     IssuerSerializer,
     CategorySerializer,
 )
-
-from api_v2.search_indexes import TopicIndex
 
 from api_v2.models.Name import Name
 from api_v2.models.Address import Address
@@ -29,7 +31,7 @@ from api_v2.models.Contact import Contact
 from api_v2.models.Category import Category
 from api_v2 import utils
 
-import logging
+from api_v2.search_indexes import CredentialIndex
 
 logger = logging.getLogger(__name__)
 
@@ -215,9 +217,68 @@ class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
         pass
 
 
-class TopicSearchResultsSerializer(HaystackSerializer):
+class CredentialNameSerializer(NameSerializer):
+    class Meta(NameSerializer.Meta):
+        fields = (
+            "id", "create_timestamp", "update_timestamp",
+            "language", "text",
+        )
+
+
+class CredentialTopicSerializer(TopicSerializer):
+    class Meta(TopicSerializer.Meta):
+        fields = (
+            "id", "create_timestamp", "update_timestamp",
+            "source_id", "type",
+        )
+
+
+class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
+    credential_type = CredentialTypeSerializer()
+    names = CredentialNameSerializer(many=True)
+    topic = CredentialTopicSerializer()
+
+    class Meta(CredentialSerializer.Meta):
+        fields = (
+            "id", "create_timestamp", "update_timestamp",
+            "credential_type", "effective_date", "names",
+            "revoked", "topic",
+        )
+        search_fields = ("name", "location", "revoked")
+
+
+class CredentialFacetSerializer(HaystackFacetSerializer):
+    serialize_objects = True
     class Meta:
-        # index_classes = [TopicIndex]
-        # list_serializer_class = SearchResultsListSerializer
-        search_fields = ("name", "location")
-        serializers = {TopicIndex: TopicSearchSerializer}
+        index_classes = [CredentialIndex]
+        fields = [
+            "effective_date", "topic_type", "issuer_id",
+            # "credential_type_id",
+        ]
+        field_options = {
+            "topic_type": {},
+            "issuer_id": {},
+# date faceting isn't working, needs to use Solr range faceting
+# https://github.com/django-haystack/django-haystack/issues/1572
+#             "effective_date": {
+#                 "start_date": datetime.now() - timedelta(days=50000),
+#                 "end_date": datetime.now(),
+#                 "gap_by": "month",
+#                 "gap_amount": 3
+#             },
+        }
+
+    def get_objects(self, instance):
+        """
+        Overriding default behaviour to use more standard pagination info
+        """
+        view = self.context["view"]
+        queryset = self.context["objects"]
+
+        page = view.paginate_queryset(queryset)
+        if page is not None:
+            serializer = view.get_facet_objects_serializer(page, many=True)
+            response = view.paginator.get_paginated_response(serializer.data)
+            return response.data # unwrap value
+
+        return super(CredentialFacetSerializer, self).get_objects()

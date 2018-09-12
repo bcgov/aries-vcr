@@ -21,9 +21,9 @@ router.register(r"person", rest.PersonViewSet, "Person")
 router.register(r"category", rest.CategoryViewSet, "Category")
 
 # Search endpoints
+router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
 searchPatterns = [
     url(r"^search/autocomplete$", search.NameAutocompleteView.as_view()),
-    url(r"^search/topic$", search.TopicSearchView.as_view()),
 ]
 
 # Misc endpoints

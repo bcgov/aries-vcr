@@ -27,13 +27,16 @@ class SchemaSerializer(ModelSerializer):
 class CredentialTypeSerializer(ModelSerializer):
     class Meta:
         model = CredentialType
-        fields = "__all__"
+        depth = 1
+        exclude = (
+            "processor_config",
+            "visible_fields",
+        )
 
 
 class TopicSerializer(ModelSerializer):
     class Meta:
         model = Topic
-        # fields = "__all__"
         fields = list(utils.fetch_custom_settings('serializers', 'Topic', 'includeFields'))
 
 
@@ -46,9 +49,7 @@ class CredentialSerializer(ModelSerializer):
 class AddressSerializer(ModelSerializer):
     class Meta:
         model = Address
-        #fields = "__all__"
         fields = list(utils.fetch_custom_settings('serializers', 'Address', 'includeFields'))
-   
 
 
 class ClaimSerializer(ModelSerializer):
@@ -73,6 +74,7 @@ class PersonSerializer(ModelSerializer):
     class Meta:
         model = Person
         fields = "__all__"
+
 
 class CategorySerializer(ModelSerializer):
     class Meta:

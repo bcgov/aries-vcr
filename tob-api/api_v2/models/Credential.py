@@ -10,8 +10,6 @@ from .TopicRelationship import TopicRelationship
 
 
 class Credential(Auditable):
-    reindex_related = ["topic"]
-
     topic = models.ForeignKey("Topic", related_name="credentials")
 
     credential_type = models.ForeignKey(CredentialType, related_name="credentials")

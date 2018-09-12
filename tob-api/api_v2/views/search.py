@@ -4,13 +4,16 @@ from django.conf import settings
 from pysolr import Solr, SolrError
 
 from rest_framework import permissions
-from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_haystack.generics import HaystackGenericAPIView
+from drf_haystack.filters import HaystackFilter, HaystackFacetFilter
+from drf_haystack.mixins import FacetMixin
+from drf_haystack.viewsets import HaystackViewSet
 
-from api_v2.serializers.search import TopicSearchResultsSerializer
-from api_v2.models.Topic import Topic
+from api_v2.models.Credential import Credential
+from api_v2.serializers.search import (
+    CredentialSearchSerializer, CredentialFacetSerializer,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -45,10 +48,29 @@ class NameAutocompleteView(APIView):
         return Response({"result": rows})
 
 
-class TopicSearchView(ListModelMixin, HaystackGenericAPIView):
-    index_models = [Topic]
-    serializer_class = TopicSearchResultsSerializer
-    permission_classes = (permissions.AllowAny,)
+class DefaultCredSearchFilter(HaystackFilter):
+    """
+    Apply default filter value(s) to credential search
+    """
+    @staticmethod
+    def get_request_filters(request):
+        filters = HaystackFilter.get_request_filters(request)
+        if "revoked" not in filters:
+            filters["revoked"] = "false"
+        return filters
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+
+class CredentialSearchView(HaystackViewSet, FacetMixin):
+    """
+    Provide credential search via Solr with both faceted (/facets) and unfaceted results
+    """
+    index_models = [Credential]
+    load_all = True
+    serializer_class = CredentialSearchSerializer
+    permission_classes = (permissions.AllowAny,)
+    filter_backends = [DefaultCredSearchFilter]
+    facet_filter_backends = [DefaultCredSearchFilter, HaystackFacetFilter] # enable normal filtering
+    facet_serializer_class = CredentialFacetSerializer
+    facet_objects_serializer_class = CredentialSearchSerializer
+
+    # FacetMixin provides /facets
