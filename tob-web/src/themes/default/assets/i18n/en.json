@@ -78,7 +78,8 @@
   "name": {
     "doing-business-as": "Doing Business As",
     "incorporation": "Incorporation",
-    "legal-name": "Legal Name"
+    "legal-name": "Legal Name",
+    "registration": "Registration"
   },
   "not-found": {
     "breadcrumb": "Not Found",
