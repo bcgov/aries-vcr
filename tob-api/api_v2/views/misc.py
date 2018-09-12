@@ -1,5 +1,6 @@
 import logging
 
+from django.db import connection
 from django.http import JsonResponse
 
 from rest_framework.decorators import (
@@ -23,23 +24,34 @@ from api_v2.models.Topic import Topic
 LOGGER = logging.getLogger(__name__)
 
 
+def quick_counts(cursor, model_cls):
+    cursor.execute(
+        "SELECT reltuples::BIGINT AS estimate FROM pg_class WHERE relname=%s",
+        [model_cls._meta.db_table])
+    row = cursor.fetchone()
+    return row[0]
+
+
 @api_view(["GET"])
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
 def quickload(request, *args, **kwargs):
+    count_models = {
+        "address": Address,
+        "claim": Claim,
+        "contact": Contact,
+        "credential": CredentialModel,
+        "credentialtype": CredentialType,
+        "issuer": Issuer,
+        "name": Name,
+        "person": Person,
+        "schema": Schema,
+        "topic": Topic,
+    }
+    with connection.cursor() as cursor:
+        counts = {mname: quick_counts(cursor, model) for (mname, model) in count_models.items()}
     return JsonResponse(
         {
-            "counts": {
-                "address": Address.objects.count(),
-                "claim": Claim.objects.count(),
-                "contact": Contact.objects.count(),
-                "credential": CredentialModel.objects.count(),
-                "credentialtype": CredentialType.objects.count(),
-                "issuer": Issuer.objects.count(),
-                "name": Name.objects.count(),
-                "person": Person.objects.count(),
-                "schema": Schema.objects.count(),
-                "topic": Topic.objects.count(),
-            }
+            "counts": counts,
         }
     )
