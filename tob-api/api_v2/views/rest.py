@@ -94,6 +94,7 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "id",
             "effective_date",
             "revoked",
+            "wallet_id",
             "credential_type",
             "issuer",
             "addresses",
