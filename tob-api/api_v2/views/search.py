@@ -1,8 +1,5 @@
 import logging
 
-from django.conf import settings
-from pysolr import Solr, SolrError
-
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +11,7 @@ from api_v2.models.Credential import Credential
 from api_v2.serializers.search import (
     CredentialSearchSerializer, CredentialFacetSerializer,
 )
+from api_v2.suggest import SuggestManager
 
 LOGGER = logging.getLogger(__name__)
 
@@ -25,26 +23,7 @@ class NameAutocompleteView(APIView):
     def get(self, request, format=None):
         query_string = request.GET.get('q', '')
         highlight = request.GET.get('hl', 'false')
-        rows = []
-        try:
-            solr = Solr(
-                settings.HAYSTACK_CONNECTIONS['default']['URL'],
-                search_handler='/suggest',
-                use_qt_param=False,
-                results_cls=dict)
-            raw_results = solr.search('', **{
-                'suggest.q': query_string,
-                'suggest.highlight': highlight,
-            })
-            if "suggest" in raw_results:
-                for found in raw_results["suggest"]["autocomplete"].values():
-                    rows = [
-                        {"term": row["term"], "weight": row["weight"]}
-                        for row in found["suggestions"]
-                    ]
-                    break
-        except SolrError:
-            LOGGER.exception("Error during Solr query:")
+        rows = SuggestManager().query(query_string, highlight)
         return Response({"result": rows})
 
 
