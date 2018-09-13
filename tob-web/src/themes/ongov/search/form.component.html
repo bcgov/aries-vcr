@@ -25,12 +25,12 @@
 
         <div class="col-sm-12 rows">
           <label class="control-label" translate>search.results-title</label>
-          <ng-container *ngIf="topics.length">
-            <search-nav (nav)="handleNav($event)" [info]="results && results.info"></search-nav>
-            <topic-list [records]="topics"></topic-list>
-            <search-nav (nav)="handleNav($event)" [info]="results && results.info"></search-nav>
+          <ng-container *ngIf="creds.length">
+            <search-nav (nav)="handleNav($event)" [info]="resultInfo"></search-nav>
+            <cred-list [records]="creds" format="search"></cred-list>
+            <search-nav (nav)="handleNav($event)" [info]="resultInfo"></search-nav>
           </ng-container>
-          <div class="alert alert-info" *ngIf="!topics.length" translate>
+          <div class="alert alert-info" *ngIf="!creds.length" translate>
             search.no-results
           </div>
         </div>
