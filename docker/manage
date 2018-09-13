@@ -211,6 +211,9 @@ configureEnvironment() {
 	export POSTGRESQL_USER="DB_USER"
 	export POSTGRESQL_PASSWORD="DB_PASSWORD"
 
+	# wallet-db
+    export POSTGRESQL_WALLET_HOST="wallet-db"
+    export POSTGRESQL_WALLET_PORT="5432"
 	export POSTGRESQL_ADMIN_USER="postgres"
 	export POSTGRESQL_ADMIN_PASSWORD="mysecretpassword"
 

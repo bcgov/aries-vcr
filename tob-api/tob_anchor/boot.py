@@ -113,14 +113,36 @@ async def register_services():
     if not wallet_seed or len(wallet_seed) is not 32:
         raise Exception('INDY_WALLET_SEED must be set and be 32 characters long.')
 
+    # wallet-db
+    wallet_host = os.environ.get('POSTGRESQL_WALLET_HOST')
+    if not wallet_host or len(wallet_seed) is not 32:
+        raise Exception('POSTGRESQL_WALLET_HOST must be set.')
+    wallet_port = os.environ.get('POSTGRESQL_WALLET_PORT')
+    if not wallet_port or len(wallet_seed) is not 32:
+        raise Exception('POSTGRESQL_WALLET_PORT must be set.')
+    wallet_user = os.environ.get('POSTGRESQL_WALLET_USER')
+    if not wallet_user or len(wallet_seed) is not 32:
+        raise Exception('POSTGRESQL_WALLET_USER must be set.')
+    wallet_password = os.environ.get('POSTGRESQL_WALLET_PASSWORD')
+    if not wallet_password or len(wallet_seed) is not 32:
+        raise Exception('POSTGRESQL_WALLET_PASSWORD must be set.')
+    wallet_admin_user = 'postgres'
+    wallet_admin_password = os.environ.get('POSTGRESQL_ADMIN_PASSWORD')
+
+    stg_config = {"url": wallet_host + ':' + wallet_port}
+    stg_creds = {"account": wallet_user, "password": wallet_password}
+    if wallet_admin_password:
+        stg_creds["admin_account"] = wallet_admin_user
+        stg_creds["admin_password"] = wallet_admin_password
+
     LOGGER.info("Registering holder service")
     client = indy_client()
     holder_wallet_id = await client.register_wallet({
         "name": "tob_holder",
         "seed": wallet_seed,
         "type": "postgres",
-        "params": {"storage_config": {"url": "wallet-db:5432"}},
-        "access_creds": {"key": "key", "storage_credentials": {"account": "postgres", "password": "mysecretpassword", "admin_account": "postgres", "admin_password": "mysecretpassword"}, "key_derivation_method": "ARGON2I_MOD"},
+        "params": {"storage_config": stg_config},
+        "access_creds": {"key": "key", "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
     })
     LOGGER.debug("Indy holder wallet id: %s", holder_wallet_id)
     holder_id = await client.register_holder(holder_wallet_id, {
