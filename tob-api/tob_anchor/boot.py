@@ -130,7 +130,7 @@ async def register_services():
     if not wallet_password or len(wallet_seed) is not 32:
         raise Exception('POSTGRESQL_WALLET_PASSWORD must be set.')
     wallet_admin_user = 'postgres'
-    wallet_admin_password = os.environ.get('POSTGRESQL_ADMIN_PASSWORD')
+    wallet_admin_password = os.environ.get('POSTGRESQL_WALLET_ADMIN_PASSWORD')
 
     stg_config = {"url": wallet_host + ':' + wallet_port}
     stg_creds = {"account": wallet_user, "password": wallet_password}
