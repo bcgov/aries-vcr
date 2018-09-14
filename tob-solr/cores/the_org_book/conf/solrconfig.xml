@@ -35,7 +35,7 @@
             <str name="indexPath">autocomplete</str>
             <str name="buildOnStartup">false</str>
             <str name="buildOnCommit">false</str>
-            <str name="buildOnOptimize">true</str>
+            <str name="buildOnOptimize">false</str>
             <bool name="exactMatchFirst">true</bool>
             <bool name="allTermsRequired">false</bool>
             <bool name="preserveSep">true</bool>
