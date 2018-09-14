@@ -72,7 +72,11 @@ INSTALLED_APPS = [
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 
-HAYSTACK_SIGNAL_PROCESSOR = "api_v2.signals.RelatedRealtimeSignalProcessor"
+if os.getenv("ENABLE_REALTIME_INDEXING"):
+    print("Enabling realtime indexing ...")
+    HAYSTACK_SIGNAL_PROCESSOR = "api_v2.signals.RelatedRealtimeSignalProcessor"
+else:
+    print("Realtime indexing has been disabled ...")
 
 HAYSTACK_DOCUMENT_FIELD = "document"
 

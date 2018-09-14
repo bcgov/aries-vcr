@@ -72,6 +72,7 @@ services:
       - RUST_LOG=${RUST_LOG}
       - RUST_BACKTRACE=${RUST_BACKTRACE}
       - TOB_THEME=${TOB_THEME}
+      - ENABLE_REALTIME_INDEXING=${ENABLE_REALTIME_INDEXING}
     volumes:
       - ../tob-api/api:/home/indy/api
       - ../tob-api/api_v2:/home/indy/api_v2
