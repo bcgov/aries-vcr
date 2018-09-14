@@ -124,32 +124,33 @@ async def register_services():
         wallet_type = 'sqlite'
     wallet_type = wallet_type.lower()
 
-    # postgresql wallet-db configuration
-    wallet_host = os.environ.get('POSTGRESQL_WALLET_HOST')
-    if not wallet_host or len(wallet_seed) is not 32:
-        raise Exception('POSTGRESQL_WALLET_HOST must be set.')
-    wallet_port = os.environ.get('POSTGRESQL_WALLET_PORT')
-    if not wallet_port or len(wallet_seed) is not 32:
-        raise Exception('POSTGRESQL_WALLET_PORT must be set.')
-    wallet_user = os.environ.get('POSTGRESQL_WALLET_USER')
-    if not wallet_user or len(wallet_seed) is not 32:
-        raise Exception('POSTGRESQL_WALLET_USER must be set.')
-    wallet_password = os.environ.get('POSTGRESQL_WALLET_PASSWORD')
-    if not wallet_password or len(wallet_seed) is not 32:
-        raise Exception('POSTGRESQL_WALLET_PASSWORD must be set.')
-    wallet_admin_user = 'postgres'
-    wallet_admin_password = os.environ.get('POSTGRESQL_WALLET_ADMIN_PASSWORD')
-
-    stg_config = {"url": wallet_host + ':' + wallet_port}
-    stg_creds = {"account": wallet_user, "password": wallet_password}
-    if wallet_admin_password:
-        stg_creds["admin_account"] = wallet_admin_user
-        stg_creds["admin_password"] = wallet_admin_password
-
     LOGGER.info("Registering holder service")
     client = indy_client()    
     if wallet_type == 'postgres':
         LOGGER.info("Using Postgres storage ...")
+
+        # postgresql wallet-db configuration
+        wallet_host = os.environ.get('POSTGRESQL_WALLET_HOST')
+        if not wallet_host or len(wallet_seed) is not 32:
+            raise Exception('POSTGRESQL_WALLET_HOST must be set.')
+        wallet_port = os.environ.get('POSTGRESQL_WALLET_PORT')
+        if not wallet_port or len(wallet_seed) is not 32:
+            raise Exception('POSTGRESQL_WALLET_PORT must be set.')
+        wallet_user = os.environ.get('POSTGRESQL_WALLET_USER')
+        if not wallet_user or len(wallet_seed) is not 32:
+            raise Exception('POSTGRESQL_WALLET_USER must be set.')
+        wallet_password = os.environ.get('POSTGRESQL_WALLET_PASSWORD')
+        if not wallet_password or len(wallet_seed) is not 32:
+            raise Exception('POSTGRESQL_WALLET_PASSWORD must be set.')
+        wallet_admin_user = 'postgres'
+        wallet_admin_password = os.environ.get('POSTGRESQL_WALLET_ADMIN_PASSWORD')
+
+        stg_config = {"url": wallet_host + ':' + wallet_port}
+        stg_creds = {"account": wallet_user, "password": wallet_password}
+        if wallet_admin_password:
+            stg_creds["admin_account"] = wallet_admin_user
+            stg_creds["admin_password"] = wallet_admin_password
+
         holder_wallet_id = await client.register_wallet({
             "name": "tob_holder",
             "seed": wallet_seed,
