@@ -7,6 +7,8 @@ from django.db.models import Q
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+from api_v2.suggest import SuggestManager
+
 class Command(migrate.Command):
     """
     Overrides django's default migrate command in order to update the solr index, and initialize user accounts following migration.
@@ -30,6 +32,7 @@ class Command(migrate.Command):
         self.stdout.write("\nSearch indexing in progress ...")
       else:
         self.stdout.write("\nSkipping search indexing ...")
+      SuggestManager().rebuild()
 
     def __initialize_user_accounts(self):
       self.stdout.write("\nInitializing user accounts ...")
