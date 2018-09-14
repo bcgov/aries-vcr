@@ -244,7 +244,7 @@
             "displayName": "Name",
             "description": "The name assigned to all of the OpenShift resources associated to the PostgreSQL instance.",
             "required": true,
-            "value": "postgresql"
+            "value": "wallet-db"
         },
         {
             "name": "IMAGE_NAMESPACE",
