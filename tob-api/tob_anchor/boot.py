@@ -146,6 +146,7 @@ async def register_services():
     LOGGER.info("Registering holder service")
     client = indy_client()    
     if wallet_type == 'postgres':
+        LOGGER.info("Using Postgres storage ...")
         holder_wallet_id = await client.register_wallet({
             "name": "tob_holder",
             "seed": wallet_seed,
@@ -154,6 +155,7 @@ async def register_services():
             "access_creds": {"key": "key", "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
         })
     elif wallet_type == 'sqlite':
+        LOGGER.info("Using Sqlite storage ...")
         holder_wallet_id = await client.register_wallet({
             "name": "TheOrgBook_Holder_Wallet",
             "seed": wallet_seed,
