@@ -213,6 +213,41 @@
                     }
                   },
                   {
+                    "name": "POSTGRESQL_WALLET_HOST",
+                    "value": "${POSTGRESQL_WALLET_HOST}"
+                  },
+                  {
+                    "name": "POSTGRESQL_WALLET_PORT",
+                    "value": "${POSTGRESQL_WALLET_PORT}"
+                  },
+                  {
+                    "name": "POSTGRESQL_WALLET_USER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${POSTGRESQL_WALLET_HOST}",
+                        "key": "database-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "POSTGRESQL_WALLET_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${POSTGRESQL_WALLET_HOST}",
+                        "key": "database-password"
+                      }
+                    }
+                  },
+                  {
+                    "name": "POSTGRESQL_WALLET_ADMIN_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${POSTGRESQL_WALLET_HOST}",
+                        "key": "admin-password"
+                      }
+                    }
+                  },
+                  {
                     "name": "APP_CONFIG",
                     "value": "${APP_CONFIG}"
                   },
@@ -347,6 +382,20 @@
       "required": true,
       "description": "Name of the deployed database (see environment variables in deployed database).",
       "value": "TheOrgBook_Database"
+    },
+    {
+      "name": "POSTGRESQL_WALLET_HOST",
+      "displayName": "PostgreSql Wallet Hostname",
+      "required": true,
+      "description": "Hostname of the deployed database hosting the wallet.",
+      "value": "wallet-db"
+    },
+    {
+      "name": "POSTGRESQL_WALLET_PORT",
+      "displayName": "PostgreSql Wallet Port",
+      "required": true,
+      "description": "The port number of the deployed database hosting the wallet.",
+      "value": "5432"
     },
     {
       "name": "APP_CONFIG",
