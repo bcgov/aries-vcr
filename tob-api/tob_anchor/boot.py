@@ -122,6 +122,7 @@ async def register_services():
     wallet_type = os.environ.get('WALLET_TYPE')
     if not wallet_type:
         wallet_type = 'sqlite'
+    wallet_type = wallet_type.lower()
 
     # postgresql wallet-db configuration
     wallet_host = os.environ.get('POSTGRESQL_WALLET_HOST')
