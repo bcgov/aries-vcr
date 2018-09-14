@@ -50,6 +50,15 @@ usage () {
     rebuildSearchIndex
       - Rebuild the search index for a given environment.
 
+    deleteWallets
+      - Delete the local wallets from one or more pods.
+        For example;
+          $0 -e dev deleteWallets django
+
+    recycle
+      - Recycle one or more pods.
+        For example;
+          $0 -e dev recycle django
 
 EOF
 exit 1
@@ -223,7 +232,7 @@ case "${_cmd}" in
     dbPodName=${2:-postgresql}
     resetDatabase "${apiPodName}" "${dbPodName}"
     ;;
-  deletedatabase)    
+  deletedatabase)
     # Allow all of the other parameters to be overridden ...
     apiPodName=${1:-django}
     dbPodName=${2:-postgresql}
@@ -245,6 +254,13 @@ case "${_cmd}" in
     ;;
   registerdids)
     registerDids $(getDidNames)
+    ;;
+  deletewallets)
+    deleteWallets ${@}
+    recyclePods ${@}
+    ;;
+  recycle)
+    recyclePods ${@}
     ;;
   *)
     echoWarning "Unrecognized command; ${_cmd}"
