@@ -213,6 +213,10 @@
                     }
                   },
                   {
+                    "name": "WALLET_TYPE",
+                    "value": "${WALLET_TYPE}"
+                  },
+                  {
                     "name": "POSTGRESQL_WALLET_HOST",
                     "value": "${POSTGRESQL_WALLET_HOST}"
                   },
@@ -482,7 +486,7 @@
     {
       "name": "INDY_WALLET_TYPE",
       "displayName": "Indy Wallet Type",
-      "description": "The wallet type to use; remote (enterprise) or virtual (local), defaults to virtual.",
+      "description": "DEPRICATED - The wallet type to use; remote (enterprise) or virtual (local), defaults to virtual.",
       "required": true,
       "value": "virtual"
     },
