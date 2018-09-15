@@ -70,7 +70,7 @@
                         ],
                         "containers": [
                             {
-                                "name": "postgresql",
+                                "name": "${NAME}",
                                 "image": " ",
                                 "ports": [
                                     {
@@ -112,7 +112,12 @@
                                     }
                                 ],
                                 "resources": {
+                                    "requests": {
+                                        "cpu": "${CPU_REQUEST}",
+                                        "memory": "${MEMORY_REQUEST}"
+                                    },
                                     "limits": {
+                                        "cpu": "${CPU_LIMIT}",
                                         "memory": "${MEMORY_LIMIT}"
                                     }
                                 },
@@ -237,7 +242,7 @@
         {
             "name": "NAME",
             "displayName": "Name",
-            "description": "The name assigned to all of the OpenShift resources associated to the PostgreSQL instance.",
+            "description": "The name assigned to all of the OpenShift resources associated to the server instance.",
             "required": true,
             "value": "postgresql"
         },
@@ -316,9 +321,30 @@
             "value": "gluster-file-db"
         },
         {
+            "name": "CPU_REQUEST",
+            "displayName": "Resources CPU Request",
+            "description": "The resources CPU request (in cores) for this build.",
+            "required": true,
+            "value": "100m"
+        },
+        {
+            "name": "CPU_LIMIT",
+            "displayName": "Resources CPU Limit",
+            "description": "The resources CPU limit (in cores) for this build.",
+            "required": true,
+            "value": "250m"
+        },
+        {
+            "name": "MEMORY_REQUEST",
+            "displayName": "Resources Memory Request",
+            "description": "The resources Memory request (in Mi, Gi, etc) for this build.",
+            "required": true,
+            "value": "100Mi"
+        },
+        {
             "name": "MEMORY_LIMIT",
-            "displayName": "Memory Limit",
-            "description": "Maximum amount of memory the container can use.",
+            "displayName": "Resources Memory Limit",
+            "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
             "required": true,
             "value": "512Mi"
         }

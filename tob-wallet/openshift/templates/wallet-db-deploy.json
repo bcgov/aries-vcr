@@ -70,7 +70,7 @@
                         ],
                         "containers": [
                             {
-                                "name": "postgresql",
+                                "name": "${NAME}",
                                 "image": " ",
                                 "ports": [
                                     {
@@ -242,7 +242,7 @@
         {
             "name": "NAME",
             "displayName": "Name",
-            "description": "The name assigned to all of the OpenShift resources associated to the PostgreSQL instance.",
+            "description": "The name assigned to all of the OpenShift resources associated to the server instance.",
             "required": true,
             "value": "wallet-db"
         },
