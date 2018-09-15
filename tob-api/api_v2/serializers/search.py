@@ -241,7 +241,8 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     class Meta(CredentialSerializer.Meta):
         fields = (
             "id", "create_timestamp", "update_timestamp",
-            "credential_type", "effective_date", "names",
+            "credential_type", "effective_date",
+            "addresses", "categories", "names",
             "revoked", "topic",
         )
         search_fields = ("name", "location", "revoked")

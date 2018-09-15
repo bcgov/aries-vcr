@@ -19,17 +19,22 @@ class CredentialIndex(indexes.SearchIndex, indexes.Indexable):
 
     name = indexes.MultiValueField()
     location = indexes.MultiValueField()
+    category = indexes.MultiValueField()
     topic_id = indexes.IntegerField(model_attr="topic_id")
     topic_type = indexes.CharField(faceted=True, model_attr="topic__type")
     source_id = indexes.CharField(model_attr="topic__source_id")
     revoked = indexes.BooleanField(model_attr="revoked")
     effective_date = indexes.DateTimeField(faceted=True, model_attr="effective_date")
     credential_type_id = indexes.IntegerField(faceted=True, model_attr="credential_type_id")
-    issuer_id = indexes.IntegerField(faceted=True, model_attr="credential_type__issuer_id")
+    issuer_id = indexes.IntegerField(model_attr="credential_type__issuer_id")
 
     @staticmethod
     def prepare_name(obj):
         return [name.text for name in obj.names.all()]
+
+    @staticmethod
+    def prepare_category(obj):
+        return ["{}::{}".format(cat.type, cat.value) for cat in obj.categories.all()]
 
     @staticmethod
     def prepare_location(obj):
@@ -52,17 +57,24 @@ class CredentialIndex(indexes.SearchIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         prefetch = (
-            "names",
             "addresses",
+            "categories",
+            "names",
+        )
+        select = (
+          "credential_type",
+          "topic",
         )
         queryset = super(CredentialIndex, self).index_queryset(using)\
             .prefetch_related(*prefetch)\
-            .select_related("topic")\
-            .select_related("credential_type")
+            .select_related(*select)
         return queryset
 
     def read_queryset(self, using=None):
+        select = (
+            "credential_type__issuer",
+            "credential_type__schema",
+        )
         queryset = self.index_queryset(using) \
-            .select_related("credential_type__issuer") \
-            .select_related("credential_type__schema")
+            .select_related(*select)
         return queryset
