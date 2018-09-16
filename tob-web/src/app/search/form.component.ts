@@ -1,11 +1,10 @@
 import { Component, AfterViewInit, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchInputComponent } from './input.component';
-import { SearchResults, SearchInfo } from './results.model';
-import { Subscription } from 'rxjs/Subscription';
+import { GeneralDataService } from '../general-data.service';
+import { Fetch, Model } from '../data-types';
 import { CredListComponent } from '../cred/list.component';
-import { CredentialResult } from '../data-types';
-import { CredSearchClient } from './cred-search.client';
+import { SearchInputComponent } from './input.component';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-search',
@@ -18,45 +17,51 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('credList') _nameList: CredListComponent;
   protected _curQuery: string;
   protected _filterType: string;
-  protected _results: SearchResults<CredentialResult>;
+  protected _loader = new Fetch.ModelListLoader(Model.CredentialSearchResult);
   protected _searching = false;
-  protected _searchSub: Subscription;
+  protected _querySub: Subscription;
   protected _typeSub: Subscription;
-  public inited = true;
+  protected _pageNum: number;
 
   constructor(
-    private _searchClient: CredSearchClient,
+    private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
     private _router: Router,
   ) {}
 
   ngOnInit() {
-    this._searchClient.init();
-    this._searchSub = this._searchClient.subscribe(this._receiveStatus.bind(this));
+    this._loader.stream.subscribe(result => {
+      this._searching = result.loading;
+    });
     this._typeSub = this._route.params.subscribe(params => {
       this.filterType = params['filterType'];
     });
   }
 
   ngAfterViewInit() {
-    this._route.queryParams.subscribe(params => {
-      this._searchInput.value = params['query'];
-      this._curQuery = this._searchInput.value;
-      if(! this._curQuery.length) {
-        this._searchInput.focus();
+    this._querySub = this._route.queryParams.subscribe(params => {
+      if(this._searchInput) {
+        this._searchInput.value = params['query'];
+        this._curQuery = this._searchInput.value;
+        if(! this._curQuery.length)
+          this._searchInput.focus();
       }
       setTimeout(this.updateQuery.bind(this), 50);
     });
   }
 
   ngOnDestroy() {
-    this._searchSub.unsubscribe();
+    this._querySub.unsubscribe();
     this._typeSub.unsubscribe();
+    this._loader.complete();
   }
 
+  get inited(): boolean {
+    return true;
+  }
 
   get error(): string {
-    return this._searchClient && this._searchClient.error;
+    return this._loader.result && this._loader.result.error;
   }
 
   get filterType(): string {
@@ -69,25 +74,20 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateQuery();
   }
 
-  get creds(): CredentialResult[] {
-    return this._results && this._results.rows;
+  get results(): Fetch.ListResult<Model.CredentialSearchResult> {
+    return this._loader.result;
   }
 
-  get results(): SearchResults<CredentialResult> {
-    return this._results;
+  get creds(): Model.CredentialSearchResult[] {
+    return this.results.data || [];
   }
 
-  get resultInfo(): SearchInfo {
-    return this._results && this._results.info;
+  get resultInfo(): Fetch.Pagination {
+    return this.results.pagination;
   }
 
   get searching(): boolean {
     return this._searching;
-  }
-
-  protected _receiveStatus(loading: boolean) {
-    this._results = this._searchClient.results;
-    this._searching = loading;
   }
 
   /*setFilterType(filter: string) {
@@ -95,31 +95,33 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }*/
 
   public handleNav(nav: string) {
-    this._searchClient.clearSearch();
     if (nav === 'previous') {
-      this._searchClient.previousPage();
+      this._pageNum --;
     } else if (nav == 'next') {
-      this._searchClient.nextPage();
+      this._pageNum ++;
     } else {
       console.warn(`Invalid nav '${nav}' received`);
-      this._searchClient.clearSearch();
     }
-    this._searchClient.performSearch();
+    this._performSearch();
   }
 
   public updateQuery() {
     if(! this._searchInput) return;
-    this._searchClient.pageNum = 1;
+    this._pageNum = 1;
     let value = this._searchInput.value;
     if(this._curQuery !== value) {
       this._router.navigate([], { relativeTo: this._route, queryParams: {query: value }, queryParamsHandling: 'merge' });
       return;
     }
+    this._performSearch();
+  }
+
+  _performSearch() {
+    let value = this._searchInput.value;
     if(value !== null && value.length) {
-      this._searchClient.updateParams({query: value, filter: this.filterType});
-      this._searchClient.performSearch();
+      this._dataService.loadList(this._loader, {query: {page: this._pageNum, name: value}});
     } else {
-      this._searchClient.clearSearch();
+      this._loader.reset();
     }
   }
 

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CredentialResult } from '../data-types';
+import { Model } from '../data-types';
 
 @Component({
   selector: 'cred-list',
@@ -10,7 +10,7 @@ import { CredentialResult } from '../data-types';
 })
 export class CredListComponent {
 
-  @Input() records: CredentialResult[];
+  @Input() records: Model.Credential[];
   @Input() topicId: string;
   protected _format = 'cards';
 

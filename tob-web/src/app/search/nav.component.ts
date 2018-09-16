@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SearchInfo } from './results.model';
+import { Fetch } from '../data-types';
 
 @Component({
   selector: 'search-nav',
@@ -8,7 +8,7 @@ import { SearchInfo } from './results.model';
 })
 export class SearchNavComponent {
 
-  @Input() info : SearchInfo;
+  @Input() info : Fetch.Pagination;
   private _loading: boolean;
   @Output() nav = new EventEmitter<string>();
 

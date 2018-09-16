@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../environments/environment';
+import { Fetch } from './data-types';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -27,7 +28,7 @@ export class GeneralDataService {
     }
   }
 
-  loadJson(url, params?) : Observable<Object> {
+  loadJson(url, params?: HttpParams) : Observable<Object> {
     return this._http.get(url, {params: params})
       .catch(error => {
         console.error("JSON load error", error);
@@ -35,7 +36,7 @@ export class GeneralDataService {
       });
   }
 
-  loadFromApi(path: string, params?) : Observable<Object> {
+  loadFromApi(path: string, params?: HttpParams) : Observable<Object> {
     let url = this.getRequestUrl(path);
     if(url) {
       return this.loadJson(url, params);
@@ -83,14 +84,57 @@ export class GeneralDataService {
     return this.recordCounts[type] || 0;
   }
 
-  autocomplete(term) : Observable<Object> {
+  autocomplete (term) : Observable<Object> {
     if(term === '' || typeof(term) !== 'string') {
       return Observable.of([]);
     }
-    console.log(term);
     let params = new HttpParams().set('q', term);
     return this.loadFromApi('search/autocomplete', params)
       .map(response => response["result"]);
+  }
+
+  makeHttpParams(query?: { [key: string ]: string } | HttpParams) {
+    let httpParams: HttpParams;
+    if(query instanceof HttpParams) {
+      httpParams = query;
+    } else {
+      httpParams = new HttpParams();
+      if(query) {
+        for(let k in query) {
+          httpParams = httpParams.set(k, query[k]);
+        }
+      }
+    }
+    return httpParams;
+  }
+
+  fixRecordId (id: number | string) {
+    if(typeof id === 'number')
+      id = ''+id;
+    return id;
+  }
+
+  loadRecord <T>(fetch: Fetch.DataLoader<T>, id: string | number, params?: { [key: string ]: any }) {
+    if(! params) params = {};
+    let path = params.path || fetch.request.getRecordPath(
+      this.fixRecordId(id), this.fixRecordId(params.childId), params.extPath);
+    return this.loadData(fetch, path, params);
+  }
+
+  loadList <T>(fetch: Fetch.ListLoader<T>, params?: { [key: string ]: any }) {
+    if(! params) params = {};
+    let path = params.path || fetch.request.getListPath(params.parentId, params.extPath);
+    return this.loadData(fetch, path, params);
+  }
+
+  loadData <T, R extends Fetch.BaseResult<T>>(fetch: Fetch.BaseLoader<T,R>, path: string, params?: { [key: string ]: any }) {
+    if(! params) params = {};
+    if(! path)
+      fetch.loadError("Undefined resource path");
+    else {
+      let httpParams = this.makeHttpParams(params.query);
+      fetch.loadFrom(this.loadFromApi(path, httpParams));
+    }
   }
 
   deleteRecord (mod: string, id: string) {
@@ -106,12 +150,6 @@ export class GeneralDataService {
         console.log('delete result', data);
         resolve(data);
       });
-    });
-  }
-
-  verifyCred (credId: string) {
-    return new Promise((resolve, reject) => {
-      return resolve(this.loadFromApi(`credential/${credId}/verify`).toPromise());
     });
   }
 

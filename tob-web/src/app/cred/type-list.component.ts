@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CredentialTypeResult } from '../data-types';
+import { Model } from '../data-types';
 
 @Component({
   selector: 'cred-type-list',
@@ -10,6 +10,6 @@ import { CredentialTypeResult } from '../data-types';
 })
 export class CredTypeListComponent {
 
-  @Input() records: CredentialTypeResult[];
+  @Input() records: Model.CredentialType[];
 
 }

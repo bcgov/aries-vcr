@@ -76,9 +76,9 @@
 
     </div>
 
-    <related-topics [topicId]="id" defaultFormat="compact" *ngIf="loaded" [related-from]="true" [title]="'topic.related-to' | translate"></related-topics>
+    <related-topics [records]="topic.related_from" [topicId]="id" defaultFormat="compact" *ngIf="loaded" [related-from]="true" [title]="'topic.related-to' | translate"></related-topics>
 
-    <related-topics [topicId]="id" defaultFormat="cards" *ngIf="loaded" [title]="'name.doing-business-as' | translate"></related-topics>
+    <related-topics [records]="topic.related_to" [topicId]="id" defaultFormat="cards" *ngIf="loaded" [title]="'name.doing-business-as' | translate"></related-topics>
 
     <div class="row creds-outer" *ngIf="loaded">
       <div class="col-sm-12">

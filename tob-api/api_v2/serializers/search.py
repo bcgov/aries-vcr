@@ -245,7 +245,12 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "addresses", "categories", "names",
             "revoked", "topic",
         )
-        search_fields = ("name", "location", "revoked")
+        search_fields = (
+            "name", "location", "category",
+            "effective_date", "revoked",
+            "topic_id", "topic_type", "topic_source_id",
+            "credential_type_id", "issuer_id",
+        )
 
 
 class CredentialFacetSerializer(HaystackFacetSerializer):

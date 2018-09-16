@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CredentialResult, IssuerResult, NameResult, TopicResult, CategoryResult, AddressResult, ContactResult, PersonResult } from '../data-types';
+import { Model } from '../data-types';
 
 @Component({
   selector: 'name-panel',
@@ -10,34 +10,34 @@ import { CredentialResult, IssuerResult, NameResult, TopicResult, CategoryResult
 })
 export class NamePanelComponent {
 
-  @Input() record: TopicResult;
+  @Input() record: Model.Topic;
   @Input() link: boolean = false;
 
   // get cred(): CredentialResult {
   //   return this.record ? this.record.credential : null;
   // }
 
-  get people(): PersonResult[] {
+  get people(): Model.Person[] {
     return this.record && this.record.people && this.record.people.length ? this.record.people : [];
   }
 
-  get contacts(): ContactResult[] {
+  get contacts(): Model.Contact[] {
     return this.record && this.record.contacts && this.record.contacts.length ? this.record.contacts : [];
   }
 
-  get addresses(): AddressResult[] {
+  get addresses(): Model.Address[] {
     return this.record && this.record.addresses && this.record.addresses.length ? this.record.addresses : [];
   }
 
-  get name(): NameResult {
+  get name(): Model.Name {
     return this.record && this.record.names && this.record.names.length ? this.record.names[0] : null;
   }
 
-  get categories(): CategoryResult[] {
+  get categories(): Model.Category[] {
     return this.record && this.record.categories && this.record.categories.length ? this.record.categories : [];
   }
 
-  get issuer(): IssuerResult {
+  get issuer(): Model.Issuer {
     return this.name ? this.name.issuer : null;
   }
 

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TopicResult } from '../data-types';
+import { Model } from '../data-types';
 
 @Component({
   selector: 'topic-list',
@@ -10,7 +10,7 @@ import { TopicResult } from '../data-types';
 })
 export class TopicListComponent {
 
-  @Input() public records: TopicResult[];
+  @Input() public records: Model.Topic[];
   protected _format = 'rows';
 
   @Input() set format(fmt: string) {

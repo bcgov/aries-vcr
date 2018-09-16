@@ -1,9 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TopicResult } from '../data-types';
-import { TopicRelatedClient } from '../search/topic-related.client';
-import { TopicRelatedFromClient } from '../search/topic-related-from.client';
-import { SearchResults } from '../search/results.model';
+import { GeneralDataService } from '../general-data.service';
+import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -15,23 +13,31 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
   protected _defaultFormat = 'cards';
   @Input() title: string;
   @Input('related-from') relatedFrom: boolean;
+  @Input('records') inputRecords: Model.Topic[];
   loaded: boolean;
   loading: boolean;
   filterActive: string = 'true';
 
-  private _results: SearchResults<TopicResult>;
-  private _resultError: any;
-  private _resultLoading: boolean;
-  private _resultSub: Subscription;
-  private _topicClient;
+  private _loader: Fetch.ModelListLoader<Model.Topic>;
 
   constructor(
+    private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _topicToClient: TopicRelatedClient,
-    private _topicFromClient: TopicRelatedFromClient) { }
+  ) {}
 
   ngOnInit() {
+    this._loader = new Fetch.ModelListLoader(
+      this.relatedFrom ? Model.TopicRelatedFrom : Model.TopicRelatedTo);
+    this._loader.stream.subscribe(result => {
+      this.loading = result.loading;
+      this.loaded = result.loaded;
+    });
+    this.load();
+  }
+
+  ngOnDestroy() {
+    this._loader.complete();
   }
 
   @Input() set defaultFormat(fmt: string) {
@@ -53,42 +59,23 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
 
   @Input() set topicId(newId: number) {
     this._topicId = newId;
-    this.performSearch();
+    this.load();
   }
 
-  get topics(): TopicResult[] {
-    return this._results && this._results.rows;
+  load() {
+    if(this._loader && this._topicId && ! this.inputRecords)
+      this._dataService.loadList(this._loader, {parentId: this._topicId});
+  }
+
+  get topics(): Model.Topic[] {
+    return this.inputRecords || this._loader.result.data;
   }
 
   get error(): string {
-    if(this._resultError && ! this.notFound) {
-      return this._resultError.display;
-    }
+    return this._loader.result.formatError();
   }
 
   get notFound(): boolean {
-    return (this._resultError && this._resultError.obj.status === 404);
-  }
-
-  performSearch() {
-    if(! this._topicClient) {
-      this._topicClient = this.relatedFrom ? this._topicFromClient : this._topicToClient;
-      this._resultSub = this._topicClient.subscribe(this._receiveTopics.bind(this));
-    }
-    if(this._topicId) {
-      this._topicClient.getRelatedById(this._topicId);
-    }
-  }
-
-  protected _receiveTopics(loading: boolean) {
-    this._results = this._topicClient.results;
-    this._resultError = this._topicClient.error;
-    this._resultLoading = loading;
-    this.loaded = !! this._results;
-    this.loading = false;
-  }
-
-  ngOnDestroy() {
-    this._resultSub.unsubscribe();
+    return this._loader.result.notFound;
   }
 }

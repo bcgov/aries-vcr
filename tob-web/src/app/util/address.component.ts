@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AddressResult } from '../data-types';
+import { Model } from '../data-types';
 
 @Component({
   selector: 'address-view',
@@ -8,7 +8,7 @@ import { AddressResult } from '../data-types';
 })
 export class AddressComponent {
 
-  @Input() record: AddressResult;
+  @Input() record: Model.Address;
 
   get formatted(): string {
     let addr = this.record;

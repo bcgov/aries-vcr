@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { GeneralDataService } from 'app/general-data.service';
 import { ActivatedRoute } from '@angular/router';
-import { CredentialResult, IssuerResult, NameResult, PersonResult, ContactResult, CategoryResult, AddressResult, TopicResult } from '../data-types';
-import { CredentialClient } from '../search/cred.client';
-import { SearchResult } from '../search/results.model';
+import { GeneralDataService } from 'app/general-data.service';
+import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -16,71 +14,87 @@ import { Subscription } from 'rxjs/Subscription';
 export class CredFormComponent implements OnInit, OnDestroy {
   id: number;
   loaded: boolean;
-  // record: CredentialResult;
   error: string;
   verifyStatus: string;
-  verifyResult: any;
   verifying: boolean = false;
 
-  private _cred: SearchResult<CredentialResult>;
-
+  private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
+  private _verify = new Fetch.JsonLoader();
   private _idSub: Subscription;
-  private _credSub: Subscription;
 
   constructor(
     private _dataService: GeneralDataService,
-    private _route: ActivatedRoute,
-    private _credClient: CredentialClient) { }
+    private _route: ActivatedRoute) { }
 
   ngOnInit() {
+    this._loader.stream.subscribe(result => {
+      this.loaded = result.loaded;
+    });
+    this._verify.stream.subscribe(result => {
+      this.verifying = result.loading;
+      if(result.error)
+        this.verifyStatus = 'error';
+      else if(result.loaded)
+        this.verifyStatus = result.data.success ? 'success' : 'failure';
+      else
+        this.verifyStatus = null;
+    });
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['credId'];
-
-      this._credSub = this._credClient.subscribe(this._receiveCred.bind(this))
-      this._credClient.getRelatedById(this.id);
+      this._dataService.loadRecord(this._loader, this.id);
     });
   }
 
   ngOnDestroy() {
     this._idSub.unsubscribe();
-    this._credSub.unsubscribe();
+    this._loader.complete();
   }
 
-  get record(): CredentialResult {
-    return this._cred && this._cred.data;
+  get result(): Fetch.BaseResult<Model.CredentialFormatted> {
+    return this._loader.result;
   }
 
-  get people(): PersonResult[] {
+  get record(): Model.CredentialFormatted {
+    return this.result.data;
+  }
+
+  get people(): Model.Person[] {
     return this.record && this.record.people && this.record.people.length ? this.record.people : [];
   }
 
-  get contacts(): ContactResult[] {
+  get contacts(): Model.Contact[] {
     return this.record && this.record.contacts && this.record.contacts.length ? this.record.contacts : [];
   }
 
-  get addresses(): AddressResult[] {
+  get addresses(): Model.Address[] {
     return this.record && this.record.addresses && this.record.addresses.length ? this.record.addresses : [];
   }
 
-  get categories(): CategoryResult[] {
+  get categories(): Model.Category[] {
     return this.record && this.record.categories && this.record.categories.length ? this.record.categories : [];
   }
 
-  get names(): NameResult[] {
+  get names(): Model.Name[] {
     return this.record && this.record.names && this.record.names.length ? this.record.names : [];
   }
 
-  get issuer(): IssuerResult {
+  get issuer(): Model.Issuer {
     return this.record && this.record.issuer ? this.record.issuer : null;
   }
 
-  get topic(): TopicResult {
+  get topic(): Model.Topic {
     return this.record && this.record.topic;
   }
 
-  protected _receiveCred(loading: boolean) {
-    this._cred = this._credClient.result;
-    if (this._cred) this.loaded = true;
+  get verifyResult(): object {
+    let result = this._verify.result;
+    let ret = null;
+    if(result.error) {
+      ret = result.formatError();
+    } else {
+      ret = JSON.stringify(result.data, null, 2);
+    }
+    return ret;
   }
 
   showVerify() {
@@ -103,20 +117,6 @@ export class CredFormComponent implements OnInit, OnDestroy {
   }
 
   verifyCred(evt) {
-    this.verifying = true;
-    this._dataService.verifyCred(''+this.id).then((data : any) => {
-      this.verifyStatus = data.success ? 'success' : 'failure';
-      this.verifyResult = JSON.stringify(data, null, 2);
-      this.verifying = false;
-    }, (err) => {
-      this.verifyStatus = 'error';
-      if(err._body) {
-        let body = JSON.parse(err._body);
-        if(body && body.detail)
-          err = body.detail;
-      }
-      this.verifyResult = err;
-      this.verifying = false;
-    });
+    this._dataService.loadData(this._verify, `credential/${this.id}/verify`);
   }
 }
