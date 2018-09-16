@@ -125,7 +125,7 @@ async def register_services():
     wallet_type = wallet_type.lower()
 
     LOGGER.info("Registering holder service")
-    client = indy_client()    
+    client = indy_client()
     if wallet_type == 'postgres':
         LOGGER.info("Using Postgres storage ...")
 
@@ -180,7 +180,7 @@ async def register_services():
         "seed": "tob-verifier-wallet-000000000001",
     })
     LOGGER.debug("Indy verifier wallet id: %s", verifier_wallet_id)
-    
+
     verifier_id = await client.register_verifier(verifier_wallet_id, {
         "id": indy_verifier_id(),
         "name": "TheOrgBook Verifier",

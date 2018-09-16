@@ -490,9 +490,14 @@ async def verify_credential(request):
     LOGGER.warn(">>> Verify credential")
     perf = _time_start("verify_credential")
     credential_id = request.match_info.get("id")
+    headers = {'Access-Control-Allow-Origin': '*'}
 
     if not credential_id:
-        return web.json_response({"success": False, "result": "Credential ID not provided"}, status=400)
+        return web.json_response(
+            {"success": False, "result": "Credential ID not provided"},
+            status=400,
+            headers=headers,
+        )
 
     def fetch_cred(credential_id):
         try:
@@ -506,18 +511,29 @@ async def verify_credential(request):
     credential = await run_django(fetch_cred, credential_id)
     if not credential:
         LOGGER.warn("Credential not found: %s", credential_id)
-        return web.json_response({"success": False, "result": "Credential not found"}, status=404)
+        return web.json_response(
+            {"success": False, "result": "Credential not found"},
+            status=404,
+            headers=headers,
+        )
 
     proof_request = ProofRequest(name="the-org-book", version="1.0.0")
     proof_request.build_from_credential(credential)
 
     proof_manager = ProofManager(proof_request.dict, {credential.wallet_id})
-    proof = await proof_manager.construct_proof_async()
+    try:
+        proof = await proof_manager.construct_proof_async()
+        verified = await indy_client().verify_proof(
+                indy_verifier_id(),
+                VonxProofRequest(proof_request.dict),
+                VonxConstructedProof(proof))
+    except IndyError as e:
+        LOGGER.exception("Credential verification error:")
+        return web.json_response(
+            {"success": False, "result": "Credential verification error: {}".format(str(e))},
+            headers=headers,
+        )
 
-    verified = await indy_client().verify_proof(
-            indy_verifier_id(),
-            VonxProofRequest(proof_request.dict),
-            VonxConstructedProof(proof))
     verified = verified.verified == "true"
     LOGGER.warn("<<< Verify credential: %s", _time_end(perf))
 
@@ -529,7 +545,8 @@ async def verify_credential(request):
                 "proof": proof,
                 "proof_request": proof_request.dict,
             },
-        }
+        },
+        headers=headers,
     )
 
 
