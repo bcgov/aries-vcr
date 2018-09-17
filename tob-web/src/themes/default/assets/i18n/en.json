@@ -52,12 +52,12 @@
   "general": {
     "display-list": "List",
     "display-cards": "Cards",
-    "other-error": "An unknown error occurred.",
     "hide-filters": "Hide Filters",
     "none": "None",
     "map-link": "Show on map",
     "next-link": "Next",
     "not-found": "This record could not be located.",
+    "other-error": "An unknown error occurred.",
     "period-current": "Current",
     "period-historical": "Historical",
     "prev-link": "Previous",
@@ -67,8 +67,8 @@
   "home": {
     "breadcrumb": "Home",
     "title": "Welcome to British Columbia's Verifiable Organizations",
-    "title-orgs": "organizations",
-    "title-certs": "permits and licences"
+    "title-certs": "verifiable credentials held",
+    "title-orgs": "legal entities"
   },
   "issuer": {
     "breadcrumb": "Issuer Service",
