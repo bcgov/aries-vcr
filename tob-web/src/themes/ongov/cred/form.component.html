@@ -73,8 +73,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row form-group" *ngIf="record.haveAddresses">
+              
+                    <div class="row form-group"  *ngIf="record.addresses.length > 0">
                         <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
                         <div class="form-field">
                             <span *ngIf="record.effective_date"></span>
