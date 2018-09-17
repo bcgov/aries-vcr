@@ -169,7 +169,7 @@ export namespace Model {
     static extPath = 'verify';
 
     get status(): string {
-      return this.success ? 'cred.success' : 'cred.not-verified';
+      return this.success ? 'cred.verified' : 'cred.not-verified';
     }
     get text(): string {
       if(typeof this.result === 'string')
