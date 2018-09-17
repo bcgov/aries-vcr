@@ -17,11 +17,9 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   _filterActive: boolean = true;
   showFilters: boolean = false;
 
-  private _focus = new Fetch.ModelLoader(Model.TopicFormatted);
+  private _loader = new Fetch.ModelLoader(Model.TopicFormatted);
 
   private _creds = new Fetch.ModelListLoader(Model.CredentialSearchResult);
-  private _credsLoading: boolean;
-  private _credsLoaded: boolean;
 
   private _idSub: Subscription;
 
@@ -31,64 +29,42 @@ export class TopicFormComponent implements OnInit, OnDestroy {
     private _router: Router) { }
 
   ngOnInit() {
-    this._focus.stream.subscribe(result => {
-      this.loaded = result.loaded;
-      this.loading = result.loading;
-      if(this.loaded) {
-        this._fetchCreds();
-      }
-    });
-    this._creds.stream.subscribe(result => {
-      this._credsLoaded = result.loaded;
-      this._credsLoading = result.loading;
+    this._loader.ready.subscribe(result => {
+      this._fetchCreds();
     });
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['topicId'];
-      this._dataService.loadRecord(this._focus, this.id);
+      this._dataService.loadRecord(this._loader, this.id);
     });
   }
 
   ngOnDestroy() {
     this._idSub.unsubscribe();
-    this._focus.complete();
+    this._loader.complete();
     this._creds.complete();
   }
 
   get title(): string {
-    let names = this.names;
+    let names = this.topic.names;
     if(names && names.length) {
       return names[0].text;
     }
+  }
+
+  get topic(): Model.TopicFormatted {
+    return this._loader.result.data;
   }
 
   get names(): Model.Name[] {
     return this.loaded && this.topic.names;
   }
 
-  get result(): Fetch.BaseResult<Model.TopicFormatted> {
-    return this._focus.result;
+  get result$() {
+    return this._loader.stream;
   }
 
-  get topic(): Model.TopicFormatted {
-    return this.result.data;
-  }
-
-  get error(): string {
-    if(this.result.error && ! this.result.notFound) {
-      return this.result.error.display;
-    }
-  }
-
-  get notFound(): boolean {
-    return this.result.notFound;
-  }
-
-  get creds(): Model.CredentialSearchResult[] {
-    return this._creds.result.data;
-  }
-
-  get credsLoading() {
-    return this._credsLoading;
+  get creds$() {
+    return this._creds.stream;
   }
 
   get filterActive(): string {

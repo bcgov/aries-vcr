@@ -5,6 +5,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from 'localize-router';
 import { AddressComponent } from './address.component';
 import { DateFormatPipe } from './date-format.pipe';
+import { ErrorMessageComponent } from './error-message.component';
+import { LoadingIndicatorComponent } from './loading-indicator.component';
 import { NotFoundComponent } from './not-found.component';
 
 const ROUTES = [];
@@ -13,6 +15,8 @@ const ROUTES = [];
   declarations: [
     AddressComponent,
     DateFormatPipe,
+    ErrorMessageComponent,
+    LoadingIndicatorComponent,
     NotFoundComponent,
   ],
   providers: [
@@ -26,6 +30,8 @@ const ROUTES = [];
   exports: [
     AddressComponent,
     DateFormatPipe,
+    ErrorMessageComponent,
+    LoadingIndicatorComponent,
     NotFoundComponent,
   ]
 })

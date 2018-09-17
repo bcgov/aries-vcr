@@ -1,20 +1,11 @@
-<section id="issuer">
-  <div class="row" *ngIf="error">
+<section id="issuer" *ngIf="(result$ | async) as result">
+  <loading-indicator [loading]="result.loading"></loading-indicator>
+  <error-message [error]="result.error"></error-message>
+
+  <div class="row" *ngIf="result.data as record">
     <div class="col-sm-12">
-      {{error}}
-    </div>
-  </div>
-
-  <div class="row" *ngIf="!loaded && !error">
-    <div class="col-sm-12 page-load">
-      <div class="loading-indicator"></div>
-    </div>
-  </div>
-
-  <div class="row" *ngIf="loaded">
- 
-    <div class="panel name-panel" >
-        <div class="panel-heading" translate >issuer.breadcrumb</div>
+      <div class="panel name-panel" >
+        <div class="panel-heading" translate>issuer.breadcrumb</div>
         <h3 class="panel-title"> <strong>{{record.name}}</strong></h3>
 
         <div class="panel-body form-body">
@@ -35,7 +26,8 @@
             </div>
         </div>
       </div>
+    </div>
   </div>
-            
-      
+
+
 </section>

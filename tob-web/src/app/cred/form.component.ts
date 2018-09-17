@@ -13,13 +13,9 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class CredFormComponent implements OnInit, OnDestroy {
   id: number;
-  loaded: boolean;
-  error: string;
-  verifyStatus: string;
-  verifying: boolean = false;
 
   private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
-  private _verify = new Fetch.JsonLoader();
+  private _verify = new Fetch.ModelLoader(Model.CredentialVerifyResult);
   private _idSub: Subscription;
 
   constructor(
@@ -27,17 +23,8 @@ export class CredFormComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute) { }
 
   ngOnInit() {
-    this._loader.stream.subscribe(result => {
-      this.loaded = result.loaded;
-    });
-    this._verify.stream.subscribe(result => {
-      this.verifying = result.loading;
-      if(result.error)
-        this.verifyStatus = 'error';
-      else if(result.loaded)
-        this.verifyStatus = result.data.success ? 'success' : 'failure';
-      else
-        this.verifyStatus = null;
+    this._loader.ready.subscribe(result => {
+      this.verifyCred();
     });
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['credId'];
@@ -48,75 +35,22 @@ export class CredFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._idSub.unsubscribe();
     this._loader.complete();
+    this._verify.complete();
   }
 
-  get result(): Fetch.BaseResult<Model.CredentialFormatted> {
-    return this._loader.result;
+  get result() {
+    return this._loader.result.data;
   }
 
-  get record(): Model.CredentialFormatted {
-    return this.result.data;
+  get result$() {
+    return this._loader.stream;
   }
 
-  get people(): Model.Person[] {
-    return this.record && this.record.people && this.record.people.length ? this.record.people : [];
+  get verify$() {
+    return this._verify.stream;
   }
 
-  get contacts(): Model.Contact[] {
-    return this.record && this.record.contacts && this.record.contacts.length ? this.record.contacts : [];
-  }
-
-  get addresses(): Model.Address[] {
-    return this.record && this.record.addresses && this.record.addresses.length ? this.record.addresses : [];
-  }
-
-  get categories(): Model.Category[] {
-    return this.record && this.record.categories && this.record.categories.length ? this.record.categories : [];
-  }
-
-  get names(): Model.Name[] {
-    return this.record && this.record.names && this.record.names.length ? this.record.names : [];
-  }
-
-  get issuer(): Model.Issuer {
-    return this.record && this.record.issuer ? this.record.issuer : null;
-  }
-
-  get topic(): Model.Topic {
-    return this.record && this.record.topic;
-  }
-
-  get verifyResult(): object {
-    let result = this._verify.result;
-    let ret = null;
-    if(result.error) {
-      ret = result.formatError();
-    } else {
-      ret = JSON.stringify(result.data, null, 2);
-    }
-    return ret;
-  }
-
-  showVerify() {
-    let div = document.getElementsByClassName('cred-verify');
-    let time = 0;
-    if(div.length) {
-      let outer = <any>div[0];
-      outer.style.display = 'block';
-      let inner = outer.getElementsByClassName('verify-line');
-      for(let i = 0; i < inner.length; i++) {
-        let line = <any>inner[i];
-        if(line.classList.contains('delay')) time += 500;
-        setTimeout(() => line.classList.add('show'), time);
-      }
-    }
-    let stat = document.getElementById('verify-status');
-    if(stat) {
-      setTimeout(() => (<any>stat).textContent = 'Verified', time);
-    }
-  }
-
-  verifyCred(evt) {
-    this._dataService.loadData(this._verify, `credential/${this.id}/verify`);
+  verifyCred(evt?) {
+    this._dataService.loadRecord(this._verify, this.id);
   }
 }

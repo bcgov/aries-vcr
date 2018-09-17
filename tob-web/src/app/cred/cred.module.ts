@@ -6,6 +6,7 @@ import { LocalizeRouterModule } from 'localize-router';
 import { CredFormComponent } from './form.component';
 import { CredListComponent } from './list.component';
 import { CredTypeListComponent } from './type-list.component';
+import { IssuerFormComponent } from '../issuer/form.component';
 import { NamePanelComponent } from './name-panel.component';
 import { UtilModule } from '../util/util.module';
 
@@ -17,6 +18,7 @@ const ROUTES = [];
     CredFormComponent,
     CredListComponent,
     CredTypeListComponent,
+    IssuerFormComponent,
     NamePanelComponent,
   ],
   providers: [
@@ -32,6 +34,7 @@ const ROUTES = [];
     CredFormComponent,
     CredListComponent,
     CredTypeListComponent,
+    IssuerFormComponent,
     NamePanelComponent,
   ]
 })

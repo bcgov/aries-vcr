@@ -1,14 +1,8 @@
-<section id="search">
+<section id="search" *ngIf="(result$ | async) as result">
 
-  <div class="row mrgn-tp-lg" *ngIf="!inited">
-    <div class="col-sm-12 page-load">
-      <div class="loading-indicator"></div>
-    </div>
-  </div>
+  <h1 class="search-title" translate>search.title</h1>
 
-  <h1 class="search-title" translate *ngIf="inited">search.title</h1>
-
-  <div class="row" *ngIf="inited">
+  <div class="row">
     <div class="col-sm-12">
 
       <div class="search-head">
@@ -17,23 +11,22 @@
         </div>
       </div>
 
-      <div class="alert alert-danger mrgn-tp-lg" *ngIf="error" translate>
-        search.results-error
-      </div>
+      <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
 
-      <div class="row results mrgn-tp-lg" *ngIf="results && !error">
+      <div class="row results mrgn-tp-lg" *ngIf="result.loaded">
 
-        <div class="col-sm-12 rows">
+        <div class="col-sm-12 rows" *ngIf="result.data as creds">
           <label class="control-label" translate>search.results-title</label>
-          <ng-container *ngIf="topics.length">
-            <search-nav (nav)="handleNav($event)" [info]="results && results.info"></search-nav>
+          <ng-container *ngIf="creds.length">
+            <search-nav (nav)="handleNav($event)" [info]="result.pagination"></search-nav>
             <cred-list [records]="creds" format="search"></cred-list>
-            <search-nav (nav)="handleNav($event)" [info]="results && results.info"></search-nav>
+            <search-nav (nav)="handleNav($event)" [info]="result.pagination"></search-nav>
           </ng-container>
           <div class="alert alert-info" *ngIf="!creds.length" translate>
             search.no-results
           </div>
         </div>
+
       </div>
     </div>
   </div>

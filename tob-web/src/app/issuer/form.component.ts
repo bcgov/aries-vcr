@@ -12,9 +12,6 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class IssuerFormComponent implements OnInit, OnDestroy {
   id: number;
-  loaded: boolean;
-  loading: boolean;
-  credentialTypesLoaded: boolean;
 
   private _loader = new Fetch.ModelLoader(Model.Issuer);
   private _credTypes = new Fetch.ModelListLoader(Model.IssuerCredentialType);
@@ -27,15 +24,8 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this._loader.stream.subscribe(result => {
-      this.loaded = result.loaded;
-      this.loading = result.loading;
-      if(this.loaded) {
-        this._dataService.loadList(this._credTypes, {parentId: this.id});
-      }
-    });
-    this._credTypes.stream.subscribe(result => {
-      this.credentialTypesLoaded = result.loaded;
+    this._loader.ready.subscribe(result => {
+      this._dataService.loadList(this._credTypes, {parentId: this.id});
     });
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['issuerId'];
@@ -53,23 +43,17 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
     return this._loader.result;
   }
 
-  get record(): Model.Issuer {
-    return this.result.data;
+  get result$() {
+    return this._loader.stream;
   }
 
-  get error(): string {
-    if(this.result.error && ! this.result.notFound) {
-      return this.result.error.display;
-    }
-  }
-
-  get credentialTypeRecords(): Model.IssuerCredentialType[] {
-    return this._credTypes.result.data;
+  get credTypes$() {
+    return this._credTypes.stream;
   }
 
   get safeImg() {
-    if(this.record.logo_b64) {
-      let src = 'data:image/*;base64,' + this.record.logo_b64;
+    if(this.result.data.logo_b64) {
+      let src = 'data:image/*;base64,' + this.result.data.logo_b64;
       return this._sanitizer.bypassSecurityTrustUrl(src);
     }
   }

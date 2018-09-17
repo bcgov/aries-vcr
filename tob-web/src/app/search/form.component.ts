@@ -18,7 +18,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _curQuery: string;
   protected _filterType: string;
   protected _loader = new Fetch.ModelListLoader(Model.CredentialSearchResult);
-  protected _searching = false;
   protected _querySub: Subscription;
   protected _typeSub: Subscription;
   protected _pageNum: number;
@@ -30,9 +29,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this._loader.stream.subscribe(result => {
-      this._searching = result.loading;
-    });
     this._typeSub = this._route.params.subscribe(params => {
       this.filterType = params['filterType'];
     });
@@ -56,14 +52,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this._loader.complete();
   }
 
-  get inited(): boolean {
-    return true;
-  }
-
-  get error(): string {
-    return this._loader.result && this._loader.result.error;
-  }
-
   get filterType(): string {
     return this._filterType;
   }
@@ -74,20 +62,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateQuery();
   }
 
-  get results(): Fetch.ListResult<Model.CredentialSearchResult> {
-    return this._loader.result;
-  }
-
-  get creds(): Model.CredentialSearchResult[] {
-    return this.results.data || [];
-  }
-
-  get resultInfo(): Fetch.Pagination {
-    return this.results.pagination;
-  }
-
-  get searching(): boolean {
-    return this._searching;
+  get result$() {
+    return this._loader.stream;
   }
 
   /*setFilterType(filter: string) {

@@ -70,12 +70,4 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
   get topics(): Model.Topic[] {
     return this.inputRecords || this._loader.result.data;
   }
-
-  get error(): string {
-    return this._loader.result.formatError();
-  }
-
-  get notFound(): boolean {
-    return this._loader.result.notFound;
-  }
 }

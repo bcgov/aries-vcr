@@ -1,17 +1,8 @@
-<section id="issuer">
-  <div class="row" *ngIf="error">
-    <div class="col-sm-12">
-      {{error}}
-    </div>
-  </div>
+<section id="issuer" *ngIf="(result$ | async) as result">
+  <loading-indicator [loading]="result.loading"></loading-indicator>
+  <error-message [error]="result.error"></error-message>
 
-  <div class="row" *ngIf="!loaded && !error">
-    <div class="col-sm-12 page-load">
-      <div class="loading-indicator"></div>
-    </div>
-  </div>
-
-  <div class="row" *ngIf="loaded">
+  <div class="row" *ngIf="result.data as record">
     <div class="col-md-8 col-sm-7">
       <h1 class="issuer-title">{{record.name}}
         <span *ngIf="record.abbreviation">({{record.abbreviation}})</span></h1>
@@ -52,15 +43,11 @@
     </div>
   </div>
 
-  <div class="row mrgn-tp-md mrgn-bttm-lg issuer-creds" *ngIf="loaded">
-    <div class="col-sm-12">
+  <div class="row mrgn-tp-md mrgn-bttm-lg issuer-creds" *ngIf="result.loaded">
+    <div class="col-sm-12" *ngIf="(credTypes$ | async) as credTypes">
       <label class="control-label"><span class="field-name" translate>issuer.cred-types</span></label>
-      <div class="row loading" *ngIf="!credentialTypesLoaded">
-        <div class="col-sm-12 page-load">
-          <div class="loading-indicator"></div>
-        </div>
-      </div>
-      <cred-type-list [records]="credentialTypeRecords" *ngIf="credentialTypesLoaded"></cred-type-list>
+      <loading-indicator [loading]="credTypes.loading"></loading-indicator>
+      <cred-type-list [records]="credTypes.data" *ngIf="credTypes.loaded"></cred-type-list>
     </div>
   </div>
 </section>

@@ -1,17 +1,8 @@
-<section id="cred-form">
-  <div class="row" *ngIf="error">
-    <div class="col-sm-12">
-      {{error}}
-    </div>
-  </div>
+<section id="cred-form" *ngIf="(result$ | async) as result">
+  <loading-indicator [loading]="result.loading"></loading-indicator>
+  <error-message [error]="result.error"></error-message>
 
-  <div class="row" *ngIf="!loaded && !error">
-    <div class="col-sm-12 page-load">
-      <div class="loading-indicator"></div>
-    </div>
-  </div>
-
-  <div class="row" *ngIf="loaded">
+  <div class="row" *ngIf="result.data as record">
     <div class="col-md-7 col-sm-6">
       <h1 class="cred-title">{{record.credential_type.description}}</h1>
 
@@ -19,12 +10,12 @@
         <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
 
       <div class="cred-info">
-        <div class="row form-group" *ngIf="names.length">
+        <div class="row form-group" *ngIf="record.haveNames">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.names</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let name of names">
+                <li *ngFor="let name of record.names">
                   <label translate>{{name.type}}</label>
                   <span class="claim-info name">{{name.text}}</span>
                 </li>
@@ -32,12 +23,12 @@
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="contacts.length">
+        <div class="row form-group" *ngIf="record.haveContacts">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.contact</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let contact of contacts">
+                <li *ngFor="let contact of record.contacts">
                   <label translate>{{contact.type}}</label>
                   <span class="claim-info {{contact.typeClass}}">{{contact.text}}</span>
                 </li>
@@ -45,12 +36,12 @@
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="people.length">
+        <div class="row form-group" *ngIf="record.havePeople">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.people</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let person of people">
+                <li *ngFor="let person of record.people">
                   <label translate>{{person.type}}</label>
                   <span class="claim-info person">{{person.full_name}}</span>
                 </li>
@@ -58,12 +49,12 @@
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="addresses.length">
+        <div class="row form-group" *ngIf="record.haveAddresses">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.addresses</label>
             <div class="form-field">
               <ul class="claim-list">
-                <li *ngFor="let address of addresses">
+                <li *ngFor="let address of record.addresses">
                   <label translate>{{address.type}}</label>
                   <address-view [record]="address"></address-view>
                 </li>
@@ -79,11 +70,11 @@
       <div class="meta-info well mrgn-tp-lg">
         <h3 class="well-title">Credential Info</h3>
         <div class="meta-body form-body">
-          <div class="row form-group" *ngIf="issuer">
+          <div class="row form-group" *ngIf="record.issuer">
             <div class="col-sm-12">
               <label class="control-label" translate>cred.issuer</label>
               <div class="form-field">
-                <a class="body-link issuer-link" [routerLink]="['/issuer', issuer.id] | localize">{{issuer.name}}</a>
+                <a class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
               </div>
             </div>
           </div>
@@ -107,24 +98,25 @@
               </a>
             </div>
           </div>
-          <div class="row cred-verify" *ngIf="verifyResult || verifying">
-            <div class="col-sm-12" *ngIf="verifying">
+          <div class="row cred-verify" *ngIf="(verify$ | async) as verify">
+            <div class="col-sm-12" *ngIf="verify.loading">
               <section class="alert alert-info">
                 <p translate>cred.requesting-proof</p>
               </section>
             </div>
-            <div class="col-sm-12" *ngIf="! verifying">
-              <div [class]="'verify-result panel panel-' + (verifyStatus == 'success' ? 'success' : 'warning')" *ngIf="verifyStatus && verifyStatus !== 'error'">
+            <error-message [error]="verify.error"></error-message>
+            <div class="col-sm-12" *ngIf="verify.data as verifyData">
+              <div [class]="'verify-result panel panel-' + (verifyData.success ? 'success' : 'warning')">
                 <div class="panel-heading">
-                  {{'cred.verify-status' | translate}} {{verifyStatus}}
+                  {{'cred.verify-status' | translate}} {{verifyData.status | translate}}
                 </div>
-                <div class="panel-body">
-                  <code>{{verifyResult}}</code>
+                <div class="panel-body" *ngIf="verifyData.sucess">
+                  <code>{{verifyData.text}}</code>
+                </div>
+                <div class="panel-body" *ngIf="! verifyData.sucess">
+                  {{verifyData.text}}
                 </div>
               </div>
-              <section class="alert alert-danger" *ngIf="verifyStatus === 'error'">
-                <p>{{verifyResult}}</p>
-              </section>
             </div>
           </div>
         </div>

@@ -43,7 +43,9 @@
     "verify-button-label": "Verify Credential",
     "view-link": "View credential",
     "whats-this-link": "What's this?",
-    "verify-status": "Verification Status:"
+    "verify-status": "Verification Status:",
+    "verified": "Success",
+    "not-verified": "Not verified"
   },
   "general": {
     "display-list": "List",

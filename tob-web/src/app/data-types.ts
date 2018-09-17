@@ -161,6 +161,23 @@ export namespace Model {
     static resourceName = 'search/credential';
   }
 
+  export class CredentialVerifyResult extends BaseModel {
+    success: boolean;
+    result: any;
+
+    static resourceName = 'credential';
+    static extPath = 'verify';
+
+    get status(): string {
+      return this.success ? 'cred.success' : 'cred.not-verified';
+    }
+    get text(): string {
+      if(typeof this.result === 'string')
+        return this.result;
+      return JSON.stringify(this.result.data, null, 2);
+    }
+  }
+
   export class CredentialType extends BaseModel {
     id: number;
     // schema: Schema;
@@ -283,7 +300,7 @@ export namespace Fetch {
         this.input = _input;
     }
 
-    get input() {
+    get input(): any {
       return this._input;
     }
 
@@ -292,38 +309,16 @@ export namespace Fetch {
       this.data = value ? this._ctor(value) : null;
     }
 
-    get empty() {
+    get empty(): boolean {
       return ! this.data;
     }
 
-    get loaded() {
+    get loaded(): boolean {
       return ! this.empty && ! this.loading;
     }
 
-    get notFound() {
+    get notFound(): boolean {
       return this.error && this.error.obj && this.error.obj.status === 404;
-    }
-
-    formatError() {
-      let err = this.error;
-      let ret = null;
-      if(err) {
-        try {
-          let body = JSON.parse(err._body);
-          if(body && body.detail)
-            ret = body.detail;
-        } catch(e) {
-          if(! (e instanceof SyntaxError))
-            console.error(e);
-        }
-        if(! ret) {
-          if(err.statusText)
-            ret = `HTTP Error: ${err.statusText}`;
-          else
-            ret = 'Unknown error';
-        }
-      }
-      return ret;
     }
   }
 
@@ -339,11 +334,11 @@ export namespace Fetch {
     public next: string = null;
     public params: {[key: string]: any};
 
-    get havePrevious() {
+    get havePrevious(): boolean {
       return this.previous != null;
     }
 
-    get haveNext() {
+    get haveNext(): boolean {
       return this.next != null;
     }
 
@@ -505,6 +500,10 @@ export namespace Fetch {
 
     get stream(): Observable<R> {
       return this._result.asObservable();
+    }
+
+    get ready(): Observable<R> {
+      return this.stream.filter(result => result.loaded);
     }
 
     get result(): R {

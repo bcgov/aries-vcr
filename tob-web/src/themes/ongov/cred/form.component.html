@@ -1,41 +1,31 @@
-<section id="cred-form">
+<section id="cred-form" *ngIf="(result$ | async) as result">
+  <loading-indicator [loading]="result.loading"></loading-indicator>
+  <error-message [error]="result.error"></error-message>
 
-  <div class="row" *ngIf="error">
-    <div class="col-sm-12">
-      {{error}}
-    </div>
-  </div>
-
-  <div class="row" *ngIf="!loaded && !error">
-    <div class="col-sm-12 page-load">
-      <div class="loading-indicator"></div>
-    </div>
-  </div>
-
-  <div class="row" *ngIf="loaded">
+  <div class="row" *ngIf="result.data as record">
     <div class="col-md-12">
         <div class="col-sm-12">
             <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
               <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
-            
+
               <div class="panel name-panel">
                   <div class="panel-heading" translate >
                       cred.business_registration
                   </div>
                   <h3 class="panel-title"> <strong>{{record.names[0].text}}</strong></h3>
-              
+
                 <div class="panel-body form-body">
-                    <div class="row form-group">
+                    <div class="row form-group" *ngIf="record.issuer">
                         <label class="col-sm-3 control-label" translate>cred.issuer</label>
                         <div class="form-field">
-                            <a class="body-link issuer-link" [routerLink]="['/issuer', issuer.id] | localize">{{issuer.name}}</a>
+                            <a class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
                         </div>
                         <br/>
                     </div>
 
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.type</label>
-                        <div  *ngFor="let category of categories">
+                        <div  *ngFor="let category of record.categories">
                             <div  *ngIf="category.type === 'topic_type'">
                                 <div *ngIf="category.value" >
                                     {{('business_type.' + category.value) | translate}}
@@ -53,18 +43,18 @@
 
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.start-date</label>
-                        <div  *ngFor="let category of categories">
-                                <div  *ngIf="category.type === 'topic_registration_date'">
-                                    <div *ngIf="category.value" >
-                                        {{category.value}}
-                                    </div>
+                        <div  *ngFor="let category of record.categories">
+                            <div  *ngIf="category.type === 'topic_registration_date'">
+                                <div *ngIf="category.value" >
+                                    {{category.value}}
                                 </div>
                             </div>
+                        </div>
                     </div>
 
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.status</label>
-                        <div  *ngFor="let category of categories">
+                        <div  *ngFor="let category of record.categories">
                             <div  *ngIf="category.type === 'topic_status'">
                                 <div *ngIf="category.value" >
                                     {{('business_status.' + category.value) | translate}}
@@ -75,7 +65,7 @@
 
                     <div class="row form-group">
                         <label class="col-sm-3 control-label" translate>cred.effective-date</label>
-                        <div  *ngFor="let category of categories">
+                        <div  *ngFor="let category of record.categories">
                             <div  *ngIf="category.type === 'topic_status_effective_date'">
                                     <div *ngIf="category.value" >
                                         {{category.value}}
@@ -83,41 +73,40 @@
                             </div>
                         </div>
                     </div>
-                   
-                    <div class="row form-group"  *ngIf="record.addresses.length > 0">
+
+                    <div class="row form-group" *ngIf="record.haveAddresses">
                         <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
                         <div class="form-field">
                             <span *ngIf="record.effective_date"></span>
                         </div>
                     </div>
 
+                  <div class="cred-verify" *ngIf="(verify$ | async) as verify">
                     <div class="row form-group">
-                      <div class="col-sm-6">
-                          <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)">
+                      <div class="col-sm-12">
+                          <button type="button" [class]="'btn btn-primary btn-verify' + (verify.loading ? ' loading' : '')" (click)="verifyCred($event)">
                             <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
                         </div>
-                      </div>  
-
-                      <div class="row cred-verify" *ngIf="verifyResult || verifying">
-                          <div class="col-sm-12" *ngIf="verifying">
-                            <section class="alert alert-info">
-                              <p translate>cred.verifying-record</p>
-                            </section>
+                    </div>
+                    <div class="row form-group">
+                      <div class="col-sm-12" *ngIf="verify.loading">
+                        <section class="alert alert-info">
+                          <p translate>cred.verifying-record</p>
+                        </section>
+                      </div>
+                      <error-message [error]="verify.error"></error-message>
+                      <div class="col-sm-12" *ngIf="verify.data as verifyResult">
+                        <div [class]="'verify-result panel panel-' + (verifyResult.success ? 'success' : 'warning')">
+                          <div class="panel-heading">
+                            {{'cred.verify-status' | translate}}
                           </div>
-                          <div class="col-sm-12" *ngIf="! verifying">
-                            <div [class]="'verify-result panel panel-' + (verifyStatus == 'success' ? 'success' : 'warning')" *ngIf="verifyStatus && verifyStatus !== 'error'">
-                              <div class="panel-heading">
-                                {{'cred.verify-status' | translate}} 
-                              </div>
-                              <div class="panel-body">
-                                {{'cred.success' | translate }} 
-                              </div>
-                            </div>
-                            <section class="alert alert-danger" *ngIf="verifyStatus === 'error'">
-                              <p translate>cred.error</p>
-                            </section>
+                          <div class="panel-body">
+                            {{verifyResult.status | translate }}
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
             </div>
 
