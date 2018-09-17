@@ -14,7 +14,8 @@
       "privacy": "Confidentialité",
       "accessibility": "Accessibilité",
       "copyright": "Imprimeur de la Reine pour l'Ontario, 2015",
-      "contact": "Pour nous joindre"
+      "contact": "Pour nous joindre",
+      "link-title": "Ce lien ouvrira la page dans une nouvelle fenêtre du navigateur"
     }
   },
   "address": {
@@ -31,28 +32,31 @@
     "addresses": "Adresses",
     "breadcrumb": "Dossiers vérifiables",
     "contact": "Coordonnées",
-    "corp-num": "Identifiant unique",
+    "corp-num": "Identifiant unique:",
     "end-date": "Date de fin",
     "history-link": "Voir historique",
-    "issuer": "Délivreur",
+    "issuer": "Délivreur:",
     "last-updated": "Dernière mise à jour",
     "names": "Noms",
     "people": "Personnes",
-    "start-date": "Date d'enregistrement",
+    "start-date": "Date d'enregistrement:",
     "effective-date": "Date d'entrée en vigueur de l'Statut",
     "verify-button-label": "Vérifier le dossier",
     "view-link": "Voir les titres de compétences",
     "whats-this-link": "Qu'est-ce que c'est?",
     "verify-status": "Statut de la vérification:",
-    "status": "Statut",
-    "type": "Type d'entreprise",
+    "status": "Statut:",
+    "type": "Type d'entreprise:",
     "business_registration": "Renseignements fondamentaux sur l'enregistrement de l'entreprise",
     "municipality": "Municipalité",
-    "jurisdiction": "Compétence territoriale",
+    "jurisdiction": "Compétence territoriale:",
     "verifying-record": "Vérification les titres de compétences",
     "verify-info": "Informations vérifiables",
     "error": "La signature numérique associée à cet enregistrement n'a pas pu être vérifiée. Veuillez réessayer plus tard.",
-    "success": "Vérification réussie! La signature numérique associée à cet enregistrement tel que signé par le délivreur a été validée cryptographiquement."
+    "success": "Vérification réussie! La signature numérique associée à cet enregistrement tel que signé par le délivreur a été validée cryptographiquement.",
+    "note": "Remarque:",
+    "disclaimer": "les renseignements sur l'entreprise ci-dessus ne sont pas en temps réel et ne sont donnés qu'à titre indicatif.  Le présent document ne remplace pas un rapport officiel provenant des dossiers publics tenus par le ministère des Services gouvernementaux et des Services aux consommateurs. Le ministère des Services gouvernementaux et des Services aux consommateurs n'offre aucune garantie, expresse ou implicite, concernant l'exactitude des renseignements commerciaux contenus dans cette page. Pour savoir comment faire une recherche dans les dossiers publics,",
+    "click-here": "cliquez ici"
   },
   "general": {
     "none": "Aucun",
@@ -117,7 +121,8 @@
     "placeholder": "recherche",
     "results-title": "Résultats de la recherche",
     "return-link": "Retour à la recherche",
-    "results-error": "Votre requête n'a pas pu être complétée pour le moment."
+    "results-error": "Votre requête n'a pas pu être complétée pour le moment.",
+    "title": "Trouver une organisation"
   },
   "business_type": {
     "ONBIS_BUSINESS_TYPE_A": "Sociétés par actions de l'Ontario",

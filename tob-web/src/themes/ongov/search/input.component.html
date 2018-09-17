@@ -4,7 +4,7 @@
     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
     [ngbTypeahead]="typeaheadSearch" [focusFirst]="false"
     (selectItem)="typeaheadSelected($event)">
-  <button #queryButton class="btn btn-primary">
+  <button #queryButton [title]="'search.by-name' | translate" class="btn btn-primary">
     <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
     <span class="fa fa-search" *ngIf="! loading"></span>
   </button>

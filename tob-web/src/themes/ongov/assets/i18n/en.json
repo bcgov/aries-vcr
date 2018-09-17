@@ -14,7 +14,8 @@
       "privacy": "Privacy",
       "accessibility": "Accessibility",
       "copyright": "Queen's Printer for Ontario 2015",
-      "contact": "Contact Us"
+      "contact": "Contact Us",
+      "link-title": "This link will open the page in a new browser window"
     }
   },
   "address": {
@@ -31,28 +32,31 @@
     "addresses": "Addresses",
     "breadcrumb": "Verifiable Records",
     "contact": "Contact",
-    "corp-num": "Unique Identifier",
+    "corp-num": "Unique Identifier:",
     "end-date": "End Date",
     "history-link": "See history",
-    "issuer": "Issuer",
+    "issuer": "Issuer:",
     "last-updated": "Last Updated",
     "names": "Names",
     "people": "People",
-    "start-date": "Registration Date",
+    "start-date": "Registration Date:",
     "effective-date": "Status Effective Date",
     "verify-button-label": "Verify Record",
     "view-link": "View credential",
     "whats-this-link": "What's this?",
     "verify-status": "Verification Status:",
-    "status": "Status",
-    "type": "Business Type",
+    "status": "Status:",
+    "type": "Business Type:",
     "business_registration": "Foundational Business Registration Information",
     "municipality": "Municipality",
-    "jurisdiction": "Jurisdiction",
+    "jurisdiction": "Jurisdiction:",
     "verifying-record": "Verifying Record",
     "verify-info": "Verifiable Information",
     "error": "The digital signature associated with this record could not be verified. Please try again later.",
-    "success": "Verification Successful! The digital signature associated with this record as signed by the issuer has been cryptographically validated."
+    "success": "Verification Successful! The digital signature associated with this record as signed by the issuer has been cryptographically validated.",
+    "note": "Note:",
+    "disclaimer": "The business information above is not real-time and is not a substitute for a Ministry of Government and Consumer Services generated report.  Ministry of Government and Consumer Services makes no warranty, expressed or implied regarding the accuracy of the business information contained on this page. To find out how to search the official Public Record,",
+    "click-here": "click here"
   },
   "general": {
     "none": "None",
@@ -117,7 +121,8 @@
     "placeholder": "search",
     "results-title": "Search Results",
     "return-link": "Back to Search",
-    "records-prefix": "Records "
+    "records-prefix": "Records ",
+    "title": "Find an Organization"
   },
   "business_type": {
     "ONBIS_BUSINESS_TYPE_A": "Ontario Business Corporation",
