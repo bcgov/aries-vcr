@@ -6,4 +6,5 @@ import { Component, Input } from '@angular/core';
 })
 export class LoadingIndicatorComponent {
   @Input() loading: boolean = true;
+  @Input() inline: boolean = false;
 }

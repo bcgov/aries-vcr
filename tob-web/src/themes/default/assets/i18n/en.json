@@ -31,6 +31,9 @@
     "addresses": "Addresses",
     "breadcrumb": "Credential Information",
     "contact": "Contact",
+    "claims-proven": "Claims Proven and Verified",
+    "cred-type": "Credential Type",
+    "crypto-data": "Cryptographic Proof Data",
     "end-date": "End Date",
     "expired": "Expired",
     "expired-message": "This credential has been revoked or superceded.",
@@ -40,16 +43,20 @@
     "names": "Names",
     "not-verified": "Not verified",
     "people": "People",
+    "proof-details": "Credential and Proof Details",
+    "proof-of-claims": "Proof of Claims",
     "requesting-proof": "Requesting proof...",
+    "schema-info": "Credential Schema",
     "start-date": "Effective Date",
     "topic-title": "Other Credentials",
     "verify-button-label": "Verify Credential",
     "view-link": "View credential",
     "whats-this-link": "What's this?",
     "verify-status": "Verification Status:",
-    "verified": "Success"
+    "verified": "Verified"
   },
   "general": {
+    "date-entered": "Date Entered",
     "display-list": "List",
     "display-cards": "Cards",
     "hide-filters": "Hide Filters",
@@ -104,8 +111,12 @@
     "register-link": "Register your Organization",
     "title": "Recipe"
   },
+  "schema": {
+    "name": "Schema Name",
+    "version": "Schema Version"
+  },
   "topic": {
-    "breadcrumb": "Topic Information",
+    "breadcrumb": "Organization",
     "related-to": "Related To",
     "return-link": "Back to Topic",
     "view-link": "Show Details"

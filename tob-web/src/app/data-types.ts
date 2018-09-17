@@ -168,13 +168,25 @@ export namespace Model {
     static resourceName = 'credential';
     static extPath = 'verify';
 
+    get claims() {
+      let ret = [];
+      if(typeof this.result === 'object' && this.result.proof) {
+        let attrs = this.result.proof.requested_proof.revealed_attrs;
+        for(let k in attrs) {
+          ret.push({name: k, value: attrs[k].raw});
+        }
+      }
+      return ret;
+    }
+
     get status(): string {
       return this.success ? 'cred.verified' : 'cred.not-verified';
     }
+
     get text(): string {
       if(typeof this.result === 'string')
         return this.result;
-      return JSON.stringify(this.result.data, null, 2);
+      return JSON.stringify(this.result, null, 2);
     }
   }
 

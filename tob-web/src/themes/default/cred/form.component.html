@@ -3,13 +3,14 @@
   <error-message [error]="result.error"></error-message>
 
   <div class="row" *ngIf="result.data as record">
-    <div class="col-md-7 col-sm-6">
+    <div class="col-sm-12" *ngIf="(verify$ | async) as verify">
       <h1 class="cred-title">{{record.credential_type.description}}</h1>
 
       <a [routerLink]="['/topic/', record.topic.id] | localize" class="title-back-link mrgn-bttm-md">
         <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
 
       <div class="cred-info">
+
         <div class="row form-group" *ngIf="record.revoked">
           <div class="col-sm-12">
             <div class="alert alert-danger">
@@ -18,119 +19,120 @@
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="record.haveNames">
+
+        <div class="row form-group" *ngIf="record.credential_type">
           <div class="col-sm-12">
-            <label class="control-label" translate>cred.names</label>
+            <label class="control-label" translate>cred.cred-type</label>
             <div class="form-field">
-              <ul class="claim-list">
-                <li *ngFor="let name of record.names">
-                  <label translate>{{name.type}}</label>
-                  <span class="claim-info name">{{name.text}}</span>
-                </li>
-              </ul>
+              {{record.credential_type.description}}
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="record.haveContacts">
+
+        <div class="row form-group" *ngIf="record.issuer">
           <div class="col-sm-12">
-            <label class="control-label" translate>cred.contact</label>
+            <label class="control-label" translate>cred.issuer</label>
             <div class="form-field">
-              <ul class="claim-list">
-                <li *ngFor="let contact of record.contacts">
-                  <label translate>{{contact.type}}</label>
-                  <span class="claim-info {{contact.typeClass}}">{{contact.text}}</span>
-                </li>
-              </ul>
+              <a class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="record.havePeople">
+
+        <div class="row form-group" *ngIf="(topic$ | async) as topic">
           <div class="col-sm-12">
-            <label class="control-label" translate>cred.people</label>
-            <div class="form-field">
-              <ul class="claim-list">
-                <li *ngFor="let person of record.people">
-                  <label translate>{{person.type}}</label>
-                  <span class="claim-info person">{{person.full_name}}</span>
-                </li>
-              </ul>
+            <label class="control-label" translate>topic.related-to</label>
+            <div class="form-field" *ngIf="topic.data">
+              {{topic.data.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="['/topic', topic.data.id] | localize">{{topic.data.names[0]?.text}}</a>
             </div>
           </div>
         </div>
-        <div class="row form-group" *ngIf="record.haveAddresses">
+
+        <div class="row form-group">
           <div class="col-sm-12">
-            <label class="control-label" translate>cred.addresses</label>
-            <div class="form-field">
-              <ul class="claim-list">
-                <li *ngFor="let address of record.addresses">
-                  <label translate>{{address.type}}</label>
-                  <address-view [record]="address"></address-view>
-                </li>
-              </ul>
+            <label class="control-label" translate>cred.proof-of-claims</label>
+            <loading-indicator [inline]="true" [loading]="verify.loading"></loading-indicator>
+            <div class="form-field" *ngIf="verify.data as verifyResult">
+              <span [class]="'proof-icon fa ' + (verifyResult.success ? 'fa-check-circle text-success' : 'fa-times-circle text-danger')"></span>
+              <span>{{verifyResult.status | translate}}</span>
+              <p *ngIf="! verifyResult.success" class="mrgn-tp-sm mrgn-bttm-0">{{verifyResult.text}}</p>
             </div>
           </div>
         </div>
+
+        <div class="row form-group">
+          <div class="col-sm-12">
+            <label class="control-label" translate>cred.start-date</label>
+            <div class="form-field">
+              <span class="claim-info date" *ngIf="record.effective_date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row form-group" *ngIf="record.create_timestamp">
+          <div class="col-sm-12">
+            <label class="control-label" translate>general.date-created</label>
+            <div class="form-field">
+              <span class="claim-info date" *ngIf="record.create_timestamp">{{record.create_timestamp | dateFormat: 'effectiveDateTime'}}</span>
+            </div>
+          </div>
+        </div>
+
+      <ng-container *ngIf="verify.data as verifyResult">
+        <div class="panel panel-info">
+          <div class="panel-heading expand-link" (click)="toggleShowClaims($event)">
+            <h3 class="mrgn-bttm-0 mrgn-tp-0">
+              <span translate>cred.claims-proven</span>
+              <span [class]="'expand-icon fa ' + (claimsVisible ? 'fa-chevron-up': 'fa-chevron-down')"></span>
+            </h3>
+          </div>
+          <div class="panel-body" *ngIf="claimsVisible">
+            <div class="text-right">
+              <a class="body-link verify-help" href="#">
+                <span class="fa fa-question-circle"></span>
+                <span translate>cred.whats-this-link</span>
+              </a>
+            </div>
+            <div class="row claim-row" *ngFor="let claim of verifyResult.claims">
+              <label class="col-sm-3 control-label text-right">{{claim.name}}</label>
+              <div class="col-sm-9">{{claim.value}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-info">
+          <div class="panel-heading expand-link" (click)="toggleShowProof($event)">
+            <h3 class="mrgn-bttm-0 mrgn-tp-0">
+              <span translate>cred.proof-details</span>
+              <span [class]="'expand-icon fa ' + (proofVisible ? 'fa-chevron-up': 'fa-chevron-down')"></span>
+            </h3>
+          </div>
+          <div class="panel-body" *ngIf="proofVisible">
+            <div class="pull-right">
+              <a class="body-link verify-help" href="#">
+                <span class="fa fa-question-circle"></span>
+                <span translate>cred.whats-this-link</span>
+              </a>
+            </div>
+            <h3 class="mrgn-tp-sm" translate>cred.schema-info</h3>
+            <div class="row">
+              <label class="col-sm-3 control-label text-right" translate>schema.name</label>
+              <div class="col-sm-9">{{record.credential_type.schema.name}}</div>
+            </div>
+            <div class="row">
+              <label class="col-sm-3 control-label text-right" translate>schema.version</label>
+              <div class="col-sm-9">{{record.credential_type.schema.version}}</div>
+            </div>
+            <ng-container *ngIf="verifyResult.success">
+              <h3 class="mrgn-tp-sm" translate>cred.crypto-data</h3>
+              <div class="verify-data"><code>{{verifyResult.text}}</code></div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+
       </div>
     </div>
 
-    <div class="col-md-5 col-sm-6">
-      <div class="meta-info well mrgn-tp-lg">
-        <h3 class="well-title">Credential Info</h3>
-        <div class="meta-body form-body">
-          <div class="row form-group" *ngIf="record.issuer">
-            <div class="col-sm-12">
-              <label class="control-label" translate>cred.issuer</label>
-              <div class="form-field">
-                <a class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
-              </div>
-            </div>
-          </div>
-          <div class="row form-group">
-            <div class="col-sm-12">
-              <label class="control-label" translate>cred.start-date</label>
-              <div class="form-field">
-                <span class="claim-info date" *ngIf="record.effective_date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="cred-verify" *ngIf="! record.revoked">
-            <div class="row form-group mrgn-tp-lg">
-              <div class="col-sm-6">
-                <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)">
-                  <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
-              </div>
-              <div class="col-sm-6 mrgn-tp-sm">
-                <a class="body-link verify-help" href="#">
-                  <span class="fa fa-question-circle"></span>
-                  <span translate>cred.whats-this-link</span>
-                </a>
-              </div>
-            </div>
-            <div class="row form-group" *ngIf="(verify$ | async) as verify">
-              <div class="col-sm-12" *ngIf="verify.loading">
-                <section class="alert alert-info">
-                  <p translate>cred.requesting-proof</p>
-                </section>
-              </div>
-              <error-message [error]="verify.error"></error-message>
-              <div class="col-sm-12" *ngIf="verify.data as verifyData">
-                <div [class]="'verify-result mrgn-bttm-0 panel panel-' + (verifyData.success ? 'success' : 'warning')">
-                  <div class="panel-heading">
-                    {{'cred.verify-status' | translate}} {{verifyData.status | translate}}
-                  </div>
-                  <div class="panel-body" *ngIf="verifyData.sucess">
-                    <code>{{verifyData.text}}</code>
-                  </div>
-                  <div class="panel-body" *ngIf="! verifyData.sucess">
-                    {{verifyData.text}}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
 </section>

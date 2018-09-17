@@ -47,7 +47,9 @@ $indicator-thickness: 0.2em;
 	border: $indicator-thickness solid transparent;
 	border-top-color: $indicator-color;
 	line-height: 1;
-	margin: 0 auto;
+	&:not(.inline) {
+    margin: 0 auto;
+  }
 	position: relative;
 	text-indent: -9999em;
 	transform: translateZ(0);

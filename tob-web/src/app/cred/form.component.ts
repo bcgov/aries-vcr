@@ -13,8 +13,11 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class CredFormComponent implements OnInit, OnDestroy {
   id: number;
+  claimsVisible: boolean = false;
+  proofVisible: boolean = false;
 
   private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
+  private _topic = new Fetch.ModelLoader(Model.TopicFormatted);
   private _verify = new Fetch.ModelLoader(Model.CredentialVerifyResult);
   private _idSub: Subscription;
 
@@ -25,6 +28,7 @@ export class CredFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._loader.ready.subscribe(result => {
       this.verifyCred();
+      this._dataService.loadRecord(this._topic, this.result.data.topic.id);
     });
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['credId'];
@@ -46,8 +50,22 @@ export class CredFormComponent implements OnInit, OnDestroy {
     return this._loader.stream;
   }
 
+  get topic$() {
+    return this._topic.stream;
+  }
+
   get verify$() {
     return this._verify.stream;
+  }
+
+  toggleShowClaims(evt?) {
+    this.claimsVisible = !this.claimsVisible;
+    if(evt) evt.preventDefault();
+  }
+
+  toggleShowProof(evt?) {
+    this.proofVisible = !this.proofVisible;
+    if(evt) evt.preventDefault();
   }
 
   verifyCred(evt?) {
