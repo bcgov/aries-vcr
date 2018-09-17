@@ -78,22 +78,12 @@ class CustomIssuerSerializer(IssuerSerializer):
 
 class CustomAddressSerializer(AddressSerializer):
     last_updated = SerializerMethodField()
-    # issuer = SerializerMethodField()
 
     class Meta(AddressSerializer.Meta):
-        fields = list(
-            utils.fetch_custom_settings("serializers", "Address", "includeFields")
-        )
-        fields.append("last_updated")
+        fields = tuple(AddressSerializer.Meta.fields) + ("credential_id", "last_updated")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
-
-    def get_issuer(self, obj):
-        serializer = CustomIssuerSerializer(
-            instance=obj.credential.credential_type.issuer
-        )
-        return serializer.data
 
 
 class CustomNameSerializer(NameSerializer):
@@ -101,7 +91,7 @@ class CustomNameSerializer(NameSerializer):
     issuer = SerializerMethodField()
 
     class Meta(NameSerializer.Meta):
-        fields = ("id", "credential", "last_updated", "text", "language", "issuer")
+        fields = ("id", "credential_id", "last_updated", "text", "language", "issuer")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
@@ -115,43 +105,29 @@ class CustomNameSerializer(NameSerializer):
 
 class CustomContactSerializer(ContactSerializer):
     last_updated = SerializerMethodField()
-    # issuer = SerializerMethodField()
 
     class Meta(ContactSerializer.Meta):
-        fields = ("id", "credential", "last_updated", "text", "type")
+        fields = ("id", "credential_id", "last_updated", "text", "type")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
-
-    def get_issuer(self, obj):
-        serializer = CustomIssuerSerializer(
-            instance=obj.credential.credential_type.issuer
-        )
-        return serializer.data
 
 
 class CustomPersonSerializer(PersonSerializer):
     last_updated = SerializerMethodField()
-    # issuer = SerializerMethodField()
 
     class Meta(PersonSerializer.Meta):
-        fields = ("id", "credential", "last_updated", "full_name")
+        fields = ("id", "credential_id", "last_updated", "full_name")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
-
-    def get_issuer(self, obj):
-        serializer = CustomIssuerSerializer(
-            instance=obj.credential.credential_type.issuer
-        )
-        return serializer.data
 
 
 class CustomCategorySerializer(CategorySerializer):
     last_updated = SerializerMethodField()
 
     class Meta(CategorySerializer.Meta):
-        fields = ("id", "credential", "last_updated", "type", "value")
+        fields = ("id", "credential_id", "last_updated", "type", "value")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
@@ -217,13 +193,19 @@ class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
         pass
 
 
+class CredentialAddressSerializer(AddressSerializer):
+    class Meta(AddressSerializer.Meta):
+        fields = tuple(f for f in AddressSerializer.Meta.fields if f != "credential")
+
+class CredentialCategorySerializer(CategorySerializer):
+    class Meta(CategorySerializer.Meta):
+        fields = None
+        exclude = ("credential",)
+
 class CredentialNameSerializer(NameSerializer):
     class Meta(NameSerializer.Meta):
-        fields = (
-            "id", "create_timestamp", "update_timestamp",
-            "language", "text",
-        )
-
+        fields = None
+        exclude = ("credential",)
 
 class CredentialTopicSerializer(TopicSerializer):
     class Meta(TopicSerializer.Meta):
@@ -234,6 +216,8 @@ class CredentialTopicSerializer(TopicSerializer):
 
 
 class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
+    addresses = CredentialAddressSerializer(many=True)
+    categories = CredentialCategorySerializer(many=True)
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
     topic = CredentialTopicSerializer()

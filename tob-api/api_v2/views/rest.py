@@ -84,8 +84,7 @@ class CredentialTypeViewSet(ViewSet):
 
 
 class ExpandedCredentialSerializer(CredentialSerializer):
-    credential_type = SerializerMethodField()
-    issuer = SerializerMethodField()
+    credential_type = CredentialTypeSerializer()
     topic = TopicSerializer()
 
     class Meta(CredentialSerializer.Meta):
@@ -96,7 +95,6 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "revoked",
             "wallet_id",
             "credential_type",
-            "issuer",
             "addresses",
             "categories",
             "names",
@@ -104,16 +102,6 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "people",
             "topic",
         )
-
-    def get_credential_type(self, obj):
-        qs = obj.credential_type
-        serializer = CredentialTypeSerializer(instance=qs)
-        return serializer.data
-
-    def get_issuer(self, obj):
-        qs = obj.credential_type.issuer
-        serializer = IssuerSerializer(instance=qs)
-        return serializer.data
 
 
 class TopicViewSet(ViewSet):
