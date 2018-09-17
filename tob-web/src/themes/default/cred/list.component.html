@@ -9,6 +9,9 @@
     <div class="cred-issuer" *ngIf="cred.issuer">
       <a class="body-link issuer-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.name}}</a>
     </div>
+    <div class="cred-status">
+      <div class="badge" *ngIf="cred.revoked" translate>cred.expired</div>
+    </div>
   </div>
 </div>
 <div class="creds-list" *ngIf="format==='rows'">
@@ -27,13 +30,13 @@
       </div>
     </div>
     <div class="col-sm-4">
+      <div class="badge" *ngIf="cred.revoked" translate>cred.expired</div>
     </div>
   </div>
 </div>
 <div class="creds-list creds-search" *ngIf="format==='search'">
   <div class="row cred-row" *ngFor="let cred of records">
     <div class="col-sm-7">
-      <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
       <label>{{cred.topic.typeLabel | translate}}:</label>
       <a [routerLink]="['/topic', cred.topic.id] | localize"
         class="body-link cred-link name">{{cred.names[0].text}}</a>
@@ -47,11 +50,14 @@
       <br>
       <small>
         <label>
-          <span translate>cred.last-updated</span>:</label>
+          <span translate>cred.last-updated</span>:
+        </label>
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </small>
     </div>
     <div class="col-sm-5">
+      <div class="badge" *ngIf="cred.revoked" translate>cred.expired</div>
+
       <small *ngIf="cred.addresses && cred.addresses.length > 0">
         <!-- TODO: Add notion of 'type' to address model? -->
         <!-- <label class="control-label" translate>{{topic.addresses[0].type}}</label> -->

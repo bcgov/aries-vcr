@@ -39,7 +39,7 @@ export class CredFormComponent implements OnInit, OnDestroy {
   }
 
   get result() {
-    return this._loader.result.data;
+    return this._loader.result;
   }
 
   get result$() {
@@ -51,6 +51,9 @@ export class CredFormComponent implements OnInit, OnDestroy {
   }
 
   verifyCred(evt?) {
-    this._dataService.loadRecord(this._verify, this.id);
+    if(this.result.data.revoked)
+      this._verify.reset();
+    else
+      this._dataService.loadRecord(this._verify, this.id);
   }
 }

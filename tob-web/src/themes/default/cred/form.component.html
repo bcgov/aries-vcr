@@ -6,10 +6,18 @@
     <div class="col-md-7 col-sm-6">
       <h1 class="cred-title">{{record.credential_type.description}}</h1>
 
-      <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
+      <a [routerLink]="['/topic/', record.topic.id] | localize" class="title-back-link mrgn-bttm-md">
         <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
 
       <div class="cred-info">
+        <div class="row form-group" *ngIf="record.revoked">
+          <div class="col-sm-12">
+            <div class="alert alert-danger">
+              <h3 translate>cred.expired</h3>
+              <p translate>cred.expired-message</p>
+            </div>
+          </div>
+        </div>
         <div class="row form-group" *ngIf="record.haveNames">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.names</label>
@@ -63,7 +71,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="col-md-5 col-sm-6">
@@ -86,35 +93,37 @@
               </div>
             </div>
           </div>
-          <div class="row form-group mrgn-tp-lg">
-            <div class="col-sm-6">
-              <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)">
-                <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
+          <div class="cred-verify" *ngIf="! record.revoked">
+            <div class="row form-group mrgn-tp-lg">
+              <div class="col-sm-6">
+                <button type="button" [class]="'btn btn-primary btn-verify' + (verifying ? ' loading' : '')" (click)="verifyCred($event)">
+                  <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
+              </div>
+              <div class="col-sm-6 mrgn-tp-sm">
+                <a class="body-link verify-help" href="#">
+                  <span class="fa fa-question-circle"></span>
+                  <span translate>cred.whats-this-link</span>
+                </a>
+              </div>
             </div>
-            <div class="col-sm-6 mrgn-tp-sm">
-              <a class="body-link verify-help" href="#">
-                <span class="fa fa-question-circle"></span>
-                <span translate>cred.whats-this-link</span>
-              </a>
-            </div>
-          </div>
-          <div class="row cred-verify" *ngIf="(verify$ | async) as verify">
-            <div class="col-sm-12" *ngIf="verify.loading">
-              <section class="alert alert-info">
-                <p translate>cred.requesting-proof</p>
-              </section>
-            </div>
-            <error-message [error]="verify.error"></error-message>
-            <div class="col-sm-12" *ngIf="verify.data as verifyData">
-              <div [class]="'verify-result panel panel-' + (verifyData.success ? 'success' : 'warning')">
-                <div class="panel-heading">
-                  {{'cred.verify-status' | translate}} {{verifyData.status | translate}}
-                </div>
-                <div class="panel-body" *ngIf="verifyData.sucess">
-                  <code>{{verifyData.text}}</code>
-                </div>
-                <div class="panel-body" *ngIf="! verifyData.sucess">
-                  {{verifyData.text}}
+            <div class="row form-group" *ngIf="(verify$ | async) as verify">
+              <div class="col-sm-12" *ngIf="verify.loading">
+                <section class="alert alert-info">
+                  <p translate>cred.requesting-proof</p>
+                </section>
+              </div>
+              <error-message [error]="verify.error"></error-message>
+              <div class="col-sm-12" *ngIf="verify.data as verifyData">
+                <div [class]="'verify-result mrgn-bttm-0 panel panel-' + (verifyData.success ? 'success' : 'warning')">
+                  <div class="panel-heading">
+                    {{'cred.verify-status' | translate}} {{verifyData.status | translate}}
+                  </div>
+                  <div class="panel-body" *ngIf="verifyData.sucess">
+                    <code>{{verifyData.text}}</code>
+                  </div>
+                  <div class="panel-body" *ngIf="! verifyData.sucess">
+                    {{verifyData.text}}
+                  </div>
                 </div>
               </div>
             </div>
