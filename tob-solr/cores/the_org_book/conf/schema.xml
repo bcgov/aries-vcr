@@ -458,7 +458,7 @@
             -->
             <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" />
             <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="15" />
+            <!-- filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="15" / -->
             <filter class="solr.EnglishPossessiveFilterFactory"/>
             <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
             <!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
