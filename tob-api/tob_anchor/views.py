@@ -578,7 +578,7 @@ async def slowTest(request):
     if not delay or delay > 30:
         delay = 2
     import asyncio
-    await asyncio.sleep(2)
+    await asyncio.sleep(delay)
     return web.json_response({})
 
 
