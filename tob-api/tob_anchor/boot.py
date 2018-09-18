@@ -124,8 +124,6 @@ async def register_services():
         wallet_type = 'sqlite'
     wallet_type = wallet_type.lower()
 
-    LOGGER.info("Registering holder service")
-    client = indy_client()
     if wallet_type == 'postgres':
         LOGGER.info("Using Postgres storage ...")
 
@@ -150,7 +148,15 @@ async def register_services():
         if wallet_admin_password:
             stg_creds["admin_account"] = wallet_admin_user
             stg_creds["admin_password"] = wallet_admin_password
+    elif wallet_type == 'sqlite':
+        LOGGER.info("Using Sqlite storage ...")
+    else:
+        raise Exception('Unknown WALLET_TYPE: {}'.format(wallet_type))
 
+    client = indy_client()
+
+    LOGGER.info("Registering holder service")
+    if wallet_type == 'postgres':
         holder_wallet_id = await client.register_wallet({
             "name": "tob_holder",
             "seed": wallet_seed,
@@ -158,14 +164,12 @@ async def register_services():
             "params": {"storage_config": stg_config},
             "access_creds": {"key": "key", "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
         })
-    elif wallet_type == 'sqlite':
+    else:
         LOGGER.info("Using Sqlite storage ...")
         holder_wallet_id = await client.register_wallet({
             "name": "TheOrgBook_Holder_Wallet",
             "seed": wallet_seed,
         })
-    else:
-        raise Exception('Unknown WALLET_TYPE: {}'.format(wallet_type))
     LOGGER.debug("Indy holder wallet id: %s", holder_wallet_id)
 
     holder_id = await client.register_holder(holder_wallet_id, {
@@ -174,11 +178,20 @@ async def register_services():
     })
     LOGGER.debug("Indy holder id: %s", holder_id)
 
-    LOGGER.info("Registering verifier service")
-    verifier_wallet_id = await client.register_wallet({
-        "name": "TheOrgBook_Verifier_Wallet",
-        "seed": "tob-verifier-wallet-000000000001",
-    })
+    LOGGER.info("Registering verifier service")   
+    if wallet_type == 'postgres':
+        verifier_wallet_id = await client.register_wallet({
+            "name": "tob_verifier",
+            "seed": "tob-verifier-wallet-000000000001",
+            "type": "postgres",
+            "params": {"storage_config": stg_config},
+            "access_creds": {"key": "key", "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
+        })
+    else:
+        verifier_wallet_id = await client.register_wallet({
+            "name": "TheOrgBook_Verifier_Wallet",
+            "seed": "tob-verifier-wallet-000000000001",
+        })
     LOGGER.debug("Indy verifier wallet id: %s", verifier_wallet_id)
 
     verifier_id = await client.register_verifier(verifier_wallet_id, {
