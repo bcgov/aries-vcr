@@ -565,6 +565,23 @@ async def reqInfo(request):
     return web.json_response(info)
 
 
+async def slowTest(request):
+    """
+    Slow response for debugging request distribution
+    """
+    delay = request.query.get('delay')
+    if delay:
+        try:
+            delay = int(delay)
+        except ValueError:
+            delay = None
+    if not delay or delay > 30:
+        delay = 2
+    import asyncio
+    await asyncio.sleep(2)
+    return web.json_response({})
+
+
 async def status(request):
     """
     Return status of the Indy service including statistics on the requests performed
