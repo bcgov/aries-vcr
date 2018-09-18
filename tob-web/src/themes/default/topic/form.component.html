@@ -69,7 +69,7 @@
 
   <related-topics [records]="topic.related_from" [topicId]="id" defaultFormat="compact" *ngIf="result.loaded" [related-from]="true" [title]="'topic.related-to' | translate"></related-topics>
 
-  <related-topics [records]="topic.related_to" [topicId]="id" defaultFormat="cards" *ngIf="result.loaded" [title]="'name.doing-business-as' | translate"></related-topics>
+  <related-topics [records]="topic.related_to" [topicId]="id" defaultFormat="compact" *ngIf="result.loaded" [title]="'name.doing-business-as' | translate"></related-topics>
 
   <div class="row creds-outer" *ngIf="result.loaded">
     <div class="col-sm-12">

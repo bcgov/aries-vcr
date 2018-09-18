@@ -3,7 +3,7 @@
   <h2 *ngIf="title && !loading && topics && topics.length">{{title}}</h2>
   <topic-list [records]="topics" [format]="format" *ngIf="!loading"></topic-list>
 </div>
-<div class="related-topics mrgn-bttm-md" *ngIf="format == 'compact'">
+<div class="related-topics" *ngIf="format == 'compact'">
   <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
   <div class="row" *ngIf="!loading && topics && topics.length">
     <div class="col-sm-12">
