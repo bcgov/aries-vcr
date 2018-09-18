@@ -176,6 +176,7 @@ export namespace Model {
           ret.push({name: k, value: attrs[k].raw});
         }
       }
+      ret.sort((a,b) => a.name.localeCompare(b.name));
       return ret;
     }
 
