@@ -585,7 +585,7 @@
       "displayName": "Resources CPU Limit",
       "description": "The resources CPU limit (in cores) for this build.",
       "required": true,
-      "value": "500m"
+      "value": "750m"
     },
     {
       "name": "MEMORY_REQUEST",
