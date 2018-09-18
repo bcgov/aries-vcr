@@ -432,18 +432,21 @@ class CredentialManager(object):
         credential_config = processor_config.get("credential")
         if credential_config:
             effective_date = process_mapping(credential_config.get("effective_date"))
+            if effective_date:
+                try:
+                    # effective_date could be seconds since epoch
+                    effective_date = datetime.utcfromtimestamp(
+                        int(effective_date)
+                    ).isoformat()
+                except ValueError:
+                    # If it's not an int, assume it's already ISO8601 string.
+                    # Fail later if it isn't
+                    pass
+                credential_args["effective_date"] = effective_date
 
-            try:
-                # effective_date could be seconds since epoch
-                effective_date = datetime.utcfromtimestamp(
-                    int(effective_date)
-                ).isoformat()
-            except ValueError:
-                # If it's not an int, assume it's already ISO8601 string.
-                # Fail later if it isn't
-                pass
-
-            credential_args["effective_date"] = effective_date
+            revoked = process_mapping(credential_config.get("revoked"))
+            if revoked:
+                credential_args["revoked"] = bool(revoked)
 
         credential = topic.credentials.create(**credential_args)
 
