@@ -91,14 +91,29 @@
                         </div>
                     </div>
 
-                  <div class="cred-verify" *ngIf="! record.revoked">
-                    <div class="row form-group" *ngIf="(verify$ | async) as verify">
+                  <div class="cred-verify" *ngIf="(verify$ | async) as verify">
+                    <div class="row form-group">
+                      <div class="col-sm-12">
+                          <button type="button" [class]="'btn btn-primary btn-verify' + (verify.loading ? ' loading' : '')" (click)="verifyCred($event)">
+                            <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                            <div class="disclaimer-cred" translate>
+                                  <b translate>cred.note</b>
+                                  cred.disclaimer
+                                  <a href="https://www.ontario.ca/page/public-record-search" class="disclaimer-link" 
+                                  target="_blank" 
+                                  translate>topic.click-here</a>
+                              </div>
+                    </div>
+                    <div class="row form-group">
                       <div class="col-sm-12" *ngIf="verify.loading">
                         <section class="alert alert-info">
                           <p translate>cred.verifying-record</p>
                         </section>
                       </div>
-                      <error-message [error]="verify.error"></error-message>
+                      <error-message [error]="verify.error"></error-message>***
                       <div class="col-sm-12" *ngIf="verify.data as verifyResult">
                         <div [class]="'verify-result panel panel-' + (verifyResult.success ? 'success' : 'warning')">
                           <div class="panel-heading">
