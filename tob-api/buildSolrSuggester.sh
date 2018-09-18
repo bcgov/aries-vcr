@@ -1,35 +1,31 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname $0)
-MANAGE_CMD=${SCRIPT_DIR}/runManageCmd.sh
-SOLR_BATCH_SIZE=${SOLR_BATCH_SIZE:-500}
+SOLR_URL=${SOLR_URL:-http://solr:8983/solr/the_org_book}
 
 # ==============================================================================================================================
 usage() {
   cat <<-EOF
   ========================================================================================
-  Rebuilds the Haystack indexes for the project.
+  Builds the Suggester on the Solr server which is used for auto-complete functionality.
   ----------------------------------------------------------------------------------------
   Usage:
-    ${0} [ -h -x -s <SolrUrl/> -b <BatchSize/> ]
+    ${0} [ -h -x -s <SolrUrl/> ]
   
   Options:
     -h Prints the usage for the script
     -x Enable debug output
-    -s The URL to the Solr search engine instance
-    -b The batch size to use when performing the indexing.  Defaults to ${SOLR_BATCH_SIZE}.
+    -s The URL to the Solr search engine instance. Defaults to ${SOLR_URL}.
   
   Example:
-    ${0} -s http://localhost:8983/solr/the_org_book  
+    ${0} -s http://localhost:8983/solr/the_org_book
   ========================================================================================
 EOF
 exit
-}
 
+}
 while getopts s:b:xh FLAG; do
   case $FLAG in
-    s ) export SOLR_URL=$OPTARG
-      ;;
-    b ) SOLR_BATCH_SIZE=$OPTARG
+    s ) SOLR_URL=$OPTARG
       ;;
     x ) export DEBUG=1
       ;;
@@ -45,4 +41,4 @@ done
 shift $((OPTIND-1))
 # ==============================================================================================================================
 
-${MANAGE_CMD} rebuild_index --noinput --batch-size=$SOLR_BATCH_SIZE
+curl "${SOLR_URL}/suggest/?q=&suggest.build=true&wt=json"
