@@ -43,8 +43,6 @@ SUPPORTED_MODELS_MAPPING = {
     "category": Category,
 }
 
-SUPPORTED_CATEGORIES = ["topic_status", "topic_type", "topic_registration_date", "topic_status_effective_date"]
-
 
 class CredentialException(Exception):
     pass
@@ -169,6 +167,7 @@ class Credential(object):
         """
         return self._cred_def_id
 
+
 class CredentialManager(object):
     """
     Handles processing of incoming credentials. Populates application
@@ -214,7 +213,9 @@ class CredentialManager(object):
             )
 
         credential_type = CredentialType.objects.get(schema=schema, issuer=issuer)
-        LOGGER.warn("<<< get credential context: " + str(time.perf_counter() - start_time))
+        LOGGER.warn(
+            "<<< get credential context: " + str(time.perf_counter() - start_time)
+        )
 
         # credential_wallet_id = run_coro(self.store())
         with transaction.atomic():
@@ -398,8 +399,9 @@ class CredentialManager(object):
         cardinality_values = {}
         for cardinality_field in cardinality_fields:
             try:
-                cardinality_values[cardinality_field] = \
-                    getattr(self.credential, cardinality_field)
+                cardinality_values[cardinality_field] = getattr(
+                    self.credential, cardinality_field
+                )
             except AttributeError as error:
                 raise CredentialException(
                     "Issuer configuration specifies field '{}' ".format(
@@ -412,8 +414,7 @@ class CredentialManager(object):
                 )
         if cardinality_values:
             hash_fields = [
-                "{}::{}".format(k, cardinality_values[k])
-                for k in cardinality_values
+                "{}::{}".format(k, cardinality_values[k]) for k in cardinality_values
             ]
             cardinality_hash = base64.b64encode(
                 hashlib.sha256(",".join(hash_fields).encode("utf-8")).digest()
@@ -522,19 +523,12 @@ class CredentialManager(object):
             for field, field_mapper in model_mapper["fields"].items():
                 setattr(model, field, process_mapping(field_mapper))
 
-            # Validate category type
-            if model_name == "category" and model.type not in SUPPORTED_CATEGORIES:
-                raise CredentialException(
-                    "Invalid category type '{}'. ".format(model.type)
-                    + "Valid categories are: {}".format(
-                        ", ".join(list(SUPPORTED_CATEGORIES))
-                    )
-                )
-
             model.credential = credential
             model.save()
 
-        LOGGER.warn("<<< store cred in local database: " + str(time.perf_counter() - start_time))
+        LOGGER.warn(
+            "<<< store cred in local database: " + str(time.perf_counter() - start_time)
+        )
 
         return topic
 
