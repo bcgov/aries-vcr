@@ -6,6 +6,7 @@
 # NAME=django
 # IMAGE_NAMESPACE=devex-von-tools
 APPLICATION_DOMAIN=django-devex-von-dev.pathfinder.gov.bc.ca
+ROUTE_PATH=
 # DATABASE_SERVICE_NAME=postgresql
 # DATABASE_ENGINE=postgresql
 # DATABASE_NAME=TheOrgBook_Database

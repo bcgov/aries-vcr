@@ -6,6 +6,7 @@
 # NAME=django
 # IMAGE_NAMESPACE=ontvon-von-tools
 APPLICATION_DOMAIN=django-ontvon-von-dev.pathfinder.gov.bc.ca
+ROUTE_PATH=/api/v2/indy
 # DATABASE_SERVICE_NAME=postgresql
 # DATABASE_ENGINE=postgresql
 # DATABASE_NAME=TheOrgBook_Database

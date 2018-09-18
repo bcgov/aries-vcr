@@ -58,6 +58,7 @@
       },
       "spec": {
         "host": "${APPLICATION_DOMAIN}",
+        "path": "${ROUTE_PATH}",
         "port": {
           "targetPort": "8080-tcp"
         },
@@ -365,6 +366,13 @@
       "displayName": "Application Hostname",
       "description": "The exposed hostname that will route to the Django service, if left blank a value will be defaulted.",
       "value": ""
+    },
+    {
+      "name": "ROUTE_PATH",
+      "displayName": "Route Path",
+      "description": "The path with which to restrict access on the exposed route.",
+      "required": false,
+      "value": "/api/v2/indy"
     },
     {
       "name": "DATABASE_SERVICE_NAME",
