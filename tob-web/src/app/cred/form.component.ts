@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
 import { Fetch, Model } from '../data-types';
@@ -11,7 +11,8 @@ import { Subscription } from 'rxjs/Subscription';
     '../../themes/_active/cred/cred.scss',
     '../../themes/_active/cred/form.component.scss']
 })
-export class CredFormComponent implements OnInit, OnDestroy {
+export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('credForm') _formRef: ElementRef;
   id: number;
   claimsVisible: boolean = false;
   proofVisible: boolean = false;
@@ -26,13 +27,18 @@ export class CredFormComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute) { }
 
   ngOnInit() {
-    this._loader.ready.subscribe(result => {
-      this.verifyCred();
-      this._dataService.loadRecord(this._topic, this.result.data.topic.id);
-    });
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['credId'];
       this._dataService.loadRecord(this._loader, this.id);
+    });
+  }
+
+  ngAfterViewInit() {
+    this._loader.ready.subscribe(result => {
+      if(! this._formRef || ! this._formRef.nativeElement.classList.contains('no-verify'))
+        // auto-verify unless button is present
+        this.verifyCred();
+      this._dataService.loadRecord(this._topic, this.result.data.topic.id);
     });
   }
 
