@@ -20,6 +20,8 @@ class NameAutocompleteView(APIView):
     """
     Return autocomplete results for a query string
     """
+    permission_classes = (permissions.AllowAny,)
+
     def get(self, request, format=None):
         query_string = request.GET.get('q', '')
         highlight = request.GET.get('hl', 'false')

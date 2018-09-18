@@ -3,7 +3,7 @@ from django.db.models import Q
 
 from rest_framework.exceptions import NotFound
 from rest_framework.decorators import detail_route, list_route
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.response import Response
 
 from api_v2.serializers.rest import (
@@ -37,17 +37,9 @@ from api_v2.models.Category import Category
 from api_v2 import utils
 
 
-class IssuerViewSet(ViewSet):
-    def list(self, request):
-        queryset = Issuer.objects.all()
-        serializer = IssuerSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Issuer.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = IssuerSerializer(item)
-        return Response(serializer.data)
+class IssuerViewSet(ModelViewSet):
+    serializer_class = IssuerSerializer
+    queryset = Issuer.objects.all()
 
     @detail_route(url_path="credentialtype")
     def list_credential_types(self, request, pk=None):
@@ -57,30 +49,14 @@ class IssuerViewSet(ViewSet):
         return Response(serializer.data)
 
 
-class SchemaViewSet(ViewSet):
-    def list(self, request):
-        queryset = Schema.objects.all()
-        serializer = SchemaSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Schema.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = SchemaSerializer(item)
-        return Response(serializer.data)
+class SchemaViewSet(ModelViewSet):
+    serializer_class = SchemaSerializer
+    queryset = Schema.objects.all()
 
 
-class CredentialTypeViewSet(ViewSet):
-    def list(self, request):
-        queryset = CredentialType.objects.all()
-        serializer = CredentialTypeSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = CredentialType.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = CredentialTypeSerializer(item)
-        return Response(serializer.data)
+class CredentialTypeViewSet(ModelViewSet):
+    serializer_class = CredentialTypeSerializer
+    queryset = CredentialType.objects.all()
 
 
 class ExpandedCredentialSerializer(CredentialSerializer):
@@ -104,152 +80,90 @@ class ExpandedCredentialSerializer(CredentialSerializer):
         )
 
 
-class TopicViewSet(ViewSet):
-    def list(self, request):
-        queryset = Topic.objects.all()
-        serializer = TopicSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Topic.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = TopicSerializer(item)
-        return Response(serializer.data)
+class TopicViewSet(ModelViewSet):
+    serializer_class = TopicSerializer
+    queryset = Topic.objects.all()
 
     @detail_route(url_path="formatted")
     def retrieve_formatted(self, request, pk=None):
-        queryset = Topic.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
+        item = get_object_or_404(self.queryset, pk=pk)
         serializer = CustomTopicSerializer(item)
         return Response(serializer.data)
 
     @detail_route(url_path="credential")
     def list_credentials(self, request, pk=None):
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
+        item = get_object_or_404(self.queryset, pk=pk)
         queryset = item.credentials
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @detail_route(url_path="credential/active")
     def list_active_credentials(self, request, pk=None):
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
+        item = get_object_or_404(self.queryset, pk=pk)
         queryset = item.credentials.filter(revoked=False)
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @detail_route(url_path="credential/historical")
     def list_historical_credentials(self, request, pk=None):
-        parent_queryset = Topic.objects.all()
-        item = get_object_or_404(parent_queryset, pk=pk)
+        item = get_object_or_404(self.queryset, pk=pk)
         queryset = item.credentials.filter(~Q(revoked=False))
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
-class CredentialViewSet(ViewSet):
-    def list(self, request):
-        queryset = Credential.objects.all()
-        serializer = CredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
+class CredentialViewSet(ModelViewSet):
+    serializer_class = CredentialSerializer
+    queryset = Credential.objects.all()
 
     def retrieve(self, request, pk=None):
-        queryset = Credential.objects.all()
-        try:
-            # Overload to allow querying by wallet_id
-            item = Credential.objects.get(wallet_id=pk)
-        except Credential.DoesNotExist:
-            try:
-                item = get_object_or_404(queryset, pk=pk)
-            except ValueError:
-                raise NotFound()
+        queryset = self.queryset.filter(Q(wallet_id=pk) | Q(pk=pk))
+        item = get_object_or_404(queryset)
         serializer = CredentialSerializer(item)
         return Response(serializer.data)
 
     @detail_route(url_path="formatted")
     def retrieve_formatted(self, request, pk=None):
-        queryset = Credential.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
+        item = get_object_or_404(self.queryset, pk=pk)
         serializer = ExpandedCredentialSerializer(item)
         return Response(serializer.data)
 
     @list_route(url_path="active")
     def list_active(self, request, pk=None):
-        queryset = Credential.objects.filter(revoked=False)
+        queryset = self.queryset.filter(revoked=False)
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @list_route(url_path="historical")
     def list_historical(self, request, pk=None):
-        queryset = Credential.objects.filter(~Q(revoked=False))
+        queryset = self.queryset.filter(~Q(revoked=False))
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
-class AddressViewSet(ViewSet):
-    def list(self, request):
-        queryset = Address.objects.all()
-        serializer = AddressSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Address.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = AddressSerializer(item)
-        return Response(serializer.data)
+class AddressViewSet(ModelViewSet):
+    serializer_class = AddressSerializer
+    queryset = Address.objects.all()
 
 
-class ContactViewSet(ViewSet):
-    def list(self, request):
-        queryset = Contact.objects.all()
-        serializer = ContactSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Contact.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = ContactSerializer(item)
-        return Response(serializer.data)
+class ContactViewSet(ModelViewSet):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
 
 
-class NameViewSet(ViewSet):
-    def list(self, request):
-        queryset = Name.objects.all()
-        serializer = NameSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Name.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = NameSerializer(item)
-        return Response(serializer.data)
+class NameViewSet(ModelViewSet):
+    serializer_class = NameSerializer
+    queryset = Name.objects.all()
 
 
-class PersonViewSet(ViewSet):
-    def list(self, request):
-        queryset = Person.objects.all()
-        serializer = PersonSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Person.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = PersonSerializer(item)
-        return Response(serializer.data)
+class PersonViewSet(ModelViewSet):
+    serializer_class = PersonSerializer
+    queryset = Person.objects.all()
 
 
-class CategoryViewSet(ViewSet):
-    def list(self, request):
-        queryset = Category.objects.all()
-        serializer = CategorySerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Category.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = CategorySerializer(item)
-        return Response(serializer.data)
+class CategoryViewSet(ModelViewSet):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
 
 
 # Add environment specific endpoints

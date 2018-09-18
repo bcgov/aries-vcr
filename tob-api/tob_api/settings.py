@@ -147,7 +147,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "tob_api.pagination.EnhancedPageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
-    "DEFAULT_PERMISSION_CLASSES": permissions.defaults(),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
+    ],
 }
 
 SWAGGER_SETTINGS = {

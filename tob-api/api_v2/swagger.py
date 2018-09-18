@@ -1,4 +1,5 @@
 import logging
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.schemas import SchemaGenerator
 from rest_framework.views import APIView
@@ -11,6 +12,7 @@ class SwaggerSchemaView(APIView):
     """
     Utility class for rendering swagger documentation
     """
+    permission_classes = (permissions.AllowAny,)
     renderer_classes = [renderers.OpenAPIRenderer, renderers.SwaggerUIRenderer]
     schema = None
 
