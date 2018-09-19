@@ -6,10 +6,12 @@ from rest_framework.views import APIView
 from drf_haystack.filters import HaystackFilter, HaystackFacetFilter
 from drf_haystack.mixins import FacetMixin
 from drf_haystack.viewsets import HaystackViewSet
+from haystack.query import RelatedSearchQuerySet
 
 from api_v2.models.Credential import Credential
 from api_v2.serializers.search import (
     CredentialSearchSerializer, CredentialFacetSerializer,
+    CredentialTopicSearchSerializer,
 )
 from api_v2.suggest import SuggestManager
 
@@ -55,3 +57,26 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
     facet_objects_serializer_class = CredentialSearchSerializer
 
     # FacetMixin provides /facets
+
+
+class TopicSearchQuerySet(RelatedSearchQuerySet):
+    """
+    Optimize queries when fetching topic-oriented credential search results
+    """
+    def __init__(self, *args, **kwargs):
+        super(TopicSearchQuerySet, self).__init__(*args, **kwargs)
+        self._load_all_querysets[Credential] = self.topic_queryset()
+
+    def topic_queryset(self):
+        return Credential.objects.select_related(
+            "credential_type",
+            "credential_type__issuer",
+            "credential_type__schema",
+            "topic",
+        ).all()
+
+
+class CredentialTopicSearchView(CredentialSearchView):
+    object_class = TopicSearchQuerySet
+    serializer_class = CredentialTopicSearchSerializer
+    facet_objects_serializer_class = CredentialTopicSearchSerializer

@@ -29,6 +29,7 @@ from api_v2.models.Address import Address
 from api_v2.models.Person import Person
 from api_v2.models.Contact import Contact
 from api_v2.models.Category import Category
+from api_v2.models.Credential import Credential
 from api_v2 import utils
 
 from api_v2.search_indexes import CredentialIndex
@@ -73,7 +74,8 @@ class CustomCredentialSerializer(CredentialSerializer):
 
 class CustomIssuerSerializer(IssuerSerializer):
     class Meta(IssuerSerializer.Meta):
-        fields = ("id", "did", "name", "abbreviation", "email", "url")
+        fields = ("id", "did", "name", "abbreviation", "email", "url", "has_logo")
+        exclude = None
 
 
 class CustomAddressSerializer(AddressSerializer):
@@ -230,11 +232,17 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "revoked", "topic",
         )
         search_fields = (
-            "name", "location", "category",
+            "category", "location", "name",
             "effective_date", "revoked",
             "topic_id", "topic_type", "topic_source_id",
             "credential_type_id", "issuer_id",
         )
+
+
+class CredentialTopicSearchSerializer(CredentialSearchSerializer):
+    topic = CredentialTopicSerializer()
+    addresses = CredentialAddressSerializer(source='get_topic_addresses', many=True)
+    categories = CredentialCategorySerializer(source='get_topic_categories', many=True)
 
 
 class CredentialFacetSerializer(HaystackFacetSerializer):

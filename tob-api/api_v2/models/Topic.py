@@ -5,9 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from auditable.models import Auditable
 
-# from .Credential import Credential
-# from .TopicRelationship import TopicRelationship
-
 import logging
 
 logger = logging.getLogger(__name__)

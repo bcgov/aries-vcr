@@ -154,7 +154,7 @@ export namespace Model {
   }
 
   export class CredentialSearchResult extends Credential {
-    static resourceName = 'search/credential';
+    static resourceName = 'search/credential/topic';
   }
 
   export class CredentialVerifyResult extends BaseModel {
