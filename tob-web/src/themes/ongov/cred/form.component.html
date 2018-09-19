@@ -120,7 +120,12 @@
                           {{'cred.verify-status' | translate}}
                         </div>
                         <div class="panel-body">
-                          {{verifyResult.status | translate }}
+                            <div *ngIf="verifyResult && verifyResult.success"> 
+                                {{ 'cred.success' | translate }}
+                            </div>
+                            <div  *ngIf="verifyResult && !verifyResult.success"> 
+                                {{'cred.error' | translate }}
+                            </div>
                         </div>
                       </div>
                     </div>

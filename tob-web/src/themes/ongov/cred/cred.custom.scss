@@ -1,15 +1,27 @@
-.cred-link {
-    &::before {
-      padding-right: 0em;
-    }
-    &.location {
-      content: "";
-    }
-    &.name::before {
-      content: "";
-    }
+.cred-row {
+  padding-bottom: 0.5em;
+  padding-top: 0.5em;
+  padding-left: 0.5em;
+  .cred-link {
+      margin-left: 0em;
+      &::before {
+        padding-right: 0em;
+      }
+      &.location {
+        content: "";
+      }
+      &.name::before {
+        content: "";
+      }
+  }
+  .cred-info{
+    margin-left: 0em;
+    padding-left: 0px;
+  }
+  .cred-address {
+    float: right;
+  }
 }
-
 .panel-title {
   font-size: 2rem;
   margin-top: 25px;
@@ -20,6 +32,7 @@
 
 .name-panel {
   border: 1px solid #ccc;
+  max-height: inherit;
   > .panel-heading {
     background-color:#595959;
     color: white;
@@ -44,7 +57,7 @@
 }
 
 .disclaimer-cred{
-  padding: 10px;
+  padding: 15px;
 }
 .cred {
   max-width: 50%;

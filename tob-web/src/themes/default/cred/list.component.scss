@@ -59,3 +59,5 @@ $cred-pad: 10px;
   }
 }
 
+//place all overrides for a specific theme in this file inside your theme/cred directory
+@import "../../_active/cred/cred.custom";
