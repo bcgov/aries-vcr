@@ -1,7 +1,7 @@
 <div class="creds-grid" *ngIf="format==='cards'">
   <div class="cred-card" *ngFor="let cred of records">
-    <div class="cred-icon" *ngIf="cred.issuer.logo_b64">
-      <img src="assets/bc-logo-icon.jpg">
+    <div class="cred-icon" *ngIf="cred.issuer.has_logo">
+      <img [src]="cred.issuer.logo_url | resolveUrl" [alt]="'issuer.logo-image' | translate">
     </div>
     <div class="cred-detail">
       <p class="cred-title">

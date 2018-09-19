@@ -1,5 +1,8 @@
-from django.shortcuts import get_object_or_404
+import base64
+
 from django.db.models import Q
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404
 
 from rest_framework.exceptions import NotFound
 from rest_framework.decorators import detail_route, list_route
@@ -48,6 +51,17 @@ class IssuerViewSet(ModelViewSet):
         serializer = CredentialTypeSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    @detail_route(url_path="logo")
+    def fetch_logo(self, request, pk=None):
+        issuer = get_object_or_404(self.queryset, pk=pk)
+        logo = None
+        if issuer.logo_b64:
+            logo = base64.b64decode(issuer.logo_b64)
+        if not logo:
+            raise Http404()
+        # FIXME - need to store the logo mime type
+        return HttpResponse(logo, content_type="image/jpg")
+
 
 class SchemaViewSet(ModelViewSet):
     serializer_class = SchemaSerializer
@@ -57,6 +71,19 @@ class SchemaViewSet(ModelViewSet):
 class CredentialTypeViewSet(ModelViewSet):
     serializer_class = CredentialTypeSerializer
     queryset = CredentialType.objects.all()
+
+    @detail_route(url_path="logo")
+    def fetch_logo(self, request, pk=None):
+        credType = get_object_or_404(self.queryset, pk=pk)
+        logo = None
+        if credType.logo_b64:
+            logo = base64.b64decode(credType.logo_b64)
+        elif credType.issuer and credType.issuer.logo_b64:
+            logo = base64.b64decode(credType.issuer.logo_b64)
+        if not logo:
+            raise Http404()
+        # FIXME - need to store the logo mime type
+        return HttpResponse(logo, content_type="image/jpg")
 
 
 class ExpandedCredentialSerializer(CredentialSerializer):

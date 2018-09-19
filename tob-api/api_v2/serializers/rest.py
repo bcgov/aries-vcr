@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import BooleanField, ModelSerializer
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.CredentialType import CredentialType
@@ -12,10 +12,15 @@ from api_v2.models.Person import Person
 from api_v2.models.Category import Category
 from api_v2 import utils
 
+
 class IssuerSerializer(ModelSerializer):
+    has_logo = BooleanField(source="get_has_logo", read_only=True)
+
     class Meta:
         model = Issuer
-        fields = "__all__"
+        exclude = (
+            "logo_b64",
+        )
 
 
 class SchemaSerializer(ModelSerializer):
@@ -25,10 +30,14 @@ class SchemaSerializer(ModelSerializer):
 
 
 class CredentialTypeSerializer(ModelSerializer):
+    issuer = IssuerSerializer()
+    has_logo = BooleanField(source="get_has_logo", read_only=True)
+
     class Meta:
         model = CredentialType
         depth = 1
         exclude = (
+            "logo_b64",
             "processor_config",
             "visible_fields",
         )

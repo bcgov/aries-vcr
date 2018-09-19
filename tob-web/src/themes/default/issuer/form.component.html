@@ -9,10 +9,10 @@
 
       <div class="row">
         <div class="col-md-12 issuer-info">
-          <div class="row form-group" *ngIf="record.logo_b64">
+          <div class="row form-group" *ngIf="record.has_logo">
             <div class="col-sm-8 form-field">
               <div class="issuer-logo">
-                <img [src]="safeImg" [alt]="'issuer.logo-image' | translate">
+                <img [src]="record.logo_url | resolveUrl" [alt]="'issuer.logo-image' | translate">
               </div>
             </div>
           </div>

@@ -20,8 +20,11 @@ export class GeneralDataService {
   }
 
   getRequestUrl(path: string) : string {
-   let root = (<any>window).testApiUrl || this.apiUrl;
-  // let root = 'http://localhost:8081/api/v2/'
+    if(typeof path === 'string' && path.match(/^(\/\/|\w+:\/\/)\w/)) {
+      // absolute URL
+      return path;
+    }
+    let root = (<any>window).testApiUrl || this.apiUrl;
     if(root) {
       if(! root.endsWith('/')) root += '/';
       return root + path;
@@ -133,7 +136,8 @@ export class GeneralDataService {
       fetch.loadError("Undefined resource path");
     else {
       let httpParams = this.makeHttpParams(params.query);
-      fetch.loadFrom(this.loadFromApi(path, httpParams));
+      let url = this.getRequestUrl(path);
+      fetch.loadFrom(this.loadJson(url, httpParams), {url: url});
     }
   }
 

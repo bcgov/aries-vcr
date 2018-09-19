@@ -8,6 +8,7 @@ import { DateFormatPipe } from './date-format.pipe';
 import { ErrorMessageComponent } from './error-message.component';
 import { LoadingIndicatorComponent } from './loading-indicator.component';
 import { NotFoundComponent } from './not-found.component';
+import { ResolveUrlPipe } from './resolve-url.pipe';
 
 const ROUTES = [];
 
@@ -18,6 +19,7 @@ const ROUTES = [];
     ErrorMessageComponent,
     LoadingIndicatorComponent,
     NotFoundComponent,
+    ResolveUrlPipe,
   ],
   providers: [
   ],
@@ -33,6 +35,7 @@ const ROUTES = [];
     ErrorMessageComponent,
     LoadingIndicatorComponent,
     NotFoundComponent,
+    ResolveUrlPipe,
   ]
 })
 export class UtilModule {}

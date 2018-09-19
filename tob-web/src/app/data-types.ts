@@ -54,10 +54,6 @@ export namespace Model {
       let ctor = (this.constructor as ModelCtor<T>);
       return load_data(this, result, ctor.propertyMap, ctor.listPropertyMap);
     }
-    // temporary
-    load(result: any) {
-      return this._load(result);
-    }
   }
 
   export class Address extends BaseModel {
@@ -198,14 +194,20 @@ export namespace Model {
     description: string;
     // processorConfig: string;
     credential_def_id: string;
-    logo_b64: string;
     // visible_fields: string;
+    has_logo: boolean;
 
     static resourceName = 'credentialtype';
 
     static propertyMap = {
       issuer: 'Issuer',
     };
+
+    get logo_url(): string {
+      if(this.has_logo) {
+        return `${CredentialType.resourceName}/${this.id}/logo`;
+      }
+    }
   }
 
   export class Issuer extends BaseModel {
@@ -215,9 +217,15 @@ export namespace Model {
     abbreviation: string;
     email: string;
     url: string;
-    logo_b64: string;
+    has_logo: boolean;
 
     static resourceName = 'issuer';
+
+    get logo_url(): string {
+      if(this.has_logo) {
+        return `${Issuer.resourceName}/${this.id}/logo`;
+      }
+    }
   }
 
   export class IssuerCredentialType extends CredentialType {
@@ -304,13 +312,16 @@ export namespace Fetch {
 
   export class BaseResult<T> {
     public data: T;
+    public meta: any;
 
     constructor(
       protected _ctor: (any) => T,
       protected _input?: any,
       public error?: any,
-      public loading: boolean = false) {
+      public loading: boolean = false,
+      _meta: any = null) {
         this.input = _input;
+        this.meta = _meta || {};
     }
 
     get input(): any {
@@ -393,7 +404,8 @@ export namespace Fetch {
       ctor: (any) => T,
       input?: any,
       error?: any,
-      loading?: boolean): R;
+      loading?: boolean,
+      meta?: any): R;
   }
 
   export class RequestParams {
@@ -507,8 +519,8 @@ export namespace Fetch {
       }
     }
 
-    protected _makeResult(input?: any, error?: any, loading: boolean=false) {
-      return new this._rctor(this._map, input, error, loading);
+    protected _makeResult(input?: any, error?: any, loading: boolean=false, meta=null) {
+      return new this._rctor(this._map, input, error, loading, meta);
     }
 
     get stream(): Observable<R> {
@@ -531,20 +543,20 @@ export namespace Fetch {
       return this._req;
     }
 
-    loadData(data: any) {
-      this.result = this._makeResult(data, null);
+    loadData(data: any, meta=null) {
+      this.result = this._makeResult(data, null, false, meta);
     }
 
-    loadError(err: any) {
-      this.result = this._makeResult(null, err, false);
+    loadError(err: any, meta=null) {
+      this.result = this._makeResult(null, err, false, meta);
     }
 
-    loadFrom(obs: Observable<any>) {
+    loadFrom(obs: Observable<any>, meta=null) {
       this._clearSub();
-      this.result = this._makeResult(null, null, true);
+      this.result = this._makeResult(null, null, true, meta);
       this._sub = obs.subscribe(
-        this.loadData.bind(this),
-        this.loadError.bind(this)
+        (result) => this.loadData(result, meta),
+        (err) => this.loadError(err, meta)
       );
     }
   }

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Fetch, Model } from '../data-types';
 import { GeneralDataService } from '../general-data.service';
@@ -20,7 +19,6 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
   constructor(
     private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
-    private _sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
@@ -50,12 +48,4 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
   get credTypes$() {
     return this._credTypes.stream;
   }
-
-  get safeImg() {
-    if(this.result.data.logo_b64) {
-      let src = 'data:image/*;base64,' + this.result.data.logo_b64;
-      return this._sanitizer.bypassSecurityTrustUrl(src);
-    }
-  }
-
 }

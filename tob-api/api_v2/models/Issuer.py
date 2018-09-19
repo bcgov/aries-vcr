@@ -13,3 +13,6 @@ class Issuer(Auditable):
 
     class Meta:
         db_table = "issuer"
+
+    def get_has_logo(self):
+        return bool(self.logo_b64)
