@@ -402,6 +402,11 @@ shell)
   configureEnvironment $@
   docker-compose run tob-api bash
   ;;
+django)
+  _startupParams=$(getStartupParams $@)
+  configureEnvironment $@
+  docker-compose run tob-api python manage.py
+  ;;
 *)
   usage
   ;;
