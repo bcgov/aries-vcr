@@ -20,3 +20,33 @@
         </div>
     </div>
 </div>
+</div>
+<div class="creds-list creds-search" *ngIf="format==='search'">
+    <div class="row cred-row" *ngFor="let cred of records">
+            <ng-container *ngIf="cred.names.length > 0"> <!-- temp issue with search returning blank topics -->
+                <div class="col-sm-10">
+                  <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
+                  <a [routerLink]="['/topic',  cred.topic.id] | localize"
+                    class="body-link cred-link name">{{cred.names[0].text}}</a>
+                  <br>
+                  <label *ngIf="cred.categories.length > 0">
+                    <div  *ngFor="let category of cred.categories">
+                       <div  *ngIf="category.type === 'topic_type'">
+                          <div *ngIf="category.value" >
+                           {{('business_type.' + category.value) | translate}}
+                         </div>
+                       </div>
+                     </div>
+                 </label>
+                </div>
+                <div class="col-sm-5">{{cred.addresses.length}}
+                  <small *ngIf="cred.addresses.length > 0">
+                    <!-- TODO: Add notion of 'type' to address model? -->
+                    <!-- <label class="control-label" translate>{{topic.addresses[0].type}}</label> -->
+                    <address-view [record]="cred.addresses[0]"></address-view>
+                  </small>
+                </div>
+              </ng-container>
+                  
+    </div>
+</div>
