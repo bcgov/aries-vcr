@@ -405,7 +405,7 @@ shell)
 django)
   _startupParams=$(getStartupParams $@)
   configureEnvironment $@
-  docker-compose run tob-api python manage.py
+  docker-compose run tob-api python manage.py $@
   ;;
 *)
   usage

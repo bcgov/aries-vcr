@@ -178,6 +178,98 @@ class CredentialManager(object):
         self.credential = credential
         self.credential_request_metadata = request_metadata
 
+    @staticmethod
+    def process_mapping(rules, credential):
+        """
+        Takes our mapping rules and returns a value from credential
+        """
+        if not rules:
+            return None
+
+        # Get required values from config
+        try:
+            _input = rules["input"]
+            _from = rules["from"]
+        except KeyError as error:
+            raise CredentialException(
+                "Every mapping must specify 'input' and 'from' values."
+            )
+
+        # Pocessor is optional
+        try:
+            processor = rules["processor"]
+        except KeyError as error:
+            processor = None
+
+        # Get model field value from string literal or claim value
+        if _from == "value":
+            mapped_value = _input
+        elif _from == "claim":
+            try:
+                if isinstance(credential, Credential):
+                    mapped_value = getattr(credential, _input)
+                elif isinstance(credential, CredentialModel):
+                    mapped_value = Claim.objects.get(credential=credential, name=_input)
+            except AttributeError as error:
+                raise CredentialException(
+                    "Credential does not contain the configured claim '{}'".format(
+                        _input
+                    )
+                )
+        else:
+            raise CredentialException(
+                "Supported field from values are 'value' and 'claim'"
+                + " but received '{}'".format(_from)
+            )
+
+        # If we have a processor config, build pipeline of functions
+        # and run field value through pipeline
+        if processor is not None:
+            pipeline = []
+            # Construct pipeline by dot notation. Last token is the
+            # function name and all preceeding dots denote path of
+            # module starting from `PROCESSOR_FUNCTION_BASE_PATH``
+            for function_path_with_name in processor:
+                function_path, function_name = function_path_with_name.rsplit(".", 1)
+
+                # Does the file exist?
+                try:
+                    function_module = import_module(
+                        "{}.{}".format(PROCESSOR_FUNCTION_BASE_PATH, function_path)
+                    )
+                except ModuleNotFoundError as error:
+                    raise CredentialException(
+                        "No processor module named '{}'".format(function_path)
+                    )
+
+                # Does the function exist?
+                try:
+                    function = getattr(function_module, function_name)
+                except AttributeError as error:
+                    raise CredentialException(
+                        "Module '{}' has no function '{}'.".format(
+                            function_path, function_name
+                        )
+                    )
+
+                # Build up a list of functions to call
+                pipeline.append(function)
+
+            # We want to run the pipeline in logical order
+            pipeline.reverse()
+
+            # Run pipeline
+            while len(pipeline) > 0:
+                function = pipeline.pop()
+                mapped_value = function(mapped_value)
+
+        # This is ugly. von-agent currently serializes null values
+        # to the string 'None'
+        if mapped_value == "None":
+            mapped_value = None
+
+        return mapped_value
+
     def process(self, credential_wallet_id):
         """
         Processes incoming credential data and returns newly created credential
@@ -224,98 +316,6 @@ class CredentialManager(object):
         return credential_wallet_id
 
     def populate_application_database(self, credential_type, credential_wallet_id):
-
-        # Takes our mapping rules and returns a value from credential
-        def process_mapping(rules):
-            if not rules:
-                return None
-
-            # Get required values from config
-            try:
-                _input = rules["input"]
-                _from = rules["from"]
-            except KeyError as error:
-                raise CredentialException(
-                    "Every mapping must specify 'input' and 'from' values."
-                )
-
-            # Pocessor is optional
-            try:
-                processor = rules["processor"]
-            except KeyError as error:
-                processor = None
-
-            # Get model field value from string literal or claim value
-            if _from == "value":
-                mapped_value = _input
-            elif _from == "claim":
-                try:
-                    mapped_value = getattr(self.credential, _input)
-                except AttributeError as error:
-                    raise CredentialException(
-                        "Credential does not contain the configured claim '{}'".format(
-                            _input
-                        )
-                        + "Claims are: {}".format(
-                            ", ".join(self.credential.claim_attributes)
-                        )
-                    )
-            else:
-                raise CredentialException(
-                    "Supported field from values are 'value' and 'claim'"
-                    + " but received '{}'".format(_from)
-                )
-
-            # If we have a processor config, build pipeline of functions
-            # and run field value through pipeline
-            if processor is not None:
-                pipeline = []
-                # Construct pipeline by dot notation. Last token is the
-                # function name and all preceeding dots denote path of
-                # module starting from `PROCESSOR_FUNCTION_BASE_PATH``
-                for function_path_with_name in processor:
-                    function_path, function_name = function_path_with_name.rsplit(
-                        ".", 1
-                    )
-
-                    # Does the file exist?
-                    try:
-                        function_module = import_module(
-                            "{}.{}".format(PROCESSOR_FUNCTION_BASE_PATH, function_path)
-                        )
-                    except ModuleNotFoundError as error:
-                        raise CredentialException(
-                            "No processor module named '{}'".format(function_path)
-                        )
-
-                    # Does the function exist?
-                    try:
-                        function = getattr(function_module, function_name)
-                    except AttributeError as error:
-                        raise CredentialException(
-                            "Module '{}' has no function '{}'.".format(
-                                function_path, function_name
-                            )
-                        )
-
-                    # Build up a list of functions to call
-                    pipeline.append(function)
-
-                # We want to run the pipeline in logical order
-                pipeline.reverse()
-
-                # Run pipeline
-                while len(pipeline) > 0:
-                    function = pipeline.pop()
-                    mapped_value = function(mapped_value)
-
-            # This is ugly. von-agent currently serializes null values
-            # to the string 'None'
-            if mapped_value == "None":
-                mapped_value = None
-
-            return mapped_value
-
         LOGGER.warn(">>> store cred in local database")
         start_time = time.perf_counter()
         processor_config = credential_type.processor_config
@@ -334,15 +334,25 @@ class CredentialManager(object):
             related_topic = None
             topic = None
 
-            related_topic_name = process_mapping(topic_def.get("related_name"))
-            related_topic_source_id = process_mapping(
-                topic_def.get("related_source_id")
+            related_topic_name = CredentialManager.process_mapping(
+                topic_def.get("related_name"), self.credential
             )
-            related_topic_type = process_mapping(topic_def.get("related_type"))
+            related_topic_source_id = CredentialManager.process_mapping(
+                topic_def.get("related_source_id"), self.credential
+            )
+            related_topic_type = CredentialManager.process_mapping(
+                topic_def.get("related_type"), self.credential
+            )
 
-            topic_name = process_mapping(topic_def.get("name"))
-            topic_source_id = process_mapping(topic_def.get("source_id"))
-            topic_type = process_mapping(topic_def.get("type"))
+            topic_name = CredentialManager.process_mapping(
+                topic_def.get("name"), self.credential
+            )
+            topic_source_id = CredentialManager.process_mapping(
+                topic_def.get("source_id"), self.credential
+            )
+            topic_type = CredentialManager.process_mapping(
+                topic_def.get("type"), self.credential
+            )
 
             # Get parent topic if possible
             if related_topic_name:
@@ -431,7 +441,9 @@ class CredentialManager(object):
 
         credential_config = processor_config.get("credential")
         if credential_config:
-            effective_date = process_mapping(credential_config.get("effective_date"))
+            effective_date = CredentialManager.process_mapping(
+                credential_config.get("effective_date"), self.credential
+            )
             if effective_date:
                 try:
                     # effective_date could be seconds since epoch
@@ -444,7 +456,9 @@ class CredentialManager(object):
                     pass
                 credential_args["effective_date"] = effective_date
 
-            revoked = process_mapping(credential_config.get("revoked"))
+            revoked = CredentialManager.process_mapping(
+                credential_config.get("revoked"), self.credential
+            )
             if revoked:
                 credential_args["revoked"] = bool(revoked)
 
@@ -513,8 +527,6 @@ class CredentialManager(object):
         for model_mapper in mapping:
             model_name = model_mapper["model"]
 
-            # We currently support 4 model types
-            # see SUPPORTED_MODELS_MAPPING
             try:
                 Model = SUPPORTED_MODELS_MAPPING[model_name]
                 model = Model()
@@ -524,7 +536,11 @@ class CredentialManager(object):
                 )
 
             for field, field_mapper in model_mapper["fields"].items():
-                setattr(model, field, process_mapping(field_mapper))
+                setattr(
+                    model,
+                    field,
+                    CredentialManager.process_mapping(field_mapper, self.credential),
+                )
 
             model.credential = credential
             model.save()
