@@ -15,11 +15,13 @@ from api_v2.serializers.rest import (
     CredentialTypeSerializer,
     TopicSerializer,
     CredentialSerializer,
+    ExpandedCredentialSerializer,
     AddressSerializer,
     ContactSerializer,
     NameSerializer,
     CategorySerializer,
     PersonSerializer,
+    CredentialTopicExtSerializer,
 )
 
 from rest_framework.serializers import SerializerMethodField
@@ -84,27 +86,6 @@ class CredentialTypeViewSet(ModelViewSet):
             raise Http404()
         # FIXME - need to store the logo mime type
         return HttpResponse(logo, content_type="image/jpg")
-
-
-class ExpandedCredentialSerializer(CredentialSerializer):
-    credential_type = CredentialTypeSerializer()
-    topic = TopicSerializer()
-
-    class Meta(CredentialSerializer.Meta):
-        depth = 1
-        fields = (
-            "id",
-            "effective_date",
-            "revoked",
-            "wallet_id",
-            "credential_type",
-            "addresses",
-            "categories",
-            "names",
-            "contacts",
-            "people",
-            "topic",
-        )
 
 
 class TopicViewSet(ModelViewSet):

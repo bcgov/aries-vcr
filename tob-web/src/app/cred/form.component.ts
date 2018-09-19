@@ -18,7 +18,6 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   proofVisible: boolean = false;
 
   private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
-  private _topic = new Fetch.ModelLoader(Model.TopicFormatted);
   private _verify = new Fetch.ModelLoader(Model.CredentialVerifyResult);
   private _idSub: Subscription;
 
@@ -38,7 +37,6 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
       if(! this._formRef || ! this._formRef.nativeElement.classList.contains('no-verify'))
         // auto-verify unless button is present
         this.verifyCred();
-      this._dataService.loadRecord(this._topic, this.result.data.topic.id);
     });
   }
 
@@ -54,10 +52,6 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get result$() {
     return this._loader.stream;
-  }
-
-  get topic$() {
-    return this._topic.stream;
   }
 
   get verify$() {

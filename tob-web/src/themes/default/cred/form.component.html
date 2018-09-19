@@ -38,11 +38,11 @@
           </div>
         </div>
 
-        <div class="row form-group" *ngIf="(topic$ | async) as topic">
+        <div class="row form-group" *ngIf="record.topic as topic">
           <div class="col-sm-12">
             <label class="control-label" translate>topic.related-to</label>
-            <div class="form-field" *ngIf="topic.data">
-              {{topic.data.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="['/topic', topic.data.id] | localize">{{topic.data.names[0]?.text}}</a>
+            <div class="form-field">
+              {{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="['/topic', topic.id] | localize">{{topic.names[0]?.text}}</a>
             </div>
           </div>
         </div>

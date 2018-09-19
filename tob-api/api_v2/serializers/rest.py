@@ -49,12 +49,6 @@ class TopicSerializer(ModelSerializer):
         fields = list(utils.fetch_custom_settings('serializers', 'Topic', 'includeFields'))
 
 
-class CredentialSerializer(ModelSerializer):
-    class Meta:
-        model = Credential
-        fields = "__all__"
-
-
 class AddressSerializer(ModelSerializer):
     class Meta:
         model = Address
@@ -89,3 +83,78 @@ class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
+
+
+class CredentialSerializer(ModelSerializer):
+    class Meta:
+        model = Credential
+        fields = "__all__"
+
+class CredentialAddressSerializer(AddressSerializer):
+    class Meta(AddressSerializer.Meta):
+        fields = tuple(
+            {*AddressSerializer.Meta.fields, "credential_id"} - {"credential"}
+        )
+
+class CredentialCategorySerializer(CategorySerializer):
+    class Meta(CategorySerializer.Meta):
+        fields = ("id", "type", "value", "credential_id")
+
+class CredentialContactSerializer(ContactSerializer):
+    class Meta(ContactSerializer.Meta):
+        fields = ("id", "type", "text", "credential_id")
+
+class CredentialNameSerializer(NameSerializer):
+    class Meta(NameSerializer.Meta):
+        fields = ("id", "text", "language", "credential_id")
+
+class CredentialPersonSerializer(PersonSerializer):
+    class Meta(PersonSerializer.Meta):
+        fields = ("id", "full_name", "credential_id")
+
+class CredentialTopicSerializer(TopicSerializer):
+    class Meta(TopicSerializer.Meta):
+        fields = (
+            "id", "create_timestamp", "update_timestamp",
+            "source_id", "type",
+        )
+
+
+class CredentialTopicExtSerializer(TopicSerializer):
+    addresses = CredentialAddressSerializer(source='get_active_addresses', many=True)
+    categories = CredentialCategorySerializer(source='get_active_categories', many=True)
+    #contacts = CredentialContactSerializer(source='get_active_contacts', many=True)
+    names = CredentialNameSerializer(source='get_active_names', many=True)
+    #people = CredentialPersonSerializer(source='get_active_people', many=True)
+
+    class Meta(TopicSerializer.Meta):
+        fields = (
+            "id", "create_timestamp", "update_timestamp",
+            "source_id", "type",
+            "addresses", "categories", "names",
+        )
+
+class ExpandedCredentialSerializer(CredentialSerializer):
+    addresses = CredentialAddressSerializer(many=True)
+    categories = CredentialCategorySerializer(many=True)
+    contacts = CredentialContactSerializer(many=True)
+    credential_type = CredentialTypeSerializer()
+    names = CredentialNameSerializer(many=True)
+    people = CredentialPersonSerializer(many=True)
+    topic = CredentialTopicExtSerializer()
+
+    class Meta(CredentialSerializer.Meta):
+        depth = 1
+        fields = (
+            "id",
+            "effective_date",
+            "revoked",
+            "wallet_id",
+            "credential_type",
+            "addresses",
+            "categories",
+            "names",
+            "contacts",
+            "people",
+            "topic",
+        )

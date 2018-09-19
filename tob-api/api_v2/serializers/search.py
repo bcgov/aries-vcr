@@ -22,6 +22,11 @@ from api_v2.serializers.rest import (
     CredentialTypeSerializer,
     IssuerSerializer,
     CategorySerializer,
+    CredentialAddressSerializer,
+    CredentialCategorySerializer,
+    CredentialNameSerializer,
+    CredentialTopicSerializer,
+    CredentialTopicExtSerializer,
 )
 
 from api_v2.models.Name import Name
@@ -136,7 +141,6 @@ class CustomCategorySerializer(CategorySerializer):
 
 
 class CustomTopicSerializer(TopicSerializer):
-    credential_ids = None
     names = SerializerMethodField()
     addresses = SerializerMethodField()
     contacts = SerializerMethodField()
@@ -188,35 +192,6 @@ class CustomTopicSerializer(TopicSerializer):
         return serializer.data
 
 
-class TopicSearchSerializer(HaystackSerializerMixin, CustomTopicSerializer):
-    credential_ids = None
-
-    class Meta(CustomTopicSerializer.Meta):
-        pass
-
-
-class CredentialAddressSerializer(AddressSerializer):
-    class Meta(AddressSerializer.Meta):
-        fields = tuple(f for f in AddressSerializer.Meta.fields if f != "credential")
-
-class CredentialCategorySerializer(CategorySerializer):
-    class Meta(CategorySerializer.Meta):
-        fields = None
-        exclude = ("credential",)
-
-class CredentialNameSerializer(NameSerializer):
-    class Meta(NameSerializer.Meta):
-        fields = None
-        exclude = ("credential",)
-
-class CredentialTopicSerializer(TopicSerializer):
-    class Meta(TopicSerializer.Meta):
-        fields = (
-            "id", "create_timestamp", "update_timestamp",
-            "source_id", "type",
-        )
-
-
 class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     addresses = CredentialAddressSerializer(many=True)
     categories = CredentialCategorySerializer(many=True)
@@ -240,9 +215,19 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
 
 
 class CredentialTopicSearchSerializer(CredentialSearchSerializer):
-    topic = CredentialTopicSerializer()
-    addresses = CredentialAddressSerializer(source='get_topic_addresses', many=True)
-    categories = CredentialCategorySerializer(source='get_topic_categories', many=True)
+    """
+    Return credentials with addresses and categories removed, but
+    added for the related topic instead
+    """
+    topic = CredentialTopicExtSerializer()
+
+    class Meta(CredentialSearchSerializer.Meta):
+        fields = (
+            "id", "create_timestamp", "update_timestamp",
+            "credential_type", "effective_date",
+            "names",
+            "revoked", "topic",
+        )
 
 
 class CredentialFacetSerializer(HaystackFacetSerializer):
