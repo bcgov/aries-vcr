@@ -35,7 +35,7 @@ usage () {
       - Rebuild search indexes.
 
     deleteDatabase
-      - Delete and recreate the database.
+      - Deletes all databases off a pod and recycles the pod leaving it in a clean state.
       - Useful when database credentials change.
 
     hardReset
@@ -44,9 +44,6 @@ usage () {
       - Rebuild search indexes.
       - Register the environment's DID with the ledger.
 
-    registerDids
-      - Register/re-register the services's DIDs with the ledger.
-
     rebuildSearchIndex
       - Rebuild the search index for a given environment.
 
@@ -54,6 +51,16 @@ usage () {
       - Delete the local wallets from one or more pods.
         For example;
           $0 -e dev deleteWallets django
+
+    scaleUp
+      - Scale up one or more pods.
+        For example;
+          $0 -e dev scaleUp django
+
+    scaleDown
+      - Scale down one or more pods.
+        For example;
+          $0 -e dev scaleDown django
 
     recycle
       - Recycle one or more pods.
@@ -141,48 +148,63 @@ resetDatabase() {
 }
 
 deleteDatabase() {
-  _apiPodName=${1}
-  _dbPodName=${2}
-  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ]; then
+  _dbPodName=${1}
+  if [ -z "${_dbPodName}" ]; then
     echo -e \\n"resetDatabase; Missing parameter!"\\n
     exit 1
   fi
 
-  printAndAskToContinue "If you contiune the database will be deleted.  All data will be lost."
+  printAndAskToContinue "If you contiune all of the databases on ${_dbPodName} will be deleted.  All data will be lost."
 
   switchProject
   exitOnError
 
-  deleteAndRecreateDatabaseWithMigrations ${_apiPodName} ${_dbPodName}
+  deleteAndRecreateDatabase ${_dbPodName}
 
-  echoWarning "\nThe project's database has been deleted and recreated."
+  echoWarning "\nThe databases on ${_dbPodName} have been deleted."
 }
 
 hardReset() {
   _apiPodName=${1}
   _dbPodName=${2}
-  _walletApiPodName=${3}
-  _walletDbPodName=${4}
-  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ] || [ -z "${_walletApiPodName}" ] || [ -z "${_walletDbPodName}" ]; then
+  _walletDbPodName=${3}
+  if [ -z "${_apiPodName}" ] || [ -z "${_dbPodName}" ] || [ -z "${_walletDbPodName}" ]; then
     echo -e \\n"resetDatabase; Missing parameter!"\\n
     exit 1
   fi
 
-  printAndWait "Use the Permitify manage script to reset the Permitify pods.\nWait for all of the pods to completely shut down before continuing."
+  printAndWait "If you are using Permitify, use the Permitify manage script to reset the Permitify pods.\nWait for all of the pods to completely shut down before continuing."
 
   switchProject
   exitOnError
 
-  dropAndRecreateDatabaseWithMigrations ${_walletApiPodName} ${_walletDbPodName}
-  dropAndRecreateDatabaseWithMigrations ${_apiPodName} ${_dbPodName}
+  # Delete any sqlite wallets from the API Pod ...
+  deleteWallets ${_apiPodName}
+
+  # Scale down the API pod ...
+  scaleDown ${_apiPodName}
+  exitOnError
+  printAndWait "Wait for the ${_apiPodName} pod to completely shut down before continuing."
+
+  # Drop and recreate the application database ...
+  dropAndRecreatePostgreSqlDatabase ${_dbPodName}
+  exitOnError
+
+  # Drop the wallet databases ...
+  deleteAndRecreateDatabase ${_walletDbPodName}
+  exitOnError
+
+  # Bring the API pod back up ...
+  scaleUp ${_apiPodName}
+  exitOnError
+  printAndWait "Wait for the ${_apiPodName} pod to completely start up before continuing."
+
   rebuildSearchIndex ${_apiPodName}
 
   printAndWait "If you are resetting the ledger, wait for the ledger to completely start up before continuing."
 
-  registerDids $(getDidNames)
-
   echoWarning "\nThe project's database and indy wallets have been reset."  
-  echoWarning "You can now use the Permitify manage script to scale the Permitify pods up."  
+  echoWarning "If you are using Permitify, you can now use the Permitify manage script to scale the Permitify pods up."  
 }
 
 rebuildSearchIndex() {
@@ -195,29 +217,6 @@ rebuildSearchIndex() {
   echoWarning "The command may start interactively in the pod.  Please answer 'y' to the question if you are prompted."
   runInContainerInteractively ${_apiPodName} './rebuildSearchIndex.sh'
   exitOnError
-}
-
-getDidNames() {
-  _didNames="
-    the_org_book
-    the_org_book_on"
-  
-  echo ${_didNames}
-}
-
-getLedgerAddress() {
-  case "${DEPLOYMENT_ENV_NAME}" in
-    dev)
-      _ledgerAddress="159.89.115.24";;
-    test)
-      _ledgerAddress="159.89.125.134";;
-    prod)
-      _ledgerAddress="159.89.125.134";;
-    *)
-      return 1;;
-  esac
-
-  echo ${_ledgerAddress}
 }
 # =================================================================================================================
 
@@ -233,18 +232,15 @@ case "${_cmd}" in
     resetDatabase "${apiPodName}" "${dbPodName}"
     ;;
   deletedatabase)
-    # Allow all of the other parameters to be overridden ...
-    apiPodName=${1:-django}
-    dbPodName=${2:-postgresql}
-    deleteDatabase "${apiPodName}" "${dbPodName}"
+    dbPodName=${1}
+    deleteDatabase "${dbPodName}"
     ;;
   hardreset)
     # Allow all of the other parameters to be overridden ...
     apiPodName=${1:-django}
     dbPodName=${2:-postgresql}
-    walletApiPodName=${3:-wallet}
-    walletDbPodName=${4:-wallet-db}
-    hardReset "${apiPodName}" "${dbPodName}" "${walletApiPodName}" "${walletDbPodName}"
+    walletDbPodName=${3:-wallet-db}
+    hardReset "${apiPodName}" "${dbPodName}" "${walletDbPodName}"
     ;;
   rebuildsearchindex)
     apiPodName=${1:-django}
@@ -252,12 +248,19 @@ case "${_cmd}" in
     exitOnError
     rebuildSearchIndex "${apiPodName}"
     ;;
-  registerdids)
-    registerDids $(getDidNames)
-    ;;
   deletewallets)
     deleteWallets ${@}
     recyclePods ${@}
+    ;;
+  scaleup)
+    switchProject
+    exitOnError
+    scaleUp ${@}
+    ;;
+  scaledown)
+    switchProject
+    exitOnError
+    scaleDown ${@}
     ;;
   recycle)
     recyclePods ${@}
