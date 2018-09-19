@@ -30,25 +30,28 @@ class Command(BaseCommand):
 
         current_cred = 0
         for credential in Credential.objects.all():
-            current_cred += 1
-            self.stdout.write(
-                "Processing credential id:{} ({} of {})".format(
-                    credential.id, current_cred, cred_count
+            with transaction.atomic():
+                current_cred += 1
+                self.stdout.write(
+                    "Processing credential id:{} ({} of {})".format(
+                        credential.id, current_cred, cred_count
+                    )
                 )
-            )
 
-            credential_type = credential.credential_type
-            processor_config = credential_type.processor_config
-            mapping = processor_config.get("mapping") or []
+                credential_type = credential.credential_type
+                processor_config = credential_type.processor_config
+                mapping = processor_config.get("mapping") or []
 
-            # Create search models using mapping from issuer config
-            for model_mapper in mapping:
-                model_name = model_mapper["model"]
+                # Delete existing search models
+                for Model in MODEL_TYPE_MAP.values():
+                    Model.objects.filter(credential=credential).delete()
 
-                Model = MODEL_TYPE_MAP[model_name]
-                models = Model.objects.filter(credential=credential)
+                # Create search models using mapping from issuer config
+                for model_mapper in mapping:
+                    model_name = model_mapper["model"]
 
-                for model in models:
+                    Model = MODEL_TYPE_MAP[model_name]
+                    model = Model()
                     for field, field_mapper in model_mapper["fields"].items():
                         setattr(
                             model,
@@ -56,4 +59,5 @@ class Command(BaseCommand):
                             CredentialManager.process_mapping(field_mapper, credential),
                         )
 
+                    model.credential = credential
                     model.save()

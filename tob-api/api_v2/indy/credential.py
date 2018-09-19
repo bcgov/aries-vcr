@@ -209,8 +209,8 @@ class CredentialManager(object):
                 if isinstance(credential, Credential):
                     mapped_value = getattr(credential, _input)
                 elif isinstance(credential, CredentialModel):
-                    mapped_value = Claim.objects.get(credential=credential, name=_input)
-            except AttributeError as error:
+                    mapped_value = Claim.objects.get(credential=credential, name=_input).value
+            except (AttributeError, Claim.DoesNotExist) as error:
                 raise CredentialException(
                     "Credential does not contain the configured claim '{}'".format(
                         _input
