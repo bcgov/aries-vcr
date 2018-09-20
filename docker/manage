@@ -214,6 +214,7 @@ configureEnvironment() {
 
   # wallet-db
   export WALLET_TYPE="postgres"
+  export WALLET_ENCRYPTION_KEY="mysecretencryptionkey"
   export POSTGRESQL_WALLET_HOST="wallet-db"
   export POSTGRESQL_WALLET_PORT="5432"
   export POSTGRESQL_ADMIN_USER="postgres"

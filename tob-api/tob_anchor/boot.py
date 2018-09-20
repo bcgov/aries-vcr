@@ -129,19 +129,24 @@ async def register_services():
 
         # postgresql wallet-db configuration
         wallet_host = os.environ.get('POSTGRESQL_WALLET_HOST')
-        if not wallet_host or len(wallet_seed) is not 32:
+        if not wallet_host:
             raise Exception('POSTGRESQL_WALLET_HOST must be set.')
         wallet_port = os.environ.get('POSTGRESQL_WALLET_PORT')
-        if not wallet_port or len(wallet_seed) is not 32:
+        if not wallet_port  :
             raise Exception('POSTGRESQL_WALLET_PORT must be set.')
         wallet_user = os.environ.get('POSTGRESQL_WALLET_USER')
-        if not wallet_user or len(wallet_seed) is not 32:
+        if not wallet_user  :
             raise Exception('POSTGRESQL_WALLET_USER must be set.')
         wallet_password = os.environ.get('POSTGRESQL_WALLET_PASSWORD')
-        if not wallet_password or len(wallet_seed) is not 32:
+        if not wallet_password  :
             raise Exception('POSTGRESQL_WALLET_PASSWORD must be set.')
         wallet_admin_user = 'postgres'
         wallet_admin_password = os.environ.get('POSTGRESQL_WALLET_ADMIN_PASSWORD')
+        
+        # TODO pass in as env parameter - key for encrypting the wallet contents
+        wallet_encryp_key = os.environ.get('WALLET_ENCRYPTION_KEY')
+        if not wallet_encryp_key:
+            wallet_encryp_key = "key"
 
         stg_config = {"url": wallet_host + ':' + wallet_port}
         stg_creds = {"account": wallet_user, "password": wallet_password}
@@ -162,7 +167,7 @@ async def register_services():
             "seed": wallet_seed,
             "type": "postgres",
             "params": {"storage_config": stg_config},
-            "access_creds": {"key": "key", "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
+            "access_creds": {"key": wallet_encryp_key, "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
         })
     else:
         LOGGER.info("Using Sqlite storage ...")
@@ -185,7 +190,7 @@ async def register_services():
             "seed": "tob-verifier-wallet-000000000001",
             "type": "postgres",
             "params": {"storage_config": stg_config},
-            "access_creds": {"key": "key", "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
+            "access_creds": {"key": wallet_encryp_key, "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
         })
     else:
         verifier_wallet_id = await client.register_wallet({
