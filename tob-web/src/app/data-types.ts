@@ -54,6 +54,10 @@ export namespace Model {
       let ctor = (this.constructor as ModelCtor<T>);
       return load_data(this, result, ctor.propertyMap, ctor.listPropertyMap);
     }
+
+    get pageTitle(): string {
+      return null;
+    }
   }
 
   export class Address extends BaseModel {
@@ -112,6 +116,10 @@ export namespace Model {
     names: Name[];
     people: Person[];
     topic: Topic;
+
+    get pageTitle(): string {
+      return this.credential_type && this.credential_type.description;
+    }
 
     static resourceName = 'credential';
 
@@ -221,6 +229,10 @@ export namespace Model {
 
     static resourceName = 'issuer';
 
+    get pageTitle(): string {
+      return this.name;
+    }
+
     get logo_url(): string {
       if(this.has_logo) {
         return `${Issuer.resourceName}/${this.id}/logo`;
@@ -285,6 +297,12 @@ export namespace Model {
       address: 'Address',
       category: 'Category',
     };
+
+    get pageTitle(): string {
+      if(this.names && this.names.length) {
+        return this.names[0].text;
+      }
+    }
 
     get typeLabel(): string {
       if(this.type) return ('name.'+this.type).replace(/_/g, '-');

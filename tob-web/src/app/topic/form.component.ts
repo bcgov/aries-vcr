@@ -37,11 +37,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
       this.type = params['topicType'];
       this.source_id = params['sourceId'];
       let ident = this.ident;
-      if(ident) {
-        this._dataService.loadRecord(this._loader, ident);
-      } else {
-        this._loader.loadNotFound();
-      }
+      this._dataService.loadRecord(this._loader, ident, {primary: true});
     });
   }
 

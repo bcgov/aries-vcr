@@ -28,7 +28,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['credId'];
-      this._dataService.loadRecord(this._loader, this.id);
+      this._dataService.loadRecord(this._loader, this.id, {primary: true});
     });
   }
 

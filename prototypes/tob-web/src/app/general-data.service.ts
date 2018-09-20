@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { environment } from '../environments/environment';
 import { Fetch } from './data-types';
 import 'rxjs/add/operator/map';
@@ -15,6 +17,8 @@ export class GeneralDataService {
   private quickLoaded = false;
   private orgData : {[key: string]: any} = {};
   private recordCounts : {[key: string]: number} = {};
+  private currentResultSubj = new BehaviorSubject<Fetch.BaseResult<any>>(null);
+  private loaderSub: Subscription = null;
 
   constructor(private _http: HttpClient) {
   }
@@ -134,12 +138,28 @@ export class GeneralDataService {
   loadData <T, R extends Fetch.BaseResult<T>>(fetch: Fetch.BaseLoader<T,R>, path: string, params?: { [key: string ]: any }) {
     if(! params) params = {};
     if(! path)
+      // fetch.loadNotFound
       fetch.loadError("Undefined resource path");
     else {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
       fetch.loadFrom(this.loadJson(url, httpParams), {url: url});
+      if(params.primary) {
+        if(this.loaderSub)
+          this.loaderSub.unsubscribe();
+        this.loaderSub = fetch.stream.subscribe((result) => {
+          this.setCurrentResult(result);
+        });
+      }
     }
+  }
+
+  onCurrentResult(sub): Subscription {
+    return this.currentResultSubj.subscribe(sub);
+  }
+
+  setCurrentResult(result: Fetch.BaseResult<any>) {
+    this.currentResultSubj.next(result);
   }
 
   deleteRecord (mod: string, id: string) {

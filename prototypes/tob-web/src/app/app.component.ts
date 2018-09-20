@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LocalizeRouterService } from 'localize-router';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { GeneralDataService } from './general-data.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
@@ -33,12 +34,16 @@ export class AppComponent implements OnInit, OnDestroy {
   showTitlePrefix: boolean = true;
   titlePrefix = 'app.title-prefix';
   private _titleLabel;
+  private _titleText;
+  private _titlePrefixText;
   private _onFetchTitle: Subscription;
   private _onLangChange: Subscription;
   private _isPopState: boolean;
+  private _currentRecord: any;
 
   constructor(
     public _el: ElementRef,
+    private _dataService: GeneralDataService,
     private _localize: LocalizeRouterService,
     private _locStrat: LocationStrategy,
     private _route: ActivatedRoute,
@@ -50,6 +55,18 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
   	this._locStrat.onPopState(() => {
       this._isPopState = true;
+    });
+
+    this._dataService.onCurrentResult((result) => {
+      if(result && result.loaded) {
+        this._currentRecord = result.data;
+      } else {
+        this._currentRecord = null;
+        if(result && result.notFound) {
+          console.log('not found!');
+        }
+      }
+      this.updateTitle();
     });
 
     this._router.events
@@ -67,6 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
           window.scrollTo(0, 0);
         }
         this._isPopState = false;
+        this._currentRecord = null;
 
         let title = data['title'] || data['breadcrumb'];
         this.titleLabel = title;
@@ -105,7 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.altLangLabel = alt ? alt.label : '';
       // set the lang attribute on the html element
       this._el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
-      this.updateTitle();
+      this.fetchTitle();
       this.checkInit();
     }
   }
@@ -174,21 +192,39 @@ export class AppComponent implements OnInit, OnDestroy {
   set titleLabel(newLabel: string) {
     this._titleLabel = newLabel;
     this.showTitlePrefix = !! newLabel;
-    this.updateTitle();
+    this.fetchTitle();
   }
 
-  public updateTitle() {
+  public fetchTitle() {
     if (this._onFetchTitle !== undefined) {
       this._onFetchTitle.unsubscribe();
     }
     let lbl = this.titleLabel;
     this._onFetchTitle = this.translate.stream(lbl).subscribe((res: string) => {
-      if(this.showTitlePrefix) {
+      this._titleText = res;
+      if(this.titlePrefix) {
         let pfx = this.translate.get(this.titlePrefix);
-        res = '' + pfx['value'] + res;
+        this._titlePrefixText = pfx['value'];
+      } else {
+        this._titlePrefixText = '';
       }
-      this.setTitle(res);
+      this.updateTitle();
     });
+  }
+
+  public updateTitle() {
+    let title = '';
+    if(this.showTitlePrefix && this._titlePrefixText) {
+      title = this._titlePrefixText;
+    }
+    title += this._titleText;
+    if(title && this._currentRecord) {
+      let recordTitle = this._currentRecord.pageTitle;
+      if(recordTitle) {
+        title += ': ' + recordTitle;
+      }
+    }
+    this.setTitle(title);
   }
 
   public setTitle(newTitle: string) {

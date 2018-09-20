@@ -27,7 +27,7 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
     });
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['issuerId'];
-      this._dataService.loadRecord(this._loader, this.id);
+      this._dataService.loadRecord(this._loader, this.id, {primary: true});
     });
   }
 
