@@ -290,6 +290,14 @@ export namespace Model {
       if(this.type) return ('name.'+this.type).replace(/_/g, '-');
       return '';
     }
+
+    get link(): string[] {
+      return ['/topic/', this.type, this.source_id];
+    }
+
+    extLink(...args): string[] {
+      return this.link.concat(args)
+    }
   }
 
   export class TopicFormatted extends Topic {
@@ -558,6 +566,10 @@ export namespace Fetch {
         (result) => this.loadData(result, meta),
         (err) => this.loadError(err, meta)
       );
+    }
+
+    loadNotFound(meta=null) {
+      this.loadError({obj: {status: 404}});
     }
   }
 

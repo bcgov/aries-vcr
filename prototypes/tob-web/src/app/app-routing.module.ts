@@ -34,7 +34,7 @@ export const routes: Routes = [
     }
   },
   {
-    path: 'topic/:topicId',
+    path: 'topic/:topicType/:sourceId',
     data: {
       breadcrumb: 'topic.breadcrumb'
     },

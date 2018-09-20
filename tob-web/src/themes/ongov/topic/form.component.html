@@ -21,7 +21,7 @@
     <div class="col-sm-12" *ngIf="(creds$ | async) as creds">
       <loading-indicator [loading]="creds.loading"></loading-indicator>
       <error-message [error]="creds.error"></error-message>
-      <cred-list [topicId]="id" [records]="creds.data" [format]="credsFormat"></cred-list>
+      <cred-list [records]="creds.data" [format]="credsFormat"></cred-list>
     </div>
   </div>
 

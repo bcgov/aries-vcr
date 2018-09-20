@@ -11,7 +11,6 @@ import { Model } from '../data-types';
 export class CredListComponent {
 
   @Input() records: Model.Credential[];
-  @Input() topicId: string;
   protected _format = 'cards';
 
   @Input() set format(fmt: string) {

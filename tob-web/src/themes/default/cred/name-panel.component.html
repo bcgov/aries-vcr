@@ -3,7 +3,7 @@
     <h3 class="panel-title">
       {{record.typeLabel | translate}}:
       <span class="strong cred-link name" *ngIf="!link">{{name.text}}</span>
-      <a [routerLink]="['/topic', record.id] | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
+      <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
     </h3>
   </div>
   <div class="panel-body form-body">

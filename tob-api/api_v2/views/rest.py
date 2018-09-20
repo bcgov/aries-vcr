@@ -94,30 +94,54 @@ class TopicViewSet(ModelViewSet):
 
     @detail_route(url_path="formatted")
     def retrieve_formatted(self, request, pk=None):
-        item = get_object_or_404(self.queryset, pk=pk)
+        item = self.get_object()
         serializer = CustomTopicSerializer(item)
         return Response(serializer.data)
 
     @detail_route(url_path="credential")
     def list_credentials(self, request, pk=None):
-        item = get_object_or_404(self.queryset, pk=pk)
+        item = self.get_object()
         queryset = item.credentials
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @detail_route(url_path="credential/active")
     def list_active_credentials(self, request, pk=None):
-        item = get_object_or_404(self.queryset, pk=pk)
+        item = self.get_object()
         queryset = item.credentials.filter(revoked=False)
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @detail_route(url_path="credential/historical")
     def list_historical_credentials(self, request, pk=None):
-        item = get_object_or_404(self.queryset, pk=pk)
+        item = self.get_object()
         queryset = item.credentials.filter(~Q(revoked=False))
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    @list_route(methods=['get'], url_path="ident/(?P<type>[^/.]+)/(?P<source_id>[^/.]+)")
+    def retrieve_by_type(self, request, type=None, source_id=None):
+        return self.retrieve(request)
+
+    @list_route(methods=['get'], url_path="ident/(?P<type>[^/.]+)/(?P<source_id>[^/.]+)/formatted")
+    def retrieve_by_type_formatted(self, request, type=None, source_id=None):
+        return self.retrieve_formatted(request)
+
+    def get_object(self):
+        if self.kwargs.get("pk"):
+            return super(TopicViewSet, self).get_object()
+
+        type = self.kwargs.get("type")
+        source_id = self.kwargs.get("source_id")
+        if not type or not source_id:
+            raise Http404()
+
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = get_object_or_404(queryset, type=type, source_id=source_id)
+
+        # May raise a permission denied
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 
 class CredentialViewSet(ModelViewSet):

@@ -5,7 +5,7 @@
     </div>
     <div class="cred-detail">
       <p class="cred-title">
-        <a class="body-link cred-link" [routerLink]="['/topic', topicId, 'cred', cred.id] | localize">{{cred.credential_type.description}}</a>
+        <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">{{cred.credential_type.description}}</a>
       </p>
       <p class="cred-date" *ngIf="cred.effective_date">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
@@ -23,7 +23,7 @@
   <div class="row cred-row" *ngFor="let cred of records">
     <div class="col-sm-4">
       <div class="cred-title">
-        <a class="body-link cred-link" [routerLink]="['/topic', topicId, 'cred', cred.id] | localize">{{cred.credential_type.description}}</a>
+        <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">{{cred.credential_type.description}}</a>
       </div>
       <div class="cred-date" *ngIf="cred.effective_date">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
@@ -43,7 +43,7 @@
   <div class="row cred-row" *ngFor="let cred of records">
     <div class="col-sm-7">
       <label>{{cred.topic.typeLabel | translate}}:</label>
-      <a [routerLink]="['/topic', cred.topic.id] | localize"
+      <a [routerLink]="cred.topic.link | localize"
         class="body-link cred-link name">{{cred.names[0].text}}</a>
       <br>
       <small *ngIf="cred.issuer">

@@ -4,7 +4,7 @@
   <div class="col-sm-7">
     <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
     <label>{{typeLabel(topic.type) | translate}}:</label>
-    <a [routerLink]="['/topic', topic.id] | localize"
+    <a [routerLink]="topic.link | localize"
       class="body-link cred-link name">{{topic.names[0].text}}</a>
     <br>
     <small>
@@ -38,7 +38,7 @@
   <div class="col-sm-7">
     <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
     <label>{{typeLabel(topic.type) | translate}}:</label>
-    <a [routerLink]="['/topic', topic.id] | localize"
+    <a [routerLink]="topic.link | localize"
       class="body-link cred-link name">{{topic.names[0].text}}</a>
   </div>
   <div class="col-sm-5">

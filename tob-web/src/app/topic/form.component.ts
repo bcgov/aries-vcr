@@ -10,7 +10,8 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['../../themes/_active/topic/form.component.scss']
 })
 export class TopicFormComponent implements OnInit, OnDestroy {
-  id: number;
+  type: string;
+  source_id: string;
   loaded: boolean;
   loading: boolean;
   credsFormat: string = 'rows';
@@ -33,8 +34,14 @@ export class TopicFormComponent implements OnInit, OnDestroy {
       this._fetchCreds();
     });
     this._idSub = this._route.params.subscribe(params => {
-      this.id = +params['topicId'];
-      this._dataService.loadRecord(this._loader, this.id);
+      this.type = params['topicType'];
+      this.source_id = params['sourceId'];
+      let ident = this.ident;
+      if(ident) {
+        this._dataService.loadRecord(this._loader, ident);
+      } else {
+        this._loader.loadNotFound();
+      }
     });
   }
 
@@ -42,6 +49,12 @@ export class TopicFormComponent implements OnInit, OnDestroy {
     this._idSub.unsubscribe();
     this._loader.complete();
     this._creds.complete();
+  }
+
+  get ident(): string {
+    if(this.type && this.source_id) {
+      return this.type === '_' ? this.source_id : `ident/${this.type}/${this.source_id}`;
+    }
   }
 
   get title(): string {
@@ -78,7 +91,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
 
   protected _fetchCreds() {
     let credsFilter = {
-      topic_id: ''+this.id,
+      topic_id: ''+this.topic.id,
       revoked: this._filterActive ? 'false': '',
     };
     this._dataService.loadList(this._creds, {query: credsFilter});

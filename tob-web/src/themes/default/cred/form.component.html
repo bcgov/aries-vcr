@@ -6,7 +6,7 @@
     <div class="col-sm-12" *ngIf="(verify$ | async) as verify">
       <h1 class="cred-title">{{record.credential_type.description}}</h1>
 
-      <a [routerLink]="['/topic/', record.topic.id] | localize" class="title-back-link mrgn-bttm-md">
+      <a [routerLink]="record.topic.link | localize" class="title-back-link mrgn-bttm-md">
         <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
 
       <div class="cred-info">
@@ -42,7 +42,7 @@
           <div class="col-sm-12">
             <label class="control-label" translate>topic.related-to</label>
             <div class="form-field">
-              {{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="['/topic', topic.id] | localize">{{topic.names[0]?.text}}</a>
+              {{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="topic.link | localize">{{topic.names[0]?.text}}</a>
             </div>
           </div>
         </div>
