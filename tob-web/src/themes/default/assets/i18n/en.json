@@ -4,7 +4,6 @@
   },
   "app": {
     "breadcrumb": "Home",
-    "title": "TheOrgBook Demo",
     "header": {
       "title": "TheOrgBook",
       "logo-alt-text": "B.C. Government Logo"
@@ -15,7 +14,9 @@
       "accessibility": "Accessibility",
       "copyright": "Copyright",
       "contact": "Contact Us"
-    }
+    },
+    "title": "TheOrgBook Beta",
+    "title-prefix": "TheOrgBook Beta | "
   },
   "address": {
     "registered-office": "Registered Office"
@@ -100,16 +101,6 @@
   },
   "person": {
     "director": "Director"
-  },
-  "recipe": {
-    "breadcrumb": "Recipe",
-    "cert-depends-on": "Depends on",
-    "cert-view-link": "View record",
-    "cert-not-found": "Certificate not found",
-    "find-org-title": "Find your Organization",
-    "org-view-link": "View organization record",
-    "register-link": "Register your Organization",
-    "title": "Recipe"
   },
   "schema": {
     "name": "Schema Name",

@@ -1,11 +1,12 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { LocationStrategy } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LocalizeRouterService } from 'localize-router';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
-
+import 'rxjs/add/operator/mergeMap';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,6 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['../themes/_active/app/app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  onLangChange: Subscription;
   currentLang : string;
   inited = false;
   // to be moved into external JSON loaded by localize-router
@@ -29,23 +29,55 @@ export class AppComponent implements OnInit, OnDestroy {
   ];
   altLang : string;
   altLangLabel : string;
-  private titleLabel = 'app.title';
-  private onFetchTitle: Subscription;
+  defaultTitleLabel = 'app.title';
+  showTitlePrefix: boolean = true;
+  titlePrefix = 'app.title-prefix';
+  private _titleLabel;
+  private _onFetchTitle: Subscription;
+  private _onLangChange: Subscription;
+  private _isPopState: boolean;
 
   constructor(
-    public el: ElementRef,
+    public _el: ElementRef,
+    private _localize: LocalizeRouterService,
+    private _locStrat: LocationStrategy,
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private _titleService: Title,
     public translate: TranslateService,
-    private localize: LocalizeRouterService,
-    private route: ActivatedRoute,
-    private titleService: Title) {}
+  ) {}
 
   ngOnInit() {
+  	this._locStrat.onPopState(() => {
+      this._isPopState = true;
+    });
+
+    this._router.events
+      .filter((event) => event instanceof NavigationEnd)
+      .map(() => this._route)
+      .map((route) => {
+        while (route.firstChild) route = route.firstChild;
+        return route;
+      })
+      .filter((route) => route.outlet === 'primary')
+      .mergeMap((route) => route.data)
+      .subscribe((data) => {
+        if (!this._isPopState) {
+          // scroll to page top only when navigating to a new page (not via history state)
+          window.scrollTo(0, 0);
+        }
+        this._isPopState = false;
+
+        let title = data['title'] || data['breadcrumb'];
+        this.titleLabel = title;
+      });
+
     // Initialize fallback and initial language
     // NOTE - currently superceded by localize-router
     // this.translate.setDefaultLang(this.supportedLanguages[0]);
     // this.translate.use(this.guessLanguage());
 
-    this.onLangChange = this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+    this._onLangChange = this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.onUpdateLanguage(event.lang);
     });
     if(this.translate.currentLang) {
@@ -55,11 +87,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.onLangChange !== undefined) {
-      this.onLangChange.unsubscribe();
+    if (this._onLangChange !== undefined) {
+      this._onLangChange.unsubscribe();
     }
-    if (this.onFetchTitle !== undefined) {
-      this.onFetchTitle.unsubscribe();
+    if (this._onFetchTitle !== undefined) {
+      this._onFetchTitle.unsubscribe();
     }
   }
 
@@ -72,8 +104,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this.altLang = alt ? alt.name : 'en';
       this.altLangLabel = alt ? alt.label : '';
       // set the lang attribute on the html element
-      this.el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
-      this.setTitleLabel(this.titleLabel);
+      this._el.nativeElement.parentElement.parentElement.setAttribute('lang', lang);
+      this.updateTitle();
       this.checkInit();
     }
   }
@@ -92,12 +124,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public changeLanguage(lang: string) {
-    this.localize.changeLanguage(lang);
+    this._localize.changeLanguage(lang);
   }
 
   public switchLanguage(evt) {
     if(this.altLang) {
-      this.localize.changeLanguage(this.altLang);
+      this._localize.changeLanguage(this.altLang);
     }
     if(evt) {
       evt.preventDefault();
@@ -135,18 +167,32 @@ export class AppComponent implements OnInit, OnDestroy {
     return ret;
   }
 
-  public setTitleLabel(newLabel: string) {
-    if (this.onFetchTitle !== undefined) {
-      this.onFetchTitle.unsubscribe();
+  get titleLabel(): string {
+    return this._titleLabel || this.defaultTitleLabel;
+  }
+
+  set titleLabel(newLabel: string) {
+    this._titleLabel = newLabel;
+    this.showTitlePrefix = !! newLabel;
+    this.updateTitle();
+  }
+
+  public updateTitle() {
+    if (this._onFetchTitle !== undefined) {
+      this._onFetchTitle.unsubscribe();
     }
-    this.titleLabel = newLabel;
-    this.onFetchTitle = this.translate.stream(newLabel).subscribe((res: string) => {
+    let lbl = this.titleLabel;
+    this._onFetchTitle = this.translate.stream(lbl).subscribe((res: string) => {
+      if(this.showTitlePrefix) {
+        let pfx = this.translate.get(this.titlePrefix);
+        res = '' + pfx['value'] + res;
+      }
       this.setTitle(res);
     });
   }
 
   public setTitle(newTitle: string) {
-    this.titleService.setTitle(newTitle);
+    this._titleService.setTitle(newTitle);
   }
 }
 
