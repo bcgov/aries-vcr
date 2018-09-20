@@ -1,0 +1,18 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-backup
+# Template File: templates/backup-deploy.json
+#=========================================================
+# NAME=backup
+# SOURCE_IMAGE_NAME=backup
+# IMAGE_NAMESPACE=devex-von-tools
+TAG_NAME=bc-tob-prod
+# DATABASE_SERVICE_NAME=postgresql
+# DATABASE_NAME=TheOrgBook_Database
+# DATABASE_DEPLOYMENT_NAME=postgresql
+# BACKUP_DIR=/backups/
+# NUM_BACKUPS=31
+# BACKUP_PERIOD=1d
+# PERSISTENT_VOLUME_NAME=backup-pvc
+# PERSISTENT_VOLUME_SIZE=1Gi
+# MEMORY_LIMIT=512Mi

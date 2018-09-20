@@ -1,0 +1,264 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata":
+  {
+    "name": "${NAME}-deployment-template"
+  },
+  "objects": [
+    {
+      "kind": "PersistentVolumeClaim",
+      "apiVersion": "v1",
+      "metadata":
+      {
+        "name": "${PERSISTENT_VOLUME_NAME}",
+        "labels":
+        {
+          "app": "${NAME}-persistent",
+          "template": "${NAME}-persistent-template"
+        }
+      },
+      "spec":
+      {
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "resources":
+        {
+          "requests":
+          {
+            "storage": "${PERSISTENT_VOLUME_SIZE}"
+          }
+        }
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata":
+      {
+        "name": "${NAME}",
+        "labels":
+        {
+          "template": "${NAME}-deployment"
+        },
+        "annotations":
+        {
+          "description": "Defines how to deploy the ${NAME} server"
+        }
+      },
+      "spec":
+      {
+        "strategy":
+        {
+          "type": "Recreate"
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChangeParams":
+            {
+              "automatic": true,
+              "containerNames": [
+                "${NAME}"
+              ],
+              "from":
+              {
+                "kind": "ImageStreamTag",
+                "namespace": "${IMAGE_NAMESPACE}",
+                "name": "${SOURCE_IMAGE_NAME}:${TAG_NAME}"
+              }
+            }
+          }
+        ],
+        "replicas": 1,
+        "selector":
+        {
+          "name": "${NAME}"
+        },
+        "template":
+        {
+          "metadata":
+          {
+            "name": "${NAME}",
+            "labels":
+            {
+              "name": "${NAME}"
+            }
+          },
+          "spec":
+          {
+            "volumes": [
+              {
+                "name": "${NAME}",
+                "persistentVolumeClaim":
+                {
+                  "claimName": "${PERSISTENT_VOLUME_NAME}"
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "${NAME}",
+                "image": "",
+                "ports": [],
+                "env": [
+                  {
+                    "name": "BACKUP_DIR",
+                    "value": "${BACKUP_DIR}"
+                  },
+                  {
+                    "name": "NUM_BACKUPS",
+                    "value": "${NUM_BACKUPS}"
+                  },
+                  {
+                    "name": "BACKUP_PERIOD",
+                    "value": "${BACKUP_PERIOD}"
+                  },
+                  {
+                    "name": "DATABASE_SERVICE_NAME",
+                    "value": "${DATABASE_SERVICE_NAME}"
+                  },
+                  {
+                    "name": "POSTGRESQL_DATABASE",
+                    "value": "${DATABASE_NAME}"
+                  },
+                  {
+                    "name": "POSTGRESQL_USER",
+                    "valueFrom":
+                    {
+                      "secretKeyRef":
+                      {
+                        "name": "${DATABASE_DEPLOYMENT_NAME}",
+                        "key": "database-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "POSTGRESQL_PASSWORD",
+                    "valueFrom":
+                    {
+                      "secretKeyRef":
+                      {
+                        "name": "${DATABASE_DEPLOYMENT_NAME}",
+                        "key": "database-password"
+                      }
+                    }
+                  }
+                ],
+                "resources":
+                {
+                  "limits":
+                  {
+                    "memory": "${MEMORY_LIMIT}"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "${NAME}",
+                    "mountPath": "${BACKUP_DIR}"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "name": "NAME",
+      "displayName": "Name",
+      "description": "The name assigned to all of the resources defined in this template.",
+      "required": true,
+      "value": "backup"
+    },
+    {
+      "name": "SOURCE_IMAGE_NAME",
+      "displayName": "Source Image Name",
+      "description": "The name of the image to use for this resource.",
+      "required": true,
+      "value": "backup"
+    },
+    {
+      "name": "IMAGE_NAMESPACE",
+      "displayName": "Image Namespace",
+      "description": "The namespace of the OpenShift project containing the imagestream for the application.",
+      "required": true,
+      "value": "backup-container"
+    },
+    {
+      "name": "TAG_NAME",
+      "displayName": "Environment TAG name",
+      "description": "The TAG name for this environment, e.g., dev, test, prod",
+      "required": true,
+      "value": "dev"
+    },
+    {
+      "name": "DATABASE_SERVICE_NAME",
+      "displayName": "Database Service Name",
+      "description": "The name of the database service.",
+      "required": true,
+      "value": "postgresql"
+    },
+    {
+      "name": "DATABASE_NAME",
+      "displayName": "Database Name",
+      "description": "The name of the database.",
+      "required": true,
+      "value": "MyDatabase"
+    },
+    {
+      "name": "DATABASE_DEPLOYMENT_NAME",
+      "displayName": "Database Deployment Name",
+      "description": "The name associated to the database deployment resources.  In particular, this is used to wrie up the credentials associated to the database.",
+      "required": true,
+      "value": "postgresql"
+    },
+    {
+      "name": "BACKUP_DIR",
+      "displayName": "The root backup directory",
+      "description": "The name of the root backup directory",
+      "required": true,
+      "value": "/backups/"
+    },
+    {
+      "name": "NUM_BACKUPS",
+      "displayName": "The number of backup files to be retained",
+      "description": "The number of backup files to be retained",
+      "required": true,
+      "value": "31"
+    },
+    {
+      "name": "BACKUP_PERIOD",
+      "displayName": "Period (d,m,s) between backups in a format used by the sleep command",
+      "description": "Period (d,m,s) between backups in a format used by the sleep command",
+      "required": true,
+      "value": "1d"
+    },
+    {
+      "name": "PERSISTENT_VOLUME_NAME",
+      "displayName": "Persistent Volume Name",
+      "description": "The name of the persistent volume associated with the deployment.",
+      "required": true,
+      "value": "backup-pvc"
+    },
+    {
+      "name": "PERSISTENT_VOLUME_SIZE",
+      "displayName": "Persistent Volume Size",
+      "description": "The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.",
+      "required": true,
+      "value": "1Gi"
+    },
+    {
+      "name": "MEMORY_LIMIT",
+      "displayName": "Memory Limit",
+      "description": "Maximum amount of memory the container can use.",
+      "value": "512Mi"
+    }
+  ]
+}
