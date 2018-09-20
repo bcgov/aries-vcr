@@ -108,7 +108,8 @@ export namespace Model {
     id: number;
     credential_type: CredentialType;
     effective_date: string;
-    revoked: string;
+    inactive: boolean;
+    revoked: boolean;
 
     addresses: Address[];
     categories: Category[];

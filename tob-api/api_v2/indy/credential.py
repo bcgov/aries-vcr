@@ -462,6 +462,12 @@ class CredentialManager(object):
             if revoked:
                 credential_args["revoked"] = bool(revoked)
 
+            inactive = CredentialManager.process_mapping(
+                credential_config.get("inactive"), self.credential
+            )
+            if inactive:
+                credential_args["inactive"] = bool(inactive)
+
         credential = topic.credentials.create(**credential_args)
 
         # Create and associate claims for this credential

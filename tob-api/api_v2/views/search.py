@@ -38,6 +38,8 @@ class DefaultCredSearchFilter(HaystackFilter):
     @staticmethod
     def get_request_filters(request):
         filters = HaystackFilter.get_request_filters(request)
+        if "inactive" not in filters:
+            filters["inactive"] = "false"
         if "revoked" not in filters:
             filters["revoked"] = "false"
         return filters

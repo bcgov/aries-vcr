@@ -13,6 +13,7 @@ class Credential(Auditable):
     cardinality_hash = models.TextField(db_index=True, null=True)
 
     effective_date = models.DateTimeField(default=timezone.now)
+    inactive = models.BooleanField(db_index=True, default=False)
     revoked = models.BooleanField(db_index=True, default=False)
 
     class Meta:

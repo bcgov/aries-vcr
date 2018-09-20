@@ -148,6 +148,7 @@ class ExpandedCredentialSerializer(CredentialSerializer):
         fields = (
             "id",
             "effective_date",
+            "inactive",
             "revoked",
             "wallet_id",
             "credential_type",

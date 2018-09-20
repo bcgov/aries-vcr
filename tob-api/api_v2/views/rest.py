@@ -108,14 +108,14 @@ class TopicViewSet(ModelViewSet):
     @detail_route(url_path="credential/active")
     def list_active_credentials(self, request, pk=None):
         item = self.get_object()
-        queryset = item.credentials.filter(revoked=False)
+        queryset = item.credentials.filter(revoked=False, inactive=False)
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @detail_route(url_path="credential/historical")
     def list_historical_credentials(self, request, pk=None):
         item = self.get_object()
-        queryset = item.credentials.filter(~Q(revoked=False))
+        queryset = item.credentials.filter(Q(revoked=True) | Q(inactive=True))
         serializer = ExpandedCredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -156,13 +156,13 @@ class CredentialViewSet(ModelViewSet):
 
     @list_route(url_path="active")
     def list_active(self, request, pk=None):
-        queryset = self.queryset.filter(revoked=False)
+        queryset = self.queryset.filter(revoked=False, inactive=False)
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @list_route(url_path="historical")
     def list_historical(self, request, pk=None):
-        queryset = self.queryset.filter(~Q(revoked=False))
+        queryset = self.queryset.filter(Q(revoked=True) | Q(inactive=True))
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
