@@ -21,6 +21,7 @@ if __name__ == '__main__':
     django.setup()
 
     disable_migrate = os.environ.get('DISABLE_MIGRATE', 'false')
+    disconnected = os.environ.get('INDY_DISABLED', 'false')
     skip_indexing = os.environ.get('SKIP_INDEXING_ON_STARTUP', 'false')
 
     if not disable_migrate or disable_migrate == 'false':
@@ -39,7 +40,8 @@ if __name__ == '__main__':
     if not args.socket and not args.port:
         args.port = 8080
 
-    pre_init()
+    if not disconnected or disconnected == 'false':
+        pre_init()
 
     web.run_app(
         init_app(),

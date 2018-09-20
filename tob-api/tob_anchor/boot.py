@@ -106,23 +106,23 @@ def pre_init(proc=False):
         MANAGER.start_process()
     else:
         MANAGER.start()
-    run_coro(register_services())
+    try:
+        run_coro(register_services())
+    except:
+        LOGGER.exception("Error during Indy initialization:")
+        MANAGER.stop()
+        raise
 
-async def register_services():
-
-    await asyncio.sleep(2) # temp fix for messages being sent before exchange has started
-
-    wallet_seed = os.environ.get('INDY_WALLET_SEED')
-    if not wallet_seed or len(wallet_seed) is not 32:
-        raise Exception('INDY_WALLET_SEED must be set and be 32 characters long.')
-
+def indy_general_wallet_config():
     # wallet configuration
     # - your choice of postgres or sqlite at the moment
     # - defaults to sqlite for compatibility
     wallet_type = os.environ.get('WALLET_TYPE')
-    if not wallet_type:
-        wallet_type = 'sqlite'
-    wallet_type = wallet_type.lower()
+    wallet_type = wallet_type.lower() if wallet_type else 'sqlite'
+
+    wallet_encryp_key = os.environ.get('WALLET_ENCRYPTION_KEY') or "key"
+
+    ret = {"type": wallet_type}
 
     if wallet_type == 'postgres':
         LOGGER.info("Using Postgres storage ...")
@@ -132,49 +132,86 @@ async def register_services():
         if not wallet_host:
             raise Exception('POSTGRESQL_WALLET_HOST must be set.')
         wallet_port = os.environ.get('POSTGRESQL_WALLET_PORT')
-        if not wallet_port  :
+        if not wallet_port:
             raise Exception('POSTGRESQL_WALLET_PORT must be set.')
         wallet_user = os.environ.get('POSTGRESQL_WALLET_USER')
-        if not wallet_user  :
+        if not wallet_user:
             raise Exception('POSTGRESQL_WALLET_USER must be set.')
         wallet_password = os.environ.get('POSTGRESQL_WALLET_PASSWORD')
-        if not wallet_password  :
+        if not wallet_password:
             raise Exception('POSTGRESQL_WALLET_PASSWORD must be set.')
         wallet_admin_user = 'postgres'
         wallet_admin_password = os.environ.get('POSTGRESQL_WALLET_ADMIN_PASSWORD')
-        
-        # TODO pass in as env parameter - key for encrypting the wallet contents
-        wallet_encryp_key = os.environ.get('WALLET_ENCRYPTION_KEY')
-        if not wallet_encryp_key:
-            wallet_encryp_key = "key"
 
-        stg_config = {"url": wallet_host + ':' + wallet_port}
+        # TODO pass in as env parameter - key for encrypting the wallet contents
+
+        ret["params"] = {
+            "storage_config": {"url": "{}:{}".format(wallet_host, wallet_port)},
+        }
         stg_creds = {"account": wallet_user, "password": wallet_password}
         if wallet_admin_password:
             stg_creds["admin_account"] = wallet_admin_user
             stg_creds["admin_password"] = wallet_admin_password
+        ret["access_creds"] = {
+            "key": wallet_encryp_key,
+            "storage_credentials": stg_creds,
+            "key_derivation_method": "ARGON2I_MOD",
+        }
+
     elif wallet_type == 'sqlite':
         LOGGER.info("Using Sqlite storage ...")
+        ret["access_creds"] = {"key": wallet_encryp_key}
     else:
-        raise Exception('Unknown WALLET_TYPE: {}'.format(wallet_type))
+        raise ValueError('Unknown WALLET_TYPE: {}'.format(wallet_type))
 
-    client = indy_client()
+    return ret
 
-    LOGGER.info("Registering holder service")
-    if wallet_type == 'postgres':
-        holder_wallet_id = await client.register_wallet({
+def indy_holder_wallet_config(wallet_cfg: dict):
+    wallet_seed = os.environ.get('INDY_WALLET_SEED')
+    if not wallet_seed or len(wallet_seed) is not 32:
+        raise ValueError('INDY_WALLET_SEED must be set and be 32 characters long.')
+
+    if wallet_cfg['type'] == 'postgres':
+        return {
             "name": "tob_holder",
             "seed": wallet_seed,
             "type": "postgres",
-            "params": {"storage_config": stg_config},
-            "access_creds": {"key": wallet_encryp_key, "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
-        })
-    else:
-        LOGGER.info("Using Sqlite storage ...")
-        holder_wallet_id = await client.register_wallet({
-            "name": "TheOrgBook_Holder_Wallet",
-            "seed": wallet_seed,
-        })
+            "params": wallet_cfg["params"],
+            "access_creds": wallet_cfg["access_creds"],
+        }
+    return {
+        "name": "TheOrgBook_Holder_Wallet",
+        "seed": wallet_seed,
+        "access_creds": wallet_cfg["access_creds"],
+    }
+
+def indy_verifier_wallet_config(wallet_cfg: dict):
+    verifier_seed = "tob-verifier-wallet-000000000001"
+
+    if wallet_cfg['type'] == 'postgres':
+        return {
+            "name": "tob_verifier",
+            "seed": verifier_seed,
+            "type": "postgres",
+            "params": wallet_cfg["params"],
+            "access_creds": wallet_cfg["access_creds"],
+        }
+    return {
+        "name": "TheOrgBook_Verifier_Wallet",
+        "seed": verifier_seed,
+        "access_creds": wallet_cfg["access_creds"],
+    }
+
+async def register_services():
+
+    await asyncio.sleep(2) # temp fix for messages being sent before exchange has started
+
+    client = indy_client()
+    wallet_config = indy_general_wallet_config()
+
+    LOGGER.info("Registering holder service")
+    holder_wallet_id = await client.register_wallet(
+        indy_holder_wallet_config(wallet_config))
     LOGGER.debug("Indy holder wallet id: %s", holder_wallet_id)
 
     holder_id = await client.register_holder(holder_wallet_id, {
@@ -183,20 +220,9 @@ async def register_services():
     })
     LOGGER.debug("Indy holder id: %s", holder_id)
 
-    LOGGER.info("Registering verifier service")   
-    if wallet_type == 'postgres':
-        verifier_wallet_id = await client.register_wallet({
-            "name": "tob_verifier",
-            "seed": "tob-verifier-wallet-000000000001",
-            "type": "postgres",
-            "params": {"storage_config": stg_config},
-            "access_creds": {"key": wallet_encryp_key, "storage_credentials": stg_creds, "key_derivation_method": "ARGON2I_MOD"},
-        })
-    else:
-        verifier_wallet_id = await client.register_wallet({
-            "name": "TheOrgBook_Verifier_Wallet",
-            "seed": "tob-verifier-wallet-000000000001",
-        })
+    LOGGER.info("Registering verifier service")
+    verifier_wallet_id = await client.register_wallet(
+        indy_verifier_wallet_config(wallet_config))
     LOGGER.debug("Indy verifier wallet id: %s", verifier_wallet_id)
 
     verifier_id = await client.register_verifier(verifier_wallet_id, {
