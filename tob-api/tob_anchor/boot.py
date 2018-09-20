@@ -35,6 +35,7 @@ from vonx.indy.manager import IndyManager
 
 LOGGER = logging.getLogger(__name__)
 
+STARTED = False
 
 def get_genesis_path():
     if platform.system() == "Windows":
@@ -45,6 +46,8 @@ def get_genesis_path():
     return txn_path
 
 def indy_client():
+    if not STARTED:
+        raise RuntimeError("Indy service is not running")
     return MANAGER.get_client()
 
 def indy_env():
@@ -102,15 +105,18 @@ def run_migration():
     call_command("migrate")
 
 def pre_init(proc=False):
+    global MANAGER, STARTED
     if proc:
         MANAGER.start_process()
     else:
         MANAGER.start()
+    STARTED = True
     try:
         run_coro(register_services())
     except:
         LOGGER.exception("Error during Indy initialization:")
         MANAGER.stop()
+        STARTED = False
         raise
 
 def indy_general_wallet_config():
@@ -130,16 +136,16 @@ def indy_general_wallet_config():
         # postgresql wallet-db configuration
         wallet_host = os.environ.get('POSTGRESQL_WALLET_HOST')
         if not wallet_host:
-            raise Exception('POSTGRESQL_WALLET_HOST must be set.')
+            raise ValueError('POSTGRESQL_WALLET_HOST must be set.')
         wallet_port = os.environ.get('POSTGRESQL_WALLET_PORT')
         if not wallet_port:
-            raise Exception('POSTGRESQL_WALLET_PORT must be set.')
+            raise ValueError('POSTGRESQL_WALLET_PORT must be set.')
         wallet_user = os.environ.get('POSTGRESQL_WALLET_USER')
         if not wallet_user:
-            raise Exception('POSTGRESQL_WALLET_USER must be set.')
+            raise ValueError('POSTGRESQL_WALLET_USER must be set.')
         wallet_password = os.environ.get('POSTGRESQL_WALLET_PASSWORD')
         if not wallet_password:
-            raise Exception('POSTGRESQL_WALLET_PASSWORD must be set.')
+            raise ValueError('POSTGRESQL_WALLET_PASSWORD must be set.')
         wallet_admin_user = 'postgres'
         wallet_admin_password = os.environ.get('POSTGRESQL_WALLET_ADMIN_PASSWORD')
 
