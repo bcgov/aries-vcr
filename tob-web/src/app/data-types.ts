@@ -303,6 +303,19 @@ export namespace Model {
       }
     }
 
+    get preferredName(): Name {
+      let found = null;
+      if(this.names) {
+        for(let name of this.names) {
+          if(name.type === 'entity_name')
+            found = name;
+        }
+        if(! found)
+          found = this.names[0];
+      }
+      return found;
+    }
+
     get typeLabel(): string {
       if(this.type) return ('name.'+this.type).replace(/_/g, '-');
       return '';

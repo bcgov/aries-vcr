@@ -51,7 +51,7 @@
           <div class="col-sm-12">
             <label class="control-label" translate>topic.related-to</label>
             <div class="form-field">
-              {{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="topic.link | localize">{{topic.names[0]?.text}}</a>
+              {{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="topic.link | localize">{{topic.preferredName?.text}}</a>
             </div>
           </div>
         </div>

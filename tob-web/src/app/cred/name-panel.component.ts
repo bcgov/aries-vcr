@@ -14,7 +14,7 @@ export class NamePanelComponent {
   @Input() link: boolean = false;
 
   get name(): Model.Name {
-    return this.record && this.record.names && this.record.names.length ? this.record.names[0] : null;
+    return this.record.preferredName;
   }
 
   get issuer(): Model.Issuer {

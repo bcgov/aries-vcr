@@ -1,22 +1,22 @@
 <ng-container *ngIf="format === 'rows'">
 <div class="row name-row" *ngFor="let topic of records">
-<ng-container *ngIf="topic.names.length > 0"> <!-- temp issue with search returning blank topics -->
+<ng-container *ngIf="topic.preferredName as name">
   <div class="col-sm-7">
     <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
     <label>{{typeLabel(topic.type) | translate}}:</label>
     <a [routerLink]="topic.link | localize"
-      class="body-link cred-link name">{{topic.names[0].text}}</a>
+      class="body-link cred-link name">{{name.text}}</a>
     <br>
     <small>
       <label>
         <span translate>cred.issuer</span>:</label>
-      <a [routerLink]="['/issuer', topic.names[0].issuer.id] | localize" class="body-link issuer-link">{{topic.names[0].issuer.name}}</a>
+      <a [routerLink]="['/issuer', name.issuer.id] | localize" class="body-link issuer-link">{{name.issuer.name}}</a>
     </small>
     <br>
     <small>
       <label>
         <span translate>cred.last-updated</span>:</label>
-      <span class="claim-info date">{{topic.names[0].last_updated | dateFormat: 'effectiveDate'}}</span>
+      <span class="claim-info date">{{name.last_updated | dateFormat: 'effectiveDate'}}</span>
     </small>
   </div>
   <div class="col-sm-5">
@@ -34,18 +34,18 @@
 </div>
 <ng-container *ngIf="format === 'compact'">
 <div class="row name-row" *ngFor="let topic of records">
-<ng-container *ngIf="topic.names.length > 0"> <!-- temp issue with search returning blank topics -->
+<ng-container *ngIf="topic.preferredName as name">
   <div class="col-sm-7">
     <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
     <label>{{typeLabel(topic.type) | translate}}:</label>
     <a [routerLink]="topic.link | localize"
-      class="body-link cred-link name">{{topic.names[0].text}}</a>
+      class="body-link cred-link name">{{name.text}}</a>
   </div>
   <div class="col-sm-5">
     <small>
       <label>
         <span translate>cred.last-updated</span>:</label>
-      <span class="claim-info date">{{topic.names[0].last_updated | dateFormat: 'effectiveDate'}}</span>
+      <span class="claim-info date">{{name.last_updated | dateFormat: 'effectiveDate'}}</span>
     </small>
   </div>
 </ng-container>

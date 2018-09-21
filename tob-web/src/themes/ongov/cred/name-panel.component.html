@@ -6,7 +6,7 @@
       <div class="row form-group">
           <label class="col-sm-3 control-label" translate>cred.type</label>
           <div class="form-field">
-                <div  *ngFor="let category of categories">
+                <div  *ngFor="let category of record.categories">
                         <div  *ngIf="category.type === 'topic_type'">
                                 <div *ngIf="category.value" >
                                         {{('business_type.' + category.value) | translate}}
@@ -26,7 +26,7 @@
       <div class="row form-group">
             <label class="col-sm-3 control-label" translate>cred.status</label>
             <div class="form-field">
-                    <div  *ngFor="let category of categories">
+                    <div  *ngFor="let category of record.categories">
                             <div  *ngIf="category.type === 'topic_status'">
                                 <div *ngIf="category.value" >
                                     {{('business_status.' + category.value) | translate}}
@@ -35,11 +35,11 @@
                     </div>
             </div>
       </div>
-     
-      <div class="row form-group" *ngIf="addresses.length > 0">
+
+      <div class="row form-group" *ngIf="record.addresses.length > 0">
           <label class="col-sm-3 control-label" translate>cred.municipality</label>
           <div class="form-field">
-             {{addresses[0].city | titlecase }}
+             {{record.addresses[0].city | titlecase }}
           </div>
       </div>
 
@@ -53,12 +53,12 @@
       <div class="disclaimer" translate>
           <b translate>topic.note</b>
           topic.disclaimer
-          <a [title]="'app.footer.link-title' | translate " class="disclaimer-link" href="https://www.ontario.ca/page/public-record-search" target="_blank" 
+          <a [title]="'app.footer.link-title' | translate " class="disclaimer-link" href="https://www.ontario.ca/page/public-record-search" target="_blank"
           translate>topic.click-here</a>
       </div>
-    
-    
+
+
   </div>
 
-  
+
 </div>
