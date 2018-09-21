@@ -53,6 +53,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'topic/:id',
+    redirectTo: 'topic/_/:id'
+  },
+  {
     path: 'issuer/:issuerId',
     component: IssuerFormComponent,
     data: {
