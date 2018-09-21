@@ -1,5 +1,5 @@
 <div class="panel name-panel" *ngIf="record && name">
-    <h3 class="panel-title"> <strong>{{name.text }}</strong></h3>
+    <h3 class="panel-title" tabIndex="-1"> <strong>{{name.text }}</strong></h3>
 
   <div class="panel-body form-body">
 
@@ -53,7 +53,7 @@
       <div class="disclaimer" translate>
           <b translate>topic.note</b>
           topic.disclaimer
-          <a class="disclaimer-link" href="https://www.ontario.ca/page/public-record-search" target="_blank" 
+          <a [title]="'app.footer.link-title' | translate " class="disclaimer-link" href="https://www.ontario.ca/page/public-record-search" target="_blank" 
           translate>topic.click-here</a>
       </div>
     

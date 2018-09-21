@@ -13,15 +13,14 @@
             <div class="row form-group">
                 <label class="col-sm-3 control-label" translate>issuer.website</label>
                 <div class="form-field">
-                    <a class="body-link" [href]="record.url" rel="external">
+                    <a [title]="'app.footer.link-title' | translate "  target="_blank" class="body-link" [href]="[record.url]" rel="external">
                         {{record.url}}</a>
                 </div>
             </div>
             <div class="row form-group">
                 <label class="col-sm-3 control-label" translate>issuer.email</label>
                 <div class="form-field">
-                    <a class="body-link" [href]="record.url" rel="external">
-                        {{record.email}}</a>
+                    {{record.email}}
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@
   },
   "app": {
     "title": "Ontario's TheOrgBook",
+    "switch-language": "Switch the language",
     "breadcrumb": "Home",
     "header": {
       "title": "TheOrgBook",
@@ -66,6 +67,7 @@
     "verified": "Verified"
   },
   "home": {
+    "beta": "This project is in the beta stage",
     "breadcrumb": "Search",
     "title-orgs": "organizations",
     "title-certs": "permits and licences",

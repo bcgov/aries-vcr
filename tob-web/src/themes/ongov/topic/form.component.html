@@ -4,7 +4,7 @@
 
   <div class="row" *ngIf="result.data as topic">
     <div class="col-sm-12">
-      <a [routerLink]="'/home' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
+      <a [title]="'search.return-link' | translate" [routerLink]="'/home' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
 
       <div class="row">
         <div class="col-sm-12 name-info">

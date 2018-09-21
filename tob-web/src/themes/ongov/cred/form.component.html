@@ -4,7 +4,7 @@
 
   <div class="row" *ngIf="result.data as record">
     <div class="col-sm-12">
-        <a [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
+        <a [title]="'topic.return-link' | translate"   [routerLink]="'../../' | localize" class="title-back-link mrgn-bttm-md">
           <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
 
           <div class="panel name-panel">
@@ -27,7 +27,7 @@
                 <div class="row form-group" *ngIf="record.issuer">
                     <label class="col-sm-3 control-label" translate>cred.issuer</label>
                     <div class="form-field">
-                        <a class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
+                        <a [title]="[record.issuer.name]" class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
                     </div>
                     <br/>
                 </div>
@@ -86,14 +86,14 @@
                 <div class="row form-group" *ngIf="record.haveAddresses">
                     <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
                     <div class="form-field">
-                        {{record.address[0].province}}
+                        {{record.topic.addresses[0].province}}
                     </div>
                 </div>
                 <div class="row form-group">
                         <div class="disclaimer-cred" translate>
                               <b translate>cred.note</b>
                               cred.disclaimer
-                              <a href="https://www.ontario.ca/page/public-record-search" class="disclaimer-link"
+                              <a [title]="'app.footer.link-title' | translate " href="https://www.ontario.ca/page/public-record-search" class="disclaimer-link"
                               target="_blank"
                               translate>topic.click-here</a>
                           </div>
@@ -103,7 +103,7 @@
                 <ng-container *ngIf="(verify$ | async) as verify">
                   <div class="row form-group">
                     <div class="col-sm-12">
-                        <button type="button" [class]="'btn btn-primary btn-verify' + (verify.loading ? ' loading' : '')" (click)="verifyCred($event)">
+                        <button [title]="'cred.verify-button-label' | translate"  type="button" [class]="'btn btn-primary btn-verify' + (verify.loading ? ' loading' : '')" (click)="verifyCred($event)">
                           <span class="fa fa-accept"></span> {{'cred.verify-button-label' | translate}}</button>
                       </div>
                   </div>

@@ -10,16 +10,17 @@
         {{'general.other-error' | translate}}
       </div>
 
-  <h1 class="home-title text-left" translate *ngIf="inited">home.title</h1>
+      <span><h1 tabIndex="4" class="home-title text-left" translate *ngIf="inited">home.title<span class="beta">beta</span>
+        <img class="beaker" tabindex="5" [alt]="'home.beta' |translate" [src]="'assets/beaker.png'"></h1></span>
 
   <div class="row" *ngIf="inited && !loadError">
     <div class="col-sm-12">
 
       <div class="text-left">
-        <p translate *ngIf="inited">home.message</p>
+        <p translate *ngIf="inited" tabindex="6" >home.message</p>
         <div class="search-outer">
           <div class="search-inner">
-              <search-input #searchInput (accepted)="performSearch($event)"></search-input>
+              <search-input  #searchInput (accepted)="performSearch($event)"></search-input>
             </div>
         </div>
       </div>

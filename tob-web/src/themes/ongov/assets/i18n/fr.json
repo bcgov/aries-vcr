@@ -4,6 +4,7 @@
   },
   "app": {
     "title": "TheOrgBook de l'Ontario",
+    "switch-language": "Changer de langue",
     "breadcrumb": "Accueil",
     "header": {
       "title": "TheOrgBook",
@@ -66,6 +67,7 @@
     "verified": "Vérifié"
   },
   "home": {
+    "beta": "ce projet est en phase bêta",
     "breadcrumb": "Recherche",
     "title-orgs": "organisations",
     "title-certs": "permis et licences",

@@ -1,6 +1,6 @@
   <ol class="breadcrumb">
-      <li><a [routerLink]="'/'" translate>app.breadcrumb</a></li>
+      <li><a [title]="'app.breadcrumb' | translate" [routerLink]="'/'" translate>app.breadcrumb</a></li>
       <li *ngFor="let breadcrumb of breadcrumbs">
-        <a [routerLink]="[breadcrumb.url]" translate>{{ breadcrumb.label }}</a>
+        <a [title]="breadcrumb.label | translate" [routerLink]="[breadcrumb.url]" translate>{{ breadcrumb.label }}</a>
       </li>
   </ol>

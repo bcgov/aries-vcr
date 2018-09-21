@@ -142,7 +142,7 @@ export namespace Model {
     set issuer(val: Issuer) {
     }
     get haveAddresses() {
-      return this.addresses && this.addresses.length;
+      return this.topic.addresses && this.topic.addresses.length;
     }
     get haveContacts() {
       return this.contacts && this.contacts.length;
