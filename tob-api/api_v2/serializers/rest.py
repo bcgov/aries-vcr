@@ -10,6 +10,7 @@ from api_v2.models.Contact import Contact
 from api_v2.models.Name import Name
 from api_v2.models.Person import Person
 from api_v2.models.Category import Category
+from api_v2.models.Attribute import Attribute
 from api_v2 import utils
 
 
@@ -85,6 +86,12 @@ class CategorySerializer(ModelSerializer):
         fields = "__all__"
 
 
+class AttributeSerializer(ModelSerializer):
+    class Meta:
+        model = Attribute
+        fields = "__all__"
+
+
 class CredentialSerializer(ModelSerializer):
     class Meta:
         model = Credential
@@ -95,6 +102,10 @@ class CredentialAddressSerializer(AddressSerializer):
         fields = tuple(
             {*AddressSerializer.Meta.fields, "credential_id"} - {"credential"}
         )
+
+class CredentialAttributeSerializer(AttributeSerializer):
+    class Meta(AttributeSerializer.Meta):
+        fields = ("id", "type", "format", "value", "credential_id")
 
 class CredentialCategorySerializer(CategorySerializer):
     class Meta(CategorySerializer.Meta):
@@ -122,6 +133,7 @@ class CredentialTopicSerializer(TopicSerializer):
 
 class CredentialTopicExtSerializer(TopicSerializer):
     addresses = CredentialAddressSerializer(source='get_active_addresses', many=True)
+    attributes = CredentialAttributeSerializer(source='get_active_attributes', many=True)
     categories = CredentialCategorySerializer(source='get_active_categories', many=True)
     #contacts = CredentialContactSerializer(source='get_active_contacts', many=True)
     names = CredentialNameSerializer(source='get_active_names', many=True)
@@ -131,7 +143,7 @@ class CredentialTopicExtSerializer(TopicSerializer):
         fields = (
             "id", "create_timestamp", "update_timestamp",
             "source_id", "type",
-            "addresses", "categories", "names",
+            "addresses", "attributes", "categories", "names",
         )
 
 class ExpandedCredentialSerializer(CredentialSerializer):
@@ -153,6 +165,7 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "wallet_id",
             "credential_type",
             "addresses",
+            "attributes",
             "categories",
             "names",
             "contacts",

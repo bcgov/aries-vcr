@@ -14,6 +14,7 @@ from drf_haystack.serializers import (
 
 from api_v2.serializers.rest import (
     AddressSerializer,
+    AttributeSerializer,
     NameSerializer,
     ContactSerializer,
     PersonSerializer,
@@ -23,18 +24,20 @@ from api_v2.serializers.rest import (
     IssuerSerializer,
     CategorySerializer,
     CredentialAddressSerializer,
+    CredentialAttributeSerializer,
     CredentialCategorySerializer,
     CredentialNameSerializer,
     CredentialTopicSerializer,
     CredentialTopicExtSerializer,
 )
 
-from api_v2.models.Name import Name
 from api_v2.models.Address import Address
-from api_v2.models.Person import Person
-from api_v2.models.Contact import Contact
+from api_v2.models.Attribute import Attribute
 from api_v2.models.Category import Category
+from api_v2.models.Contact import Contact
 from api_v2.models.Credential import Credential
+from api_v2.models.Name import Name
+from api_v2.models.Person import Person
 from api_v2 import utils
 
 from api_v2.search_indexes import CredentialIndex
@@ -93,6 +96,16 @@ class CustomAddressSerializer(AddressSerializer):
         return obj.credential.effective_date
 
 
+class CustomAttributeSerializer(AttributeSerializer):
+    last_updated = SerializerMethodField()
+
+    class Meta(AttributeSerializer.Meta):
+        fields = ("id", "credential_id", "last_updated", "type", "format", "value")
+
+    def get_last_updated(self, obj):
+        return obj.credential.effective_date
+
+
 class CustomNameSerializer(NameSerializer):
     last_updated = SerializerMethodField()
     issuer = SerializerMethodField()
@@ -143,6 +156,7 @@ class CustomCategorySerializer(CategorySerializer):
 class CustomTopicSerializer(TopicSerializer):
     names = SerializerMethodField()
     addresses = SerializerMethodField()
+    attributes = SerializerMethodField()
     contacts = SerializerMethodField()
     people = SerializerMethodField()
     categories = SerializerMethodField()
@@ -155,6 +169,7 @@ class CustomTopicSerializer(TopicSerializer):
             "type",
             "names",
             "addresses",
+            "attributes",
             "contacts",
             "people",
             "categories",
@@ -176,6 +191,13 @@ class CustomTopicSerializer(TopicSerializer):
             credential__revoked=False,
         )
         serializer = CustomAddressSerializer(instance=addresses, many=True)
+        return serializer.data
+
+    def get_attributes(self, obj):
+        attributes = Attribute.objects.filter(
+            credential__topic=obj, credential__revoked=False
+        )
+        serializer = CustomAttributeSerializer(instance=attributes, many=True)
         return serializer.data
 
     def get_contacts(self, obj):
@@ -208,6 +230,7 @@ class CustomTopicSerializer(TopicSerializer):
 
 class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     addresses = CredentialAddressSerializer(many=True)
+    attributes = CredentialAttributeSerializer(many=True)
     categories = CredentialCategorySerializer(many=True)
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
@@ -217,8 +240,8 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
         fields = (
             "id", "create_timestamp", "update_timestamp",
             "credential_type", "effective_date",
-            "addresses", "categories", "names",
-            "inactive", "revoked", "topic",
+            "addresses", "attributes", "categories", "names",
+            "revoked", "topic",
         )
         search_fields = (
             "category", "location", "name",

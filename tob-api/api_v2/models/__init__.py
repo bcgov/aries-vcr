@@ -1,4 +1,5 @@
 from .Address import Address
+from .Attribute import Attribute
 from .Category import Category
 from .Claim import Claim
 from .Contact import Contact
