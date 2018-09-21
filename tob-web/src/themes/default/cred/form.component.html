@@ -11,6 +11,15 @@
 
       <div class="cred-info">
 
+        <div class="row form-group" *ngIf="record.inactive">
+          <div class="col-sm-12">
+            <div class="alert alert-warning">
+              <h3 translate>cred.inactive</h3>
+              <p translate>cred.inactive-message</p>
+            </div>
+          </div>
+        </div>
+
         <div class="row form-group" *ngIf="record.revoked">
           <div class="col-sm-12">
             <div class="alert alert-danger">

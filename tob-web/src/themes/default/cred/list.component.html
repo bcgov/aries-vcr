@@ -14,7 +14,8 @@
         <a class="body-link issuer-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.name}}</a>
       </p>
       <div class="cred-status">
-        <div class="badge" *ngIf="cred.revoked" translate>cred.expired</div>
+        <div class="label label-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
+        <div class="label label-danger" *ngIf="cred.revoked" translate>cred.expired</div>
       </div>
     </div>
   </div>
@@ -35,7 +36,8 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <div class="badge" *ngIf="cred.revoked" translate>cred.expired</div>
+      <div class="label label-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
+      <div class="label label-danger" *ngIf="cred.revoked" translate>cred.expired</div>
     </div>
   </div>
 </div>
@@ -61,7 +63,8 @@
       </small>
     </div>
     <div class="col-sm-5">
-      <div class="badge" *ngIf="cred.revoked" translate>cred.expired</div>
+      <div class="label label-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
+      <div class="label label-danger" *ngIf="cred.revoked" translate>cred.expired</div>
 
       <small *ngIf="cred.addresses && cred.addresses.length > 0">
         <!-- TODO: Add notion of 'type' to address model? -->
