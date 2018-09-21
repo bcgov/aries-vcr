@@ -74,6 +74,7 @@ def get_key_finder(use_cache: bool = True):
         INDY_KEYFINDER = IndyKeyFinder(indy_client(), indy_verifier_id())
         DJANGO_KEYFINDER = DjangoKeyFinder(INDY_KEYFINDER)
         KEY_CACHE = KeyCache(DJANGO_KEYFINDER)
+    return INDY_KEYFINDER
 
 async def _check_signature(request, use_cache: bool = True):
     """
