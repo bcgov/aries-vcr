@@ -21,35 +21,11 @@
         </div>
       </div>
     </div>
-    <div class="row form-group" *ngIf="contacts.length || contacts.length">
-      <div class="col-sm-7" *ngIf="contacts.length">
-        <label class="control-label" translate>cred.contact</label>
-        <div class="form-field">
-          <ul class="claim-list">
-            <li *ngFor="let contact of contacts">
-              <label translate>{{contact.type}}</label>
-              <span class="claim-info {{contact.typeClass}}">{{contact.text}}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-sm-5" *ngIf="addresses.length">
+    <div class="row form-group" *ngIf="record.addresses?.length">
+      <div class="col-sm-5">
         <div class="form-field address-list" *ngFor="let address of addresses">
           <label class="control-label" translate>{{address.addressType}}</label>
           <address-view [record]="address"></address-view>
-        </div>
-      </div>
-    </div>
-    <div class="row form-group" *ngIf="people.length">
-      <div class="col-sm-7">
-        <label class="control-label" translate>cred.people</label>
-        <div class="form-field">
-          <ul class="claim-list">
-            <li *ngFor="let person of people">
-              <label translate>{{person.type}}</label>
-              <span class="claim-info person">{{person.full_name}}</span>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
