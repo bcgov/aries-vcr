@@ -117,7 +117,9 @@
     <field name="topic_type" type="text_en" indexed="true" stored="true" multiValued="false" />
     
     <field name="effective_date" type="date" indexed="true" stored="true" multiValued="false" />
-        
+    
+    <field name="inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
+    
     <field name="revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
     
     <field name="issuer_id" type="long" indexed="true" stored="true" multiValued="false" />
