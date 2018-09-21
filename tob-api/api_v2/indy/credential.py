@@ -24,12 +24,10 @@ from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.Claim import Claim
 
-from api_v2.models.Name import Name
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
-from api_v2.models.Person import Person
-from api_v2.models.Contact import Contact
 from api_v2.models.Category import Category
+from api_v2.models.Name import Name
 from api_v2.models.TopicRelationship import TopicRelationship
 
 LOGGER = logging.getLogger(__name__)
@@ -37,12 +35,10 @@ LOGGER = logging.getLogger(__name__)
 PROCESSOR_FUNCTION_BASE_PATH = "api_v2.processor"
 
 SUPPORTED_MODELS_MAPPING = {
-    "name": Name,
     "attribute": Attribute,
     "address": Address,
-    "person": Person,
-    "contact": Contact,
     "category": Category,
+    "name": Name,
 }
 
 

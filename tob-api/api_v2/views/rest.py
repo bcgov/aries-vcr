@@ -18,10 +18,8 @@ from api_v2.serializers.rest import (
     ExpandedCredentialSerializer,
     AddressSerializer,
     AttributeSerializer,
-    ContactSerializer,
-    NameSerializer,
     CategorySerializer,
-    PersonSerializer,
+    NameSerializer,
     CredentialTopicExtSerializer,
 )
 
@@ -37,9 +35,7 @@ from api_v2.models.Credential import Credential
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
 from api_v2.models.Category import Category
-from api_v2.models.Contact import Contact
 from api_v2.models.Name import Name
-from api_v2.models.Person import Person
 
 from api_v2 import utils
 
@@ -196,19 +192,9 @@ class AttributeViewSet(ModelViewSet):
     queryset = Attribute.objects.all()
 
 
-class ContactViewSet(ModelViewSet):
-    serializer_class = ContactSerializer
-    queryset = Contact.objects.all()
-
-
 class NameViewSet(ModelViewSet):
     serializer_class = NameSerializer
     queryset = Name.objects.all()
-
-
-class PersonViewSet(ModelViewSet):
-    serializer_class = PersonSerializer
-    queryset = Person.objects.all()
 
 
 class CategoryViewSet(ModelViewSet):

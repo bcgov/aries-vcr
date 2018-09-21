@@ -7,23 +7,21 @@ from api_v2.views import misc, rest, search
 
 router = SimpleRouter(trailing_slash=False)
 
-router.register(r"issuer", rest.IssuerViewSet, "Issuer")
-router.register(r"schema", rest.SchemaViewSet, "Schema")
-router.register(
-    r"credentialtype", rest.CredentialTypeViewSet, "CredentialType"
-)
-router.register(r"topic", rest.TopicViewSet, "Topic")
-router.register(r"credential", rest.CredentialViewSet, "Credential")
-router.register(r"address", rest.AddressViewSet, "Address")
-router.register(r"attribute", rest.AttributeViewSet, "Attribute")
-router.register(r"contact", rest.ContactViewSet, "Contact")
-router.register(r"name", rest.NameViewSet, "Name")
-router.register(r"person", rest.PersonViewSet, "Person")
-router.register(r"category", rest.CategoryViewSet, "Category")
+router.register(r"issuer", rest.IssuerViewSet)
+router.register(r"schema", rest.SchemaViewSet)
+router.register(r"credentialtype", rest.CredentialTypeViewSet)
+router.register(r"address", rest.AddressViewSet)
+router.register(r"attribute", rest.AttributeViewSet)
+router.register(r"category", rest.CategoryViewSet)
+router.register(r"credential", rest.CredentialViewSet)
+router.register(r"name", rest.NameViewSet)
+router.register(r"topic", rest.TopicViewSet)
 
 # Search endpoints
-router.register(r"search/credential/topic", search.CredentialTopicSearchView, "Credential Topic Search")
-router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
+router.register(
+    r"search/credential/topic", search.CredentialTopicSearchView, "Credential Topic Search")
+router.register(
+    r"search/credential", search.CredentialSearchView, "Credential Search")
 searchPatterns = [
     url(r"^search/autocomplete$", search.NameAutocompleteView.as_view()),
 ]

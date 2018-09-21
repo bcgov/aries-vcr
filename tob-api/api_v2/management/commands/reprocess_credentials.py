@@ -1,22 +1,20 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from api_v2.models.Name import Name
 from api_v2.models.Address import Address
-from api_v2.models.Person import Person
-from api_v2.models.Contact import Contact
+from api_v2.models.Attribute import Attribute
 from api_v2.models.Category import Category
 from api_v2.models.Credential import Credential
+from api_v2.models.Name import Name
 
 from api_v2.indy.credential import CredentialManager
 
 
 MODEL_TYPE_MAP = {
-    "name": Name,
     "address": Address,
-    "person": Person,
-    "contact": Contact,
+    "attribute": Attribute,
     "category": Category,
+    "name": Name,
 }
 
 
