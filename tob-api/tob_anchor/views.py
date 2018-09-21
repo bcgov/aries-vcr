@@ -97,6 +97,7 @@ async def _check_signature(request, use_cache: bool = True):
     except:
         LOGGER.exception("Signature validation error:")
         result = web.json_response({"success": False, "result": "Not available"}, status=403)
+        ok = False
     _time_end(perf)
     return ok, result
 
