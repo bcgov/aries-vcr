@@ -45,7 +45,7 @@ export namespace Model {
     static extPath: string;
 
     constructor(data?: any) {
-      if(data !== undefined && data !== null) {
+      if(data) {
         this._load(data);
       }
     }
@@ -117,10 +117,10 @@ export namespace Model {
 
     addresses: Address[];
     _attributes: Attribute[];
+    _attribute_map: {[key: string]: Attribute};
     categories: Category[];
     names: Name[];
     topic: Topic;
-    attributes_map: {[key: string]: Attribute} = {};
 
     get pageTitle(): string {
       return this.credential_type && this.credential_type.description;
@@ -144,7 +144,11 @@ export namespace Model {
     }
     set attributes(attrs: Attribute[]) {
       this._attributes = attrs || [];
-      this.attributes_map = mapByType(this._attributes);
+      this._attribute_map = mapByType(this._attributes);
+    }
+
+    get attribute_map(): {[key: string]: Attribute} {
+      return this._attribute_map || {};
     }
 
     get issuer(): Issuer {
@@ -276,9 +280,9 @@ export namespace Model {
 
     addresses: Address[];
     _attributes: Attribute[];
+    _attribute_map: {[key: string]: Attribute};
     categories: Category[];
     names: Name[];
-    attributes_map: {[key: string]: Attribute};
 
     static resourceName = 'topic';
 
@@ -294,7 +298,11 @@ export namespace Model {
     }
     set attributes(attrs: Attribute[]) {
       this._attributes = attrs;
-      this.attributes_map = mapByType(this._attributes);
+      this._attribute_map = mapByType(this._attributes);
+    }
+
+    get attribute_map(): {[key: string]: Attribute} {
+      return this._attribute_map || {};
     }
 
     get pageTitle(): string {

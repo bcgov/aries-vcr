@@ -35,19 +35,11 @@
                   </div>
                 <div>
                   <div class="col-sm-5 cred-info">
-                    <label *ngIf="cred.topic.categories.length > 0">
-                      <div  *ngFor="let category of cred.topic.categories">
-                        <div  *ngIf="category.type === 'topic_type'">
-                            <div *ngIf="category.value" >
-                            {{('business_type.' + category.value) | translate}}
-                          </div>
-                        </div>
-                      </div>
+                    <label *ngIf="cred.topic.attribute_map['topic_type'] as topic_type">
+                        {{('business_type.' + topic_type.value) | translate}}
                     </label>
                   </div>
-                 
                 </div>
-              </ng-container>
-
+            </ng-container>
     </div>
 </div>

@@ -35,7 +35,10 @@ class CredentialIndex(indexes.SearchIndex, indexes.Indexable):
 
     @staticmethod
     def prepare_category(obj):
-        return ["{}::{}".format(cat.type, cat.value) for cat in obj.categories.all()]
+        return [
+            "{}::{}".format(cat.type, cat.value)
+            for cat in obj.attributes.all()
+            if cat.format == "category"]
 
     @staticmethod
     def prepare_location(obj):
@@ -59,7 +62,7 @@ class CredentialIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         prefetch = (
             "addresses",
-            "categories",
+            "attributes",
             "names",
         )
         select = (

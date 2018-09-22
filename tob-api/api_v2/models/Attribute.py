@@ -7,7 +7,7 @@ class Attribute(Auditable):
     reindex_related = ["credential"]
 
     credential = models.ForeignKey("Credential", related_name="attributes", on_delete=models.CASCADE)
-    type = models.TextField()
+    type = models.TextField(db_index=True, default='text')
     format = models.TextField(null=True)
     value = models.TextField(null=True)
 

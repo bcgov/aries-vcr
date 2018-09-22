@@ -37,7 +37,7 @@ PROCESSOR_FUNCTION_BASE_PATH = "api_v2.processor"
 SUPPORTED_MODELS_MAPPING = {
     "attribute": Attribute,
     "address": Address,
-    "category": Category,
+    "category": Attribute,
     "name": Name,
 }
 
@@ -545,6 +545,8 @@ class CredentialManager(object):
                     field,
                     CredentialManager.process_mapping(field_mapper, self.credential),
                 )
+            if model_name == "category":
+                model.format = "category"
 
             model.credential = credential
             model.save()

@@ -34,12 +34,8 @@
 
                 <div class="row form-group">
                     <label class="col-sm-3 control-label" translate>cred.type</label>
-                    <div  *ngFor="let category of record.categories">
-                        <div  *ngIf="category.type === 'topic_type'">
-                            <div *ngIf="category.value" >
-                                {{('business_type.' + category.value) | translate}}
-                            </div>
-                        </div>
+                    <div *ngIf="record.attribute_map['topic_type'] as topic_type">
+                        {{('business_type.' + topic_type.value) | translate}}
                     </div>
                 </div>
 
@@ -52,41 +48,29 @@
 
                 <div class="row form-group">
                     <label class="col-sm-3 control-label" translate>cred.start-date</label>
-                    <div  *ngFor="let category of record.categories">
-                        <div  *ngIf="category.type === 'topic_registration_date'">
-                            <div *ngIf="category.value" >
-                                {{category.value}}
-                            </div>
-                        </div>
+                    <div *ngIf="record.attribute_map['topic_registration_date'] as reg_date">
+                        <attribute-view [record]="reg_date"></attribute-view>
                     </div>
                 </div>
 
                 <div class="row form-group">
                     <label class="col-sm-3 control-label" translate>cred.status</label>
-                    <div  *ngFor="let category of record.categories">
-                        <div  *ngIf="category.type === 'topic_status'">
-                            <div *ngIf="category.value" >
-                                {{('business_status.' + category.value) | translate}}
-                            </div>
-                        </div>
+                    <div *ngIf="record.attribute_map['topic_type'] as topic_status">
+                        {{('business_status.' + topic_status.value) | translate}}
                     </div>
                 </div>
 
                 <div class="row form-group">
                     <label class="col-sm-3 control-label" translate>cred.effective-date</label>
-                    <div  *ngFor="let category of record.categories">
-                        <div  *ngIf="category.type === 'topic_status_effective_date'">
-                                <div *ngIf="category.value" >
-                                    {{category.value}}
-                                </div>
-                        </div>
+                    <div *ngIf="record.attribute_map['topic_status_effective_date'] as status_date">
+                        <attribute-view [record]="status_date"></attribute-view>
                     </div>
                 </div>
 
                 <div class="row form-group" *ngIf="record.haveAddresses">
                     <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
                     <div class="form-field">
-                        {{record.topic.addresses[0].province}}
+                        {{record.topic.addresses[0]?.province}}
                     </div>
                 </div>
                 <div class="row form-group">
@@ -120,10 +104,10 @@
                           {{'cred.verify-status' | translate}}
                         </div>
                         <div class="panel-body">
-                            <div *ngIf="verifyResult && verifyResult.success"> 
+                            <div *ngIf="verifyResult && verifyResult.success">
                                 {{ 'cred.success' | translate }}
                             </div>
-                            <div  *ngIf="verifyResult && !verifyResult.success"> 
+                            <div  *ngIf="verifyResult && !verifyResult.success">
                                 {{'cred.error' | translate }}
                             </div>
                         </div>
