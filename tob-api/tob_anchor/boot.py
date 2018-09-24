@@ -99,7 +99,7 @@ async def init_app(on_startup=None, on_cleanup=None):
     if on_cleanup:
         app.on_cleanup.append(on_cleanup)
     no_headers = os.environ.get("DISABLE_SERVER_HEADERS")
-    if no_headers and no_headers != "false":
+    if not no_headers or no_headers == "false":
         app.on_response_prepare.append(add_server_headers)
 
     return app
