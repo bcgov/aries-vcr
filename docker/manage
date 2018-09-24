@@ -157,7 +157,7 @@ build-api() {
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../tob-api' \
-    'bcgovimages/von-image:py36-1.6-ew-2-s2i' \
+    'bcgovimages/von-image:py36-1.6-ew-s2i' \
     'django'
 }
 
@@ -194,12 +194,27 @@ configureEnvironment() {
       echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
       exit 1
     fi
+
+    if [ ${#seed} -ne 32 ]; then
+      echo "The seed parameter must be 32 characters long exactly."
+      exit 1
+    fi
+
+    if [ -z "$ver_seed" ]; then
+      echo "You must provide a ver_seed parameter. For example: ver_seed=my_seed_000000000000000000000001."
+      exit 1
+    fi
+
+    if [ ${#ver_seed} -ne 32 ]; then
+      echo "The ver_seed parameter must be 32 characters long exactly."
+      exit 1
+    fi
   fi
 
   export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-tob}"
 
   export INDY_WALLET_SEED=${seed}
-  export INDY_VERIFIER_WALLET_SEED=${INDY_VERIFIER_WALLET_SEED:-tob-verifier-wallet-000000000001}
+  export INDY_VER_WALLET_SEED=${ver_seed}
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   export RUST_LOG=${RUST_LOG:-warn}
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
