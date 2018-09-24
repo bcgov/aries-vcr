@@ -188,6 +188,7 @@ configureEnvironment() {
   done
 
   seed=${INDY_WALLET_SEED:-$seed}
+  ver_seed=${INDY_VERIFIER_WALLET_SEED:-$ver_seed}
 
   if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
@@ -214,7 +215,7 @@ configureEnvironment() {
   export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-tob}"
 
   export INDY_WALLET_SEED=${seed}
-  export INDY_VER_WALLET_SEED=${ver_seed}
+  export INDY_VERIFIER_WALLET_SEED=${ver_seed:-tob-verifier-wallet-000000000001}
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   export RUST_LOG=${RUST_LOG:-warn}
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
