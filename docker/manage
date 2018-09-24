@@ -187,14 +187,11 @@ configureEnvironment() {
     esac
   done
 
+  seed=${INDY_WALLET_SEED:-$seed}
+
   if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
       echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
-      exit 1
-    fi
-
-    if [ ${#seed} -ne 32 ]; then
-      echo "The seed parameter must be 32 characters long exactly."
       exit 1
     fi
   fi
@@ -202,6 +199,7 @@ configureEnvironment() {
   export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-tob}"
 
   export INDY_WALLET_SEED=${seed}
+  export INDY_VERIFIER_WALLET_SEED=${INDY_VERIFIER_WALLET_SEED:-tob-verifier-wallet-000000000001}
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   export RUST_LOG=${RUST_LOG:-warn}
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
@@ -246,7 +244,9 @@ configureEnvironment() {
   export SOLR_SERVICE_NAME="tob-solr"
   export SOLR_CORE_NAME=${CORE_NAME}
   export SKIP_INDEXING_ON_STARTUP=${SKIP_INDEXING_ON_STARTUP-}
+  export GENESIS_URL=${GENESIS_URL-}
   export LEDGER_URL=${LEDGER_URL-http://$DOCKERHOST:9000}
+  export LEDGER_PROTOCOL_VERSION=${LEDGER_PROTOCOL_VERSION-}
   export SQL_DEBUG=${SQL_DEBUG:-}
   export WEB_CONCURRENCY=${WEB_CONCURRENCY:-5}
 
