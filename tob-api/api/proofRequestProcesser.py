@@ -9,10 +9,6 @@ from rest_framework.exceptions import NotAcceptable
 import requests
 import time
 
-# LEDGER_URL = os.environ.get('LEDGER_URL')
-# if not LEDGER_URL:
-#     raise Exception('LEDGER_URL must be set.')
-
 
 class ProofRequestProcesser(object):
     """

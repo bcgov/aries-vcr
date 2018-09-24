@@ -54,6 +54,8 @@ def indy_env():
     return {
         "INDY_GENESIS_PATH": get_genesis_path(),
         "INDY_LEDGER_URL": os.environ.get("LEDGER_URL"),
+        "INDY_GENESIS_URL": os.environ.get("GENESIS_URL"),
+        "LEDGER_PROTOCOL_VERSION": os.environ.get("LEDGER_PROTOCOL_VERSION"),
     }
 
 def indy_holder_id():

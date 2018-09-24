@@ -13,11 +13,15 @@ def getGenesisData():
     """
 
     # Use the BCovrin DEV ledger by default.
-    ledgerUrl = os.getenv('LEDGER_URL', 'http://159.89.115.24').lower()
-    if not ledgerUrl:
-        raise Exception('LEDGER_URL must be set.')
-    logger.info('Using genesis transaction file from {}/genesis'.format(ledgerUrl))
-    response = requests.get('{}/genesis'.format(ledgerUrl))
+    genesisUrl = os.getenv('GENESIS_URL')
+    if not genesisUrl:
+        ledgerUrl = os.getenv('LEDGER_URL', 'http://159.89.115.24').lower()
+        if ledgerUrl:
+            genesisUrl = '{}/genesis'.format(ledgerUrl)
+    if not genesisUrl:
+        raise Exception('LEDGER_URL or GENESIS_URL must be set.')
+    logger.info('Using genesis transaction file from {}'.format(genesisUrl))
+    response = requests.get(genesisUrl)
     return response.text
 
 def checkGenesisFile(genesis_txn_path):

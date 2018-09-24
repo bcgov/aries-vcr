@@ -3,10 +3,6 @@ import json
 import logging
 import requests
 
-# LEDGER_URL = os.environ.get('LEDGER_URL')
-# if not LEDGER_URL:
-#     raise Exception('LEDGER_URL must be set.')
-
 
 class ClaimParser(object):
     """
