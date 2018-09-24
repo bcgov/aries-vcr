@@ -2,7 +2,7 @@
     <div class="cred" *ngIf="cred.credential_type.schema.name.indexOf('registration') != -1">
         <div class="panel name-panel" >
             <div class="panel-heading" >
-                <a [title]="[cred.issuer.name]" class="header-link"  [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.name}} </a>
+                <a [title]="[cred.issuer.name]" class="header-link"  [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.abbreviation | translate}} </a>
 
             </div>
 

@@ -1,9 +1,15 @@
 <div class="panel name-panel" *ngIf="record && name">
     <h3 class="panel-title" tabIndex="-1"> <strong>{{name.text }}</strong></h3>
 
+    
   <div class="panel-body form-body">
-
-      <div class="row form-group">
+        <div class="row form-group" *ngIf="addresses.length > 0">
+                <label class="col-sm-3 control-label" translate>cred.municipality</label>
+                <div class="form-field">
+                   {{addresses[0].city | titlecase }}
+                </div>
+        </div>
+       <div class="row form-group">
           <label class="col-sm-3 control-label" translate>cred.type</label>
           <div class="form-field">
               <div *ngIf="record.attribute_map['topic_type'] as topic_type">
@@ -27,13 +33,8 @@
                 </div>
             </div>
       </div>
-
-      <div class="row form-group" *ngIf="record.addresses.length > 0">
-          <label class="col-sm-3 control-label" translate>cred.municipality</label>
-          <div class="form-field">
-             {{record.addresses[0]?.city | titlecase }}
-          </div>
-      </div>
+     
+     
 
       <div class="row form-group" *ngIf="addresses.length > 0">
           <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>

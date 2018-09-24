@@ -56,7 +56,7 @@
     "error": "The digital signature associated with this record could not be verified. Please try again later.",
     "success": "Verification Successful! The digital signature associated with this record as signed by the issuer has been cryptographically validated.",
     "note": "Note:",
-    "disclaimer": "The business information above is not real-time and is not a substitute for a Ministry of Government and Consumer Services generated report.  Ministry of Government and Consumer Services makes no warranty, expressed or implied regarding the accuracy of the business information contained on this page. To find out how to search the official Public Record,",
+    "disclaimer": "The business information above is not real-time and is intended for informational purposes only. This is not a substitute for an official report from the Public Record maintained by the Ministry of Government and Consumer Services. To find out how to search the official Public Record,",
     "click-here": "click here"
   },
   "general": {
@@ -111,7 +111,7 @@
     "breadcrumb": "Organization Information",
     "return-link": "Back to Organization Information",  
     "note": "Note:",
-    "disclaimer": "The business information above is not real-time and intended for informational purposes only.  This is not a substitute for an official report from the Public Record maintained by the Ministry of Government and Consumer Services. To find out how to search the official Public Record,",
+    "disclaimer": "The business information above is not real-time and is intended for informational purposes only. This is not a substitute for an official report from the Public Record maintained by the Ministry of Government and Consumer Services. To find out how to search the Public Record,",
     "click-here": "click here",
     "incorporation": "Incorporation",
     "doing_business_as": "Business Name registered by a corporation"
@@ -188,6 +188,7 @@
     "ONBIS_BUSINESS_STATUS_1":	"In default - Ontario Securities Act",
     "ONBIS_BUSINESS_STATUS_5":	"In default - Ministry of Finance tax statute",
     "ONBIS_BUSINESS_STATUS_ 4":	"Not Available"
-  }
+  },
+  "MGCS": "Ministry of Government and Consumer Services"
 
 }

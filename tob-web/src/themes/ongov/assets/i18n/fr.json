@@ -56,7 +56,7 @@
     "error": "La signature numérique associée à cet enregistrement n'a pas pu être vérifiée. Veuillez réessayer plus tard.",
     "success": "Vérification réussie! La signature numérique associée à cet enregistrement tel que signé par le délivreur a été validée cryptographiquement.",
     "note": "Remarque:",
-    "disclaimer": "les renseignements sur l'entreprise ci-dessus ne sont pas en temps réel et ne sont donnés qu'à titre indicatif.  Le présent document ne remplace pas un rapport officiel provenant des dossiers publics tenus par le ministère des Services gouvernementaux et des Services aux consommateurs. Le ministère des Services gouvernementaux et des Services aux consommateurs n'offre aucune garantie, expresse ou implicite, concernant l'exactitude des renseignements commerciaux contenus dans cette page. Pour savoir comment faire une recherche dans les dossiers publics,",
+    "disclaimer": "Les informations commerciales ci-dessus ne sont pas en temps réel et sont destinées à des fins d'information uniquement. Ceci ne remplace pas un rapport officiel du dossier public tenu par le ministère des Services gouvernementaux et des Services aux consommateurs. Pour savoir comment faire une recherche dans les dossiers publics,",
     "click-here": "cliquez ici"
   },
   "general": {
@@ -82,7 +82,7 @@
     "end-date": "Date de fin",
     "start-date": "Date d'entrée en vigueur",
     "website": "Site Web du délivreur",
-    "email": "Email"
+    "email": "Adresse"
   },
   "name": {
     "doing-business-as": "Nom commercial enregistré par une société",
@@ -111,7 +111,7 @@
     "breadcrumb": "Renseignements sur l'organisation",
     "return-link": "Retour aux renseignements sur l'organisation",  
     "note": "Remarque:",
-    "disclaimer": "les renseignements sur l'entreprise ci-dessus ne sont pas en temps réel et ne sont donnés qu'à titre indicatif.  Le présent document ne remplace pas un rapport officiel provenant des dossiers publics tenus par le ministère des Services gouvernementaux et des Services aux consommateurs. Pour savoir comment faire une recherche dans les dossiers publics,",
+    "disclaimer": "Les informations commerciales ci-dessus ne sont pas en temps réel et sont destinées à des fins d'information uniquement. Ceci ne remplace pas un rapport officiel du dossier public tenu par le ministère des Services gouvernementaux et des Services aux consommateurs. Pour savoir comment faire une recherche dans les dossiers publics,",
     "click-here": "cliquez ici",
     "incorporation": "Incorporation",
     "doing_business_as": "Nom commercial enregistré par une société"
@@ -124,7 +124,8 @@
     "results-title": "Résultats de la recherche",
     "return-link": "Retour à la recherche",
     "results-error": "Votre requête n'a pas pu être complétée pour le moment.",
-    "title": "Trouver une organisation"
+    "title": "Trouver une organisation",
+    "records-prefix": "Des dossiers"
   },
   "business_type": {
     "ONBIS_BUSINESS_TYPE_A": "Sociétés par actions de l'Ontario",
@@ -188,6 +189,7 @@
     "ONBIS_BUSINESS_STATUS_1":	"En défaut - Loi sur les valeurs mobilières",
     "ONBIS_BUSINESS_STATUS_5":	"En défaut - Loi sur les valeurs mobilières",
     "ONBIS_BUSINESS_STATUS_ 4":	"Non disponible"
-  }
+  },
+  "MGCS": "Ministère des Services gouvernementaux et des Services aux consommateurs"
 
 }
