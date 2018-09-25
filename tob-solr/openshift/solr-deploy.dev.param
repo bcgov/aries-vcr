@@ -6,7 +6,7 @@
 # NAME=solr
 # IMAGE_NAMESPACE=devex-von-tools
 # TAG_NAME=dev
-PERSISTENT_VOLUME_SIZE=25Gi
+PERSISTENT_VOLUME_SIZE=1Gi
 # MOUNT_PATH=/opt/solr/server/solr/mycores
 # CORE_NAME=the_org_book
 # CPU_REQUEST=100m
