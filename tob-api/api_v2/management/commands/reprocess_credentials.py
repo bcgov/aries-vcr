@@ -13,7 +13,7 @@ from api_v2.indy.credential import CredentialManager
 MODEL_TYPE_MAP = {
     "address": Address,
     "attribute": Attribute,
-    "category": Category,
+    "category": Attribute,
     "name": Name,
 }
 
@@ -56,6 +56,15 @@ class Command(BaseCommand):
                             field,
                             CredentialManager.process_mapping(field_mapper, credential),
                         )
+                    if model_name == "category":
+                        model.format = "category"
+
+                    # skip blank values
+                    if model_name == "name" and (model.text is None or model.text is ""):
+                        continue
+                    if (model_name == "category" or model_name == "attribute") and \
+                            (not model.type or model.value is None or model.value is ""):
+                        continue
 
                     model.credential = credential
                     model.save()
