@@ -281,8 +281,20 @@
                     "value": "${INDY_WALLET_SEED}"
                   },
                   {
+                    "name": "GENESIS_URL",
+                    "value": "${GENESIS_URL}"
+                  },
+                  {
                     "name": "LEDGER_URL",
                     "value": "${LEDGER_URL}"
+                  },
+                  {
+                    "name": "LEDGER_PROTOCOL_VERSION",
+                    "value": "${LEDGER_PROTOCOL_VERSION}"
+                  },
+                  {
+                    "name": "AUTO_REGISTER_DID",
+                    "value": "${AUTO_REGISTER_DID}"
                   },
                   {
                     "name": "INDY_WALLET_TYPE",
@@ -514,11 +526,32 @@
       "value": "the_org_book_dev_000000000000000"
     },
     {
+      "name": "GENESIS_URL",
+      "displayName": "Genesis Url",
+      "description": "URL for downloading a copy of the genesis file defining the ledger connection for the environment.  Used when connecting the the Sovrin Ledger.",
+      "required": false,
+      "value": ""
+    },
+    {
       "name": "LEDGER_URL",
       "displayName": "VON network ledger url.",
-      "description": "URL for a running instance of the von-network.",
-      "required": true,
+      "description": "URL for a running instance of the von-network.  Used when connecting to the BCovrin Ledger.",
+      "required": false,
       "value": "http://159.89.115.24"
+    },
+    {
+      "name": "LEDGER_PROTOCOL_VERSION",
+      "displayName": "Ledger Protocol Version",
+      "description": "Used to specify the protocol version for the ledger.  Defaults if left blank.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "AUTO_REGISTER_DID",
+      "displayName": "Auto Register DID",
+      "description": "Flag to indicate whether or not to auto-register with the ledger.  Only works with the BCovrin, which has an endpoint for self registration.",
+      "required": false,
+      "value": "1"
     },
     {
       "name": "INDY_WALLET_TYPE",
