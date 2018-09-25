@@ -106,7 +106,7 @@
 
     <field name="topic_id" type="long" indexed="true" stored="true" multiValued="false" />
 
-    <field name="category" type="text_en" indexed="true" stored="true" multiValued="true" />
+    <field name="category" type="string" indexed="true" stored="true" multiValued="true" />
 
     <field name="location" type="text_en" indexed="true" stored="true" multiValued="true" />
      
@@ -114,7 +114,7 @@
      
     <field name="effective_date_exact" type="date" indexed="true" stored="true" multiValued="false" />
     
-    <field name="topic_type" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_type" type="string" indexed="true" stored="true" multiValued="false" />
     
     <field name="effective_date" type="date" indexed="true" stored="true" multiValued="false" />
     
@@ -124,7 +124,7 @@
     
     <field name="issuer_id" type="long" indexed="true" stored="true" multiValued="false" />
     
-    <field name="source_id" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="source_id" type="string" indexed="true" stored="true" multiValued="false" />
 
     <uniqueKey>id</uniqueKey>
 
