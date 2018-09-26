@@ -1,9 +1,10 @@
 {
   "attribute": {
-    "entity_status": "Entity Status",
-    "entity_name_effective": "Entity Name Effective",
-    "entity_status_effective": "Entity Status Effective",
-    "entity_type": "Entity Type",
+    "entity_status": "Registration Status",
+    "entity_name_effective": "Name Effective Date",
+    "entity_name_effective-short": "Name Effective",
+    "entity_status_effective": "Status Effective Date",
+    "entity_type": "Registration Type",
     "registration_date": "Registration Date"
   },
   "category": {
