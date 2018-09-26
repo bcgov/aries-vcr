@@ -8,11 +8,11 @@
 # REAL_IP_FROM=172.51.0.0/16
 API_URL=https://django-devex-von-bc-tob-dev.pathfinder.gov.bc.ca/api/v2/
 # API_SERVICE_NAME=django
-# API_PATH=/api/V2/
+# API_PATH=/api/v2/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
-# APPLICATION_DOMAIN=angular-on-nginx-devex-von-bc-tob-dev.pathfinder.gov.bc.ca
-# TAG_NAME=dev
+APPLICATION_DOMAIN=angular-on-nginx-devex-von-bc-tob-dev.pathfinder.gov.bc.ca
+TAG_NAME=dev
 # HTTP_BASIC=auth_basic 'restricted';
 # TOB_THEME=bcgov
 # CPU_REQUEST=10m
