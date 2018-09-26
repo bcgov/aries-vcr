@@ -1,9 +1,9 @@
-<ng-container *ngIf="record; else ifBlank" [ngSwitch]="record.format">
-  <div *ngSwitchCase="'category'">{{categoryValue | async}}</div>
-  <div *ngSwitchCase="'date'" class="claim-info date">{{record.value | dateFormat: 'effectiveDate'}}</div>
-  <div *ngSwitchCase="'datetime'" class="claim-info date">{{record.value | dateFormat: 'effectiveDateTime'}}</div>
-  <div *ngSwitchDefault [class]="'claim-info '+record.typeClass" [innerHTML]="formatted"></div>
+<ng-container *ngIf="record; else ifBlank" [ngSwitch]="format">
+  <span *ngSwitchCase="'category'">{{categoryValue | async}}</span>
+  <span *ngSwitchCase="'date'" class="claim-info date">{{record.value | dateFormat: 'effectiveDate'}}</span>
+  <span *ngSwitchCase="'datetime'" class="claim-info date">{{record.value | dateFormat: 'effectiveDateTime'}}</span>
+  <span *ngSwitchDefault [class]="'claim-info '+record.typeClass" [innerHTML]="formatted"></span>
 </ng-container>
 <ng-template #ifBlank>
-  {{cred.empty-attribute | translate}}
+  {{'cred.empty-attribute' | translate}}
 </ng-template>

@@ -121,7 +121,12 @@ div.claim-info {
 }
 
 .form-field + .control-label, .form-field + .form-field {
-  margin-top: 8px;
+  margin-top: 10px;
+}
+
+.claim-meta {
+  padding-left: 3em;
+  white-space: nowrap;
 }
 
 //place all overrides for a specific theme in this file inside your theme/cred directory

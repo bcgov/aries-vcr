@@ -36,6 +36,7 @@
     "contact": "Contact",
     "cred-type": "Credential Type",
     "crypto-data": "Cryptographic Proof Data",
+    "empty-attribute": "–",
     "end-date": "End Date",
     "expired": "Expired",
     "expired-message": "This credential is expired and no longer verifiable.",

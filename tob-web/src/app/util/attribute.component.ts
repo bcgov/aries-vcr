@@ -10,10 +10,15 @@ import { TranslateService } from '@ngx-translate/core';
 export class AttributeComponent {
 
   @Input() record: Model.Attribute;
+  @Input('format') _format: string;
 
   constructor(
     private _translate: TranslateService,
   ) {}
+
+  get format(): string {
+    return this._format === undefined ? (this.record && this.record.format) : this._format;
+  }
 
   get formatted(): string {
     return this.record.value;
