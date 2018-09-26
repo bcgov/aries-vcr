@@ -149,7 +149,7 @@ export namespace Model {
       return this._attributes;
     }
     set attributes(attrs: Attribute[]) {
-      this._attributes = attrs || [];
+      this._attributes = attrs;
       this._attribute_map = mapByType(this._attributes);
     }
 
