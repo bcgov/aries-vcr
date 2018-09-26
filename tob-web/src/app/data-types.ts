@@ -97,6 +97,12 @@ export namespace Model {
       if(this.format === 'url')
         return 'website';
     }
+
+    get typeLabel(): string {
+      if(this.type && ! ~this.type.indexOf('.'))
+        return `attribute.${this.type}`;
+      return this.type;
+    }
   }
 
   export class Category extends BaseModel {

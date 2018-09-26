@@ -56,6 +56,15 @@
           </div>
         </div>
 
+        <div class="row form-group" *ngIf="record.attributes?.length">
+          <div class="col-sm-12">
+            <label class="control-label" translate>cred.attributes</label>
+            <div class="form-field attributes-outer">
+              <attribute-list [records]="record.attributes"></attribute-list>
+            </div>
+          </div>
+        </div>
+
         <div class="row form-group">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.proof-of-claims</label>

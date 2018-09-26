@@ -8,13 +8,14 @@
   </div>
   <div class="panel-body form-body">
     <div class="row form-group">
-      <div class="col-sm-7" *ngIf="issuer">
+      <div class="col-sm-7">
+        <attribute-list [records]="record.attributes"></attribute-list>
+      </div>
+      <div class="col-sm-5">
         <label class="control-label" translate>cred.issuer</label>
         <div class="form-field">
           <a [routerLink]="['/issuer', issuer.id] | localize" class="body-link issuer-link">{{issuer.name}}</a>
         </div>
-      </div>
-      <div class="col-sm-5">
         <label class="control-label" translate>cred.start-date</label>
         <div class="form-field">
           <span class="claim-info date">{{name.last_updated | dateFormat: 'effectiveDate'}}</span>

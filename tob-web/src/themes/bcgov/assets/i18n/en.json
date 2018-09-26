@@ -1,0 +1,15 @@
+{
+  "attribute": {
+    "entity_status": "Entity Status",
+    "entity_name_effective": "Entity Name Effective",
+    "entity_status_effective": "Entity Status Effective",
+    "entity_type": "Entity Type",
+    "registration_date": "Registration Date"
+  },
+  "category": {
+    "entity_status": {
+      "ACT": "Active",
+      "HIS": "Historical"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<div class="panel name-panel" *ngIf="record && name">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      {{record.typeLabel | translate}}:
+      <span class="strong cred-link name" *ngIf="!link">{{name.text}}</span>
+      <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
+    </h3>
+  </div>
+  <div class="panel-body form-body">
+    <div class="row">
+      <div class="col-sm-7">
+        <label class="control-label" translate>attribute.entity_status</label>
+        <div class="form-field">
+          <attribute-view [record]="record.attribute_map.entity_status"></attribute-view>
+        </div>
+        <label class="control-label" translate>attribute.entity_type</label>
+        <div class="form-field">
+          <attribute-view [record]="record.attribute_map.entity_type"></attribute-view>
+        </div>
+        <label class="control-label" translate>attribute.registration_date</label>
+        <div class="form-field">
+          <attribute-view [record]="record.attribute_map.registration_date"></attribute-view>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <label class="control-label" translate>cred.issuer</label>
+        <div class="form-field">
+          <a [routerLink]="['/issuer', issuer.id] | localize" class="body-link issuer-link">{{issuer.name}}</a>
+        </div>
+        <label class="control-label" translate>cred.start-date</label>
+        <div class="form-field">
+          <span class="claim-info date">{{name.last_updated | dateFormat: 'effectiveDateTime'}}</span>
+        </div>
+        <label class="control-label" translate>attribute.entity_name_effective</label>
+        <div class="form-field">
+          <attribute-view [record]="record.attribute_map.entity_name_effective"></attribute-view>
+        </div>
+        <label class="control-label" translate>attribute.entity_status_effective</label>
+        <div class="form-field">
+          <attribute-view [record]="record.attribute_map.entity_status_effective"></attribute-view>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
