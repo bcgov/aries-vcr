@@ -215,6 +215,8 @@ function combineLanguage(theme_name, target_dir) {
                 input.push(require('./' + lang_path));
             }
             var data = mergeDeep(...input);
+            if(! ('app' in data)) data['app'] = {};
+            data['app']['theme-name'] = theme_name;
             var target_path = path.join(lang_dir, lang + '.json');
             try {
                 target_stats = fs.lstatSync(target_path);
