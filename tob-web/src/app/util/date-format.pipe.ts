@@ -8,7 +8,7 @@ export class DateFormatPipe extends DatePipe implements PipeTransform {
   transform(value: any, args?: any): any {
     let format = arguments[1] || 'mediumDate';
     if(format === 'effectiveDate') format = 'mediumDate';
-    else if(format === 'effectiveDateTime') format = 'medium';
+    else if(format === 'effectiveDateTime') format = 'MMM d, y, h:mm a';
     // may want to automatically strip off time if equal to midnight
     return super.transform(value, format);
   }
