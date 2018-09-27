@@ -22,8 +22,11 @@
       "data": {
         "key": "${WALLET_ENCRYPTION_KEY}",
         "holder-seed": "${HOLDER_WALLET_SEED}",
+        "holder-did": "${HOLDER_WALLET_DID}",
         "verifier-seed": "${VERIFIER_WALLET_SEED}",
-        "issuer-seed": "${ISSUER_WALLET_SEED}"
+        "verifier-did": "${VERIFIER_WALLET_DID}",
+        "issuer-seed": "${ISSUER_WALLET_SEED}",
+        "issuer-did": "${ISSUER_WALLET_DID}"
       },
       "type": "Opaque"
     },
@@ -297,6 +300,24 @@
                     }
                   },
                   {
+                    "name": "HOLDER_WALLET_DID",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
+                        "key": "holder-did"
+                      }
+                    }
+                  },
+                  {
+                    "name": "VERIFIER_WALLET_DID",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
+                        "key": "verifier-did"
+                      }
+                    }
+                  },
+                  {
                     "name": "APP_CONFIG",
                     "value": "${APP_CONFIG}"
                   },
@@ -515,6 +536,30 @@
       "displayName": "Issuer Wallet Seed",
       "description": "The Seed used for the issuer wallet.  Needs to be basee64 encoded.",
       "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "HOLDER_WALLET_DID",
+      "displayName": "Holder Wallet DID",
+      "description": "The DID associated to the holder wallet.  Needs to be basee64 encoded.",
+      "required": false,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "VERIFIER_WALLET_DID",
+      "displayName": "Verifier Wallet DID",
+      "description": "The DID associated to the verifier wallet.  Needs to be basee64 encoded.",
+      "required": false,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "ISSUER_WALLET_DID",
+      "displayName": "Issuer Wallet DID",
+      "description": "The DID associated to the issuer wallet.  Needs to be basee64 encoded.",
+      "required": false,
       "generate": "expression",
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },

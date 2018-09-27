@@ -17,6 +17,9 @@ APPLICATION_DOMAIN=django-devex-von-bc-tob-test.pathfinder.gov.bc.ca
 # HOLDER_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # VERIFIER_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # ISSUER_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# HOLDER_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# VERIFIER_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# ISSUER_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # WALLET_CREDENTIAL_STORE_NAME=wallet-credentials
 # APP_CONFIG=
 # #DJANGO_SECRET_KEY=[\w]{50}
