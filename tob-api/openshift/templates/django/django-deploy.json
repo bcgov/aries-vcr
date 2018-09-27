@@ -14,6 +14,20 @@
       "kind": "Secret",
       "apiVersion": "v1",
       "metadata": {
+        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
+        "labels": {
+          "app": "${NAME}"
+        }
+      },
+      "data": {
+        "key": "${WALLET_ENCRYPTION_KEY}"
+      },
+      "type": "Opaque"
+    },
+    {
+      "kind": "Secret",
+      "apiVersion": "v1",
+      "metadata": {
         "name": "${NAME}",
         "labels": {
           "app": "${NAME}"
@@ -253,6 +267,15 @@
                     }
                   },
                   {
+                    "name": "WALLET_ENCRYPTION_KEY",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
+                        "key": "key"
+                      }
+                    }
+                  },
+                  {
                     "name": "APP_CONFIG",
                     "value": "${APP_CONFIG}"
                   },
@@ -295,10 +318,6 @@
                   {
                     "name": "AUTO_REGISTER_DID",
                     "value": "${AUTO_REGISTER_DID}"
-                  },
-                  {
-                    "name": "INDY_WALLET_TYPE",
-                    "value": "${INDY_WALLET_TYPE}"
                   },
                   {
                     "name": "USE_AUTHENTICATION",
@@ -451,6 +470,21 @@
       "value": "5432"
     },
     {
+      "name": "WALLET_ENCRYPTION_KEY",
+      "displayName": "Wallet Encryption Key",
+      "description": "The encryption key to be used for the wallets.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "WALLET_CREDENTIAL_STORE_NAME",
+      "displayName": "Wallet Credential Store Name",
+      "description": "The name of the wallet credential store (aka The name of the secret that contains the wallet credentials).",
+      "required": true,
+      "value": "wallet-credentials"
+    },
+    {
       "name": "APP_CONFIG",
       "displayName": "Application Configuration File Path",
       "description": "Relative path to Gunicorn configuration file (optional)."
@@ -552,13 +586,6 @@
       "description": "Flag to indicate whether or not to auto-register with the ledger.  Only works with the BCovrin, which has an endpoint for self registration.",
       "required": false,
       "value": "1"
-    },
-    {
-      "name": "INDY_WALLET_TYPE",
-      "displayName": "Indy Wallet Type",
-      "description": "DEPRICATED - The wallet type to use; remote (enterprise) or virtual (local), defaults to virtual.",
-      "required": true,
-      "value": "virtual"
     },
     {
       "name": "TOB_THEME",
