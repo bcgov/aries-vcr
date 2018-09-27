@@ -71,19 +71,26 @@ generatePassword() {
   _password=$(echo -n "${_password}")
   echo ${_password}
 }
+
+initialize(){
+  # Define the name of the override param file.
+  _scriptName=$(basename ${0%.*})
+  export _overrideParamFile=${_scriptName}.param
+
+  printStatusMsg "Initializing ${_scriptName} ..."
+
+  # Remove any previous version of the file ...
+  if [ -f ${_overrideParamFile} ]; then
+    printStatusMsg "Removing previous copy of ${_overrideParamFile} ..."
+    rm -f ${_overrideParamFile}
+  fi
+}
 # ================================================================================================================
 
 # ================================================================================================================
 # Main Scipt Starts Here ...
 # ----------------------------------------------------------------------------------------------------------------
-
-# Define the name of the override param file.
-_overrideParamFile=$(basename ${0%.*}).param
-
-# Remove any previous version of the file ...
-if [ -f ${_overrideParamFile} ]; then
-    rm ${_overrideParamFile}
-fi
+initialize
 
 # Randomly generate a set of credentials without asking ...
 printStatusMsg "Creating a set of random user credentials ..."
