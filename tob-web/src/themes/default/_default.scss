@@ -73,6 +73,10 @@ $indicator-thickness: 0.2em;
 	font-variant-numeric: lining-nums tabular-nums;
 }
 
+.text-identifier {
+	font-family: monospace;
+}
+
 @keyframes loading {
     from {left: -100%; }
     to { left: 100%; }

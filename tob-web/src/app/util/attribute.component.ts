@@ -61,4 +61,13 @@ export class AttributeComponent {
       }
     }
   }
+
+  get numberValue() {
+    let val = this.record.value;
+    let match = val && val.match(/^(\d+)(\.\d+)?$/);
+    if(match) {
+      val = new Number(match[1]).toLocaleString() + match[2];
+    }
+    return val;
+  }
 }
