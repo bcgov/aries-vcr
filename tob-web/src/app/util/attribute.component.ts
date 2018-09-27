@@ -30,4 +30,35 @@ export class AttributeComponent {
       lbl => (! lbl || lbl.substring(0, 2) == '??') ? this.record.value : lbl
     );
   }
+
+  get jurisdictionValue() {
+    let val = this.record.value;
+    if(val) {
+      let usState = val.match(/^\s*US[, \-]+([A-Z]{2})\s*$/i);
+      if(usState) {
+        let stateLbl = 'jurisdiction.us_states.' + usState[1].toUpperCase();
+        let usLbl = 'jurisdiction.general.US';
+        return this._translate.stream([stateLbl, usLbl]).map(
+          lbls => {
+            if(lbls[stateLbl] && lbls[stateLbl] != stateLbl && lbls[stateLbl].substring(0, 2) != '??') {
+              return lbls[stateLbl] + ', ' + lbls[usLbl];
+            }
+            return val;
+          }
+        );
+      } else {
+        let provLbl = 'jurisdiction.provinces.' + val.toUpperCase();
+        let extLbl = 'jurisdiction.general.' + val.toUpperCase();
+        return this._translate.stream([provLbl, extLbl]).map(
+          lbls => {
+            if(lbls[provLbl] && lbls[provLbl] != provLbl && lbls[provLbl].substring(0, 2) != '??')
+              return lbls[provLbl];
+            else if(lbls[extLbl] && lbls[extLbl] != extLbl && lbls[extLbl].substring(0, 2) != '??')
+              return lbls[extLbl];
+            return val;
+          }
+        );
+      }
+    }
+  }
 }

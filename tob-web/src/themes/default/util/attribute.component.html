@@ -2,6 +2,7 @@
   <span *ngSwitchCase="'category'">{{categoryValue | async}}</span>
   <span *ngSwitchCase="'date'" class="claim-info date">{{record.value | dateFormat: 'effectiveDate'}}</span>
   <span *ngSwitchCase="'datetime'" class="claim-info date">{{record.value | dateFormat: 'effectiveDateTime'}}</span>
+  <span *ngSwitchCase="'jurisdiction'" class="claim-info location">{{jurisdictionValue | async}}</span>
   <span *ngSwitchDefault [class]="'claim-info '+record.typeClass" [innerHTML]="formatted"></span>
 </ng-container>
 <ng-template #ifBlank>
