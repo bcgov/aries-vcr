@@ -20,7 +20,10 @@
         }
       },
       "data": {
-        "key": "${WALLET_ENCRYPTION_KEY}"
+        "key": "${WALLET_ENCRYPTION_KEY}",
+        "holder-seed": "${HOLDER_WALLET_SEED}",
+        "verifier-seed": "${VERIFIER_WALLET_SEED}",
+        "issuer-seed": "${ISSUER_WALLET_SEED}"
       },
       "type": "Opaque"
     },
@@ -276,6 +279,24 @@
                     }
                   },
                   {
+                    "name": "INDY_WALLET_SEED",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
+                        "key": "holder-seed"
+                      }
+                    }
+                  },
+                  {
+                    "name": "INDY_VERIFIER_WALLET_SEED",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
+                        "key": "verifier-seed"
+                      }
+                    }
+                  },
+                  {
                     "name": "APP_CONFIG",
                     "value": "${APP_CONFIG}"
                   },
@@ -298,10 +319,6 @@
                   {
                     "name": "SKIP_INDEXING_ON_STARTUP",
                     "value": "${SKIP_INDEXING_ON_STARTUP}"
-                  },
-                  {
-                    "name": "INDY_WALLET_SEED",
-                    "value": "${INDY_WALLET_SEED}"
                   },
                   {
                     "name": "GENESIS_URL",
@@ -478,6 +495,30 @@
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
+      "name": "HOLDER_WALLET_SEED",
+      "displayName": "Holder Wallet Seed",
+      "description": "The Seed used for the holder wallet.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "VERIFIER_WALLET_SEED",
+      "displayName": "Verifier Wallet Seed",
+      "description": "The Seed used for the verifier wallet.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "ISSUER_WALLET_SEED",
+      "displayName": "Issuer Wallet Seed",
+      "description": "The Seed used for the issuer wallet.  Needs to be basee64 encoded.",
+      "required": true,
+      "generate": "expression",
+      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
       "name": "WALLET_CREDENTIAL_STORE_NAME",
       "displayName": "Wallet Credential Store Name",
       "description": "The name of the wallet credential store (aka The name of the secret that contains the wallet credentials).",
@@ -551,13 +592,6 @@
       "description": "The path to mount the persistent volume.",
       "required": true,
       "value": "/home/indy/.indy_client/wallet"
-    },
-    {
-      "name": "INDY_WALLET_SEED",
-      "displayName": "Indy Wallet Seed",
-      "description": "The seed that the indy wallet uses to generate predictable keys.",
-      "required": true,
-      "value": "the_org_book_dev_000000000000000"
     },
     {
       "name": "GENESIS_URL",

@@ -7,6 +7,15 @@
 # ================================================================================================================
 # Functions
 # ----------------------------------------------------------------------------------------------------------------
+printStatusMsg(){
+  (
+    _msg=${1}
+    _yellow='\033[1;33m'
+    _nc='\033[0m' # No Color
+    printf "\n${_yellow}${_msg}\n${_nc}" >&2
+  )
+}
+
 readParameter(){
   (
     _msg=${1}
@@ -20,15 +29,6 @@ readParameter(){
 
     read -r -p $"${_message}" ${_paramName}
     writeParameter "${_paramName}" "${_defaultValue}" "${_encode}"
-  )
-}
-
-printStatusMsg(){
-  (
-    _msg=${1}
-    _yellow='\033[1;33m'
-    _nc='\033[0m' # No Color
-    printf "\n${_yellow}${_msg}\n${_nc}" >&2
   )
 }
 
@@ -55,6 +55,15 @@ generateKey(){
     _format=${2:--base64} 
 
     echo $(openssl rand ${_format} ${_length})
+  )
+}
+
+generateSeed(){
+  (
+    _prefix=${1}
+    _seed=$(echo "${_prefix}$(generateKey 32)" | fold -w 32 | head -n 1 )
+    _seed=$(echo -n "${_seed}")
+    echo ${_seed}
   )
 }
 
@@ -101,6 +110,18 @@ writeParameter "ADMIN_PASSWORD" $(generatePassword) "true"
 
 # Ask the user to supply the sensitive parameters ...
 readParameter "WALLET_ENCRYPTION_KEY - Please provide the wallet encryption key for the environment.  If left blank, a 48 character long base64 encoded value will be randomly generated using openssl:" WALLET_ENCRYPTION_KEY $(generateKey) "true"
+
+_walletPrefix="TB"
+_holderWalletPrefix="${_walletPrefix}H"
+_verifierWalletPrefix="${_walletPrefix}V"
+_issuerWalletPrefix="${_walletPrefix}I"
+
+readParameter "HOLDER_WALLET_SEED - Please provide the holder wallet seed for the environment.  If left blank, a seed will be randomly generated using openssl:" HOLDER_WALLET_SEED $(generateSeed ${_holderWalletPrefix}) "true"
+readParameter "VERIFIER_WALLET_SEED - Please provide the verifier wallet seed for the environment.  If left blank, a seed will be randomly generated using openssl:" VERIFIER_WALLET_SEED $(generateSeed ${_verifierWalletPrefix}) "true"
+
+# TheOrgBook does not use a issuer wallet at the moment so just generate one without asking ...
+# readParameter "ISSUER_WALLET_SEED - Please provide the issuer wallet seed for the environment.  If left blank, a seed will be randomly generated using openssl:" ISSUER_WALLET_SEED $(generateSeed ${_issuerWalletPrefix}) "true"
+writeParameter "ISSUER_WALLET_SEED" $(generateSeed ${_issuerWalletPrefix}) "true"
 
 SPECIALDEPLOYPARMS="--param-file=${_overrideParamFile}"
 echo ${SPECIALDEPLOYPARMS}
