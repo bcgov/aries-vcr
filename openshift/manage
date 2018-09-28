@@ -191,8 +191,10 @@ hardReset() {
   exitOnError
 
   # Drop the wallet databases ...
-  deleteAndRecreateDatabase ${_walletDbPodName}
-  exitOnError
+  if podExists ${_walletDbPodName}; then
+    deleteAndRecreateDatabase ${_walletDbPodName}
+    exitOnError
+  fi
 
   # Bring the API pod back up ...
   scaleUp ${_apiPodName}
