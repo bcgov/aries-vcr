@@ -41,7 +41,7 @@
     "names": "Names",
     "people": "People",
     "start-date": "Registration Date:",
-    "effective-date": "Status Effective Date",
+    "effective-date": "Status Effective Date:",
     "verify-button-label": "Verify Record",
     "view-link": "View credential",
     "whats-this-link": "What's this?",
@@ -49,7 +49,7 @@
     "status": "Status:",
     "type": "Business Type:",
     "business_registration": "Foundational Business Registration Information",
-    "municipality": "Municipality",
+    "municipality": "Municipality:",
     "jurisdiction": "Jurisdiction:",
     "verifying-record": "Verifying Record",
     "verify-info": "Verifiable Information",
@@ -57,7 +57,7 @@
     "success": "Verification Successful! The digital signature associated with this record as signed by the issuer has been cryptographically validated.",
     "note": "Note:",
     "disclaimer": "The business information above is not real-time and is intended for informational purposes only. This is not a substitute for an official report from the Public Record maintained by the Ministry of Government and Consumer Services. To find out how to search the official Public Record,",
-    "click-here": "click here"
+    "click-here": "click here."
   },
   "general": {
     "none": "None",
@@ -81,8 +81,8 @@
     "cred-types": "Credential Types",
     "end-date": "End Date",
     "start-date": "Effective Date",
-    "website": "Issuer Website",
-    "email": "Address"
+    "website": "Issuer Website:",
+    "email": "Address:"
   },
   "name": {
     "doing-business-as": "Business Name registered by a corporation",
@@ -111,8 +111,8 @@
     "breadcrumb": "Organization Information",
     "return-link": "Back to Organization Information",  
     "note": "Note:",
-    "disclaimer": "The business information above is not real-time and is intended for informational purposes only. This is not a substitute for an official report from the Public Record maintained by the Ministry of Government and Consumer Services. To find out how to search the Public Record,",
-    "click-here": "click here",
+    "disclaimer": "The business information above is not real-time and is not a substitute for a Ministry of Government and Consumer Services generated report. Ministry of Government and Consumer Services makes no warranty, expressed or implied, regarding the accuracy of the business information contained on this page. To find out how to search the Public Record,",
+    "click-here": "click here.",
     "incorporation": "Incorporation",
     "doing_business_as": "Business Name registered by a corporation"
   },

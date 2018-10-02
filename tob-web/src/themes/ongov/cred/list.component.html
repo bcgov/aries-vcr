@@ -35,7 +35,7 @@
                   </div>
                 <div>
                   <div class="col-sm-5 cred-info">
-                    <label *ngIf="cred.topic.attribute_map['topic_type'] as topic_type">
+                    <label *ngIf="cred.topic.attribute_map['entity_type'] as topic_type">
                         {{('business_type.' + topic_type.value) | translate}}
                     </label>
                   </div>

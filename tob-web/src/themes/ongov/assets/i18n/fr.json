@@ -41,7 +41,7 @@
     "names": "Noms",
     "people": "Personnes",
     "start-date": "Date d'enregistrement:",
-    "effective-date": "Date d'entrée en vigueur de l'Statut",
+    "effective-date": "Date d'entrée en vigueur de l'Statut:",
     "verify-button-label": "Vérifier le dossier",
     "view-link": "Voir les titres de compétences",
     "whats-this-link": "Qu'est-ce que c'est?",
@@ -49,7 +49,7 @@
     "status": "Statut:",
     "type": "Type d'entreprise:",
     "business_registration": "Renseignements fondamentaux sur l'enregistrement de l'entreprise",
-    "municipality": "Municipalité",
+    "municipality": "Municipalité:",
     "jurisdiction": "Compétence territoriale:",
     "verifying-record": "Vérification les titres de compétences",
     "verify-info": "Informations vérifiables",
@@ -57,7 +57,7 @@
     "success": "Vérification réussie! La signature numérique associée à cet enregistrement tel que signé par le délivreur a été validée cryptographiquement.",
     "note": "Remarque:",
     "disclaimer": "Les informations commerciales ci-dessus ne sont pas en temps réel et sont destinées à des fins d'information uniquement. Ceci ne remplace pas un rapport officiel du dossier public tenu par le ministère des Services gouvernementaux et des Services aux consommateurs. Pour savoir comment faire une recherche dans les dossiers publics,",
-    "click-here": "cliquez ici"
+    "click-here": "cliquez ici."
   },
   "general": {
     "none": "Aucun",
@@ -81,8 +81,8 @@
     "cred-types": "Types de titres de compétences",
     "end-date": "Date de fin",
     "start-date": "Date d'entrée en vigueur",
-    "website": "Site Web du délivreur",
-    "email": "Adresse"
+    "website": "Site Web du délivreur:",
+    "email": "Adresse:"
   },
   "name": {
     "doing-business-as": "Nom commercial enregistré par une société",
@@ -111,8 +111,8 @@
     "breadcrumb": "Renseignements sur l'organisation",
     "return-link": "Retour aux renseignements sur l'organisation",  
     "note": "Remarque:",
-    "disclaimer": "Les informations commerciales ci-dessus ne sont pas en temps réel et sont destinées à des fins d'information uniquement. Ceci ne remplace pas un rapport officiel du dossier public tenu par le ministère des Services gouvernementaux et des Services aux consommateurs. Pour savoir comment faire une recherche dans les dossiers publics,",
-    "click-here": "cliquez ici",
+    "disclaimer": "Les informations commerciales ci-dessus ne sont pas en temps réel et ne sauraient remplacer un rapport généré par le ministère des Services gouvernementaux et des Services aux consommateurs. Ministère des Services gouvernementaux et des Services aux consommateurs n'offre aucune garantie, expresse ou implicite, quant à l'exactitude des informations commerciales contenues sur cette page. Pour savoir comment rechercher dans le dossier publics,",
+    "click-here": "cliquez ici.",
     "incorporation": "Incorporation",
     "doing_business_as": "Nom commercial enregistré par une société"
   },
