@@ -52,6 +52,7 @@
             <label class="control-label" translate>topic.related-to</label>
             <div class="form-field">
               {{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="topic.link | localize">{{topic.preferredName?.text}}</a>
+              <br>{{'topic.source-id' | translate}}: <span class="text-identifier">{{topic.source_id}}</span>
             </div>
           </div>
         </div>
