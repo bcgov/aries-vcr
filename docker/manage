@@ -157,7 +157,7 @@ build-api() {
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../tob-api' \
-    'bcgovimages/von-image:py36-1.6-ew-3-s2i' \
+    'bcgovimages/von-image:py36-1.6-ew-4-s2i' \
     'django'
 }
 
