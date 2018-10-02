@@ -10,11 +10,12 @@ from django.utils import timezone
 
 from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.Name import Name as NameModel
+from api_v2.search.index import TxnAwareSearchIndex
 
 LOGGER = logging.getLogger(__name__)
 
 
-class CredentialIndex(indexes.SearchIndex, indexes.Indexable):
+class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
     document = indexes.CharField(document=True, use_template=True)
 
     name = indexes.MultiValueField()
@@ -82,3 +83,6 @@ class CredentialIndex(indexes.SearchIndex, indexes.Indexable):
         queryset = self.index_queryset(using) \
             .select_related(*select)
         return queryset
+
+    def get_updated_field(self):
+      return "update_timestamp"

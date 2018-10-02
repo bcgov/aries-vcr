@@ -32,7 +32,8 @@ class Command(migrate.Command):
         self.stdout.write("\nSearch indexing in progress ...")
       else:
         self.stdout.write("\nSkipping search indexing ...")
-      SuggestManager().rebuild()
+      if SKIP_INDEXING != 'all':
+        SuggestManager().rebuild()
 
     def __initialize_user_accounts(self):
       self.stdout.write("\nInitializing user accounts ...")

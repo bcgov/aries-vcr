@@ -85,6 +85,7 @@ async def add_server_headers(request, response):
 async def init_app(on_startup=None, on_cleanup=None):
     from aiohttp.web import Application
     from aiohttp_wsgi import WSGIHandler
+    from tob_anchor.solrqueue import SolrQueue
     from tob_anchor.urls import get_routes
 
     wsgi_handler = WSGIHandler(application)
@@ -93,6 +94,9 @@ async def init_app(on_startup=None, on_cleanup=None):
     app.router.add_routes(get_routes())
     # all other requests forwarded to django
     app.router.add_route("*", "/{path_info:.*}", wsgi_handler)
+
+    queue = SolrQueue()
+    queue.setup(app)
 
     if on_startup:
         app.on_startup.append(on_startup)

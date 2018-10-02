@@ -33,7 +33,7 @@ if __name__ == '__main__':
         if do_reindex:
             # queue in current asyncio loop
             run_django(run_reindex)
-        else:
+        elif skip_indexing != 'all':
             run_django(update_suggester)
 
     args = parser.parse_args()
