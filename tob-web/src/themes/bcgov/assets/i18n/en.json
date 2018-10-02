@@ -1,8 +1,9 @@
 {
   "attribute": {
-    "entity_status": "Registration Status",
+    "entity_name_assumed_effective": "Assumed Name Effective Date",
     "entity_name_effective": "Name Effective Date",
     "entity_name_effective-short": "Name Effective",
+    "entity_status": "Registration Status",
     "entity_status_effective": "Status Effective Date",
     "entity_type": "Registration Type",
     "home_jurisdiction": "Home Jurisdiction",
