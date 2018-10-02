@@ -5,11 +5,10 @@
         <li><a [title]="'app.switch-language' | translate" tabindex="2"  href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a></li>
       </ul>
     </div>
-    <a [title]="'app.header.logo-alt-text' | translate"  href="http://www.ontario.ca" tabindex="1">
+    <a [title]="'app.header.logo-alt-text' | translate"  href="http://www.ontario.ca" tabindex="0">
       <img class="header-logo" target="_blank"
            [src]="'assets/ontario-logo.png'">
     </a>
    
-    <span class="title" role="banner"  tabindex="3" translate>app.header.title</span>
   </div>
 </header>

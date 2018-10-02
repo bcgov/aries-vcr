@@ -49,7 +49,7 @@
                 <div class="row form-group">
                     <label class="col-sm-4 control-label" translate>cred.start-date</label>
                     <div *ngIf="record.attribute_map['registration_date'] as reg_date">
-                        {{ reg_date.value | date }}
+                        <attribute-view [record]="reg_date" format="date"></attribute-view>
                     </div>
                 </div>
 
@@ -63,7 +63,7 @@
                 <div class="row form-group">
                     <label class="col-sm-4 control-label" translate>cred.effective-date</label>
                     <div *ngIf="record.attribute_map['entity_status_effective'] as status_date">
-                         {{ status_date.value | date }} 
+                         <attribute-view [record]="status_date" format="date"></attribute-view>
                     </div>
                 </div>
 
