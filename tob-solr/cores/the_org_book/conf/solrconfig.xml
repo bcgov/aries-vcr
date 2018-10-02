@@ -26,7 +26,7 @@
     <searchComponent name="suggest" class="solr.SuggestComponent">
         <lst name="suggester">
             <str name="name">autocomplete</str>
-            <str name="lookupImpl">AnalyzingInfixLookupFactory</str>
+            <str name="lookupImpl">BlendedInfixLookupFactory</str>
             <str name="dictionaryimpl">DocumentDictionaryFactory</str>
             <str name="field">name_suggest</str>
             <str name="payloadField">id</str>
