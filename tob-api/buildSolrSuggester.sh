@@ -1,6 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname $0)
-SOLR_URL=${SOLR_URL:-http://solr:8983/solr/the_org_book}
+SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME:-solr}
+SOLR_URL=${SOLR_URL:-http://$SOLR_SERVICE_NAME:8983/solr/the_org_book}
 
 # ==============================================================================================================================
 usage() {
