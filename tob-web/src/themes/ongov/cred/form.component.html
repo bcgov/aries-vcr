@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="row form-group" *ngIf="record.issuer">
-                    <label class="col-sm-3 control-label" translate>cred.issuer</label>
+                    <label class="col-sm-4 control-label" translate>cred.issuer</label>
                     <div class="form-field">
                         <a [title]="[record.issuer.name]" class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
                     </div>
@@ -33,44 +33,44 @@
                 </div>
 
                 <div class="row form-group">
-                    <label class="col-sm-3 control-label" translate>cred.type</label>
-                    <div *ngIf="record.attribute_map['topic_type'] as topic_type">
+                    <label class="col-sm-4 control-label" translate>cred.type</label>
+                    <div *ngIf="record.attribute_map['entity_type'] as topic_type">
                         {{('business_type.' + topic_type.value) | translate}}
                     </div>
                 </div>
 
                 <div class="row form-group">
-                    <label class="col-sm-3 control-label" translate>cred.corp-num</label>
+                    <label class="col-sm-4 control-label" translate>cred.corp-num</label>
                     <div class="form-field">
                       {{record.topic.source_id}}
                     </div>
                 </div>
 
                 <div class="row form-group">
-                    <label class="col-sm-3 control-label" translate>cred.start-date</label>
-                    <div *ngIf="record.attribute_map['topic_registration_date'] as reg_date">
-                        <attribute-view [record]="reg_date"></attribute-view>
+                    <label class="col-sm-4 control-label" translate>cred.start-date</label>
+                    <div *ngIf="record.attribute_map['registration_date'] as reg_date">
+                        {{ reg_date.value | date }}
                     </div>
                 </div>
 
                 <div class="row form-group">
-                    <label class="col-sm-3 control-label" translate>cred.status</label>
-                    <div *ngIf="record.attribute_map['topic_type'] as topic_status">
+                    <label class="col-sm-4 control-label" translate>cred.status</label>
+                    <div *ngIf="record.attribute_map['entity_status'] as topic_status">
                         {{('business_status.' + topic_status.value) | translate}}
                     </div>
                 </div>
 
                 <div class="row form-group">
-                    <label class="col-sm-3 control-label" translate>cred.effective-date</label>
-                    <div *ngIf="record.attribute_map['topic_status_effective_date'] as status_date">
-                        <attribute-view [record]="status_date"></attribute-view>
+                    <label class="col-sm-4 control-label" translate>cred.effective-date</label>
+                    <div *ngIf="record.attribute_map['entity_status_effective'] as status_date">
+                         {{ status_date.value | date }} 
                     </div>
                 </div>
 
                 <div class="row form-group" *ngIf="record.haveAddresses">
-                    <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
+                    <label class="col-sm-4 control-label" translate>cred.jurisdiction</label>
                     <div class="form-field">
-                        {{record.topic.addresses[0]?.province}}
+                        {{record.topic.addresses[0].province}}
                     </div>
                 </div>
                 <div class="row form-group">

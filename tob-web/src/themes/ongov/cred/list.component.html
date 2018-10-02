@@ -1,4 +1,5 @@
-<div *ngFor="let cred of records">
+<div class="creds-list" *ngIf="format !='search'">
+    <div *ngFor="let cred of records">
     <div class="cred" *ngIf="cred.credential_type.schema.name.indexOf('registration') != -1">
         <div class="panel name-panel" >
             <div class="panel-heading" >

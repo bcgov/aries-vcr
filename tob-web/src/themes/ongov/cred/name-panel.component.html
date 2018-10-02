@@ -1,18 +1,18 @@
 <div class="panel name-panel" *ngIf="record && name">
     <h3 class="panel-title" tabIndex="-1"> <strong>{{name.text }}</strong></h3>
 
-    
+   
   <div class="panel-body form-body">
-        <div class="row form-group" *ngIf="addresses.length > 0">
+        <div class="row form-group" *ngIf="record.addresses.length > 0">
                 <label class="col-sm-3 control-label" translate>cred.municipality</label>
                 <div class="form-field">
-                   {{addresses[0].city | titlecase }}
+                   {{record.addresses[0].city | titlecase }}
                 </div>
         </div>
        <div class="row form-group">
           <label class="col-sm-3 control-label" translate>cred.type</label>
           <div class="form-field">
-              <div *ngIf="record.attribute_map['topic_type'] as topic_type">
+              <div *ngIf="record.attribute_map['entity_type'] as topic_type">
                   {{('business_type.' + topic_type.value) | translate}}
               </div>
           </div>
@@ -28,20 +28,13 @@
       <div class="row form-group">
             <label class="col-sm-3 control-label" translate>cred.status</label>
             <div class="form-field">
-                <div *ngIf="record.attribute_map['topic_status'] as topic_status">
+                <div *ngIf="record.attribute_map['entity_status'] as topic_status">
                     {{('business_status.' + topic_status.value) | translate}}
                 </div>
             </div>
       </div>
      
      
-
-      <div class="row form-group" *ngIf="addresses.length > 0">
-          <label class="col-sm-3 control-label" translate>cred.jurisdiction</label>
-          <div class="form-field">
-              {{addresses[0].province}}
-          </div>
-      </div>
 
       <div class="disclaimer" translate>
           <b translate>topic.note</b>

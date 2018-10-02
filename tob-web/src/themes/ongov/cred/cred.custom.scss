@@ -46,8 +46,16 @@
 }
 
 .claim-info {
-  float: right;
+  float: left;
+  padding-left: 0px;
+  padding-right: 0em;
+  &::before {
+    padding-right: 0em;
+  }
   &.location::before {
+    content: "";
+  }
+  &.date::before {
     content: "";
   }
 }
