@@ -3,7 +3,9 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.schemas import SchemaGenerator
 from rest_framework.views import APIView
-from rest_framework_swagger import renderers
+
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
 LOGGER = logging.getLogger(__name__)
 

@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     "haystack",
     "rest_framework",
     "drf_generators",
-    "rest_framework_swagger",
+    "drf_yasg",
     "auditable",
     "api",
     "api_v2",

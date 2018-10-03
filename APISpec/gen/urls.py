@@ -25,7 +25,7 @@ from rest_framework.response import Response
 from rest_framework.schemas import SchemaGenerator
 from rest_framework.views import APIView
 from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework_swagger import renderers
+# from rest_framework_swagger import renderers
 # generated views
 from . import views
 # custom views
@@ -34,8 +34,8 @@ from . import views_custom
 class SwaggerSchemaView(APIView):
     permission_classes = [AllowAny]
     renderer_classes = [
-        renderers.OpenAPIRenderer,
-        renderers.SwaggerUIRenderer
+        # renderers.OpenAPIRenderer,
+        # renderers.SwaggerUIRenderer
     ]
     _ignore_model_permissions = True
     exclude_from_schema = True  
