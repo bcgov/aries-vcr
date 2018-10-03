@@ -53,11 +53,6 @@ miscPatterns = [
 
 swaggerPatterns = [
     url(r"/", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs"),
-    url(
-        r"^swagger.json$",
-        schema_view.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
     # url(
     #     r"^swagger/$",
     #     schema_view.with_ui("swagger", cache_timeout=0),
@@ -80,5 +75,5 @@ swaggerPatterns = [
 # ]
 
 urlpatterns = format_suffix_patterns(
-    swaggerPatterns + router.urls + searchPatterns + miscPatterns  # + indyPatterns
+     router.urls + searchPatterns + miscPatterns + swaggerPatterns  # + indyPatterns
 )
