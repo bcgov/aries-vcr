@@ -1,10 +1,10 @@
+import os
 import logging
 
 from django.conf import settings
 from pysolr import Solr, SolrError
 
 LOGGER = logging.getLogger(__name__)
-
 
 class SuggestManager:
     """
@@ -48,12 +48,15 @@ class SuggestManager:
         Rebuild suggest database
         """
         try:
-            solr = Solr(
-                self.url,
-                search_handler=self.handler)
-            LOGGER.info("Rebuilding Solr suggester...")
-            _results = solr.search('', **{
-                'suggest.build': 'true',
-            })
+            if os.getenv("ENABLE_SUGGESTER_REBUILD"):
+                solr = Solr(
+                    self.url,
+                    search_handler=self.handler)
+                LOGGER.info("Rebuilding Solr suggester...")
+                _results = solr.search('', **{
+                    'suggest.build': 'true',
+                })
+            else:
+                LOGGER.warn("Solr suggester rebuilding has been disabled ...")
         except SolrError:
             LOGGER.exception("Error during Solr query:")
