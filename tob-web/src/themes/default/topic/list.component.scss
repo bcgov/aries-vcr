@@ -1,8 +1,10 @@
 .name-row {
-  border-top: 1px solid #ddd;
   font-size: 2rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  &:not(:first-child) {
+    border-top: 1px solid #ddd;
+  }
   &:nth-of-type(odd) {
     background-color: #f9f9f9;
   }
