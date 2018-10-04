@@ -83,7 +83,7 @@
               {
                 "name": "${NAME}-config-volume",
                 "configMap": {
-                  "name": "${NAME}-${CONFIG_MAP_NAME}",
+                  "name": "${CONFIG_MAP_NAME}",
                   "items": [
                     {
                       "key": "${CONFIG_FILE_NAME}",
