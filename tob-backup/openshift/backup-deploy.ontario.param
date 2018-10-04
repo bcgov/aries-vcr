@@ -1,0 +1,30 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: tob-backup
+# Template File: templates/backup-deploy.json
+#=========================================================
+NAME=backup
+SOURCE_IMAGE_NAME=backup
+IMAGE_NAMESPACE=ontvon-von-tools
+TAG_NAME=dev
+DATABASE_SERVICE_NAME=postgresql
+DATABASE_NAME=TheOrgBook_Database
+DATABASE_DEPLOYMENT_NAME=postgresql
+WALLET_DB_HOST_NAME=wallet-db
+BACKUP_STRATEGY=rolling
+BACKUP_DIR=/backups/
+NUM_BACKUPS=
+DAILY_BACKUPS=
+WEEKLY_BACKUPS=
+MONTHLY_BACKUPS=0
+BACKUP_PERIOD=1d
+CONFIG_FILE_NAME=backup.conf
+CONFIG_MAP_NAME=backup-conf
+CONFIG_MOUNT_PATH=/
+PERSISTENT_VOLUME_NAME=backup-pvc
+PERSISTENT_VOLUME_SIZE=1Gi
+PERSISTENT_VOLUME_CLASS=
+CPU_REQUEST=0
+CPU_LIMIT=0
+MEMORY_REQUEST=0Mi
+MEMORY_LIMIT=0Mi
