@@ -37,7 +37,7 @@
 
 .verify-data {
   padding: 10px 20px;
-  code {
-    word-wrap: break-word;
+  pre {
+    white-space: pre-wrap;
   }
 }
