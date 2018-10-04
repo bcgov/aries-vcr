@@ -8,12 +8,12 @@
         <div class="search-wrap">
           <search-input #searchInput (accepted)="updateQuery($event)" [loading]="result.loading"></search-input>
         </div>
-        <div class="search-types">
+        <!-- div class="search-types">
           <a routerLink="../name" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='name'}">Names</a>
           <a routerLink="../location" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='location'}">Locations</a>
           <a routerLink="../issuer" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='issuer'}">Issuers</a>
           <a routerLink="../map" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='map'}">Map</a>
-        </div>
+        </div -->
       </div>
 
       <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
