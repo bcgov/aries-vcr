@@ -1,32 +1,26 @@
 {
   "kind": "Template",
   "apiVersion": "v1",
-  "metadata":
-  {
+  "metadata": {
     "name": "${NAME}-deployment-template"
   },
   "objects": [
     {
       "kind": "PersistentVolumeClaim",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${PERSISTENT_VOLUME_NAME}",
-        "labels":
-        {
+        "labels": {
           "app": "${NAME}-persistent",
           "template": "${NAME}-persistent-template"
         }
       },
-      "spec":
-      {
+      "spec": {
         "accessModes": [
           "ReadWriteOnce"
         ],
-        "resources":
-        {
-          "requests":
-          {
+        "resources": {
+          "requests": {
             "storage": "${PERSISTENT_VOLUME_SIZE}"
           }
         }
@@ -35,22 +29,17 @@
     {
       "kind": "DeploymentConfig",
       "apiVersion": "v1",
-      "metadata":
-      {
+      "metadata": {
         "name": "${NAME}",
-        "labels":
-        {
+        "labels": {
           "template": "${NAME}-deployment"
         },
-        "annotations":
-        {
+        "annotations": {
           "description": "Defines how to deploy the ${NAME} server"
         }
       },
-      "spec":
-      {
-        "strategy":
-        {
+      "spec": {
+        "strategy": {
           "type": "Recreate"
         },
         "triggers": [
@@ -59,14 +48,12 @@
           },
           {
             "type": "ImageChange",
-            "imageChangeParams":
-            {
+            "imageChangeParams": {
               "automatic": true,
               "containerNames": [
                 "${NAME}"
               ],
-              "from":
-              {
+              "from": {
                 "kind": "ImageStreamTag",
                 "namespace": "${IMAGE_NAMESPACE}",
                 "name": "${SOURCE_IMAGE_NAME}:${TAG_NAME}"
@@ -75,28 +62,34 @@
           }
         ],
         "replicas": 1,
-        "selector":
-        {
+        "selector": {
           "name": "${NAME}"
         },
-        "template":
-        {
-          "metadata":
-          {
+        "template": {
+          "metadata": {
             "name": "${NAME}",
-            "labels":
-            {
+            "labels": {
               "name": "${NAME}"
             }
           },
-          "spec":
-          {
+          "spec": {
             "volumes": [
               {
                 "name": "${NAME}",
-                "persistentVolumeClaim":
-                {
+                "persistentVolumeClaim": {
                   "claimName": "${PERSISTENT_VOLUME_NAME}"
+                }
+              },
+              {
+                "name": "${NAME}-config-volume",
+                "configMap": {
+                  "name": "${NAME}-${CONFIG_MAP_NAME}",
+                  "items": [
+                    {
+                      "key": "${CONFIG_FILE_NAME}",
+                      "path": "${CONFIG_FILE_NAME}"
+                    }
+                  ]
                 }
               }
             ],
@@ -107,12 +100,28 @@
                 "ports": [],
                 "env": [
                   {
+                    "name": "BACKUP_STRATEGY",
+                    "value": "${BACKUP_STRATEGY}"
+                  },
+                  {
                     "name": "BACKUP_DIR",
                     "value": "${BACKUP_DIR}"
                   },
                   {
                     "name": "NUM_BACKUPS",
                     "value": "${NUM_BACKUPS}"
+                  },
+                  {
+                    "name": "DAILY_BACKUPS",
+                    "value": "${DAILY_BACKUPS}"
+                  },
+                  {
+                    "name": "WEEKLY_BACKUPS",
+                    "value": "${WEEKLY_BACKUPS}"
+                  },
+                  {
+                    "name": "MONTHLY_BACKUPS",
+                    "value": "${MONTHLY_BACKUPS}"
                   },
                   {
                     "name": "BACKUP_PERIOD",
@@ -128,10 +137,8 @@
                   },
                   {
                     "name": "POSTGRESQL_USER",
-                    "valueFrom":
-                    {
-                      "secretKeyRef":
-                      {
+                    "valueFrom": {
+                      "secretKeyRef": {
                         "name": "${DATABASE_DEPLOYMENT_NAME}",
                         "key": "database-user"
                       }
@@ -139,20 +146,39 @@
                   },
                   {
                     "name": "POSTGRESQL_PASSWORD",
-                    "valueFrom":
-                    {
-                      "secretKeyRef":
-                      {
+                    "valueFrom": {
+                      "secretKeyRef": {
                         "name": "${DATABASE_DEPLOYMENT_NAME}",
+                        "key": "database-password"
+                      }
+                    }
+                  },
+                  {
+                    "name": "WALLET_DB_USER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_DB_HOST_NAME}",
+                        "key": "database-user"
+                      }
+                    }
+                  },
+                  {
+                    "name": "WALLET_DB_PASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${WALLET_DB_HOST_NAME}",
                         "key": "database-password"
                       }
                     }
                   }
                 ],
-                "resources":
-                {
-                  "limits":
-                  {
+                "resources": {
+                  "requests": {
+                    "cpu": "${CPU_REQUEST}",
+                    "memory": "${MEMORY_REQUEST}"
+                  },
+                  "limits": {
+                    "cpu": "${CPU_LIMIT}",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 },
@@ -160,6 +186,11 @@
                   {
                     "name": "${NAME}",
                     "mountPath": "${BACKUP_DIR}"
+                  },
+                  {
+                    "name": "${NAME}-config-volume",
+                    "mountPath": "${CONFIG_MOUNT_PATH}${CONFIG_FILE_NAME}",
+                    "subPath": "${CONFIG_FILE_NAME}"
                   }
                 ]
               }
@@ -215,9 +246,23 @@
     {
       "name": "DATABASE_DEPLOYMENT_NAME",
       "displayName": "Database Deployment Name",
-      "description": "The name associated to the database deployment resources.  In particular, this is used to wrie up the credentials associated to the database.",
+      "description": "The name associated to the database deployment resources.  In particular, this is used to wire up the credentials associated to the database.",
       "required": true,
       "value": "postgresql"
+    },
+    {
+      "name": "WALLET_DB_HOST_NAME",
+      "displayName": "Wallet Database Hostname",
+      "description": "The name associated to the wallet database deployment resources.  In particular, this is used to wire up the credentials associated to the database.",
+      "required": true,
+      "value": "wallet-db"
+    },
+    {
+      "name": "BACKUP_STRATEGY",
+      "displayName": "Backup Strategy",
+      "description": "The strategy to use for backups; for example daily, or rolling.",
+      "required": true,
+      "value": "daily"
     },
     {
       "name": "BACKUP_DIR",
@@ -229,9 +274,30 @@
     {
       "name": "NUM_BACKUPS",
       "displayName": "The number of backup files to be retained",
-      "description": "The number of backup files to be retained",
-      "required": true,
-      "value": "31"
+      "description": "The number of backup files to be retained.  Used for the `daily` backup strategy.  Ignored when using the `rolling` backup strategy.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "DAILY_BACKUPS",
+      "displayName": "Number of Daily Backups to Retain",
+      "description": "The number of daily backup files to be retained.  Used for the `rolling` backup strategy.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "WEEKLY_BACKUPS",
+      "displayName": "Number of Weekly Backups to Retain",
+      "description": "The number of weekly backup files to be retained.  Used for the `rolling` backup strategy.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "MONTHLY_BACKUPS",
+      "displayName": "Number of Monthly Backups to Retain",
+      "description": "The number of monthly backup files to be retained.  Used for the `rolling` backup strategy.",
+      "required": false,
+      "value": ""
     },
     {
       "name": "BACKUP_PERIOD",
@@ -239,6 +305,27 @@
       "description": "Period (d,m,s) between backups in a format used by the sleep command",
       "required": true,
       "value": "1d"
+    },
+    {
+      "name": "CONFIG_FILE_NAME",
+      "displayName": "Config File Name",
+      "description": "The name of the configuration file.",
+      "required": true,
+      "value": "backup.conf"
+    },
+    {
+      "name": "CONFIG_MAP_NAME",
+      "displayName": "Config Map Name",
+      "description": "The name of the configuration map.",
+      "required": true,
+      "value": "backup-conf"
+    },
+    {
+      "name": "CONFIG_MOUNT_PATH",
+      "displayName": "Config Mount Path",
+      "description": "The path to use to mount the config file.",
+      "required": true,
+      "value": "/"
     },
     {
       "name": "PERSISTENT_VOLUME_NAME",
@@ -255,10 +342,32 @@
       "value": "1Gi"
     },
     {
+      "name": "CPU_LIMIT",
+      "displayName": "Resources CPU Limit",
+      "description": "The resources CPU limit (in cores) for this build.",
+      "required": true,
+      "value": "0"
+    },
+    {
       "name": "MEMORY_LIMIT",
-      "displayName": "Memory Limit",
-      "description": "Maximum amount of memory the container can use.",
-      "value": "512Mi"
+      "displayName": "Resources Memory Limit",
+      "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
+      "required": true,
+      "value": "0Mi"
+    },
+    {
+      "name": "CPU_REQUEST",
+      "displayName": "Resources CPU Request",
+      "description": "The resources CPU request (in cores) for this build.",
+      "required": true,
+      "value": "0"
+    },
+    {
+      "name": "MEMORY_REQUEST",
+      "displayName": "Resources Memory Request",
+      "description": "The resources Memory request (in Mi, Gi, etc) for this build.",
+      "required": true,
+      "value": "0Mi"
     }
   ]
 }
