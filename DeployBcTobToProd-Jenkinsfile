@@ -2,7 +2,7 @@
 // In other words all of the images that are currently deployed in TEST will be tagged for deployment to PROD.
 
 // Define these in the order they should be deployed.
-def APP_NAMES = ['postgresql', 'django', 'schema-spy', 'solr', 'angular-on-nginx']
+def APP_NAMES = ['postgresql', 'django', 'schema-spy', 'solr', 'angular-on-nginx', 'backup']
 def SOURCE_TAG = 'bc-tob-test'
 def DESTINATION_TAG = 'bc-tob-prod'
 
