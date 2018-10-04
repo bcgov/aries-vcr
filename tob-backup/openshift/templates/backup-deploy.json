@@ -262,7 +262,7 @@
       "displayName": "Backup Strategy",
       "description": "The strategy to use for backups; for example daily, or rolling.",
       "required": true,
-      "value": "daily"
+      "value": "rolling"
     },
     {
       "name": "BACKUP_DIR",
@@ -297,7 +297,7 @@
       "displayName": "Number of Monthly Backups to Retain",
       "description": "The number of monthly backup files to be retained.  Used for the `rolling` backup strategy.",
       "required": false,
-      "value": ""
+      "value": "0"
     },
     {
       "name": "BACKUP_PERIOD",
