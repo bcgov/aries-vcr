@@ -52,7 +52,7 @@ miscPatterns = [
 ]
 
 swaggerPatterns = [
-    url(r"/", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs"),
+    url(r"^$", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs"),
     # url(
     #     r"^swagger/$",
     #     schema_view.with_ui("swagger", cache_timeout=0),
