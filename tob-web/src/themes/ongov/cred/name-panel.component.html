@@ -1,34 +1,27 @@
 <div class="panel name-panel" *ngIf="record && name">
-    <h3 class="panel-title" tabIndex="3"> <strong>{{name.text }}</strong></h3>
+    <h3 class="panel-title" tabIndex="0"> <strong>{{name.text }}</strong></h3>
 
    
   <div class="panel-body form-body">
         <div class="row form-group" *ngIf="record.addresses.length > 0">
-                <label class="col-sm-3 control-label" translate>cred.municipality</label>
-                <div class="form-field">
+                <label tabindex="0" class="col-sm-3 control-label" translate>cred.municipality</label>
+                <div tabindex="0" class="form-field">
                    {{record.addresses[0].city | titlecase }}
                 </div>
         </div>
        <div class="row form-group">
-          <label class="col-sm-3 control-label" translate>cred.type</label>
+          <label tabindex="0" class="col-sm-3 control-label" translate>cred.type</label>
           <div class="form-field">
-              <div *ngIf="record.attribute_map['entity_type'] as topic_type">
+              <div tabindex="0" *ngIf="record.attribute_map['entity_type'] as topic_type">
                   {{('business_type.' + topic_type.value) | translate}}
               </div>
           </div>
       </div>
 
       <div class="row form-group">
-            <label class="col-sm-3 control-label" translate>cred.corp-num</label>
+            <label tabindex="0" class="col-sm-3 control-label" translate>cred.status</label>
             <div class="form-field">
-               {{record.source_id}}
-            </div>
-      </div>
-
-      <div class="row form-group">
-            <label class="col-sm-3 control-label" translate>cred.status</label>
-            <div class="form-field">
-                <div *ngIf="record.attribute_map['entity_status'] as topic_status">
+                <div tabindex="0" *ngIf="record.attribute_map['entity_status'] as topic_status">
                     {{('business_status.' + topic_status.value) | translate}}
                 </div>
             </div>
@@ -36,7 +29,7 @@
      
      
 
-      <div class="disclaimer" translate>
+      <div class="disclaimer" translate tabindex="0">
           <b translate>topic.note</b>
           topic.disclaimer
           <a [title]="'app.footer.link-title' | translate " class="disclaimer-link" href="https://www.ontario.ca/page/public-record-search" target="_blank"

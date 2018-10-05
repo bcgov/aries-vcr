@@ -2,11 +2,11 @@
   <div class="container">
     <div id="header-links" role="navigation">
       <ul class="inline nav navbar-nav">
-        <li><a [title]="'app.switch-language' | translate" tabindex="2"  href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a></li>
+        <li><a [title]="'app.switch-language' | translate" tabindex="3"  href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a></li>
       </ul>
     </div>
-    <a [title]="'app.header.logo-alt-text' | translate"  href="http://www.ontario.ca" tabindex="0">
-      <img class="header-logo" target="_blank"
+    <a [title]="'app.header.logo-alt-text' | translate"  href="http://www.ontario.ca" tabindex="1">
+      <img class="header-logo" tabindex="-1" target="_blank"
            [src]="'assets/ontario-logo.png'">
     </a>
    
