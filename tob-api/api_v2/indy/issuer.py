@@ -4,7 +4,7 @@ from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 
-from api.auth import create_issuer_user
+from tob_api.auth import create_issuer_user
 
 from api_v2.serializers.rest import (
     IssuerSerializer,

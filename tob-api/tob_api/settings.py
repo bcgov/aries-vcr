@@ -65,7 +65,7 @@ INSTALLED_APPS = [
     "drf_generators",
     "drf_yasg",
     "auditable",
-    "api",
+    "tob_api",
     "api_v2",
     "corsheaders",
 ]
@@ -141,7 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "api.User"
+AUTH_USER_MODEL = "tob_api.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "tob_api.pagination.EnhancedPageNumberPagination",
