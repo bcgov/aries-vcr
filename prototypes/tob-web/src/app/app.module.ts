@@ -1,15 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule, routes } from './app-routing.module';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import {
+  TranslateModule, TranslateLoader, TranslateService,
+  MissingTranslationHandler, MissingTranslationHandlerParams
+  } from '@ngx-translate/core';
 import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings } from 'localize-router';
-import { LocalizeRouterHttpLoader } from 'localize-router-http-loader';
-import { MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
+import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
+import { Observable } from 'rxjs';
 
 import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
@@ -29,13 +32,23 @@ import { UtilModule } from './util/util.module';
 
 const ROUTE_PREFIX : string = 'ROUTES.';
 
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+export class WebpackTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    return Observable.fromPromise(System.import(`../themes/_active/assets/i18n/${lang}.json`));
+  }
 }
-export function createLocalizeLoader(translate: TranslateService, location: Location, settings: LocalizeRouterSettings, http: HttpClient) {
-  // list of locales could be loaded from an external file, ie. locales.json
-  //return new ManualParserLoader(translate, location, settings, ['en', 'fr'], ROUTE_PREFIX);
-  return new LocalizeRouterHttpLoader(translate, location, settings, http, './assets/locales.json');
+export class WebpackLocalizeRouterLoader extends LocalizeParser {
+  load(routes: Routes): Promise<any> {
+    return new Promise((resolve) => {
+      System.import(`../themes/_active/assets/locales.json`)
+        .then((data: ILocalizeRouterParserConfig) => {
+            this.locales = data.locales;
+            this.prefix = data.prefix || '';
+            this.init(routes).then(resolve);
+          }
+        );
+    });
+  }
 }
 export class MyMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
@@ -73,15 +86,14 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
+        useClass: WebpackTranslateLoader
       }
     }),
     LocalizeRouterModule.forRoot(routes, {
       parser: {
         provide: LocalizeParser,
-        useFactory: createLocalizeLoader,
-        deps: [TranslateService, Location, LocalizeRouterSettings, HttpClient]
+        useClass: WebpackLocalizeRouterLoader,
+        deps: [TranslateService, Location, LocalizeRouterSettings]
       }
     }),
   ],
