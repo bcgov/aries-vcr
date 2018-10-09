@@ -6,6 +6,3 @@ class User(AbstractUser):
     DID = models.TextField(max_length=60, blank=True, unique=True)
     verkey = models.BinaryField(blank=True)
     display_name = models.TextField(blank=True)
-
-    class Meta:
-        db_table = 'user'
