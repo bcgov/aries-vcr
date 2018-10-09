@@ -1,7 +1,0 @@
-{{ object.addressee }}
-{{ object.municipality }}
-{{ object.postalCode }}
-{{ object.province }}
-{{ object.streetAddress }}
-Created: {{ object.create_timestamp }}
-Last modified: {{ object.update_timestamp }}
