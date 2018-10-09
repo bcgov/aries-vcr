@@ -80,7 +80,7 @@ services:
       - TOB_THEME=${TOB_THEME}
       - ENABLE_REALTIME_INDEXING=${ENABLE_REALTIME_INDEXING}
     volumes:
-      - ../tob-api/api:/home/indy/api
+      - ../tob-api/tob_api:/home/indy/tob_api
       - ../tob-api/api_v2:/home/indy/api_v2
       - tob-wallet:/home/indy/.indy_client/wallet
     networks:

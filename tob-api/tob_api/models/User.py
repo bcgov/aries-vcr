@@ -8,4 +8,4 @@ class User(AbstractUser):
     display_name = models.TextField(blank=True)
 
     class Meta:
-        db_table = 'api_user'
+        db_table = 'user'
