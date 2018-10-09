@@ -761,6 +761,13 @@
       "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
       "required": true,
       "value": "512Mi"
+    },
+    {
+      "name": "APPLICATION_URL",
+      "displayName": "Application url",
+      "description": "This service's url.",
+      "required": true,
+      "value": "https://theorgbook.pathfinder.gov.bc.ca"
     }
   ]
 }

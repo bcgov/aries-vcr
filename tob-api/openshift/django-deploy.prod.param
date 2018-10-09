@@ -47,3 +47,4 @@ LEDGER_URL=http://159.203.24.151
 # CPU_LIMIT=750m
 # MEMORY_REQUEST=100Mi
 # MEMORY_LIMIT=512Mi
+# APPLICATION_URL=https://theorgbook.pathfinder.gov.bc.ca
