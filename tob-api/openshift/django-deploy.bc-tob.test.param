@@ -47,4 +47,4 @@ LEDGER_URL=http://138.197.138.255
 # CPU_LIMIT=750m
 # MEMORY_REQUEST=100Mi
 # MEMORY_LIMIT=512Mi
-# APPLICATION_URL=https://theorgbook.pathfinder.gov.bc.ca
+APPLICATION_URL=https://angular-on-nginx-devex-von-bc-tob-test.pathfinder.gov.bc.ca
