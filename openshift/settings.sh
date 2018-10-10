@@ -4,7 +4,7 @@ export PROJECT_OS_DIR=${PROJECT_OS_DIR:-../../openshift}
 # The templates that should not have their GIT referances(uri and ref) over-ridden
 # Templates NOT in this list will have they GIT referances over-ridden
 # with the values of GIT_URI and GIT_REF
-export -a skip_git_overrides="schema-spy-build.json solr-base-build.json"
+export skip_git_overrides="schema-spy-build.json solr-base-build.json"
 export GIT_URI="https://github.com/bcgov/TheOrgBook.git"
 export GIT_REF="master"
 
