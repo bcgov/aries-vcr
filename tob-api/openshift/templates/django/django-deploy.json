@@ -408,6 +408,10 @@
                   {
                     "name": "TOB_THEME",
                     "value": "${TOB_THEME}"
+                  },
+                  {
+                    "name": "APPLICATION_URL",
+                    "value": "${APPLICATION_URL}"
                   }
                 ],
                 "resources": {
