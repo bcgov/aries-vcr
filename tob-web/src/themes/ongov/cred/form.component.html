@@ -67,12 +67,13 @@
                     </div>
                 </div>
 
-                <div class="row form-group" *ngIf="record.haveAddresses">
+                <div class="row form-group" *ngIf="record.attribute_map['home_jurisdiction'] as home_jurisdiction">
                     <label tabIndex="0" class="col-sm-4 control-label" translate>cred.jurisdiction</label>
                     <div tabIndex="0" class="form-field">
-                        {{record.topic.addresses[0].province}}
+                        <attribute-view [record]="home_jurisdiction"></attribute-view>
                     </div>
                 </div>
+
                 <div class="row form-group">
                         <div  tabIndex="0"class="disclaimer-cred" translate>
                               <b translate>cred.note</b>
