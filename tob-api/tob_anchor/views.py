@@ -1,9 +1,11 @@
 import asyncio
 import logging
 import math
+import os
 import time
 
 from aiohttp import web
+import django.db
 import jsonschema
 
 from vonx.indy.messages import (
@@ -586,6 +588,33 @@ async def request_info(request):
         "secure": request.secure,
     }
     return web.json_response(info)
+
+
+async def combined_health(request):
+    """
+    Combined health check including Indy and the database
+    """
+    ok = True
+    disconnected = os.environ.get('INDY_DISABLED', 'false')
+    if not disconnected or disconnected == 'false':
+        try:
+            result = await _indy_client().get_status()
+            indy_ok = result and result.get("synced")
+            if not indy_ok:
+                ok = False
+        except IndyRequestError as e:
+            ok = False
+    def db_check():
+        try:
+            LOGGER.info("rows: %s", User.objects.count())
+            return True
+        except django.db.Error:
+            LOGGER.exception("Error during DB health check")
+            return False
+    ok = ok and await run_django(db_check)
+    return web.Response(
+        text='ok' if ok else '',
+        status=200 if ok else 451)
 
 
 async def status(request):
