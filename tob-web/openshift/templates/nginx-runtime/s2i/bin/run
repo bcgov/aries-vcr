@@ -31,6 +31,14 @@ read -r -d '' _CONFIG_SECTION << EOF
             proxy_set_header X-Forwarded-Proto \$proxy_scheme;
             proxy_pass ${1};
         }
+        location /api/v2/ {
+            ${HTTP_BASIC}
+            proxy_set_header Authorization "";
+            proxy_set_header X-Forwarded-Host \$host:\$server_port;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
+            proxy_pass ${1};
+        }
 EOF
 
 echo "${_CONFIG_SECTION}"

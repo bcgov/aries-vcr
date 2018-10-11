@@ -16,9 +16,17 @@ schema_view = get_schema_view(
     openapi.Info(
         title="TheOrgBook API",
         default_version="v2",
-        # description="Description goes here",
+        description="TheOrgBook is a public searchable directory of digital records for registered businesses in the Province "
+        "of British Columbia. Over time, other government organizations and businesses will also begin to issue"
+        "digital records through TheOrgBook. For example, permits and licenses issued by various government services.",
+        terms_of_service="https://www2.gov.bc.ca/gov/content/data/open-data",
+        contact=openapi.Contact(email="bcdevexchange@gov.bc.ca"),
+        license=openapi.License(
+            name="Open Government License - British Columbia",
+            url="https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information",
+        ),
     ),
-    url="{}/api/v2".format(APPLICATION_URL),
+    url="{}/api".format(APPLICATION_URL),
     validators=["flex", "ssv"],
     public=True,
     permission_classes=(AllowAny,),
@@ -45,12 +53,10 @@ router.register(r"search/credential", search.CredentialSearchView, "Credential S
 searchPatterns = [url(r"^search/autocomplete$", search.NameAutocompleteView.as_view())]
 
 # Misc endpoints
-miscPatterns = [
-    url(r"^quickload$", misc.quickload)
-]
+miscPatterns = [url(r"^quickload$", misc.quickload)]
 
 swaggerPatterns = [
-    url(r"^$", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs"),
+    url(r"^$", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
 ]
 
 urlpatterns = format_suffix_patterns(
