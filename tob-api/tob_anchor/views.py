@@ -606,7 +606,7 @@ async def combined_health(request):
             ok = False
     def db_check():
         try:
-            LOGGER.info("rows: %s", User.objects.count())
+            User.objects.count()
             return True
         except django.db.Error:
             LOGGER.exception("Error during DB health check")
