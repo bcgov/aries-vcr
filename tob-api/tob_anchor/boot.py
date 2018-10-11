@@ -139,15 +139,27 @@ def run_migration():
     call_command("migrate")
 
 
-def pre_init(proc=False):
+def start_indy_manager(proc: bool = False):
     global MANAGER, STARTED
     if proc:
         MANAGER.start_process()
     else:
         MANAGER.start()
     STARTED = True
+
+
+def pre_init():
+    start_indy_manager()
+    run_coro(perform_register_services())
+
+
+async def perform_register_services(app=None):
+    if app:
+        return app.loop.create_task(
+            perform_register_services()
+        )
     try:
-        run_coro(register_services())
+        await register_services()
     except:
         LOGGER.exception("Error during Indy initialization:")
         MANAGER.stop()
@@ -271,6 +283,7 @@ async def register_services():
     await client.sync()
     LOGGER.debug("Indy client synced")
     LOGGER.debug(await client.get_status())
+
 
 def shutdown():
     MANAGER.stop()

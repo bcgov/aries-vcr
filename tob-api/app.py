@@ -7,8 +7,8 @@ import os
 from aiohttp import web
 import django
 from tob_anchor.boot import (
-    MANAGER, init_app, pre_init, run_django, run_reindex, run_migration,
-    update_suggester,
+    init_app, perform_register_services, start_indy_manager,
+    run_django, run_reindex, run_migration, update_suggester,
 )
 
 parser = argparse.ArgumentParser(description="aiohttp server example")
@@ -40,11 +40,13 @@ if __name__ == '__main__':
     if not args.socket and not args.port:
         args.port = 8080
 
+    startup = None
     if not disconnected or disconnected == 'false':
-        pre_init()
+        start_indy_manager()
+        startup = perform_register_services
 
     web.run_app(
-        init_app(),
+        init_app(startup),
         host=args.host, port=args.port, path=args.socket,
         handle_signals=True
     )
