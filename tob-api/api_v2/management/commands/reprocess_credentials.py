@@ -1,5 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
+from django.db import transaction, DEFAULT_DB_ALIAS
+from django.db.models import signals
+
+from api_v2.indy.credential import CredentialManager
 
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
@@ -7,8 +10,7 @@ from api_v2.models.Category import Category
 from api_v2.models.Credential import Credential
 from api_v2.models.Name import Name
 
-from api_v2.indy.credential import CredentialManager
-
+from tob_anchor.solrqueue import SolrQueue
 
 MODEL_TYPE_MAP = {
     "address": Address,
@@ -22,7 +24,13 @@ class Command(BaseCommand):
     help = "Reprocesses all credentials to populate search database"
 
     def handle(self, *args, **options):
+        queue = SolrQueue()
+        with queue:
+            self.reprocess(queue, *args, **options)
+
+    def reprocess(self, queue, *args, **options):
         self.stdout.write("Starting...")
+
         cred_count = Credential.objects.count()
         self.stdout.write("Reprocessing {} credentials".format(cred_count))
 
@@ -31,7 +39,7 @@ class Command(BaseCommand):
             with transaction.atomic():
                 current_cred += 1
                 self.stdout.write(
-                    "Processing credential id:{} ({} of {})".format(
+                    "Processing credential id: {} ({} of {})".format(
                         credential.id, current_cred, cred_count
                     )
                 )
@@ -41,8 +49,11 @@ class Command(BaseCommand):
                 mapping = processor_config.get("mapping") or []
 
                 # Delete existing search models
-                for Model in MODEL_TYPE_MAP.values():
-                    Model.objects.filter(credential=credential).delete()
+                for ModelKey, Model in MODEL_TYPE_MAP.items():
+                    if ModelKey == "category":
+                        continue
+                    # Don't trigger search reindex (yet)
+                    Model.objects.filter(credential=credential)._raw_delete(using=DEFAULT_DB_ALIAS)
 
                 # Create search models using mapping from issuer config
                 for model_mapper in mapping:
@@ -68,3 +79,6 @@ class Command(BaseCommand):
 
                     model.credential = credential
                     model.save()
+
+                # Now reindex
+                signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)

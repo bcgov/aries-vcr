@@ -192,6 +192,31 @@ class Credential(object):
         self._wallet_id = val
 
 
+class CredentialClaims:
+    def __init__(self, cred: CredentialModel):
+        self._cred = cred
+        self._claims = {}
+        self._load_claims()
+
+    def _load_claims(self):
+        claims = getattr(self._cred, '_claims_cache', None)
+        if claims is None:
+            claims = {}
+            for claim in self._cred.claims.all():
+                claims[claim.name] = claim.value
+            setattr(self._cred, '_claims_cache', claims)
+        self._claims = claims
+
+    def __getattr__(self, name: str):
+        """Make claim values accessible on class instance"""
+        try:
+            return self._claims[name]
+        except KeyError:
+            raise AttributeError(
+                "'Credential' object has no attribute '{}'".format(name)
+            )
+
+
 class CredentialManager(object):
     """
     Handles processing of incoming credentials. Populates application
@@ -200,6 +225,13 @@ class CredentialManager(object):
 
     def __init__(self) -> None:
         self._cred_type_cache = {}
+
+    @staticmethod
+    def get_claims(credential):
+        if isinstance(credential, Credential):
+            return credential
+        elif isinstance(credential, CredentialModel):
+            return CredentialClaims(credential)
 
     @staticmethod
     def process_mapping(rules, credential):
@@ -218,22 +250,18 @@ class CredentialManager(object):
                 "Every mapping must specify 'input' and 'from' values."
             )
 
-        # Pocessor is optional
-        try:
-            processor = rules["processor"]
-        except KeyError as error:
-            processor = None
+        # Processor is optional
+        processor = rules.get("processor")
+
+        claims = CredentialManager.get_claims(credential)
 
         # Get model field value from string literal or claim value
         if _from == "value":
             mapped_value = _input
         elif _from == "claim":
             try:
-                if isinstance(credential, Credential):
-                    mapped_value = getattr(credential, _input)
-                elif isinstance(credential, CredentialModel):
-                    mapped_value = Claim.objects.get(credential=credential, name=_input).value
-            except (AttributeError, Claim.DoesNotExist) as error:
+                mapped_value = getattr(claims, _input)
+            except AttributeError as error:
                 raise CredentialException(
                     "Credential does not contain the configured claim '{}'".format(
                         _input

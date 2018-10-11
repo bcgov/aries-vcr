@@ -2,6 +2,8 @@ from haystack.signals import RealtimeSignalProcessor
 
 
 class RelatedRealtimeSignalProcessor(RealtimeSignalProcessor):
+    reindex_related = True
+
     """
     Extension to haystack's RealtimeSignalProcessor not only causing the
     search_index to update on saved model, but also for image url, which is
@@ -15,18 +17,18 @@ class RelatedRealtimeSignalProcessor(RealtimeSignalProcessor):
     """
 
     def handle_save(self, sender, instance, **kwargs):
-        if hasattr(instance, "reindex_related"):
+        if self.reindex_related and hasattr(instance, "reindex_related"):
             for related in instance.reindex_related:
                 related_obj = getattr(instance, related)
                 related_objs = None
-                
+
                 # Possible that the relationship is one or many.
                 # Handle both.
                 try:
                     related_objs = related_obj.all()
                 except AttributeError:
                     pass
-                
+
                 if related_objs:
                     for related_obj in related_objs:
                         self.handle_save(related_obj.__class__, related_obj)
@@ -37,7 +39,7 @@ class RelatedRealtimeSignalProcessor(RealtimeSignalProcessor):
         )
 
     def handle_delete(self, sender, instance, **kwargs):
-        if hasattr(instance, "reindex_related"):
+        if self.reindex_related and hasattr(instance, "reindex_related"):
             for related in instance.reindex_related:
                 related_obj = getattr(instance, related)
                 related_objs = None
@@ -45,7 +47,7 @@ class RelatedRealtimeSignalProcessor(RealtimeSignalProcessor):
                     related_objs = related_obj.all()
                 except AttributeError:
                     pass
-                
+
                 if related_objs:
                     for related_obj in related_objs:
                         self.handle_delete(related_obj.__class__, related_obj)
