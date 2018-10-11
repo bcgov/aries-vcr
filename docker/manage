@@ -414,6 +414,9 @@ build)
   tob-solr)
     build-solr
     ;;
+  tob-db)
+    build-db
+    ;;
   *)
     buildImages
     ;;
