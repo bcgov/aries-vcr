@@ -151,7 +151,7 @@ services:
   # tob-db
   # 
   tob-db:
-    image: registry.access.redhat.com/rhscl/postgresql-95-rhel7:9.5
+    image: postgresql
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -167,7 +167,7 @@ services:
   # wallet-db
   # 
   wallet-db:
-    image: registry.access.redhat.com/rhscl/postgresql-95-rhel7:9.5
+    image: postgresql
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
