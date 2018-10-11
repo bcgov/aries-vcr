@@ -15,16 +15,9 @@ from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Topic import Topic
+from api_v2.utils import model_counts
 
 LOGGER = logging.getLogger(__name__)
-
-
-def quick_counts(cursor, model_cls):
-    cursor.execute(
-        "SELECT reltuples::BIGINT AS estimate FROM pg_class WHERE relname=%s",
-        [model_cls._meta.db_table])
-    row = cursor.fetchone()
-    return row[0]
 
 
 @api_view(["GET"])
@@ -39,7 +32,7 @@ def quickload(request, *args, **kwargs):
         "topic": Topic,
     }
     with connection.cursor() as cursor:
-        counts = {mname: quick_counts(cursor, model) for (mname, model) in count_models.items()}
+        counts = {mname: model_counts(model, cursor) for (mname, model) in count_models.items()}
     return JsonResponse(
         {
             "counts": counts,

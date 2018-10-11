@@ -11,10 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
-import posixpath
-import logging.config
 import os.path
-import glob
 
 from pathlib import Path
 
@@ -31,6 +28,9 @@ try:
 except:
     import haystack
 
+def parse_bool(val):
+    return val and val != '0' and str(val).lower() != "false"
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -46,7 +46,7 @@ SECRET_KEY = os.getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
+DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "True"))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -123,6 +123,7 @@ WSGI_APPLICATION = "wsgi.application"
 
 DATABASES = {"default": database.config()}
 
+OPTIMIZE_TABLE_ROW_COUNTS = parse_bool(os.getenv("OPTIMIZE_TABLE_ROW_COUNTS", "True"))
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
