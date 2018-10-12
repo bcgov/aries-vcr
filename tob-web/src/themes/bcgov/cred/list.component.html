@@ -43,7 +43,7 @@
 </div>
 <div class="creds-list creds-search" *ngIf="format==='search'">
   <div class="row cred-row" *ngFor="let cred of records">
-    <div class="col-sm-8">
+    <div class="col-md-8">
       <div class="cred-title">
         <label>{{cred.topic.typeLabel | translate}}:</label>
         <a [routerLink]="cred.topic.link | localize"
@@ -54,7 +54,7 @@
         - <attribute-view *ngIf="topic.attribute_map.entity_type as type" [record]="type"></attribute-view>
       </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-md-4">
       <small *ngIf="cred.issuer">
         <label>
           <span translate>cred.issuer</span>:
