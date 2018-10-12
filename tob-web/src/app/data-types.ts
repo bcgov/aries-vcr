@@ -80,6 +80,7 @@ export namespace Model {
     country: string;
     address_type: string;
     credential_id: number;
+    inactive: boolean;
 
     static resourceName = 'address';
   }
@@ -90,6 +91,7 @@ export namespace Model {
     format: string;
     value: string;
     credential_id: number;
+    inactive: boolean;
 
     get typeClass(): string {
       if(this.format === 'email' || this.format === 'phone' || this.format === 'name')
@@ -269,6 +271,7 @@ export namespace Model {
     text: string;
     type: string;
     credential_id: number;
+    inactive: boolean;
 
     static resourceName = 'name';
 

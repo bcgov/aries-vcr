@@ -20,10 +20,8 @@ from api_v2.serializers.rest import (
     CredentialSerializer,
     CredentialTypeSerializer,
     IssuerSerializer,
-    CategorySerializer,
     CredentialAddressSerializer,
     CredentialAttributeSerializer,
-    CredentialCategorySerializer,
     CredentialNameSerializer,
     CredentialTopicSerializer,
     CredentialTopicExtSerializer,
@@ -31,7 +29,6 @@ from api_v2.serializers.rest import (
 
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
-from api_v2.models.Category import Category
 from api_v2.models.Credential import Credential
 from api_v2.models.Name import Name
 from api_v2 import utils
@@ -84,33 +81,45 @@ class CustomIssuerSerializer(IssuerSerializer):
 
 class CustomAddressSerializer(AddressSerializer):
     last_updated = SerializerMethodField()
+    inactive = SerializerMethodField()
 
     class Meta(AddressSerializer.Meta):
-        fields = tuple(AddressSerializer.Meta.fields) + ("credential_id", "last_updated")
+        fields = tuple(AddressSerializer.Meta.fields) + ("credential_id", "last_updated", "inactive")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
+
+    def get_inactive(self, obj):
+        return obj.credential.inactive
 
 
 class CustomAttributeSerializer(AttributeSerializer):
     last_updated = SerializerMethodField()
+    inactive = SerializerMethodField()
 
     class Meta(AttributeSerializer.Meta):
-        fields = ("id", "credential_id", "last_updated", "type", "format", "value")
+        fields = ("id", "credential_id", "last_updated", "inactive", "type", "format", "value")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
+
+    def get_inactive(self, obj):
+        return obj.credential.inactive
 
 
 class CustomNameSerializer(NameSerializer):
     last_updated = SerializerMethodField()
+    inactive = SerializerMethodField()
     issuer = SerializerMethodField()
 
     class Meta(NameSerializer.Meta):
-        fields = ("id", "credential_id", "last_updated", "text", "language", "issuer")
+        fields = ("id", "credential_id", "last_updated", "inactive", "text", "language", "issuer")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
+
+    def get_inactive(self, obj):
+        return obj.credential.inactive
 
     def get_issuer(self, obj):
         serializer = CustomIssuerSerializer(
@@ -119,21 +128,10 @@ class CustomNameSerializer(NameSerializer):
         return serializer.data
 
 
-class CustomCategorySerializer(CategorySerializer):
-    last_updated = SerializerMethodField()
-
-    class Meta(CategorySerializer.Meta):
-        fields = ("id", "credential_id", "last_updated", "type", "value")
-
-    def get_last_updated(self, obj):
-        return obj.credential.effective_date
-
-
 class CustomTopicSerializer(TopicSerializer):
     names = SerializerMethodField()
     addresses = SerializerMethodField()
     attributes = SerializerMethodField()
-    #categories = SerializerMethodField()
 
     class Meta(TopicSerializer.Meta):
         depth = 1
@@ -144,48 +142,36 @@ class CustomTopicSerializer(TopicSerializer):
             "names",
             "addresses",
             "attributes",
-            #"categories",
         )
 
     def get_names(self, obj):
         names = Name.objects.filter(
             credential__topic=obj,
-            credential__inactive=False,
             credential__revoked=False,
-        )
+        ).order_by('credential__inactive')
         serializer = CustomNameSerializer(instance=names, many=True)
         return serializer.data
 
     def get_addresses(self, obj):
         addresses = Address.objects.filter(
             credential__topic=obj,
-            credential__inactive=False,
             credential__revoked=False,
-        )
+        ).order_by('credential__inactive')
         serializer = CustomAddressSerializer(instance=addresses, many=True)
         return serializer.data
 
     def get_attributes(self, obj):
         attributes = Attribute.objects.filter(
-            credential__topic=obj, credential__revoked=False
-        )
-        serializer = CustomAttributeSerializer(instance=attributes, many=True)
-        return serializer.data
-
-    def get_categories(self, obj):
-        categories = Category.objects.filter(
             credential__topic=obj,
-            credential__inactive=False,
             credential__revoked=False,
-        )
-        serializer = CustomCategorySerializer(instance=categories, many=True)
+        ).order_by('credential__inactive')
+        serializer = CustomAttributeSerializer(instance=attributes, many=True)
         return serializer.data
 
 
 class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     addresses = CredentialAddressSerializer(many=True)
     attributes = CredentialAttributeSerializer(many=True)
-    #categories = CredentialCategorySerializer(many=True)
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
     topic = CredentialTopicSerializer()
@@ -195,7 +181,6 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "id", "create_timestamp", "update_timestamp",
             "credential_type", "effective_date",
             "addresses", "attributes", "names",
-            #"categories",
             "inactive", "revoked", "topic",
         )
         search_fields = (
