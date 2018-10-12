@@ -6,6 +6,7 @@
         <span class="strong cred-link name" *ngIf="!link">{{name.text}}</span>
         <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
       </h3>
+      <div class="label label-warning" *ngIf="name.inactive" translate>cred.inactive</div>
     </div>
     <div class="name-meta text-right text-muted">
       <label translate>attribute.entity_name_effective-short</label>:

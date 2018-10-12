@@ -4,6 +4,7 @@
       {{record.typeLabel | translate}}:
       <span class="strong cred-link name" *ngIf="!link">{{name.text}}</span>
       <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
+      <div class="label label-warning" *ngIf="name.inactive" translate>cred.inactive</div>
     </h3>
   </div>
   <div class="panel-body form-body">
