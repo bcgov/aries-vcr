@@ -14,6 +14,16 @@
     "entity_status": {
       "ACT": "Active",
       "HIS": "Historical"
+    },
+    "entity_type": {
+      "BC Company": "BC Company",
+      "BC Unlimited Liability Company": "BC Unlimited Liability Company",
+      "Continuation In": "Continuation In",
+      "Continuation In as a BC ULC": "Continuation In as a BC ULC",
+      "Extraprovincial Company": "Extraprovincial Company",
+      "Limited Liability Company": "Limited Liability Company",
+      "Miscellaneous Firm": "Miscellaneous Firm",
+      "Sole Proprietorship": "Sole Proprietorship"
     }
   },
   "jurisdiction": {
