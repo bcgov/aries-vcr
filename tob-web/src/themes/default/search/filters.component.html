@@ -1,0 +1,11 @@
+<ng-container *ngIf="(filters$ | async) as filters">
+  <div class="facet" *ngFor="let filter of filters">
+    <label class="control-label">{{filter.label | translate}}</label>
+    <ul>
+      <li *ngFor="let opt of filter.options">
+        <strong *ngIf="opt.active">{{opt.label | translate}}</strong>
+        <a tabindex="0" href="#" *ngIf="!opt.active" (click)="setFilter($event, filter.name, opt.value)">{{opt.label | translate}}</a>
+      </li>
+    </ul>
+  </div>
+</ng-container>

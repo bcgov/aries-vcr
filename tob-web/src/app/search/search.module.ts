@@ -6,6 +6,7 @@ import { LocalizeRouterModule } from 'localize-router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SearchComponent } from './form.component';
+import { SearchFiltersComponent } from './filters.component';
 import { SearchInputComponent } from './input.component';
 import { SearchNavComponent } from './nav.component';
 import { CredModule } from '../cred/cred.module';
@@ -16,6 +17,7 @@ const ROUTES = [];
 @NgModule({
   declarations: [
     SearchComponent,
+    SearchFiltersComponent,
     SearchInputComponent,
     SearchNavComponent,
   ],
@@ -32,6 +34,7 @@ const ROUTES = [];
   ],
   exports: [
     SearchComponent,
+    SearchFiltersComponent,
     SearchInputComponent,
     SearchNavComponent,
   ]

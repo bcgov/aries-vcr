@@ -1,4 +1,4 @@
-<div [class]="'large-search' + (focused ? ' active' : '')">
+<div [ngClass]="{'large-search': true, 'active': focused}">
   <input #queryInput type="text" id="queryInput" name="query" size="40"
     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
     [ngbTypeahead]="typeaheadSearch" [focusFirst]="false"

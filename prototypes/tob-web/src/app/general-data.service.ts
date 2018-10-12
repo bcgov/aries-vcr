@@ -143,7 +143,6 @@ export class GeneralDataService {
     else {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
-      fetch.loadFrom(this.loadJson(url, httpParams), {url: url});
       if(params.primary) {
         if(this.loaderSub)
           this.loaderSub.unsubscribe();
@@ -151,6 +150,7 @@ export class GeneralDataService {
           this.setCurrentResult(result);
         });
       }
+      fetch.loadFrom(this.loadJson(url, httpParams), {url: url});
     }
   }
 

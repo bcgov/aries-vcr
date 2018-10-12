@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-sm-12">
 
-      <div class="search-head">
+      <div class="search-head mrgn-bttm-lg">
         <div class="search-wrap">
           <search-input #searchInput (accepted)="updateQuery($event)" [loading]="result.loading"></search-input>
         </div>
@@ -16,55 +16,28 @@
         </div -->
       </div>
 
-      <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
-
-      <div class="row results mrgn-tp-lg" *ngIf="result.loaded">
-        <!-- div class="col-sm-3 facets">
-          <label class="control-label">Refine search</label>
-          <div class="facet">
-            <label class="control-label">Status</label>
-            <ul>
-              <li><strong>Current</strong></li>
-              <li><a href="#">Historical</a></li>
-            </ul>
-          </div>
-          <div class="facet">
-            <label class="control-label">Issuers</label>
-            <ul>
-              <li><a href="#">BC Registries</a></li>
-            </ul>
-          </div>
-          <div class="facet">
-            <label class="control-label">Credential Types</label>
-            <ul>
-              <li><a href="#">Incorporation</a></li>
-              <li><a href="#">Doing Business As</a></li>
-            </ul>
-          </div>
-          <div class="facet">
-            <label class="control-label">Year</label>
-            <ul>
-              <li><a href="#">2018</a></li>
-            </ul>
-          </div>
-        </div -->
-
-        <div class="col-sm-12 rows" *ngIf="result.data as creds">
-          <label class="control-label" translate>search.results-title</label>
-          <ng-container *ngIf="creds.length">
-            <search-nav (nav)="handleNav($event)" [info]="result.pagination"></search-nav>
-            <cred-list [records]="creds" format="search"></cred-list>
-            <search-nav (nav)="handleNav($event)" [info]="result.pagination"></search-nav>
-          </ng-container>
-          <div class="alert alert-info" *ngIf="!creds.length" translate>
-            search.no-results
-          </div>
+      <div class="row results" *ngIf="inited">
+        <div class="col-sm-3 facets">
+          <search-filters #searchFilters [filters]="filters"></search-filters>
         </div>
-      </div>
 
-      <div class="map mrgn-tp-lg hidden">
-        <label class="control-label">Search by Location</label>
-        <div class="map-image"></div>
+        <div class="col-sm-9 rows">
+          <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
+          <div class="alert alert-info" *ngIf="blankQuery && !result.data" translate>
+            search.prompt
+          </div>
+          <ng-container *ngIf="result.data as creds">
+            <label class="control-label" translate>search.results-title</label>
+            <ng-container *ngIf="creds.length">
+              <search-nav (nav)="handleNav($event)" [info]="result.info" [loading]="result.loading" show-status="true"></search-nav>
+              <cred-list [records]="creds" format="search"></cred-list>
+              <search-nav (nav)="handleNav($event)" [info]="result.info" [loading]="result.loading"></search-nav>
+            </ng-container>
+            <div class="alert alert-info" *ngIf="!creds.length" translate>
+              search.no-results
+            </div>
+          </ng-container>
+        </div>
       </div>
     </div>
   </div>

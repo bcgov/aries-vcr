@@ -52,6 +52,7 @@
     "requesting-proof": "Requesting proof...",
     "schema-info": "Credential Schema",
     "start-date": "Effective Date",
+    "status": "Revocation Status",
     "topic-title": "Other Credentials",
     "verify-button-label": "Verify Credential",
     "view-link": "View credential",
@@ -70,9 +71,12 @@
     "not-found": "This record could not be located.",
     "other-error": "An unknown error occurred.",
     "period-current": "Current",
-    "period-historical": "Historical",
+    "period-historical": "Past",
     "prev-link": "Previous",
     "show-filters": "Show Filters",
+    "status-nonrevoked": "Not Revoked",
+    "status-revoked": "Revoked",
+    "status-any": "Any",
     "verified": "Verified"
   },
   "home": {
@@ -109,23 +113,24 @@
     "name": "Schema Name",
     "version": "Schema Version"
   },
-  "topic": {
-    "breadcrumb": "Organization",
-    "related-to": "Related To",
-    "return-link": "Back to Organization",
-    "source-id": "Registration ID",
-    "view-link": "Show Details"
-  },
   "search": {
     "breadcrumb": "Search",
     "by-name": "Search by Name",
     "by-location": "Search by Location",
     "no-results": "No results",
     "placeholder": "search",
+    "prompt": "Please enter your search query above in order to proceed.",
     "records-prefix": "Records ",
     "results-error": "Your query could not be completed at this time.",
     "results-title": "Search Results",
     "return-link": "Back to Search",
     "title": "Find an Organization"
+  },
+  "topic": {
+    "breadcrumb": "Organization",
+    "related-to": "Related To",
+    "return-link": "Back to Organization",
+    "source-id": "Registration ID",
+    "view-link": "Show Details"
   }
 }

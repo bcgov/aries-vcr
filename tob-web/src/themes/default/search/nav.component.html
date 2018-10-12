@@ -6,7 +6,8 @@
     </button>
   </div>
   <div class="col-sm-4 text-center col-center">
-    <span  tabIndex="0"  *ngIf="loaded">{{'search.records-prefix' | translate}} {{info.firstIndex}}-{{info.lastIndex}} of {{info.totalCount}}</span>
+    <span tabIndex="0" *ngIf="! loading">{{'search.records-prefix' | translate}} {{info.firstIndex}}-{{info.lastIndex}} of {{info.totalCount}}</span>
+    <loading-indicator [loading]="loading && showStatus"></loading-indicator>
   </div>
   <div class="col-sm-4 text-right col-right">
     <button  tabIndex="0" type="button" [title]="'general.next-link' | translate" class="btn btn-default btn-md nav-button nav-next" [disabled]="!haveNext" (click)="performNav($event, 'next')">

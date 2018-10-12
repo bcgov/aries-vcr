@@ -8,9 +8,10 @@ import { Fetch } from '../data-types';
 })
 export class SearchNavComponent {
 
-  @Input() info : Fetch.Pagination;
-  private _loading: boolean;
+  @Input() info : Fetch.ListInfo;
+  private _loading : boolean;
   @Output() nav = new EventEmitter<string>();
+  @Input('show-status') showStatus : any;
 
   get enabled() : boolean {
     return !! this.info && ! this.loading;
