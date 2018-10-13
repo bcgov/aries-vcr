@@ -107,15 +107,6 @@ export namespace Model {
     }
   }
 
-  export class Category extends BaseModel {
-    id: number;
-    type: string;
-    value: string;
-    credential_id: number;
-
-    static resourceName = 'category';
-  }
-
   export class Credential extends BaseModel {
     id: number;
     credential_type: CredentialType;
@@ -126,7 +117,6 @@ export namespace Model {
     addresses: Address[];
     _attributes: Attribute[];
     _attribute_map: {[key: string]: Attribute};
-    categories: Category[];
     names: Name[];
     topic: Topic;
 
@@ -143,7 +133,6 @@ export namespace Model {
     static listPropertyMap = {
       addresses: 'Address',
       attributes: 'Attribute',
-      categories: 'Category',
       names: 'Name',
     };
 
@@ -169,9 +158,6 @@ export namespace Model {
     }
     get haveAttributes() {
       return this.attributes && this.attributes.length;
-    }
-    get haveCategories() {
-      return this.categories && this.categories.length;
     }
     get haveNames() {
       return this.names && this.names.length;
@@ -290,7 +276,6 @@ export namespace Model {
     addresses: Address[];
     _attributes: Attribute[];
     _attribute_map: {[key: string]: Attribute};
-    categories: Category[];
     names: Name[];
 
     static resourceName = 'topic';
@@ -298,7 +283,6 @@ export namespace Model {
     static listPropertyMap = {
       addresses: 'Address',
       attributes: 'Attribute',
-      categories: 'Category',
       names: 'Name',
     };
 
@@ -339,6 +323,9 @@ export namespace Model {
     }
 
     get link(): string[] {
+      // FIXME need to move link generation into general data service
+      if(this.type === 'registration')
+        return ['/topic/', this.source_id];
       return ['/topic/', this.type, this.source_id];
     }
 

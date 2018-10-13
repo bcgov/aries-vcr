@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['../../themes/_active/topic/form.component.scss']
 })
 export class TopicFormComponent implements OnInit, OnDestroy {
-  type: string;
+  source_type: string;
   source_id: string;
   loaded: boolean;
   loading: boolean;
@@ -34,7 +34,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
       this._fetchCreds();
     });
     this._idSub = this._route.params.subscribe(params => {
-      this.type = params['topicType'];
+      this.source_type = params['sourceType'];
       this.source_id = params['sourceId'];
       let ident = this.ident;
       this._dataService.loadRecord(this._loader, ident, {primary: true});
@@ -48,8 +48,9 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   }
 
   get ident(): string {
-    if(this.type && this.source_id) {
-      return this.type === '_' ? this.source_id : `ident/${this.type}/${this.source_id}`;
+    let source_type = this.source_type || this._dataService.defaultTopicType;
+    if(source_type && this.source_id) {
+      return this.source_type === '_' ? this.source_id : `ident/${source_type}/${this.source_id}`;
     }
   }
 

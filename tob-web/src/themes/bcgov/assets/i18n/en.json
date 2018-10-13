@@ -1,4 +1,7 @@
 {
+  "ROUTES": {
+    "topic": "organization"
+  },
   "attribute": {
     "entity_name_assumed_effective": "Assumed Name Effective Date",
     "entity_name_effective": "Name Effective Date",

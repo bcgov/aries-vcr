@@ -14,11 +14,12 @@ import 'rxjs/add/observable/throw';
 export class GeneralDataService {
 
   public apiUrl = environment.API_URL;
-  private quickLoaded = false;
-  private orgData : {[key: string]: any} = {};
-  private recordCounts : {[key: string]: number} = {};
-  private currentResultSubj = new BehaviorSubject<Fetch.BaseResult<any>>(null);
-  private loaderSub: Subscription = null;
+  private _quickLoaded = false;
+  private _orgData : {[key: string]: any} = {};
+  private _recordCounts : {[key: string]: number} = {};
+  private _currentResultSubj = new BehaviorSubject<Fetch.BaseResult<any>>(null);
+  private _loaderSub: Subscription = null;
+  private _defaultTopicType = 'registration';
 
   constructor(private _http: HttpClient) {
   }
@@ -34,6 +35,10 @@ export class GeneralDataService {
       if(! root.endsWith('/')) root += '/';
       return root + path;
     }
+  }
+
+  get defaultTopicType(): string {
+    return this._defaultTopicType;
   }
 
   loadJson(url, params?: HttpParams) : Observable<Object> {
@@ -53,7 +58,7 @@ export class GeneralDataService {
 
   quickLoad(force?) {
     return new Promise((resolve, reject) => {
-      if(this.quickLoaded && !force) {
+      if(this._quickLoaded && !force) {
         resolve(1);
         return;
       }
@@ -72,15 +77,15 @@ export class GeneralDataService {
         console.log('quickload', data);
         if(data.counts) {
           for (let k in data.counts) {
-            this.recordCounts[k] = parseInt(data.counts[k]);
+            this._recordCounts[k] = parseInt(data.counts[k]);
           }
         }
         if(data.records) {
           for (let k in data.records) {
-            this.orgData[k] = data.records[k];
+            this._orgData[k] = data.records[k];
           }
         }
-        this.quickLoaded = true;
+        this._quickLoaded = true;
         resolve(1);
       }, err => {
         reject(err);
@@ -89,7 +94,7 @@ export class GeneralDataService {
   }
 
   getRecordCount (type) {
-    return this.recordCounts[type] || 0;
+    return this._recordCounts[type] || 0;
   }
 
   autocomplete (term) : Observable<Object> {
@@ -144,9 +149,9 @@ export class GeneralDataService {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
       if(params.primary) {
-        if(this.loaderSub)
-          this.loaderSub.unsubscribe();
-        this.loaderSub = fetch.stream.subscribe((result) => {
+        if(this._loaderSub)
+          this._loaderSub.unsubscribe();
+        this._loaderSub = fetch.stream.subscribe((result) => {
           this.setCurrentResult(result);
         });
       }
@@ -155,11 +160,11 @@ export class GeneralDataService {
   }
 
   onCurrentResult(sub): Subscription {
-    return this.currentResultSubj.subscribe(sub);
+    return this._currentResultSubj.subscribe(sub);
   }
 
   setCurrentResult(result: Fetch.BaseResult<any>) {
-    this.currentResultSubj.next(result);
+    this._currentResultSubj.next(result);
   }
 
   deleteRecord (mod: string, id: string) {

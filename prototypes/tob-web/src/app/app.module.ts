@@ -10,7 +10,7 @@ import {
   TranslateModule, TranslateLoader, TranslateService,
   MissingTranslationHandler, MissingTranslationHandlerParams
   } from '@ngx-translate/core';
-import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings } from 'localize-router';
+import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX } from 'localize-router';
 import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
 import { Observable } from 'rxjs';
 
@@ -107,6 +107,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
   providers: [
     GeneralDataService,
     {provide: MissingTranslationHandler, useClass: MyMissingTranslationHandler},
+    {provide: ALWAYS_SET_PREFIX, useValue: true},
   ],
   bootstrap: [AppComponent]
 })
