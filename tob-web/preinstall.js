@@ -7,13 +7,13 @@
 var fs = require('fs'),
     path = require('path');
 
-THEME_NAME = process.env.TOB_THEME || 'bcgov';
+var THEME_NAME = process.env.TOB_THEME || 'bcgov';
 if (THEME_NAME === '_active')
     throw 'Invalid theme name';
-TARGET_DIR = 'src/themes/_active';
-THEMES_ROOT = 'src/themes';
-LANG_ROOT = 'assets/i18n';
-RESOLVE_LINKS = ['favicon.ico', 'styles.scss', LANG_ROOT];
+var TARGET_DIR = 'src/themes/_active';
+var THEMES_ROOT = 'src/themes';
+var LANG_ROOT = 'assets/i18n';
+var RESOLVE_LINKS = ['favicon.ico', 'styles.scss', LANG_ROOT];
 
 
 if(! fs.copyFileSync) {
@@ -70,8 +70,8 @@ function populateLinksSync(source_dir, target_dir) {
             }
         }
         // must change to the target directory to create the relative symlink properly
-        link_path = path.relative(target_dir, source_path);
-        return_dir = path.relative(target_dir, process.cwd());
+        var link_path = path.relative(target_dir, source_path);
+        var return_dir = path.relative(target_dir, process.cwd());
         process.chdir(target_dir);
         fs.symlinkSync(link_path, file);
         process.chdir(return_dir);
@@ -139,7 +139,8 @@ function resolveLinks(target_dir, paths) {
             continue;
         }
         if (target_stats.isSymbolicLink()) {
-            real_path = fs.realpathSync(target_path);
+            var real_path = fs.realpathSync(target_path);
+            var real_stats = null;
             fs.unlinkSync(target_path);
             try {
                 real_stats = fs.lstatSync(real_path);
@@ -218,10 +219,10 @@ function combineLanguage(theme_name, target_dir) {
             if(! ('app' in data)) data['app'] = {};
             data['app']['theme-name'] = theme_name;
             var target_path = path.join(lang_dir, lang + '.json');
+            var target_stats = null;
             try {
                 target_stats = fs.lstatSync(target_path);
             } catch (err) {
-                target_stats = null;
             }
             if (target_stats && target_stats.isSymbolicLink()) {
                 fs.unlinkSync(target_path);
