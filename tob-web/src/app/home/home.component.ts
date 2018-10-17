@@ -44,8 +44,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if(this._searchInput) this._searchInput.focus();
   }
 
-  performSearch(value: string) {
-    value = this._searchInput.value;
-    this._router.navigate(['../search/name'], {relativeTo: this._route, queryParams: {query: value}});
+  performSearch(evt?) {
+    let query = this._searchInput.value;
+    this._router.navigate(['../search/name'], {relativeTo: this._route, queryParams: {query}});
   }
 }
