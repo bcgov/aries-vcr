@@ -1,15 +1,28 @@
 <header>
-  <div class="container">
-    <div id="header-links" role="navigation">
-      <ul class="inline nav navbar-nav">
-        <li><a href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a></li>
-      </ul>
+  <nav class="navbar navbar-expand-md navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="https://www2.gov.bc.ca">
+
+        <img class="img-fluid d-none d-md-block"
+          [src]="'assets/bootstrap/bc-logo-' + parent.currentLang + '.svg'" width="183" height="44"
+          tabindex="-1" [alt]="'app.header.logo-alt-text' | translate">
+
+        <img class="img-fluid d-md-none" src="assets/bootstrap/01_gov3_bc_symbol.svg" width="61" height="43"
+          [alt]="'app.header.logo-alt-text' | translate">
+      </a>
+      <div class="navbar-brand">
+        <span translate>app.header.title</span>
+        <span class="tag">BETA</span>
+      </div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+        (click)="toggleNavCollapsed($event)" [attr.aria-expanded]="!navCollapsed" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" [ngbCollapse]="navCollapsed" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a>
+        </div>
+      </div>
     </div>
-    <a href="http://www2.gov.bc.ca/" tabindex="-1">
-      <img class="header-logo"
-           tabindex="-1" [alt]="'app.header.logo-alt-text' | translate"
-           [src]="'assets/bc-logo-' + parent.currentLang + '.svg'">
-    </a>
-    <span class="title" role="banner" translate>app.header.title <span class="tag">BETA</span></span>
-  </div>
+  </nav>
 </header>

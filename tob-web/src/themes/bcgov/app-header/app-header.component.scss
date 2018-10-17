@@ -1,3 +1,32 @@
+@import "../common";
+
+.navbar-brand {
+  font-size: 26px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+
+  @include media-breakpoint-down(sm) {
+    font-size: 20px;
+  }
+}
+
+.navbar-collapse.collapse {
+  justify-content: flex-end;
+
+  .nav-item {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+    padding: 10px 10px 8px;
+    text-decoration: none;
+    &:hover, &:focus, &:active {
+      background: initial;
+      border-color: #fff;
+      color: #fff;
+      text-decoration: underline;
+    }
+  }
+}
 
 .tag {
   border: 1px solid #fff;
@@ -8,5 +37,5 @@
   line-height: 1;
   margin-left: 0.5em;
   padding: 0.25em 0.5em 0;
-  vertical-align: 5px;
+  vertical-align: 3px;
 }

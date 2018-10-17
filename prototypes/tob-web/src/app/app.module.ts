@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule, routes } from './app-routing.module';
 import {
   TranslateModule, TranslateLoader, TranslateService,
@@ -13,6 +12,8 @@ import {
 import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX } from 'localize-router';
 import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
 import { Observable } from 'rxjs';
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
@@ -78,7 +79,6 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    NgbModule.forRoot(),
     AdminModule,
     CredModule,
     SearchModule,
@@ -96,6 +96,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
         deps: [TranslateService, Location, LocalizeRouterSettings]
       }
     }),
+    NgbModule.forRoot(),
   ],
   exports: [
     CredModule,

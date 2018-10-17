@@ -14,8 +14,8 @@
         <a class="body-link issuer-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{cred.issuer.name}}</a>
       </p>
       <div class="cred-status">
-        <div class="label label-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
-        <div class="label label-danger" *ngIf="cred.revoked" translate>cred.expired</div>
+        <div class="badge badge-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
+        <div class="badge badge-danger" *ngIf="cred.revoked" translate>cred.expired</div>
       </div>
     </div>
   </div>
@@ -36,14 +36,14 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <div class="label label-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
-      <div class="label label-danger" *ngIf="cred.revoked" translate>cred.expired</div>
+      <div class="badge badge-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
+      <div class="badge badge-danger" *ngIf="cred.revoked" translate>cred.expired</div>
     </div>
   </div>
 </div>
 <div class="creds-list creds-search" *ngIf="format==='search'">
   <div class="row cred-row" *ngFor="let cred of records">
-    <div class="col-md-8">
+    <div class="col-lg-8">
       <div class="cred-title">
         <label>{{cred.topic.typeLabel | translate}}:</label>
         <a [routerLink]="cred.topic.link | localize"
@@ -54,7 +54,7 @@
         - <attribute-view *ngIf="topic.attribute_map.entity_type as type" [record]="type"></attribute-view>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-lg-4">
       <small *ngIf="cred.issuer">
         <label>
           <span translate>cred.issuer</span>:
@@ -68,8 +68,8 @@
         </label>
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </small>
-      <div class="label label-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
-      <div class="label label-danger" *ngIf="cred.revoked" translate>cred.expired</div>
+      <div class="badge badge-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
+      <div class="badge badge-danger" *ngIf="cred.revoked" translate>cred.expired</div>
     </div>
   </div>
 </div>

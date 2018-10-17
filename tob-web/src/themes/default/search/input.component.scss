@@ -1,7 +1,8 @@
-$input-border-color: rgba(128, 173, 210, 0.9);
+@import "../common";
+
+$input-border-color: lighten(rgba(theme-color(primary), 0.8), 10%);
 $input-border-active: #5c8de6;
 $input-border-radius: 10px;
-$input-button-color: #8ac;
 
 .large-search {
   align-items: center;
@@ -44,17 +45,10 @@ $input-button-color: #8ac;
     width: 100%;
   }
   button {
-    background-color: $input-button-color;
-    border: 2px solid transparent;
     border-radius: ($input-border-radius - 4);
     display: flex;
     flex: none;
     margin: 2px;
-    &:hover, &:focus {
-      background-color: darken($input-button-color, 5%);
-      border-color: $input-border-active;
-      outline: none;
-    }
   }
   &.active {
     border-color: $input-border-active;

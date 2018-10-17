@@ -16,13 +16,17 @@
     <div class="col-sm-12">
 
       <div class="text-center">
-        <ul class="stats">
-          <li class="stat"><span class="numbers">{{recordCounts.orgs | number}}</span> <span class="desc">{{'home.title-orgs' | translate}}</span></li>
-          <li class="stat"><span class="numbers">{{recordCounts.certs | number}}</span> <span class="desc">{{'home.title-certs' | translate}}</span></li>
-        </ul>
+        <div class="row stats">
+          <div class="col-sm-auto stat">
+            <span class="numbers">{{recordCounts.orgs | number}}</span> <span class="desc">{{'home.title-orgs' | translate}}</span>
+          </div>
+          <div class="col-sm-auto stat">
+            <span class="numbers">{{recordCounts.certs | number}}</span> <span class="desc">{{'home.title-certs' | translate}}</span>
+          </div>
+        </div>
         <div class="search-outer">
           <div class="search-inner">
-            <div class="search-title">
+            <div class="search-title mt-3">
               <h2>Find an organization</h2>
             </div>
             <search-input #searchInput (accepted)="performSearch($event)"></search-input>
