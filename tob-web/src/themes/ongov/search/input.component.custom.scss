@@ -1,14 +1,10 @@
 $input-border-color: #4d4d4d;
 $input-border-active:#4d4d4d;
-$input-button-color: #4d4d4d;
 
 .large-search {
     border: 2px solid $input-border-color;
     background-color: transparent;
 
-  button {
-    background-color: $input-button-color;
-  }
   &.active {
     border-color: $input-border-active;
   }

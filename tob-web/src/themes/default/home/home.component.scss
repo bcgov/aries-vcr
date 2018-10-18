@@ -1,6 +1,6 @@
 
 #home {
-  min-height: 50vh;
+  // min-height: 50vh;
 }
 
 .stats {
@@ -12,8 +12,8 @@
   list-style-type: none;
   padding: 2px;
   margin: 0.8em auto;
-  max-width: 500px;
-  min-width: 80%;
+  max-width: 550px;
+  min-width: 75%;
   .stat {
     color: #446;
     padding-top: 2px;
@@ -32,7 +32,7 @@
   border-radius: 5px;
   margin: 1em auto 0;
   max-width: 550px;
-  min-width: 80%;
+  min-width: 75%;
   padding: 2px;
 }
 .search-inner {

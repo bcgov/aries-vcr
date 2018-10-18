@@ -1,20 +1,9 @@
 a.body-link, breadcrumb a {
-  border-bottom: 1px solid rgba(#1a5a96, 0.8);
+  border-bottom: 1px solid rgba($link-color, 0.8);
   margin-bottom: -1px;
   text-decoration: none;
-  &:hover, &:focus {
-    border-bottom-color: #0f3355;
+  @include hover-focus {
+    border-bottom-color: $link-hover-color;
     text-decoration: none;
   }
-}
-
-.fa.left {
-  margin-right: 0.25em;
-}
-.fa.right {
-  margin-left: 0.25em;
-}
-.btn .fa {
-  // Fix button height when only icon is visible
-  line-height: inherit;
 }

@@ -43,7 +43,7 @@
     </div>
   </div>
 
-  <div class="row mrgn-tp-md mrgn-bttm-lg issuer-creds" *ngIf="result.loaded">
+  <div class="row mt-3 mb-5 issuer-creds" *ngIf="result.loaded">
     <div class="col-sm-12" *ngIf="(credTypes$ | async) as credTypes">
       <label class="control-label"><span class="field-name" translate>issuer.cred-types</span></label>
       <loading-indicator [loading]="credTypes.loading"></loading-indicator>

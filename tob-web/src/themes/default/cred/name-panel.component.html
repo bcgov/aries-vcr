@@ -1,10 +1,12 @@
 <div class="card name-panel" *ngIf="record && name">
-  <h3 class="card-header">
-    {{record.typeLabel | translate}}:
-    <span class="strong cred-link name" *ngIf="!link">{{name.text}}</span>
-    <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
-    <div class="label label-warning" *ngIf="name.inactive" translate>cred.inactive</div>
-  </h3>
+  <div class="card-header">
+    <h3>
+      {{record.typeLabel | translate}}:
+      <span class="strong cred-link name" *ngIf="!link">{{name.text}}</span>
+      <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
+    </h3>
+    <span class="badge badge-warning" *ngIf="name.inactive" translate>cred.inactive</span>
+  </div>
   <div class="card-body form-body">
     <div class="row form-group">
       <div class="col-sm-7">

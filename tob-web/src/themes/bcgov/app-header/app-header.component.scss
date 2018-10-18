@@ -10,20 +10,16 @@
   }
 }
 
-.navbar-collapse.collapse {
+.navbar-collapse:not(.show) {
   justify-content: flex-end;
 
   .nav-item {
     border: 1px solid transparent;
     border-radius: 4px;
-    color: #fff;
     padding: 10px 10px 8px;
-    text-decoration: none;
-    &:hover, &:focus, &:active {
+    @include hover-focus {
       background: initial;
-      border-color: #fff;
-      color: #fff;
-      text-decoration: underline;
+      border-color: $navbar-dark-hover-color;
     }
   }
 }

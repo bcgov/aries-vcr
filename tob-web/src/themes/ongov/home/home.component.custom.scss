@@ -1,6 +1,7 @@
 // replace this file in your theme to override standard styles
 .search-outer {
     border: none;
+    min-width: 65%;
   }
 
 .search-inner {
@@ -9,12 +10,12 @@
 
 .beta {
   background: #7b953d;
-  font-size: 1.5rem;
+  font-size: .9rem;
   font-weight: 400;
   vertical-align: middle;
   margin-left: 10px;
   color: #fefefe;
-  padding: .33333rem .5rem;
+  padding: .2rem .4rem;
   border-radius: 3px;
   line-height: 1;
   white-space: nowrap;

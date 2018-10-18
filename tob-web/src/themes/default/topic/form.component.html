@@ -2,11 +2,11 @@
   <loading-indicator [loading]="result.loading"></loading-indicator>
   <error-message [error]="result.error"></error-message>
 
-  <div class="row mrgn-bttm-md" *ngIf="result.data as topic">
+  <div class="row mb-3" *ngIf="result.data as topic">
     <div class="col-sm-12">
       <h1 class="topic-name">{{title}}</h1>
 
-      <a [routerLink]="'/search' | localize" class="title-back-link mrgn-bttm-md"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
+      <a [routerLink]="'/search' | localize" class="title-back-link mb-3"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
 
       <div class="row">
         <div class="col-sm-12 name-info">

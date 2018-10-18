@@ -13,7 +13,7 @@
 
       <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
 
-      <div class="row results mrgn-tp-lg" *ngIf="result.loaded">
+      <div class="row results mt-5" *ngIf="result.loaded">
 
         <div class="col-sm-12 rows" *ngIf="result.data as creds">
           <label tabIndex="0" class="control-label" translate>search.results-title</label>

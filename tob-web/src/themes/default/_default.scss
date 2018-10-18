@@ -1,31 +1,5 @@
 .page-min-height {
-  min-height: 36em;
-}
-
-.mrgn-tp-0 {
-  margin-top: 0;
-}
-.mrgn-tp-sm {
-  margin-top: 8px;
-}
-.mrgn-tp-md {
-  margin-top: 1.5rem;
-}
-.mrgn-tp-lg {
-  margin-top: 3rem;
-}
-
-.mrgn-bttm-0 {
-  margin-bottom: 0;
-}
-.mrgn-bttm-sm {
-  margin-bottom: 8px;
-}
-.mrgn-bttm-md {
-  margin-bottom: 1.5rem;
-}
-.mrgn-bttm-lg {
-  margin-bottom: 3rem;
+  // min-height: 36em;
 }
 
 @keyframes spin {
@@ -103,8 +77,41 @@ $indicator-thickness: 0.2em;
   }
 }
 
+// Standard margins for icons
+.fa.left {
+  margin-right: 0.25em;
+}
+.fa.right {
+  margin-left: 0.25em;
+}
+// Fix button height when only icon is visible
+.btn .fa {
+  line-height: inherit;
+}
+
 .form-body {
   > .form-group:last-child {
     margin-bottom: 0;
   }
+}
+
+// Restore panel-info etc equivalents
+@each $color, $value in (success, info, warning, danger) {
+  .card-#{$color} {
+    border-color: theme-color-level($color, $alert-border-level);
+    > .card-header {
+      @include gradient-bg(theme-color-level($color, $alert-bg-level));
+      border-color: theme-color-level($color, $alert-border-level);
+      color: theme-color-level($color, $alert-color-level);
+    }
+    > .card-footer {
+      border-color: theme-color-level($color, $alert-border-level);
+    }
+  }
+}
+.card-warning {
+    border-color: theme-color-level(warning, -6);
+    > .card-header, > .card-footer {
+        border-color: theme-color-level(warning, -6);
+    }
 }

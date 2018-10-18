@@ -1,2 +1,15 @@
-//place all overrides for a specific theme in this file inside your theme/app-header directory
-@import "../../_active/app-header/app-header.component.custom";
+@import "../../_active/common";
+
+.navbar-collapse:not(.show) {
+  justify-content: flex-end;
+
+  .nav-item {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 10px 10px 8px;
+    @include hover-focus {
+      background: initial;
+      border-color: $navbar-dark-hover-color;
+    }
+  }
+}

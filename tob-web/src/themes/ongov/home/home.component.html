@@ -1,11 +1,11 @@
 <section id="home">
 
-    <div class="row mrgn-tp-lg" *ngIf="!inited">
+    <div class="row mt-5" *ngIf="!inited">
         <div class="col-sm-12 page-load">
           <div class="loading-indicator"></div>
         </div>
       </div>
-    
+
       <div class="alert alert-danger" *ngIf="loadError">
         {{'general.other-error' | translate}}
       </div>
@@ -19,7 +19,7 @@
       <div class="text-left">
         <p translate *ngIf="inited" tabindex="0" >home.message</p>
         <div class="search-outer">
-          <div class="search-inner">
+          <div class="search-inner mt-3">
               <search-input  #searchInput (accepted)="performSearch($event)"></search-input>
             </div>
         </div>

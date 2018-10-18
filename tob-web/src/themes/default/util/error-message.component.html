@@ -3,10 +3,10 @@
   <ng-template #main>
     <div class="alert alert-danger">
       <h3 *ngIf="title">{{title}}</h3>
-      <p>{{formatted}}</p>
-      <p *ngIf="showReturn">
+      <div>{{formatted}}</div>
+      <div class="mt-3" *ngIf="showReturn">
         <a [href]="'/' | localize" translate>not-found.return-link-title</a>
-      </p>
+      </div>
     </div>
   </ng-template>
 </ng-container>
