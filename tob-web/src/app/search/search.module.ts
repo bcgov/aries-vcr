@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from 'localize-router';
-//import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SearchComponent } from './form.component';
