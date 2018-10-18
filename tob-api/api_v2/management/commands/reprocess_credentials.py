@@ -6,7 +6,6 @@ from api_v2.indy.credential import CredentialManager
 
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
-from api_v2.models.Category import Category
 from api_v2.models.Credential import Credential
 from api_v2.models.Name import Name
 
@@ -49,18 +48,18 @@ class Command(BaseCommand):
                 mapping = processor_config.get("mapping") or []
 
                 # Delete existing search models
-                for ModelKey, Model in MODEL_TYPE_MAP.items():
-                    if ModelKey == "category":
+                for model_key, model_cls in MODEL_TYPE_MAP.items():
+                    if model_key == "category":
                         continue
                     # Don't trigger search reindex (yet)
-                    Model.objects.filter(credential=credential)._raw_delete(using=DEFAULT_DB_ALIAS)
+                    model_cls.objects.filter(credential=credential)._raw_delete(using=DEFAULT_DB_ALIAS)
 
                 # Create search models using mapping from issuer config
                 for model_mapper in mapping:
                     model_name = model_mapper["model"]
 
-                    Model = MODEL_TYPE_MAP[model_name]
-                    model = Model()
+                    model_cls = MODEL_TYPE_MAP[model_name]
+                    model = model_cls()
                     for field, field_mapper in model_mapper["fields"].items():
                         setattr(
                             model,

@@ -154,6 +154,7 @@ def pre_init():
 
 
 async def perform_register_services(app=None):
+    global MANAGER, STARTED
     if app:
         return app.loop.create_task(
             perform_register_services()

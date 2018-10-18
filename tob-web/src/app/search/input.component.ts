@@ -71,22 +71,22 @@ export class SearchInputComponent implements AfterViewInit {
       console.error('search input element not found');
       return;
     }
-    let elt = this._input.nativeElement;
-    this._renderer.listen(this._input.nativeElement, 'focus', (event) => {
+    let input_elt = this._input.nativeElement;
+    this._renderer.listen(input_elt, 'focus', (event) => {
       this._focused = true;
       this.focusChange.emit(this._focused);
     });
-    this._renderer.listen(this._input.nativeElement, 'blur', (event) => {
+    this._renderer.listen(input_elt, 'blur', (event) => {
       this._focused = false;
       this.focusChange.emit(this._focused);
     });
-    this._renderer.listen(this._input.nativeElement, 'input', (event) => {
+    this._renderer.listen(input_elt, 'input', (event) => {
       this.updateQuery(event.target.value, true);
     });
-    this._renderer.listen(this._input.nativeElement, 'change', (event) => {
+    this._renderer.listen(input_elt, 'change', (event) => {
       this.updateQuery(event.target.value);
     });
-    this._renderer.listen(this._input.nativeElement, 'keydown', (event) => {
+    this._renderer.listen(input_elt, 'keydown', (event) => {
       if(event.keyCode === 13) {
         event.preventDefault();
         this.acceptInput();

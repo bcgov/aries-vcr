@@ -21,7 +21,6 @@ from api_v2.models.Claim import Claim
 
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
-from api_v2.models.Category import Category
 from api_v2.models.Name import Name
 from api_v2.models.TopicRelationship import TopicRelationship
 

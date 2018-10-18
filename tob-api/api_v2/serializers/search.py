@@ -44,8 +44,8 @@ class SearchResultsListSerializer(ListSerializer):
         return s[:1].lower() + s[1:] if s else ""
 
     def __get_keyName(self, instance):
-        searchIndex = instance.searchindex
-        model = searchIndex.get_model()
+        search_index = instance.searchindex
+        model = search_index.get_model()
         return self.__camelCase(model.__name__) + "s"
 
     @property
@@ -57,8 +57,8 @@ class SearchResultsListSerializer(ListSerializer):
         results = OrderedDict()
         iterable = data.all() if isinstance(data, Manager) else data
         for item in iterable:
-            searchIndexName = self.__get_keyName(item)
-            results.setdefault(searchIndexName, []).append(
+            search_index_name = self.__get_keyName(item)
+            results.setdefault(search_index_name, []).append(
                 self.child.to_representation(item)
             )
 
@@ -66,10 +66,7 @@ class SearchResultsListSerializer(ListSerializer):
 
 
 class CustomCredentialSerializer(CredentialSerializer):
-    # topics = CustomTopicSerializer(read_only=True, many=True)
-
     class Meta(CredentialSerializer.Meta):
-        # depth =
         fields = ("id", "effective_date", "inactive", "revoked")
 
 

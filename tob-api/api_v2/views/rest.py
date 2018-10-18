@@ -18,7 +18,6 @@ from api_v2.serializers.rest import (
     ExpandedCredentialSerializer,
     AddressSerializer,
     AttributeSerializer,
-    CategorySerializer,
     NameSerializer,
     CredentialTopicExtSerializer,
 )
@@ -36,7 +35,6 @@ from api_v2.models.Topic import Topic
 from api_v2.models.Credential import Credential
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
-from api_v2.models.Category import Category
 from api_v2.models.Name import Name
 
 from api_v2 import utils
@@ -78,12 +76,12 @@ class CredentialTypeViewSet(ReadOnlyModelViewSet):
 
     @detail_route(url_path="logo", methods=["get"])
     def fetch_logo(self, request, pk=None):
-        credType = get_object_or_404(self.queryset, pk=pk)
+        cred_type = get_object_or_404(self.queryset, pk=pk)
         logo = None
-        if credType.logo_b64:
-            logo = base64.b64decode(credType.logo_b64)
-        elif credType.issuer and credType.issuer.logo_b64:
-            logo = base64.b64decode(credType.issuer.logo_b64)
+        if cred_type.logo_b64:
+            logo = base64.b64decode(cred_type.logo_b64)
+        elif cred_type.issuer and cred_type.issuer.logo_b64:
+            logo = base64.b64decode(cred_type.issuer.logo_b64)
         if not logo:
             raise Http404()
         # FIXME - need to store the logo mime type
@@ -204,11 +202,6 @@ class AttributeViewSet(ReadOnlyModelViewSet):
 class NameViewSet(ReadOnlyModelViewSet):
     serializer_class = NameSerializer
     queryset = Name.objects.all()
-
-
-class CategoryViewSet(ReadOnlyModelViewSet):
-    serializer_class = CategorySerializer
-    queryset = Category.objects.all()
 
 
 # Add environment specific endpoints

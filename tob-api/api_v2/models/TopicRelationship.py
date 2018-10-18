@@ -3,7 +3,6 @@ from django.utils import timezone
 
 from auditable.models import Auditable
 
-# from .Credential import Credential
 from .Topic import Topic
 
 

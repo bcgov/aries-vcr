@@ -729,7 +729,7 @@ export namespace Filter {
     }
   }
 
-  interface StrDict {[key: string]: string};
+  interface StrDict {[key: string]: string}
 
   export class FieldSet {
     _result: BehaviorSubject<Field[]>;
