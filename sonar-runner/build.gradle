@@ -1,0 +1,73 @@
+// Uses DSL plugins resolution introduced in Gradle 2.1
+plugins {
+  id "java"
+  id "jacoco"
+  id "org.sonarqube" version "2.6.2"
+}
+
+// ==============================================================================================
+// SonarQube Scanner Defaults
+// ==============================================================================================
+// Set your project's SonarQube scanner properties at your build/pipeline script level,
+// not at this level.  The only thing that should be defined at this level is a minimal set of
+// generic defaults.
+//
+// For more information on available properties visit:
+// - https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Gradle
+// ----------------------------------------------------------------------------------------------
+sonarqube {
+    properties {
+        property "sonar.host.url", "<Set This In Your Build/Pipeline Script>"
+        property "sonar.projectName", "<Set This In Your Build/Pipeline Script>"
+        property "sonar.projectKey", "<Set This In Your Build/Pipeline Script>"
+
+        // ================================================================
+        // Assumptions are being made by these defaults
+        // ================================================================
+        // You should set these paths at your build/pipeline script level.
+        // These defaults assume this build file is one level down
+        // from your root project directory and you what to scan
+        // your entire project.
+        // ----------------------------------------------------------------
+        property "sonar.projectBaseDir", "../"
+        property "sonar.sources", "./"
+        // ================================================================
+
+        property "sonar.verbose", "true"
+        property "sourceEncoding", "UTF-8"
+        property "sonar.python.coveragePlugin","cobertura"
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+    }
+}
+// ==============================================================================================
+
+allprojects {
+  def env = System.getenv()
+  TimeZone.getTimeZone('UTC')
+  Date date= new Date()
+  String newdate=date.format("YYYYMMDD")
+  ext.baseVersion = newdate + "." + env['BUILD_NUMBER']
+  ext.snapshotVersion = false
+
+  group = "org.sonarqube"
+  version = "$baseVersion" + (snapshotVersion ? "-SNAPSHOT" : "")
+}
+
+test {
+  ignoreFailures = true
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
+
+repositories {
+  repositories {
+    maven {
+      url "http://repo1.maven.org/maven2/"
+    }
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+}
