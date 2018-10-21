@@ -73,7 +73,7 @@ export class GeneralDataService {
           console.error(error);
           return Observable.throw(error);
         });
-      req.subscribe(data => {
+      req.subscribe((data: any) => {
         console.log('quickload', data);
         if(data.counts) {
           for (let k in data.counts) {

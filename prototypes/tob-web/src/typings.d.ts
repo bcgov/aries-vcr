@@ -1,11 +1,7 @@
-/* SystemJS module definition */
-declare var module: NodeModule;
-interface NodeModule {
-  id: string;
-}
-
-/* Required for translation loader (class provided by webpack) */
-declare var System: System;
-interface System {
-  import(request: string): Promise<any>;
+/* Allow JSON files to be dynamically imported
+   Note: typescript 2.9 adds resolveJsonModule compiler option instead
+*/
+declare module "*.json" {
+    const value: any;
+    export default value;
 }
