@@ -20,7 +20,6 @@
   },
   "dependencies": {
     "@angular/animations": "~5.2.0",
-    "@angular/cli": "~6.0.0",
     "@angular/common": "~5.2.0",
     "@angular/compiler": "~5.2.0",
     "@angular/core": "~5.2.0",
@@ -29,7 +28,7 @@
     "@angular/platform-browser": "~5.2.0",
     "@angular/platform-browser-dynamic": "~5.2.0",
     "@angular/router": "~5.2.0",
-    "@ng-bootstrap/ng-bootstrap": "~1.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^1.1.0",
     "@ngx-translate/core": "~8.0.0",
     "@ngx-translate/http-loader": "^2.0.0",
     "bootstrap-theme": "cywolf/bootstrap-theme",
@@ -42,9 +41,10 @@
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
+    "@angular/cli": "^6.2.0",
     "@angular/compiler-cli": "~5.2.0",
     "@angular-devkit/build-angular": "~0.6.8",
-    "@types/jasmine": "2.8.6",
+    "@types/jasmine": "~2.8.6",
     "@types/node": "~8.9.4",
     "codelyzer": "~4.4.0",
     "jasmine-core": "~2.99.1",
