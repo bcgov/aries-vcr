@@ -40,7 +40,7 @@
             "scripts": []
           },
           "configurations": {
-            "development": {
+            "dev": {
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
@@ -96,7 +96,7 @@
             "production": {
               "browserTarget": "tob-web:build:production"
             },
-            "development": {
+            "dev": {
               "browserTarget": "tob-web:build:dev"
             },
             "test": {

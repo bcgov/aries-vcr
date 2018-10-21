@@ -36,6 +36,7 @@
 /libpeerconnection.log
 package-lock.json
 npm-debug.log
+.npm
 testem.log
 /typings
 

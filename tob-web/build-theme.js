@@ -14,6 +14,8 @@ var TARGET_DIR = 'src/themes/_active';
 var THEMES_ROOT = 'src/themes';
 var LANG_ROOT = 'assets/i18n';
 var RESOLVE_LINKS = ['favicon.ico', 'styles.scss', LANG_ROOT];
+var USE_LINKS = process.env.PREINSTALL_LINKS || false;
+var UPDATE_ONLY = process.env.UPDATE_ONLY || false;
 
 
 if(! fs.copyFileSync) {
@@ -38,7 +40,7 @@ function unlinkRecursiveSync(dir) {
     }
 }
 
-function populateLinksSync(source_dir, target_dir) {
+function populateDirSync(source_dir, target_dir) {
     fs.readdirSync(source_dir).forEach(function(file, index) {
         var source_path = path.join(source_dir, file);
         var target_path = path.join(target_dir, file);
@@ -47,34 +49,49 @@ function populateLinksSync(source_dir, target_dir) {
         try {
             target_stats = fs.lstatSync(target_path);
         } catch (err) { }
-        if (target_stats && target_stats.isSymbolicLink()) {
-            var sync_target_stats = fs.statSync(target_path);
-            var resolved_source_path = fs.realpathSync(target_path);
-            fs.unlinkSync(target_path);
-            if (sync_target_stats.isDirectory()) {
-                fs.mkdirSync(target_path);
-                populateLinksSync(resolved_source_path, target_path);
-                target_stats = fs.lstatSync(target_path);
-            } else {
-                target_stats = null;
-            }
+        if (target_stats && USE_LINKS && target_stats.isSymbolicLink()) {
+          var sync_target_stats = fs.statSync(target_path);
+          var resolved_source_path = fs.realpathSync(target_path);
+          fs.unlinkSync(target_path);
+          if (sync_target_stats.isDirectory()) {
+              fs.mkdirSync(target_path);
+              populateDirSync(resolved_source_path, target_path);
+              target_stats = fs.lstatSync(target_path);
+          } else {
+              target_stats = null;
+          }
         }
+
         if (target_stats) {
-            if (target_stats.isDirectory() && source_stats.isDirectory()) {
-                populateLinksSync(source_path, target_path);
-                return;
-            } else if (target_stats.isDirectory()) {
-                unlinkRecursiveSync(target_path);
-            } else {
-                fs.unlinkSync(target_path);
-            }
+          if (target_stats.isDirectory()) {
+              if (source_stats.isDirectory()) {
+                  populateDirSync(source_path, target_path);
+                  return;
+              } else {
+                  unlinkRecursiveSync(target_path);
+              }
+          } else if (USE_LINKS) {
+              fs.unlinkSync(target_path);
+          }
         }
-        // must change to the target directory to create the relative symlink properly
-        var link_path = path.relative(target_dir, source_path);
-        var return_dir = path.relative(target_dir, process.cwd());
-        process.chdir(target_dir);
-        fs.symlinkSync(link_path, file);
-        process.chdir(return_dir);
+
+        if(! USE_LINKS) {
+          if (source_stats.isDirectory()) {
+              if (! target_stats) {
+                  fs.mkdirSync(target_path);
+              }
+              populateDirSync(source_path, target_path);
+          } else {
+              fs.copyFileSync(source_path, target_path);
+          }
+        } else {
+          // must change to the target directory to create the relative symlink properly
+          var link_path = path.relative(target_dir, source_path);
+          var return_dir = path.relative(target_dir, process.cwd());
+          process.chdir(target_dir);
+          fs.symlinkSync(link_path, file);
+          process.chdir(return_dir);
+        }
     });
 }
 
@@ -88,7 +105,7 @@ function copyThemeDir(theme_name, target_dir) {
     if (! fs.statSync(theme_dir).isDirectory()) {
         throw 'Theme path is not a directory: ' + theme_dir
     }
-    populateLinksSync(theme_dir, target_dir);
+    populateDirSync(theme_dir, target_dir);
 }
 
 function cleanTargetDir(target_dir, root, depth) {
@@ -109,7 +126,7 @@ function cleanTargetDir(target_dir, root, depth) {
         } else if(stat.isSymbolicLink()) {
             fs.unlinkSync(target_path);
         } else {
-            var del = false;
+            var del = ! USE_LINKS;
             if (!depth && ~RESOLVE_LINKS.indexOf(file)) {
                 del = true;
             } else {
@@ -232,17 +249,23 @@ function combineLanguage(theme_name, target_dir) {
     }
 }
 
-console.log('Copying theme files to ' + TARGET_DIR);
-console.log('Theme selected: ' + THEME_NAME);
-
-cleanTargetDir(TARGET_DIR);
+if(UPDATE_ONLY) {
+  console.log('Updating theme: %s', THEME_NAME);
+}
+else {
+  console.log('Copying theme files to %s', TARGET_DIR);
+  console.log('Theme selected: %s', THEME_NAME);
+  cleanTargetDir(TARGET_DIR);
+}
 
 copyThemeDir('default', TARGET_DIR)
 if (THEME_NAME !== 'default') {
     copyThemeDir(THEME_NAME, TARGET_DIR)
 }
 
-resolveLinks(TARGET_DIR, RESOLVE_LINKS);
+if(USE_LINKS)
+  resolveLinks(TARGET_DIR, RESOLVE_LINKS);
 combineLanguage(THEME_NAME, TARGET_DIR);
 
-console.log('Done.\n');
+if(! UPDATE_ONLY)
+  console.log('Done.\n');
