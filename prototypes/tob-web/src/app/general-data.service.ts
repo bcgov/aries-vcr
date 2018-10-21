@@ -3,11 +3,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { map, catchError } from 'rxjs/operators';
+import { _throw } from 'rxjs/observable/throw';
 import { environment } from '../environments/environment';
 import { Fetch } from './data-types';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
 
 
 @Injectable()
@@ -43,10 +42,10 @@ export class GeneralDataService {
 
   loadJson(url, params?: HttpParams) : Observable<Object> {
     return this._http.get(url, {params: params})
-      .catch(error => {
+      .pipe(catchError(error => {
         console.error("JSON load error", error);
         return Observable.throw(error);
-      });
+      }));
   }
 
   loadFromApi(path: string, params?: HttpParams) : Observable<Object> {
@@ -69,10 +68,10 @@ export class GeneralDataService {
         return;
       }
       let req = this._http.get(baseurl + 'quickload')
-        .catch(error => {
+        .pipe(catchError(error => {
           console.error(error);
-          return Observable.throw(error);
-        });
+          return _throw(error);
+        }));
       req.subscribe((data: any) => {
         console.log('quickload', data);
         if(data.counts) {
@@ -103,7 +102,7 @@ export class GeneralDataService {
     }
     let params = new HttpParams().set('q', term);
     return this.loadFromApi('search/autocomplete', params)
-      .map(response => response["result"]);
+      .pipe(map(response => response["result"]));
   }
 
   makeHttpParams(query?: { [key: string ]: string } | HttpParams) {
@@ -171,11 +170,11 @@ export class GeneralDataService {
     return new Promise(resolve => {
       let baseurl = this.getRequestUrl(mod + '/' + id + '/delete');
       let req = this._http.post(baseurl, {params: {id}})
-        .catch(error => {
+        .pipe(catchError(error => {
           console.error(error);
           resolve(null);
-          return Observable.throw(error);
-        });
+          return _throw(error);
+        }));
       req.subscribe(data => {
         console.log('delete result', data);
         resolve(data);

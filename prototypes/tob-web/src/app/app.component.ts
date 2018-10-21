@@ -7,7 +7,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { GeneralDataService } from './general-data.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/mergeMap';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy {
         return route;
       })
       .filter((route) => route.outlet === 'primary')
-      .mergeMap((route) => route.data)
+      .pipe(mergeMap((route) => route.data))
       .subscribe((data) => {
         if (!this._isPopState) {
           // scroll to page top only when navigating to a new page (not via history state)
