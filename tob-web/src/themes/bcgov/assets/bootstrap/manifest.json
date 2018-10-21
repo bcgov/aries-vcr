@@ -1,20 +1,21 @@
 {
-    "name": "B.C. Government",
-    "short_name": "BC Gov.",
+    "name": "TheOrgBook",
+    "short_name": "TheOrgBook",
     "icons": [
         {
-            "src": "/assets/bootstrap/bceid-192x192.png",
+            "src": "/assets/bootstrap/bcid-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/assets/bootstrap/bceid-512x512.png",
+            "src": "/assets/bootstrap/bcid-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         }
     ],
+    "scope": "/",
     "start_url": "/",
     "theme_color": "#036",
-    "background_color": "#036",
+    "background_color": "#fff",
     "display": "standalone"
 }
