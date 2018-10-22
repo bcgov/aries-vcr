@@ -60,7 +60,11 @@ usage() {
               $0 start tob-web
               $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
               $0 start tob-api
-    
+
+      web-dev - Builds and runs a live development version of tob-web, along with
+                the required supporting components. Once started, the website is
+                automatically compiled and updated in response to file modifications.
+
       stop - Stops the services.  This is a non-destructive process.  The containers
              are not deleted so they will be reused the next time you run start.
     
@@ -119,6 +123,10 @@ build-web() {
 }
 
 build-web-dev() {
+  #
+  # tob-web-dev
+  # Alternative version of tob-web for live development
+  #
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
@@ -412,7 +420,7 @@ toLower() {
 
 pushd ${SCRIPT_HOME} >/dev/null
 COMMAND=$(toLower ${1})
-shift
+shift || COMMAND=usage
 
 case "${COMMAND}" in
 start)
