@@ -11,7 +11,7 @@
 # API_PATH=/api/v2/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
-APPLICATION_DOMAIN=ontvon-von-test.pathfinder.gov.bc.ca
+APPLICATION_DOMAIN=stage.von.gov.on.ca
 TAG_NAME=test
 # HTTP_BASIC=auth_basic 'restricted';
 # TOB_THEME=ongov
