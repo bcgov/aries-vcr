@@ -38,7 +38,7 @@ class Command(BaseCommand):
         current_cred = 0
         with transaction.atomic():
             for credential in Credential.objects.all():
-                if current_cred % 200 == 0:
+                if current_cred % 20 == 0:
                     gc.collect()
 
                 current_cred += 1
