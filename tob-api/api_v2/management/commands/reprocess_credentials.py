@@ -1,5 +1,3 @@
-import gc
-
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction, DEFAULT_DB_ALIAS
 from django.db.models import signals
@@ -36,11 +34,8 @@ class Command(BaseCommand):
         self.stdout.write("Reprocessing {} credentials".format(cred_count))
 
         current_cred = 0
-        with transaction.atomic():
-            for credential in Credential.objects.all():
-                if current_cred % 20 == 0:
-                    gc.collect()
-
+        for credential in Credential.objects.all().iterator():
+            with transaction.atomic():
                 current_cred += 1
                 self.stdout.write(
                     "Processing credential id: {} ({} of {})".format(
@@ -57,9 +52,7 @@ class Command(BaseCommand):
                     if model_key == "category":
                         continue
                     # Don't trigger search reindex (yet)
-                    model_cls.objects.filter(credential=credential)._raw_delete(
-                        using=DEFAULT_DB_ALIAS
-                    )
+                    model_cls.objects.filter(credential=credential)._raw_delete(using=DEFAULT_DB_ALIAS)
 
                 # Create search models using mapping from issuer config
                 for model_mapper in mapping:
@@ -77,19 +70,14 @@ class Command(BaseCommand):
                         model.format = "category"
 
                     # skip blank values
-                    if model_name == "name" and (
-                        model.text is None or model.text is ""
-                    ):
+                    if model_name == "name" and (model.text is None or model.text is ""):
                         continue
-                    if (model_name == "category" or model_name == "attribute") and (
-                        not model.type or model.value is None or model.value is ""
-                    ):
+                    if (model_name == "category" or model_name == "attribute") and \
+                            (not model.type or model.value is None or model.value is ""):
                         continue
 
                     model.credential = credential
                     model.save()
 
                 # Now reindex
-                signals.post_save.send(
-                    sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS
-                )
+                signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)
