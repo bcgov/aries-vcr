@@ -1,3 +1,5 @@
+import time
+
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction, DEFAULT_DB_ALIAS
 from django.db.models import signals
@@ -35,6 +37,7 @@ class Command(BaseCommand):
 
         current_cred = 0
         for credential in Credential.objects.all():
+            time.sleep(0.1)
             with transaction.atomic():
                 current_cred += 1
                 self.stdout.write(
@@ -79,5 +82,5 @@ class Command(BaseCommand):
                     model.credential = credential
                     model.save()
 
-            # Now reindex
-            signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)
+                # Now reindex
+                signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)
