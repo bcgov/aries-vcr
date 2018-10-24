@@ -38,6 +38,7 @@ class Command(BaseCommand):
         current_cred = 0
         with transaction.atomic():
             for credential in Credential.objects.all():
+                time.sleep(0.1)
                 current_cred += 1
                 self.stdout.write(
                     "Processing credential id: {} ({} of {})".format(
