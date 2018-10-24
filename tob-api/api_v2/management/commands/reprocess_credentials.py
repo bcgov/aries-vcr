@@ -79,5 +79,5 @@ class Command(BaseCommand):
                     model.credential = credential
                     model.save()
 
-                # Now reindex
-                signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)
+            # Now reindex
+            signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)
