@@ -195,7 +195,7 @@ build-api() {
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../tob-api' \
-    'vonx-base' \
+    'bcgovimages/von-image:py36-1.6-ew-7-s2i' \
     'django'
 }
 
