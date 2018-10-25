@@ -58,7 +58,7 @@ def indy_general_wallet_config():
     return ret
 
 
-def indy_holder_wallet_config(wallet_cfg: dict):
+def indy_wallet_config(wallet_cfg: dict):
     wallet_seed = os.environ.get('INDY_WALLET_SEED')
     if not wallet_seed:
         raise ValueError('INDY_WALLET_SEED must be set')
@@ -74,23 +74,5 @@ def indy_holder_wallet_config(wallet_cfg: dict):
     return {
         "name": "TheOrgBook_Holder_Wallet",
         "seed": wallet_seed,
-        "access_creds": wallet_cfg["access_creds"],
-    }
-
-
-def indy_verifier_wallet_config(wallet_cfg: dict):
-    verifier_seed = os.environ.get('INDY_VERIFIER_WALLET_SEED') or "tob-verifier-wallet-000000000001"
-
-    if wallet_cfg['type'] == 'postgres':
-        return {
-            "name": "tob_verifier",
-            "seed": verifier_seed,
-            "type": "postgres",
-            "params": wallet_cfg["params"],
-            "access_creds": wallet_cfg["access_creds"],
-        }
-    return {
-        "name": "TheOrgBook_Verifier_Wallet",
-        "seed": verifier_seed,
         "access_creds": wallet_cfg["access_creds"],
     }

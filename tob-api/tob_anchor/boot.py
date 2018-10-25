@@ -35,8 +35,7 @@ from vonx.indy.manager import IndyManager
 
 from .config import (
     indy_general_wallet_config,
-    indy_holder_wallet_config,
-    indy_verifier_wallet_config,
+    indy_wallet_config,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -70,10 +69,6 @@ def indy_env():
 
 def indy_holder_id():
     return settings.INDY_HOLDER_ID
-
-
-def indy_verifier_id():
-    return settings.INDY_VERIFIER_ID
 
 
 async def add_server_headers(request, response):
@@ -259,27 +254,17 @@ async def register_services():
     client = indy_client()
     wallet_config = indy_general_wallet_config()
 
-    LOGGER.info("Registering holder service")
-    holder_wallet_id = await client.register_wallet(
-        indy_holder_wallet_config(wallet_config))
-    LOGGER.debug("Indy holder wallet id: %s", holder_wallet_id)
+    LOGGER.info("Registering indy agent")
+    wallet_id = await client.register_wallet(
+        indy_wallet_config(wallet_config))
+    LOGGER.debug("Indy wallet id: %s", wallet_id)
 
-    holder_id = await client.register_holder(holder_wallet_id, {
+    agent_id = await client.register_issuer(wallet_id, {
         "id": indy_holder_id(),
         "name": "TheOrgBook Holder",
+        "holder_verifier": True,
     })
-    LOGGER.debug("Indy holder id: %s", holder_id)
-
-    LOGGER.info("Registering verifier service")
-    verifier_wallet_id = await client.register_wallet(
-        indy_verifier_wallet_config(wallet_config))
-    LOGGER.debug("Indy verifier wallet id: %s", verifier_wallet_id)
-
-    verifier_id = await client.register_verifier(verifier_wallet_id, {
-        "id": indy_verifier_id(),
-        "name": "TheOrgBook Verifier",
-    })
-    LOGGER.info("Indy verifier id: %s", verifier_id)
+    LOGGER.debug("Indy agent id: %s", agent_id)
 
     await client.sync()
     LOGGER.debug("Indy client synced")

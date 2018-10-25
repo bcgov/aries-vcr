@@ -246,7 +246,6 @@ if os.getenv("SQL_DEBUG"):
     }
 
 INDY_HOLDER_ID = "TheOrgBook_Holder"
-INDY_VERIFIER_ID = "TheOrgBook_Verifier"
 
 custom_settings_file = Path(
     BASE_DIR,

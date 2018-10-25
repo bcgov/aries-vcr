@@ -39,7 +39,7 @@ from api_v2.indy.proof import ProofManager
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 
 from tob_anchor.boot import (
-    indy_client, indy_holder_id, indy_verifier_id, run_django
+    indy_client, indy_holder_id, run_django
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -85,7 +85,7 @@ def get_key_finder(use_cache: bool = True) -> KeyFinderBase:
         return KEY_CACHE
     if not INDY_KEYFINDER:
         # may raise RuntimeError on indy_client() if Indy service has not been started
-        INDY_KEYFINDER = IndyKeyFinder(_indy_client(), indy_verifier_id())
+        INDY_KEYFINDER = IndyKeyFinder(_indy_client(), indy_holder_id())
         DJANGO_KEYFINDER = DjangoKeyFinder(INDY_KEYFINDER)
         KEY_CACHE = KeyCache(DJANGO_KEYFINDER)
     return INDY_KEYFINDER
@@ -542,7 +542,7 @@ async def verify_credential(request):
     try:
         proof = await proof_manager.construct_proof_async()
         verified = await _indy_client().verify_proof(
-                indy_verifier_id(),
+                indy_holder_id(),
                 VonxProofRequest(proof_request.dict),
                 VonxConstructedProof(proof))
     except IndyError as e:
