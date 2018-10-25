@@ -1,5 +1,4 @@
-import os
-
+from django.conf import settings
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.routers import SimpleRouter
@@ -10,23 +9,17 @@ from api_v2.views import misc, rest, search
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-APPLICATION_URL = os.environ.get("APPLICATION_URL")
-
+API_METADATA = settings.API_METADATA
 schema_view = get_schema_view(
     openapi.Info(
-        title="TheOrgBook API",
+        title=API_METADATA["title"],
         default_version="v2",
-        description="TheOrgBook is a public searchable directory of digital records for registered businesses in the Province "
-        "of British Columbia. Over time, other government organizations and businesses will also begin to issue"
-        "digital records through TheOrgBook. For example, permits and licenses issued by various government services.",
-        terms_of_service="https://www2.gov.bc.ca/gov/content/data/open-data",
-        contact=openapi.Contact(email="bcdevexchange@gov.bc.ca"),
-        license=openapi.License(
-            name="Open Government License - British Columbia",
-            url="https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information",
-        ),
+        description=API_METADATA["description"],
+        terms_of_service=API_METADATA["terms"]["url"],
+        contact=openapi.Contact(**API_METADATA["contact"]),
+        license=openapi.License(**API_METADATA["license"]),
     ),
-    url="{}/api".format(APPLICATION_URL),
+    url="{}/api".format(settings.APPLICATION_URL),
     validators=["flex", "ssv"],
     public=True,
     permission_classes=(AllowAny,),

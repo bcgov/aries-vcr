@@ -247,6 +247,27 @@ if os.getenv("SQL_DEBUG"):
 
 INDY_HOLDER_ID = "TheOrgBook_Holder"
 
+APPLICATION_URL = os.getenv("APPLICATION_URL") or "http://localhost:8080"
+
+API_METADATA = {
+    "title": "TheOrgBook API",
+    "description":
+        "TheOrgBook is a public, searchable directory of digital records for registered "
+        "businesses in the Province of British Columbia. Over time, other government "
+        "organizations and businesses will also begin to issue digital records through "
+        "TheOrgBook. For example, permits and licenses issued by various government services.",
+    "terms": {
+        "url": "https://www2.gov.bc.ca/gov/content/data/open-data",
+    },
+    "contact": {
+        "email": "bcdevexchange@gov.bc.ca",
+    },
+    "license": {
+        "name": "Open Government License - British Columbia",
+        "url": "https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information",
+    },
+}
+
 custom_settings_file = Path(
     BASE_DIR,
     "custom_settings_" + str(os.getenv("TOB_THEME")).lower() + ".py",
