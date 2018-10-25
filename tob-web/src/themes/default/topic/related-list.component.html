@@ -1,15 +1,15 @@
 <div class="related-topics mb-3" *ngIf="format != 'compact'">
   <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
-  <h2 *ngIf="title && !loading && topics && topics.length">{{title}}</h2>
+  <h4 *ngIf="title && !loading && topics && topics.length">{{title}}</h4>
   <topic-list [records]="topics" [format]="format" *ngIf="!loading"></topic-list>
 </div>
-<div class="related-topics" *ngIf="format == 'compact'">
+<div class="related-topics mb-3" *ngIf="format == 'compact'">
   <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
   <div class="row" *ngIf="!loading && topics && topics.length">
     <div class="col-sm-12">
       <div class="card creds-panel">
         <div class="card-header panel-heading">
-          <h3>{{title}}</h3>
+          <h4 class="my-0">{{title}}</h4>
         </div>
         <div class="card-body">
           <topic-list [records]="topics" [format]="format"></topic-list>
