@@ -7,7 +7,6 @@ from auditable.models import Auditable
 
 from .Address import Address
 from .Attribute import Attribute
-from .Category import Category
 from .Name import Name
 
 
@@ -57,14 +56,16 @@ class Topic(Auditable):
             return Attribute.objects.filter(credential_id__in=creds)
         return []
 
-    def get_active_categories(self):
-        creds = self.get_active_credential_ids()
-        if creds:
-            return Category.objects.filter(credential_id__in=creds)
-        return []
-
     def get_active_names(self):
         creds = self.get_active_credential_ids()
         if creds:
             return Name.objects.filter(credential_id__in=creds)
         return []
+
+    def get_active_related_to(self):
+        return self.related_to.filter(
+            from_rels__credential__revoked=False)
+
+    def get_active_related_from(self):
+        return self.related_from.filter(
+            to_rels__credential__revoked=False)
