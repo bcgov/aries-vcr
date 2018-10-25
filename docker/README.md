@@ -10,40 +10,26 @@ All application services are exposed to the host so they may be easily accessed 
   * Install and configure Docker and Docker compose for your system.
 * The S2I CLI
   * Download and install the S2I CLI tool; [source-to-image](https://github.com/openshift/source-to-image)
-  * Make sure it is available on your `PATH`.  The `manage.sh` will look for the `s2i` executable on your `PATH`.  If it is not found you will get a message asking you to download and set it on your `PATH`.
+  * Make sure it is available on your `PATH`.  The `manage` will look for the `s2i` executable on your `PATH`.  If it is not found you will get a message asking you to download and set it on your `PATH`.
 
 ## Management Script
 
-The `manage.sh` script wraps the Docker and S2I process in easy to use commands.
+The `manage` script wraps the Docker and S2I process in easy to use commands.
 
 To get full usage information on the script run:
-```
-./manage.sh -h
+
+```sh
+./manage
 ```
   
 ## Building the Images
 
-The first thing you'll need to do is build the Docker images.  Since this requires a combination of Docker and S2I builds the process has been scripted inside `manage.sh`.  _The `docker-compose.yml` file does not perform any of the builds._
+The first thing you'll need to do is build the Docker images.  Since this requires a combination of Docker and S2I builds the process has been scripted inside `manage`.  _The `docker-compose.yml` file does not perform any of the builds._
 
 To build the images run:
+```sh
+./manage build
 ```
-./manage.sh build
-```
-
-### Troubleshooting the Building
-
-If you get errors during the build that reference scripts such as the following, check the line endings of your local copy of the file.  Replace `CRLF` line endings with `LF` and rebuild the image.
-
-The `.gitattributes` file for the project has been updated, but if your local copy predates the update, your files may still be affected.
-
-```
-/bin/sh: 1: /usr/libexec/s2i/assemble-runtime: not found
-error: Execution of post execute step failed
-Build failed
-ERROR: An error occurred: non-zero (13) exit code from angular-builder
-```
-
-In this example search your working copy for all instances of `assemble-runtime`.
 
 ## Starting the Project
 
@@ -52,20 +38,20 @@ To start the project run:
 You will need to choose a unique seed value for development. Use a value that no one else is using. It must be 32 characters long exactly.
 
 
-```
-./manage.sh start seed=my_unique_seed_00000000000000000
+```sh
+./manage start seed=my_unique_seed_00000000000000000
 ```
 
 This will start the project interactively; with all of the logs being written to the command line.
 
-Each seed, must be authorized on the Indy ledger. If you are using the https://github.com/bcgov/von-network network locally, you can visit the webserver running on your local machine to authorize the did for each seed. If you are using the shared development Indy ledger (which is an instance of von-network), you can visit this page to authorize your did: http://138.197.170.136
+Each seed must be authorized on the Indy ledger. If you are running the VON Network component locally, then DID registration is automatic. If using a shared Indy ledger then you will need to request authorization.
 
 
 ## Stopping the Project
 
 To stop the project run:
-```
-./manage.sh stop
+```sh
+./manage stop
 ```
 
 This will shut down all of the containers in the project.
@@ -81,7 +67,7 @@ This will shut down all of the containers in the project.
 ## Loading Data
 
 To load sample data into the running application use the `loadData.sh` script:
-```
+```sh
 ../openshift/loadData.sh -e http://localhost:8081
 ```
 
@@ -103,26 +89,31 @@ The following **Quick Start Guide** will have you up and running in no time.  Fo
 1. Wait for the builds to complete.
 1. From `.../von-network` run `./manage start`, and wait for the von-network components to fully start.
 1. Ensure the node pool is running by opening a browser window to http://localhost:9000
-1. Register the DIDs you will be using for TheOrgBook and the Permitify service(s).
-    1. From `.../TheOrgBook/docker` run `./manage registerDids seed=the_org_book_0000000000000000000`
-    1. From `.../permitify/docker` run `./manage registerDids seed=issuer_service_00000000000000000`
 1. From `.../TheOrgBook/docker` run `./manage start seed=the_org_book_0000000000000000000`
 1. Wait for the TheOrgBook's components to start up.
 1. Ensure TheOrgBook is running by opening a browser window to http://localhost:8080/en/home
-1. From `.../permitify/docker` run `./manage start all seed=issuer_service_00000000000000000 TOB_INDY_SEED=the_org_book_0000000000000000000`
+1. From `.../permitify/docker` run `./manage start`
 1. Wait for all of the issuer services to start up.
 1. Ensure the issuer services are running by opening a browser window to http://localhost:5000/ to start.  Each service starts up on a different port starting with 5000, the next on 5001, and so on.
-1. You should now be able to browser to http://localhost:8080/en/recipe/start_a_restaurant and walk though the **Permitify Demo - Starting a Restaurant Recipe** demo, starting with registering an organization.
+1. You should now be able to browse to http://localhost:5000 and walk though the **Permitify Demo - Starting a Restaurant Recipe** demo, starting with registering an organization.
 
 ## Tips and Tricks
 
 The component containers use persistent volumes, which can be a bit of an issue from time to time during testing as the various ledgers and wallets may get out of sync.  To clear out the volumes and start again you can use the following management command included in each of the projects.
 
-```
+```sh
 ./manage rm
 ```
 
 This command will stop and remove any project related containers, and then remove their associated volumes.
+
+### Live Web Development
+
+TheOrgBook can also be brought up in a state where local modifications to the tob-web component are detected automatically, resulting in recompilation of the Javascript and CSS resources and a page reload when viewed in a web browser. To run TheOrgBook using this method execute:
+
+```sh
+./manage web-dev
+```
 
 # Current State
 
