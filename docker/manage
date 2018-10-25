@@ -99,22 +99,30 @@ build-web() {
     -t 'nginx-runtime' \
     -f '../tob-web/openshift/templates/nginx-runtime/Dockerfile' '../tob-web/openshift/templates/nginx-runtime/'
 
+  # This image only exists to pre-create the npm cache directory
+  # so it can be properly used as a volume, it doesn't apply to openshift
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
     -f '../tob-web/openshift/templates/nodejs-build/Dockerfile' '../tob-web/openshift/templates/nodejs-build/'
 
-  _projectName=${COMPOSE_PROJECT_NAME:-docker}
+  if [ -t 0 ]; then
+    # color npm output in interactive terminal
+	NPM_COLOR="always"
+  else
+    NPM_COLOR="true"
+  fi
+
   echo -e "\nBuilding angular-on-nginx image ..."
   ${S2I_EXE} build \
-    -e "npm_config_color=always" \
-    -e "npm_config_loglevel=info" \
+    -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
+    -e "NPM_CONFIG_LOGLEVEL=timing" \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
     -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
     -e "TOB_THEME=${TOB_THEME}" \
-    -v "${_projectName}_tob-npm-cache:/opt/app-root/src/.npm" \
+    -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
     --runtime-image nginx-runtime \
     -a /opt/app-root/src/dist:app \
     '../tob-web' \
@@ -132,7 +140,7 @@ build-web-dev() {
     -t 'nodejs-build' \
     -f '../tob-web/openshift/templates/nodejs-build/Dockerfile' '../tob-web/openshift/templates/nodejs-build/'
 
-  _projectName=${COMPOSE_PROJECT_NAME:-docker}
+  # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
   ${S2I_EXE} build \
     -e "DEV_MODE=true" \
@@ -141,7 +149,7 @@ build-web-dev() {
     -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
     -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
     -e "TOB_THEME=${TOB_THEME}" \
-    -v "${_projectName}_tob-npm-cache:/opt/app-root/src/.npm" \
+    -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
     '../tob-web' \
     'nodejs-build' \
     'angular-dev'
@@ -190,12 +198,15 @@ build-api() {
   #
   # tob-api
   #
-  echo -e "\nBuilding django image ..."
+  BASE_IMAGE="bcgovimages/von-image:py36-1.6-ew-9-s2i"
+  echo -e "\nBuilding django image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
+    -e "PIP_NO_CACHE_DIR=" \
+    -v "${COMPOSE_PROJECT_NAME}_tob-pip-cache:/home/indy/.cache/pip" \
     '../tob-api' \
-    'bcgovimages/von-image:py36-1.6-ew-9-s2i' \
+    "$BASE_IMAGE" \
     'django'
 }
 
