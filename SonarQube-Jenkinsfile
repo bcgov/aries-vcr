@@ -2,6 +2,9 @@
 // SonarQube Scanner Settings
 // ------------------------------------------------------------------------------------------------
 
+// The name of the SonarQube route.  Used to dynamically get the URL for SonarQube.
+def SONAR_ROUTE_NAME = 'sonarqube'
+
 // The name of your SonarQube project
 def SONAR_PROJECT_NAME = 'TheOrgBook'
 
@@ -17,6 +20,33 @@ def SONAR_PROJECT_BASE_DIR = '../'
 // This is relative to the project base directory.
 def SONAR_SOURCES = './'
 // ================================================================================================
+
+@NonCPS
+String getUrlForRoute(String routeName, String projectNameSpace = '') {
+
+  def nameSpaceFlag = ''
+  if(projectNameSpace?.trim()) {
+    nameSpaceFlag = "-n ${projectNameSpace}"
+  }
+  
+  def url = sh (
+    script: "oc get routes ${nameSpaceFlag} -o wide --no-headers | awk \'/${routeName}/{ print match(\$0,/edge/) ?  \"https://\"\$2 : \"http://\"\$2 }\'",
+    returnStdout: true
+  ).trim()
+
+  return url
+}
+
+@NonCPS
+String getSonarQubePwd() {
+
+  sonarQubePwd = sh (
+    script: 'oc env dc/sonarqube --list | awk  -F  "=" \'/SONARQUBE_ADMINPW/{print $2}\'',
+    returnStdout: true
+  ).trim()
+
+  return sonarQubePwd
+}
 
 // The jenkins-python3nodejs template has been purpose built for supporting SonarQube scanning.
 podTemplate(
@@ -48,16 +78,8 @@ podTemplate(
     stage('SonarQube Analysis') {
       echo "Performing static SonarQube code analysis ..."
 
-      SONARQUBE_PWD = sh (
-        script: 'oc env dc/sonarqube --list | awk  -F  "=" \'/SONARQUBE_ADMINPW/{print $2}\'',
-        returnStdout: true
-      ).trim()
-
-      SONARQUBE_URL = sh (
-        script: 'oc get routes -o wide --no-headers | awk \'/sonarqube/{ print match($0,/edge/) ?  "https://"$2 : "http://"$2 }\'',
-        returnStdout: true
-      ).trim()
-
+      SONARQUBE_URL = getUrlForRoute(SONAR_ROUTE_NAME).trim()
+      SONARQUBE_PWD = getSonarQubePwd().trim()
       echo "URL: ${SONARQUBE_URL}"
       echo "PWD: ${SONARQUBE_PWD}"
 

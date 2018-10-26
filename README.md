@@ -1,6 +1,12 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
+SonarQube Results:
+
 [![Bugs](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook&metric=bugs&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook) [![Vulnerabilities](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook&metric=vulnerabilities&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook) [![Code smells](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook&metric=code_smells&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook) [![Coverage](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook&metric=coverage&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook) [![Duplication](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook&metric=duplicated_lines_density&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook) [![Lines of code](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook&metric=lines&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook) 
+
+Zap Results:
+
+[![Bugs](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook-Zap&metric=bugs&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook-Zap) [![Vulnerabilities](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook-Zap&metric=vulnerabilities&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook-Zap) [![Code smells](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/api/badges/measure?key=TheOrgBook-Zap&metric=code_smells&template=FLAT)](https://sonarqube-devex-von-tools.pathfinder.gov.bc.ca/dashboard?id=TheOrgBook-Zap)
 
 # TheOrgBook
 # Hyperledger Indy Catalyst <!-- omit in toc -->
