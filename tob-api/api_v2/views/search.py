@@ -31,8 +31,12 @@ class NameAutocompleteView(APIView):
 
     @swagger_auto_schema(
         manual_parameters=[
-            openapi.Parameter("q", openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter("hl", openapi.IN_QUERY, type=openapi.TYPE_BOOLEAN),
+            openapi.Parameter(
+                "q", openapi.IN_QUERY, description="", type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                "hl", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+            ),
         ]
     )
     def get(self, request, format=None):
@@ -64,16 +68,28 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
 
     list = swagger_auto_schema(
         manual_parameters=[
-            openapi.Parameter("name", openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter("inactive", openapi.IN_QUERY, type=openapi.TYPE_BOOLEAN),
-            openapi.Parameter("revoked", openapi.IN_QUERY, type=openapi.TYPE_BOOLEAN),
+            openapi.Parameter(
+                "name", openapi.IN_QUERY, description="", type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                "inactive", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+            ),
+            openapi.Parameter(
+                "revoked", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+            ),
         ]
     )(HaystackViewSet.list)
     retrieve = swagger_auto_schema(
         manual_parameters=[
-            openapi.Parameter("name", openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter("inactive", openapi.IN_QUERY, type=openapi.TYPE_BOOLEAN),
-            openapi.Parameter("revoked", openapi.IN_QUERY, type=openapi.TYPE_BOOLEAN),
+            openapi.Parameter(
+                "name", openapi.IN_QUERY, description="", type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                "inactive", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+            ),
+            openapi.Parameter(
+                "revoked", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+            ),
         ]
     )(HaystackViewSet.retrieve)
 
