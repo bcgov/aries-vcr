@@ -24,9 +24,10 @@ from api_v2.jsonschema.construct_proof import CONSTRUCT_PROOF_JSON_SCHEMA
 
 from tob_anchor.boot import indy_client, indy_holder_id
 from vonx.common.eventloop import run_coro
-from vonx.indy.messages import \
-    ProofRequest as VonxProofRequest, \
-    ConstructedProof as VonxConstructedProof
+from vonx.indy.messages import (
+    ProofRequest as VonxProofRequest,
+    ConstructedProof as VonxConstructedProof,
+)
 
 logger = logging.getLogger(__name__)
 
