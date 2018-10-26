@@ -11,13 +11,6 @@ from api_v2.models.Name import Name
 
 from tob_anchor.solrqueue import SolrQueue
 
-MODEL_TYPE_MAP = {
-    "address": Address,
-    "attribute": Attribute,
-    "category": Attribute,
-    "name": Name,
-}
-
 
 class Command(BaseCommand):
     help = "Reprocesses all credentials to populate search database"
@@ -34,50 +27,17 @@ class Command(BaseCommand):
         self.stdout.write("Reprocessing {} credentials".format(cred_count))
 
         current_cred = 0
+        mgr = CredentialManager()
         for credential in Credential.objects.all().iterator():
-            with transaction.atomic():
-                current_cred += 1
-                self.stdout.write(
-                    "Processing credential id: {} ({} of {})".format(
-                        credential.id, current_cred, cred_count
-                    )
+            current_cred += 1
+            self.stdout.write(
+                "Processing credential id: {} ({} of {})".format(
+                    credential.id, current_cred, cred_count
                 )
+            )
 
-                credential_type = credential.credential_type
-                processor_config = credential_type.processor_config
-                mapping = processor_config.get("mapping") or []
+            # Remove and recreate search records
+            mgr.reprocess(credential)
 
-                # Delete existing search models
-                for model_key, model_cls in MODEL_TYPE_MAP.items():
-                    if model_key == "category":
-                        continue
-                    # Don't trigger search reindex (yet)
-                    model_cls.objects.filter(credential=credential)._raw_delete(using=DEFAULT_DB_ALIAS)
-
-                # Create search models using mapping from issuer config
-                for model_mapper in mapping:
-                    model_name = model_mapper["model"]
-
-                    model_cls = MODEL_TYPE_MAP[model_name]
-                    model = model_cls()
-                    for field, field_mapper in model_mapper["fields"].items():
-                        setattr(
-                            model,
-                            field,
-                            CredentialManager.process_mapping(field_mapper, credential),
-                        )
-                    if model_name == "category":
-                        model.format = "category"
-
-                    # skip blank values
-                    if model_name == "name" and (model.text is None or model.text is ""):
-                        continue
-                    if (model_name == "category" or model_name == "attribute") and \
-                            (not model.type or model.value is None or model.value is ""):
-                        continue
-
-                    model.credential = credential
-                    model.save()
-
-                # Now reindex
-                signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)
+            # Now reindex
+            signals.post_save.send(sender=Credential, instance=credential, using=DEFAULT_DB_ALIAS)
