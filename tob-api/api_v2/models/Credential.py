@@ -14,7 +14,10 @@ class Credential(Auditable):
 
     effective_date = models.DateTimeField(default=timezone.now)
     inactive = models.BooleanField(db_index=True, default=False)
+    latest = models.BooleanField(db_index=True, default=False)
     revoked = models.BooleanField(db_index=True, default=False)
+    revoked_date = models.DateTimeField(null=True)
+    revoked_by = models.ForeignKey("Credential", related_name="+", null=True)
 
     class Meta:
         db_table = "credential"

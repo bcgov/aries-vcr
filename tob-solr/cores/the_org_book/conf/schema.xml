@@ -97,6 +97,8 @@
     <field name="django_id" type="string" indexed="true" stored="true" multiValued="false"/>
 
     <field name="document" type="text_en" indexed="true" stored="true" multiValued="false" />
+
+    <field name="credential_set_id" type="long" indexed="true" stored="true" multiValued="false" />
      
     <field name="credential_type_id" type="long" indexed="true" stored="true" multiValued="false" />
     
@@ -121,6 +123,8 @@
     <field name="inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
     
     <field name="revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
+
+    <field name="revoked_date" type="date" indexed="true" stored="true" multiValued="false" />
     
     <field name="latest" type="boolean" indexed="true" stored="true" multiValued="false" />
     

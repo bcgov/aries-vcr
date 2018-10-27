@@ -625,35 +625,46 @@ class CredentialManager(object):
         }
         try:
             cred_set = CredentialSet.objects.get(**existing_set_query)
-            latest = credential
-            first_date = cred_set.first_effective_date
-            last_date = cred_set.last_effective_date
-            to_revoke = []
+            latest_cred = credential
             for prev_cred in cred_set.credentials.filter(revoked=False).order_by('effective_date'):
-                first_date = min(first_date, prev_cred.effective_date)
-                last_date = max(first_date, prev_cred.effective_date)
                 if prev_cred.effective_date <= credential.effective_date:
-                    # defer until credential set is updated for accurate search indexing
-                    to_revoke.append(prev_cred)
+                    prev_cred.latest = False
+                    prev_cred.revoked = True
+                    prev_cred.revoked_by = credential
+                    prev_cred.revoked_date = credential.effective_date
+                    prev_cred.save()
                 else:
-                    latest = prev_cred
-                    credential.revoked = True
-            cred_set.latest = latest
-            cred_set.first_effective_date = min(first_date, credential.effective_date)
-            cred_set.last_effective_date = max(last_date, credential.effective_date)
+                    latest_cred = prev_cred
+                    if not credential.revoked:
+                        credential.revoked = True
+                        credential.revoked_by = prev_cred
+                        credential.revoked_date = prev_cred.effective_date
+            cred_set.latest_credential = latest_cred
+            cred_set.first_effective_date = credential.effective_date if \
+                cred_set.first_effective_date is None else \
+                min(cred_set.first_effective_date, credential.effective_date)
+            if latest_cred.revoked:
+                cred_set.last_effective_date = latest_cred.revoked_date if \
+                    cred_set.last_effective_date is None else \
+                    max(cred_set.last_effective_date, latest_cred.revoked_date)
+            else:
+                cred_set.last_effective_date = None
             cred_set.save()
-            for prev_cred in to_revoke:
-                prev_cred.revoked = True
-                prev_cred.save()
             credential.credential_set = cred_set
+            credential.latest = (latest_cred == credential)
             credential.save()
+            if latest_cred != credential and not latest_cred.latest:
+                latest_cred.latest = True
+                latest_cred.save()
         except CredentialSet.DoesNotExist:
             updates = existing_set_query.copy()
             updates['first_effective_date'] = credential.effective_date
-            updates['last_effective_date'] = credential.effective_date
-            updates['latest'] = credential
+            updates['last_effective_date'] = credential.revoked_date \
+                if credential.revoked else None
+            updates['latest_credential'] = credential
             cred_set = CredentialSet.objects.create(**updates)
             credential.credential_set = cred_set
+            credential.latest = True
             credential.save()
         return cred_set
 
