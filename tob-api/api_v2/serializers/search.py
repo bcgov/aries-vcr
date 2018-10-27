@@ -182,7 +182,7 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
         )
         search_fields = (
             "category", "location", "name",
-            "effective_date", "inactive", "revoked",
+            "effective_date", "inactive", "latest", "revoked",
             "topic_id", "topic_type", "topic_source_id",
             "credential_type_id", "issuer_id",
         )

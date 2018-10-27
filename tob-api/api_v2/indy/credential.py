@@ -3,18 +3,20 @@ from datetime import datetime
 import json as _json
 import hashlib
 import logging
+import re
 import time
 from importlib import import_module
 
 from django.db import transaction, DEFAULT_DB_ALIAS
-
 from django.db.utils import IntegrityError
+from django.utils.dateparse import parse_datetime
 
 from von_anchor.util import schema_key
 
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.Topic import Topic
+from api_v2.models.CredentialSet import CredentialSet
 from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.Claim import Claim
@@ -87,7 +89,6 @@ class Credential(object):
         claim_data = credential_data["values"]
         for claim_attribute in claim_data:
             self._claim_attributes.append(claim_attribute)
-
     def __getattr__(self, name: str):
         """Make claim values accessible on class instance"""
         try:
@@ -389,6 +390,9 @@ class CredentialManager(object):
         processor_config = credential_type.processor_config
 
         with transaction.atomic():
+            if not credential.credential_set:
+                cardinality = self.credential_cardinality(credential, processor_config)
+                self.update_credential_set(credential_type, credential, cardinality)
             self.remove_search_models(credential)
             self.create_search_models(credential, processor_config)
 
@@ -480,16 +484,18 @@ class CredentialManager(object):
         """
         fields = processor_config.get("cardinality_fields") or []
         values = {}
-        for field in fields:
-            try:
-                values[field] = getattr(credential, field)
-            except AttributeError as error:
-                raise CredentialException(
-                    "Issuer configuration specifies field '{}' in cardinality_fields "
-                    "value does not exist in credential. Values are: {}".format(
-                        field, ", ".join(list(credential.claim_attributes))
+        if fields:
+            claims = cls.get_claims(credential)
+            for field in fields:
+                try:
+                    values[field] = getattr(claims, field)
+                except AttributeError as error:
+                    raise CredentialException(
+                        "Issuer configuration specifies field '{}' in cardinality_fields "
+                        "value does not exist in credential. Values are: {}".format(
+                            field, ", ".join(list(credential.claim_attributes))
+                        )
                     )
-                )
         if values:
             hash_fields = ["{}::{}".format(k, values[k]) for k in values]
             hash = base64.b64encode(
@@ -516,9 +522,17 @@ class CredentialManager(object):
                         int(effective_date)
                     ).isoformat()
                 except ValueError:
-                    # If it's not an int, assume it's already ISO8601 string.
-                    # Fail later if it isn't
-                    pass
+                    # Django method to parse a date string. Must be in ISO8601 format
+                    try:
+                        effective_date = parse_datetime(effective_date)
+                    except re.error:
+                        raise CredentialException(
+                            "Error parsing effective date: {}".format(effective_date)
+                        )
+                    except ValueError:
+                        raise CredentialException(
+                            "Credential effective date is invalid: {}".format(effective_date)
+                        )
                 args["effective_date"] = effective_date
 
             revoked = cls.process_mapping(
@@ -599,40 +613,49 @@ class CredentialManager(object):
                 rows.delete()
 
     @classmethod
-    def revoke_previous_credentials(cls, topic, credential_type, cardinality=None):
-        # We search for existing credentials by cardinality fields
-        # to revoke credentials occuring before latest credential
-        existing_credential_query = {
+    def update_credential_set(cls, credential_type: CredentialType,
+                              credential: CredentialModel,
+                              cardinality=None) -> CredentialSet:
+        if credential.credential_set:
+            return credential.credential_set
+        existing_set_query = {
             "cardinality_hash": cardinality["hash"] if cardinality else None,
             "credential_type": credential_type,
-            "revoked": False,
-            "topic": topic,
+            "topic": credential.topic,
         }
-        existing_credentials = CredentialModel.objects.filter(
-            **existing_credential_query
-        )
-        if cardinality:
-            existing_credentials = existing_credentials.prefetch_related("claims")
-
-        latest = existing_credentials.latest("effective_date")
-        for existing_credential in existing_credentials:
-            if (
-                existing_credential.effective_date > latest.effective_date
-                or existing_credential == latest
-            ):
-                continue
-            if cardinality:
-                # we already checked the hash,
-                # but check the claim values just to be sure
-                existing_claims = {}
-                for claim in existing_credential.claims.all():
-                    if claim.name in cardinality["values"]:
-                        existing_claims[claim.name] = claim.value
-                if existing_claims != cardinality["values"]:
-                    LOGGER.warn("Credential hash matched but cardinality claims do not")
-                    continue
-            existing_credential.revoked = True
-            existing_credential.save()
+        try:
+            cred_set = CredentialSet.objects.get(**existing_set_query)
+            latest = credential
+            first_date = cred_set.first_effective_date
+            last_date = cred_set.last_effective_date
+            to_revoke = []
+            for prev_cred in cred_set.credentials.filter(revoked=False).order_by('effective_date'):
+                first_date = min(first_date, prev_cred.effective_date)
+                last_date = max(first_date, prev_cred.effective_date)
+                if prev_cred.effective_date <= credential.effective_date:
+                    # defer until credential set is updated for accurate search indexing
+                    to_revoke.append(prev_cred)
+                else:
+                    latest = prev_cred
+                    credential.revoked = True
+            cred_set.latest = latest
+            cred_set.first_effective_date = min(first_date, credential.effective_date)
+            cred_set.last_effective_date = max(last_date, credential.effective_date)
+            cred_set.save()
+            for prev_cred in to_revoke:
+                prev_cred.revoked = True
+                prev_cred.save()
+            credential.credential_set = cred_set
+            credential.save()
+        except CredentialSet.DoesNotExist:
+            updates = existing_set_query.copy()
+            updates['first_effective_date'] = credential.effective_date
+            updates['last_effective_date'] = credential.effective_date
+            updates['latest'] = credential
+            cred_set = CredentialSet.objects.create(**updates)
+            credential.credential_set = cred_set
+            credential.save()
+        return cred_set
 
     @classmethod
     def populate_application_database(cls, credential_type: CredentialType,
@@ -690,8 +713,8 @@ class CredentialManager(object):
                     )
                 )
 
-        # Revoke previous credentials in the credential set
-        cls.revoke_previous_credentials(topic, credential_type, cardinality)
+        # Assign to credential set
+        cls.update_credential_set(credential_type, dbCredential, cardinality)
 
         # Save search models
         cls.create_search_models(dbCredential, processor_config)

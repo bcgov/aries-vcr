@@ -26,6 +26,7 @@ class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
     source_id = indexes.CharField(model_attr="topic__source_id")
     inactive = indexes.BooleanField(model_attr="inactive")
     revoked = indexes.BooleanField(model_attr="revoked")
+    latest = indexes.BooleanField()
     effective_date = indexes.DateTimeField(faceted=True, model_attr="effective_date")
     credential_type_id = indexes.IntegerField(faceted=True, model_attr="credential_type_id")
     issuer_id = indexes.IntegerField(model_attr="credential_type__issuer_id")
@@ -40,6 +41,10 @@ class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
             "{}::{}".format(cat.type, cat.value)
             for cat in obj.attributes.all()
             if cat.format == "category"]
+
+    @staticmethod
+    def prepare_latest(obj):
+        return obj.credential_set and obj.credential_set.latest_id == obj.id
 
     @staticmethod
     def prepare_location(obj):
@@ -67,6 +72,7 @@ class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
             "names",
         )
         select = (
+          "credential_set",
           "credential_type",
           "topic",
         )
