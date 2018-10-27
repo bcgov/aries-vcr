@@ -379,8 +379,7 @@ class CredentialManager(object):
                 credential.origin_did, check_from_did))
         credential_type = self.get_credential_type(credential)
 
-        with transaction.atomic():
-            return self.populate_application_database(credential_type, credential)
+        return self.populate_application_database(credential_type, credential)
 
     def reprocess(self, credential: CredentialModel):
         """
@@ -395,6 +394,21 @@ class CredentialManager(object):
                 self.update_credential_set(credential_type, credential, cardinality)
             self.remove_search_models(credential)
             self.create_search_models(credential, processor_config)
+
+    @classmethod
+    def find_or_create_topic(cls, topic_spec: dict, retry=True):
+        """
+        Create a Topic, allowing for other threads which may have created it first
+        """
+        try:
+            return Topic.objects.get(**topic_spec)
+        except Topic.DoesNotExist:
+            try:
+                return Topic.objects.create(**topic_spec)
+            except IntegrityError:
+                if retry:
+                    return cls.find_or_create_topic(topic_spec, retry=False)
+                raise CredentialException("Database error while creating topic")
 
     @classmethod
     def resolve_credential_topics(cls, credential, processor_config) -> (Topic, Topic):
@@ -457,23 +471,15 @@ class CredentialManager(object):
                 except Topic.DoesNotExist:
                     continue
             elif topic_source_id and topic_type:
-                # Special Case:
                 # Create a new topic if our query comes up empty
-                try:
-                    topic = Topic.objects.get(
-                        source_id=topic_source_id, type=topic_type
-                    )
-                except Topic.DoesNotExist as error:
-                    topic = Topic.objects.create(
-                        source_id=topic_source_id, type=topic_type
-                    )
+                topic_spec = {"source_id": topic_source_id, "type": topic_type}
+                topic = cls.find_or_create_topic(topic_spec)
 
             # We stick with the first topic that we resolve
             if topic:
                 if not related_topic and related_topic_source_id and related_topic_type:
-                    related_topic = Topic.objects.create(
-                        source_id=related_topic_source_id, type=related_topic_type
-                    )
+                    topic_spec = {"source_id": related_topic_source_id, "type": related_topic_type}
+                    related_topic = cls.find_or_create_topic(topic_spec)
                 result = (topic, related_topic)
         return result
 
@@ -626,6 +632,7 @@ class CredentialManager(object):
         try:
             cred_set = CredentialSet.objects.get(**existing_set_query)
             latest_cred = credential
+
             for prev_cred in cred_set.credentials.filter(revoked=False).order_by('effective_date'):
                 if prev_cred.effective_date <= credential.effective_date:
                     prev_cred.latest = False
@@ -639,23 +646,28 @@ class CredentialManager(object):
                         credential.revoked = True
                         credential.revoked_by = prev_cred
                         credential.revoked_date = prev_cred.effective_date
+
             cred_set.latest_credential = latest_cred
             cred_set.first_effective_date = credential.effective_date if \
                 cred_set.first_effective_date is None else \
                 min(cred_set.first_effective_date, credential.effective_date)
+
             if latest_cred.revoked:
                 cred_set.last_effective_date = latest_cred.revoked_date if \
                     cred_set.last_effective_date is None else \
                     max(cred_set.last_effective_date, latest_cred.revoked_date)
             else:
                 cred_set.last_effective_date = None
+
             cred_set.save()
             credential.credential_set = cred_set
             credential.latest = (latest_cred == credential)
             credential.save()
+
             if latest_cred != credential and not latest_cred.latest:
                 latest_cred.latest = True
                 latest_cred.save()
+
         except CredentialSet.DoesNotExist:
             updates = existing_set_query.copy()
             updates['first_effective_date'] = credential.effective_date
@@ -685,50 +697,55 @@ class CredentialManager(object):
                 "OR topic type and topic source_id"
             )
 
-        cardinality = cls.credential_cardinality(
-            credential, processor_config
-        )
+        with transaction.atomic():
+            # Acquire a lock on the topic to block competing credentials
+            # This lock is released when the transaction ends
+            Topic.objects.select_for_update().get(pk=topic.id)
 
-        # We always create a new credential model to represent the current credential
-        # The issuer may specify an effective date from a claim. Otherwise, defaults to now.
-
-        credential_args = {
-            "cardinality_hash": cardinality["hash"] if cardinality else None,
-            "credential_def_id": credential.cred_def_id,
-            "credential_type": credential_type,
-            "wallet_id": credential.wallet_id,
-        }
-        credential_args.update(
-            cls.process_credential_properties(credential, processor_config)
-        )
-
-        dbCredential = topic.credentials.create(**credential_args)
-
-        # Create and associate claims for this credential
-        for claim_attribute in credential.claim_attributes:
-            claim_value = getattr(credential, claim_attribute)
-            Claim.objects.create(
-                credential=dbCredential, name=claim_attribute, value=claim_value
+            cardinality = cls.credential_cardinality(
+                credential, processor_config
             )
 
-        # Create topic relationship if needed
-        if related_topic is not None:
-            try:
-                TopicRelationship.objects.create(
-                    credential=dbCredential, topic=topic, related_topic=related_topic
+            # We always create a new credential model to represent the current credential
+            # The issuer may specify an effective date from a claim. Otherwise, defaults to now.
+
+            credential_args = {
+                "cardinality_hash": cardinality["hash"] if cardinality else None,
+                "credential_def_id": credential.cred_def_id,
+                "credential_type": credential_type,
+                "wallet_id": credential.wallet_id,
+            }
+            credential_args.update(
+                cls.process_credential_properties(credential, processor_config)
+            )
+
+            dbCredential = topic.credentials.create(**credential_args)
+
+            # Create and associate claims for this credential
+            for claim_attribute in credential.claim_attributes:
+                claim_value = getattr(credential, claim_attribute)
+                Claim.objects.create(
+                    credential=dbCredential, name=claim_attribute, value=claim_value
                 )
-            except IntegrityError:
-                raise CredentialException(
-                    "Relationship between topics '{}' and '{}' already exist.".format(
-                        topic.id, related_topic.id
+
+            # Create topic relationship if needed
+            if related_topic is not None:
+                try:
+                    TopicRelationship.objects.create(
+                        credential=dbCredential, topic=topic, related_topic=related_topic
                     )
-                )
+                except IntegrityError:
+                    raise CredentialException(
+                        "Relationship between topics '{}' and '{}' already exist.".format(
+                            topic.id, related_topic.id
+                        )
+                    )
 
-        # Assign to credential set
-        cls.update_credential_set(credential_type, dbCredential, cardinality)
+            # Assign to credential set
+            cls.update_credential_set(credential_type, dbCredential, cardinality)
 
-        # Save search models
-        cls.create_search_models(dbCredential, processor_config)
+            # Save search models
+            cls.create_search_models(dbCredential, processor_config)
 
         LOGGER.warn(
             "<<< store cred in local database: " + str(time.perf_counter() - start_time)
