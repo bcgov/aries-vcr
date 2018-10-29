@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { Location } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
+import { AppConfigService } from './app-config.service';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppFooterComponent } from './app-footer/app-footer.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
@@ -33,6 +34,13 @@ import { UtilModule } from './util/util.module';
 import { environment } from '../environments/environment';
 
 const ROUTE_PREFIX : string = 'ROUTES.';
+
+const appInitializerFn = (appConfig: AppConfigService) => {
+  return () => {
+    return appConfig.loadFromPromise(
+      import(/* webpackMode: "eager" */ `../themes/_active/assets/config.json`));
+  };
+};
 
 export class WebpackTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
@@ -111,6 +119,13 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     UtilModule,
   ],
   providers: [
+    AppConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFn,
+      multi: true,
+      deps: [AppConfigService]
+    },
     GeneralDataService,
     {provide: MissingTranslationHandler, useClass: MyMissingTranslationHandler},
     {provide: ALWAYS_SET_PREFIX, useValue: true},

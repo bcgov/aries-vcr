@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { GeneralDataService } from '../general-data.service';
 
 @Pipe({
-  name: 'resolveUrl'
+  name: 'resolveUrl',
+  pure: true
 })
 export class ResolveUrlPipe implements PipeTransform {
   constructor(

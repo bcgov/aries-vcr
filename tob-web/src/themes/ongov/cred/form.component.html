@@ -51,7 +51,7 @@
                 <div class="row form-group">
                     <label tabIndex="0" class="col-sm-4 control-label" translate>cred.start-date</label>
                     <div tabIndex="0" class="col-sm-8 form-field" *ngIf="record.attribute_map['registration_date'] as reg_date">
-                        <attribute-view [record]="reg_date" format="date" timezone="EST"></attribute-view>
+                        <attribute-view [record]="reg_date" format="date"></attribute-view>
                     </div>
                 </div>
 
@@ -65,7 +65,7 @@
                 <div class="row form-group">
                     <label tabIndex="0" class="col-sm-4 control-label" translate>cred.effective-date</label>
                     <div tabIndex="0" class="col-sm-8 form-field" *ngIf="record.attribute_map['entity_status_effective'] as status_date">
-                         <attribute-view [record]="status_date" format="date" timezone="EST" ></attribute-view>
+                         <attribute-view [record]="status_date" format="date"></attribute-view>
                     </div>
                 </div>
 
