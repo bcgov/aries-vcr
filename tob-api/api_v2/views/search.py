@@ -32,10 +32,10 @@ class NameAutocompleteView(APIView):
     @swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
-                "q", openapi.IN_QUERY, description="", type=openapi.TYPE_STRING
+                "q", openapi.IN_QUERY, description="Query string", type=openapi.TYPE_STRING
             ),
             openapi.Parameter(
-                "hl", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+                "hl", openapi.IN_QUERY, description="Highlight search term", type=openapi.TYPE_BOOLEAN
             ),
         ]
     )
@@ -69,26 +69,26 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
     list = swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
-                "name", openapi.IN_QUERY, description="", type=openapi.TYPE_STRING
+                "name", openapi.IN_QUERY, description="Filter credentials by related name", type=openapi.TYPE_STRING
             ),
             openapi.Parameter(
-                "inactive", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+                "inactive", openapi.IN_QUERY, description="Filter inactive credentials ('true'/'false'/'' for all)", type=openapi.TYPE_BOOLEAN
             ),
             openapi.Parameter(
-                "revoked", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+                "revoked", openapi.IN_QUERY, description="Filter revoked credentials ('true'/'false'/'' for all)", type=openapi.TYPE_BOOLEAN
             ),
         ]
     )(HaystackViewSet.list)
     retrieve = swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
-                "name", openapi.IN_QUERY, description="", type=openapi.TYPE_STRING
+                "name", openapi.IN_QUERY, description="Filter credentials by related name", type=openapi.TYPE_STRING
             ),
             openapi.Parameter(
-                "inactive", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+                "inactive", openapi.IN_QUERY, description="Filter inactive credentials ('true'/'false'/'' for all)", type=openapi.TYPE_BOOLEAN
             ),
             openapi.Parameter(
-                "revoked", openapi.IN_QUERY, description="", type=openapi.TYPE_BOOLEAN
+                "revoked", openapi.IN_QUERY, description="Filter revoked credentials ('true'/'false'/'' for all)", type=openapi.TYPE_BOOLEAN
             ),
         ]
     )(HaystackViewSet.retrieve)
