@@ -113,7 +113,7 @@ readParameter "WALLET_ENCRYPTION_KEY - Please provide the wallet encryption key 
 
 _walletPrefix="TB"
 readParameter "INDY_WALLET_SEED - Please provide the indy wallet seed for the environment.  If left blank, a seed will be randomly generated using openssl:" INDY_WALLET_SEED $(generateSeed ${_walletPrefix}) "true"
-readParameter "INDY_WALLET_DID - Please provide the holder wallet did for the environment.  The default is an empty string:" INDY_WALLET_DID "" "true"
+readParameter "INDY_WALLET_DID - Please provide the indy wallet did for the environment.  The default is an empty string:" INDY_WALLET_DID "" "true"
 
 
 SPECIALDEPLOYPARMS="--param-file=${_overrideParamFile}"
