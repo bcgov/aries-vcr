@@ -14,12 +14,8 @@ APPLICATION_DOMAIN=django-ontvon-von-test.pathfinder.gov.bc.ca
 # POSTGRESQL_WALLET_HOST=wallet-db
 # POSTGRESQL_WALLET_PORT=5432
 # WALLET_ENCRYPTION_KEY=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-# HOLDER_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-# VERIFIER_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-# ISSUER_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-# HOLDER_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-# VERIFIER_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-# ISSUER_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# INDY_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# INDY_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # WALLET_CREDENTIAL_STORE_NAME=wallet-credentials
 # APP_CONFIG=
 # #DJANGO_SECRET_KEY=[\w]{50}

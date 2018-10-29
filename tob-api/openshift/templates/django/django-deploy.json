@@ -21,12 +21,8 @@
       },
       "data": {
         "key": "${WALLET_ENCRYPTION_KEY}",
-        "holder-seed": "${HOLDER_WALLET_SEED}",
-        "holder-did": "${HOLDER_WALLET_DID}",
-        "verifier-seed": "${VERIFIER_WALLET_SEED}",
-        "verifier-did": "${VERIFIER_WALLET_DID}",
-        "issuer-seed": "${ISSUER_WALLET_SEED}",
-        "issuer-did": "${ISSUER_WALLET_DID}"
+        "seed": "${INDY_WALLET_SEED}",
+        "did": "${INDY_WALLET_DID}"
       },
       "type": "Opaque"
     },
@@ -286,34 +282,16 @@
                     "valueFrom": {
                       "secretKeyRef": {
                         "name": "${WALLET_CREDENTIAL_STORE_NAME}",
-                        "key": "holder-seed"
+                        "key": "seed"
                       }
                     }
                   },
                   {
-                    "name": "INDY_VERIFIER_WALLET_SEED",
+                    "name": "INDY_WALLET_DID",
                     "valueFrom": {
                       "secretKeyRef": {
                         "name": "${WALLET_CREDENTIAL_STORE_NAME}",
-                        "key": "verifier-seed"
-                      }
-                    }
-                  },
-                  {
-                    "name": "HOLDER_WALLET_DID",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
-                        "key": "holder-did"
-                      }
-                    }
-                  },
-                  {
-                    "name": "VERIFIER_WALLET_DID",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "${WALLET_CREDENTIAL_STORE_NAME}",
-                        "key": "verifier-did"
+                        "key": "did"
                       }
                     }
                   },
@@ -528,49 +506,17 @@
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
-      "name": "HOLDER_WALLET_SEED",
-      "displayName": "Holder Wallet Seed",
-      "description": "The Seed used for the holder wallet.  Needs to be basee64 encoded.",
+      "name": "INDY_WALLET_SEED",
+      "displayName": "Indy Wallet Seed",
+      "description": "The Seed used for the indy wallet.  Needs to be basee64 encoded.",
       "required": true,
       "generate": "expression",
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
-      "name": "VERIFIER_WALLET_SEED",
-      "displayName": "Verifier Wallet Seed",
-      "description": "The Seed used for the verifier wallet.  Needs to be basee64 encoded.",
-      "required": true,
-      "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
-    },
-    {
-      "name": "ISSUER_WALLET_SEED",
-      "displayName": "Issuer Wallet Seed",
-      "description": "The Seed used for the issuer wallet.  Needs to be basee64 encoded.",
-      "required": true,
-      "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
-    },
-    {
-      "name": "HOLDER_WALLET_DID",
-      "displayName": "Holder Wallet DID",
-      "description": "The DID associated to the holder wallet.  Needs to be basee64 encoded.",
-      "required": false,
-      "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
-    },
-    {
-      "name": "VERIFIER_WALLET_DID",
-      "displayName": "Verifier Wallet DID",
-      "description": "The DID associated to the verifier wallet.  Needs to be basee64 encoded.",
-      "required": false,
-      "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
-    },
-    {
-      "name": "ISSUER_WALLET_DID",
-      "displayName": "Issuer Wallet DID",
-      "description": "The DID associated to the issuer wallet.  Needs to be basee64 encoded.",
+      "name": "INDY_WALLET_DID",
+      "displayName": "Indy Wallet DID",
+      "description": "The DID associated to the indy wallet.  Needs to be basee64 encoded.",
       "required": false,
       "generate": "expression",
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
@@ -627,7 +573,7 @@
       "displayName": "Enable Realtime Indexing",
       "description": "Flag to enable/disable realtime search indexing.  Set to 1 to enable, leave it blank to disable.  Having realtime indexing enabled during onboarding can cause performance issues.",
       "required": false,
-      "value": ""
+      "value": "1"
     },
     {
       "name": "ENABLE_SUGGESTER_REBUILD",
