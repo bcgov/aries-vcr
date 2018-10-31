@@ -18,6 +18,7 @@ from api_v2.serializers.rest import (
     NameSerializer,
     TopicSerializer,
     CredentialSerializer,
+    CredentialSetSerializer,
     CredentialTypeSerializer,
     IssuerSerializer,
     CredentialAddressSerializer,
@@ -65,11 +66,6 @@ class SearchResultsListSerializer(ListSerializer):
         return results
 
 
-class CustomCredentialSerializer(CredentialSerializer):
-    class Meta(CredentialSerializer.Meta):
-        fields = ("id", "effective_date", "inactive", "revoked")
-
-
 class CustomIssuerSerializer(IssuerSerializer):
     class Meta(IssuerSerializer.Meta):
         fields = ("id", "did", "name", "abbreviation", "email", "url", "has_logo")
@@ -81,7 +77,8 @@ class CustomAddressSerializer(AddressSerializer):
     inactive = SerializerMethodField()
 
     class Meta(AddressSerializer.Meta):
-        fields = tuple(AddressSerializer.Meta.fields) + ("credential_id", "last_updated", "inactive")
+        fields = tuple(AddressSerializer.Meta.fields) + (
+            "credential_id", "last_updated", "inactive")
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
@@ -95,7 +92,10 @@ class CustomAttributeSerializer(AttributeSerializer):
     inactive = SerializerMethodField()
 
     class Meta(AttributeSerializer.Meta):
-        fields = ("id", "credential_id", "last_updated", "inactive", "type", "format", "value")
+        fields = (
+            "id", "credential_id", "last_updated", "inactive",
+            "type", "format", "value",
+        )
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
@@ -110,7 +110,10 @@ class CustomNameSerializer(NameSerializer):
     issuer = SerializerMethodField()
 
     class Meta(NameSerializer.Meta):
-        fields = ("id", "credential_id", "last_updated", "inactive", "text", "language", "issuer")
+        fields = (
+            "id", "credential_id", "last_updated", "inactive",
+            "text", "language", "issuer",
+        )
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
@@ -144,6 +147,7 @@ class CustomTopicSerializer(TopicSerializer):
     def get_names(self, obj):
         names = Name.objects.filter(
             credential__topic=obj,
+            credential__latest=True,
             credential__revoked=False,
         ).order_by('credential__inactive')
         serializer = CustomNameSerializer(instance=names, many=True)
@@ -152,6 +156,7 @@ class CustomTopicSerializer(TopicSerializer):
     def get_addresses(self, obj):
         addresses = Address.objects.filter(
             credential__topic=obj,
+            credential__latest=True,
             credential__revoked=False,
         ).order_by('credential__inactive')
         serializer = CustomAddressSerializer(instance=addresses, many=True)
@@ -160,6 +165,7 @@ class CustomTopicSerializer(TopicSerializer):
     def get_attributes(self, obj):
         attributes = Attribute.objects.filter(
             credential__topic=obj,
+            credential__latest=True,
             credential__revoked=False,
         ).order_by('credential__inactive')
         serializer = CustomAttributeSerializer(instance=attributes, many=True)
@@ -169,6 +175,7 @@ class CustomTopicSerializer(TopicSerializer):
 class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     addresses = CredentialAddressSerializer(many=True)
     attributes = CredentialAttributeSerializer(many=True)
+    credential_set = CredentialSetSerializer()
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
     topic = CredentialTopicSerializer()
@@ -176,13 +183,15 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     class Meta(CredentialSerializer.Meta):
         fields = (
             "id", "create_timestamp", "update_timestamp",
-            "credential_type", "effective_date",
+            "credential_set", "credential_type", "effective_date",
             "addresses", "attributes", "names",
-            "inactive", "revoked", "topic",
+            "inactive", "revoked", "revoked_date", "latest",
+            "topic",
         )
         search_fields = (
             "category", "location", "name",
-            "effective_date", "inactive", "latest", "revoked",
+            "effective_date",
+            "inactive", "latest", "revoked", "revoked_date",
             "topic_id", "topic_type", "topic_source_id",
             "credential_type_id", "issuer_id",
         )
@@ -198,9 +207,10 @@ class CredentialTopicSearchSerializer(CredentialSearchSerializer):
     class Meta(CredentialSearchSerializer.Meta):
         fields = (
             "id", "create_timestamp", "update_timestamp",
-            "credential_type", "effective_date",
+            "credential_set", "credential_type", "effective_date",
             "names",
-            "inactive", "revoked", "topic",
+            "inactive", "revoked", "revoked_date", "latest",
+            "topic",
         )
 
 

@@ -40,7 +40,7 @@ class Topic(Auditable):
 
     def get_active_credential_ids(self):
         if self._active_cred_ids is None:
-            self._active_cred_ids = set(self.credentials.filter(revoked=False)\
+            self._active_cred_ids = set(self.credentials.filter(latest=True, revoked=False)\
                 .only('id', 'topic_id').values_list('id', flat=True))
         return self._active_cred_ids
 
@@ -64,8 +64,10 @@ class Topic(Auditable):
 
     def get_active_related_to(self):
         return self.related_to.filter(
+            from_rels__credential__latest=True,
             from_rels__credential__revoked=False)
 
     def get_active_related_from(self):
         return self.related_from.filter(
+            to_rels__credential__latest=True,
             to_rels__credential__revoked=False)

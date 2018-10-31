@@ -4,6 +4,7 @@ from api_v2.models.Schema import Schema
 from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Topic import Topic
 from api_v2.models.Credential import Credential
+from api_v2.models.CredentialSet import CredentialSet
 from api_v2.models.Address import Address
 from api_v2.models.Claim import Claim
 from api_v2.models.Name import Name
@@ -25,6 +26,16 @@ class SchemaSerializer(ModelSerializer):
     class Meta:
         model = Schema
         fields = "__all__"
+
+
+class CredentialSetSerializer(ModelSerializer):
+    class Meta:
+        model = CredentialSet
+        fields = (
+            "id", "create_timestamp", "update_timestamp",
+            "latest_credential_id", "topic_id",
+            "first_effective_date", "last_effective_date",
+        )
 
 
 class CredentialTypeSerializer(ModelSerializer):
@@ -97,7 +108,6 @@ class CredentialTopicSerializer(TopicSerializer):
             "source_id", "type",
         )
 
-
 class CredentialTopicExtSerializer(TopicSerializer):
     addresses = CredentialAddressSerializer(source='get_active_addresses', many=True)
     attributes = CredentialAttributeSerializer(source='get_active_attributes', many=True)
@@ -113,6 +123,7 @@ class CredentialTopicExtSerializer(TopicSerializer):
 class ExpandedCredentialSerializer(CredentialSerializer):
     addresses = CredentialAddressSerializer(many=True)
     attributes = CredentialAttributeSerializer(many=True)
+    credential_set = CredentialSetSerializer()
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
     topic = CredentialTopicExtSerializer()
@@ -123,8 +134,11 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "id",
             "effective_date",
             "inactive",
+            "latest",
             "revoked",
+            "revoked_date",
             "wallet_id",
+            "credential_set",
             "credential_type",
             "addresses",
             "attributes",

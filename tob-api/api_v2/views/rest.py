@@ -161,7 +161,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
     @list_route(url_path="active", methods=["get"])
     def list_active(self, request, pk=None):
-        queryset = self.queryset.filter(revoked=False, inactive=False)
+        queryset = self.queryset.filter(revoked=False, inactive=False, latest=True)
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -169,6 +169,17 @@ class CredentialViewSet(ReadOnlyModelViewSet):
     def list_historical(self, request, pk=None):
         queryset = self.queryset.filter(Q(revoked=True) | Q(inactive=True))
         serializer = CredentialSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(url_path="latest", methods=["get"])
+    def get_latest(self, request, pk=None):
+        item = self.get_object()
+        latest = None
+        if item.credential_set:
+            latest = item.credential_set.latest_credential
+        if not latest:
+            latest = item
+        serializer = CredentialSerializer(latest)
         return Response(serializer.data)
 
     def get_object(self):

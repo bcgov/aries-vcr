@@ -56,6 +56,8 @@ class DefaultCredSearchFilter(HaystackFilter):
         filters = HaystackFilter.get_request_filters(request)
         if "inactive" not in filters:
             filters["inactive"] = "false"
+        if "latest" not in filters:
+            filters["latest"] = "true"
         if "revoked" not in filters:
             filters["revoked"] = "false"
         return filters
