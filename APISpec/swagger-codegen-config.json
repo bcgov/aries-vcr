@@ -1,7 +1,0 @@
-{	
-	"packageName" : "tfrs",    
-	"apiPackage"  : "com.tfrs.client.api",
-	"modelPackage"  : "com.tfrs.client.model",
-    "packageVersion" : "1.0.0",
-    "sourceFolder" : "src"
-}

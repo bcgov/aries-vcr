@@ -1,8 +1,0 @@
-swagger: '2.0'
-info:
-  version: v1
-  title: REST API Documentation for TheOrgBook
-  description: TheOrgBook is a repository for Verifiable Claims made about Organizations related to a known foundational Verifiable Claim. See https://github.com/bcgov/VON
-  termsOfService: N/A
-basePath: /api/v1
-paths:
