@@ -19,10 +19,9 @@
 
   <div class="row mt-3" *ngIf="result.loaded">
     <h5><strong class="section-title" tabIndex="0" translate>cred.breadcrumb</strong></h5>
-    <div class="col-sm-12" *ngIf="(creds$ | async) as creds">
-      <loading-indicator [loading]="creds.loading"></loading-indicator>
-      <error-message tabIndex="0"  [error]="creds.error"></error-message>
-      <cred-list [records]="creds.data" [format]="credsFormat"></cred-list>
+
+    <div class="col-sm-12">
+      <related-creds [topicId]="topic.id" [defaultFormat]="credsFormat"></related-creds>
     </div>
   </div>
 
