@@ -1,0 +1,142 @@
+@import "../common";
+
+$timeline-border: 1px solid #ddd;
+$timeline-row-shadow: inset 0 5px 20px 5px rgba(0, 0, 0, 0.08);
+$timeline-bg-level: $alert-bg-level;
+$timeline-color-level: $alert-color-level;
+$timeline-border-level: $alert-border-level;
+$slot-border-default: 1px solid #ccc;
+$slot-bg-default: #fff;
+$slot-radius: 5px;
+$slot-focus-width: $btn-focus-width;
+
+
+@mixin slot-variant($background, $border, $color) {
+  color: $color;
+  @include gradient-bg($background);
+  border-color: $border;
+  &.focus {
+    box-shadow: 0 0 0 $btn-focus-width rgba($border, .5);
+  }
+  &.hover, &.focus {
+    border-color: mix($black, $border, 3 * $theme-color-interval);
+  }
+}
+
+
+.timeline-outer {
+  border: $timeline-border;
+  box-sizing: border-box;
+  .rows-outer {
+    padding: 2px 0 2px 0;
+  }
+}
+
+.timeline-row {
+  border: $timeline-border;
+  border-left: none;
+  border-right: none;
+  box-shadow: $timeline-row-shadow;
+  box-sizing: border-box;
+  height: 2.3em;
+  margin-bottom: 8px;
+  padding: 2px 0;
+  position: relative;
+  .prev-link, .next-link {
+    position: absolute;
+    color: #555;
+    top: 0;
+    bottom: 0;
+    font-size: 1.2em;
+    line-height: 1.7;
+    width: 0.8em;
+    z-index: 101;
+  }
+  .prev-link {
+    left: 0;
+  }
+  .next-link {
+    right: 0;
+    text-align: right;
+  }
+}
+
+.timeline-axis {
+  border-top: 2px solid #ddd;
+  height: 1.8em;
+  overflow: hidden;
+  padding-top: 2px;
+  pointer-events: none;
+  position: relative;
+  .tick {
+    box-sizing: border-box;
+    background: #bbb;
+    position: absolute;
+    top: 0;
+    height: 0.8em;
+    width: 1px;
+    .small {
+      height: 0.3em;
+      background: #ddd;
+    }
+  }
+  .date {
+    bottom: 0;
+    color: #555;
+    font-size: 0.8em;
+    line-height: 1em;
+    margin-left: -3em;
+    position: absolute;
+    text-align: center;
+    width: 6em;
+    word-wrap: nowrap;
+  }
+}
+
+.timeline-slot {
+  background: $slot-bg-default;
+  border: $slot-border-default;
+  box-sizing: border-box;
+  font-size: 0.9em;
+  line-height: 100%;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  text-decoration: none;
+  width: 15em;
+  .content {
+    overflow: hidden;
+    padding: 0.2em 0 0 0.25em;
+    // word-wrap: break-word;
+  }
+  &:not([href]) {
+    cursor: default;
+  }
+  &.focus {
+    outline: none;
+  }
+  &.focus, &.hover {
+    z-index: 100;
+  }
+  &.started {
+    border-top-left-radius: $slot-radius;
+    border-bottom-left-radius: $slot-radius;
+  }
+  &:not(.started) {
+    border-left-width: 0;
+  }
+  &.ended {
+    border-top-right-radius: $slot-radius;
+    border-bottom-right-radius: $slot-radius;
+  }
+  &:not(.ended) {
+    border-right-width: 0;
+  }
+  @each $color, $value in (success, warning, danger, primary, secondary) {
+    &.slot-#{$color} {
+      @include slot-variant(theme-color-level($color, $timeline-bg-level), theme-color-level($color, $timeline-border-level), theme-color-level($color, $timeline-color-level));
+    }
+  }
+}

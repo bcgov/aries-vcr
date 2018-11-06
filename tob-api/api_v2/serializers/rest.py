@@ -120,10 +120,10 @@ class CredentialTopicExtSerializer(TopicSerializer):
             "addresses", "attributes", "names",
         )
 
-class ExpandedCredentialSerializer(CredentialSerializer):
+
+class CredentialExtSerializer(CredentialSerializer):
     addresses = CredentialAddressSerializer(many=True)
     attributes = CredentialAttributeSerializer(many=True)
-    credential_set = CredentialSetSerializer()
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
     topic = CredentialTopicExtSerializer()
@@ -138,10 +138,23 @@ class ExpandedCredentialSerializer(CredentialSerializer):
             "revoked",
             "revoked_date",
             "wallet_id",
-            "credential_set",
             "credential_type",
             "addresses",
             "attributes",
             "names",
             "topic",
         )
+
+
+class ExpandedCredentialSerializer(CredentialExtSerializer):
+    credential_set = CredentialSetSerializer()
+
+    class Meta(CredentialExtSerializer.Meta):
+        fields = CredentialExtSerializer.Meta.fields + ("credential_set",)
+
+
+class ExpandedCredentialSetSerializer(CredentialSetSerializer):
+    credentials = CredentialExtSerializer(many=True)
+
+    class Meta(CredentialSetSerializer.Meta):
+        fields = CredentialSetSerializer.Meta.fields + ("credentials",)

@@ -73,74 +73,7 @@
 
   <div class="row creds-outer" *ngIf="result.loaded">
     <div class="col-sm-12">
-      <div class="card creds-panel">
-        <div class="card-header">
-          <div class="row">
-            <div class="col-lg-auto">
-              <h4 class="my-0" translate>cred.topic-title</h4>
-            </div>
-            <div class="col-lg form-inline justify-content-end">
-              <div class="btn-group filter-entry">
-                <label [class]="'btn btn-secondary' + (filterActive === 'true' ? ' active' : '')">
-                  <input type="radio" name="search_active" value="true" checked class="d-none" [(ngModel)]="filterActive"><span class="fa fa-bell left"></span> <span translate>general.period-current</span>
-                </label>
-                <label [class]="'btn btn-secondary' + (filterActive === 'false' ? ' active' : '')">
-                  <input type="radio" name="search_active" value="false" class="d-none" [(ngModel)]="filterActive"><span class="fa fa-history left"></span> <span translate>general.period-historical</span>
-                </label>
-              </div>
-              <label class="btn btn-secondary filter-entry">
-                <input type="checkbox" name="show_filters" value="1" class="d-none" [(ngModel)]="showFilters">
-                <span class="fa fa-filter left"></span>
-                <span translate *ngIf="showFilters">general.hide-filters</span>
-                <span translate *ngIf="!showFilters">general.show-filters</span>
-                <span [class]="'fa right ' + (showFilters ? 'fa-angle-double-up' : 'fa-angle-double-down')"></span>
-              </label>
-              <div class="btn-group filter-entry">
-                <label [class]="'btn btn-secondary' + (credsFormat === 'rows' ? ' active' : '')">
-                  <input type="radio" name="display_format" value="rows" checked class="d-none" [(ngModel)]="credsFormat"><span class="fa fa-list"></span> <span class="d-none" translate>general.display-list</span>
-                </label>
-                <label [class]="'btn btn-secondary' + (credsFormat === 'cards' ? ' active' : '')">
-                  <input type="radio" name="display_format" value="cards" class="d-none" [(ngModel)]="credsFormat"><span class="fa fa-th-large"></span> <span class="d-none" translate>general.display-cards</span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card-header filters" *ngIf="showFilters">
-          <div class="row">
-            <div class="col-sm-3">
-              <label class="control-label">Credential Type</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
-            </div>
-            <div class="col-sm-3">
-              <label class="control-label">Issuer</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
-            </div>
-            <div class="col-sm-3">
-              <label class="control-label">Before Date</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
-            </div>
-            <div class="col-sm-3">
-              <label class="control-label">After Date</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
-            </div>
-          </div>
-        </div>
-        <div class="card-header columns">
-          <div class="row">
-            <div class="col-sm-4">
-              <a href="#">Credential Type</a> / <a href="#"><strong>Start Date</strong> <span class="fa fa-arrow-down"></span></a>
-            </div>
-            <div class="col-sm-4">
-              <a href="#">Issuer</a>
-            </div>
-            <div class="col-sm-4">
-              Details
-            </div>
-          </div>
-        </div>
-        <div class="card-body" *ngIf="(creds$ | async) as creds">
-          <loading-indicator [loading]="creds.loading"></loading-indicator>
-          <error-message [error]="creds.error"></error-message>
-          <cred-list [records]="creds.data" [format]="credsFormat"></cred-list>
-        </div>
-      </div>
+      <related-creds [topicId]="topic.id" [defaultFormat]="credsFormat"></related-creds>
     </div>
   </div>
 

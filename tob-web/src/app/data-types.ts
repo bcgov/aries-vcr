@@ -202,6 +202,28 @@ export namespace Model {
     }
   }
 
+  export class CredentialSet extends BaseModel {
+    id: number;
+    credentials: Credential[];
+    credential_type: CredentialType;
+    latest_credential: Credential;
+    latest_credential_id: number;
+    first_effective_date: string;
+    last_effective_date: string;
+
+    static propertyMap = {
+      latest_credential: 'Credential',
+      credential_type: 'CredentialType',
+      topic: 'Topic',
+    };
+    static listPropertyMap = {
+      credentials: 'Credential',
+    };
+
+    static resourceName = 'topic';
+    static childResource = 'credentialset';
+  }
+
   export class CredentialType extends BaseModel {
     id: number;
     // schema: Schema;

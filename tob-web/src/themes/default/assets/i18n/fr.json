@@ -1,1 +1,55 @@
-{"ROUTES":{"home":"acceuil"},"app":{"breadcrumb":"Accueil","header":{"title":"Le livre d'organisation","logo-alt-text":"Logo du Gouvernement de la C-B"},"footer":{"disclaimer":"Avertissement","privacy":"Politique de confidentialité","accessibility":"Accessibilité","copyright":"Droits d'auteur","contact":"Contactez-nous"},"title":"Demo du livre d'organisation","title-prefix":"TheOrgBook Beta | ","theme-name":"default"},"address":{"registered-office":"Registered Office"},"contact":{"email":"Email Address","phone":"Phone","phone-business":"Business Phone","skype":"Skype Address","website":"Website Address"},"cred":{"addresses":"Addresses","attributes":"Attributes","breadcrumb":"Credential Information","claims-proven":"Claims Proven and Verified","contact":"Contact","cred-type":"Credential Type","crypto-data":"Cryptographic Proof Data","empty-attribute":"–","end-date":"End Date","expired":"Expired","expired-message":"This credential is expired and no longer verifiable.","history-link":"See history","inactive":"Archived","inactive-message":"This credential has been issued for archival purposes only. It does not represent a currently active registration, permit, or license.","issuer":"Issuer","last-updated":"Last Updated","names":"Names","not-verified":"Not verified","proof-details":"Credential and Proof Details","proof-of-claims":"Proof of Claims","requesting-proof":"Requesting proof...","schema-info":"Credential Schema","start-date":"Effective Date","status":"Revocation Status","topic-title":"Other Credentials","verify-button-label":"Verify Credential","view-link":"View credential","whats-this-link":"What's this?","verified":"Verified","verify-status":"Verification Status:"},"general":{"date-entered":"Date Entered","display-list":"List","display-cards":"Cards","hide-filters":"Hide Filters","none":"None","map-link":"Show on map","next-link":"Suivant","not-found":"This record could not be located.","other-error":"An unknown error occurred.","period-current":"Current","period-historical":"Past","prev-link":"Précédent","show-filters":"Show Filters","status-nonrevoked":"Not Revoked","status-revoked":"Revoked","status-any":"Any","verified":"Verified"},"home":{"breadcrumb":"Recherche","title":"Bienvenue aux Organisations vérifiables de la Colombie-Britannique","title-certs":"permis et licences","title-orgs":"organisations"},"issuer":{"breadcrumb":"Issuer Service","cred-types":"Credential Types","did":"did","end-date":"Expiry Date","logo-image":"Logo Image","start-date":"Effective Date","website":"Issuer Website","email":"email"},"name":{"doing-business-as":"Doing Business As","incorporation":"Incorporation","legal-name":"Legal Name","registration":"Registration"},"not-found":{"breadcrumb":"Page non trouvée","title":"Page non trouvée","error":"Cette page a été déplacée.","return-link-title":"Retournez sur la page d'accueil"},"person":{"director":"Director"},"schema":{"name":"Schema Name","version":"Schema Version"},"search":{"breadcrumb":"Search","by-name":"Recherche par nom","by-location":"Recherche par lieu","no-results":"Aucun résultat","placeholder":"recherche","prompt":"Please enter your search query above in order to proceed.","records-prefix":"Records ","results-error":"Your query could not be completed at this time.","results-title":"Résultats de la recherche","return-link":"Back to Search","title":"Find an Organization"},"topic":{"breadcrumb":"Organization","related-to":"Related To","return-link":"Back to Organization","source-id":"Registration ID","view-link":"Show Details"},"recipe":{"breadcrumb":"Recipe","cert-depends-on":"Depends on","cert-view-link":"View record","cert-not-found":"Certificate not found","find-org-title":"Find your Organization","org-view-link":"View organization record","register-link":"Register your Organization","title":"Recipe"}}
+{
+  "ROUTES": {
+    "home": "acceuil"
+  },
+  "app": {
+    "breadcrumb": "Accueil",
+    "title": "Demo du livre d'organisation",
+    "header": {
+      "title": "Le livre d'organisation",
+      "logo-alt-text": "Logo du Gouvernement de la C-B"
+    },
+    "footer": {
+      "disclaimer": "Avertissement",
+      "privacy": "Politique de confidentialité",
+      "accessibility": "Accessibilité",
+      "copyright": "Droits d'auteur",
+      "contact": "Contactez-nous"
+    }
+  },
+  "home": {
+    "breadcrumb": "Recherche",
+    "title": "Bienvenue aux Organisations vérifiables de la Colombie-Britannique",
+    "title-orgs": "organisations",
+    "title-certs": "permis et licences"
+  },
+  "general": {
+    "none": "None",
+    "map-link": "Show on map",
+    "next-link": "Suivant",
+    "prev-link": "Précédent",
+    "verified": "Verified"
+  },
+  "issuer": {
+    "did": "did",
+    "email": "email",
+    "breadcrumb": "Issuer Service",
+    "cred-types": "Credential Types",
+    "end-date": "Expiry Date",
+    "start-date": "Effective Date",
+    "website": "Issuer Website"
+  },
+  "not-found": {
+    "breadcrumb": "Page non trouvée",
+    "title": "Page non trouvée",
+    "error": "Cette page a été déplacée.",
+    "return-link-title": "Retournez sur la page d'accueil"
+  },
+  "search": {
+    "by-name": "Recherche par nom",
+    "by-location": "Recherche par lieu",
+    "no-results": "Aucun résultat",
+    "placeholder": "recherche",
+    "results-title": "Résultats de la recherche"
+  }
+}
