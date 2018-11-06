@@ -16,7 +16,6 @@ export class DateFormatPipe extends DatePipe implements PipeTransform {
   transform(value: any, args?: any): any {
     let format = arguments[1] || 'mediumDate';
     let timezone = arguments[2] || this._config.getConfig().DISPLAY_TIMEZONE || undefined;
-    console.log(timezone);
     if(format === 'effectiveDate') format = 'mediumDate';
     else if(format === 'effectiveDateTime') format = 'MMM d, y, h:mm a';
     // may want to automatically strip off time if equal to midnight

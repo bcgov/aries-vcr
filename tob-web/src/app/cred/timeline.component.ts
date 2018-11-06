@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, Inject, L
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
+import { AppConfigService } from '../app-config.service';
 import { DateFormatPipe } from '../util/date-format.pipe';
 import { LocalizeRouterService } from 'localize-router';
 
@@ -29,9 +30,10 @@ export class CredSetTimelineComponent implements OnInit, OnDestroy {
   constructor(
     private _dataService: GeneralDataService,
     private _localize: LocalizeRouterService,
+    private _config: AppConfigService,
     @Inject(LOCALE_ID) _locale: string,
   ) {
-    this._dateFormat = new DateFormatPipe(_locale);
+    this._dateFormat = new DateFormatPipe(_locale, _config);
   }
 
   ngOnInit() {
