@@ -44,7 +44,7 @@ export class GeneralDataService {
     return this._http.get(url, {params: params})
       .pipe(catchError(error => {
         console.error("JSON load error", error);
-        return Observable.throw(error);
+        return _throw(error);
       }));
   }
 
