@@ -30,7 +30,7 @@ export namespace Timeline {
     }
   }
 
-  function parseDate(date: string | Date) {
+  export function parseDate(date: string | Date) {
     let result: Date = null;
     if(typeof date === 'string')
       result = new Date(date);
@@ -523,13 +523,21 @@ export namespace Timeline {
       }
       else if(evt.type === 'gesturestart') {
         evt.preventDefault();
+        evt.stopPropagation();
+        console.log('!!');
         this._gestureStartLayout = Object.assign({}, this._layout);
       }
       else if(evt.type === 'gesturechange') {
         evt.preventDefault();
+        evt.stopPropagation();
+        console.log('??');
         if(evt.scale) {
           this.scaleRange(- evt.scale, this._gestureStartLayout);
         }
+      }
+      else if(evt.type === 'gestureend') {
+        evt.preventDefault();
+        this._gestureStartLayout = null;
       }
     }
 
@@ -546,7 +554,7 @@ export namespace Timeline {
         rdr.listen(elts.container, 'gesturechange', handler);
         rdr.listen(elts.container, 'gestureend', handler);
         // disable forward/back gesture in Chrome
-        rdr.listen(elts.container, 'pointermove', handler);
+        // rdr.listen(elts.container, 'pointermove', handler);
         rdr.addClass(elts.container, 'timeline-outer');
         elts.rowsOuter = rdr.createElement('div');
         rdr.addClass(elts.rowsOuter, 'rows-outer');

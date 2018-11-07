@@ -59,6 +59,17 @@ export class TimelineViewComponent implements AfterViewInit {
   }
 
   @Input() set range(rng: {start: (string | Date), end: (string | Date)}) {
+    if(rng.start && rng.end) {
+      // expand range
+      let start = Timeline.parseDate(rng.start);
+      let end = Timeline.parseDate(rng.end);
+      let diff = end.getTime() - start.getTime();
+      let offs = diff * 0.1;
+      start.setTime(start.getTime() - offs);
+      end.setTime(end.getTime() + offs);
+      rng.start = start.toISOString();
+      rng.end = end.toISOString();
+    }
     this._range = rng;
     if(this._timeline)
       this._timeline.setRange(this.rangeStart, this.rangeEnd);
