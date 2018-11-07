@@ -78,7 +78,7 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
     else if(this._loader && this._topicId) {
       let credsFilter = {
         topic_id: ''+this._topicId,
-        active: this._filterActive ? 'true': '',
+        inactive: this._filterActive ? 'false': '',
       };
       this._dataService.loadList(this._loader, {query: credsFilter});
     }
