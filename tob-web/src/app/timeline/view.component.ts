@@ -33,7 +33,6 @@ export class TimelineViewComponent implements AfterViewInit {
   }
 
   click(evt) {
-    console.log(evt.detail.spec.url);
     this._router.navigate([evt.detail.spec.url]);
   }
 

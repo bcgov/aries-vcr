@@ -136,7 +136,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
     @detail_route(url_path="credentialset", methods=["get"])
     def list_credential_sets(self, request, pk=None):
         item = self.get_object()
-        queryset = item.credential_sets.order_by("-first_effective_date").all()
+        queryset = item.credential_sets.order_by("first_effective_date").all()
         serializer = ExpandedCredentialSetSerializer(queryset, many=True)
         return Response(serializer.data)
 

@@ -10,6 +10,8 @@ import { CredTypeListComponent } from './type-list.component';
 import { IssuerFormComponent } from '../issuer/form.component';
 import { NamePanelComponent } from './name-panel.component';
 import { RelatedCredsComponent } from './related-list.component';
+import { TimelineCredComponent } from './timeline-cred.component';
+import { TimelineFormatterService } from './timeline-formatter.service';
 import { TimelineViewComponent } from '../timeline/view.component';
 import { CredSetTimelineComponent } from './timeline.component';
 import { UtilModule } from '../util/util.module';
@@ -25,10 +27,15 @@ const ROUTES = [];
     IssuerFormComponent,
     NamePanelComponent,
     RelatedCredsComponent,
-    TimelineViewComponent,
     CredSetTimelineComponent,
+    TimelineCredComponent,
+    TimelineViewComponent,
+  ],
+  entryComponents: [
+    TimelineCredComponent,
   ],
   providers: [
+    TimelineFormatterService,
   ],
   imports: [
     CommonModule,
@@ -45,8 +52,9 @@ const ROUTES = [];
     IssuerFormComponent,
     NamePanelComponent,
     RelatedCredsComponent,
-    TimelineViewComponent,
     CredSetTimelineComponent,
+    TimelineCredComponent,
+    TimelineViewComponent,
   ]
 })
 export class CredModule {}

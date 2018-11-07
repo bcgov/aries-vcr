@@ -110,9 +110,11 @@ export namespace Model {
   export class Credential extends BaseModel {
     id: number;
     credential_type: CredentialType;
+    credential_set: CredentialSet;
     effective_date: string;
     inactive: boolean;
     revoked: boolean;
+    revoked_date: string;
 
     addresses: Address[];
     _attributes: Attribute[];
@@ -128,6 +130,7 @@ export namespace Model {
 
     static propertyMap = {
       credential_type: 'CredentialType',
+      credential_set: 'CredentialSet',
       topic: 'Topic',
     };
     static listPropertyMap = {

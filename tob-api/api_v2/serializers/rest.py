@@ -146,15 +146,15 @@ class CredentialExtSerializer(CredentialSerializer):
         )
 
 
-class ExpandedCredentialSerializer(CredentialExtSerializer):
-    credential_set = CredentialSetSerializer()
-
-    class Meta(CredentialExtSerializer.Meta):
-        fields = CredentialExtSerializer.Meta.fields + ("credential_set",)
-
-
 class ExpandedCredentialSetSerializer(CredentialSetSerializer):
     credentials = CredentialExtSerializer(many=True)
 
     class Meta(CredentialSetSerializer.Meta):
         fields = CredentialSetSerializer.Meta.fields + ("credentials",)
+
+
+class ExpandedCredentialSerializer(CredentialExtSerializer):
+    credential_set = ExpandedCredentialSetSerializer()
+
+    class Meta(CredentialExtSerializer.Meta):
+        fields = CredentialExtSerializer.Meta.fields + ("credential_set",)

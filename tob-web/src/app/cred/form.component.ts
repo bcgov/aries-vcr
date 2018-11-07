@@ -1,21 +1,25 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
+import { TimelineFormatterService } from './timeline-formatter.service';
 
 @Component({
   selector: 'cred-form',
   templateUrl: '../../themes/_active/cred/form.component.html',
   styleUrls: [
     '../../themes/_active/cred/cred.scss',
-    '../../themes/_active/cred/form.component.scss']
+    '../../themes/_active/cred/form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('credForm') _formRef: ElementRef;
   id: number;
   claimsVisible: boolean = false;
   proofVisible: boolean = false;
+  _timelineRange: any;
+  _timelineRows: any;
 
   private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
   private _verify = new Fetch.ModelLoader(Model.CredentialVerifyResult);
@@ -23,7 +27,9 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private _dataService: GeneralDataService,
-    private _route: ActivatedRoute) { }
+    private _route: ActivatedRoute,
+    private _formatter: TimelineFormatterService,
+  ) { }
 
   ngOnInit() {
     this._idSub = this._route.params.subscribe(params => {
@@ -35,6 +41,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this._loader.ready.subscribe(result => {
       if(! this._formRef || ! this._formRef.nativeElement.classList.contains('no-verify'))
+        this.updateRows();
         // auto-verify unless button is present
         this.verifyCred();
     });
@@ -74,4 +81,42 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
     else
       this._dataService.loadRecord(this._verify, this.id);
   }
+
+  updateRows() {
+    let rows = [];
+    let cred = <Model.Credential>this.result.data;
+    let credset: Model.CredentialSet = cred.credential_set;
+    let start = new Date();
+    start.setFullYear(start.getFullYear() - 1);
+    let end = new Date();
+    end.setFullYear(end.getFullYear() + 1);
+    let range = {start: start.toISOString(), end: end.toISOString()};
+    if(credset) {
+      if(credset.first_effective_date && credset.first_effective_date < range.start) {
+        range.start = credset.first_effective_date;
+      }
+      if(credset.last_effective_date && credset.last_effective_date > range.end) {
+        range.end = credset.last_effective_date;
+      }
+      let row = {
+        id: `set-${credset.id}`,
+        slots: []
+      };
+      for(let cred of credset.credentials) {
+        row.slots.push(this._formatter.getCredentialSlot(cred));
+      }
+      rows.push(row);
+    }
+    this._timelineRange = range;
+    this._timelineRows = rows;
+  }
+
+  get timelineRange() {
+    return this._timelineRange;
+  }
+
+  get timelineRows() {
+    return this._timelineRows;
+  }
+
 }
