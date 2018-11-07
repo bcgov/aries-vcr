@@ -1,0 +1,1733 @@
+openapi: 3.0.0
+info:
+  title: TheOrgBook API
+  description: Test description
+  version: v2
+security:
+  - basic: []
+paths:
+  /address:
+    get:
+      operationId: address_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Address"
+      tags:
+        - address
+    parameters: []
+  "/address/{id}":
+    get:
+      operationId: address_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+      tags:
+        - address
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this address.
+        required: true
+        schema:
+          type: integer
+  /attribute:
+    get:
+      operationId: attribute_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Attribute"
+      tags:
+        - attribute
+    parameters: []
+  "/attribute/{id}":
+    get:
+      operationId: attribute_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attribute"
+      tags:
+        - attribute
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this attribute.
+        required: true
+        schema:
+          type: integer
+  /credential:
+    get:
+      operationId: credential_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Credential"
+      tags:
+        - credential
+    parameters: []
+  /credential/active:
+    get:
+      operationId: credential_list_active
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Credential"
+      tags:
+        - credential
+    parameters: []
+  /credential/historical:
+    get:
+      operationId: credential_list_historical
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Credential"
+      tags:
+        - credential
+    parameters: []
+  "/credential/{id}":
+    get:
+      operationId: credential_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Credential"
+      tags:
+        - credential
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this credential.
+        required: true
+        schema:
+          type: integer
+  "/credential/{id}/formatted":
+    get:
+      operationId: credential_retrieve_formatted
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Credential"
+      tags:
+        - credential
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this credential.
+        required: true
+        schema:
+          type: integer
+  /credentialtype:
+    get:
+      operationId: credentialtype_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CredentialType"
+      tags:
+        - credentialtype
+    parameters: []
+  "/credentialtype/{id}":
+    get:
+      operationId: credentialtype_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CredentialType"
+      tags:
+        - credentialtype
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this credential type.
+        required: true
+        schema:
+          type: integer
+  "/credentialtype/{id}/logo":
+    get:
+      operationId: credentialtype_fetch_logo
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CredentialType"
+      tags:
+        - credentialtype
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this credential type.
+        required: true
+        schema:
+          type: integer
+  /issuer:
+    get:
+      operationId: issuer_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Issuer"
+      tags:
+        - issuer
+    parameters: []
+  "/issuer/{id}":
+    get:
+      operationId: issuer_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Issuer"
+      tags:
+        - issuer
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this issuer.
+        required: true
+        schema:
+          type: integer
+  "/issuer/{id}/credentialtype":
+    get:
+      operationId: issuer_list_credential_types
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Issuer"
+      tags:
+        - issuer
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this issuer.
+        required: true
+        schema:
+          type: integer
+  "/issuer/{id}/logo":
+    get:
+      operationId: issuer_fetch_logo
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Issuer"
+      tags:
+        - issuer
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this issuer.
+        required: true
+        schema:
+          type: integer
+  /name:
+    get:
+      operationId: name_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Name"
+      tags:
+        - name
+    parameters: []
+  "/name/{id}":
+    get:
+      operationId: name_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Name"
+      tags:
+        - name
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this name.
+        required: true
+        schema:
+          type: integer
+  /quickload:
+    get:
+      operationId: quickload_list
+      description: ""
+      responses:
+        "200":
+          description: OK
+      tags:
+        - quickload
+    parameters: []
+  /schema:
+    get:
+      operationId: schema_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Schema"
+      tags:
+        - schema
+    parameters: []
+  "/schema/{id}":
+    get:
+      operationId: schema_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schema"
+      tags:
+        - schema
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this schema.
+        required: true
+        schema:
+          type: integer
+  /search/autocomplete:
+    get:
+      operationId: search_autocomplete_list
+      description: Return autocomplete results for a query string
+      responses:
+        "200":
+          description: OK
+      tags:
+        - search
+    parameters: []
+  /search/credential:
+    get:
+      operationId: search_credential_list
+      description: >-
+        Provide credential search via Solr with both faceted (/facets) and
+        unfaceted results
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CredentialSearch"
+      tags:
+        - search
+    parameters: []
+  /search/credential/facets:
+    get:
+      operationId: search_credential_facets
+      description: |-
+        Sets up a list route for ``faceted`` results.
+        This will add ie ^search/facets/$ to your existing ^search pattern.
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CredentialSearch"
+      tags:
+        - search
+    parameters: []
+  /search/credential/topic:
+    get:
+      operationId: search_credential_topic_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CredentialTopicSearch"
+      tags:
+        - search
+    parameters: []
+  /search/credential/topic/facets:
+    get:
+      operationId: search_credential_topic_facets
+      description: |-
+        Sets up a list route for ``faceted`` results.
+        This will add ie ^search/facets/$ to your existing ^search pattern.
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CredentialTopicSearch"
+      tags:
+        - search
+    parameters: []
+  "/search/credential/topic/{id}":
+    get:
+      operationId: search_credential_topic_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CredentialTopicSearch"
+      tags:
+        - search
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  "/search/credential/{id}":
+    get:
+      operationId: search_credential_read
+      description: >-
+        Provide credential search via Solr with both faceted (/facets) and
+        unfaceted results
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CredentialSearch"
+      tags:
+        - search
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /topic:
+    get:
+      operationId: topic_list
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters: []
+  "/topic/ident/{type}/{source_id}":
+    get:
+      operationId: topic_retrieve_by_type
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: source_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+  "/topic/ident/{type}/{source_id}/formatted":
+    get:
+      operationId: topic_ident_retrieve_by_type_formatted
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                  previous:
+                    type: string
+                    format: uri
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: source_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+  "/topic/{id}":
+    get:
+      operationId: topic_read
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+  "/topic/{id}/credential":
+    get:
+      operationId: topic_list_credentials
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+  "/topic/{id}/credential/active":
+    get:
+      operationId: topic_credential_list_active_credentials
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+  "/topic/{id}/credential/historical":
+    get:
+      operationId: topic_credential_list_historical_credentials
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+  "/topic/{id}/formatted":
+    get:
+      operationId: topic_retrieve_formatted
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+  "/topic/{id}/related_from":
+    get:
+      operationId: topic_list_related_from
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+  "/topic/{id}/related_to":
+    get:
+      operationId: topic_list_related_to
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+
+  "/indy/construct-proof":
+    post:
+      operationId: indy_construct_proof
+      description: Constructs a proof given a proof request
+      responses:
+        "200":
+          description: OK
+      tags:
+        - indy
+
+  "/indy/generate-credential-request":
+    post:
+      operationId: indy_generate_credential_request
+      description: >-
+        Processes a credential definition and responds with a credential request
+        which can then be used to submit a credential.
+      responses:
+        "200":
+          description: OK
+      tags:
+        - indy
+
+  "/indy/store-credential":
+    post:
+      operationId: indy_store_credential
+      description: >-
+        Stores a verifiable credential in wallet.
+
+        The data in the credential is parsed and stored in the database
+        for search/display purposes based on the issuer's processor config.
+        The data is then made available through a REST API as well as a
+        search API.
+      responses:
+        "200":
+          description: OK
+      tags:
+        - indy
+
+  "/indy/register-issuer":
+    post:
+      operationId: indy_register_issuer
+      description: >-
+        Processes an issuer definition and creates or updates the
+        corresponding records. Responds with the updated issuer
+        definition including record IDs.
+      responses:
+        "200":
+          description: OK
+      tags:
+        - indy
+
+  "/indy/status":
+    get:
+      operationId: indy_status
+      description: >-
+        Return status of the Indy service including statistics on the requests performed
+      responses:
+        "200":
+          description: OK
+      tags:
+        - indy
+
+  "/credential/{id}/verify":
+    get:
+      operationId: indy_verify
+      description: >-
+        Constructs a proof request for a credential stored in the
+        application database, constructs a proof for that proof
+        request, and then verifies it.
+      responses:
+        "200":
+          description: OK
+      tags:
+        - indy
+        - credential
+      parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this credential.
+        required: true
+        schema:
+          type: integer
+
+servers:
+  - url: "http://localhost:8081/api/v2"
+components:
+  securitySchemes:
+    basic:
+      type: http
+      scheme: basic
+  schemas:
+    Address:
+      required:
+        - credential
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        addressee:
+          title: Addressee
+          type: string
+          minLength: 1
+        civic_address:
+          title: Civic address
+          type: string
+          minLength: 1
+        city:
+          title: City
+          type: string
+          minLength: 1
+        province:
+          title: Province
+          type: string
+          minLength: 1
+        postal_code:
+          title: Postal code
+          type: string
+          minLength: 1
+        country:
+          title: Country
+          type: string
+          minLength: 1
+        credential:
+          title: Credential
+          type: integer
+    Attribute:
+      required:
+        - credential
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        type:
+          title: Type
+          type: string
+          default: text
+          minLength: 1
+        format:
+          title: Format
+          type: string
+          minLength: 1
+        value:
+          title: Value
+          type: string
+          minLength: 1
+        credential:
+          title: Credential
+          type: integer
+    Credential:
+      required:
+        - wallet_id
+        - topic
+        - credential_type
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        wallet_id:
+          title: Wallet id
+          type: string
+          minLength: 1
+        credential_def_id:
+          title: Credential def id
+          type: string
+          minLength: 1
+        cardinality_hash:
+          title: Cardinality hash
+          type: string
+          minLength: 1
+        effective_date:
+          title: Effective date
+          type: string
+          format: date-time
+        inactive:
+          title: Inactive
+          type: boolean
+        revoked:
+          title: Revoked
+          type: boolean
+        topic:
+          title: Topic
+          type: integer
+        credential_type:
+          title: Credential type
+          type: integer
+    Issuer:
+      title: Issuer
+      required:
+        - did
+        - name
+        - abbreviation
+        - email
+        - url
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        has_logo:
+          title: Has logo
+          type: boolean
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        did:
+          title: Did
+          type: string
+          minLength: 1
+        name:
+          title: Name
+          type: string
+          minLength: 1
+        abbreviation:
+          title: Abbreviation
+          type: string
+          minLength: 1
+        email:
+          title: Email
+          type: string
+          minLength: 1
+        url:
+          title: Url
+          type: string
+          minLength: 1
+    CredentialType:
+      required:
+        - issuer
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        issuer:
+          $ref: "#/components/schemas/Issuer"
+        has_logo:
+          title: Has logo
+          type: boolean
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          title: Description
+          type: string
+        credential_def_id:
+          title: Credential def id
+          type: string
+          minLength: 1
+        schema:
+          required:
+            - name
+            - version
+            - origin_did
+          type: object
+          properties:
+            id:
+              title: ID
+              type: integer
+              readOnly: true
+            create_timestamp:
+              title: Create timestamp
+              type: string
+              format: date-time
+              readOnly: true
+            update_timestamp:
+              title: Update timestamp
+              type: string
+              format: date-time
+              readOnly: true
+            name:
+              title: Name
+              type: string
+              minLength: 1
+            version:
+              title: Version
+              type: string
+              minLength: 1
+            origin_did:
+              title: Origin did
+              type: string
+              minLength: 1
+          readOnly: true
+    Name:
+      required:
+        - credential
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        text:
+          title: Text
+          type: string
+          minLength: 1
+        language:
+          title: Language
+          type: string
+          minLength: 1
+        credential:
+          title: Credential
+          type: integer
+    Schema:
+      required:
+        - name
+        - version
+        - origin_did
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          title: Name
+          type: string
+          minLength: 1
+        version:
+          title: Version
+          type: string
+          minLength: 1
+        origin_did:
+          title: Origin did
+          type: string
+          minLength: 1
+    CredentialAddress:
+      type: object
+      properties:
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        province:
+          title: Province
+          type: string
+          minLength: 1
+        addressee:
+          title: Addressee
+          type: string
+          minLength: 1
+        postal_code:
+          title: Postal code
+          type: string
+          minLength: 1
+        country:
+          title: Country
+          type: string
+          minLength: 1
+        credential_id:
+          title: Credential id
+          type: string
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        city:
+          title: City
+          type: string
+          minLength: 1
+        civic_address:
+          title: Civic address
+          type: string
+          minLength: 1
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+    CredentialAttribute:
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        type:
+          title: Type
+          type: string
+          minLength: 1
+        format:
+          title: Format
+          type: string
+          minLength: 1
+        value:
+          title: Value
+          type: string
+          minLength: 1
+        credential_id:
+          title: Credential id
+          type: string
+          readOnly: true
+    CredentialName:
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        text:
+          title: Text
+          type: string
+          minLength: 1
+        language:
+          title: Language
+          type: string
+          minLength: 1
+        credential_id:
+          title: Credential id
+          type: string
+          readOnly: true
+    CredentialTopic:
+      title: Topic
+      required:
+        - source_id
+        - type
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        source_id:
+          title: Source id
+          type: string
+          minLength: 1
+        type:
+          title: Type
+          type: string
+          minLength: 1
+    CredentialSearch:
+      required:
+        - credential_type
+        - addresses
+        - attributes
+        - names
+        - topic
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        credential_type:
+          $ref: "#/components/schemas/CredentialType"
+        effective_date:
+          title: Effective date
+          type: string
+          format: date-time
+        addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialAddress"
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialAttribute"
+        names:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialName"
+        inactive:
+          title: Inactive
+          type: boolean
+        revoked:
+          title: Revoked
+          type: boolean
+        topic:
+          $ref: "#/components/schemas/CredentialTopic"
+    CredentialTopicExt:
+      title: Topic
+      required:
+        - source_id
+        - type
+        - addresses
+        - attributes
+        - names
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        source_id:
+          title: Source id
+          type: string
+          minLength: 1
+        type:
+          title: Type
+          type: string
+          minLength: 1
+        addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialAddress"
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialAttribute"
+        names:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialName"
+    CredentialTopicSearch:
+      required:
+        - credential_type
+        - names
+        - topic
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        credential_type:
+          $ref: "#/components/schemas/CredentialType"
+        effective_date:
+          title: Effective date
+          type: string
+          format: date-time
+        names:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialName"
+        inactive:
+          title: Inactive
+          type: boolean
+        revoked:
+          title: Revoked
+          type: boolean
+        topic:
+          $ref: "#/components/schemas/CredentialTopicExt"
+    Topic:
+      required:
+        - source_id
+        - type
+      type: object
+      properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        update_timestamp:
+          title: Update timestamp
+          type: string
+          format: date-time
+          readOnly: true
+        source_id:
+          title: Source id
+          type: string
+          minLength: 1
+        type:
+          title: Type
+          type: string
+          minLength: 1
+        related_to:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+          uniqueItems: true
+        related_from:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+          uniqueItems: true
