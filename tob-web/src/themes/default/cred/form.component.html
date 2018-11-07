@@ -35,7 +35,7 @@
               <div class="col-sm-12">
                 <div class="alert alert-info">
                   <h5 class="my-0">
-                    <a [routerLink]="(record.topic.link + ['cred', credset.latest_credential_id]) | localize" class="cred-link" translate>cred.latest-link</a>
+                    <a [routerLink]="record.topic.link.concat(['cred', credset.latest_credential_id]) | localize" class="cred-link" translate>cred.latest-link</a>
                   </h5>
                 </div>
               </div>
