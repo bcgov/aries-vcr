@@ -1782,10 +1782,6 @@ paths:
 servers:
   - url: 'https://theorgbook.pathfinder.gov.bc.ca/api'
 components:
-  securitySchemes:
-    basic:
-      type: http
-      scheme: basic
   schemas:
     Address:
       required:
