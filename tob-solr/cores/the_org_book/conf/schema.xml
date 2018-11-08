@@ -63,6 +63,13 @@
 	</fieldType>
 
     <!--
+    ### More exact matching on name, used to score results
+    -->
+    <copyField source="name" dest="name_precise"/>
+
+    <field name="name_precise" type="text_general" indexed="true" stored="true" multiValued="true"/>
+
+    <!--
     ######################## django-haystack specifics begin ########################
     -->
 
@@ -115,7 +122,7 @@
     <field name="location" type="text_en" indexed="true" stored="true" multiValued="true" />
      
     <field name="name" type="text_en" indexed="true" stored="true" multiValued="true" />
-     
+
     <field name="effective_date" type="date" indexed="true" stored="true" multiValued="false" />
     
     <field name="effective_date_exact" type="date" indexed="true" stored="true" multiValued="false" />

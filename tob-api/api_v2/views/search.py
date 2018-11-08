@@ -3,8 +3,9 @@ import logging
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_haystack.filters import HaystackFilter, HaystackFacetFilter
+from drf_haystack.filters import HaystackFilter, HaystackFacetFilter, HaystackOrderingFilter
 from drf_haystack.mixins import FacetMixin
+from drf_haystack.query import FilterQueryBuilder
 from drf_haystack.viewsets import HaystackViewSet
 from haystack.query import RelatedSearchQuerySet
 
@@ -46,10 +47,40 @@ class NameAutocompleteView(APIView):
         return Response({"result": rows})
 
 
+class CustomFilterBuilder(FilterQueryBuilder):
+    @staticmethod
+    def tokenize(stream, separator):
+        """
+        Do not tokenize filter input - pass through to Solr to tokenize
+        The default implementation splits by ',' and joins with 'OR'
+        """
+        for value in stream:
+            yield value
+
+    def build_query(self, **filters):
+        """
+        Custom handling for name filter
+        Search by name and name_precise (using __exact to pass through the query)
+        allowing results to be ordered more naturally
+        """
+        name_filter = None
+        SQ = self.view.query_object
+        if 'name' in filters:
+            name = filters.pop("name")
+            if name is not None and len(name):
+                name_filter = SQ(('name__exact', name)) | SQ(('name_precise__exact', name))
+        applicable_filters, applicable_exclusions = super(CustomFilterBuilder, self).build_query(**filters)
+        if name_filter:
+            applicable_filters = (name_filter & applicable_filters) if applicable_filters else name_filter
+        return applicable_filters, applicable_exclusions
+
+
 class DefaultCredSearchFilter(HaystackFilter):
     """
     Apply default filter value(s) to credential search
     """
+
+    query_builder_class = CustomFilterBuilder
 
     @staticmethod
     def get_request_filters(request):
@@ -99,13 +130,20 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
     load_all = True
     serializer_class = CredentialSearchSerializer
     permission_classes = (permissions.AllowAny,)
-    filter_backends = [DefaultCredSearchFilter]
+    # enable normal filtering
+    filter_backends = [
+        DefaultCredSearchFilter,
+        HaystackOrderingFilter,
+    ]
     facet_filter_backends = [
         DefaultCredSearchFilter,
+        HaystackOrderingFilter,
         HaystackFacetFilter,
-    ]  # enable normal filtering
+    ]
     facet_serializer_class = CredentialFacetSerializer
     facet_objects_serializer_class = CredentialSearchSerializer
+    ordering_fields = ('effective_date', 'revoked_date', 'score')
+    ordering = ('-score')
 
     # FacetMixin provides /facets
 
