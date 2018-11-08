@@ -15,8 +15,6 @@ info:
     url: >-
       https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information
   version: v2
-security:
-  - basic: []
 paths:
   /address:
     get:
