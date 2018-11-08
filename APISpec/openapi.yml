@@ -1,7 +1,19 @@
 openapi: 3.0.0
 info:
   title: TheOrgBook API
-  description: Test description
+  description: >-
+    TheOrgBook is a public, searchable directory of digital records for
+    registered businesses in the Province of British Columbia. Over time, other
+    government organizations and businesses will also begin to issue digital
+    records through TheOrgBook. For example, permits and licenses issued by
+    various government services.
+  termsOfService: 'https://www2.gov.bc.ca/gov/content/data/open-data'
+  contact:
+    email: bcdevexchange@gov.bc.ca
+  license:
+    name: Open Government License - British Columbia
+    url: >-
+      https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information
   version: v2
 security:
   - basic: []
@@ -9,7 +21,7 @@ paths:
   /address:
     get:
       operationId: address_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -17,8 +29,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -39,21 +66,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Address"
+                      $ref: '#/components/schemas/Address'
       tags:
         - address
     parameters: []
-  "/address/{id}":
+  '/address/{id}':
     get:
       operationId: address_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Address"
+                $ref: '#/components/schemas/Address'
       tags:
         - address
     parameters:
@@ -66,7 +109,7 @@ paths:
   /attribute:
     get:
       operationId: attribute_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -74,8 +117,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -96,21 +154,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Attribute"
+                      $ref: '#/components/schemas/Attribute'
       tags:
         - attribute
     parameters: []
-  "/attribute/{id}":
+  '/attribute/{id}':
     get:
       operationId: attribute_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Attribute"
+                $ref: '#/components/schemas/Attribute'
       tags:
         - attribute
     parameters:
@@ -123,7 +197,7 @@ paths:
   /credential:
     get:
       operationId: credential_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -131,8 +205,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -153,14 +242,14 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Credential"
+                      $ref: '#/components/schemas/Credential'
       tags:
         - credential
     parameters: []
   /credential/active:
     get:
       operationId: credential_list_active
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -169,7 +258,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -190,14 +279,14 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Credential"
+                      $ref: '#/components/schemas/Credential'
       tags:
         - credential
     parameters: []
   /credential/historical:
     get:
       operationId: credential_list_historical
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -206,7 +295,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -227,21 +316,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Credential"
+                      $ref: '#/components/schemas/Credential'
       tags:
         - credential
     parameters: []
-  "/credential/{id}":
+  '/credential/{id}':
     get:
       operationId: credential_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Credential"
+                $ref: '#/components/schemas/Credential'
       tags:
         - credential
     parameters:
@@ -251,17 +356,37 @@ paths:
         required: true
         schema:
           type: integer
-  "/credential/{id}/formatted":
+  '/credential/{id}/formatted':
     get:
       operationId: credential_retrieve_formatted
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Credential"
+                $ref: '#/components/schemas/Credential'
+      tags:
+        - credential
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this credential.
+        required: true
+        schema:
+          type: integer
+  '/credential/{id}/latest':
+    get:
+      operationId: credential_get_latest
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Credential'
       tags:
         - credential
     parameters:
@@ -274,7 +399,7 @@ paths:
   /credentialtype:
     get:
       operationId: credentialtype_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -282,8 +407,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -304,21 +444,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CredentialType"
+                      $ref: '#/components/schemas/CredentialType'
       tags:
         - credentialtype
     parameters: []
-  "/credentialtype/{id}":
+  '/credentialtype/{id}':
     get:
       operationId: credentialtype_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CredentialType"
+                $ref: '#/components/schemas/CredentialType'
       tags:
         - credentialtype
     parameters:
@@ -328,17 +484,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/credentialtype/{id}/logo":
+  '/credentialtype/{id}/logo':
     get:
       operationId: credentialtype_fetch_logo
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CredentialType"
+                $ref: '#/components/schemas/CredentialType'
       tags:
         - credentialtype
     parameters:
@@ -351,7 +507,7 @@ paths:
   /issuer:
     get:
       operationId: issuer_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -359,8 +515,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -381,21 +552,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Issuer"
+                      $ref: '#/components/schemas/Issuer'
       tags:
         - issuer
     parameters: []
-  "/issuer/{id}":
+  '/issuer/{id}':
     get:
       operationId: issuer_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issuer"
+                $ref: '#/components/schemas/Issuer'
       tags:
         - issuer
     parameters:
@@ -405,17 +592,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/issuer/{id}/credentialtype":
+  '/issuer/{id}/credentialtype':
     get:
       operationId: issuer_list_credential_types
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issuer"
+                $ref: '#/components/schemas/Issuer'
       tags:
         - issuer
     parameters:
@@ -425,17 +612,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/issuer/{id}/logo":
+  '/issuer/{id}/logo':
     get:
       operationId: issuer_fetch_logo
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issuer"
+                $ref: '#/components/schemas/Issuer'
       tags:
         - issuer
     parameters:
@@ -448,7 +635,7 @@ paths:
   /name:
     get:
       operationId: name_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -456,8 +643,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -478,21 +680,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Name"
+                      $ref: '#/components/schemas/Name'
       tags:
         - name
     parameters: []
-  "/name/{id}":
+  '/name/{id}':
     get:
       operationId: name_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Name"
+                $ref: '#/components/schemas/Name'
       tags:
         - name
     parameters:
@@ -505,9 +723,9 @@ paths:
   /quickload:
     get:
       operationId: quickload_list
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
       tags:
         - quickload
@@ -515,7 +733,7 @@ paths:
   /schema:
     get:
       operationId: schema_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -523,8 +741,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -545,21 +778,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Schema"
+                      $ref: '#/components/schemas/Schema'
       tags:
         - schema
     parameters: []
-  "/schema/{id}":
+  '/schema/{id}':
     get:
       operationId: schema_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Schema"
+                $ref: '#/components/schemas/Schema'
       tags:
         - schema
     parameters:
@@ -573,8 +822,19 @@ paths:
     get:
       operationId: search_autocomplete_list
       description: Return autocomplete results for a query string
+      parameters:
+        - name: q
+          in: query
+          description: Query string
+          schema:
+            type: string
+        - name: hl
+          in: query
+          description: Highlight search term
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
       tags:
         - search
@@ -592,8 +852,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -614,7 +889,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CredentialSearch"
+                      $ref: '#/components/schemas/CredentialSearch'
       tags:
         - search
     parameters: []
@@ -632,7 +907,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -653,14 +928,14 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CredentialSearch"
+                      $ref: '#/components/schemas/CredentialSearch'
       tags:
         - search
     parameters: []
   /search/credential/topic:
     get:
       operationId: search_credential_topic_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -668,8 +943,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -690,7 +980,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CredentialTopicSearch"
+                      $ref: '#/components/schemas/CredentialTopicSearch'
       tags:
         - search
     parameters: []
@@ -708,7 +998,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -729,21 +1019,37 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CredentialTopicSearch"
+                      $ref: '#/components/schemas/CredentialTopicSearch'
       tags:
         - search
     parameters: []
-  "/search/credential/topic/{id}":
+  '/search/credential/topic/{id}':
     get:
       operationId: search_credential_topic_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CredentialTopicSearch"
+                $ref: '#/components/schemas/CredentialTopicSearch'
       tags:
         - search
     parameters:
@@ -752,19 +1058,35 @@ paths:
         required: true
         schema:
           type: string
-  "/search/credential/{id}":
+  '/search/credential/{id}':
     get:
       operationId: search_credential_read
       description: >-
         Provide credential search via Solr with both faceted (/facets) and
         unfaceted results
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CredentialSearch"
+                $ref: '#/components/schemas/CredentialSearch'
       tags:
         - search
     parameters:
@@ -776,7 +1098,7 @@ paths:
   /topic:
     get:
       operationId: topic_list
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -784,8 +1106,23 @@ paths:
           required: false
           schema:
             type: integer
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -806,14 +1143,14 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Topic"
+                      $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters: []
-  "/topic/ident/{type}/{source_id}":
+  '/topic/ident/{type}/{source_id}':
     get:
       operationId: topic_retrieve_by_type
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -822,7 +1159,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -843,7 +1180,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Topic"
+                      $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -857,10 +1194,10 @@ paths:
         required: true
         schema:
           type: string
-  "/topic/ident/{type}/{source_id}/formatted":
+  '/topic/ident/{type}/{source_id}/formatted':
     get:
       operationId: topic_ident_retrieve_by_type_formatted
-      description: ""
+      description: ''
       parameters:
         - name: page
           in: query
@@ -869,7 +1206,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -890,7 +1227,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Topic"
+                      $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -904,17 +1241,33 @@ paths:
         required: true
         schema:
           type: string
-  "/topic/{id}":
+  '/topic/{id}':
     get:
       operationId: topic_read
-      description: ""
+      description: ''
+      parameters:
+        - name: name
+          in: query
+          description: Filter credentials by related name
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          description: Filter inactive credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
+        - name: revoked
+          in: query
+          description: Filter revoked credentials ('true'/'false'/'' for all)
+          schema:
+            type: boolean
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Topic"
+                $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -924,17 +1277,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/topic/{id}/credential":
+  '/topic/{id}/credential':
     get:
       operationId: topic_list_credentials
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Topic"
+                $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -944,17 +1297,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/topic/{id}/credential/active":
+  '/topic/{id}/credential/active':
     get:
       operationId: topic_credential_list_active_credentials
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Topic"
+                $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -964,17 +1317,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/topic/{id}/credential/historical":
+  '/topic/{id}/credential/historical':
     get:
       operationId: topic_credential_list_historical_credentials
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Topic"
+                $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -984,17 +1337,37 @@ paths:
         required: true
         schema:
           type: integer
-  "/topic/{id}/formatted":
+  '/topic/{id}/credentialset':
+    get:
+      operationId: topic_list_credential_sets
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+      tags:
+        - topic
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this topic.
+        required: true
+        schema:
+          type: integer
+  '/topic/{id}/formatted':
     get:
       operationId: topic_retrieve_formatted
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Topic"
+                $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -1004,17 +1377,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/topic/{id}/related_from":
+  '/topic/{id}/related_from':
     get:
       operationId: topic_list_related_from
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Topic"
+                $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -1024,17 +1397,17 @@ paths:
         required: true
         schema:
           type: integer
-  "/topic/{id}/related_to":
+  '/topic/{id}/related_to':
     get:
       operationId: topic_list_related_to
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Topic"
+                $ref: '#/components/schemas/Topic'
       tags:
         - topic
     parameters:
@@ -1048,7 +1421,19 @@ paths:
   "/indy/construct-proof":
     post:
       operationId: indy_construct_proof
-      description: Constructs a proof given a proof request
+      description: >-
+        Constructs a proof given a proof request
+
+        ```json
+
+        {
+            "proof_request": <HL Indy proof request>
+        }
+
+        ```
+
+        returns: HL Indy proof data
+        
       responses:
         "200":
           description: OK
@@ -1061,6 +1446,29 @@ paths:
       description: >-
         Processes a credential definition and responds with a credential request
         which can then be used to submit a credential.
+
+        Example request payload:
+
+        ```json
+        
+        {
+            'credential_offer': <credential offer json>,
+            'credential_definition': <credential definition json>
+        }
+        
+        ```
+
+        returns:
+
+        ```json
+        
+        {
+            "credential_request": <credential request json>,
+            "credential_request_metadata": <credential request metadata json>
+        }
+        
+        ```
+
       responses:
         "200":
           description: OK
@@ -1071,12 +1479,42 @@ paths:
     post:
       operationId: indy_store_credential
       description: >-
-        Stores a verifiable credential in wallet.
+        Stores one or more verifiable credentials in the wallet.
 
         The data in the credential is parsed and stored in the database
         for search/display purposes based on the issuer's processor config.
         The data is then made available through a REST API as well as a
         search API.
+
+        Example request payload:
+
+        ```json
+
+        {
+            "credential_data": <credential data>,
+            "credential_request_metadata": <credential request metadata>
+        }
+
+        ```
+
+        Input may also be in the form of an array of credential data:
+
+        ```json
+
+        [
+            {
+                "credential_data": <credential data>,
+                "credential_request_metadata": <credential request metadata>
+            },
+            {
+                "credential_data": <credential data>,
+                "credential_request_metadata": <credential request metadata>
+            }
+        ]
+
+        ```
+
+        Returns: the wallet ID of the stored credential or credentials
       responses:
         "200":
           description: OK
@@ -1090,6 +1528,222 @@ paths:
         Processes an issuer definition and creates or updates the
         corresponding records. Responds with the updated issuer
         definition including record IDs.
+
+        Example request payload:
+
+        ```json
+
+        {
+            "issuer": {
+                "did": "6qnvgJtqwK44D8LFYnV5Yf", // required
+                "name": "BC Corporate Registry", // required
+                "abbreviation": "BCReg",
+                "email": "bcreg.test.issuer@example.ca",
+                "url": "http://localhost:5000"
+            },
+            "credential_types": [
+                {
+                "name": "Incorporation",
+                "schema": "incorporation.bc_registries",
+                "version": "1.0.31",
+                "endpoint": "http://localhost:5000/bcreg/incorporation",
+                "topic": {
+                    "source_id": {
+                        "input": "corp_num",
+                        "from": "claim"
+                    },
+                    "type": {
+                        "input": "incorporation",
+                        "from": "value"
+                    }
+                },
+                "mapping": [
+                    {
+                    "model": "name",
+                    "fields": {
+                        "text": {
+                            "input": "legal_name",
+                            "from": "claim"
+                        },
+                        "type": {
+                            "input": "legal_name",
+                            "from": "value"
+                        }
+                    }
+                    }
+                ]
+                },
+                {
+                "name": "Doing Business As",
+                "schema": "doing_business_as.bc_registries",
+                "version": "1.0.31",
+                "endpoint": "http://localhost:5000/bcreg/dba",
+                "topic": {
+                    "parent_source_id": {
+                        "input": "org_registry_id",
+                        "from": "claim"
+                    },
+                    "parent_type": {
+                        "input": "incorporation",
+                        "from": "value"
+                    },
+                    "source_id": {
+                        "input": "dba_corp_num",
+                        "from": "claim"
+                    },
+                    "type": {
+                        "input": "doing_business_as",
+                        "from": "value"
+                    }
+                },
+                "mapping": [
+                    {
+                    "model": "name",
+                    "fields": {
+                        "text": {
+                            "input": "dba_name",
+                            "from": "claim"
+                        },
+                        "type": {
+                            "input": "dba_name",
+                            "from": "value"
+                        }
+                    }
+                    }
+                ]
+                },
+                {
+                "name": "Corporate Address",
+                "schema": "address.bc_registries",
+                "version": "1.0.31",
+                "endpoint": "http://localhost:5000/bcreg/address",
+                "topic": [
+                    {
+                        "parent_source_id": {
+                            "input": "org_registry_id",
+                            "from": "claim"
+                        },
+                        "parent_type": {
+                            "input": "incorporation",
+                            "from": "value"
+                        },
+                        "source_id": {
+                            "input": "dba_corp_num",
+                            "from": "claim"
+                        },
+                        "type": {
+                            "input": "doing_business_as",
+                            "from": "value"
+                        }
+                    },
+                    {
+                        "source_id": {
+                            "input": "org_registry_id",
+                            "from": "claim"
+                        },
+                        "type": {
+                            "input": "incorporation",
+                            "from": "value"
+                        }
+                    }
+                ],
+                "cardinality_fields": ["addr_type"],
+                "mapping": [
+                    {
+                        "model": "address",
+                        "fields": {
+                            "addressee": {
+                                "input": "addressee",
+                                "from": "claim"
+                            },
+                            "civic_address": {
+                                "input": "local_address",
+                                "from": "claim"
+                            },
+                            "city": {
+                                "input": "municipality",
+                                "from": "claim"
+                            },
+                            "province": {
+                                "input": "province",
+                                "from": "claim"
+                            },
+                            "postal_code": {
+                                "input": "postal_code",
+                                "from": "claim",
+                                "processor": ["string_helpers.uppercase"]
+                            },
+                            "country": {
+                                "input": "country",
+                                "from": "claim"
+                            },
+                            "type": {
+                                "input": "addr_type",
+                                "from": "claim"
+                            },
+                            "end_date": {
+                                "input": "end_date",
+                                "from": "claim"
+                            }
+                        }
+                    }
+                ]
+                }
+            ]
+            }
+
+        ```
+
+        returns:
+
+        ```json
+
+        {
+            "success": true,
+            "result": {
+                "issuer": {
+                    "id": 1,
+                    "did": "6qnvgJtqwK44D8LFYnV5Yf",
+                    "name": "BC Corporate Registry",
+                    "abbreviation": "BCReg",
+                    "email": "bcreg.test.issuer@example.ca",
+                    "url": "http://localhost:5000"
+                },
+                "schemas": [
+                    {
+                        "id": 1,
+                        "name": "incorporation.bc_registries",
+                        "version": "1.0.31",
+                        "origin_did": "6qnvgJtqwK44D8LFYnV5Yf"
+                    },
+                    {
+                        "id": 2,
+                        "name": "doing_business_as.bc_registries",
+                        "version": "1.0.31",
+                        "origin_did": "6qnvgJtqwK44D8LFYnV5Yf"
+                    }
+                ],
+                "credential_types": [
+                    {
+                        "id": 1,
+                        "schema_id": 1,
+                        "issuer_id": 1,
+                        "description": "Incorporation",
+                        "processor_config": null
+                    },
+                    {
+                        "id": 2,
+                        "schema_id": 2,
+                        "issuer_id": 1,
+                        "description": "Doing Business As",
+                        "processor_config": null
+                    }
+                ]
+            }
+        }
+
+        ```
+
       responses:
         "200":
           description: OK
@@ -1127,9 +1781,8 @@ paths:
         required: true
         schema:
           type: integer
-
 servers:
-  - url: "http://localhost:8081/api/v2"
+  - url: 'https://theorgbook.pathfinder.gov.bc.ca/api'
 components:
   securitySchemes:
     basic:
@@ -1159,26 +1812,32 @@ components:
           title: Addressee
           type: string
           minLength: 1
+          nullable: true
         civic_address:
           title: Civic address
           type: string
           minLength: 1
+          nullable: true
         city:
           title: City
           type: string
           minLength: 1
+          nullable: true
         province:
           title: Province
           type: string
           minLength: 1
+          nullable: true
         postal_code:
           title: Postal code
           type: string
           minLength: 1
+          nullable: true
         country:
           title: Country
           type: string
           minLength: 1
+          nullable: true
         credential:
           title: Credential
           type: integer
@@ -1210,10 +1869,12 @@ components:
           title: Format
           type: string
           minLength: 1
+          nullable: true
         value:
           title: Value
           type: string
           minLength: 1
+          nullable: true
         credential:
           title: Credential
           type: integer
@@ -1246,10 +1907,12 @@ components:
           title: Credential def id
           type: string
           minLength: 1
+          nullable: true
         cardinality_hash:
           title: Cardinality hash
           type: string
           minLength: 1
+          nullable: true
         effective_date:
           title: Effective date
           type: string
@@ -1257,15 +1920,31 @@ components:
         inactive:
           title: Inactive
           type: boolean
+        latest:
+          title: Latest
+          type: boolean
         revoked:
           title: Revoked
           type: boolean
+        revoked_date:
+          title: Revoked date
+          type: string
+          format: date-time
+          nullable: true
         topic:
           title: Topic
           type: integer
+        credential_set:
+          title: Credential set
+          type: integer
+          nullable: true
         credential_type:
           title: Credential type
           type: integer
+        revoked_by:
+          title: Revoked by
+          type: integer
+          nullable: true
     Issuer:
       title: Issuer
       required:
@@ -1324,7 +2003,7 @@ components:
           type: integer
           readOnly: true
         issuer:
-          $ref: "#/components/schemas/Issuer"
+          $ref: '#/components/schemas/Issuer'
         has_logo:
           title: Has logo
           type: boolean
@@ -1342,10 +2021,12 @@ components:
         description:
           title: Description
           type: string
+          nullable: true
         credential_def_id:
           title: Credential def id
           type: string
           minLength: 1
+          nullable: true
         schema:
           required:
             - name
@@ -1403,10 +2084,12 @@ components:
           title: Text
           type: string
           minLength: 1
+          nullable: true
         language:
           title: Language
           type: string
           minLength: 1
+          nullable: true
         credential:
           title: Credential
           type: integer
@@ -1443,36 +2126,52 @@ components:
           title: Origin did
           type: string
           minLength: 1
-    CredentialAddress:
+    CredentialSet:
+      title: Credential set
       type: object
       properties:
+        id:
+          title: ID
+          type: integer
+          readOnly: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
+          readOnly: true
         update_timestamp:
           title: Update timestamp
           type: string
           format: date-time
           readOnly: true
-        province:
-          title: Province
+        latest_credential_id:
+          title: Latest credential id
           type: string
-          minLength: 1
-        addressee:
-          title: Addressee
+          readOnly: true
+        topic_id:
+          title: Topic id
           type: string
-          minLength: 1
-        postal_code:
-          title: Postal code
+          readOnly: true
+        first_effective_date:
+          title: First effective date
           type: string
-          minLength: 1
+          format: date-time
+          nullable: true
+        last_effective_date:
+          title: Last effective date
+          type: string
+          format: date-time
+          nullable: true
+    CredentialAddress:
+      type: object
+      properties:
         country:
           title: Country
           type: string
           minLength: 1
-        credential_id:
-          title: Credential id
-          type: string
-          readOnly: true
-        create_timestamp:
-          title: Create timestamp
+          nullable: true
+        update_timestamp:
+          title: Update timestamp
           type: string
           format: date-time
           readOnly: true
@@ -1480,13 +2179,39 @@ components:
           title: City
           type: string
           minLength: 1
+          nullable: true
+        addressee:
+          title: Addressee
+          type: string
+          minLength: 1
+          nullable: true
         civic_address:
           title: Civic address
           type: string
           minLength: 1
+          nullable: true
         id:
           title: ID
           type: integer
+          readOnly: true
+        credential_id:
+          title: Credential id
+          type: string
+          readOnly: true
+        postal_code:
+          title: Postal code
+          type: string
+          minLength: 1
+          nullable: true
+        province:
+          title: Province
+          type: string
+          minLength: 1
+          nullable: true
+        create_timestamp:
+          title: Create timestamp
+          type: string
+          format: date-time
           readOnly: true
     CredentialAttribute:
       type: object
@@ -1503,10 +2228,12 @@ components:
           title: Format
           type: string
           minLength: 1
+          nullable: true
         value:
           title: Value
           type: string
           minLength: 1
+          nullable: true
         credential_id:
           title: Credential id
           type: string
@@ -1522,10 +2249,12 @@ components:
           title: Text
           type: string
           minLength: 1
+          nullable: true
         language:
           title: Language
           type: string
           minLength: 1
+          nullable: true
         credential_id:
           title: Credential id
           type: string
@@ -1561,6 +2290,7 @@ components:
           minLength: 1
     CredentialSearch:
       required:
+        - credential_set
         - credential_type
         - addresses
         - attributes
@@ -1582,8 +2312,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        credential_set:
+          $ref: '#/components/schemas/CredentialSet'
         credential_type:
-          $ref: "#/components/schemas/CredentialType"
+          $ref: '#/components/schemas/CredentialType'
         effective_date:
           title: Effective date
           type: string
@@ -1591,23 +2323,31 @@ components:
         addresses:
           type: array
           items:
-            $ref: "#/components/schemas/CredentialAddress"
+            $ref: '#/components/schemas/CredentialAddress'
         attributes:
           type: array
           items:
-            $ref: "#/components/schemas/CredentialAttribute"
+            $ref: '#/components/schemas/CredentialAttribute'
         names:
           type: array
           items:
-            $ref: "#/components/schemas/CredentialName"
+            $ref: '#/components/schemas/CredentialName'
         inactive:
           title: Inactive
           type: boolean
         revoked:
           title: Revoked
           type: boolean
+        revoked_date:
+          title: Revoked date
+          type: string
+          format: date-time
+          nullable: true
+        latest:
+          title: Latest
+          type: boolean
         topic:
-          $ref: "#/components/schemas/CredentialTopic"
+          $ref: '#/components/schemas/CredentialTopic'
     CredentialTopicExt:
       title: Topic
       required:
@@ -1643,17 +2383,18 @@ components:
         addresses:
           type: array
           items:
-            $ref: "#/components/schemas/CredentialAddress"
+            $ref: '#/components/schemas/CredentialAddress'
         attributes:
           type: array
           items:
-            $ref: "#/components/schemas/CredentialAttribute"
+            $ref: '#/components/schemas/CredentialAttribute'
         names:
           type: array
           items:
-            $ref: "#/components/schemas/CredentialName"
+            $ref: '#/components/schemas/CredentialName'
     CredentialTopicSearch:
       required:
+        - credential_set
         - credential_type
         - names
         - topic
@@ -1673,8 +2414,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        credential_set:
+          $ref: '#/components/schemas/CredentialSet'
         credential_type:
-          $ref: "#/components/schemas/CredentialType"
+          $ref: '#/components/schemas/CredentialType'
         effective_date:
           title: Effective date
           type: string
@@ -1682,15 +2425,23 @@ components:
         names:
           type: array
           items:
-            $ref: "#/components/schemas/CredentialName"
+            $ref: '#/components/schemas/CredentialName'
         inactive:
           title: Inactive
           type: boolean
         revoked:
           title: Revoked
           type: boolean
+        revoked_date:
+          title: Revoked date
+          type: string
+          format: date-time
+          nullable: true
+        latest:
+          title: Latest
+          type: boolean
         topic:
-          $ref: "#/components/schemas/CredentialTopicExt"
+          $ref: '#/components/schemas/CredentialTopicExt'
     Topic:
       required:
         - source_id
