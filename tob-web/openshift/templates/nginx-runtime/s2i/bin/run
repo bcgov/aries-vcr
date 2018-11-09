@@ -42,6 +42,7 @@ read -r -d '' _CONFIG_SECTION << EOF
         }
         location = /api/v2/ {
             # allow access to swagger
+            proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
             proxy_pass ${1};
         }
