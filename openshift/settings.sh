@@ -9,13 +9,13 @@ export GIT_URI="https://github.com/bcgov/TheOrgBook.git"
 export GIT_REF="master"
 
 # The project components
-export components="tob-db tob-solr tob-api tob-web tob-wallet tob-ghost"
+export components="tob-db tob-solr tob-api tob-web tob-wallet"
 
 # The builds to be triggered after buildconfigs created (not auto-triggered)
 export builds=""
 
 # The images to be tagged after build
-export images="angular-on-nginx django solr schema-spy ghost"
+export images="angular-on-nginx django solr schema-spy"
 
 # The routes for the project
 export routes="angular-on-nginx django solr schema-spy"
