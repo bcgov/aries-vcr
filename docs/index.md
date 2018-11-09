@@ -5,4 +5,4 @@ title: Verifiable Organizations Network
 
 # We've Moved!
 
-### Our new info site is [https://von.pathfinder.gov.bc.ca/](https://von.pathfinder.gov.bc.ca/)
+### Our new info site is [https://vonx.io/](https://vonx.io/)
