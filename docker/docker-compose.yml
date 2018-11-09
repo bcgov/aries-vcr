@@ -9,6 +9,8 @@ services:
       - API_URL=${API_URL}
       - IpFilterRules=${IpFilterRules}
       - RealIpFrom=${RealIpFrom}
+      - HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME}
+      - HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD}
       - TOB_THEME=${TOB_THEME}
       - WEB_BASE_HREF=${WEB_BASE_HREF}
       - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}

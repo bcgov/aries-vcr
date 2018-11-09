@@ -198,7 +198,7 @@ build-api() {
   #
   # tob-api
   #
-  BASE_IMAGE="bcgovimages/von-image:py36-1.6-ew-10-s2i"
+  BASE_IMAGE="bcgovimages/von-image:py36-1.6-ew-11-s2i"
   echo -e "\nBuilding django image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -323,6 +323,8 @@ configureEnvironment() {
   export API_URL=${API_URL-http://tob-api:8080/api/v2/}
   export IpFilterRules='#allow all; deny all;'
   export RealIpFrom='127.0.0.0/16'
+  export HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME:-}
+  export HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD:-}
 }
 
 getStartupParams() {
