@@ -9,34 +9,40 @@ getApiProxyConfigSection (){
 # API_URL:
 #  - The URL for the API endpoint.
 # ================================================================================
+read -r -d '' _FORWARDED_HEADERS << EOF
+            proxy_set_header X-Forwarded-Host \$host:\$server_port;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
+EOF
+
 read -r -d '' _CONFIG_SECTION << EOF
         # proxy requests to the API
         location /api/indy/ {
-            proxy_set_header X-Forwarded-Host \$host:\$server_port;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
             proxy_pass ${1}indy/;
         }
         location /api/static/ {
-            proxy_set_header X-Forwarded-Host \$host:\$server_port;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
+            ${_FORWARDED_HEADERS}
             proxy_pass ${1%v2/}static/;
         }
         location /api/ {
-            ${HTTP_BASIC}
+            limit_except OPTIONS {
+                ${HTTP_BASIC}
+            }
             proxy_set_header Authorization "";
-            proxy_set_header X-Forwarded-Host \$host:\$server_port;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
+            ${_FORWARDED_HEADERS}
             proxy_pass ${1};
         }
         location /api/v2/ {
-            ${HTTP_BASIC}
+            limit_except OPTIONS {
+                ${HTTP_BASIC}
+            }
             proxy_set_header Authorization "";
-            proxy_set_header X-Forwarded-Host \$host:\$server_port;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
+            ${_FORWARDED_HEADERS}
+            proxy_pass ${1};
+        }
+        location = /api/v2/ {
+            # allow access to swagger
+            ${_FORWARDED_HEADERS}
             proxy_pass ${1};
         }
 EOF
@@ -114,6 +120,16 @@ getRemoveBaseHref() {
   fi
 }
 
+if [ -n "$HTTP_BASIC_USERNAME" ] && [ -n "$HTTP_BASIC_PASSWORD" ]; then
+    echo "---> Generating .htpasswd file"
+    `echo "$HTTP_BASIC_USERNAME:$(openssl passwd -crypt $HTTP_BASIC_PASSWORD)" > /tmp/.htpasswd`
+    if [ -z "${HTTP_BASIC+test}" ] || [ "on" == "${HTTP_BASIC}" ] || [ "1" == "${HTTP_BASIC}" ]; then
+      HTTP_BASIC="auth_basic 'restricted';"
+    elif [ "0" == "${HTTP_BASIC}" ] || [ "off" == "${HTTP_BASIC}" ]; then
+      HTTP_BASIC=""
+    fi
+fi
+
 export RealIpFrom="${RealIpFrom:-172.51.0.0/16}"
 export TOB_THEME="${TOB_THEME:-}"
 export WEB_BASE_HREF="${WEB_BASE_HREF:-/}"
@@ -156,11 +172,6 @@ REPLACE_VARS="
 "
 
 sed "$(makeReplacementPattern $REPLACE_VARS)" /tmp/nginx.conf.template > /etc/nginx/nginx.conf
-
-if [ -n "$HTTP_BASIC_USERNAME" ] && [ -n "$HTTP_BASIC_PASSWORD" ]; then
-    echo "---> Generating .htpasswd file"
-    `echo "$HTTP_BASIC_USERNAME:$(openssl passwd -crypt $HTTP_BASIC_PASSWORD)" > /tmp/.htpasswd`
-fi
 
 echo "---> Starting nginx ..."
 /usr/sbin/nginx -g "daemon off;"
