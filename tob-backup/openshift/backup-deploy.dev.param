@@ -5,10 +5,10 @@
 #=========================================================
 # NAME=backup
 # SOURCE_IMAGE_NAME=backup
-# IMAGE_NAMESPACE=ontvon-von-tools
-TAG_NAME=test
+# IMAGE_NAMESPACE=devex-von-tools
+TAG_NAME=dev
 # DATABASE_SERVICE_NAME=postgresql
-# DATABASE_NAME=TheOrgBook_Database
+# DATABASE_NAME=MyDatabase
 # DATABASE_DEPLOYMENT_NAME=postgresql
 # WALLET_DB_HOST_NAME=wallet-db
 # BACKUP_STRATEGY=rolling
@@ -22,7 +22,7 @@ TAG_NAME=test
 # CONFIG_MAP_NAME=backup-conf
 # CONFIG_MOUNT_PATH=/
 # PERSISTENT_VOLUME_NAME=backup-pvc
-PERSISTENT_VOLUME_SIZE=120Gi
+PERSISTENT_VOLUME_SIZE=10Gi
 PERSISTENT_VOLUME_CLASS=gluster-file
 # CPU_REQUEST=0
 # CPU_LIMIT=0
