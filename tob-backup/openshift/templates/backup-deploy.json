@@ -133,10 +133,6 @@
                     "value": "${DATABASE_SERVICE_NAME}"
                   },
                   {
-                    "name": "POSTGRESQL_DATABASE",
-                    "value": "${DATABASE_NAME}"
-                  },
-                  {
                     "name": "POSTGRESQL_USER",
                     "valueFrom": {
                       "secretKeyRef": {
@@ -236,13 +232,6 @@
       "description": "The name of the database service.",
       "required": true,
       "value": "postgresql"
-    },
-    {
-      "name": "DATABASE_NAME",
-      "displayName": "Database Name",
-      "description": "The name of the database.",
-      "required": true,
-      "value": "MyDatabase"
     },
     {
       "name": "DATABASE_DEPLOYMENT_NAME",

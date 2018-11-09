@@ -8,7 +8,6 @@
 # IMAGE_NAMESPACE=devex-von-tools
 TAG_NAME=bc-tob-prod
 # DATABASE_SERVICE_NAME=postgresql
-# DATABASE_NAME=TheOrgBook_Database
 # DATABASE_DEPLOYMENT_NAME=postgresql
 # WALLET_DB_HOST_NAME=wallet-db
 # BACKUP_STRATEGY=rolling
