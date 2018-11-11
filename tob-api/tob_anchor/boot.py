@@ -121,12 +121,6 @@ def run_reindex():
     from django.core.management import call_command
     batch_size = os.getenv("SOLR_BATCH_SIZE", 500)
     call_command("update_index", "--max-retries=5", "--batch-size={}".format(batch_size))
-    update_suggester()
-
-
-def update_suggester():
-    from api_v2.suggest import SuggestManager
-    SuggestManager().rebuild()
 
 
 def run_migration():

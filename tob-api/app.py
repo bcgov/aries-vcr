@@ -8,7 +8,7 @@ from aiohttp import web
 import django
 from tob_anchor.boot import (
     init_app, perform_register_services, start_indy_manager,
-    run_django, run_reindex, run_migration, update_suggester,
+    run_django, run_reindex, run_migration,
 )
 
 parser = argparse.ArgumentParser(description="aiohttp server example")
@@ -33,8 +33,6 @@ if __name__ == '__main__':
         if do_reindex:
             # queue in current asyncio loop
             run_django(run_reindex)
-        elif skip_indexing != 'all':
-            run_django(update_suggester)
 
     args = parser.parse_args()
     if not args.socket and not args.port:

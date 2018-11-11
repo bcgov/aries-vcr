@@ -24,7 +24,6 @@ from api_v2.serializers.search import (
     CredentialFacetSerializer,
     CredentialTopicSearchSerializer,
 )
-from api_v2.suggest import SuggestManager
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -129,34 +128,6 @@ class NameAutocompleteView(HaystackViewSet):
     ]
     ordering_fields = ('effective_date', 'revoked_date', 'score')
     ordering = ('-score')
-
-
-class CustomFilterBuilder(FilterQueryBuilder):
-    @staticmethod
-    def tokenize(stream, separator):
-        """
-        Do not tokenize filter input - pass through to Solr to tokenize
-        The default implementation splits by ',' and joins with 'OR'
-        """
-        for value in stream:
-            yield value
-
-    def build_query(self, **filters):
-        """
-        Custom handling for name filter
-        Search by name and name_precise (using __exact to pass through the query)
-        allowing results to be ordered more naturally
-        """
-        name_filter = None
-        SQ = self.view.query_object
-        if 'name' in filters:
-            name = filters.pop("name")
-            if name is not None and len(name):
-                name_filter = SQ(name__exact=name) | SQ(name_precise__exact=name)
-        applicable_filters, applicable_exclusions = super(CustomFilterBuilder, self).build_query(**filters)
-        if name_filter:
-            applicable_filters = (name_filter & applicable_filters) if applicable_filters else name_filter
-        return applicable_filters, applicable_exclusions
 
 
 class NameFilterBuilder(AutocompleteFilterBuilder):

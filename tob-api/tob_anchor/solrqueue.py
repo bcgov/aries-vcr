@@ -6,15 +6,12 @@ import threading
 from haystack.utils import get_identifier
 
 from api_v2.search.index import TxnAwareSearchIndex
-from api_v2.suggest import SuggestManager
 
 LOGGER = logging.getLogger(__name__)
 
 
 class SolrQueue:
     def __init__(self):
-        self._rebuild_count = None
-        self._rebuild_time = None
         self._queue = Queue()
         self._prev_queue = None
         self._stop = threading.Event()
@@ -62,8 +59,6 @@ class SolrQueue:
         TxnAwareSearchIndex._backend_queue = self._prev_queue
 
     def start(self):
-        self._rebuild_count = 0
-        self._rebuild_time = datetime.now()
         self._thread = threading.Thread(target=self._run)
         self._thread.start()
 
@@ -107,11 +102,6 @@ class SolrQueue:
                 last_using = using
                 last_del = delete
                 last_ids = set(ids)
-        if self._rebuild_count > 1000 or \
-                (self._rebuild_count and (datetime.now() - self._rebuild_time).seconds > 300):
-            self._rebuild_count = 0
-            self._rebuild_time = datetime.now()
-            SuggestManager().rebuild()
 
     def update(self, index_cls, using, ids):
         index = index_cls()
@@ -120,7 +110,6 @@ class SolrQueue:
             LOGGER.debug("Updating %d row(s) in solr queue: %s", len(ids), ids)
             rows = index.index_queryset(using).filter(id__in=ids)
             backend.update(index, rows)
-            self._rebuild_count += len(ids)
 
     def remove(self, index_cls, using, ids):
         index = index_cls()
@@ -129,4 +118,3 @@ class SolrQueue:
             LOGGER.debug("Removing %d row(s) in solr queue: %s", len(ids), ids)
             # backend.remove has no support for a list of IDs
             backend.conn.delete(id=ids)
-            self._rebuild_count += len(ids)
