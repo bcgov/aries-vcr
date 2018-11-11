@@ -73,7 +73,6 @@ export class GeneralDataService {
           return _throw(error);
         }));
       req.subscribe((data: any) => {
-        console.log('quickload', data);
         if(data.counts) {
           for (let k in data.counts) {
             this._recordCounts[k] = parseInt(data.counts[k]);
@@ -118,7 +117,6 @@ export class GeneralDataService {
             ret.push({id: row.id, term: found});
           }
         }
-        console.log(ret);
         return ret;
       }));
   }
