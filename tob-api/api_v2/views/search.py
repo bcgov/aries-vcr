@@ -14,6 +14,8 @@ from drf_haystack.filters import (
 from drf_haystack.mixins import FacetMixin
 from drf_haystack.query import BaseQueryBuilder, FilterQueryBuilder
 from drf_haystack.viewsets import HaystackViewSet
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from haystack.query import RelatedSearchQuerySet
 from haystack.inputs import Clean, Exact, Raw
 
@@ -24,9 +26,7 @@ from api_v2.serializers.search import (
     CredentialFacetSerializer,
     CredentialTopicSearchSerializer,
 )
-
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from tob_api.pagination import ResultLimitPagination
 
 LOGGER = logging.getLogger(__name__)
 
@@ -104,6 +104,7 @@ class NameAutocompleteView(HaystackViewSet):
     Return autocomplete results for a query string
     """
     permission_classes = (permissions.AllowAny,)
+    pagination_class = ResultLimitPagination
 
     @swagger_auto_schema(
         manual_parameters=[
