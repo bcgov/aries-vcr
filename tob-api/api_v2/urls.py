@@ -42,8 +42,16 @@ router.register(
     search.CredentialTopicSearchView,
     "Credential Topic Search",
 )
-router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
-searchPatterns = [url(r"^search/autocomplete$", search.NameAutocompleteView.as_view())]
+router.register(
+    r"search/credential",
+    search.CredentialSearchView,
+    "Credential Search",
+)
+router.register(
+    r"search/autocomplete",
+    search.NameAutocompleteView,
+    "Name Autocomplete",
+)
 
 # Misc endpoints
 miscPatterns = [url(r"^quickload$", misc.quickload)]
@@ -53,5 +61,5 @@ swaggerPatterns = [
 ]
 
 urlpatterns = format_suffix_patterns(
-    router.urls + searchPatterns + miscPatterns + swaggerPatterns
+    router.urls + miscPatterns + swaggerPatterns
 )

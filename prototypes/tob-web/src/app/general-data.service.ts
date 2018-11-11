@@ -102,7 +102,25 @@ export class GeneralDataService {
     }
     let params = new HttpParams().set('q', term);
     return this.loadFromApi('search/autocomplete', params)
-      .pipe(map(response => response["result"]));
+      .pipe(map(response => {
+        let ret = [];
+        for(let row of response['results']) {
+          let found = null;
+          for(let name of row.names) {
+            if(~ name.text.toLowerCase().indexOf(term.toLowerCase())) {
+              found = name.text;
+              break;
+            } else if(found === null) {
+              found = name.text;
+            }
+          }
+          if(found !== null) {
+            ret.push({id: row.id, term: found});
+          }
+        }
+        console.log(ret);
+        return ret;
+      }));
   }
 
   makeHttpParams(query?: { [key: string ]: string } | HttpParams) {

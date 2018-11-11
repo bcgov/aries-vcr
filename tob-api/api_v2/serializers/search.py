@@ -197,6 +197,18 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
         )
 
 
+class CredentialAutocompleteSerializer(HaystackSerializerMixin, CredentialSerializer):
+    names = CredentialNameSerializer(many=True)
+
+    class Meta(CredentialSerializer.Meta):
+        fields = (
+            "id", "names", "inactive",
+        )
+        search_fields = (
+            "inactive", "score",
+        )
+
+
 class CredentialTopicSearchSerializer(CredentialSearchSerializer):
     """
     Return credentials with addresses and attributes removed, but

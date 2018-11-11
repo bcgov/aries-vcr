@@ -131,7 +131,7 @@ export class SearchInputComponent implements AfterViewInit {
         distinctUntilChanged(),
         switchMap(term => this._dataService.autocomplete(term)),
         map((result: any[]) =>
-          result.map((item) => item['term'].replace(/<[^>]*>/g, '')))
+          result.map((item) => item['term']))
       );
     }
   }

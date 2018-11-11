@@ -22,39 +22,6 @@
 -->
 <config>
 
-    <!-- *** Manual additions for autocomplete (suggester) support -->
-    <searchComponent name="suggest" class="solr.SuggestComponent">
-        <lst name="suggester">
-            <str name="name">autocomplete</str>
-            <str name="lookupImpl">BlendedInfixLookupFactory</str>
-            <str name="dictionaryimpl">DocumentDictionaryFactory</str>
-            <str name="field">name_suggest</str>
-            <str name="payloadField">id</str>
-            <str name="suggestAnalyzerFieldType">text_en</str>
-            <str name="indexPath">autocomplete</str>
-            <str name="buildOnStartup">false</str>
-            <str name="buildOnCommit">false</str>
-            <str name="buildOnOptimize">false</str>
-            <bool name="exactMatchFirst">true</bool>
-            <bool name="allTermsRequired">false</bool>
-            <bool name="preserveSep">true</bool>
-		</lst>
-    </searchComponent>
-    <requestHandler name="/suggest" class="solr.SearchHandler" startup="lazy">
-        <lst name="defaults">
-            <str name="echoParams">explicit</str>
-            <str name="wt">json</str>
-            <str name="indent">false</str>
-            <str name="suggest">true</str>
-            <str name="suggest.count">10</str>
-            <str name="suggest.dictionary">autocomplete</str>
-            <str name="suggest.highlight">false</str>
-        </lst>
-        <arr name="components">
-            <str>suggest</str>
-        </arr>
-    </requestHandler>
-
   <!-- In all configuration below, a prefix of "solr." for class names
        is an alias that causes solr to search appropriate packages,
        including org.apache.solr.(search|update|request|core|analysis)
