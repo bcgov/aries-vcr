@@ -7,6 +7,7 @@ import re
 import time
 from importlib import import_module
 
+from django.core.exceptions import ValidationError
 from django.db import transaction, DEFAULT_DB_ALIAS
 from django.db.utils import IntegrityError
 from django.utils.dateparse import parse_datetime
@@ -405,10 +406,13 @@ class CredentialManager(object):
         except Topic.DoesNotExist:
             try:
                 return Topic.objects.create(**topic_spec)
+            except ValidationError:
+                if not retry:
+                    raise CredentialException("Django validation error while creating topic")
             except IntegrityError:
-                if retry:
-                    return cls.find_or_create_topic(topic_spec, retry=False)
-                raise CredentialException("Database error while creating topic")
+                if not retry:
+                    raise CredentialException("Database error while creating topic")
+        return cls.find_or_create_topic(topic_spec, retry=False)
 
     @classmethod
     def resolve_credential_topics(cls, credential, processor_config) -> (Topic, Topic):
