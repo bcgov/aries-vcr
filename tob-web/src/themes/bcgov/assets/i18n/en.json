@@ -10,6 +10,7 @@
     "entity_status_effective": "Status Effective Date",
     "entity_type": "Registration Type",
     "home_jurisdiction": "Home Jurisdiction",
+    "reason_description": "Credential Reason",
     "registered_jurisdiction": "Registered Jurisdiction",
     "registration_date": "Registration Date",
     "reason_description": "Credential Issue Reason"
