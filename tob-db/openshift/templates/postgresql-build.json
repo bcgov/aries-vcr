@@ -106,7 +106,7 @@
             "displayName": "Source Image Tag",
             "required": true,
             "description": "The tag of the source image.",
-            "value": "9.5"
+            "value": "latest"
         },
         {
             "name": "OUTPUT_IMAGE_TAG",
