@@ -93,20 +93,20 @@
           </div>
         </div>
 
-        <div class="row form-group">
+        <div class="row form-group" *ngIf="record.effective_date">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.start-date</label>
             <div class="form-field">
-              <span class="claim-info date" *ngIf="record.effective_date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
+              <span class="claim-info date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
             </div>
           </div>
         </div>
 
         <div class="row form-group" *ngIf="record.create_timestamp">
           <div class="col-sm-12">
-            <label class="control-label" translate>general.date-created</label>
+            <label class="control-label" translate>general.date-entered</label>
             <div class="form-field">
-              <span class="claim-info date" *ngIf="record.create_timestamp">{{record.create_timestamp | dateFormat: 'effectiveDateTime'}}</span>
+              <span class="claim-info date">{{record.create_timestamp | dateFormat: 'effectiveDateTime'}}</span>
             </div>
           </div>
         </div>

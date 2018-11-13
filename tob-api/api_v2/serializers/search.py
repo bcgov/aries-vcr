@@ -137,6 +137,7 @@ class CustomTopicSerializer(TopicSerializer):
         depth = 1
         fields = (
             "id",
+            "create_timestamp",
             "source_id",
             "type",
             "names",

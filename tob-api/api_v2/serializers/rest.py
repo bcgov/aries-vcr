@@ -134,6 +134,7 @@ class CredentialExtSerializer(CredentialSerializer):
         depth = 1
         fields = (
             "id",
+            "create_timestamp",
             "effective_date",
             "inactive",
             "latest",
