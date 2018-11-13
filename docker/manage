@@ -180,7 +180,7 @@ build-db() {
   echo -e "\nBuilding postgresql image ..."
   ${S2I_EXE} build \
     '../tob-db/config' \
-    'registry.access.redhat.com/rhscl/postgresql-95-rhel7:9.5' \
+    'registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest' \
     'postgresql'
 }
 

@@ -8,6 +8,6 @@ GIT_REPO_URL=https://github.com/bcgov/TheOrgBook.git
 GIT_REF=master
 SOURCE_CONTEXT_DIR=tob-db/config
 SOURCE_IMAGE_KIND=DockerImage
-SOURCE_IMAGE_NAME=registry.access.redhat.com/rhscl/postgresql-95-rhel7
+SOURCE_IMAGE_NAME=registry.access.redhat.com/rhscl/postgresql-10-rhel7
 SOURCE_IMAGE_TAG=9.5
 OUTPUT_IMAGE_TAG=latest
