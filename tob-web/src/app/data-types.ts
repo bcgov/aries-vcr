@@ -121,6 +121,7 @@ export namespace Model {
     _attribute_map: {[key: string]: Attribute};
     names: Name[];
     topic: Topic;
+    related_topics: Topic[];
 
     get pageTitle(): string {
       return this.credential_type && this.credential_type.description;
@@ -137,6 +138,7 @@ export namespace Model {
       addresses: 'Address',
       attributes: 'Attribute',
       names: 'Name',
+      related_topics: 'Topic',
     };
 
     get attributes(): Attribute[] {

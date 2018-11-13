@@ -108,17 +108,18 @@ class CredentialTopicSerializer(TopicSerializer):
             "source_id", "type",
         )
 
-class CredentialTopicExtSerializer(TopicSerializer):
-    addresses = CredentialAddressSerializer(source='get_active_addresses', many=True)
-    attributes = CredentialAttributeSerializer(source='get_active_attributes', many=True)
+class CredentialNamedTopicSerializer(CredentialTopicSerializer):
     names = CredentialNameSerializer(source='get_active_names', many=True)
 
-    class Meta(TopicSerializer.Meta):
-        fields = (
-            "id", "create_timestamp", "update_timestamp",
-            "source_id", "type",
-            "addresses", "attributes", "names",
-        )
+    class Meta(CredentialTopicSerializer.Meta):
+        fields = CredentialTopicSerializer.Meta.fields + ("names",)
+
+class CredentialTopicExtSerializer(CredentialNamedTopicSerializer):
+    addresses = CredentialAddressSerializer(source='get_active_addresses', many=True)
+    attributes = CredentialAttributeSerializer(source='get_active_attributes', many=True)
+
+    class Meta(CredentialNamedTopicSerializer.Meta):
+        fields = CredentialNamedTopicSerializer.Meta.fields + ("addresses", "attributes")
 
 
 class CredentialExtSerializer(CredentialSerializer):
@@ -127,6 +128,7 @@ class CredentialExtSerializer(CredentialSerializer):
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
     topic = CredentialTopicExtSerializer()
+    related_topics = CredentialNamedTopicSerializer(many=True)
 
     class Meta(CredentialSerializer.Meta):
         depth = 1
@@ -143,6 +145,7 @@ class CredentialExtSerializer(CredentialSerializer):
             "attributes",
             "names",
             "topic",
+            "related_topics",
         )
 
 

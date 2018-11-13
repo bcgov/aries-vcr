@@ -19,5 +19,15 @@ class Credential(Auditable):
     revoked_date = models.DateTimeField(null=True)
     revoked_by = models.ForeignKey("Credential", related_name="+", null=True)
 
+    # Topics related by this credential
+    related_topics = models.ManyToManyField(
+        "Topic",
+        # Topics that have a verifiable relationship to me
+        related_name="related_via",
+        through="TopicRelationship",
+        through_fields=("credential", "related_topic"),
+        symmetrical=False,
+    )
+
     class Meta:
         db_table = "credential"
