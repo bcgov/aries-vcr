@@ -32,6 +32,19 @@ $slot-focus-width: $btn-focus-width;
   }
 }
 
+.controls-outer {
+  padding: 5px 3px 3px;
+  text-align: center;
+  .btn {
+    font-size: 110%;
+    padding: 0.1rem;
+    width: 3rem;
+  }
+  > .btn, > .btn-group {
+    margin: 0 4px;
+  }
+}
+
 .timeline-row {
   border: $timeline-border;
   border-left: none;

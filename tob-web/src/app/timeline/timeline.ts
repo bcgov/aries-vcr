@@ -414,6 +414,7 @@ export namespace Timeline {
     _gestureStartLayout: Layout;
     _rendered: boolean = false;
     _renderer: Renderer2;
+    _resetRange : {start: Date, end: Date};
     _rows: Row[] = [];
     _redrawTimer: number;
     _updateTimer: number;
@@ -567,6 +568,46 @@ export namespace Timeline {
         this.redraw();
       }
       return elts.container;
+    }
+
+    renderControls() {
+      let groups = [
+        ['fastprev', 'prev'],
+        ['zoomout', 'zoomin'],
+        ['reset'],
+        ['next', 'fastnext'],
+      ];
+      let icons = {
+        fastprev: 'fa-angle-double-left',
+        prev: 'fa-angle-left',
+        zoomin: 'fa-search-plus',
+        zoomout: 'fa-search-minus',
+        reset: 'fa-undo',
+        next: 'fa-angle-right',
+        fastnext: 'fa-angle-double-right',
+      };
+      let rdr = this._renderer;
+      for(let btns of groups) {
+        let grp = rdr.createElement('div');
+        rdr.addClass(grp, 'btn-group');
+        grp.setAttribute('role', 'group');
+        for(let btn of btns) {
+          let elt = rdr.createElement('button');
+          elt.setAttribute('type', 'button');
+          rdr.addClass(elt, 'btn');
+          rdr.addClass(elt, 'btn-sm');
+          rdr.addClass(elt, 'btn-secondary');
+          elt.name = btn;
+          elt.tabIndex = 0;
+          let icon = rdr.createElement('span');
+          rdr.addClass(icon, 'fa');
+          rdr.addClass(icon, icons[btn]);
+          elt.appendChild(icon);
+          grp.appendChild(elt);
+          rdr.listen(elt, 'click', this.handleControl.bind(this));
+        }
+        this._elts.controlsOuter.appendChild(grp);
+      }
     }
 
     redraw() {
