@@ -46,20 +46,24 @@ usage() {
     
                 $0 build
     
-      start - Creates the application containers from the built images
-              and starts the services based on the docker-compose.yml file.
-    
-              You can pass in a list of containers to start.  
-              By default all containers will be started.
-              
-              The API_URL used by tob-web can also be redirected.
-    
-              Examples:
-              $0 start
-              $0 start tob-solr
-              $0 start tob-web
-              $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
-              $0 start tob-api
+      up -  Creates the application containers from the built images
+            and starts the services based on the docker-compose.yml file.
+
+            You can pass in a list of containers to start.  
+            By default all containers will be started.
+            
+            The API_URL used by tob-web can also be redirected.
+
+            Examples:
+            $0 start
+            $0 start tob-solr
+            $0 start tob-web
+            $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
+            $0 start tob-api
+
+      start - Same as up
+
+      logs - Display the logs from the docker compose run (ctrl-c to exit).
 
       web-dev - Builds and runs a live development version of tob-web, along with
                 the required supporting components. Once started, the website is
@@ -68,7 +72,10 @@ usage() {
       stop - Stops the services.  This is a non-destructive process.  The containers
              are not deleted so they will be reused the next time you run start.
     
-      rm - Remove project containers and associated volumes.
+      down - Brings down the services and removes the volumes (storage).  The containers
+             are not deleted so they will be reused the next time you run start.
+
+      rm - Same as down
     
       registerDids - Register the DIDs for the issuer services.
                      This is intended for development use.
@@ -356,18 +363,8 @@ deleteVolumes() {
   _projectName=${COMPOSE_PROJECT_NAME:-docker}
 
   echo "Stopping and removing any running containers ..."
-  docker-compose rm -svf >/dev/null
+  docker-compose down -v
 
-  _pattern="^${_projectName}_\|^docker_"
-  _volumes=$(docker volume ls -q | grep ${_pattern})
-
-  if [ ! -z "${_volumes}" ]; then
-    echo "Removing project volumes ..."
-    echo ${_volumes} | xargs docker volume rm
-  else
-    echo "No project volumes exist."
-  fi
-  
   echo "Removing build cache ..."
   rm -Rf ../tob-web/.cache
 }
@@ -434,10 +431,15 @@ COMMAND=$(toLower ${1})
 shift || COMMAND=usage
 
 case "${COMMAND}" in
-start)
+start|up)
   _startupParams=$(getStartupParams $@)
   configureEnvironment $@
-  docker-compose up ${_startupParams}
+  docker-compose up -d ${_startupParams}
+  docker-compose logs -f
+ ;;
+logs)
+  configureEnvironment $@
+  docker-compose logs -f
   ;;
 web-dev)
   _startupParams=$(getStartupParams $@)
@@ -449,7 +451,7 @@ stop)
   configureEnvironment
   docker-compose stop
   ;;
-rm)
+rm|down)
   configureEnvironment
   deleteVolumes
   ;;
