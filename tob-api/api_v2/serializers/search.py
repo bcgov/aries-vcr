@@ -184,9 +184,11 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     class Meta(CredentialSerializer.Meta):
         fields = (
             "id", "create_timestamp", "update_timestamp",
-            "credential_set", "credential_type", "effective_date",
+            "effective_date",
+            "inactive", "latest", "revoked", "revoked_date",
+            "wallet_id",
+            "credential_set", "credential_type",
             "addresses", "attributes", "names",
-            "inactive", "revoked", "revoked_date", "latest",
             "topic",
         )
         search_fields = (
@@ -194,7 +196,7 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "effective_date",
             "inactive", "latest", "revoked", "revoked_date",
             "topic_id", "topic_type", "topic_source_id",
-            "credential_type_id", "issuer_id",
+            "credential_type_id", "issuer_id", "wallet_id",
         )
 
 
@@ -220,9 +222,11 @@ class CredentialTopicSearchSerializer(CredentialSearchSerializer):
     class Meta(CredentialSearchSerializer.Meta):
         fields = (
             "id", "create_timestamp", "update_timestamp",
-            "credential_set", "credential_type", "effective_date",
+            "effective_date",
+            "inactive", "latest", "revoked", "revoked_date",
+            "wallet_id",
+            "credential_set", "credential_type",
             "names",
-            "inactive", "revoked", "revoked_date", "latest",
             "topic",
         )
 

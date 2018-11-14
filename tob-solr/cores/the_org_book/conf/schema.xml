@@ -138,6 +138,8 @@
     
     <field name="source_id" type="string" indexed="true" stored="true" multiValued="false" />
 
+    <field name="wallet_id" type="string" indexed="true" stored="true" multiValued="false" />
+
     <uniqueKey>id</uniqueKey>
 
     <!--
