@@ -76,7 +76,7 @@ class AutocompleteFilterBuilder(BaseQueryBuilder):
             for qval in qvals:
                 if qname == self.query_param:
                     query_filters[qname] = self.build_name_query(qval)
-                elif qname in check_fields and qname not in exclude and qval:
+                elif qname in check_fields and qname not in exclude and qval and qval != 'any':
                     query_filters[qname] = SQ(**{qname: Exact(qval)})
         applicable_filters = functools.reduce(operator.and_, query_filters.values()) \
             if query_filters else None
@@ -110,7 +110,34 @@ class NameAutocompleteView(HaystackViewSet):
     @swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
-                "q", openapi.IN_QUERY, description="Query string", type=openapi.TYPE_STRING
+                "q",
+                openapi.IN_QUERY,
+                description="Query string",
+                type=openapi.TYPE_STRING,
+            ),
+            openapi.Parameter(
+                "inactive",
+                openapi.IN_QUERY,
+                description="Show inactive credentials",
+                type=openapi.TYPE_STRING,
+                enum=["any", "false", "true"],
+                default="any",
+            ),
+            openapi.Parameter(
+                "latest",
+                openapi.IN_QUERY,
+                description="Show only latest credentials",
+                type=openapi.TYPE_STRING,
+                enum=["any", "false", "true"],
+                default="true",
+            ),
+            openapi.Parameter(
+                "revoked",
+                openapi.IN_QUERY,
+                description="Show revoked credentials",
+                type=openapi.TYPE_STRING,
+                enum=["any", "false", "true"],
+                default="false",
             ),
             #openapi.Parameter(
             #    "hl", openapi.IN_QUERY, description="Highlight search term", type=openapi.TYPE_BOOLEAN
@@ -176,7 +203,7 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
             openapi.IN_QUERY,
             description="Show inactive credentials",
             type=openapi.TYPE_STRING,
-            enum=["", "false", "true"],
+            enum=["any", "false", "true"],
             default="false",
         ),
         openapi.Parameter(
@@ -184,7 +211,7 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
             openapi.IN_QUERY,
             description="Show only latest credentials",
             type=openapi.TYPE_STRING,
-            enum=["", "false", "true"],
+            enum=["any", "false", "true"],
             default="true",
         ),
         openapi.Parameter(
@@ -192,7 +219,7 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
             openapi.IN_QUERY,
             description="Show revoked credentials",
             type=openapi.TYPE_STRING,
-            enum=["", "false", "true"],
+            enum=["any", "false", "true"],
             default="false",
         ),
     ]
