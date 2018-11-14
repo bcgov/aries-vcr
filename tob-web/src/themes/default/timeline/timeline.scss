@@ -1,14 +1,16 @@
 @import "../common";
 
-$timeline-border: 1px solid #ddd;
+$timeline-border: 1px solid $card-border-color;
+$timeline-hpad: 0; /* allow room for scrollbar? */
+$timeline-vpad: 8px;
 $timeline-row-shadow: inset 0 5px 20px 5px rgba(0, 0, 0, 0.08);
-$timeline-bg-level: $alert-bg-level;
-$timeline-color-level: $alert-color-level;
-$timeline-border-level: $alert-border-level;
 $slot-border-default: 1px solid #ccc;
-$slot-bg-default: #fff;
-$slot-radius: 5px;
+$slot-bg-default: theme-color(light);
+$slot-bg-level: $alert-bg-level;
+$slot-border-level: $alert-border-level;
+$slot-color-level: $alert-color-level;
 $slot-focus-width: $btn-focus-width;
+$slot-radius: 5px;
 
 
 @mixin slot-variant($background, $border, $color) {
@@ -27,21 +29,37 @@ $slot-focus-width: $btn-focus-width;
 .timeline-outer {
   border: $timeline-border;
   box-sizing: border-box;
-  .rows-outer {
-    padding: 2px 0 2px 0;
-  }
-}
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 10rem;
+  overflow: hidden;
 
-.controls-outer {
-  padding: 5px 3px 3px;
-  text-align: center;
-  .btn {
-    font-size: 110%;
-    padding: 0.1rem;
-    width: 3rem;
+  .controls-outer {
+    border-bottom: $timeline-border;
+    flex: none;
+    padding: 5px 3px;
+    text-align: center;
+    .btn {
+      font-size: 110%;
+      padding: 0.1rem;
+      width: 3rem;
+    }
+    > .btn, > .btn-group {
+      margin: 0 4px;
+    }
   }
-  > .btn, > .btn-group {
-    margin: 0 4px;
+
+  .rows-outer {
+    flex: auto;
+    padding: $timeline-vpad 0;
+    margin: 0 $timeline-hpad;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .axis-outer {
+    flex: none;
+    margin: 0 $timeline-hpad;
   }
 }
 
@@ -149,7 +167,7 @@ $slot-focus-width: $btn-focus-width;
   }
   @each $color, $value in (success, warning, danger, primary, secondary) {
     &.slot-#{$color} {
-      @include slot-variant(theme-color-level($color, $timeline-bg-level), theme-color-level($color, $timeline-border-level), theme-color-level($color, $timeline-color-level));
+      @include slot-variant(theme-color-level($color, $slot-bg-level), theme-color-level($color, $slot-border-level), theme-color-level($color, $slot-color-level));
     }
   }
 }

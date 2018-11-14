@@ -673,13 +673,15 @@ export namespace Timeline {
 
         // reposition slots
         for(let row of this._rows) {
+          let rowsWidth = this._elts.rowsOuter.clientWidth;
           row.setRange(this._layout.start, this._layout.end);
-          row.update(width);
+          row.update(rowsWidth);
         }
 
         // redraw axis
+        let axisWidth = this._elts.axisOuter.clientWidth;
         this._axis.setRange(this._layout.start, this._layout.end);
-        this._axis.update(width);
+        this._axis.update(axisWidth);
       }
       if(reUp)
         this.update();
