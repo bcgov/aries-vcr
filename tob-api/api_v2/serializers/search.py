@@ -26,6 +26,7 @@ from api_v2.serializers.rest import (
     CredentialNameSerializer,
     CredentialTopicSerializer,
     CredentialTopicExtSerializer,
+    CredentialNamedTopicSerializer,
 )
 
 from api_v2.models.Address import Address
@@ -180,6 +181,7 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
     credential_type = CredentialTypeSerializer()
     names = CredentialNameSerializer(many=True)
     topic = CredentialTopicSerializer()
+    related_topics = CredentialNamedTopicSerializer(many=True)
 
     class Meta(CredentialSerializer.Meta):
         fields = (
@@ -190,6 +192,7 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "credential_set", "credential_type",
             "addresses", "attributes", "names",
             "topic",
+            "related_topics",
         )
         search_fields = (
             "category", "location", "name",
@@ -228,6 +231,7 @@ class CredentialTopicSearchSerializer(CredentialSearchSerializer):
             "credential_set", "credential_type",
             "names",
             "topic",
+            "related_topics",
         )
 
 
