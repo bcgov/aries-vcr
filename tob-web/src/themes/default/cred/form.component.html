@@ -4,7 +4,7 @@
 
   <div class="row" *ngIf="result.data as record">
     <div class="col-sm-12" *ngIf="(verify$ | async) as verify">
-      <h1 class="cred-title">{{record.credential_type.description}}</h1>
+      <h2 class="cred-title">{{record.credential_type.description}}</h2>
 
       <a [routerLink]="record.topic.link | localize" class="title-back-link mb-3">
         <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>

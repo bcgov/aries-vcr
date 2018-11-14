@@ -4,7 +4,7 @@
 
   <div class="row mb-3" *ngIf="result.data as topic">
     <div class="col-sm-12">
-      <h1 class="topic-name">{{title}}</h1>
+      <h2 class="topic-name">{{title}}</h2>
 
       <a [routerLink]="'/search' | localize" class="title-back-link mb-3"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
 

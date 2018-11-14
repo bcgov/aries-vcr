@@ -4,8 +4,9 @@
 
   <div class="row" *ngIf="result.data as record">
     <div class="col-md-8 col-sm-7">
-      <h1 class="issuer-title">{{record.name}}
-        <span *ngIf="record.abbreviation">({{record.abbreviation}})</span></h1>
+      <h2 class="issuer-title">{{record.name}}
+        <span *ngIf="record.abbreviation">({{record.abbreviation}})</span>
+      </h2>
 
       <div class="row">
         <div class="col-md-12 issuer-info">
