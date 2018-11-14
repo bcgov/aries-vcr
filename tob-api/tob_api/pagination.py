@@ -41,7 +41,6 @@ class ResultLimitPagination(BasePagination):
         return list(queryset[:self.result_limit])
 
     def get_paginated_response(self, data):
-        LOGGER.info("data: %s", data)
         count = len(data)
         return Response(
             OrderedDict(
