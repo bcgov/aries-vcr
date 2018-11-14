@@ -65,7 +65,7 @@ class AutocompleteFilterBuilder(BaseQueryBuilder):
                | SQ(name_precise=Proximate(term, boost=10, any=True))
 
     def build_query(self, **filters):
-        applicable_filters = {}
+        query_filters = {}
         applicable_exclusions = None
         SQ = self.view.query_object
         fields = getattr(self.view.serializer_class.Meta, 'fields', [])
@@ -75,10 +75,11 @@ class AutocompleteFilterBuilder(BaseQueryBuilder):
         for qname, qvals in filters.items():
             for qval in qvals:
                 if qname == self.query_param:
-                    applicable_filters[qname] = self.build_name_query(qval)
+                    query_filters[qname] = self.build_name_query(qval)
                 elif qname in check_fields and qname not in exclude and qval:
-                    applicable_filters[qname] = SQ(**{qname: Exact(qval)})
-        applicable_filters = functools.reduce(operator.and_, applicable_filters.values())
+                    query_filters[qname] = SQ(**{qname: Exact(qval)})
+        applicable_filters = functools.reduce(operator.and_, query_filters.values()) \
+            if query_filters else None
         return applicable_filters, applicable_exclusions
 
 
