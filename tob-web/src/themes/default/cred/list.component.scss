@@ -32,6 +32,7 @@ $cred-pad: 10px;
 
 .creds-grid {
   display: inline-flex;
+  flex-flow: row wrap;
   margin: 0 -15px;
   padding: $cred-pad $cred-pad 0 0;
   .cred-card {

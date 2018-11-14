@@ -7,6 +7,9 @@
       <p class="cred-title">
         <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">{{cred.credential_type.description}}</a>
       </p>
+      <p *ngIf="cred.related_topics && cred.related_topics.length">
+        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link name">{{cred.related_topics[0].names[0].text}}</a>
+      </p>
       <p class="cred-date" *ngIf="cred.effective_date">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </p>
@@ -36,6 +39,9 @@
       </div>
     </div>
     <div class="col-sm-4">
+      <ng-container *ngIf="cred.related_topics && cred.related_topics.length">
+        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link name">{{cred.related_topics[0].names[0].text}}</a>
+      </ng-container>
       <div class="badge badge-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
       <div class="badge badge-danger" *ngIf="cred.revoked" translate>cred.expired</div>
     </div>

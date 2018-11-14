@@ -1,41 +1,45 @@
 <div class="card creds-panel">
   <div class="card-header">
     <div class="row">
-      <div class="col-lg-auto">
+      <div class="col">
         <h4 class="my-0" translate>cred.topic-title</h4>
       </div>
-      <div class="col-lg form-inline justify-content-end">
+      <div class="col form-inline justify-content-end">
         <div class="btn-group filter-entry">
-          <label [class]="'btn btn-secondary' + (filterActive === 'true' ? ' active' : '')" tabindex="0">
-            <input type="radio" name="search_active" value="true" checked class="d-none" [(ngModel)]="filterActive"><span class="fa fa-bell left"></span> <span translate>general.period-current</span>
-          </label>
-          <label [class]="'btn btn-secondary' + (filterActive === 'false' ? ' active' : '')" tabindex="0">
-            <input type="radio" name="search_active" value="false" class="d-none" [(ngModel)]="filterActive"><span class="fa fa-history left"></span> <span translate>general.period-historical</span>
-          </label>
-        </div>
-        <label class="btn btn-secondary filter-entry" tabindex="0">
-          <input type="checkbox" name="show_filters" value="1" class="d-none" [(ngModel)]="showFilters">
-          <span class="fa fa-filter left"></span>
-          <span translate *ngIf="showFilters">general.hide-filters</span>
-          <span translate *ngIf="!showFilters">general.show-filters</span>
-          <span [class]="'fa right ' + (showFilters ? 'fa-angle-double-up' : 'fa-angle-double-down')"></span>
-        </label>
-        <div class="btn-group filter-entry">
-          <label [class]="'btn btn-secondary' + (format === 'rows' ? ' active' : '')" tabindex="0">
+          <label class="btn btn-secondary" [ngClass]="{active: (format === 'rows')}" tabindex="0">
             <input type="radio" name="display_format" value="rows" checked class="d-none" [(ngModel)]="format"><span class="fa fa-list"></span> <span class="d-none" translate>general.display-list</span>
           </label>
-          <label [class]="'btn btn-secondary' + (format === 'cards' ? ' active' : '')" tabindex="0">
+          <label class="btn btn-secondary" [ngClass]="{active: (format === 'cards')}" tabindex="0">
             <input type="radio" name="display_format" value="cards" class="d-none" [(ngModel)]="format"><span class="fa fa-th-large"></span> <span class="d-none" translate>general.display-cards</span>
           </label>
-          <label [class]="'btn btn-secondary' + (format === 'timeline' ? ' active' : '')" tabindex="0">
+          <label class="btn btn-secondary" [ngClass]="{active: (format === 'timeline')}" tabindex="0">
             <input type="radio" name="display_format" value="timeline" class="d-none" [(ngModel)]="format"><span class="fa fa-calendar"></span> <span class="d-none" translate>general.display-timeline</span>
           </label>
         </div>
       </div>
     </div>
   </div>
-  <div class="card-header filters" *ngIf="showFilters">
-    <div class="row">
+  <div class="card-header filters" *ngIf="format !== 'timeline'">
+    <div class="row filters-head text-center">
+      <div class="col">
+        <label class="btn btn-secondary btn-sm filter-entry" tabindex="0">
+          <input type="checkbox" name="show_filters" value="1" class="d-none" [(ngModel)]="showFilters">
+          <span class="fa fa-filter left"></span>
+          <span translate *ngIf="showFilters">general.hide-filters</span>
+          <span translate *ngIf="!showFilters">general.show-filters</span>
+          <span class="fa right" [ngClass]="{'fa-angle-double-up': showFilters, 'fa-angle-double-down': !showFilters}"></span>
+        </label>
+        <div class="btn-group filter-entry">
+          <label class="btn btn-secondary btn-sm" [ngClass]="{active: (filterActive === 'true')}" tabindex="0">
+            <input type="radio" name="search_active" value="true" checked class="d-none" [(ngModel)]="filterActive"><span class="fa fa-bell left"></span> <span translate>general.period-current</span>
+          </label>
+          <label class="btn btn-secondary btn-sm" [ngClass]="{active: (filterActive === 'false')}" tabindex="0">
+            <input type="radio" name="search_active" value="false" class="d-none" [(ngModel)]="filterActive"><span class="fa fa-history left"></span> <span translate>general.period-historical</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row filters-body mt-3" *ngIf="showFilters">
       <div class="col-sm-3">
         <label class="control-label">Credential Type</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
       </div>
@@ -53,12 +57,12 @@
   <div class="card-header columns" *ngIf="format !== 'timeline'">
     <div class="row">
       <div class="col-sm-4">
-        <a href="#">Credential Type</a> / <a href="#"><strong>Start Date</strong> <span class="fa fa-arrow-down"></span></a>
+        <a href="#" class="text-nowrap">Credential Type</a> / <a href="#" class="text-nowrap"><strong>Start Date</strong> <span class="fa fa-arrow-down"></span></a>
       </div>
       <div class="col-sm-4">
-        <a href="#">Issuer</a>
+        <a href="#" class="text-nowrap">Issuer</a>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-4 d-none d-md-inline">
         Details
       </div>
     </div>

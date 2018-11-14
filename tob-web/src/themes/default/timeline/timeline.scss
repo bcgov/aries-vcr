@@ -4,6 +4,7 @@ $timeline-border: 1px solid $card-border-color;
 $timeline-hpad: 0; /* allow room for scrollbar? */
 $timeline-vpad: 8px;
 $timeline-row-shadow: inset 0 5px 20px 5px rgba(0, 0, 0, 0.08);
+$timeline-controls-bg: #eee;
 $slot-border-default: 1px solid #ccc;
 $slot-bg-default: theme-color(light);
 $slot-bg-level: $alert-bg-level;
@@ -35,17 +36,19 @@ $slot-radius: 5px;
   overflow: hidden;
 
   .controls-outer {
+    background: $timeline-controls-bg;
     border-bottom: $timeline-border;
+    padding: $card-spacer-y $card-spacer-x;
     flex: none;
-    padding: 5px 3px;
-    text-align: center;
+  }
+  .controls-inner {
     .btn {
       font-size: 110%;
       padding: 0.1rem;
       width: 3rem;
     }
     > .btn, > .btn-group {
-      margin: 0 4px;
+      margin: 0 5px 0 0;
     }
   }
 

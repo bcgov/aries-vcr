@@ -11,6 +11,7 @@
   margin-top: 0;
 }
 
+$creds-panel-header-bg: #eee;
 
 .creds-panel {
   border: 1px solid #ccc;
@@ -20,10 +21,10 @@
   max-height: 40em;
   overflow: hidden;
   .filters {
-    background-color: #eee;
+    background-color: $creds-panel-header-bg;
   }
   .columns {
-    background-color: #eee;
+    background-color: $creds-panel-header-bg;
     border-bottom: 3px double #bbb;
     border-top: 1px solid #bbb;
     a {
