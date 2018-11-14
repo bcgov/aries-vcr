@@ -44,6 +44,9 @@ export class IssuerFormComponent implements OnInit, OnDestroy {
     return did;
   }
 
+  get didResolverUrl() {
+    return 'https://uniresolver.io/#did=' + this.fullDid;
+  }
 
   get result() {
     return this._loader.result;
