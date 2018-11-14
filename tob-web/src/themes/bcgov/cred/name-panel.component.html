@@ -6,7 +6,7 @@
         <h4 class="my-0 name-label">
           <span class="type-label" *ngIf="!link">{{record.typeLabel | translate}}</span>
           <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
-          <div class="badge badge-warning" *ngIf="name && name.inactive || 1" translate>cred.inactive</div>
+          <div class="badge badge-warning" *ngIf="name && name.inactive" translate>cred.inactive</div>
         </h4>
       </div>
       <div class="col-sm-6 name-meta text-right text-muted d-flex align-items-end justify-content-end">
