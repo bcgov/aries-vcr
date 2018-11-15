@@ -38,42 +38,48 @@ class NameAutocompleteView(HaystackViewSet):
     permission_classes = (permissions.AllowAny,)
     pagination_class = ResultLimitPagination
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                "q",
-                openapi.IN_QUERY,
-                description="Query string",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "inactive",
-                openapi.IN_QUERY,
-                description="Show inactive credentials",
-                type=openapi.TYPE_STRING,
-                enum=["any", "false", "true"],
-                default="any",
-            ),
-            openapi.Parameter(
-                "latest",
-                openapi.IN_QUERY,
-                description="Show only latest credentials",
-                type=openapi.TYPE_STRING,
-                enum=["any", "false", "true"],
-                default="true",
-            ),
-            openapi.Parameter(
-                "revoked",
-                openapi.IN_QUERY,
-                description="Show revoked credentials",
-                type=openapi.TYPE_STRING,
-                enum=["any", "false", "true"],
-                default="false",
-            ),
-            #openapi.Parameter(
-            #    "hl", openapi.IN_QUERY, description="Highlight search term", type=openapi.TYPE_BOOLEAN
-            #),
-        ])
+    _swagger_params = [
+        openapi.Parameter(
+            "q",
+            openapi.IN_QUERY,
+            description="Query string",
+            type=openapi.TYPE_STRING,
+        ),
+        openapi.Parameter(
+            "inactive",
+            openapi.IN_QUERY,
+            description="Show inactive credentials",
+            type=openapi.TYPE_STRING,
+            enum=["any", "false", "true"],
+            default="any",
+        ),
+        openapi.Parameter(
+            "latest",
+            openapi.IN_QUERY,
+            description="Show only latest credentials",
+            type=openapi.TYPE_STRING,
+            enum=["any", "false", "true"],
+            default="true",
+        ),
+        openapi.Parameter(
+            "revoked",
+            openapi.IN_QUERY,
+            description="Show revoked credentials",
+            type=openapi.TYPE_STRING,
+            enum=["any", "false", "true"],
+            default="false",
+        ),
+        openapi.Parameter(
+            "category",
+            openapi.IN_QUERY,
+            description="Filter by credential category. The category name and value should be joined by '::'",
+            type=openapi.TYPE_STRING,
+        ),
+        #openapi.Parameter(
+        #    "hl", openapi.IN_QUERY, description="Highlight search term", type=openapi.TYPE_BOOLEAN
+        #),
+    ]
+    @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
         return super(NameAutocompleteView, self).list(*args, **kwargs)
     retrieve = None
@@ -129,6 +135,12 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
             type=openapi.TYPE_STRING,
             enum=["any", "false", "true"],
             default="false",
+        ),
+        openapi.Parameter(
+            "category",
+            openapi.IN_QUERY,
+            description="Filter by credential category. The category name and value should be joined by '::'",
+            type=openapi.TYPE_STRING,
         ),
     ]
     list = swagger_auto_schema(
