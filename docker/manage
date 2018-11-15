@@ -69,7 +69,7 @@ usage() {
                 the required supporting components. Once started, the website is
                 automatically compiled and updated in response to file modifications.
 
-      stop - Stops the services.  This is a non-destructive process.  The containers
+      stop - Stops the services.  This is a non-destructive process.  The volumes and containers
              are not deleted so they will be reused the next time you run start.
     
       down - Brings down the services and removes the volumes (storage) and containers.
