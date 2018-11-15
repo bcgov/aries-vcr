@@ -34,7 +34,7 @@ boolean triggerBuild(String contextDirectory) {
       }
     }
   }
-  
+
   if ( filesChangeCnt < 1 ) {
     echo('The changes do not require a build.')
     return false
@@ -42,38 +42,75 @@ boolean triggerBuild(String contextDirectory) {
   else {
     echo('The changes require a build.')
     return true
-  } 
+  }
+}
+
+// Get an image's hash tag
+String getImageTagHash(String imageName, String tag = "") {
+
+  if(!tag?.trim()) {
+    tag = "latest"
+  }
+
+  def istag = openshift.raw("get istag ${imageName}:${tag} -o template --template='{{.image.dockerImageReference}}'")
+  return istag.out.tokenize('@')[1].trim()
 }
 
 node {
   if( triggerBuild(CONTEXT_DIRECTORY) ) {
-    stage('build ' + BUILD_CONFIG) {
-      echo "Building: " + BUILD_CONFIG
-      openshiftBuild bldCfg: BUILD_CONFIG, showBuildLogs: 'true'
 
-      // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
-      // Tag the images for deployment based on the image's hash
-      IMAGE_HASH = sh (
-        script: """oc get istag ${IMAGESTREAM_NAME}:latest -o template --template=\"{{.image.dockerImageReference}}\"|awk -F \":\" \'{print \$3}\'""",
-        returnStdout: true).trim()
-      echo ">> IMAGE_HASH: ${IMAGE_HASH}"
+    stage("Build ${BUILD_CONFIG}") {
+      script {
+        openshift.withCluster() {
+          openshift.withProject() {
+
+            echo "Building ${BUILD_CONFIG} ..."
+            def build = openshift.selector("bc", "${BUILD_CONFIG}")
+            build.startBuild().logs("-f")
+          }
+        }
+      }
     }
 
-    stage('deploy-' + TAG_NAMES[0]) {
-      openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: "${IMAGE_HASH}"
-      openshiftTag destStream: SCHEMA_SPY_IMAGSTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: SCHEMA_SPY_IMAGSTREAM_NAME, srcTag: 'latest'
+    stage("Deploy ${TAG_NAMES[0]}") {
+      script {
+        openshift.withCluster() {
+          openshift.withProject() {
+
+            echo "Tagging ${IMAGESTREAM_NAME} for deployment to ${TAG_NAMES[0]} ..."
+
+            // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+            // Tag the images for deployment based on the image's hash
+            def IMAGE_HASH = getImageTagHash("${IMAGESTREAM_NAME}")
+            echo "IMAGE_HASH: ${IMAGE_HASH}"
+            openshift.tag("${IMAGESTREAM_NAME}@${IMAGE_HASH}", "${IMAGESTREAM_NAME}:${TAG_NAMES[0]}")
+
+            echo "Tagging ${SCHEMA_SPY_IMAGSTREAM_NAME} for deployment to ${TAG_NAMES[0]} ..."
+            openshift.tag("${SCHEMA_SPY_IMAGSTREAM_NAME}:latest", "${SCHEMA_SPY_IMAGSTREAM_NAME}:${TAG_NAMES[0]}")
+          }
+        }
+      }
     }
 
-    // For this to work the Jenkins service mush have edit permissions within the deployment project.
-    // Example OC cmd to accomplish this task (it's better if you have projet init scripts that do this);
-    // oc policy add-role-to-user edit system:serviceaccount:devex-von-tools:jenkins -n devex-von-dev
-    stage('Update ' + SCHEMA_SPY_IMAGSTREAM_NAME + ' instance in ' + TAG_NAMES[0]) {
-      openshiftScale deploymentConfig: SCHEMA_SPY_IMAGSTREAM_NAME, replicaCount: 0, namespace: PROJECT_NAMESPACE + TAG_NAMES[0]
-      openshiftScale deploymentConfig: SCHEMA_SPY_IMAGSTREAM_NAME, replicaCount: 1, namespace: PROJECT_NAMESPACE + TAG_NAMES[0]
+    stage("Update ${SCHEMA_SPY_IMAGSTREAM_NAME} instance in ${TAG_NAMES[0]}") {
+      script {
+        openshift.withCluster() {
+          openshift.withProject("${PROJECT_NAMESPACE}${TAG_NAMES[0]}") {
+
+              // For this to work the Jenkins service mush have edit permissions within the deployment project.
+              // Example OC cmd to accomplish this task (it's better if you have projet init scripts that do this);
+              // oc policy add-role-to-user edit system:serviceaccount:devex-von-tools:jenkins -n devex-von-dev
+              def dc = openshift.selector('dc', "${SCHEMA_SPY_IMAGSTREAM_NAME}")
+              dc.scale(0)
+              dc.scale(1)
+          }
+        }
+      }
     }
   }
   else {
     stage('No Changes') {
+      echo "No changes ..."
       currentBuild.result = 'SUCCESS'
     }
   }

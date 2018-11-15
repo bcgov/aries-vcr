@@ -5,7 +5,7 @@ def APP_NAME = 'angular-app'
 def TAG_NAMES = ['dev', 'test', 'prod']
 
 // You shouldn't have to edit these if you're following the conventions
-def BUILD_CONFIG = APP_NAME + '-build'
+def BUILD_CONFIG = "${APP_NAME}-build"
 
 //EDIT LINE BELOW (Change `IMAGESTREAM_NAME` so it matches the name of your *output*/deployable image stream.)
 def IMAGESTREAM_NAME = 'angular-on-nginx'
@@ -113,18 +113,18 @@ node {
       }
     }
 
-    stage("Deploy " + TAG_NAMES[0]) {
+    stage("Deploy ${TAG_NAMES[0]}") {
       script {
         openshift.withCluster() {
           openshift.withProject() {
 
-            echo "Tagging ${IMAGESTREAM_NAME} for deployment to " + TAG_NAMES[0] + " ..."
+            echo "Tagging ${IMAGESTREAM_NAME} for deployment to ${TAG_NAMES[0]} ..."
 
             // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
             // Tag the images for deployment based on the image's hash
             def IMAGE_HASH = getImageTagHash("${IMAGESTREAM_NAME}")
             echo "IMAGE_HASH: ${IMAGE_HASH}"
-            openshift.tag("${IMAGESTREAM_NAME}@${IMAGE_HASH}", "${IMAGESTREAM_NAME}:" + TAG_NAMES[0])
+            openshift.tag("${IMAGESTREAM_NAME}@${IMAGE_HASH}", "${IMAGESTREAM_NAME}:${TAG_NAMES[0]}")
           }
 
           openshift.withProject("${DEV_NAME_SPACE}") {
