@@ -101,8 +101,8 @@ node {
               // Example OC cmd to accomplish this task (it's better if you have projet init scripts that do this);
               // oc policy add-role-to-user edit system:serviceaccount:devex-von-tools:jenkins -n devex-von-dev
               def dc = openshift.selector('dc', "${SCHEMA_SPY_IMAGSTREAM_NAME}")
-              dc.scale(0)
-              dc.scale(1)
+              dc.scale("--replicas=0")
+              dc.scale("--replicas=1")
           }
         }
       }
