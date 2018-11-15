@@ -67,8 +67,8 @@ class CategoryFilterBuilder(BaseQueryBuilder):
     query_param = 'category'
 
     def build_query(self, **filters):
-        inclusions = []
-        exclusions = []
+        inclusions = {}
+        exclusions = {}
         SQ = self.view.query_object
         for qname, qvals in filters.items():
             category = None
@@ -97,25 +97,25 @@ class CategoryFilterBuilder(BaseQueryBuilder):
                     by_value = True
             if not category and not by_value:
                 continue
-            fvals = []
+            target = exclusions if negate else inclusions
             for qv in qvals:
                 if not qv:
                     continue
                 if by_value:
                     if '::' not in qv:
                         continue
+                    parts = qv.split('::', 2)
+                    category = parts[0]
                     filt = Exact(qv)
                 else:
                     filt = Exact('{}::{}'.format(category, qv))
-                fvals.append(filt)
-            if fvals:
-                clauses = (SQ(**{self.query_param: fval}) for fval in fvals)
-                if negate:
-                    exclusions.extend(clauses)
+                sq_filt = SQ(**{self.query_param: filt})
+                if category in target:
+                    target[category] = target[category] | sq_filt
                 else:
-                    inclusions.extend(clauses)
-        inclusions = functools.reduce(operator.or_, inclusions) if inclusions else None
-        exclusions = functools.reduce(operator.or_, exclusions) if exclusions else None
+                    target[category] = sq_filt
+        inclusions = functools.reduce(operator.and_, inclusions.values()) if inclusions else None
+        exclusions = functools.reduce(operator.and_, exclusions.values()) if exclusions else None
         return inclusions, exclusions
 
 
