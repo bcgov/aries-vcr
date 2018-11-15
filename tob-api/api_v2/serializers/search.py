@@ -195,12 +195,17 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "related_topics",
         )
         search_fields = (
-            "category", "location", "name",
+            "location",
             "effective_date",
-            "inactive", "latest", "revoked", "revoked_date",
+            "revoked_date",
             "topic_id", "topic_type", "topic_source_id",
             "credential_type_id", "issuer_id", "wallet_id",
         )
+        status_fields = {
+            "inactive": "false",
+            "latest": "true",
+            "revoked": "false",
+        }
 
 
 class CredentialAutocompleteSerializer(HaystackSerializerMixin, CredentialSerializer):
@@ -211,8 +216,13 @@ class CredentialAutocompleteSerializer(HaystackSerializerMixin, CredentialSerial
             "id", "names", "inactive",
         )
         search_fields = (
-            "inactive", "score",
+            "score",
         )
+        status_fields = {
+            "inactive": None,
+            "latest": "true",
+            "revoked": "false",
+        }
 
 
 class CredentialTopicSearchSerializer(CredentialSearchSerializer):
