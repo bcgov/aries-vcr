@@ -21,21 +21,20 @@
             <label class="col-sm-4 control-label" translate>issuer.did</label>
             <div class="col-sm-8 form-field text-identifier">
               <a [href]="didResolverUrl" rel="external">{{fullDid}}</a>
+              <small><span class="fa fa-external-link"></span></small>
             </div>
           </div>
           <div class="row form-group" *ngIf="record.url">
             <label class="col-sm-4 control-label" translate>issuer.website</label>
             <div class="col-sm-8 form-field">
-              <a class="body-link" [href]="record.url" rel="external">
-                {{record.url}}</a>
+              <a class="body-link" [href]="record.url" rel="external">{{record.url}}</a>
               <small><span class="fa fa-external-link"></span></small>
             </div>
           </div>
           <div class="row form-group" *ngIf="record.email">
             <label class="col-sm-4 control-label" translate>contact.email</label>
             <div class="col-sm-8 form-field">
-              <a class="body-link" [href]="'mailto:' + record.email" rel="external">
-                {{record.email}}</a>
+              <a class="body-link" [href]="'mailto:' + record.email" rel="external">{{record.email}}</a>
               <small><span class="fa fa-external-link"></span></small>
             </div>
           </div>
