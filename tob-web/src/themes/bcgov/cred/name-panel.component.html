@@ -1,13 +1,19 @@
 <div class="card name-panel" *ngIf="record && name">
   <div class="card-header">
     <div class="row">
-      <div class="col-sm-12 name-title">
+      <div class="col-sm-6 name-title">
         <div class="type-label" *ngIf="link">{{record.typeLabel | translate}}</div>
         <h4 class="my-0 name-label">
           <span class="type-label" *ngIf="!link">{{record.typeLabel | translate}}</span>
           <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
           <div class="badge badge-warning" *ngIf="name && name.inactive" translate>cred.inactive</div>
         </h4>
+      </div>
+      <div class="col-sm-6 name-issuer form-inline">
+        <label class="issuer-label d-none" translate>cred.issuer</label>
+        <div class="form-field">
+          <a [routerLink]="['/issuer', issuer.id] | localize" class="body-link issuer-link" title="'cred.issuer' | translate">{{issuer.name}}</a>
+        </div>
       </div>
     </div>
   </div>
@@ -35,12 +41,6 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-6">
-        <label class="control-label" translate>cred.issuer</label>
-        <div class="form-field">
-          <a [routerLink]="['/issuer', issuer.id] | localize" class="body-link issuer-link">{{issuer.name}}</a>
-        </div>
-      </div>
       <div class="col-lg-6 mt-3 mt-lg-0">
         <label class="control-label" translate>general.details</label>
         <div class="form-field">
