@@ -1,4 +1,4 @@
-<section #credForm id="cred-form" class="no-verify" *ngIf="(result$ | async) as result">
+<section #credForm id="cred-form" *ngIf="(result$ | async) as result">
   <loading-indicator [loading]="result.loading"></loading-indicator>
   <error-message tabIndex="0" [error]="result.error"></error-message>
 

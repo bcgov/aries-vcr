@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AppConfigService } from 'app/app-config.service';
 import { GeneralDataService } from 'app/general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
@@ -14,7 +15,6 @@ import { TimelineFormatterService } from './timeline-formatter.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('credForm') _formRef: ElementRef;
   id: number;
   claimsVisible: boolean = false;
   proofVisible: boolean = false;
@@ -26,6 +26,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   private _idSub: Subscription;
 
   constructor(
+    private _config: AppConfigService,
     private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
     private _formatter: TimelineFormatterService,
@@ -40,10 +41,11 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this._loader.ready.subscribe(result => {
-      if(! this._formRef || ! this._formRef.nativeElement.classList.contains('no-verify'))
         this.updateRows();
         // auto-verify unless button is present
-        this.verifyCred();
+        let verify = this._config.getConfig().AUTO_VERIFY_CRED;
+        if(verify === undefined || (verify && verify !== "false"))
+          this.verifyCred();
     });
   }
 
