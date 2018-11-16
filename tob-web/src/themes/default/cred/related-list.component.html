@@ -41,26 +41,35 @@
     </div>
     <div class="row filters-body mt-3" *ngIf="showFilters">
       <div class="col-sm-3">
-        <label class="control-label">Credential Type</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
+        <label class="control-label" translate>cred.cred-type</label>
+        <select class="form-control" [(ngModel)]="credTypeId">
+          <option value="" translate>cred.select-cred-type</option>
+          <option *ngFor="let record of credTypeOptions" [value]="record.id">{{record.description}}</option>
+        </select>
       </div>
       <div class="col-sm-3">
-        <label class="control-label">Issuer</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
+        <label class="control-label" translate>cred.issuer</label>
+        <select class="form-control" [(ngModel)]="issuerId">
+          <option value="" translate>cred.select-issuer</option>
+          <option *ngFor="let record of issuerOptions" [value]="record.id">{{record.name}}</option>
+        </select>
       </div>
-      <div class="col-sm-3">
+      <!-- div class="col-sm-3">
         <label class="control-label">Before Date</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
       </div>
       <div class="col-sm-3">
         <label class="control-label">After Date</label> <input class="form-control" type="text" size="14" placeholder="(any)" />
-      </div>
+      </div -->
     </div>
   </div>
   <div class="card-header columns" *ngIf="format !== 'timeline'">
     <div class="row">
       <div class="col-sm-4">
-        <a href="#" class="text-nowrap">Credential Type</a> / <a href="#" class="text-nowrap"><strong>Start Date</strong> <span class="fa fa-arrow-down"></span></a>
+        <a href="#" class="text-nowrap" translate>cred.cred-type</a> /
+        <a href="#" class="text-nowrap"><strong translate>cred.start-date</strong> <span class="fa fa-arrow-down"></span></a>
       </div>
       <div class="col-sm-4">
-        <a href="#" class="text-nowrap">Issuer</a>
+        <a href="#" class="text-nowrap" translate>cred.issuer</a>
       </div>
       <div class="col-sm-4 d-none d-md-inline">
         Details

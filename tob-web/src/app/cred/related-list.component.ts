@@ -13,8 +13,13 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   protected _defaultFormat = 'timeline';
   protected _format = '';
   @Input() title: string;
+  _credTypeId: string = '';
+  _credTypeOptions: Model.CredentialType[] = [];
   _filterActive: boolean = true;
-  showFilters: boolean = false;
+  _issuerOptions: Model.Issuer[] = [];
+  _issuerId: string = '';
+  _optionsLoaded: boolean = false;
+  _showFilters: boolean = false;
 
   private _loader: Fetch.ModelListLoader<Model.CredentialSearchResult>;
 
@@ -42,6 +47,29 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   set filterActive(active: string) {
     this._filterActive = (active === 'true');
     this.load();
+    if(this._filterActive && ! this._optionsLoaded) {
+      this._loadOptions();
+    }
+  }
+
+  get showFilters(): boolean {
+    return this._showFilters;
+  }
+
+  set showFilters(show: boolean) {
+    this._showFilters = show;
+    this.load();
+    if(this._showFilters && ! this._optionsLoaded) {
+      this._loadOptions();
+    }
+  }
+
+  get credTypeOptions(): Model.CredentialType[] {
+    return this._credTypeOptions;
+  }
+
+  get issuerOptions(): Model.Issuer[] {
+    return this._issuerOptions;
   }
 
   @Input() set defaultFormat(fmt: string) {
@@ -50,6 +78,18 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
 
   get defaultFormat(): string {
     return this._defaultFormat;
+  }
+
+  get credTypeId(): string {
+    return this._credTypeId;
+  }
+
+  set credTypeId(val: string) {
+    if(! val) val = '';
+    if(this._credTypeId !== val) {
+      this._credTypeId = val;
+      this.load();
+    }
   }
 
   get format(): string {
@@ -62,6 +102,18 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
     this.load();
   }
 
+  get issuerId(): string {
+    return this._issuerId;
+  }
+
+  set issuerId(val: string) {
+    if(! val) val = '';
+    if(this._issuerId !== val) {
+      this._issuerId = val;
+      this.load();
+    }
+  }
+
   get topicId(): number {
     return this._topicId;
   }
@@ -71,12 +123,28 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
     this.load();
   }
 
+  _loadOptions() {
+    let credTypes = this._dataService.loadAll(Model.CredentialType);
+    credTypes.then(data => {
+      data.sort((a,b) => a.description.localeCompare(b.description));
+      this._credTypeOptions = data;
+    });
+    let issuers = this._dataService.loadAll(Model.Issuer);
+    issuers.then(data => {
+      data.sort((a,b) => a.name.localeCompare(b.name));
+      this._issuerOptions = data;
+    });
+    this._optionsLoaded = true;
+  }
+
   load() {
     if(this._loader && this.format === 'timeline') {
       this._loader.reset();
     }
     else if(this._loader && this._topicId) {
       let credsFilter = {
+        credential_type_id: this._credTypeId,
+        issuer_id: this._issuerId,
         topic_id: ''+this._topicId,
         inactive: this._filterActive ? 'false': '',
       };

@@ -53,6 +53,8 @@
     "proof-of-claims": "Proof of Claims",
     "requesting-proof": "Requesting proof...",
     "schema-info": "Credential Schema",
+    "select-cred-type": "(Select type)",
+    "select-issuer": "(Select issuer)",
     "start-date": "Effective Date",
     "status": "Revocation Status",
     "timeline-title": "Timeline",

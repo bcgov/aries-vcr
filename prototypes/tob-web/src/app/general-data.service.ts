@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { map, catchError } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { environment } from '../environments/environment';
-import { Fetch } from './data-types';
+import { Fetch, Model } from './data-types';
 
 
 @Injectable()
@@ -142,7 +142,10 @@ export class GeneralDataService {
     return id;
   }
 
-  loadRecord <T>(fetch: Fetch.DataLoader<T>, id: string | number, params?: { [key: string ]: any }) {
+  loadRecord <T>(
+      fetch: Fetch.DataLoader<T>,
+      id: string | number,
+      params?: { [key: string ]: any }) {
     if(! params) params = {};
     let path = params.path || fetch.request.getRecordPath(
       this.fixRecordId(id), this.fixRecordId(params.childId), params.extPath);
@@ -153,6 +156,22 @@ export class GeneralDataService {
     if(! params) params = {};
     let path = params.path || fetch.request.getListPath(params.parentId, params.extPath);
     return this.loadData(fetch, path, params);
+  }
+
+  loadAll <M extends Model.BaseModel>(
+      ctor: Model.ModelCtor<M>): Promise<M[]> {
+    let loader = new Fetch.ModelListLoader<M>(ctor);
+    let allRows: M[] = [];
+    return new Promise((resolve, fail) => {
+      loader.stream.subscribe(result => {
+        // FIXME - implement pagination
+        if(result.loaded) {
+          allRows = allRows.concat(result.data);
+          resolve(allRows);
+        }
+      });
+      this.loadList(loader);
+    });
   }
 
   loadData <T, R extends Fetch.BaseResult<T>>(fetch: Fetch.BaseLoader<T,R>, path: string, params?: { [key: string ]: any }) {
