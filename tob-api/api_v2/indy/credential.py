@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction, DEFAULT_DB_ALIAS
 from django.db.utils import IntegrityError
 from django.utils.dateparse import parse_datetime
+from django.utils.timezone import utc
 
 from von_anchor.util import schema_key
 
@@ -515,6 +516,33 @@ class CredentialManager(object):
         return None
 
     @classmethod
+    def process_config_date(cls, config, credential, field_name):
+        date_value = cls.process_mapping(
+            config.get(field_name), credential
+        )
+        if date_value:
+            try:
+                # could be seconds since epoch
+                date_value = datetime.utcfromtimestamp(
+                    int(date_value)
+                )
+            except ValueError:
+                # Django method to parse a date string. Must be in ISO8601 format
+                try:
+                    date_value = parse_datetime(date_value)
+                except re.error:
+                    raise CredentialException(
+                        "Error parsing {}: {}".format(field_name, date_value)
+                    )
+                except ValueError:
+                    raise CredentialException(
+                        "Credential {} is invalid: {}".format(field_name, date_value)
+                    )
+        if not date_value.tzinfo:
+            date_value = date_value.replace(tzinfo=utc)
+        return date_value
+
+    @classmethod
     def process_credential_properties(cls, credential, processor_config) -> dict:
         """
         Generate a dictionary of additional credential properties from the processor config
@@ -522,34 +550,18 @@ class CredentialManager(object):
         config = processor_config.get("credential")
         args = {}
         if config:
-            effective_date = cls.process_mapping(
-                config.get("effective_date"), credential
-            )
+            effective_date = cls.process_config_date(config, credential, "effective_date")
             if effective_date:
-                try:
-                    # effective_date could be seconds since epoch
-                    effective_date = datetime.utcfromtimestamp(
-                        int(effective_date)
-                    ).isoformat()
-                except ValueError:
-                    # Django method to parse a date string. Must be in ISO8601 format
-                    try:
-                        effective_date = parse_datetime(effective_date)
-                    except re.error:
-                        raise CredentialException(
-                            "Error parsing effective date: {}".format(effective_date)
-                        )
-                    except ValueError:
-                        raise CredentialException(
-                            "Credential effective date is invalid: {}".format(effective_date)
-                        )
                 args["effective_date"] = effective_date
 
-            revoked = cls.process_mapping(
-                config.get("revoked"), credential
-            )
-            if revoked:
-                args["revoked"] = bool(revoked)
+            revoked_date = cls.process_config_date(config, credential, "revoked_date")
+            if revoked_date:
+                if revoked_date > datetime.utcnow().replace(tzinfo=utc):
+                    raise CredentialException(
+                        "Credential revoked_date must be in the past, not: {}".format(revoked_date)
+                    )
+                args["revoked_date"] = revoked_date
+                args["revoked"] = True
 
             inactive = cls.process_mapping(
                 config.get("inactive"), credential
