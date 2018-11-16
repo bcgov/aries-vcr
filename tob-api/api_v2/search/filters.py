@@ -161,6 +161,8 @@ class StatusFilterBuilder(BaseQueryBuilder):
             for qval in qvals:
                 if qval and qval != 'any':
                     inclusions[qname] = SQ(**{qname: Exact(qval)})
+                elif qname in inclusions:
+                    del inclusions[qname]
         inclusions = functools.reduce(operator.and_, inclusions.values()) if inclusions else None
         return inclusions, exclusions
 
