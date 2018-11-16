@@ -7,7 +7,7 @@
 
       <div class="search-head">
         <div class="search-wrap">
-          <search-input #searchInput (queryChange)="updateQuery($event)" [loading]="searching"></search-input>
+          <search-input #searchInput (accepted)="updateQuery($event)" [loading]="result.loading"></search-input>
         </div>
       </div>
 
