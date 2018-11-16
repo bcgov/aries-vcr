@@ -194,13 +194,25 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "topic",
             "related_topics",
         )
+        # used by ExactFilter
+        exact_fields = (
+            "credential_set_id",
+            "credential_type_id",
+            "issuer_id",
+            "schema_name",
+            "schema_version",
+            "topic_id",
+            "topic_type",
+            "wallet_id",
+        )
+        # used by HaystackFilter
         search_fields = (
             "location",
             "effective_date",
             "revoked_date",
-            "topic_id", "topic_type", "topic_source_id",
-            "credential_type_id", "issuer_id", "wallet_id",
+            "score",
         )
+        # used by StatusFilter
         status_fields = {
             "inactive": "false",
             "latest": "true",
@@ -214,9 +226,6 @@ class CredentialAutocompleteSerializer(HaystackSerializerMixin, CredentialSerial
     class Meta(CredentialSerializer.Meta):
         fields = (
             "id", "names", "inactive",
-        )
-        search_fields = (
-            "score",
         )
         status_fields = {
             "inactive": None,
@@ -238,7 +247,8 @@ class CredentialTopicSearchSerializer(CredentialSearchSerializer):
             "effective_date",
             "inactive", "latest", "revoked", "revoked_date",
             "wallet_id",
-            "credential_set", "credential_type",
+            "credential_set",
+            "credential_type",
             "names",
             "topic",
             "related_topics",

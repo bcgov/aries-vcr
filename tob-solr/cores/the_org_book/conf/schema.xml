@@ -138,6 +138,10 @@
     
     <field name="source_id" type="string" indexed="true" stored="true" multiValued="false" />
 
+    <field name="schema_name" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <field name="schema_version" type="string" indexed="true" stored="true" multiValued="false" />
+
     <field name="wallet_id" type="string" indexed="true" stored="true" multiValued="false" />
 
     <uniqueKey>id</uniqueKey>

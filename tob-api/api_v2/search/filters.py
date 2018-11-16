@@ -9,6 +9,10 @@ from haystack.inputs import Clean, Exact, Raw
 LOGGER = logging.getLogger(__name__)
 
 
+class CustomFilter(HaystackFilter):
+    pass
+
+
 class Proximate(Clean):
     """
     Prepare a filter clause matching one or more words, adjusting score according to word proximity
@@ -56,7 +60,7 @@ class AutocompleteFilterBuilder(BaseQueryBuilder):
         return inclusions, exclusions
 
 
-class AutocompleteFilter(HaystackFilter):
+class AutocompleteFilter(CustomFilter):
     """
     Apply name autocomplete filter to credential search
     """
@@ -119,7 +123,7 @@ class CategoryFilterBuilder(BaseQueryBuilder):
         return inclusions, exclusions
 
 
-class CategoryFilter(HaystackFilter):
+class CategoryFilter(CustomFilter):
     """
     Apply category filters to credential search
     """
@@ -146,6 +150,33 @@ class CredNameFilter(AutocompleteFilter):
     query_builder_class = CredNameFilterBuilder
 
 
+class ExactFilterBuilder(BaseQueryBuilder):
+    """
+    Perform exact matching on specified fields
+    """
+    def build_query(self, **filters):
+        inclusions = {}
+        exclusions = None
+        SQ = self.view.query_object
+        exact_fields = getattr(self.view.serializer_class.Meta, 'exact_fields', [])
+        for qname, qvals in filters.items():
+            if qname not in exact_fields:
+                continue
+            for qval in qvals:
+                if qval:
+                    filt = SQ(**{qname: Exact(qval)})
+                    inclusions[qname] = (filt | inclusions[qname]) if qname in inclusions else filt
+        inclusions = functools.reduce(operator.and_, inclusions.values()) if inclusions else None
+        return inclusions, exclusions
+
+
+class ExactFilter(CustomFilter):
+    """
+    Apply exact-match filters
+    """
+    query_builder_class = ExactFilterBuilder
+
+
 class StatusFilterBuilder(BaseQueryBuilder):
     def build_query(self, **filters):
         inclusions = {}
@@ -167,7 +198,7 @@ class StatusFilterBuilder(BaseQueryBuilder):
         return inclusions, exclusions
 
 
-class StatusFilter(HaystackFilter):
+class StatusFilter(CustomFilter):
     """
     Apply boolean filter flags
     """

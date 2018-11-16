@@ -18,6 +18,7 @@ from api_v2.search.filters import (
     AutocompleteFilter,
     CategoryFilter,
     CredNameFilter,
+    ExactFilter,
     StatusFilter,
 )
 from api_v2.serializers.search import (
@@ -157,12 +158,14 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
     filter_backends = [
         CredNameFilter,
         CategoryFilter,
+        ExactFilter,
         StatusFilter,
         HaystackOrderingFilter,
     ]
     facet_filter_backends = [
         CredNameFilter,
         CategoryFilter,
+        ExactFilter,
         StatusFilter,
         HaystackOrderingFilter,
         HaystackFacetFilter,
