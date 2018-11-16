@@ -538,8 +538,8 @@ class CredentialManager(object):
                     raise CredentialException(
                         "Credential {} is invalid: {}".format(field_name, date_value)
                     )
-        if not date_value.tzinfo:
-            date_value = date_value.replace(tzinfo=utc)
+            if not date_value.tzinfo:
+                date_value = date_value.replace(tzinfo=utc)
         return date_value
 
     @classmethod
