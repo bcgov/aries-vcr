@@ -9,7 +9,9 @@ from django.db.models.manager import Manager
 from rest_framework.serializers import ListSerializer, SerializerMethodField
 from rest_framework.utils.serializer_helpers import ReturnDict
 from drf_haystack.serializers import (
-    HaystackSerializerMixin, HaystackSerializer, HaystackFacetSerializer,
+    FacetFieldSerializer,
+    HaystackFacetSerializer,
+    HaystackSerializerMixin,
 )
 
 from api_v2.serializers.rest import (
@@ -32,6 +34,8 @@ from api_v2.serializers.rest import (
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute
 from api_v2.models.Credential import Credential
+from api_v2.models.CredentialType import CredentialType
+from api_v2.models.Issuer import Issuer
 from api_v2.models.Name import Name
 from api_v2 import utils
 
@@ -257,15 +261,22 @@ class CredentialTopicSearchSerializer(CredentialSearchSerializer):
 
 class CredentialFacetSerializer(HaystackFacetSerializer):
     serialize_objects = True
+
     class Meta:
         index_classes = [CredentialIndex]
         fields = [
-            "effective_date", "topic_type", "issuer_id",
-            # "credential_type_id",
+            "category",
+            "credential_type_id",
+            "issuer_id",
+            #"inactive",
+            #"topic_type",
         ]
         field_options = {
-            "topic_type": {},
+            "category": {},
+            "credential_type_id": {},
             "issuer_id": {},
+            #"inactive": {},
+            #"topic_type": {},
 # date faceting isn't working, needs to use Solr range faceting
 # https://github.com/django-haystack/django-haystack/issues/1572
 #             "effective_date": {
@@ -275,6 +286,34 @@ class CredentialFacetSerializer(HaystackFacetSerializer):
 #                 "gap_amount": 3
 #             },
         }
+
+    def get_fields(self):
+        field_mapping = OrderedDict()
+        field_mapping["facets"] = SerializerMethodField()
+        if self.serialize_objects is True:
+            field_mapping["objects"] = SerializerMethodField()
+        return field_mapping
+
+    def get_facets(self, instance):
+        result = OrderedDict()
+        for facet_type, facet_data in instance.items():
+            serial_data = {}
+            for field, facets in facet_data.items():
+                serial_data[field] = self.format_facets(field, facets)
+            result[facet_type] = serial_data
+        return result
+
+    def format_facets(self, field_name, facets):
+        result = []
+        for facet in facets:
+            row = {'value': facet[0], 'count': facet[1]}
+            # naive method - can be optimized
+            if field_name == "issuer_id":
+                row['text'] = Issuer.objects.get(pk=row['value']).name
+            elif field_name == "credential_type_id":
+                row['text'] = CredentialType.objects.get(pk=row['value']).description
+            result.append(row)
+        return result
 
     def get_objects(self, instance):
         """

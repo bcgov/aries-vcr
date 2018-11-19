@@ -2,8 +2,15 @@ import functools
 import logging
 import operator
 
-from drf_haystack.query import BaseQueryBuilder, FilterQueryBuilder
-from drf_haystack.filters import HaystackFilter
+from drf_haystack.query import (
+    BaseQueryBuilder,
+    FacetQueryBuilder,
+    FilterQueryBuilder,
+)
+from drf_haystack.filters import (
+    HaystackFilter,
+    HaystackFacetFilter,
+)
 from haystack.inputs import Clean, Exact, Raw
 
 LOGGER = logging.getLogger(__name__)
@@ -79,23 +86,21 @@ class CategoryFilterBuilder(BaseQueryBuilder):
             by_value = False
             negate = False
             if ':' in qname:
-                parts = qname.split(':', 2)
+                parts = qname.split(':', 1)
                 if parts[0] == self.query_param:
                     category = parts[1]
                     if '__' in category:
-                        parts = category.split('__', 2)
-                        category = parts[0]
-                        if parts[1] == 'not':
+                        category, oper = category.split('__', 1)
+                        if oper == 'not':
                             negate = True
-                        elif parts[1] != 'exact':
+                        elif oper != 'exact':
                             continue
             else:
                 if '__' in qname:
-                    parts = qname.split('__', 2)
-                    qname = parts[0]
-                    if parts[1] == 'not':
+                    qname, oper = qname.split('__', 1)
+                    if oper == 'not':
                         negate = True
-                    elif parts[1] != 'exact':
+                    elif oper != 'exact':
                         continue
                 if qname == self.query_param:
                     by_value = True
@@ -108,11 +113,8 @@ class CategoryFilterBuilder(BaseQueryBuilder):
                 if by_value:
                     if '::' not in qv:
                         continue
-                    parts = qv.split('::', 2)
-                    category = parts[0]
-                    filt = Exact(qv)
-                else:
-                    filt = Exact('{}::{}'.format(category, qv))
+                    category, qv = qv.split('::', 1)
+                filt = Exact('{}::{}'.format(category, qv))
                 sq_filt = SQ(**{self.query_param: filt})
                 if category in target:
                     target[category] = target[category] | sq_filt
@@ -175,6 +177,16 @@ class ExactFilter(CustomFilter):
     Apply exact-match filters
     """
     query_builder_class = ExactFilterBuilder
+
+
+class CustomFacetQueryBuilder(FacetQueryBuilder):
+    def parse_field_options(self, *options):
+        # skip parsing of URL arguments as facets for now
+        return {}
+
+
+class CustomFacetFilter(HaystackFacetFilter):
+    query_builder_class = CustomFacetQueryBuilder
 
 
 class StatusFilterBuilder(BaseQueryBuilder):
