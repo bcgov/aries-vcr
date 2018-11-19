@@ -29,13 +29,18 @@ export class TimelineFormatterService {
   }
 
   getCredentialSlot(cred: Model.Credential) {
+    let cls = 'slot-primary';
+    if(cred.inactive)
+      cls = 'slot-secondary';
+    else if(cred.latest)
+      cls = 'slot-success';
     return {
       id: `cred-${cred.id}`,
       groups: [],
       htmlContent: this.renderCredential(cred),
       start: cred.effective_date,
       end: cred.revoked_date,
-      classNames: [cred.inactive ? 'slot-secondary' : 'slot-primary'],
+      classNames: [cls],
       url: this.getCredentialUrl(cred),
     };
   }
