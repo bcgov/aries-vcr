@@ -154,11 +154,18 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
           let optidx = optname;
           let optval: Filter.Option = {label: optitem.text, value: optitem.value, count: optitem.count};
           if(optname == 'category') {
+            if(! optitem.count)
+              // skip empty category values
+              continue;
             let optparts = optitem.value.split('::', 2);
             if(optparts.length == 2) {
               optidx = optname + ':' + optparts[0];
+              let lblkey = `category.${optparts[0]}.${optparts[1]}`;
+              let label = this._translate.instant(lblkey);
+              if(label === lblkey || label === `??${lblkey}??`)
+                label = optparts[1];
               optval = {
-                label: this._translate.instant(`category.${optparts[0]}.${optparts[1]}`),
+                label,
                 value: optparts[1],
                 count: optitem.count,
               };
