@@ -5,6 +5,8 @@ import { Fetch, Filter, Model } from '../data-types';
 import { CredListComponent } from '../cred/list.component';
 import { SearchInputComponent } from './input.component';
 import { Subscription } from 'rxjs/Subscription';
+import { TranslateService } from '@ngx-translate/core';
+
 
 const FilterSpec = [
   {
@@ -75,6 +77,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
     private _router: Router,
+    private _translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -155,7 +158,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
             if(optparts.length == 2) {
               optidx = optname + ':' + optparts[0];
               optval = {
-                tlabel: `category.${optparts[0]}.${optparts[1]}`,
+                label: this._translate.instant(`category.${optparts[0]}.${optparts[1]}`),
                 value: optparts[1],
                 count: optitem.count,
               };
