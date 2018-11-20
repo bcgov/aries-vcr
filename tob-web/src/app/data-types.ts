@@ -920,7 +920,6 @@ export namespace Filter {
           v[f.name] = defval;
         }
       }
-      console.log(v);
       this._values = v;
       this._update();
     }
