@@ -113,6 +113,7 @@ export namespace Model {
     credential_set: CredentialSet;
     effective_date: string;
     inactive: boolean;
+    latest: boolean;
     revoked: boolean;
     revoked_date: string;
 
