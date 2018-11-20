@@ -28,8 +28,9 @@ export class SearchFiltersComponent {
   }
 
   setFilter(evt, name: string, value) {
-    if(evt) evt.preventDefault();
     let upd = {};
+    if(evt && evt.target && evt.target.checked === false)
+      value = null;
     upd[name] = value;
     upd['page'] = '1';
     this._filters.update(upd);

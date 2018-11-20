@@ -81,6 +81,8 @@
     "period-historical": "Past",
     "prev-link": "Previous",
     "show-filters": "Show Filters",
+    "show-inactive": "Show Past",
+    "show-revoked": "Show Revoked",
     "status-nonrevoked": "Not Revoked",
     "status-revoked": "Revoked",
     "status-any": "Any",

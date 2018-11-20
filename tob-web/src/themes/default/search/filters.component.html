@@ -1,11 +1,17 @@
 <ng-container *ngIf="(filters$ | async) as filters">
-  <div class="facet" *ngFor="let filter of filters">
-    <label class="control-label">{{filter.label | translate}}</label>
-    <ul>
-      <li *ngFor="let opt of filter.options">
-        <strong *ngIf="opt.active">{{opt.label | translate}}</strong>
-        <a tabindex="0" href="#" *ngIf="!opt.active" (click)="setFilter($event, filter.name, opt.value)">{{opt.label | translate}}</a>
-      </li>
-    </ul>
-  </div>
+  <ng-container *ngFor="let filter of filters">
+    <div class="facet mb-3" *ngIf="filter.options?.length">
+      <label class="control-label">{{filter.label | translate}}</label>
+      <ul class="list-group filter-group">
+        <li *ngFor="let opt of filter.options" class="list-group-item filter-item" [ngClass]="{'list-group-item-primary': opt.active}">
+          <div class="form-check">
+            <input type="checkbox" tabindex="0" [id]="opt.id" class="form-check-input" [value]="opt.value" [checked]="opt.active" (change)="setFilter($event, filter.name, opt.value)">
+            <label class="form-check-label" [for]="opt.id">{{opt.label || (opt.tlabel | translate)}}
+              <span class="badge badge-primary badge-pill align-middle" *ngIf="opt.count">{{opt.count}}</span>
+            </label>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
 </ng-container>

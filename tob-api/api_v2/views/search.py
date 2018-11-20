@@ -208,10 +208,10 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
             #field, value = facet.split(":", 1)
             #if value:
             #    queryset = queryset.narrow('%s:"%s"' % (field, queryset.query.clean(value)))
-        for value in request.query_params.getlist('category'):
-            facet_queryset = facet_queryset.narrow('category:"{}"'.format(queryset.query.clean(value)))
-        for value in request.query_params.getlist('issuer_id'):
-            facet_queryset = facet_queryset.narrow('issuer_id:"{}"'.format(queryset.query.clean(value)))
+        for key in ('category', 'credential_type_id', 'issuer_id'):
+            for value in request.query_params.getlist(key):
+                if value:
+                    facet_queryset = facet_queryset.narrow('{}:"{}"'.format(key, queryset.query.clean(value)))
 
         serializer = self.get_facet_serializer(facet_queryset.facet_counts(), objects=result_queryset, many=False)
         return Response(serializer.data)
