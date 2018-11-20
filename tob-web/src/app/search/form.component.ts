@@ -42,7 +42,8 @@ const FilterSpec = [
     ],
     defval: "false",
     blank: true
-  },
+  }
+  /*
   {
     name: "revoked",
     label: "cred.status",
@@ -55,6 +56,7 @@ const FilterSpec = [
     defval: "false",
     blank: true
   }
+  */
 ];
 
 @Component({
