@@ -21,7 +21,7 @@
     <div class="col-sm-12">
 
       <div class="row results mt-4 mt-md-5" *ngIf="inited">
-        <div class="col-md-8 rows">
+        <div class="col-md-8 col-lg-9 rows">
           <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
           <div class="alert alert-info" *ngIf="blankQuery && !result.data" translate>
             search.prompt
@@ -39,7 +39,7 @@
           </ng-container>
         </div>
 
-        <div class="col-md-4 facets">
+        <div class="col-md-4 col-lg-3 facets">
           <search-filters #searchFilters [filters]="filters"></search-filters>
         </div>
       </div>
