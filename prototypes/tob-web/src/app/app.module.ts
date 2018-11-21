@@ -9,7 +9,9 @@ import {
   TranslateModule, TranslateLoader, TranslateService,
   MissingTranslationHandler, MissingTranslationHandlerParams
   } from '@ngx-translate/core';
-import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX } from 'localize-router';
+import {
+  LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX
+  } from 'localize-router';
 import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
 import { Observable } from 'rxjs';
 
@@ -21,9 +23,7 @@ import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppFooterComponent } from './app-footer/app-footer.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { GeneralDataService } from 'app/general-data.service';
-import { AdminModule } from './admin/admin.module';
 import { PageScrollComponent } from './util/pagescroll.component';
-import { SearchBoxDirective } from './search-box/search-box.directive';
 
 import { HomeComponent } from './home/home.component';
 
@@ -84,7 +84,6 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     AppComponent,
     AppHeaderComponent,
     AppFooterComponent,
-    SearchBoxDirective,
     BreadcrumbComponent,
     HomeComponent,
     PageScrollComponent,
@@ -94,7 +93,6 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    AdminModule,
     CredModule,
     SearchModule,
     TopicModule,
