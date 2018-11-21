@@ -24,6 +24,6 @@ export class PageScrollComponent {
   }
 
   onScroll() {
-    this.visible = window.scrollY > 0;
+    this.visible = window.scrollY > 100;
   }
 }
