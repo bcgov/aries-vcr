@@ -119,7 +119,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() set filterType(filter: string) {
     this._filterType = filter;
     //this._searchInput.value = '';
-    this.updateQuery();
+    if(this._inited)
+      this.updateQuery();
   }
 
   get filters() {
