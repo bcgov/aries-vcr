@@ -1,10 +1,6 @@
 $creds-border-color: #ddd;
 $creds-bg-even: #f0f0f0;
 
-.creds-search {
-  border-bottom: 1px solid $creds-border-color;
-}
-
 .cred-row {
   line-height: 1.4;
   padding-bottom: 0.5em;
@@ -24,6 +20,9 @@ $creds-bg-even: #f0f0f0;
     font-size: 1.2rem;
     padding-top: 0.7em;
     padding-bottom: 0.5em;
+    &:last-child {
+      border-bottom: 1px solid $creds-border-color;
+    }
   }
   label {
     // font-size: 85%;
