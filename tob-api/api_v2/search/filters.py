@@ -27,12 +27,19 @@ class Proximate(Clean):
     input_type_name = 'contains'
     post_process = False # don't put AND between terms
 
+    def query_words(self, *parts):
+        word_len = self.kwargs.get('wordlen', 4)
+        for part in parts:
+            clean = part.strip()
+            if len(clean.strip('_-,.;\'"')) >= word_len:
+                yield clean
+
     def prepare(self, query_obj):
         # clean input
         query_string = super(Proximate, self).prepare(query_obj)
         if query_string is not '':
             # match phrase with minimal word movements
-            proximity = self.kwargs.get('proximity', 100)
+            proximity = self.kwargs.get('proximity', 5)
             parts = query_string.split(' ')
             if len(parts) > 1:
                 output = '"{}"~{}'.format(query_string, proximity)
@@ -40,9 +47,12 @@ class Proximate(Clean):
                 output = parts[0]
             if 'boost' in self.kwargs:
                 output = '{}^{}'.format(output, self.kwargs['boost'])
+
             # increase score for any individual term
-            if len(parts) > 1 and self.kwargs.get('any'):
-                output = ' OR '.join([output, *parts])
+            if self.kwargs.get('any') and len(parts) > 1:
+                words = list(self.query_words(*parts))
+                if words:
+                    output = ' OR '.join([output, *words])
         else:
             output = query_string
         return output
