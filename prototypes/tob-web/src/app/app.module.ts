@@ -22,6 +22,7 @@ import { AppFooterComponent } from './app-footer/app-footer.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { GeneralDataService } from 'app/general-data.service';
 import { AdminModule } from './admin/admin.module';
+import { PageScrollComponent } from './util/pagescroll.component';
 import { SearchBoxDirective } from './search-box/search-box.directive';
 
 import { HomeComponent } from './home/home.component';
@@ -86,6 +87,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     SearchBoxDirective,
     BreadcrumbComponent,
     HomeComponent,
+    PageScrollComponent,
   ],
   imports: [
     BrowserModule,
