@@ -37,6 +37,9 @@ $indicator-thickness: 0.2em;
 		border: $indicator-thickness solid transparentize($indicator-color, 0.8);
 		content: ' ';
 	}
+	.alt-text {
+	  display: none;
+	}
 }
 
 .page-load {
