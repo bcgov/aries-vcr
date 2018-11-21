@@ -1,4 +1,4 @@
-<section id="issuer" *ngIf="(result$ | async) as result">
+<section id="issuer" class="container" *ngIf="(result$ | async) as result">
   <loading-indicator [loading]="result.loading"></loading-indicator>
   <error-message [error]="result.error"></error-message>
 

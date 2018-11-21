@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<main class="container">
+<main>
 
   <div class="row mt-5" *ngIf="!inited">
     <div class="col-sm-12 page-load">
@@ -9,9 +9,11 @@
   </div>
 
   <ng-container *ngIf="inited">
-    <div class="page-header" id="banner">
-      <breadcrumb></breadcrumb>
-    </div>
+    <section class="container">
+      <div class="page-header" id="banner">
+        <breadcrumb></breadcrumb>
+      </div>
+    </section>
 
     <router-outlet></router-outlet>
   </ng-container>

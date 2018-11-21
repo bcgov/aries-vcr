@@ -1,4 +1,4 @@
-<section id="topic-form" class="page-min-height" *ngIf="(result$ | async) as result">
+<section id="topic-form" class="container page-min-height" *ngIf="(result$ | async) as result">
   <loading-indicator [loading]="result.loading"></loading-indicator>
   <error-message [error]="result.error"></error-message>
 

@@ -1,10 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { Location } from '@angular/common';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { Routes } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule, routes } from './app-routing.module';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Routes } from '@angular/router';
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {
   TranslateModule, TranslateLoader, TranslateService,
   MissingTranslationHandler, MissingTranslationHandlerParams
@@ -15,17 +16,16 @@ import {
 import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
 import { Observable } from 'rxjs';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { AppRoutingModule, ROUTES } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppConfigService } from './app-config.service';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppFooterComponent } from './app-footer/app-footer.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
-import { GeneralDataService } from 'app/general-data.service';
-import { PageScrollComponent } from './util/pagescroll.component';
-
+import { GeneralDataService } from './general-data.service';
+import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
+import { PageScrollComponent } from './util/pagescroll.component';
 
 import { CredModule } from './cred/cred.module';
 import { SearchModule } from './search/search.module';
@@ -43,13 +43,13 @@ const appInitializerFn = (appConfig: AppConfigService) => {
   };
 };
 
-export class WebpackTranslateLoader implements TranslateLoader {
+class WebpackTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
     return Observable.fromPromise(
       import(/* webpackMode: "eager" */ `../themes/_active/assets/i18n/${lang}.json`));
   }
 }
-export class WebpackLocalizeRouterLoader extends LocalizeParser {
+class WebpackLocalizeRouterLoader extends LocalizeParser {
   load(routes: Routes): Promise<any> {
     return new Promise((resolve) => {
       import(/* webpackMode: "eager" */ `../themes/_active/assets/locales.json`)
@@ -63,7 +63,7 @@ export class WebpackLocalizeRouterLoader extends LocalizeParser {
     });
   }
 }
-export class MyMissingTranslationHandler implements MissingTranslationHandler {
+class MyMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
     // params: {key, translateService}
     // handle missing route translations
@@ -85,6 +85,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     AppHeaderComponent,
     AppFooterComponent,
     BreadcrumbComponent,
+    AboutComponent,
     HomeComponent,
     PageScrollComponent,
   ],
@@ -102,7 +103,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
         useClass: WebpackTranslateLoader
       }
     }),
-    LocalizeRouterModule.forRoot(routes, {
+    LocalizeRouterModule.forRoot(ROUTES, {
       parser: {
         provide: LocalizeParser,
         useClass: WebpackLocalizeRouterLoader,
@@ -110,6 +111,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
       }
     }),
     NgbModule.forRoot(),
+    UtilModule,
   ],
   exports: [
     CredModule,

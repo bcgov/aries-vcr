@@ -2,6 +2,10 @@
   "ROUTES": {
     "home": "home"
   },
+  "about": {
+    "breadcrumb": "About",
+    "title": "About"
+  },
   "app": {
     "breadcrumb": "Home",
     "header": {

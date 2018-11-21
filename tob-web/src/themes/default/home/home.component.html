@@ -1,12 +1,8 @@
-<section id="home">
+<section id="home" class="container">
 
   <h1 class="home-title text-center" translate *ngIf="inited">home.title</h1>
 
-  <div class="row mt-5" *ngIf="!inited">
-    <div class="col-sm-12 page-load">
-      <div class="loading-indicator"></div>
-    </div>
-  </div>
+  <loading-indicator [loading]="! inited"></loading-indicator>
 
   <div class="alert alert-danger" *ngIf="loadError">
     {{'general.other-error' | translate}}
@@ -27,7 +23,7 @@
         <div class="search-outer">
           <div class="search-inner">
             <div class="search-title mt-3">
-              <h2>Find an organization</h2>
+              <h2 translate>search.title</h2>
             </div>
             <search-input #searchInput (accepted)="performSearch($event)"></search-input>
           </div>

@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { NotFoundComponent } from './util/not-found.component';
 
+import { AboutComponent } from './about/about.component';
 import { CredFormComponent } from './cred/form.component';
 import { HomeComponent } from './home/home.component';
 import { IssuerFormComponent } from './issuer/form.component';
+import { NotFoundComponent } from './util/not-found.component';
 import { SearchComponent } from './search/form.component';
 import { TopicFormComponent } from './topic/form.component';
 
-export const routes: Routes = [
+export const ROUTES: Routes = [
   {
     path: '',
     redirectTo: 'home',
@@ -76,6 +77,13 @@ export const routes: Routes = [
     }
   },
   {
+    path: 'about',
+    component: AboutComponent,
+    data: {
+      breadcrumb: 'about.breadcrumb',
+    }
+  },
+  {
     path: '**',
     component: NotFoundComponent,
     data: {
@@ -86,7 +94,7 @@ export const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(ROUTES),
   ],
   exports: [
     RouterModule,
