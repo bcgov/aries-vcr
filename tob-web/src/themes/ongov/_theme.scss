@@ -24,20 +24,19 @@ header .navbar {
   }
 }
 
-.breadcrumb.page-breadcrumb {
-  background: transparent;
-}
-
 main {
   padding-bottom: 60px;
 }
 
 // Headers
-.page-header {
+
+.breadcrumb.page-breadcrumb {
+  background: transparent;
+}
+.page-breadcrumb {
   margin-top: 2px;
   font-weight: 600;
   border-bottom: none;
-  margin-bottom: 0px;
 }
 
 // Panels

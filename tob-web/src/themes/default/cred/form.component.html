@@ -1,4 +1,5 @@
 <section id="cred-form" class="container page-min-height" *ngIf="(result$ | async) as result">
+  <app-breadcrumb></app-breadcrumb>
   <loading-indicator [loading]="result.loading"></loading-indicator>
   <error-message [error]="result.error"></error-message>
 

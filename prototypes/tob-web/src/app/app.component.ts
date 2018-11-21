@@ -3,7 +3,6 @@ import { LocationStrategy } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LocalizeRouterService } from 'localize-router';
-import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { GeneralDataService } from './general-data.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';

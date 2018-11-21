@@ -21,11 +21,9 @@ import { AppComponent } from './app.component';
 import { AppConfigService } from './app-config.service';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppFooterComponent } from './app-footer/app-footer.component';
-import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { GeneralDataService } from './general-data.service';
 import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
-import { PageScrollComponent } from './util/pagescroll.component';
 
 import { CredModule } from './cred/cred.module';
 import { SearchModule } from './search/search.module';
@@ -84,10 +82,8 @@ class MyMissingTranslationHandler implements MissingTranslationHandler {
     AppComponent,
     AppHeaderComponent,
     AppFooterComponent,
-    BreadcrumbComponent,
     AboutComponent,
     HomeComponent,
-    PageScrollComponent,
   ],
   imports: [
     BrowserModule,

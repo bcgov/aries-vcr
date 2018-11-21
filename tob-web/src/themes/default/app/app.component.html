@@ -8,15 +8,8 @@
     </div>
   </div>
 
-  <ng-container *ngIf="inited">
-    <section class="container">
-      <div class="page-header" id="banner">
-        <breadcrumb></breadcrumb>
-      </div>
-    </section>
+  <router-outlet *ngIf="inited"></router-outlet>
 
-    <router-outlet></router-outlet>
-  </ng-container>
 </main>
 
 <app-footer></app-footer>
