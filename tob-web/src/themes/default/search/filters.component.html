@@ -1,7 +1,7 @@
 <ng-container *ngIf="(filters$ | async) as filters">
   <ng-container *ngFor="let filter of filters">
     <div class="facet mb-3" *ngIf="filter.options?.length">
-      <label class="control-label">{{filter.label | translate}}</label>
+      <label class="control-label mb-1">{{filter.label | translate}}</label>
       <ul class="list-group filter-group">
         <li *ngFor="let opt of filter.options" class="list-group-item filter-item" [ngClass]="{'list-group-item-primary': opt.active}">
           <div class="form-check">
