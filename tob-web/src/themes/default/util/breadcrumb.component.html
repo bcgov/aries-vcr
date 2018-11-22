@@ -2,7 +2,8 @@
   <div class="breadcrumb-item">
     <a tabIndex="0" [title]="'app.breadcrumb' | translate" [routerLink]="'/' | localize" translate>app.breadcrumb</a>
   </div>
-  <div class="breadcrumb-item" *ngFor="let breadcrumb of breadcrumbs">
-    <a tabIndex="0" [title]="breadcrumb.label | translate" [routerLink]="[breadcrumb.url]" translate>{{ breadcrumb.label }}</a>
+  <div class="breadcrumb-item" [ngClass]="{'breadcrumb-current': bc.current}" *ngFor="let bc of breadcrumbs">
+    <a *ngIf="bc.url" tabIndex="0" [title]="bc.label | translate" [routerLink]="[bc.url]">{{ bc.label | translate }}</a>
+    <span *ngIf="!bc.url" class="breadcrumb-text">{{ bc.label | translate }}</span>
   </div>
 </nav>
