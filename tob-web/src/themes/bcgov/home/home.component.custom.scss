@@ -1,0 +1,22 @@
+@import "../common";
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  margin-bottom: 1.5rem;
+
+  .square {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    background: theme-color(primary);
+    color: theme-color(light);
+    font-size: 2rem;
+    line-height: 4rem;
+    margin-right: 1rem;
+    overflow: hidden;
+    text-align: center;
+    word-wrap: nowrap;
+  }
+}

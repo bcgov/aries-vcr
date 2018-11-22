@@ -1,3 +1,13 @@
+@import "./common";
+
+main {
+  padding-top: 0;
+}
+
+.page-breadcrumb {
+  margin: 1rem 0;
+}
+
 a.body-link, .breadcrumb a {
   border-bottom: 1px solid rgba($link-color, 0.8);
   margin-bottom: -1px;
@@ -6,4 +16,19 @@ a.body-link, .breadcrumb a {
     border-bottom-color: $link-hover-color;
     text-decoration: none;
   }
+}
+
+.hero-banner {
+  padding: 2px 0; // prevent margin collapse
+
+  background: theme-color(primary);
+  color: #fff;
+
+  h1, h2, h3 {
+    font-weight: normal;
+  }
+}
+
+.lead {
+  font-weight: 300;
 }

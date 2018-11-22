@@ -3,9 +3,11 @@
 $input-border-color: lighten(rgba(theme-color(primary), 0.8), 10%);
 $input-border-active: #5c8de6;
 $input-border-radius: 10px;
+$input-background: theme-color(light);
 
 .large-search {
   align-items: center;
+  background: $input-background;
   border: 2px solid $input-border-color;
   border-bottom-color: rgba($input-border-color, 0.7);
   border-radius: $input-border-radius;

@@ -1,8 +1,4 @@
 
-#home {
-  // min-height: 50vh;
-}
-
 .stats {
   background: linear-gradient(to bottom, #fafafa, #f3f3f3, #f6f6f6);
   border: 1px solid #ccc;
@@ -34,21 +30,19 @@
   max-width: 550px;
   min-width: 75%;
   padding: 2px;
-}
-.search-inner {
-  background: #fafafa;
-  padding: 0 1em 1em;
-}
-
-.search-title {
-  display: flex;
-  margin: 0 auto;
-  h2 {
-    font-size: 22px;
-    padding: 0 2rem 1rem;
+  .search-inner {
+    background: #fafafa;
+    padding: 0 1em 1em;
+  }
+  .search-title {
+    display: flex;
+    margin: 0 auto;
+    h2 {
+      font-size: 22px;
+      padding: 0 2rem 1rem;
+    }
   }
 }
-
 
 //place all overrides for a specific theme in this file inside your theme/home directory
 @import "../../_active/home/home.component.custom";

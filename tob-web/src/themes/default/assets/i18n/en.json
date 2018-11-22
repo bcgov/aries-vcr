@@ -9,7 +9,7 @@
   "app": {
     "breadcrumb": "Home",
     "header": {
-      "title": "TheOrgBook",
+      "title": "OrgBook",
       "logo-alt-text": "B.C. Government Logo"
     },
     "footer": {
@@ -19,8 +19,8 @@
       "copyright": "Copyright",
       "contact": "Contact Us"
     },
-    "title": "TheOrgBook Beta",
-    "title-prefix": "TheOrgBook Beta | "
+    "title": "OrgBook Beta",
+    "title-prefix": "OrgBook Beta | "
   },
   "address": {
     "registered-office": "Registered Office"
@@ -94,7 +94,7 @@
   },
   "home": {
     "breadcrumb": "Home",
-    "title": "Welcome to British Columbia's Verifiable Organizations",
+    "title": "Welcome to The OrgBook",
     "title-certs": "verifiable credentials held",
     "title-orgs": "legal entities"
   },

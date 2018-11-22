@@ -548,6 +548,10 @@
       "Filing:RIPFL": "Remove NWPTA Indicator for a New West Partner (NWPTA)"
     }
   },
+  "home": {
+    "about-title": "About the OrgBook",
+    "title": "British Columbia's Verifiable Organizations"
+  },
   "jurisdiction": {
     "general": {
       "FD": "Federal",
