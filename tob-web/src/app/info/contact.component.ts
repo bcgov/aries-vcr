@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GeneralDataService } from '../general-data.service';
 
 @Component({
   selector: 'app-contact',
@@ -9,6 +10,12 @@ export class ContactComponent {
 
   inited = true;
 
-  constructor() {}
+  constructor(
+    private _dataService: GeneralDataService,
+  ) {}
+
+  get language() {
+    return this._dataService.language;
+  }
 
 }

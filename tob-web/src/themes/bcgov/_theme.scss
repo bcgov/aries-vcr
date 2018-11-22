@@ -1,5 +1,8 @@
 @import "./common";
 
+$banner-link-color: theme-color(bcgold);
+$banner-link-hover: lighten($banner-link-color, 10%);
+
 main {
   padding-top: 0;
 }
@@ -27,6 +30,20 @@ a.body-link, .breadcrumb a {
 
   h1, h2, h3 {
     font-weight: normal;
+  }
+
+  a:not(.btn) {
+    color: $banner-link-color;
+    @include hover-focus {
+      color: $banner-link-hover;
+    }
+  }
+
+  a.body-link, .breadcrumb a {
+    border-bottom: 1px solid rgba($banner-link-color, 0.8);
+    @include hover-focus {
+      border-bottom-color: $banner-link-hover;
+    }
   }
 }
 

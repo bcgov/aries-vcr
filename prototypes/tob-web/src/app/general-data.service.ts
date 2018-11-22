@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -20,7 +21,14 @@ export class GeneralDataService {
   private _loaderSub: Subscription = null;
   private _defaultTopicType = 'registration';
 
-  constructor(private _http: HttpClient) {
+  constructor(
+    private _http: HttpClient,
+    private _translate: TranslateService,
+  ) {
+  }
+
+  get language() {
+    return this._translate.currentLang;
   }
 
   getRequestUrl(path: string) : string {

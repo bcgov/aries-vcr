@@ -8,6 +8,7 @@
 
   .square {
     display: block;
+    flex: none;
     width: 4rem;
     height: 4rem;
     background: theme-color(primary);
@@ -18,5 +19,9 @@
     overflow: hidden;
     text-align: center;
     word-wrap: nowrap;
+  }
+
+  .desc {
+    flex: auto;
   }
 }

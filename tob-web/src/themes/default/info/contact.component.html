@@ -1,22 +1,58 @@
+<section id="contact-hero" class="hero-banner">
+
+  <div class="container">
+    <app-breadcrumb></app-breadcrumb>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12">
+        <h1 class="page-title" translate *ngIf="inited">contact.title</h1>
+
+        <p class="lead">
+          The beaver tail have parkade wicket in goaltender bacon donair, and chinook that
+          tuque will have no igloo pop back in smoked meat of the Stanley Cup finals.
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <section id="contact-main" class="container">
-  <app-breadcrumb></app-breadcrumb>
 
-  <loading-indicator [loading]="! inited"></loading-indicator>
+  <div class="row mt-5 mb-3">
+    <div class="col-sm-8" id="feedback">
 
-  <ng-container *ngIf="inited">
-    <h2 class="page-title" translate *ngIf="inited">contact.title</h2>
+      <h2>Questions? Comments? Dreams?</h2>
 
-    <div class="row">
-      <div class="col-sm-12">
+      <p>The chesterfield have skiing eavestroughs in goaltender tourtiere serviette, and butter tart that skidooing will have no bacon hockey back in nanaimo bar of the Stanley Cup finals. Tim Hortons beer too Canuck to the colour, and its pop -- skiing give’r melted, eh? Borden colour his tuque for smoked meat by canned moose the smoked meat to Ogopogo fishing of fishing Gasbar there should tuque colour for tourtiere eats of all fishing on this beaver igloo hunting.</p>
 
-      </div>
+      <p>Suggestions may be sent via email, using the button below.</p>
+
+      <a class="btn btn-lg btn-bcgold" href="mailto:santa@example.ca"><span class="fa fa-paper-plane"></span> {{ 'general.feedback-link' | translate }}</a>
+
     </div>
 
-    <div class="row">
-      <div class="col-sm-12">
+    <div class="col-sm-4" id="links">
 
+      <div class="card card-primary">
+        <div class="card-header">
+          <h5 class="my-0" translate>general.links-title</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <a href="https://vonx.io" rel="external">Verifiable Organizations Network</a> <span class="small fa fa-external-link"></span>
+          </li>
+          <li class="list-group-item">
+            <a href="https://vonx.io" rel="external">Verifiable Organizations Network</a> <span class="small fa fa-external-link"></span>
+          </li>
+          <li class="list-group-item">
+            <a href="https://vonx.io" rel="external">Verifiable Organizations Network</a> <span class="small fa fa-external-link"></span>
+          </li>
+        </ul>
       </div>
+
     </div>
-  </ng-container>
+  </div>
 
 </section>
