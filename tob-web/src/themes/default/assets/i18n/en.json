@@ -139,6 +139,7 @@
     "results-error": "Your query could not be completed at this time.",
     "results-title": "Search Results",
     "return-link": "Back to Search",
+    "running": "Performing search ...",
     "title": "Find an Organization"
   },
   "topic": {

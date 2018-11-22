@@ -25,8 +25,11 @@
       <div class="row results mt-4 mt-md-5" *ngIf="inited">
         <div class="col-md-8 col-lg-9 rows">
           <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
-          <div class="alert alert-info" *ngIf="blankQuery && !result.data" translate>
+          <div class="alert alert-info" *ngIf="blankQuery && !result.loading && !result.data" translate>
             search.prompt
+          </div>
+          <div class="alert alert-info" *ngIf="result.loading && !result.data" translate>
+            search.running
           </div>
           <ng-container *ngIf="result.data as creds">
             <label class="control-label d-none" translate>search.results-title</label>
