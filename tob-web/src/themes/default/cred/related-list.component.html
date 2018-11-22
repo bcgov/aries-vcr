@@ -82,6 +82,7 @@
   <div class="card-body" *ngIf="(result$ | async) as creds">
     <loading-indicator [loading]="creds.loading"></loading-indicator>
     <error-message [error]="creds.error"></error-message>
+    <p class="text-muted my-3" *ngIf="creds.loaded && ! creds.data?.length" translate>search.no-results</p>
     <cred-list [records]="creds.data" [format]="format"></cred-list>
   </div>
 </div>

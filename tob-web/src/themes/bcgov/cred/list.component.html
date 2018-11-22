@@ -1,4 +1,4 @@
-<div class="creds-grid" *ngIf="format==='cards'">
+<div class="creds-grid" *ngIf="format==='cards' && records?.length">
   <div class="cred-card" *ngFor="let cred of records">
     <div class="cred-icon" *ngIf="cred.issuer.has_logo">
       <img [src]="cred.issuer.logo_url | resolveUrl" [alt]="'issuer.logo-image' | translate">

@@ -146,7 +146,7 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
         credential_type_id: this._credTypeId,
         issuer_id: this._issuerId,
         topic_id: ''+this._topicId,
-        inactive: this._filterActive ? 'false': '',
+        inactive: this._filterActive ? 'false': 'true',
       };
       this._dataService.loadList(this._loader, {query: credsFilter});
     }
