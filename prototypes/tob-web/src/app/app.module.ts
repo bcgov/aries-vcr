@@ -34,20 +34,20 @@ import { environment } from '../environments/environment';
 
 const ROUTE_PREFIX : string = 'ROUTES.';
 
-const appInitializerFn = (appConfig: AppConfigService) => {
+export const appInitializerFn = (appConfig: AppConfigService) => {
   return () => {
     return appConfig.loadFromPromise(
       import(/* webpackMode: "eager" */ `../themes/_active/assets/config.json`));
   };
 };
 
-class WebpackTranslateLoader implements TranslateLoader {
+export class WebpackTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
     return Observable.fromPromise(
       import(/* webpackMode: "eager" */ `../themes/_active/assets/i18n/${lang}.json`));
   }
 }
-class WebpackLocalizeRouterLoader extends LocalizeParser {
+export class WebpackLocalizeRouterLoader extends LocalizeParser {
   load(routes: Routes): Promise<any> {
     return new Promise((resolve) => {
       import(/* webpackMode: "eager" */ `../themes/_active/assets/locales.json`)
@@ -61,7 +61,7 @@ class WebpackLocalizeRouterLoader extends LocalizeParser {
     });
   }
 }
-class MyMissingTranslationHandler implements MissingTranslationHandler {
+export class MyMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
     // params: {key, translateService}
     // handle missing route translations
