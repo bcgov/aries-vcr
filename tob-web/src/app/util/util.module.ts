@@ -12,6 +12,7 @@ import { ErrorMessageComponent } from './error-message.component';
 import { LoadingIndicatorComponent } from './loading-indicator.component';
 import { PageScrollComponent } from './pagescroll.component';
 import { NotFoundComponent } from './not-found.component';
+import { NumberShortenPipe } from './number-shorten.pipe';
 import { ResolveUrlPipe } from './resolve-url.pipe';
 
 const ROUTES = [];
@@ -27,6 +28,7 @@ const ROUTES = [];
     LoadingIndicatorComponent,
     PageScrollComponent,
     NotFoundComponent,
+    NumberShortenPipe,
     ResolveUrlPipe,
   ],
   providers: [
@@ -47,6 +49,7 @@ const ROUTES = [];
     LoadingIndicatorComponent,
     PageScrollComponent,
     NotFoundComponent,
+    NumberShortenPipe,
     ResolveUrlPipe,
   ]
 })
