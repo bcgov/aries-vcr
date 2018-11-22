@@ -22,7 +22,7 @@ a.body-link, .breadcrumb a {
   }
 }
 
-.hero-banner {
+.hero-banner, .footer-detail {
   padding: 2px 0; // prevent margin collapse
 
   background: theme-color(primary);
@@ -44,6 +44,17 @@ a.body-link, .breadcrumb a {
     @include hover-focus {
       border-bottom-color: $banner-link-hover;
     }
+  }
+}
+
+.footer-detail {
+  border-top: 2px solid theme-color(bcgold);
+  font-size: 0.9rem;
+  h4 {
+    font-size: 1.1rem;
+  }
+  + nav {
+    border-top: 1px solid lighten(theme-color(primary), 40%);
   }
 }
 
