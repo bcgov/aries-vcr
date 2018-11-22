@@ -2,10 +2,6 @@
   "ROUTES": {
     "home": "home"
   },
-  "about": {
-    "breadcrumb": "About",
-    "title": "About"
-  },
   "app": {
     "breadcrumb": "Home",
     "header": {
@@ -31,6 +27,10 @@
     "phone-business": "Business Phone",
     "skype": "Skype Address",
     "website": "Website Address"
+  },
+  "contact": {
+    "breadcrumb": "Contact",
+    "title": "Connect with Us"
   },
   "cred": {
     "addresses": "Addresses",

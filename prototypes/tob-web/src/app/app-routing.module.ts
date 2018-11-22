@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AboutComponent } from './about/about.component';
+import { ContactComponent } from './info/contact.component';
 import { CredFormComponent } from './cred/form.component';
 import { HomeComponent } from './home/home.component';
 import { IssuerFormComponent } from './issuer/form.component';
@@ -77,10 +77,10 @@ export const ROUTES: Routes = [
     }
   },
   {
-    path: 'about',
-    component: AboutComponent,
+    path: 'contact',
+    component: ContactComponent,
     data: {
-      breadcrumb: 'about.breadcrumb',
+      breadcrumb: 'contact.breadcrumb',
     }
   },
   {

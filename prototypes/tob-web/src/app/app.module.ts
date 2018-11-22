@@ -21,8 +21,8 @@ import { AppComponent } from './app.component';
 import { AppConfigService } from './app-config.service';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppFooterComponent } from './app-footer/app-footer.component';
+import { ContactComponent } from './info/contact.component';
 import { GeneralDataService } from './general-data.service';
-import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 
 import { CredModule } from './cred/cred.module';
@@ -82,7 +82,7 @@ class MyMissingTranslationHandler implements MissingTranslationHandler {
     AppComponent,
     AppHeaderComponent,
     AppFooterComponent,
-    AboutComponent,
+    ContactComponent,
     HomeComponent,
   ],
   imports: [
