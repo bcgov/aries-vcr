@@ -1,5 +1,7 @@
+@import "./common";
+
 .page-min-height {
-  // min-height: 36em;
+  min-height: 20em;
 }
 
 @keyframes spin {
@@ -51,7 +53,7 @@ $indicator-thickness: 0.2em;
 }
 
 .text-identifier {
-	font-family: monospace;
+	font-family: $font-family-monospace;
 }
 
 @keyframes loading {

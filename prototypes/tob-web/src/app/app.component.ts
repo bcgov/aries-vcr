@@ -97,7 +97,7 @@ export class AppComponent implements OnInit, OnDestroy {
             outer = document.getElementById(fragment);
           }
           if(! outer) {
-            outer = document.getElementById('pageOuter');
+            outer = document.getElementById('primaryOutlet');
           }
           if(! outer) {
             outer = document.getElementsByTagName('main')[0];

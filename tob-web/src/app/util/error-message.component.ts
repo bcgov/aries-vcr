@@ -11,6 +11,9 @@ export class ErrorMessageComponent {
   get formatted(): string {
     let err = this.error;
     let ret = null;
+    if(typeof err === 'string') {
+      return err;
+    }
     if(err) {
       try {
         let body = JSON.parse(err._body);
