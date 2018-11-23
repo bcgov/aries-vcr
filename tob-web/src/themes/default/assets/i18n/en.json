@@ -132,6 +132,7 @@
     "breadcrumb": "Search",
     "by-name": "Search by Name",
     "by-location": "Search by Location",
+    "input-label": "Organization Name or Registration ID",
     "no-results": "No results",
     "placeholder": "search",
     "prompt": "Please enter your search query above in order to proceed.",
