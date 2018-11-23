@@ -80,7 +80,7 @@ export const ROUTES: Routes = [
     path: 'contact',
     component: ContactComponent,
     data: {
-      breadcrumb: 'contact.breadcrumb',
+      breadcrumb: 'connect.breadcrumb',
     }
   },
   {

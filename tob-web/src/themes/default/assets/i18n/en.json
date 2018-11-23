@@ -21,16 +21,16 @@
   "address": {
     "registered-office": "Registered Office"
   },
+  "connect": {
+    "breadcrumb": "Contact",
+    "title": "Connect with Us"
+  },
   "contact": {
     "email": "Email Address",
     "phone": "Phone",
     "phone-business": "Business Phone",
     "skype": "Skype Address",
     "website": "Website Address"
-  },
-  "contact": {
-    "breadcrumb": "Contact",
-    "title": "Connect with Us"
   },
   "cred": {
     "addresses": "Addresses",

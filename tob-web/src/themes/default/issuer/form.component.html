@@ -4,10 +4,10 @@
   <error-message [error]="result.error"></error-message>
 
   <div class="row" *ngIf="result.data as record">
-    <div class="col-md-8 col-sm-7">
-      <h2 class="issuer-title">{{record.name}}
+    <div class="col">
+      <h1 class="page-title">{{record.name}}
         <span *ngIf="record.abbreviation">({{record.abbreviation}})</span>
-      </h2>
+      </h1>
 
       <div class="row">
         <div class="col-md-12 issuer-info">
@@ -20,8 +20,8 @@
           </div>
           <div class="row form-group" *ngIf="record.did">
             <label class="col-sm-4 control-label" translate>issuer.did</label>
-            <div class="col-sm-8 form-field text-identifier">
-              <a [href]="didResolverUrl" rel="external">{{fullDid}}</a>
+            <div class="col-sm-8 form-field">
+              <a [href]="didResolverUrl" rel="external" class="text-identifier">{{fullDid}}</a>
               <small><span class="fa fa-external-link"></span></small>
             </div>
           </div>
@@ -44,9 +44,9 @@
     </div>
   </div>
 
-  <div class="row mt-3 mb-5 issuer-creds" *ngIf="result.loaded">
+  <div class="row mt-3 issuer-creds" *ngIf="result.loaded">
     <div class="col-sm-12" *ngIf="(credTypes$ | async) as credTypes">
-      <label class="control-label"><span class="field-name" translate>issuer.cred-types</span></label>
+      <h2 class="h5"><span class="field-name" translate>issuer.cred-types</span></h2>
       <loading-indicator [loading]="credTypes.loading"></loading-indicator>
       <cred-type-list [records]="credTypes.data" *ngIf="credTypes.loaded"></cred-type-list>
     </div>

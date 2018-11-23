@@ -3,11 +3,11 @@
     <div class="row">
       <div class="col-sm-6 name-title">
         <div class="type-label" *ngIf="link">{{record.typeLabel | translate}}</div>
-        <h4 class="my-0 name-label">
+        <h2 class="h4 my-0 name-label">
           <span class="type-label" *ngIf="!link">{{record.typeLabel | translate}}</span>
           <a [routerLink]="record.link | localize" class="body-link cred-link name" *ngIf="link">{{name.text}}</a>
           <div class="badge badge-warning" *ngIf="name && name.inactive" translate>cred.inactive</div>
-        </h4>
+        </h2>
       </div>
       <div class="col-sm-6 name-issuer form-inline">
         <label class="issuer-label d-none" translate>cred.issuer</label>

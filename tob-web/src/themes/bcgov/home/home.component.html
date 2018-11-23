@@ -1,6 +1,6 @@
 <section id="home-hero" class="hero-banner" *ngIf="inited">
 
-  <div class="container mt-5 mb-5">
+  <div class="container my-4 my-md-5">
 
     <div class="row">
       <div class="col-sm-12">
@@ -12,9 +12,9 @@
       </div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row mt-3 mt-md-4">
       <div class="col-sm-10 col-lg-8">
-        <h4 class="search-title" translate>search.title</h4>
+        <h2 class="h4 search-title" translate>search.title</h2>
         <search-input #searchInput (accepted)="performSearch($event)"></search-input>
       </div>
     </div>
@@ -31,7 +31,7 @@
     {{'general.other-error' | translate}}
   </div>
 
-  <div class="row mt-5" *ngIf="inited && !loadError">
+  <div class="row mt-4 mt-md-5" *ngIf="inited && !loadError">
     <div class="col-md-8">
       <h2 translate>home.about-title</h2>
 
@@ -50,7 +50,7 @@
     <div class="col-md-4">
       <div class="card card-primary">
         <div class="card-header">
-          <h5 class="my-0">Current Statistics</h5>
+          <h2 class="h5 my-0">Current Statistics</h2>
         </div>
         <div class="card-body">
           <div class="stat-row">

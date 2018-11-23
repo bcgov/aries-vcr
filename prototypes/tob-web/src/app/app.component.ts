@@ -69,7 +69,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.updateTitle();
     });
 
-    let scrollWindow = function(top) {
+    let scrollWindow = function(top, now?) {
+      if(! now) {
+        setTimeout(() => scrollWindow(top, true), 50);
+        return;
+      }
       try {
         window.scrollTo({top: top || 0, left: 0, behavior: 'smooth'});
       } catch(e) {

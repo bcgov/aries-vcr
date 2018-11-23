@@ -28,7 +28,7 @@ a.body-link, .breadcrumb a {
   background: theme-color(primary);
   color: #fff;
 
-  h1, h2, h3 {
+  h1, .h1, h2, .h2, h3, .h3 {
     font-weight: normal;
   }
 
@@ -50,9 +50,6 @@ a.body-link, .breadcrumb a {
 .footer-detail {
   border-top: 2px solid theme-color(bcgold);
   font-size: 0.9rem;
-  h4 {
-    font-size: 1.1rem;
-  }
   + nav {
     border-top: none;
   }
@@ -60,4 +57,21 @@ a.body-link, .breadcrumb a {
 
 .lead {
   font-weight: 300;
+}
+
+$small-header-ratio: 0.9;
+
+@include media-breakpoint-down(sm) {
+  h1, .h1 {
+    font-size: ($h1-font-size * $small-header-ratio);
+  }
+  h2, .h2 {
+    font-size: ($h2-font-size * $small-header-ratio);
+  }
+  h3, .h3 {
+    font-size: ($h3-font-size * $small-header-ratio);
+  }
+  h4, .h4 {
+    font-size: ($h4-font-size * $small-header-ratio);
+  }
 }
