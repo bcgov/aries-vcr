@@ -3,16 +3,17 @@
 A collection of utility classes for TOB
 """
 
+from datetime import datetime, timedelta
+import logging
 import os
+
 from django.conf import settings
 from django.db import connection
 
-#
-# Read settings from a custom settings file
-# based on the path provided as an input parameter
-# The choice of the custom settings file is driven by the value of the TOB_THEME env
-# variable (i.e. ongov)
-#
+from haystack.query import SearchQuerySet
+from pysolr import SolrError
+
+LOGGER = logging.getLogger(__name__)
 
 
 def fetch_custom_settings(*args):
@@ -54,3 +55,22 @@ def model_counts(model_cls, cursor=None, optimize=None):
         if close:
             cursor.close()
     return row[0]
+
+
+def solr_counts():
+    active_q = SearchQuerySet().filter(latest=True)
+    registrations_q = active_q.filter(topic_type="registration")
+    last_week = datetime.now() - timedelta(days=7)
+    last_month = datetime.now() - timedelta(days=30)
+    last_week_q = SearchQuerySet().filter(effective_date__gte=last_week)
+    last_month_q = SearchQuerySet().filter(effective_date__gte=last_month)
+    try:
+        return {
+            "active": active_q.count(),
+            "registrations": registrations_q.count(),
+            "last_month": last_month_q.count(),
+            "last_week": last_week_q.count(),
+        }
+    except SolrError:
+        LOGGER.exception("Error when retrieving quickload counts from Solr")
+        return False

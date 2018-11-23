@@ -27,10 +27,6 @@
 
 <section id="home-body" class="container">
 
-  <div class="alert alert-danger" *ngIf="loadError">
-    {{'general.other-error' | translate}}
-  </div>
-
   <div class="row mt-4 mt-md-5">
     <div class="col-md-7 col-lg-8">
       <h2 translate>home.about-title</h2>
@@ -47,17 +43,23 @@
       The chesterfield have skiing eavestroughs in goaltender tourtiere serviette, and butter tart that skidooing will have no bacon hockey back in nanaimo bar of the Stanley Cup finals. Tim Hortons beer too Canuck to the colour, and its pop -- skiing give’r melted, eh? Borden colour his tuque for smoked meat by canned moose the smoked meat to Ogopogo fishing of fishing Gasbar there should tuque colour for tourtiere eats of all fishing on this beaver igloo hunting.
       </p>
     </div>
-    <div class="col-md-5 col-lg-4" *ngIf="inited && !loadError">
-      <div class="card card-primary">
+    <div class="col-md-5 col-lg-4">
+      <div class="alert alert-danger" *ngIf="loadError">
+        {{'general.other-error' | translate}}
+      </div>
+      <div class="card card-primary" *ngIf="inited && !loadError">
         <div class="card-header">
           <h2 class="h5 my-0">Current Statistics</h2>
         </div>
         <div class="card-body">
           <div class="stat-row">
-            <span class="square text-number">{{recordCounts.orgs | shortNumber}}</span> <span class="desc">{{'home.title-orgs' | translate}}</span>
+            <span class="square text-number">{{recordCounts.registrations | shortNumber}}</span> <span class="desc">{{'home.title-orgs' | translate}}</span>
           </div>
           <div class="stat-row">
-            <span class="square text-number">{{recordCounts.certs | shortNumber}}</span> <span class="desc">{{'home.title-certs' | translate}}</span>
+            <span class="square text-number">{{recordCounts.active | shortNumber}}</span> <span class="desc">{{'home.title-certs' | translate}}</span>
+          </div>
+          <div class="stat-row">
+            <span class="square text-number">{{recordCounts.this_week | shortNumber}}</span> <span class="desc">{{'home.title-this-week' | translate}}</span>
           </div>
         </div>
       </div>

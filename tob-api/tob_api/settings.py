@@ -268,6 +268,12 @@ API_METADATA = {
     },
 }
 
+#
+# Read settings from a custom settings file
+# based on the path provided as an input parameter
+# The choice of the custom settings file is driven by the value of the TOB_THEME env
+# variable (i.e. ongov)
+#
 custom_settings_file = Path(
     BASE_DIR,
     "custom_settings_" + str(os.getenv("TOB_THEME")).lower() + ".py",

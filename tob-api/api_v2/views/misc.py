@@ -15,7 +15,7 @@ from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Topic import Topic
-from api_v2.utils import model_counts
+from api_v2.utils import model_counts, solr_counts
 
 LOGGER = logging.getLogger(__name__)
 
@@ -33,8 +33,10 @@ def quickload(request, *args, **kwargs):
     }
     with connection.cursor() as cursor:
         counts = {mname: model_counts(model, cursor) for (mname, model) in count_models.items()}
+    cred_counts = solr_counts()
     return JsonResponse(
         {
             "counts": counts,
+            "credential_counts": cred_counts,
         }
     )

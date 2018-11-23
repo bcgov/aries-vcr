@@ -86,6 +86,11 @@ export class GeneralDataService {
             this._recordCounts[k] = parseInt(data.counts[k]);
           }
         }
+        if(data.credential_counts) {
+          for (let k in data.credential_counts) {
+            this._recordCounts[k] = parseInt(data.credential_counts[k]);
+          }
+        }
         if(data.records) {
           for (let k in data.records) {
             this._orgData[k] = data.records[k];

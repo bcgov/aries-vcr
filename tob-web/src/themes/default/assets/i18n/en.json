@@ -98,7 +98,8 @@
     "breadcrumb": "Home",
     "title": "Welcome to The OrgBook",
     "title-certs": "verifiable credentials held",
-    "title-orgs": "legal entities"
+    "title-orgs": "legal entities",
+    "title-this-week": "new credentials this week"
   },
   "issuer": {
     "breadcrumb": "Issuer Service",

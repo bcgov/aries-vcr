@@ -30,6 +30,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       if(loaded) {
         this.recordCounts.orgs = this._dataService.getRecordCount('topic');
         this.recordCounts.certs = this._dataService.getRecordCount('credential');
+        this.recordCounts.active = this._dataService.getRecordCount('active');
+        this.recordCounts.registrations = this._dataService.getRecordCount('registrations');
+        this.recordCounts.this_week = this._dataService.getRecordCount('this_week');
       }
       this.inited = true;
       setTimeout(() => this.focus(), 50);
