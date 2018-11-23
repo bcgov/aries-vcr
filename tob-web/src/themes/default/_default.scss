@@ -14,6 +14,7 @@
 }
 
 $indicator-color: #666;
+$dark-indicator-color: #eeeff3;
 $indicator-size: 1em;
 $indicator-thickness: 0.2em;
 .loading-indicator {
@@ -42,6 +43,12 @@ $indicator-thickness: 0.2em;
 	.alt-text {
 	  display: none;
 	}
+	.dark-bg & {
+	  border-top-color: $dark-indicator-color;
+    &:after {
+		  border-color: transparentize($dark-indicator-color, 0.8);
+    }
+  }
 }
 
 .page-load {
