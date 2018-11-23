@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput') _searchInput: SearchInputComponent;
   public inited = false;
   public loadError = null;
-  public recordCounts = {orgs: 0, certs: 0};
+  public recordCounts: any = {};
   public filterType = 'name';
 
   constructor(
