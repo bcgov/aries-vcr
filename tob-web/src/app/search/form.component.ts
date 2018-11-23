@@ -154,12 +154,12 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     if(fields) {
       for(let optname in fields) {
         for(let optitem of fields[optname]) {
+          if(! optitem.count)
+            // skip facets with no results
+            continue;
           let optidx = optname;
           let optval: Filter.Option = {label: optitem.text, value: optitem.value, count: optitem.count};
           if(optname == 'category') {
-            if(! optitem.count)
-              // skip empty category values
-              continue;
             let optparts = optitem.value.split('::', 2);
             if(optparts.length == 2) {
               optidx = optname + ':' + optparts[0];
