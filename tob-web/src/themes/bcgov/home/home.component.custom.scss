@@ -4,7 +4,10 @@
   display: flex;
   align-items: center;
   flex-flow: row nowrap;
-  margin-bottom: 1.5rem;
+
+  + .stat-row {
+    margin-top: 1.5rem;
+  }
 
   .square {
     display: block;
