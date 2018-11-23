@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction, DEFAULT_DB_ALIAS
 from django.db.utils import IntegrityError
 from django.utils.dateparse import parse_datetime
-from django.utils.timezone import utc
+from django.utils import timezone
 
 from von_anchor.util import schema_key
 
@@ -532,7 +532,10 @@ class CredentialManager(object):
                 try:
                     date_result = parse_datetime(date_value)
                     if not date_result:
-                        raise ValueError()
+                        date_result = parse_date(date_value)
+                        if not date_result:
+                            raise ValueError()
+                        date_result = date_result.replace(tzinfo=timezone.now)
                 except re.error:
                     raise CredentialException(
                         "Error parsing {}: {}".format(field_name, date_value)
@@ -542,7 +545,7 @@ class CredentialManager(object):
                         "Credential {} is invalid: {}".format(field_name, date_value)
                     )
             if not date_result.tzinfo:
-                date_result = date_result.replace(tzinfo=utc)
+                date_result = date_result.replace(tzinfo=timezone.utc)
         return date_result
 
     @classmethod
@@ -559,7 +562,7 @@ class CredentialManager(object):
 
             revoked_date = cls.process_config_date(config, credential, "revoked_date")
             if revoked_date:
-                if revoked_date > datetime.utcnow().replace(tzinfo=utc):
+                if revoked_date > datetime.utcnow().replace(tzinfo=timezone.utc):
                     raise CredentialException(
                         "Credential revoked_date must be in the past, not: {}".format(revoked_date)
                     )
