@@ -10,7 +10,7 @@ from importlib import import_module
 from django.core.exceptions import ValidationError
 from django.db import transaction, DEFAULT_DB_ALIAS
 from django.db.utils import IntegrityError
-from django.utils.dateparse import parse_datetime
+from django.utils.dateparse import parse_date, parse_datetime
 from django.utils import timezone
 
 from von_anchor.util import schema_key
