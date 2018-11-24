@@ -535,8 +535,8 @@ class CredentialManager(object):
                         date_result = parse_date(date_value)
                         if not date_result:
                             raise ValueError()
-                        # force date to datetime
                         date_result = datetime.combine(date_result, datetime.min.time())
+                        date_result = timezone.make_aware(date_result)
                 except re.error:
                     raise CredentialException(
                         "Error parsing {}: {}".format(field_name, date_value)
@@ -546,7 +546,11 @@ class CredentialManager(object):
                         "Credential {} is invalid: {}".format(field_name, date_value)
                     )
             if not date_result.tzinfo:
+                # interpret as UTC
                 date_result = date_result.replace(tzinfo=timezone.utc)
+            else:
+                # convert to UTC
+                date_result = date_result.astimezone(timezone.utc)
         return date_result
 
     @classmethod

@@ -39,6 +39,8 @@ def list_related_from(self, request, pk=None):
     return Response(serializer.data)
 
 
+TIME_ZONE = "America/Vancouver"
+
 CUSTOMIZATIONS = {
     "serializers": {
         "Address": {
