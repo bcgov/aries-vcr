@@ -1,10 +1,11 @@
 @import "../common";
 
-$timeline-border: 1px solid $card-border-color;
+$timeline-border-color: $card-border-color;
+$timeline-border: 1px solid $timeline-border-color;
 $timeline-hpad: 0; /* allow room for scrollbar? */
 $timeline-vpad: 8px;
 $timeline-row-shadow: inset 0 5px 20px 5px rgba(0, 0, 0, 0.08);
-$timeline-controls-bg: #eee;
+$timeline-controls-bg: rgba(0, 0, 0, 0.1);
 $slot-border-default: 1px solid #ccc;
 $slot-bg-default: theme-color(light);
 $slot-bg-level: $alert-bg-level;
@@ -29,6 +30,9 @@ $slot-radius: 5px;
 
 .timeline-outer {
   border: $timeline-border;
+  :host.flush & {
+    border: none;
+  }
   box-sizing: border-box;
   display: flex;
   flex-flow: column nowrap;
@@ -96,7 +100,8 @@ $slot-radius: 5px;
 }
 
 .timeline-axis {
-  border-top: 2px solid #ddd;
+  background: $timeline-controls-bg;
+  border-top: 2px solid $timeline-border-color;
   height: 1.8em;
   overflow: hidden;
   padding-top: 2px;

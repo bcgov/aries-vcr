@@ -1,6 +1,9 @@
+@import "./common";
+
+$well-border-color: $table-border-color;
 
 .well {
-  border: 1px solid #ccc;
+  border: 1px solid $well-border-color;
   border-radius: 8px;
   padding: 2em;
   word-wrap: break-word;
@@ -11,22 +14,22 @@
   margin-top: 0;
 }
 
-$creds-panel-header-bg: #eee;
+$creds-panel-header-bg: rgba(0, 0, 0, 0.1);
+$creds-panel-header-border-color: $card-border-color;
 
 .creds-panel {
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  // border: 1px solid $creds-panel-border-color;
+  // border-radius: 8px;
   display: flex;
   flex-flow: column nowrap;
   max-height: 40em;
   overflow: hidden;
   .filters {
-    background-color: $creds-panel-header-bg;
+    background: $creds-panel-header-bg;
   }
   .columns {
-    background-color: $creds-panel-header-bg;
-    border-bottom: 3px double #bbb;
-    border-top: 1px solid #bbb;
+    background: $creds-panel-header-bg;
+    border-bottom: 3px double $creds-panel-header-border-color;
     a {
       border-bottom: 1px solid #999;
       color: #555;
@@ -34,7 +37,6 @@ $creds-panel-header-bg: #eee;
     }
   }
   > .card-body {
-    background-color: #fff;
     overflow: auto;
     padding-bottom: 0;
     padding-top: 0;
