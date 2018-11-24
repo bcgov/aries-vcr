@@ -535,7 +535,8 @@ class CredentialManager(object):
                         date_result = parse_date(date_value)
                         if not date_result:
                             raise ValueError()
-                        date_result = date_result.replace(tzinfo=timezone.now)
+                        # force date to datetime
+                        date_result = datetime.combine(date_result, datetime.min.time())
                 except re.error:
                     raise CredentialException(
                         "Error parsing {}: {}".format(field_name, date_value)
