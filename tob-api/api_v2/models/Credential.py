@@ -31,3 +31,25 @@ class Credential(Auditable):
 
     class Meta:
         db_table = "credential"
+
+    _cache = None
+    def _cached(self, key, val):
+        cache = self._cache
+        if cache is None:
+            self._cache = cache = {}
+        if key not in cache:
+            cache[key] = val
+        return cache[key]
+
+    # used by solr document index
+    @property
+    def all_names(self):
+        return self._cached('names', self.names.all())
+
+    @property
+    def all_categories(self):
+        return self._cached('categories', self.attributes.filter(format='category'))
+
+    @property
+    def all_attributes(self):
+        return self._cached('attributes', self.attributes.all())

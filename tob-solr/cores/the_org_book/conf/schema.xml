@@ -118,6 +118,8 @@
      
     <field name="name" type="text_en" indexed="true" stored="true" multiValued="true" />
 
+    <field name="create_timestamp" type="date" indexed="true" stored="true" multiValued="false" />
+
     <field name="effective_date" type="date" indexed="true" stored="true" multiValued="false" />
     
     <field name="inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
