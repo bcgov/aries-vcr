@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { map, catchError } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { environment } from '../environments/environment';
-import { Fetch, Model } from './data-types';
+import { Fetch, Filter, Model } from './data-types';
 
 
 @Injectable()
@@ -204,6 +204,48 @@ export class GeneralDataService {
       }
       fetch.loadFrom(this.loadJson(url, httpParams), {url: url});
     }
+  }
+
+  public loadFacetOptions(data) {
+    let fields = data.info && data.info.facets && data.info.facets.fields || {};
+    let options = {
+      credential_type_id: [],
+      issuer_id: [],
+      'category:entity_type': [],
+    };
+    if(fields) {
+      for(let optname in fields) {
+        for(let optitem of fields[optname]) {
+          if(! optitem.count)
+            // skip facets with no results
+            continue;
+          let optidx = optname;
+          let optval: Filter.Option = {label: optitem.text, value: optitem.value, count: optitem.count};
+          if(optname == 'category') {
+            let optparts = optitem.value.split('::', 2);
+            if(optparts.length == 2) {
+              optidx = optname + ':' + optparts[0];
+              let lblkey = `category.${optparts[0]}.${optparts[1]}`;
+              let label = this._translate.instant(lblkey);
+              if(label === lblkey || label === `??${lblkey}??`)
+                label = optparts[1];
+              optval = {
+                label,
+                value: optparts[1],
+                count: optitem.count,
+              };
+            }
+          }
+          if(optidx in options) {
+            options[optidx].push(optval);
+          }
+        }
+      }
+    }
+    for(let name in options) {
+      options[name].sort((a,b) => a.label.localeCompare(b.label));
+    }
+    return options;
   }
 
   onCurrentResult(sub): Subscription {

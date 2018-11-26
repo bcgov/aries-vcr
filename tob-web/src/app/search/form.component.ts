@@ -5,7 +5,6 @@ import { Fetch, Filter, Model } from '../data-types';
 import { CredListComponent } from '../cred/list.component';
 import { SearchInputComponent } from './input.component';
 import { Subscription } from 'rxjs/Subscription';
-import { TranslateService } from '@ngx-translate/core';
 
 
 const FilterSpec = [
@@ -79,7 +78,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -145,43 +143,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public handleFacets(data) {
-    let fields = data.info.facets.fields;
-    let options = {
-      credential_type_id: [],
-      issuer_id: [],
-      'category:entity_type': [],
-    };
-    if(fields) {
-      for(let optname in fields) {
-        for(let optitem of fields[optname]) {
-          if(! optitem.count)
-            // skip facets with no results
-            continue;
-          let optidx = optname;
-          let optval: Filter.Option = {label: optitem.text, value: optitem.value, count: optitem.count};
-          if(optname == 'category') {
-            let optparts = optitem.value.split('::', 2);
-            if(optparts.length == 2) {
-              optidx = optname + ':' + optparts[0];
-              let lblkey = `category.${optparts[0]}.${optparts[1]}`;
-              let label = this._translate.instant(lblkey);
-              if(label === lblkey || label === `??${lblkey}??`)
-                label = optparts[1];
-              optval = {
-                label,
-                value: optparts[1],
-                count: optitem.count,
-              };
-            }
-          }
-          if(optidx in options) {
-            options[optidx].push(optval);
-          }
-        }
-      }
-    }
+    let options = this._dataService.loadFacetOptions(data);
     for(let name in options) {
-      options[name].sort((a,b) => a.label.localeCompare(b.label));
       this._filters.setOptions(name, options[name]);
     }
   }

@@ -21,14 +21,15 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   _optionsLoaded: boolean = false;
   _showFilters: boolean = false;
 
-  private _loader: Fetch.ModelListLoader<Model.CredentialSearchResult>;
+  private _loader: Fetch.ModelListLoader<Model.CredentialFacetSearchResult>;
 
   constructor(
     private _dataService: GeneralDataService,
   ) { }
 
   ngOnInit() {
-    this._loader = new Fetch.ModelListLoader(Model.CredentialSearchResult);
+    this._loader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult);
+    this._loader.ready.subscribe(this.loadOptions.bind(this));
     this.load();
   }
 
@@ -47,9 +48,6 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   set filterActive(active: string) {
     this._filterActive = (active === 'true');
     this.load();
-    if(this._filterActive && ! this._optionsLoaded) {
-      this._loadOptions();
-    }
   }
 
   get showFilters(): boolean {
@@ -59,9 +57,6 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   set showFilters(show: boolean) {
     this._showFilters = show;
     this.load();
-    if(this._showFilters && ! this._optionsLoaded) {
-      this._loadOptions();
-    }
   }
 
   get credTypeOptions(): Model.CredentialType[] {
@@ -123,20 +118,6 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
     this.load();
   }
 
-  _loadOptions() {
-    let credTypes = this._dataService.loadAll(Model.CredentialType);
-    credTypes.then(data => {
-      data.sort((a,b) => a.description.localeCompare(b.description));
-      this._credTypeOptions = data;
-    });
-    let issuers = this._dataService.loadAll(Model.Issuer);
-    issuers.then(data => {
-      data.sort((a,b) => a.name.localeCompare(b.name));
-      this._issuerOptions = data;
-    });
-    this._optionsLoaded = true;
-  }
-
   load() {
     if(this._loader && this.format === 'timeline') {
       this._loader.reset();
@@ -150,5 +131,23 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
       };
       this._dataService.loadList(this._loader, {query: credsFilter});
     }
+  }
+
+  loadOptions(result) {
+    let options = this._dataService.loadFacetOptions(result);
+    let issuers = [];
+    let credTypes = [];
+    if(options.issuer_id) {
+      for(let row of options.issuer_id) {
+        issuers.push(new Model.Issuer({id: row.value, name: row.label}));
+      }
+    }
+    if(options.credential_type_id) {
+      for(let row of options.credential_type_id) {
+        credTypes.push(new Model.CredentialType({id: row.value, description: row.label}));
+      }
+    }
+    this._issuerOptions = issuers;
+    this._credTypeOptions = credTypes;
   }
 }
