@@ -1,5 +1,4 @@
 .name-row {
-  font-size: 1.2rem;
   padding-top: 1rem;
   padding-bottom: 0.5rem;
   &:not(:first-child) {
@@ -8,8 +7,7 @@
   &:nth-of-type(odd) {
     background-color: #f9f9f9;
   }
-  label {
-    font-size: 85%;
-    font-weight: normal;
+  .row-title {
+    font-size: 1.2rem;
   }
 }

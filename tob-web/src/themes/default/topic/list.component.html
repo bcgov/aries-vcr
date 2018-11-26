@@ -2,11 +2,11 @@
 <div class="row name-row" *ngFor="let topic of records">
 <ng-container *ngIf="topic.preferredName as name">
   <div class="col-sm-7">
-    <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
-    <label>{{typeLabel(topic.type) | translate}}:</label>
-    <a [routerLink]="topic.link | localize"
-      class="body-link cred-link name">{{name.text}}</a>
-    <br>
+    <div class="row-title">
+      <label>{{typeLabel(topic.type) | translate}}:</label>
+      <a [routerLink]="topic.link | localize"
+        class="body-link cred-link name">{{name.text}}</a>
+    </div>
     <small>
       <label>
         <span translate>cred.issuer</span>:</label>
@@ -21,8 +21,6 @@
   </div>
   <div class="col-sm-5">
     <small *ngIf="topic.addresses.length > 0">
-      <!-- TODO: Add notion of 'type' to address model? -->
-      <!-- <label class="control-label" translate>{{topic.addresses[0].type}}</label> -->
       <address-view [record]="topic.addresses[0]"></address-view>
     </small>
   </div>
@@ -35,11 +33,10 @@
 <ng-container *ngIf="format === 'compact'">
 <div class="row name-row" *ngFor="let topic of records">
 <ng-container *ngIf="topic.preferredName as name">
-  <div class="col-sm-7">
-    <!-- TODO: Create mapping for type: human_readable. Hard coded? Issuer-registered? -->
+  <div class="col-sm-7 row-title">
     <label>{{typeLabel(topic.type) | translate}}:</label>
     <a [routerLink]="topic.link | localize"
-      class="body-link cred-link name">{{name.text}}</a>
+        class="body-link cred-link name">{{name.text}}</a>
   </div>
   <div class="col-sm-5">
     <label>
