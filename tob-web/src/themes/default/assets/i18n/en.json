@@ -95,11 +95,12 @@
     "verified": "Verified"
   },
   "home": {
+    "about-title": "About the BC OrgBook",
     "breadcrumb": "Home",
     "title": "Welcome to The OrgBook",
-    "title-certs": "verifiable credentials held",
-    "title-orgs": "legal entities",
-    "title-this-week": "new credentials this week"
+    "title-certs": "Credentials verified on the blockchain",
+    "title-orgs": "Legal entities",
+    "title-this-week": "Credentials added this week"
   },
   "issuer": {
     "breadcrumb": "Issuer Service",
@@ -142,7 +143,7 @@
     "results-title": "Search Results",
     "return-link": "Back to Search",
     "running": "Performing search ...",
-    "title": "Find an Organization"
+    "title": "Find a company"
   },
   "topic": {
     "breadcrumb": "Organization",
