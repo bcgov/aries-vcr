@@ -14,6 +14,9 @@
           <p>
           We welcome your feedback and questions! Contact us <a href="mailto:santa@example.ca">here</a>.
           </p>
+          <a class="btn btn-outline-light" [routerLink]="'/contact' | localize" fragment="feedback">
+            {{ 'general.feedback-link' | translate }} <span class="fa fa-arrow-right right"></span>
+          </a>
         </div>
       </div>
     </div>
