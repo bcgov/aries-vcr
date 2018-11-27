@@ -17,4 +17,12 @@ export class AppHeaderComponent {
     this.navCollapsed = ! this.navCollapsed;
   }
 
+  moveFocus(evt, id) {
+    evt.preventDefault();
+    let main = document.getElementById(id);
+    if(main) {
+      main.focus();
+      location.hash = id;
+    }
+  }
 }

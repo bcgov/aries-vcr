@@ -128,3 +128,26 @@ $indicator-thickness: 0.2em;
         border-color: theme-color-level(warning, -6);
     }
 }
+
+// Header accessibility links
+a.a11y-link {
+  color: theme-color(light);
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  text-align: center;
+  width: 100%;
+  &:focus {
+    color: theme-color(light);
+    outline: none;
+    z-index: 10;
+  }
+  .content {
+    background: theme-color(primary);
+    border: 1px solid theme-color(light);
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-size: 1.1;
+    padding: 0.25em;
+  }
+}

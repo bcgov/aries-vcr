@@ -1,7 +1,13 @@
 <header>
+  <a href="#contentStart" class="a11y-link" (click)="moveFocus($event, 'contentStart');">
+    <span class="content" translate>general.skip-link-content</span>
+  </a>
+  <a href="#footerAbout" class="a11y-link" (click)="moveFocus($event, 'footerAbout');">
+    <span class="content" translate>general.skip-link-about</span>
+  </a>
   <nav class="navbar navbar-expand-md navbar-dark">
     <div class="container">
-      <a class="navbar-brand" href="https://www2.gov.bc.ca">
+      <a class="navbar-brand" [routerLink]="'/' | localize">
 
         <img class="img-fluid d-none d-md-block"
           [src]="'assets/bootstrap/bcid-logo-rev-' + parent.currentLang + '.svg'" width="177" height="44"

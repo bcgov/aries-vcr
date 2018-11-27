@@ -12,16 +12,16 @@
   .square {
     display: block;
     flex: none;
-    width: 4rem;
-    height: 4rem;
+    width: 4.5rem;
+    height: 4.5rem;
     background: theme-color(primary);
     color: theme-color(light);
     font-size: 1.7rem;
-    line-height: 4rem;
+    line-height: 4.5rem;
     margin-right: 1rem;
     overflow: hidden;
     text-align: center;
-    word-wrap: nowrap;
+    white-space: nowrap;
   }
 
   .desc {

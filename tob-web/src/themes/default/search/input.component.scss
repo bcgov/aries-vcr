@@ -52,6 +52,9 @@ $input-background: theme-color(light);
     flex: none;
     margin: 2px;
   }
+  :host.dark-bg & {
+    border-color: $input-border-color;
+  }
   &.active {
     border-color: $input-border-active;
     box-shadow: 0 2px 4px 2px rgba(0, 10, 30, 0.1);
@@ -63,6 +66,7 @@ $input-background: theme-color(light);
       //border-left-color: $input-border-active;
     }
     :host.dark-bg & {
+      border-color: $input-border-color;
       box-shadow: 0 0 0 $btn-focus-width rgba(theme-color(light), .5);
     }
   }

@@ -7,7 +7,7 @@
           <div class="form-check">
             <input type="checkbox" tabindex="0" [id]="opt.id" class="form-check-input" [value]="opt.value" [checked]="opt.active" (change)="setFilter($event, filter.name, opt.value)">
             <label class="form-check-label" [for]="opt.id">{{opt.label || (opt.tlabel | translate)}}
-              <span class="badge badge-primary badge-pill" *ngIf="opt.count">{{opt.count}}</span>
+              <span class="badge badge-primary badge-pill" *ngIf="opt.count">{{opt.count | shortNumber}}</span>
             </label>
           </div>
         </li>

@@ -5,7 +5,7 @@
 
   <div class="row" *ngIf="result.data as record">
     <div class="col">
-      <h1 class="page-title">{{record.name}}
+      <h1 class="page-title" id="contentStart" tabindex="-1">{{record.name}}
         <span *ngIf="record.abbreviation">({{record.abbreviation}})</span>
       </h1>
 

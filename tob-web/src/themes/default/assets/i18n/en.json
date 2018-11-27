@@ -91,6 +91,8 @@
     "show-filters": "Show Filters",
     "show-inactive": "Show Past",
     "show-revoked": "Show Revoked",
+    "skip-link-about": "Skip to \"About this site\"",
+    "skip-link-content": "Skip to main content",
     "status-nonrevoked": "Not Revoked",
     "status-revoked": "Revoked",
     "status-any": "Any",
