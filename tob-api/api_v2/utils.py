@@ -58,15 +58,15 @@ def model_counts(model_cls, cursor=None, optimize=None):
 
 
 def solr_counts():
-    active_q = SearchQuerySet().filter(latest=True)
-    registrations_q = active_q.filter(topic_type="registration")
+    latest_q = SearchQuerySet().filter(latest=True)
+    registrations_q = latest_q.filter(category="entity_status::ACT")
     last_week = datetime.now() - timedelta(days=7)
     last_month = datetime.now() - timedelta(days=30)
-    last_week_q = SearchQuerySet().filter(effective_date__gte=last_week)
-    last_month_q = SearchQuerySet().filter(effective_date__gte=last_month)
+    last_week_q = SearchQuerySet().filter(create_timestamp__gte=last_week)
+    last_month_q = SearchQuerySet().filter(create_timestamp__gte=last_month)
     try:
         return {
-            "active": active_q.count(),
+            "active": latest_q.count(),
             "registrations": registrations_q.count(),
             "last_month": last_month_q.count(),
             "last_week": last_week_q.count(),

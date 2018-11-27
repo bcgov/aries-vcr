@@ -103,8 +103,8 @@
     "about-title": "About the BC OrgBook",
     "breadcrumb": "Home",
     "title": "Welcome to The OrgBook",
-    "title-certs": "Credentials verified on the blockchain",
-    "title-orgs": "Legal entities",
+    "title-certs": "Verifiable credentials held",
+    "title-orgs": "Active legal entities",
     "title-this-week": "Credentials added this week"
   },
   "issuer": {

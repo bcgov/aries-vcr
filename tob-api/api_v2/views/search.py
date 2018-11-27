@@ -9,8 +9,8 @@ from drf_haystack.filters import (
 )
 from drf_haystack.mixins import FacetMixin
 from drf_haystack.viewsets import HaystackViewSet
-from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from haystack.query import RelatedSearchQuerySet
 
 from api_v2.models.Credential import Credential
