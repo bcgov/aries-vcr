@@ -10,7 +10,7 @@
       <a [routerLink]="record.topic.link | localize" class="title-back-link mb-3">
         <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
 
-      <div class="cred-info">
+      <div class="cred-info" *ngIf="mode == 'view'">
 
         <div class="row form-group" *ngIf="record.inactive">
           <div class="col-sm-12">
@@ -81,19 +81,6 @@
           </div>
         </div>
 
-        <div class="row form-group">
-          <div class="col-sm-12">
-            <label class="control-label" translate>cred.proof-of-claims</label>
-            <loading-indicator [inline]="true" [loading]="verify.loading"></loading-indicator>
-            <error-message [error]="verify.error"></error-message>
-            <div class="form-field" *ngIf="verify.data as verifyResult">
-              <span [class]="'proof-icon fa ' + (verifyResult.success ? 'fa-check-circle text-success' : 'fa-times-circle text-danger')"></span>
-              <span>{{verifyResult.status | translate}}</span>
-              <p *ngIf="! verifyResult.success" class="mt-2 mb-0">{{verifyResult.text}}</p>
-            </div>
-          </div>
-        </div>
-
         <div class="row form-group" *ngIf="record.effective_date">
           <div class="col-sm-12">
             <label class="control-label" translate>cred.start-date</label>
@@ -119,60 +106,80 @@
           </div>
         </div>
 
-        <ng-container *ngIf="verify.data as verifyResult">
-          <div class="card card-info mb-3">
-            <div class="card-header expand-link" (click)="toggleShowClaims($event)">
-              <h2 class="h5 my-0">
-                <span translate>cred.claims-proven</span>
-                <span [class]="'expand-icon fa ' + (claimsVisible ? 'fa-chevron-up': 'fa-chevron-down')"></span>
-              </h2>
-            </div>
-            <div class="card-body" *ngIf="claimsVisible">
-              <div class="text-right">
-                <a class="body-link verify-help" href="#">
-                  <span class="fa fa-question-circle"></span>
-                  <span translate>cred.whats-this-link</span>
-                </a>
-              </div>
-              <div class="row claim-row" *ngFor="let claim of verifyResult.claims">
-                <label class="col-sm-4 control-label text-right">{{claim.name}}</label>
-                <div class="col-sm-8">{{claim.value}}</div>
-              </div>
-            </div>
-          </div>
+      </div><!-- cred-info -->
 
-          <div class="card card-info">
-            <div class="card-header expand-link" (click)="toggleShowProof($event)">
-              <h2 class="h5 my-0">
-                <span translate>cred.proof-details</span>
-                <span [class]="'expand-icon fa ' + (proofVisible ? 'fa-chevron-up': 'fa-chevron-down')"></span>
-              </h2>
-            </div>
-            <div class="card-body" *ngIf="proofVisible">
-              <div class="pull-right">
-                <a class="body-link verify-help" href="#">
-                  <span class="fa fa-question-circle"></span>
-                  <span translate>cred.whats-this-link</span>
-                </a>
-              </div>
-              <h3 class="h5 mt-2" translate>cred.schema-info</h3>
-              <div class="row">
-                <label class="col-sm-3 control-label text-right" translate>schema.name</label>
-                <div class="col-sm-9">{{record.credential_type.schema.name}}</div>
-              </div>
-              <div class="row">
-                <label class="col-sm-3 control-label text-right" translate>schema.version</label>
-                <div class="col-sm-9">{{record.credential_type.schema.version}}</div>
-              </div>
-              <ng-container *ngIf="verifyResult.success">
-                <h3 class="h5 mt-2" translate>cred.crypto-data</h3>
-                <div class="verify-data"><pre>{{verifyResult.text}}</pre></div>
-              </ng-container>
-            </div>
+      <div class="row form-group" *ngIf="mode == 'verify' || verify.error">
+        <div class="col-sm-12">
+          <label class="control-label" translate>cred.proof-of-claims</label>
+          <loading-indicator [inline]="true" [loading]="verify.loading"></loading-indicator>
+          <error-message [error]="verify.error"></error-message>
+          <div class="form-field" *ngIf="verify.data as verifyResult">
+            <span [class]="'proof-icon fa ' + (verifyResult.success ? 'fa-check-circle text-success' : 'fa-times-circle text-danger')"></span>
+            <span>{{verifyResult.status | translate}}</span>
+            <p *ngIf="! verifyResult.success" class="mt-2 mb-0">{{verifyResult.text}}</p>
           </div>
-        </ng-container>
-
+        </div>
       </div>
+
+      <div class="row form-group mt-5" *ngIf="mode == 'view'">
+        <div class="col-sm-12">
+          <a [routerLink]="['./verify'] | localize">{{ 'cred.verify-link' | translate }}</a>
+        </div>
+      </div>
+
+      <div class="cred-verify" *ngIf="mode == 'verify' && verify.data as verifyResult">
+        <div class="card card-primary mb-3">
+          <div class="card-header expand-link" (click)="toggleShowClaims($event)">
+            <h2 class="h5 my-0">
+              <span translate>cred.claims-proven</span>
+              <span [class]="'expand-icon fa ' + (claimsVisible ? 'fa-chevron-up': 'fa-chevron-down')"></span>
+            </h2>
+          </div>
+          <div class="card-body" *ngIf="claimsVisible">
+            <div class="text-right">
+              <a class="body-link verify-help" href="#">
+                <span class="fa fa-question-circle"></span>
+                <span translate>cred.whats-this-link</span>
+              </a>
+            </div>
+            <div class="row claim-row" *ngFor="let claim of verifyResult.claims">
+              <label class="col-sm-4 control-label text-right">{{claim.name}}</label>
+              <div class="col-sm-8">{{claim.value}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header expand-link" (click)="toggleShowProof($event)">
+            <h2 class="h5 my-0">
+              <span translate>cred.proof-details</span>
+              <span [class]="'expand-icon fa ' + (proofVisible ? 'fa-chevron-up': 'fa-chevron-down')"></span>
+            </h2>
+          </div>
+          <div class="card-body" *ngIf="proofVisible">
+            <div class="pull-right">
+              <a class="body-link verify-help" href="#">
+                <span class="fa fa-question-circle"></span>
+                <span translate>cred.whats-this-link</span>
+              </a>
+            </div>
+            <h3 class="h5 mt-2" translate>cred.schema-info</h3>
+            <div class="row">
+              <label class="col-sm-3 control-label text-right" translate>schema.name</label>
+              <div class="col-sm-9">{{record.credential_type.schema.name}}</div>
+            </div>
+            <div class="row">
+              <label class="col-sm-3 control-label text-right" translate>schema.version</label>
+              <div class="col-sm-9">{{record.credential_type.schema.version}}</div>
+            </div>
+            <ng-container *ngIf="verifyResult.success">
+              <h3 class="h5 mt-2" translate>cred.crypto-data</h3>
+              <div class="verify-data"><pre>{{verifyResult.text}}</pre></div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>

@@ -16,8 +16,9 @@ import { TimelineFormatterService } from './timeline-formatter.service';
 })
 export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   id: number;
-  claimsVisible: boolean = false;
-  proofVisible: boolean = false;
+  claimsVisible: boolean = true;
+  proofVisible: boolean = true;
+  mode: string = 'view';
   _timelineRange: any;
   _timelineRows: any;
 
@@ -35,6 +36,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this._idSub = this._route.params.subscribe(params => {
       this.id = +params['credId'];
+      this.mode = this._route.snapshot.data.verify ? 'verify' : 'view';
       this._dataService.loadRecord(this._loader, this.id, {primary: true});
     });
   }

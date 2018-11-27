@@ -43,10 +43,23 @@ export const ROUTES: Routes = [
       },
       {
         path: 'cred/:credId',
-        component: CredFormComponent,
         data: {
           breadcrumb: 'cred.breadcrumb'
-        }
+        },
+        children: [
+          {
+            path: '',
+            component: CredFormComponent,
+          },
+          {
+            path: 'verify',
+            component: CredFormComponent,
+            data: {
+              breadcrumb: 'cred.verify-breadcrumb',
+              verify: true
+            }
+          }
+        ]
       }
     ]
   },
@@ -62,10 +75,23 @@ export const ROUTES: Routes = [
       },
       {
         path: 'cred/:credId',
-        component: CredFormComponent,
         data: {
           breadcrumb: 'cred.breadcrumb'
-        }
+        },
+        children: [
+          {
+            path: '',
+            component: CredFormComponent,
+          },
+          {
+            path: 'verify',
+            component: CredFormComponent,
+            data: {
+              breadcrumb: 'cred.verify-breadcrumb',
+              verify: true
+            }
+          }
+        ]
       }
     ]
   },

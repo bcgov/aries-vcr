@@ -67,6 +67,8 @@
     "view-link": "View credential",
     "whats-this-link": "What's this?",
     "verified": "Verified",
+    "verify-breadcrumb": "Credential Verification",
+    "verify-link": "Show technical details",
     "verify-status": "Verification Status:"
   },
   "general": {
