@@ -47,7 +47,7 @@
     "expired-message": "This credential is expired and no longer verifiable.",
     "history-link": "See history",
     "inactive": "Archived",
-    "inactive-message": "This credential has been issued for archival purposes only. It does not represent a currently active registration, permit, or license.",
+    "inactive-message": "This credential has been issued for archival purposes only. It does not represent a currently active registration, permit, or licence.",
     "issuer": "Issuer",
     "last-updated": "Last Updated",
     "latest-link": "Go to the latest credential",
