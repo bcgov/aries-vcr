@@ -44,6 +44,12 @@ usage () {
       - Rebuild search indexes.
       - Register the environment's DID with the ledger.
 
+    resetSearchIndex
+      - Delete and recreate the search index for a given environment.
+
+    resetSolrCore
+      - Delete and recreate the solr core for a given environment.
+
     rebuildSearchIndex
       - Rebuild the search index for a given environment.
 
@@ -209,6 +215,62 @@ hardReset() {
   echoWarning "If you are using Permitify, you can now use the Permitify manage script to scale the Permitify pods up."  
 }
 
+resetSearchIndex() {
+  _apiPodName=${1}
+  _solrPodName=${2}
+  if [ -z "${_apiPodName}" ] || [ -z "${_solrPodName}" ]; then
+    echo -e \\n"resetSearchIndex; Missing parameter!"\\n
+    exit 1
+  fi
+
+  deleteSearchIndex "${_solrPodName}"
+
+  recyclePods "${_solrPodName}"
+  printAndWait "Wait for the ${_solrPodName} pod to completely start up before continuing."
+
+  rebuildSearchIndex "${_apiPodName}"
+}
+
+resetSolrCore() {
+  _apiPodName=${1}
+  _solrPodName=${2}
+  if [ -z "${_apiPodName}" ] || [ -z "${_solrPodName}" ]; then
+    echo -e \\n"resetSolrCore; Missing parameter!"\\n
+    exit 1
+  fi
+
+  deleteSolrCore "${_solrPodName}"
+
+  recyclePods "${_solrPodName}"
+  printAndWait "Wait for the ${_solrPodName} pod to completely start up before continuing."
+
+  rebuildSearchIndex "${_apiPodName}"
+}
+
+deleteSolrCore() {
+  _solrPodName=${1}
+  if [ -z "${_solrPodName}" ]; then
+    echo -e \\n"deleteSolrCore; Missing parameter!"\\n
+    exit 1
+  fi
+
+  printAndAskToContinue "If you contiune the Solr core on ${_solrPodName} will be deleted."
+  deleteFromPod "${_solrPodName}" "/opt/solr/server/solr/mycores/the_org_book"
+  exitOnError
+}
+
+deleteSearchIndex() {
+  _solrPodName=${1}
+  if [ -z "${_solrPodName}" ]; then
+    echo -e \\n"deleteSearchIndex; Missing parameter!"\\n
+    exit 1
+  fi
+
+  printAndAskToContinue "If you contiune the search index on ${_solrPodName} will be deleted."
+  deleteFromPod "${_solrPodName}" "/opt/solr/server/solr/mycores/the_org_book/data/index"
+  exitOnError
+}
+
 rebuildSearchIndex() {
   _apiPodName=${1}
   if [ -z "${_apiPodName}" ]; then
@@ -244,6 +306,20 @@ case "${_cmd}" in
     walletDbPodName=${3:-wallet-db}
     hardReset "${apiPodName}" "${dbPodName}" "${walletDbPodName}"
     ;;
+  resetsearchindex)
+    apiPodName=${1:-django}
+    solrPodName=${2:-solr}
+    switchProject
+    exitOnError
+    resetSearchIndex "${apiPodName}" "${solrPodName}"
+    ;;
+  resetsolrcore)
+    apiPodName=${1:-django}
+    solrPodName=${2:-solr}
+    switchProject
+    exitOnError
+    resetSolrCore "${apiPodName}" "${solrPodName}"
+    ;;
   rebuildsearchindex)
     apiPodName=${1:-django}
     switchProject
@@ -255,13 +331,9 @@ case "${_cmd}" in
     recyclePods ${@}
     ;;
   scaleup)
-    switchProject
-    exitOnError
     scaleUp ${@}
     ;;
   scaledown)
-    switchProject
-    exitOnError
     scaleDown ${@}
     ;;
   recycle)
