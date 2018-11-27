@@ -44,7 +44,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   focus() {
-    if(this._searchInput) this._searchInput.focus();
+    // autofocus currently disabled
+    // if(this._searchInput) this._searchInput.focus();
   }
 
   performSearch(evt?) {
