@@ -23,7 +23,7 @@
   },
   "connect": {
     "breadcrumb": "Contact",
-    "title": "Connect with Us"
+    "title": "Connect with us"
   },
   "contact": {
     "email": "Email Address",
@@ -72,6 +72,7 @@
     "verify-status": "Verification Status:"
   },
   "general": {
+    "about-site-title": "About this site",
     "date-entered": "Date Entered",
     "display-cards": "Cards",
     "display-list": "List",
