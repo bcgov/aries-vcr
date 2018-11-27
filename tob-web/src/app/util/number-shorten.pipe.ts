@@ -23,7 +23,7 @@ export class NumberShortenPipe implements PipeTransform {
         value /= 1000;
         suffix = sfx;
       }
-      let decs = Math.max(0, maxlen - intlen - 1);
+      let decs = Math.max(0, maxlen - intlen - 1 - suffix.length);
       let rnd = Math.pow(10, decs);
       ret = ('' + (Math.round(value * rnd) / rnd)) + suffix;
     }
