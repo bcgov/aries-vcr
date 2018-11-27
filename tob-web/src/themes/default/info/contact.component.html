@@ -23,17 +23,41 @@
   <div class="row mt-4 mt-md-5">
     <div class="col-lg-8" id="feedback">
 
-      <h2 tabindex="-1">Questions? Comments? Dreams?</h2>
+      <h2 tabindex="-1">Questions? Comments?</h2>
 
       <p>The chesterfield have skiing eavestroughs in goaltender tourtiere serviette, and butter tart that skidooing will have no bacon hockey back in nanaimo bar of the Stanley Cup finals. Tim Hortons beer too Canuck to the colour, and its pop -- skiing give’r melted, eh? Borden colour his tuque for smoked meat by canned moose the smoked meat to Ogopogo fishing of fishing Gasbar there should tuque colour for tourtiere eats of all fishing on this beaver igloo hunting.</p>
 
-      <p>Suggestions may be sent via email, using the button below.</p>
+      <p>Comments and suggestions may be sent using the form below.</p>
 
-      <a class="btn btn-lg btn-bcgold" href="mailto:santa@example.ca"><span class="fa fa-paper-plane left"></span> {{ 'general.feedback-link' | translate }}</a>
+      <div class="row form-group">
+        <label class="control-label col-sm-4">Name</label>
+        <div class="col-sm-8">
+          <input class="form-control" size="30" name="from_name" type="text">
+        </div>
+      </div>
 
+      <div class="row form-group">
+        <label class="control-label col-sm-4">Email address</label>
+        <div class="col-sm-8">
+          <input class="form-control" size="30" name="from_addr" type="email">
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <label class="control-label col-sm-4">Comments</label>
+        <div class="col-sm-8">
+          <textarea class="form-control" name="comments" rows="6" cols="40"></textarea>
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <div class="col text-right">
+          <button class="btn btn-bcgold"><span class="fa fa-paper-plane left"></span> {{ 'general.feedback-link' | translate }}</button>
+        </div>
+      </div>
     </div>
 
-    <div class="col-lg-4 mt-5 mt-lg-0" id="links">
+    <div class="col-lg-4 mt-4 mt-lg-0" id="links">
 
       <div class="card card-primary">
         <div class="card-header">
