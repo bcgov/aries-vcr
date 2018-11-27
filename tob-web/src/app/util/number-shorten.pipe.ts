@@ -11,24 +11,21 @@ export class NumberShortenPipe implements PipeTransform {
   transform(value: any, args?: any): any {
     let ret = '';
     let suffix = '';
-    let div = 1;
+    let maxlen = arguments[1] || 4;
+    let sfxs = ['K', 'M', 'B', 'T'];
+    let intlen = 0;
     if(! value) ret = '0';
     else {
-      if(value >= 100000000) {
-        div = 1000000000;
-        suffix = 'B';
+      for(let sfx of sfxs) {
+        intlen = ('' + Math.floor(value)).length;
+        if(intlen <= maxlen - suffix.length)
+          break;
+        value /= 1000;
+        suffix = sfx;
       }
-      else if(value >= 100000) {
-        div = 1000000;
-        suffix = 'M';
-      }
-      else if(value >= 1000) {
-        div = 1000;
-        suffix = 'K';
-      }
-      let base = value / div;
-      let rnd = Math.pow(10, base > 10 ? 0 : 1);
-      ret = ('' + (Math.round(base * rnd) / rnd)) + suffix;
+      let decs = Math.max(0, maxlen - intlen - 1);
+      let rnd = Math.pow(10, decs);
+      ret = ('' + (Math.round(value * rnd) / rnd)) + suffix;
     }
     return ret;
   }
