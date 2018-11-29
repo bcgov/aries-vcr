@@ -6,7 +6,7 @@
     "breadcrumb": "Home",
     "header": {
       "title": "OrgBook",
-      "logo-alt-text": "B.C. Government Logo"
+      "logo-alt-text": "OrgBook Logo"
     },
     "footer": {
       "disclaimer": "Disclaimer",
@@ -87,10 +87,10 @@
     "not-found": "This record could not be located.",
     "other-error": "An unknown error occurred.",
     "period-current": "Current",
-    "period-historical": "Past",
+    "period-historical": "Archived",
     "prev-link": "Previous",
     "show-filters": "Show Filters",
-    "show-inactive": "Show Past",
+    "show-inactive": "Show Archived",
     "show-revoked": "Show Revoked",
     "skip-link-about": "Skip to \"About this site\"",
     "skip-link-content": "Skip to main content",
@@ -100,7 +100,7 @@
     "verified": "Verified"
   },
   "home": {
-    "about-title": "About the BC OrgBook",
+    "about-title": "About the OrgBook",
     "breadcrumb": "Home",
     "title": "Welcome to The OrgBook",
     "title-certs": "Verifiable credentials held",

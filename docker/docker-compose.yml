@@ -7,6 +7,7 @@ services:
     image: angular-on-nginx
     environment:
       - API_URL=${API_URL}
+      - APPLICATION_URL=${APPLICATION_URL}
       - IpFilterRules=${IpFilterRules}
       - RealIpFrom=${RealIpFrom}
       - HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME}
@@ -29,6 +30,7 @@ services:
     image: angular-dev
     environment:
       - API_URL=${API_URL}
+      - APPLICATION_URL=${APPLICATION_URL}
       - DEV_MODE=false
       - NODE_ENV=development
       - NPM_CONFIG_LOGLEVEL=notice

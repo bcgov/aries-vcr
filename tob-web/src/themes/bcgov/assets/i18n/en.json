@@ -2,6 +2,14 @@
   "ROUTES": {
     "topic": "organization"
   },
+  "app": {
+    "title": "BC OrgBook Beta",
+    "title-prefix": "BC OrgBook Beta | ",
+    "header": {
+      "title": "OrgBook",
+      "logo-alt-text": "BC Government Logo"
+    }
+  },
   "attribute": {
     "effective_dates": "Effective Dates",
     "effective_date-short": "Credential",
@@ -549,7 +557,7 @@
     }
   },
   "home": {
-    "about-title": "About the OrgBook",
+    "about-title": "About BC OrgBook",
     "title": "British Columbia's Verifiable Organizations"
   },
   "jurisdiction": {

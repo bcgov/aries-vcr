@@ -17,6 +17,7 @@ var CONFIG_NAME = 'assets/config.json';
 var RESOLVE_LINKS = ['favicon.ico', 'styles.scss', LANG_ROOT, CONFIG_NAME];
 var USE_LINKS = process.env.PREINSTALL_LINKS || false;
 var UPDATE_ONLY = process.env.UPDATE_ONLY || false;
+var REPLACE_VAR_PATHS = ['index.html', 'assets/bootstrap/manifest.json'];
 
 
 if(! fs.copyFileSync) {
@@ -220,6 +221,7 @@ function mergeDeep(target, ...sources) {
   return mergeDeep(target, ...sources);
 }
 
+// merge theme and default language files
 function combineLanguage(theme_name, target_dir) {
   var langs = findLanguages(path.join(THEMES_ROOT, theme_name));
   if (theme_name !== 'default')
@@ -250,6 +252,8 @@ function combineLanguage(theme_name, target_dir) {
   }
 }
 
+// combine theme config with default config
+// and replace references to environment variables
 function updateConfig(theme_name) {
   let source_path = path.join(THEMES_ROOT, theme_name, CONFIG_NAME);
   let default_path = path.join(THEMES_ROOT, 'default', CONFIG_NAME);
@@ -264,14 +268,39 @@ function updateConfig(theme_name) {
   let result = {};
   for(let k in config) {
     let v = config[k];
-    result[k] = v.replace(/\$[A-Z_]+|\$\{[A-Z_]+\}/, (found) => {
+    result[k] = v.replace(/\$[A-Z_]+|\$\{.+?\}/g, (found) => {
       found = found.substring(1);
-      if(found[0] === '{') found = found.substring(1, -1);
-      if(found == 'TOB_THEME') return THEME_NAME;
-      return process.env[found] || '';
+      if(found[0] === '{') found = found.substring(1, found.length - 1);
+      let foundval = '';
+      let splitPos = found.indexOf('-');
+      if(~splitPos) {
+        foundval = found.substring(splitPos + 1);
+        found = found.substring(0, splitPos);
+      }
+      if(found == 'TOB_THEME')
+        foundval = THEME_NAME;
+      else if(found in process.env && process.env[found] !== '')
+        foundval = process.env[found];
+      return foundval;
     });
   }
   fs.writeFileSync(target_path, JSON.stringify(result));
+  return result;
+}
+
+// replace variable references with values from (processed) config.json
+function replaceVars(paths, config) {
+  for(let replacePath of paths) {
+    let sourcePath = path.join(TARGET_DIR, replacePath);
+    if (fs.existsSync(sourcePath)) {
+      let content = fs.readFileSync(sourcePath, 'utf8');
+      content = content.replace(/\$\{[A-Z_]+\}/g, (found) => {
+        found = found.substring(2, found.length - 1);
+        return config[found] || '';
+      });
+      fs.writeFileSync(sourcePath, content);
+    }
+  }
 }
 
 if(UPDATE_ONLY) {
@@ -290,9 +319,11 @@ if (THEME_NAME !== 'default') {
 
 if(USE_LINKS)
   resolveLinks(TARGET_DIR, RESOLVE_LINKS);
+
 combineLanguage(THEME_NAME, TARGET_DIR);
 
-updateConfig(THEME_NAME);
+let CONFIG = updateConfig(THEME_NAME);
+replaceVars(REPLACE_VAR_PATHS, CONFIG);
 
 if(! UPDATE_ONLY)
   console.log('Done.\n');
