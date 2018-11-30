@@ -11,7 +11,8 @@ export class SearchNavComponent {
   @Input() info : Fetch.ListInfo;
   private _loading : boolean;
   @Output() nav = new EventEmitter<string>();
-  @Input('show-status') showStatus : any;
+  @Input('status') showStatus : any;
+  @Input('buttons') showButtons = true;
 
   get enabled() : boolean {
     return !! this.info && ! this.loading;
