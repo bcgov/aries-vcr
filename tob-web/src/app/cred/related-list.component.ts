@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy, Input } from '@angular/core';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
@@ -13,6 +13,7 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   protected _defaultFormat = 'timeline';
   protected _format = '';
   @Input() title: string;
+  @Output() afterLoad = new EventEmitter<any>();
   _credTypeId: string = '';
   _credTypeOptions: Model.CredentialType[] = [];
   _filterActive: boolean = true;
@@ -149,5 +150,6 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
     }
     this._issuerOptions = issuers;
     this._credTypeOptions = credTypes;
+    this.afterLoad.emit(true);
   }
 }

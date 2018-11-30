@@ -1,80 +1,32 @@
 <section id="topic-form" class="container page-min-height" *ngIf="(result$ | async) as result">
   <app-breadcrumb></app-breadcrumb>
-  <loading-indicator [loading]="result.loading"></loading-indicator>
+  <loading-indicator [loading]="! isLoaded('all')"></loading-indicator>
   <error-message [error]="result.error"></error-message>
 
-  <div class="row my-4" *ngIf="result.data as topic">
-    <div class="col-sm-12">
-      <h1 class="h2 page-title" id="contentStart" tabindex="-1">{{title}}</h1>
+  <div class="topic-main" [ngClass]="{'d-none': ! isLoaded('all')}">
+    <div class="row mt-4 mb-3" *ngIf="result.data as topic">
+      <div class="col-sm-12">
+        <h1 class="h2 page-title" id="contentStart" tabindex="-1">{{title}}</h1>
 
-      <a [routerLink]="'/search' | localize" class="title-back-link mb-3"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
+        <a [routerLink]="'/search' | localize" class="title-back-link mb-3"><span class="fa fa-arrow-left"></span> {{'search.return-link' | translate}}</a>
 
-      <div class="row">
-        <div class="col-sm-12 name-info">
-          <name-panel [record]="topic"></name-panel>
+        <div class="row">
+          <div class="col-sm-12 name-info">
+            <name-panel [record]="topic"></name-panel>
+          </div>
         </div>
-      </div>
 
+      </div>
     </div>
 
-    <!-- div class="col-md-4 col-sm-5">
-      <div class="panel timeline-panel">
-        <div class="panel-heading">
-          <h3 class="panel-title">Timeline</h3>
-          <a class="util-link" href="#"><span class="fa fa-expand"></span> Expand</a>
-        </div>
-        <div class="panel-body">
-          <ul class="timeline-list">
-            <li>
-              <a href="#" class="body-link issuer-link">Fraser Valley Health Authority</a> issued <a href="#" class="cert-link">Health Inspection</a>
-              <time>10 days ago</time>
-            </li>
-            <li>
-              Added <em>Director</em> <a href="#" class="body-link cert-link person">Bob Terwilliger</a>
-              <time>3 months ago</time>
-            </li>
-            <li>
-              Added <em>Business Phone</em> contact <a href="#" class="body-link cert-link phone">+1-800-411-4111</a>
-              <time>3 months ago</time>
-            </li>
-            <li>
-              Added <em>Skype Address</em> contact <a href="#" class="body-link cert-link contact">iverson.example</a>
-              <time>3 months ago</time>
-            </li>
-            <li>
-              Added <em>Email Address</em> contact <a href="#" class="body-link cert-link email">sales@iverson.example.ca</a>
-              <time>3 months ago</time>
-            </li>
-            <li>
-              Added <em>Website Address</em> contact <a href="#" class="body-link cert-link url">https://iverson.example.ca</a>
-              <time>3 months ago</time>
-            </li>
-            <li>
-              Added <em>Registered Office</em> location <a href="#" class="body-link cert-link location">123 Fake St, Campbell River BC, Canada V4H 1B1</a>
-              <time>3 months ago</time>
-            </li>
-            <li>
-              <a href="#" class="body-link issuer-link">BC Registries</a> issued <em>Doing Business As</em> <a href="#" class="body-link cert-link name">Iverson Kitchen</a>
-              <time>3 months ago</time>
-            </li>
-            <li>
-              <a href="#" class="body-link issuer-link">BC Registries</a> issued <em>Incorporation</em> <a href="#" class="body-link cert-link name">246801234 British Columbia Inc.</a>
-              <time>4 months ago</time>
-            </li>
-          </ul>
-        </div>
+    <related-topics (afterLoad)="onLoadSection('related_from')" [records]="topic.related_from" [topicId]="topic.id" defaultFormat="compact" *ngIf="result.loaded" [related-from]="true" [title]="'topic.related-to' | translate"></related-topics>
+
+    <related-topics (afterLoad)="onLoadSection('related_to')" [records]="topic.related_to" [topicId]="topic.id" defaultFormat="compact" *ngIf="result.loaded" [title]="'name.doing-business-as' | translate"></related-topics>
+
+    <div class="row creds-outer" *ngIf="result.loaded">
+      <div class="col-sm-12">
+        <related-creds (afterLoad)="onLoadSection('creds')" [topicId]="topic.id" [defaultFormat]="credsFormat"></related-creds>
       </div>
-    </div -->
-
-  </div>
-
-  <related-topics [records]="topic.related_from" [topicId]="topic.id" defaultFormat="compact" *ngIf="result.loaded" [related-from]="true" [title]="'topic.related-to' | translate"></related-topics>
-
-  <related-topics [records]="topic.related_to" [topicId]="topic.id" defaultFormat="compact" *ngIf="result.loaded" [title]="'name.doing-business-as' | translate"></related-topics>
-
-  <div class="row creds-outer" *ngIf="result.loaded">
-    <div class="col-sm-12">
-      <related-creds [topicId]="topic.id" [defaultFormat]="credsFormat"></related-creds>
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
@@ -14,6 +14,7 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
   @Input() title: string;
   @Input('related-from') relatedFrom: boolean;
   @Input('records') inputRecords: Model.Topic[];
+  @Output() afterLoad = new EventEmitter<any>();
   loaded: boolean;
   loading: boolean;
   filterActive: string = 'true';
@@ -32,6 +33,9 @@ export class TopicRelatedListComponent implements OnInit, OnDestroy {
     this._loader.stream.subscribe(result => {
       this.loading = result.loading;
       this.loaded = result.loaded;
+      if(result.loaded || result.error) {
+        this.afterLoad.emit(result.loaded);
+      }
     });
     this.load();
   }

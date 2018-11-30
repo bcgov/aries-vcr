@@ -13,11 +13,10 @@ import { Subscription } from 'rxjs/Subscription';
 export class TopicFormComponent implements OnInit, OnDestroy {
   source_type: string;
   source_id: string;
-  loaded: boolean;
-  loading: boolean;
   credsFormat: string = 'rows';
   _filterActive: boolean = true;
   showFilters: boolean = false;
+  _sectionsLoaded = {};
 
   private _loader = new Fetch.ModelLoader(Model.TopicFormatted);
 
@@ -71,7 +70,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   }
 
   get names(): Model.Name[] {
-    return this.loaded && this.topic.names;
+    return this.topic && this.topic.names;
   }
 
   get result$() {
@@ -97,6 +96,30 @@ export class TopicFormComponent implements OnInit, OnDestroy {
       revoked: this._filterActive ? 'false': '',
     };
     this._dataService.loadList(this._creds, {query: credsFilter});
+  }
+
+  protected onLoadSection(name, state?) {
+    this._sectionsLoaded[name] = state === undefined ? true : state;
+  }
+
+  protected isLoaded(...sections: string[]) {
+    if(! sections) sections = ['all'];
+    for(let s of sections) {
+      let state = null;
+      if(s === 'all') {
+        if(this._loader.result.error)
+          state = true;
+        else
+          state = this.isLoaded('topic', 'related_to', 'related_from' /*, 'creds'*/);
+      } else if(s === 'topic') {
+        state = this._loader.result.loaded;
+      } else {
+        state = (s in this._sectionsLoaded);
+      }
+      if(! state)
+        return false;
+    }
+    return true;
   }
 
 }
