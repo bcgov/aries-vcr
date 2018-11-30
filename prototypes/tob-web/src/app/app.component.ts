@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { LocationStrategy } from '@angular/common';
-import { Title } from '@angular/platform-browser';
+import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LocalizeRouterService } from 'localize-router';
 import { GeneralDataService } from './general-data.service';
@@ -14,7 +14,7 @@ import { mergeMap } from 'rxjs/operators';
   styleUrls: ['../themes/_active/app/app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  currentLang : string;
+  currentLang: string;
   inited = false;
   // to be moved into external JSON loaded by localize-router
   supportedLanguages = [
@@ -27,25 +27,27 @@ export class AppComponent implements OnInit, OnDestroy {
       label: 'Français'
     }
   ];
-  altLang : string;
-  altLangLabel : string;
+  altLang: string;
+  altLangLabel: string;
   defaultTitleLabel = 'app.title';
   showTitlePrefix: boolean = true;
   titlePrefix = 'app.title-prefix';
   private _titleLabel;
-  private _titleText;
+  private _titleText = '';
   private _titlePrefixText;
   private _onFetchTitle: Subscription;
   private _onLangChange: Subscription;
   private _isPopState: boolean;
   private _currentRecord: any;
   private _prevRoute: string;
+  private _metaDefaults = null;
 
   constructor(
     public _el: ElementRef,
     private _dataService: GeneralDataService,
     private _localize: LocalizeRouterService,
     private _locStrat: LocationStrategy,
+    private _meta: Meta,
     private _route: ActivatedRoute,
     private _router: Router,
     private _titleService: Title,
@@ -248,18 +250,52 @@ export class AppComponent implements OnInit, OnDestroy {
     if(this.showTitlePrefix && this._titlePrefixText) {
       title = this._titlePrefixText;
     }
-    title += this._titleText;
+    if(this._titleText)
+      title += this._titleText;
     if(title && this._currentRecord) {
       let recordTitle = this._currentRecord.pageTitle;
       if(recordTitle) {
         title += ': ' + recordTitle;
       }
     }
-    this.setTitle(title);
+    if(title) {
+      this.setTitle(title);
+      this.updateMeta(title);
+    }
   }
 
   public setTitle(newTitle: string) {
     this._titleService.setTitle(newTitle);
+  }
+
+  public updateMeta(title) {
+    if(! this._metaDefaults) {
+      let defaults = {};
+      let initFrom = ['og:title', 'og:type', 'og:description', 'og:url'];
+      for(let attr of initFrom) {
+        let meta = this._meta.getTag(`property="${attr}"`);
+        if(meta) defaults[attr] = meta.getAttribute('content');
+      };
+      this._metaDefaults = defaults;
+    }
+    let tags = Object.assign({}, this._metaDefaults);
+    let route = this._route;
+    while(route.firstChild) {
+      route = route.firstChild;
+    }
+    if(route && route.routeConfig && route.routeConfig.path !== 'home') {
+      tags['og:url'] = location.href;
+      if(title) {
+        tags['og:title'] = title;
+        tags['og:type'] = 'article';
+      }
+    }
+    for(let attr in tags) {
+      this._meta.updateTag({ property: attr, content: tags[attr] }, `property="${attr}"`);
+    }
+  }
+
+  public restoreMeta() {
   }
 }
 
