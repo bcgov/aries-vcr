@@ -3,6 +3,9 @@ import logging
 from django.db import connection
 from django.http import JsonResponse
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
@@ -10,6 +13,7 @@ from rest_framework.decorators import (
 )
 from rest_framework import permissions
 
+from api_v2.feedback import email_feedback
 from api_v2.models.Claim import Claim
 from api_v2.models.Credential import Credential as CredentialModel
 from api_v2.models.CredentialType import CredentialType
@@ -38,5 +42,42 @@ def quickload(request, *args, **kwargs):
         {
             "counts": counts,
             "credential_counts": cred_counts,
+        }
+    )
+
+
+@swagger_auto_schema(method='post', manual_parameters=[
+    openapi.Parameter(
+        "from_name",
+        openapi.IN_FORM,
+        description="Sender name",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        "from_email",
+        openapi.IN_FORM,
+        description="Sender email address",
+        type=openapi.TYPE_STRING,
+        format=openapi.FORMAT_EMAIL,
+    ),
+    openapi.Parameter(
+        "comments",
+        openapi.IN_FORM,
+        description="Comments",
+        type=openapi.TYPE_STRING,
+    ),
+])
+@api_view(["POST"])
+@authentication_classes(())
+@permission_classes((permissions.AllowAny,))
+def send_feedback(request, *args, **kwargs):
+    from_name = request.POST.get('from_name')
+    from_email = request.POST.get('from_email')
+    reason = request.POST.get('reason')
+    comments = request.POST.get('comments')
+    email_feedback(from_name, from_email, reason, comments)
+    return JsonResponse(
+        {
+            "status": "ok"
         }
     )

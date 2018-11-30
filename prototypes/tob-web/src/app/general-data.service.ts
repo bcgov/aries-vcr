@@ -49,7 +49,25 @@ export class GeneralDataService {
   }
 
   loadJson(url, params?: HttpParams) : Observable<Object> {
-    return this._http.get(url, {params: params})
+    return this._http.get(url, {params})
+      .pipe(catchError(error => {
+        console.error("JSON load error", error);
+        return _throw(error);
+      }));
+  }
+
+  postJson(url, payload, params?: HttpParams) : Observable<Object> {
+    let headers = {'Content-Type': 'application/json'};
+    return this._http.post(url, JSON.stringify(payload), {headers, params})
+      .pipe(catchError(error => {
+        console.error("JSON load error", error);
+        return _throw(error);
+      }));
+  }
+
+  postParams(url, params: {[key: string]: string}|HttpParams) : Observable<Object> {
+    let body = this.makeHttpParams(params);
+    return this._http.post(url, body)
       .pipe(catchError(error => {
         console.error("JSON load error", error);
         return _throw(error);

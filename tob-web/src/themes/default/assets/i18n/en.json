@@ -22,7 +22,8 @@
     "registered-office": "Registered Office"
   },
   "connect": {
-    "breadcrumb": "Contact",
+    "breadcrumb": "Connect with us",
+    "contact-title": "Contact Us",
     "title": "Connect with us"
   },
   "contact": {
@@ -80,6 +81,8 @@
     "hide-filters": "Hide Filters",
     "details": "Details",
     "feedback-link": "Submit Feedback",
+    "feedback-title": "Submit Feedback",
+    "feedback-button-label": "Submit",
     "links-title": "External Links and Resources",
     "map-link": "Show on map",
     "next-link": "Next",
