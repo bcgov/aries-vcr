@@ -69,6 +69,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('credList') _nameList: CredListComponent;
   protected _filters = new Filter.FieldSet(FilterSpec);
   protected _filterType: string;
+  protected _firstFilter = true;
+  protected _lastQueryParams = null;
   protected _loader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, {persist: true});
   protected _querySub: Subscription;
   protected _typeSub: Subscription;
@@ -84,7 +86,13 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this._filters.stream.subscribe(fs => {
       if(this._inited) {
         let queryParams = this._filters.queryParams;
-        this._router.navigate([], { relativeTo: this._route, queryParams, queryParamsHandling: 'merge' });
+        if(JSON.stringify(queryParams) == JSON.stringify(this._lastQueryParams)) {
+          return;
+        }
+        // performs a replace URL when filters are first initialized, to preserve back button behaviour
+        this._router.navigate([], { replaceUrl: this._firstFilter, relativeTo: this._route, queryParams, queryParamsHandling: 'merge' });
+        this._firstFilter = false;
+        this._lastQueryParams = queryParams;
       }
     });
     this._querySub = this._route.queryParams.subscribe(params => {
