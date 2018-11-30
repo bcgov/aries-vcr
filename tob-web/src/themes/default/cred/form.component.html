@@ -3,7 +3,7 @@
   <loading-indicator [loading]="result.loading"></loading-indicator>
   <error-message [error]="result.error"></error-message>
 
-  <div class="row" *ngIf="result.data as record">
+  <div class="row mt-4" *ngIf="result.data as record">
     <div class="col-sm-12" *ngIf="(verify$ | async) as verify">
       <h1 class="page-title" id="contentStart" tabindex="-1">{{record.credential_type.description}}</h1>
 
