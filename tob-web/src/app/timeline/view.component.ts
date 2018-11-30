@@ -1,4 +1,8 @@
-import { Component, Input, AfterViewInit, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component, Input, AfterViewInit, OnDestroy,
+  NgZone, ChangeDetectorRef,
+  ElementRef, Renderer2, ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Model } from '../data-types';
 import { Timeline } from '../timeline/timeline';
@@ -9,27 +13,41 @@ import { Timeline } from '../timeline/timeline';
   styleUrls: [
     '../../themes/_active/timeline/timeline.scss',
   ],
-  host: {
+  /*host: {
     '(window:resize)': 'onResize($event)',
-  }
+  },*/
 })
-export class TimelineViewComponent implements AfterViewInit {
+export class TimelineViewComponent implements AfterViewInit, OnDestroy {
   @ViewChild('outer') private _outer: ElementRef;
   private _timeline: Timeline.TimelineView;
   private _range: {start: (string | Date), end: (string | Date)};
+  private _resizeHook: null;
   private _rows: Timeline.RowSpec[] = [];
 
   constructor(
+    private _cd: ChangeDetectorRef,
     private _renderer: Renderer2,
     private _router: Router,
+    private _zone: NgZone,
   ) { }
 
   ngAfterViewInit() {
     this._timeline = new Timeline.TimelineView(this._outer.nativeElement, null, this._renderer);
     this._timeline.setRange(this.rangeStart, this.rangeEnd);
     this._timeline.setRows(this.rows);
-    this._timeline.render();
     this._renderer.listen(this._timeline.container, 'slotclick', this.click.bind(this));
+    this._zone.runOutsideAngular(() => {
+      this._timeline.render();
+      this._resizeHook = this.onResize.bind(this);
+      window.addEventListener('resize', this._resizeHook, {passive: true});
+    });
+  }
+
+  ngOnDestroy() {
+    this._zone.runOutsideAngular(() => {
+      if(this._resizeHook)
+        window.removeEventListener('resize', this._resizeHook);
+    });
   }
 
   click(evt) {
@@ -85,7 +103,7 @@ export class TimelineViewComponent implements AfterViewInit {
       this._timeline.setRows(this.rows);
   }
 
-  onResize() {
+  onResize(evt?) {
     if(this._timeline)
       this._timeline.update();
   }

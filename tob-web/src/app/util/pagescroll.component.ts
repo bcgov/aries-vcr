@@ -1,17 +1,24 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
 
 @Component({
   selector: 'app-pagescroll',
   templateUrl: '../../themes/_active/util/pagescroll.component.html',
   styleUrls: ['../../themes/_active/util/pagescroll.component.scss'],
-  host: {
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  /*host: {
     '(window:scroll)': 'onScroll($event)',
-  }
+  },*/
 })
-export class PageScrollComponent {
+export class PageScrollComponent implements AfterViewInit {
   visible: boolean = false;
 
-  constructor() {
+  constructor(private _zone: NgZone, private _cd: ChangeDetectorRef) {
+  }
+
+  ngAfterViewInit() {
+    this._zone.runOutsideAngular(() => {
+      window.addEventListener('scroll', this.onScroll.bind(this), { passive: true });
+    });
   }
 
   scrollTop(evt?) {
@@ -23,7 +30,11 @@ export class PageScrollComponent {
     }
   }
 
-  onScroll() {
-    this.visible = window.scrollY > 100;
+  onScroll(evt?) {
+    let v = window.scrollY > 100;
+    if(v != this.visible) {
+      this.visible = v;
+      this._cd.detectChanges();
+    }
   }
 }
