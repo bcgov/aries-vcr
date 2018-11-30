@@ -75,6 +75,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _querySub: Subscription;
   protected _typeSub: Subscription;
   protected _inited = false;
+  protected _refresh = false;
 
   constructor(
     private _dataService: GeneralDataService,
@@ -87,12 +88,17 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       if(this._inited) {
         let queryParams = this._filters.queryParams;
         if(JSON.stringify(queryParams) == JSON.stringify(this._lastQueryParams)) {
+          if(this._refresh) {
+            this._refresh = false;
+            this._performSearch();
+          }
           return;
         }
         // performs a replace URL when filters are first initialized, to preserve back button behaviour
         this._router.navigate([], { replaceUrl: this._firstFilter, relativeTo: this._route, queryParams, queryParamsHandling: 'merge' });
         this._firstFilter = false;
         this._lastQueryParams = queryParams;
+        this._refresh = false;
       }
     });
     this._querySub = this._route.queryParams.subscribe(params => {
@@ -169,6 +175,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public updateQuery() {
     if(this._searchInput) {
+      this._refresh = true;
       this._filters.update({
         name: this._searchInput.value,
         page: '1'
