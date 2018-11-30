@@ -71,11 +71,16 @@ def quickload(request, *args, **kwargs):
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
 def send_feedback(request, *args, **kwargs):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip_addr = x_forwarded_for.split(',')[0]
+    else:
+        ip_addr = request.META.get('REMOTE_ADDR')
     from_name = request.POST.get('from_name')
     from_email = request.POST.get('from_email')
     reason = request.POST.get('reason')
     comments = request.POST.get('comments')
-    email_feedback(from_name, from_email, reason, comments)
+    email_feedback(ip_addr, from_name, from_email, reason, comments)
     return JsonResponse(
         {
             "status": "ok"

@@ -8,20 +8,22 @@ from smtplib import SMTP, SMTPException
 LOGGER = logging.getLogger(__name__)
 
 
-def email_feedback(reply_name, reply_email, reason, comments):
+def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
     server_addr = os.getenv('SMTP_SERVER_ADDRESS')
     recip_email = os.getenv('FEEDBACK_TARGET_EMAIL')
+    app_url = os.getenv('APPLICATION_URL')
     from_name = 'BC OrgBook'
     from_email = 'no-reply@orgbook.gov.bc.ca'
 
-    reason_text = {
+    reason_map = {
         "incorrect": "Reporting incorrect information",
         "additional": "Requesting additional information on BC organizations",
         "signup": "Looking to sign up my government organization",
         "developer": "Developer request",
     }
+    reason_text = reason_map.get(reason) or ''
 
-    subject = 'OrgBook Feedback: {}'.format(reason_text.get(reason))
+    subject = 'OrgBook Feedback: {}'.format(reason_text)
 
     LOGGER.info("Received feedback from %s <%s>", reply_name, reply_email)
     LOGGER.info("Feedback content: %s\n%s", subject, comments)
@@ -31,7 +33,20 @@ def email_feedback(reply_name, reply_email, reason, comments):
         return False
 
     if server_addr and recip_email:
-        msg = MIMEText(comments, 'text')
+        body = ''
+        if app_url:
+            body = '{}Application URL: {}\n'.format(body, app_url)
+        if ip_addr:
+            body = '{}IP address: {}\n'.format(body, ip_addr)
+        if reply_name:
+            body = '{}Name: {}\n'.format(body, reply_name)
+        if reply_email:
+            body = '{}Email: {}\n'.format(body, reply_email)
+        if reason_text:
+            body = '{}Contact reason: {}\n'.format(body, reason_text)
+        if comments:
+            body = '{}Comments:\n{}\n'.format(body, comments)
+        msg = MIMEText(body, 'text')
         recipients = ",".join(recip_email)
         from_line = formataddr( (str(Header(from_name, 'utf-8')), from_email) )
         reply_line = formataddr( (str(Header(reply_name, 'utf-8')), reply_email) )
@@ -39,7 +54,7 @@ def email_feedback(reply_name, reply_email, reason, comments):
         msg['From'] = from_line
         msg['Reply-To'] = reply_line
         msg['To'] = recip_email
-        LOGGER.info("encoded:\n%s", msg.as_string())
+        #LOGGER.info("encoded:\n%s", msg.as_string())
 
         with SMTP(server_addr) as smtp:
             try:
@@ -47,6 +62,5 @@ def email_feedback(reply_name, reply_email, reason, comments):
                 LOGGER.debug("Feedback email sent")
             except SMTPException:
                 LOGGER.exception("Exception when emailing feedback results")
-
 
     return True
