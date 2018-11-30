@@ -10,13 +10,15 @@ LOGGER = logging.getLogger(__name__)
 
 class EnhancedPageNumberPagination(PageNumberPagination):
     page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
     def get_paginated_response(self, data):
         return Response(
             OrderedDict(
                 [
                     ("total", self.page.paginator.count),
-                    ("page_size", self.page_size),
+                    ("page_size", self.page.paginator.per_page),
                     ("page", self.page.number),
                     ("first_index", self.page.start_index()),
                     ("last_index", self.page.end_index()),
@@ -33,7 +35,11 @@ class NullDjangoPaginator(Paginator):
     def count(self):
         return None
 
+
 class ResultLimitPagination(BasePagination):
+    """
+    Used by autocomplete to limit the number of results
+    """
     django_paginator_class = NullDjangoPaginator
     result_limit = 10
 
