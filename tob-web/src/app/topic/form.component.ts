@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppConfigService } from '../app-config.service';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
@@ -25,6 +26,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   private _idSub: Subscription;
 
   constructor(
+    private _config: AppConfigService,
     private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
     private _router: Router) { }
@@ -39,6 +41,9 @@ export class TopicFormComponent implements OnInit, OnDestroy {
       let ident = this.ident;
       this._dataService.loadRecord(this._loader, ident, {primary: true});
     });
+    let format = this._config.getConfig().TOPIC_CREDS_FORMAT;
+    if(format)
+      this.credsFormat = format;
   }
 
   ngOnDestroy() {
