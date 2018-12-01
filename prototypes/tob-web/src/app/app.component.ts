@@ -285,6 +285,14 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     if(route && route.routeConfig && route.routeConfig.path !== 'home') {
       tags['og:url'] = location.href;
+      if(this._currentRecord) {
+        let recLink = this._currentRecord.link;
+        if(recLink) {
+          // let linkParts = <string[]>this._localize.translateRoute(recLink);
+          let linkStr = recLink.join('').replace(/^\/(en|fr)/, '');
+          tags['og:url'] = location.origin + linkStr;
+        }
+      }
       if(title) {
         tags['og:title'] = title;
         tags['og:type'] = 'article';

@@ -12,7 +12,7 @@ main {
   padding: 0;
 }
 
-a.body-link, .breadcrumb a {
+a.body-link, a.title-link, .breadcrumb a {
   border-bottom: 1px solid rgba($link-color, 0.8);
   margin-bottom: -1px;
   text-decoration: none;
@@ -20,6 +20,10 @@ a.body-link, .breadcrumb a {
     border-bottom-color: $link-hover-color;
     text-decoration: none;
   }
+}
+
+.title-link {
+  font-size: 110%;
 }
 
 .hero-banner, .footer-detail {
@@ -39,7 +43,7 @@ a.body-link, .breadcrumb a {
     }
   }
 
-  a.body-link, .breadcrumb a {
+  a.body-link, a.title-link, .breadcrumb a {
     border-bottom: 1px solid rgba($banner-link-color, 0.8);
     @include hover-focus {
       border-bottom-color: $banner-link-hover;

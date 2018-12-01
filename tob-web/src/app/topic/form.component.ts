@@ -4,6 +4,7 @@ import { AppConfigService } from '../app-config.service';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'topic-form',
@@ -15,6 +16,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   source_id: string;
   credsFormat: string = 'rows';
   _filterActive: boolean = true;
+  _modal = null;
   showFilters: boolean = false;
   _sectionsLoaded = {};
 
@@ -27,6 +29,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   constructor(
     private _config: AppConfigService,
     private _dataService: GeneralDataService,
+    private _modalService: NgbModal,
     private _route: ActivatedRoute,
     private _router: Router) { }
 
@@ -120,6 +123,30 @@ export class TopicFormComponent implements OnInit, OnDestroy {
         return false;
     }
     return true;
+  }
+
+  get shareLink() {
+    if(this.topic) {
+      let link = this.topic.link;
+      return location.origin + link.join('');
+    }
+  }
+
+  copyShareLink(input) {
+    if(input) {
+      input.select();
+      document.execCommand('copy');
+    }
+  }
+
+  protected openModal(content, evt?) {
+    this._modal = this._modalService.open(content, { size: 'sm' });
+    if(evt) evt.preventDefault();
+  }
+
+  protected dismissModal(reason?) {
+    //if(this._modalActive) this._modalActive.dismiss(reason);
+    if(this._modal) this._modal.dismiss(reason);
   }
 
 }

@@ -7,8 +7,12 @@
     <div class="col-sm-12" *ngIf="(verify$ | async) as verify">
       <h1 class="page-title" id="contentStart" tabindex="-1">{{record.credential_type.description}}</h1>
 
-      <a [routerLink]="record.topic.link | localize" class="title-back-link mb-3">
-        <span class="fa fa-arrow-left"></span> {{'topic.return-link' | translate}}</a>
+      <div class="row title-links mb-3">
+        <div class="col">
+          <a [routerLink]="record.topic.link | localize" class="title-link back-link">
+            <span class="fa fa-arrow-left left"></span>{{'topic.return-link' | translate}}</a>
+        </div>
+      </div>
 
       <div class="cred-info" *ngIf="mode == 'view'">
 

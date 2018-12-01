@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from 'localize-router';
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { AddressComponent } from './address.component';
 import { AttributeComponent } from './attribute.component';
 import { AttributeListComponent } from './attribute-list.component';
@@ -35,6 +37,8 @@ const ROUTES = [];
   ],
   imports: [
     CommonModule,
+    NgbPopoverModule,
+    NgbTooltipModule,
     TranslateModule.forChild(),
     RouterModule.forChild(ROUTES),
     LocalizeRouterModule.forChild(ROUTES),
@@ -48,6 +52,8 @@ const ROUTES = [];
     ErrorMessageComponent,
     LoadingIndicatorComponent,
     PageScrollComponent,
+    NgbPopoverModule,
+    NgbTooltipModule,
     NotFoundComponent,
     NumberShortenPipe,
     ResolveUrlPipe,
