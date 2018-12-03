@@ -58,7 +58,11 @@ http {
     # Set variable for API proxy
     map $http_x_forwarded_proto $proxy_scheme {
         default $scheme;
-        https https;
+        https "https";
+    }
+    map $http_x_forwarded_port $proxy_port {
+        default $http_x_forwarded_port;
+        '' $server_port;
     }
 
     server {
