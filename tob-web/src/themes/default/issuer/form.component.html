@@ -21,7 +21,7 @@
           <div class="row form-group" *ngIf="record.did">
             <label class="col-sm-4 control-label" translate>issuer.did</label>
             <div class="col-sm-8 form-field">
-              <a [href]="didResolverUrl" rel="external" class="text-identifier">{{fullDid}}</a>
+              <a class="body-link text-identifier" [href]="didResolverUrl" rel="external">{{fullDid}}</a>
               <small><span class="fa fa-external-link"></span></small>
             </div>
           </div>
