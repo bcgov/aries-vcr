@@ -273,7 +273,7 @@ API_METADATA = {
 # Words 4 characters and over that shouldn't be considered significant when searching
 SEARCH_SKIP_WORDS = [
     'assoc', 'association',
-    'corp', 'corporation',
+    'company', 'corp', 'corporation',
     'enterprise', 'enterprises', 'entreprise', 'entreprises',
     'incorporated', 'incorporée', 'incorporation',
     'limited', 'limitée',
