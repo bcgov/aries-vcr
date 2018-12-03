@@ -39,12 +39,14 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <ng-container *ngIf="cred.related_topics?.length; else topicName">
-        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link related">{{cred.related_topics[0].names[0].text}}</a>
+      <ng-container *ngIf="cred.related_topics?.length; then relatedName; else topicName">
       </ng-container>
-      <ng-container #topicName *ngIf="cred.topic as topic">
-        <a [routerLink]="topic.link | localize" class="body-link cred-link name" *ngIf="topic.names?.length">{{topic.names[0].text}}</a>
-      </ng-container>
+      <ng-template #relatedName>
+        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link related" *ngIf="cred.related_topics[0].names?.length">{{cred.related_topics[0].names[0].text}}</a>
+      </ng-template>
+      <ng-template #topicName>
+        <a [routerLink]="cred.topic.link | localize" class="body-link cred-link name" *ngIf="cred.topic.names?.length">{{cred.topic.names[0].text}}</a>
+      </ng-template>
       <div class="badge badge-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
       <div class="badge badge-danger" *ngIf="cred.revoked" translate>cred.expired</div>
     </div>

@@ -33,7 +33,7 @@
 <ng-container *ngIf="format === 'compact'">
 <div class="row name-row" *ngFor="let topic of records">
 <ng-container *ngIf="topic.preferredName as name">
-  <div class="col-sm-7 row-title">
+  <div class="col-md-6 row-title">
     <a [routerLink]="topic.link | localize" class="body-link cred-link related">{{name.text}}</a>
     <div class="topic-info small">
       {{topic.typeLabel | translate}}<span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
@@ -44,7 +44,7 @@
       </span>
     </div>
   </div>
-  <div class="col-sm-5">
+  <div class="col-md-6">
     <label>
       <span translate>cred.last-updated</span>:</label>
     <span class="claim-info date">{{name.last_updated | dateFormat: 'effectiveDate'}}</span>
