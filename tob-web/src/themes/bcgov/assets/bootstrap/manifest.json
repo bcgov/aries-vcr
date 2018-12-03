@@ -1,6 +1,6 @@
 {
-    "name": "BC OrgBook",
-    "short_name": "BC OrgBook",
+    "name": "OrgBook BC",
+    "short_name": "OrgBook BC",
     "icons": [
         {
             "src": "${APPLICATION_URL}/assets/bootstrap/bcid-192x192.png",
