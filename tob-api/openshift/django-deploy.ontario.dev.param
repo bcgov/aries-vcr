@@ -43,4 +43,4 @@ TAG_NAME=dev
 # CPU_LIMIT=750m
 # MEMORY_REQUEST=100Mi
 # MEMORY_LIMIT=512Mi
-APPLICATION_URL=https://www.theorgbook.ca
+APPLICATION_URL=https://dev.von.gov.on.ca
