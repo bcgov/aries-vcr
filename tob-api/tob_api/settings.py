@@ -185,6 +185,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# Set up support for proxy headers (provide correct URL in swagger UI)
+USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 LOGGING = {
