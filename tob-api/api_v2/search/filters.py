@@ -2,6 +2,7 @@ import functools
 import logging
 import operator
 
+from django.conf import settings
 from drf_haystack.query import (
     BaseQueryBuilder,
     FacetQueryBuilder,
@@ -28,10 +29,11 @@ class Proximate(Clean):
     post_process = False # don't put AND between terms
 
     def query_words(self, *parts):
+        skip = settings.SEARCH_SKIP_WORDS or ()
         word_len = self.kwargs.get('wordlen', 4)
         for part in parts:
             clean = part.strip()
-            if len(clean.strip('_-,.;\'"')) >= word_len:
+            if len(clean.strip('_-,.;\'"')) >= word_len and clean.lower() not in skip:
                 yield clean
 
     def prepare(self, query_obj):
@@ -150,8 +152,9 @@ class CredNameFilterBuilder(AutocompleteFilterBuilder):
 
     def build_name_query(self, term):
         SQ = self.view.query_object
-        filter = super(CredNameFilterBuilder, self).build_name_query(term) \
-               | (SQ(source_id=Exact(term)) & SQ(name=Raw('*')))
+        filter = super(CredNameFilterBuilder, self).build_name_query(term)
+        if term and ' ' not in term:
+            filter = filter | (SQ(source_id=Exact(term)) & SQ(name=Raw('*')))
         return filter
 
 
