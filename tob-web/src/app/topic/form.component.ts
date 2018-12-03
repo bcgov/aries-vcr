@@ -34,6 +34,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
     private _router: Router) { }
 
   ngOnInit() {
+    this._sectionsLoaded = {};
     this._loader.ready.subscribe(result => {
       this._fetchCreds();
     });
