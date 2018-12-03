@@ -40,25 +40,25 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-6 mt-3 mt-lg-0">
+    <div class="row mt-3 mt-lg-0">
+      <div class="col col-md-10 col-lg-8">
         <label class="control-label" translate>general.details</label>
         <div class="form-field">
-          <div class="row">
-            <label class="col-5 col-sm-4" translate>cred.date</label>
-            <div class="col-7 col-sm-8">
+          <div class="row mb-2 mb-sm-1">
+            <label class="col-md-4 mb-0" translate>cred.date</label>
+            <div class="col-md-8">
               <span class="claim-info date">{{name.last_updated | dateFormat: 'effectiveDateTime'}}</span>
             </div>
           </div>
-          <div class="row">
-            <label class="col-5 col-sm-4" translate>attribute.entity_name_effective</label>
-            <div class="col-7 col-sm-8">
+          <div class="row mb-2 mb-sm-1">
+            <label class="col-md-4 mb-0" translate>attribute.entity_name_effective</label>
+            <div class="col-sm-8">
               <attribute-view [record]="record.attribute_map.entity_name_effective"></attribute-view>
             </div>
           </div>
-          <div class="row">
-            <label class="col-5 col-sm-4" translate>attribute.entity_status_effective</label>
-            <div class="col-7 col-sm-8">
+          <div class="row mb-2 mb-sm-1">
+            <label class="col-md-4 mb-0" translate>attribute.entity_status_effective</label>
+            <div class="col-sm-8">
               <attribute-view [record]="record.attribute_map.entity_status_effective"></attribute-view>
             </div>
           </div>
