@@ -19,7 +19,7 @@ schema_view = get_schema_view(
         contact=openapi.Contact(**API_METADATA["contact"]),
         license=openapi.License(**API_METADATA["license"]),
     ),
-    url="{}/api".format(settings.APPLICATION_URL),
+    # url="{}/api".format(settings.APPLICATION_URL),
     validators=["flex", "ssv"],
     public=True,
     permission_classes=(AllowAny,),
