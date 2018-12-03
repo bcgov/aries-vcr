@@ -34,9 +34,15 @@
 <div class="row name-row" *ngFor="let topic of records">
 <ng-container *ngIf="topic.preferredName as name">
   <div class="col-sm-7 row-title">
-    <label>{{typeLabel(topic.type) | translate}}:</label>
-    <a [routerLink]="topic.link | localize"
-        class="body-link cred-link name">{{name.text}}</a>
+    <a [routerLink]="topic.link | localize" class="body-link cred-link related">{{name.text}}</a>
+    <div class="topic-info small">
+      {{topic.typeLabel | translate}}<span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
+        <attribute-view [record]="status"></attribute-view>
+      </span>
+      <span class="cred-entity-type" *ngIf="topic.attribute_map.entity_type as type">
+        &mdash; <attribute-view [record]="type"></attribute-view>
+      </span>
+    </div>
   </div>
   <div class="col-sm-5">
     <label>

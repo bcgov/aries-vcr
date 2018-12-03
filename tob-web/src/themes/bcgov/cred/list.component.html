@@ -7,8 +7,8 @@
       <p class="cred-title">
         <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">{{cred.credential_type.description}}</a>
       </p>
-      <p *ngIf="cred.related_topics && cred.related_topics.length">
-        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link name">{{cred.related_topics[0].names[0].text}}</a>
+      <p *ngIf="cred.related_topics?.length">
+        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link related">{{cred.related_topics[0].names[0].text}}</a>
       </p>
       <p class="cred-date" *ngIf="cred.effective_date">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
@@ -39,8 +39,11 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <ng-container *ngIf="cred.related_topics && cred.related_topics.length">
-        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link name">{{cred.related_topics[0].names[0].text}}</a>
+      <ng-container *ngIf="cred.related_topics?.length; else topicName">
+        <a [routerLink]="cred.related_topics[0].link | localize" class="body-link cred-link related">{{cred.related_topics[0].names[0].text}}</a>
+      </ng-container>
+      <ng-container #topicName *ngIf="cred.topic as topic">
+        <a [routerLink]="topic.link | localize" class="body-link cred-link name" *ngIf="topic.names?.length">{{topic.names[0].text}}</a>
       </ng-container>
       <div class="badge badge-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
       <div class="badge badge-danger" *ngIf="cred.revoked" translate>cred.expired</div>
@@ -55,7 +58,7 @@
           class="body-link cred-link name">{{cred.names[0].text}}</a>
       </div>
       <div class="cred-topic small" *ngIf="cred.topic as topic">
-        {{cred.topic.typeLabel | translate}}<span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
+        {{topic.typeLabel | translate}}<span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
           <attribute-view [record]="status"></attribute-view>
         </span>
         <span class="cred-entity-type" *ngIf="topic.attribute_map.entity_type as type">
