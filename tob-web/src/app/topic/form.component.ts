@@ -140,7 +140,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
   }
 
   protected openModal(content, evt?) {
-    this._modal = this._modalService.open(content, { size: 'sm' });
+    this._modal = this._modalService.open(content, { size: 'lg' });
     if(evt) evt.preventDefault();
   }
 
