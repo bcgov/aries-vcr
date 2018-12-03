@@ -51,13 +51,16 @@
   <div class="row cred-row" *ngFor="let cred of records">
     <div class="col-lg-8">
       <div class="cred-title">
-        <label>{{cred.topic.typeLabel | translate}}:</label>
         <a [routerLink]="cred.topic.link | localize"
           class="body-link cred-link name">{{cred.names[0].text}}</a>
       </div>
       <div class="cred-topic small" *ngIf="cred.topic as topic">
-        <attribute-view *ngIf="topic.attribute_map.entity_status as status" [record]="status"></attribute-view>
-        - <attribute-view *ngIf="topic.attribute_map.entity_type as type" [record]="type"></attribute-view>
+        {{cred.topic.typeLabel | translate}}<span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
+          <attribute-view [record]="status"></attribute-view>
+        </span>
+        <span class="cred-entity-type" *ngIf="topic.attribute_map.entity_type as type">
+          &mdash; <attribute-view [record]="type"></attribute-view>
+        </span>
       </div>
     </div>
     <div class="col-lg-4">
