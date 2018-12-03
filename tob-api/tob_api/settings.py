@@ -252,12 +252,12 @@ INDY_HOLDER_ID = "TheOrgBook_Holder"
 APPLICATION_URL = os.getenv("APPLICATION_URL") or "http://localhost:8080"
 
 API_METADATA = {
-    "title": "TheOrgBook API",
+    "title": "OrgBook BC API",
     "description":
-        "TheOrgBook is a public, searchable directory of digital records for registered "
+        "OrgBook BC is a public, searchable directory of digital records for registered "
         "businesses in the Province of British Columbia. Over time, other government "
         "organizations and businesses will also begin to issue digital records through "
-        "TheOrgBook. For example, permits and licenses issued by various government services.",
+        "OrgBook BC. For example, permits and licenses issued by various government services.",
     "terms": {
         "url": "https://www2.gov.bc.ca/gov/content/data/open-data",
     },
