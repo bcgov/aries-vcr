@@ -14,6 +14,21 @@
       "kind": "Secret",
       "apiVersion": "v1",
       "metadata": {
+        "name": "${EMAIL_SETTINGS_STORE_NAME}",
+        "labels": {
+          "app": "${NAME}"
+        }
+      },
+      "stringData": {
+        "target-email": "${FEEDBACK_TARGET_EMAIL}",
+        "smtp-host": "${SMTP_SERVER_ADDRESS}"
+      },
+      "type": "Opaque"
+    },
+    {
+      "kind": "Secret",
+      "apiVersion": "v1",
+      "metadata": {
         "name": "${WALLET_CREDENTIAL_STORE_NAME}",
         "labels": {
           "app": "${NAME}"
@@ -390,6 +405,24 @@
                   {
                     "name": "APPLICATION_URL",
                     "value": "${APPLICATION_URL}"
+                  },
+                  {
+                    "name": "FEEDBACK_TARGET_EMAIL",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${EMAIL_SETTINGS_STORE_NAME}",
+                        "key": "target-email"
+                      }
+                    }
+                  },
+                  {
+                    "name": "SMTP_SERVER_ADDRESS",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${EMAIL_SETTINGS_STORE_NAME}",
+                        "key": "smtp-host"
+                      }
+                    }
                   }
                 ],
                 "resources": {
@@ -685,6 +718,34 @@
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
+      "name": "APPLICATION_URL",
+      "displayName": "Application url",
+      "description": "This service's url.",
+      "required": true,
+      "value": "https://theorgbook.pathfinder.gov.bc.ca"
+    },
+    {
+      "name": "EMAIL_SETTINGS_STORE_NAME",
+      "displayName": "Email Settings Store Name",
+      "description": "The name of the email settings store (aka The name of the secret that contains the email settings for the application.",
+      "required": true,
+      "value": "email-settings"
+    },
+    {
+      "name": "FEEDBACK_TARGET_EMAIL",
+      "displayName": "Feedback Target Url",
+      "description": "The email address to which the feedback is to be delivered.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "SMTP_SERVER_ADDRESS",
+      "displayName": "SMTP Server Address",
+      "description": "The SMTP server address used for sending email.",
+      "required": false,
+      "value": ""
+    },
+    {
       "name": "CPU_REQUEST",
       "displayName": "Resources CPU Request",
       "description": "The resources CPU request (in cores) for this build.",
@@ -711,13 +772,6 @@
       "description": "The resources Memory limit (in Mi, Gi, etc) for this build.",
       "required": true,
       "value": "512Mi"
-    },
-    {
-      "name": "APPLICATION_URL",
-      "displayName": "Application url",
-      "description": "This service's url.",
-      "required": true,
-      "value": "https://theorgbook.pathfinder.gov.bc.ca"
     }
   ]
 }

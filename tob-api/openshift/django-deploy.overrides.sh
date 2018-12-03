@@ -115,6 +115,9 @@ _walletPrefix="TB"
 readParameter "INDY_WALLET_SEED - Please provide the indy wallet seed for the environment.  If left blank, a seed will be randomly generated using openssl:" INDY_WALLET_SEED $(generateSeed ${_walletPrefix}) "true"
 readParameter "INDY_WALLET_DID - Please provide the indy wallet did for the environment.  The default is an empty string:" INDY_WALLET_DID "" "true"
 
+# Get the settings for delivering user feedback to the business
+readParameter "FEEDBACK_TARGET_EMAIL - Please provide the target email address where user feedback will be sent.  The default is a blank string." FEEDBACK_TARGET_EMAIL ""
+readParameter "SMTP_SERVER_ADDRESS - Please provide the address of the outgoing smtp server.  The default is a blank string." SMTP_SERVER_ADDRESS ""
 
 SPECIALDEPLOYPARMS="--param-file=${_overrideParamFile}"
 echo ${SPECIALDEPLOYPARMS}
