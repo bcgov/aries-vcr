@@ -746,20 +746,20 @@ class CredentialManager(object):
                 cls.process_credential_properties(credential, processor_config)
             )
 
-            dbCredential = topic.credentials.create(**credential_args)
+            db_credential = topic.credentials.create(**credential_args)
 
             # Create and associate claims for this credential
             for claim_attribute in credential.claim_attributes:
                 claim_value = getattr(credential, claim_attribute)
                 Claim.objects.create(
-                    credential=dbCredential, name=claim_attribute, value=claim_value
+                    credential=db_credential, name=claim_attribute, value=claim_value
                 )
 
             # Create topic relationship if needed
             if related_topic is not None:
                 try:
                     TopicRelationship.objects.create(
-                        credential=dbCredential, topic=topic, related_topic=related_topic
+                        credential=db_credential, topic=topic, related_topic=related_topic
                     )
                 except IntegrityError:
                     raise CredentialException(
@@ -769,13 +769,17 @@ class CredentialManager(object):
                     )
 
             # Assign to credential set
-            cls.update_credential_set(credential_type, dbCredential, cardinality)
+            cls.update_credential_set(credential_type, db_credential, cardinality)
 
             # Save search models
-            cls.create_search_models(dbCredential, processor_config)
+            cls.create_search_models(db_credential, processor_config)
+
+            # Update last issue date for credential type
+            credential_type.last_issue_date = datetime.now(timezone.utc)
+            credential_type.save()
 
         LOGGER.warn(
             "<<< store cred in local database: " + str(time.perf_counter() - start_time)
         )
 
-        return dbCredential
+        return db_credential

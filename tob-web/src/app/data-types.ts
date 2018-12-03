@@ -116,6 +116,7 @@ export namespace Model {
     latest: boolean;
     revoked: boolean;
     revoked_date: string;
+    last_issue_date: string;
 
     addresses: Address[];
     _attributes: Attribute[];

@@ -1,7 +1,7 @@
 .type-row {
-  border-top: 1px solid #ddd;
-  padding-bottom: 0.5em;
-  padding-top: 0.5em;
+  + .type-row {
+    border-top: 1px solid #ddd;
+  }
   .type-link {
     font-size: 110%;
     margin-left: 0.25em;

@@ -15,6 +15,7 @@ class CredentialType(Auditable):
     credential_def_id = models.TextField(db_index=True, null=True)
     logo_b64 = models.TextField(null=True)
     visible_fields = models.TextField(null=True)
+    last_issue_date = models.DateTimeField(null=True)
 
     class Meta:
         db_table = "credential_type"
