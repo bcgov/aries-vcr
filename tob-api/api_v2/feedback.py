@@ -12,7 +12,7 @@ def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
     server_addr = os.getenv('SMTP_SERVER_ADDRESS')
     recip_email = os.getenv('FEEDBACK_TARGET_EMAIL')
     app_url = os.getenv('APPLICATION_URL')
-    from_name = 'BC OrgBook'
+    from_name = 'OrgBook BC'
     from_email = 'no-reply@orgbook.gov.bc.ca'
 
     reason_map = {
@@ -23,7 +23,7 @@ def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
     }
     reason_text = reason_map.get(reason) or ''
 
-    subject = 'OrgBook Feedback: {}'.format(reason_text)
+    subject = 'OrgBook BC Feedback: {}'.format(reason_text)
 
     LOGGER.info("Received feedback from %s <%s>", reply_name, reply_email)
     LOGGER.info("Feedback content: %s\n%s", subject, comments)

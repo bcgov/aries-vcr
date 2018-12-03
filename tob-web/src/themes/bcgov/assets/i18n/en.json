@@ -4,10 +4,10 @@
     "topic": "organization"
   },
   "app": {
-    "title": "BC OrgBook Beta",
-    "title-prefix": "BC OrgBook Beta | ",
+    "title": "OrgBook BC Public Beta",
+    "title-prefix": "OrgBook BC Public Beta | ",
     "header": {
-      "title": "OrgBook",
+      "title": "OrgBook BC",
       "logo-alt-text": "BC Government Logo"
     }
   },
@@ -558,7 +558,7 @@
     }
   },
   "home": {
-    "about-title": "About BC OrgBook",
+    "about-title": "About OrgBook BC",
     "title": "British Columbia's Verifiable Organizations"
   },
   "jurisdiction": {
