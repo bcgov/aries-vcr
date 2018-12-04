@@ -1,5 +1,5 @@
 <ng-container *ngIf="error">
-  <app-not-found *ngIf="notFound; else main"></app-not-found>
+  <app-not-found *ngIf="notFound; else main" [nested]="true"></app-not-found>
   <ng-template #main>
     <div class="alert alert-danger">
       <h3 class="h4" *ngIf="title">{{title}}</h3>

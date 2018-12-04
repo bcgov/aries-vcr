@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalizeRouterService } from 'localize-router';
 
@@ -13,6 +13,8 @@ function joinPath(path) {
   templateUrl: '../../themes/_active/util/not-found.component.html'
 })
 export class NotFoundComponent implements OnInit {
+  @Input() nested: boolean = false;
+
   constructor(
     private _router: Router,
     private _route: ActivatedRoute,

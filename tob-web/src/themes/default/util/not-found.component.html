@@ -1,5 +1,5 @@
-<section id="not-found" class="container">
-  <app-breadcrumb></app-breadcrumb>
+<section class="not-found" [ngClass]="{container: ! nested}">
+  <app-breadcrumb *ngIf="! nested"></app-breadcrumb>
 
   <h2 translate>not-found.title</h2>
 
