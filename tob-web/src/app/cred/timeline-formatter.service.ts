@@ -14,8 +14,10 @@ export class TimelineFormatterService {
   }
 
   getCredentialUrl(cred: Model.Credential) {
-    let url = <string[]>this._localize.translateRoute(['/topic', cred.topic.id, 'cred', cred.id]);
-    return url.join('/');
+    let parts = [...cred.topic.link, '/cred/', cred.id];
+    console.log(parts);
+    let url = <string[]>this._localize.translateRoute(parts);
+    return url.join('');
   }
 
   renderCredential(cred: Model.Credential) {
