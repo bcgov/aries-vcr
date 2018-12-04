@@ -30,7 +30,7 @@
         search.running
       </div>
       <ng-container *ngIf="result.data as creds">
-        <label class="control-label mb-1" translate>search.results-title</label>
+        <h3 class="control-label mb-1" translate>search.results-title</h3>
         <ng-container *ngIf="creds.length">
           <cred-list [records]="creds" format="search"></cred-list>
           <search-nav (nav)="handleNav($event)" [info]="result.info" [loading]="result.loading"></search-nav>

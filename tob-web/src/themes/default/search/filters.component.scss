@@ -1,27 +1,21 @@
 @import "../common";
 
 .filter-item {
-  padding: 0;
-  .form-check {
-    padding: 0;
-    .form-check-input {
-      margin-left: 0.5rem;
-      margin-top: 0.75em;
-      &:focus + .form-check-label {
-        box-shadow: 0 0 0 $btn-focus-width rgba(theme-color-level(primary, $alert-border-level), .5);
-        color: theme-color(primary);
-      }
+  cursor: pointer;
+  padding: 0.4rem 0.5rem 0.4rem 0.6rem;
+  &.active {
+    // box-shadow: 0 0 0 $btn-focus-width rgba(theme-color-level(primary, $alert-border-level), .5);
+  }
+  .form-check-input {
+    &:focus + .list-check-label {
+      color: theme-color(primary);
     }
-    .form-check-label {
-      border-radius: $border-radius;
-      cursor: pointer;
-      display: block;
-      font-size: 95%;
-      padding: 0.6rem 0.25rem 0.5rem 2rem;
-      word-break: break-word;
-    }
-    .badge {
-      vertical-align: 0.2em;
-    }
+  }
+  .filter-label {
+    font-size: 95%;
+    word-break: break-word;
+  }
+  .badge {
+    vertical-align: 0.2em;
   }
 }
