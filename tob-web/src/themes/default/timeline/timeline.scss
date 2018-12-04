@@ -58,7 +58,7 @@ $slot-radius: 5px;
 
   .rows-outer {
     flex: auto;
-    padding: $timeline-vpad 0;
+    padding: $timeline-vpad 0 1rem;
     margin: 0 $timeline-hpad;
     overflow-x: hidden;
     overflow-y: auto;
