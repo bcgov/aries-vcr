@@ -6,6 +6,9 @@
   &.active {
     // box-shadow: 0 0 0 $btn-focus-width rgba(theme-color-level(primary, $alert-border-level), .5);
   }
+  &:hover {
+    background: theme-color-level(primary, -9);
+  }
   .form-check-input {
     &:focus + .list-check-label {
       color: theme-color(primary);
