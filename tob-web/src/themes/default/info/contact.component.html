@@ -7,7 +7,7 @@
       <div class="col-sm-12">
         <h1 class="page-title" id="contentStart" tabindex="-1" translate>connect.title</h1>
 
-        <p class="lead">
+        <p class="lead" *withLang="'en'">
           OrgBook BC is continuously evolving. More information and features will be added
           to the site on an ongoing basis, and we welcome feedback to help us decide what
           would be most valuable.
@@ -30,7 +30,7 @@
 
       <div class="alert alert-success alert-dismissible" id="alert-success" role="alert" tabindex="0" *ngIf="sent">
         <h3 class="h5 my-0">Feedback Sent</h3>
-        Thank your, your feedback has been submitted.
+        Thank you, your feedback has been submitted.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="sent=false">
           <span aria-hidden="true">&times;</span>
         </button>

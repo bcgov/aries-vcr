@@ -21,10 +21,6 @@ export class ContactComponent {
     private _dataService: GeneralDataService,
   ) {}
 
-  get language() {
-    return this._dataService.language;
-  }
-
   checkFeedback(fb) {
     if(! fb.reason || ! fb.from_name || ! fb.from_email)
       return false;
