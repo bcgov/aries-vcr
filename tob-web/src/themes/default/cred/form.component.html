@@ -16,91 +16,120 @@
 
       <div class="cred-info" *ngIf="mode == 'view'">
 
-        <div class="row form-group" *ngIf="record.inactive">
-          <div class="col-sm-12">
-            <div class="alert alert-warning">
-              <h3 translate>cred.inactive</h3>
-              <div translate>cred.inactive-message</div>
+        <div class="row">
+          <div class="col-md-4 order-md-1">
+            <div class="card card-primary mb-3">
+              <div class="card-body">
+                <h5>What is a credential?</h5>
+
+                <p>
+                A credential is held by an organization, for example a permit or a business licence.
+                </p>
+
+                <h5>What is an issuer?</h5>
+
+                <p>
+                An issuer issues credentials to organizations listed in the OrgBook BC. For example,
+                BC Registries issues credentials for companies incorporated in British Columbia.
+                </p>
+
+                <p class="mb-0">
+                <a [routerLink]="['./verify'] | localize" class="body-link switch-verify">{{ 'cred.verify-link' | translate }}</a>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="row form-group" *ngIf="record.revoked">
-          <div class="col-sm-12">
-            <div class="alert alert-danger">
-              <h3>{{'cred.expired' | translate}} <small>&nbsp;{{record.revoked_date | dateFormat: 'effectiveDateTime'}}</small></h3>
-              <div translate>cred.expired-message</div>
+          <div class="col-md-8 order-md-0">
+
+            <div class="row form-group" *ngIf="record.inactive">
+              <div class="col-sm-12">
+                <div class="alert alert-warning">
+                  <h3 translate>cred.inactive</h3>
+                  <div translate>cred.inactive-message</div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <ng-container *ngIf="record.credential_set as credset">
-          <div *ngIf="credset.latest_credential_id && credset.latest_credential_id != record.id">
             <div class="row form-group" *ngIf="record.revoked">
               <div class="col-sm-12">
-                <div class="alert alert-info">
-                  <h5 class="my-0">
-                    <a [routerLink]="record.topic.link.concat(['cred', credset.latest_credential_id]) | localize" class="cred-link" translate>cred.latest-link</a>
-                  </h5>
+                <div class="alert alert-danger">
+                  <h3>{{'cred.expired' | translate}} <small>&nbsp;{{record.revoked_date | dateFormat: 'effectiveDateTime'}}</small></h3>
+                  <div translate>cred.expired-message</div>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="record.credential_set as credset">
+              <div *ngIf="credset.latest_credential_id && credset.latest_credential_id != record.id">
+                <div class="row form-group" *ngIf="record.revoked">
+                  <div class="col-sm-12">
+                    <div class="alert alert-info">
+                      <h5 class="my-0">
+                        <a [routerLink]="record.topic.link.concat(['cred', credset.latest_credential_id]) | localize" class="cred-link" translate>cred.latest-link</a>
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="row form-group" *ngIf="record.credential_type">
+              <div class="col-sm-12">
+                <label class="control-label" translate>cred.cred-type</label>
+                <div class="form-field">
+                  {{record.credential_type.description}}
+                </div>
+              </div>
+            </div>
+
+            <div class="row form-group" *ngIf="record.issuer">
+              <div class="col-sm-12">
+                <label class="control-label" translate>cred.issuer</label>
+                <div class="form-field">
+                  <a class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="row form-group" *ngIf="record.topic as topic">
+              <div class="col-sm-12">
+                <label class="control-label" translate>topic.related-to</label>
+                <div class="form-field">
+                  <p class="mb-1">{{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="topic.link | localize">{{topic.preferredName?.text}}</a></p>
+                  <p class="mb-0">{{'topic.source-id' | translate}}: <span class="text-identifier">{{topic.source_id}}</span></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row form-group" *ngIf="record.attributes?.length">
+              <div class="col-sm-12">
+                <label class="control-label" translate>cred.attributes</label>
+                <div class="form-field attributes-outer">
+                  <attribute-list [records]="record.attributes"></attribute-list>
+                </div>
+              </div>
+            </div>
+
+            <div class="row form-group" *ngIf="record.effective_date">
+              <div class="col-sm-12">
+                <label class="control-label" translate>cred.start-date</label>
+                <div class="form-field">
+                  <span class="claim-info date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row form-group" *ngIf="record.create_timestamp">
+              <div class="col-sm-12">
+                <label class="control-label" translate>general.date-issued</label>
+                <div class="form-field">
+                  <span class="claim-info date">{{record.create_timestamp | dateFormat: 'effectiveDateTime'}}</span>
                 </div>
               </div>
             </div>
           </div>
-        </ng-container>
 
-        <div class="row form-group" *ngIf="record.credential_type">
-          <div class="col-sm-12">
-            <label class="control-label" translate>cred.cred-type</label>
-            <div class="form-field">
-              {{record.credential_type.description}}
-            </div>
-          </div>
-        </div>
-
-        <div class="row form-group" *ngIf="record.issuer">
-          <div class="col-sm-12">
-            <label class="control-label" translate>cred.issuer</label>
-            <div class="form-field">
-              <a class="body-link issuer-link" [routerLink]="['/issuer', record.issuer.id] | localize">{{record.issuer.name}}</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="row form-group" *ngIf="record.topic as topic">
-          <div class="col-sm-12">
-            <label class="control-label" translate>topic.related-to</label>
-            <div class="form-field">
-              <p class="mb-1">{{topic.typeLabel | translate}}: <a class="body-link cred-link name" [routerLink]="topic.link | localize">{{topic.preferredName?.text}}</a></p>
-              <p class="mb-0">{{'topic.source-id' | translate}}: <span class="text-identifier">{{topic.source_id}}</span></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="row form-group" *ngIf="record.attributes?.length">
-          <div class="col-sm-12">
-            <label class="control-label" translate>cred.attributes</label>
-            <div class="form-field attributes-outer">
-              <attribute-list [records]="record.attributes"></attribute-list>
-            </div>
-          </div>
-        </div>
-
-        <div class="row form-group" *ngIf="record.effective_date">
-          <div class="col-sm-12">
-            <label class="control-label" translate>cred.start-date</label>
-            <div class="form-field">
-              <span class="claim-info date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="row form-group" *ngIf="record.create_timestamp">
-          <div class="col-sm-12">
-            <label class="control-label" translate>general.date-entered</label>
-            <div class="form-field">
-              <span class="claim-info date">{{record.create_timestamp | dateFormat: 'effectiveDateTime'}}</span>
-            </div>
-          </div>
         </div>
 
         <div class="row form-group" *ngIf="record.credential_set as credset">
@@ -122,12 +151,6 @@
             <span>{{verifyResult.status | translate}}</span>
             <p *ngIf="! verifyResult.success" class="mt-2 mb-0">{{verifyResult.text}}</p>
           </div>
-        </div>
-      </div>
-
-      <div class="row form-group mt-5" *ngIf="mode == 'view'">
-        <div class="col-sm-12">
-          <a [routerLink]="['./verify'] | localize" class="body-link switch-verify">{{ 'cred.verify-link' | translate }}</a>
         </div>
       </div>
 

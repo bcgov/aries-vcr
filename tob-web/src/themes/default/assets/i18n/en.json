@@ -71,12 +71,13 @@
     "whats-this-link": "What's this?",
     "verified": "Verified",
     "verify-breadcrumb": "Credential Verification",
-    "verify-link": "Verify and show credential details",
+    "verify-link": "See data for this credential",
     "verify-status": "Verification Status:"
   },
   "general": {
     "about-site-title": "About this site",
     "date-entered": "Date Entered",
+    "date-issued": "Issued Date",
     "display-cards": "Cards",
     "display-list": "List",
     "display-timeline": "Timeline",
