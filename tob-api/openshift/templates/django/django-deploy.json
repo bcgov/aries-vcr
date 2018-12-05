@@ -722,7 +722,7 @@
       "displayName": "Application url",
       "description": "This service's url.",
       "required": true,
-      "value": "https://theorgbook.pathfinder.gov.bc.ca"
+      "value": "https://www.orgbook.gov.bc.ca"
     },
     {
       "name": "EMAIL_SETTINGS_STORE_NAME",

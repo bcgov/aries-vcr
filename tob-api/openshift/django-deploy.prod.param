@@ -5,7 +5,7 @@
 #=========================================================
 # NAME=django
 # IMAGE_NAMESPACE=devex-von-tools
-APPLICATION_DOMAIN=django-devex-von-prod.pathfinder.gov.bc.ca
+APPLICATION_DOMAIN=demo-api.orgbook.gov.bc.ca
 # ROUTE_PATH=/api/v2/indy
 # DATABASE_SERVICE_NAME=postgresql
 # DATABASE_ENGINE=postgresql
@@ -39,7 +39,7 @@ LEDGER_URL=http://159.203.24.151
 # USER_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # ADMIN_USER_ID=[a-zA-Z_][a-zA-Z0-9_]{10}
 # ADMIN_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-APPLICATION_URL=https://devex-von-prod.pathfinder.gov.bc.ca
+APPLICATION_URL=https://demo.orgbook.gov.bc.ca
 # EMAIL_SETTINGS_STORE_NAME=email-settings
 # FEEDBACK_TARGET_EMAIL=
 # SMTP_SERVER_ADDRESS=

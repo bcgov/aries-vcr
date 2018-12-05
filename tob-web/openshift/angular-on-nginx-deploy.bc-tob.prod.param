@@ -6,12 +6,12 @@
 # NAME=angular-on-nginx
 # IMAGE_NAMESPACE=devex-von-tools
 # REAL_IP_FROM=172.51.0.0/16
-API_URL=https://django-devex-von-bc-tob-prod.pathfinder.gov.bc.ca/api/v2/
+API_URL=https://api.orgbook.gov.bc.ca/api/v2/
 # API_SERVICE_NAME=django
 # API_PATH=/api/v2/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
-APPLICATION_DOMAIN=angular-on-nginx-devex-von-bc-tob-prod.pathfinder.gov.bc.ca
+APPLICATION_DOMAIN=www.orgbook.gov.bc.ca
 TAG_NAME=bc-tob-prod
 HTTP_BASIC=
 # TOB_THEME=bcgov

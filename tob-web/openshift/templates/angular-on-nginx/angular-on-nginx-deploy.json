@@ -269,7 +269,7 @@
       "displayName": "API URL",
       "name": "API_URL",
       "required": true,
-      "value": "https://django-devex-von-dev.pathfinder.gov.bc.ca/api/V2/"
+      "value": "https://dev-demo-api.orgbook.gov.bc.ca/api/V2/"
     },
     {
       "description": "The name of the service endpoint for the API.  Used to wire up to an API endpoint within the same project; overriding the URL defined by API_URL.",

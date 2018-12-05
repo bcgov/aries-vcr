@@ -72,7 +72,7 @@ getApiUrl (){
   # Examples:
   #
   # 1)
-  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v2/
+  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
   #   API_SERVICE_NAME=django
   #   DJANGO_SERVICE_HOST=172.50.105.217
   #   DJANGO_SERVICE_PORT=8080
@@ -81,7 +81,7 @@ getApiUrl (){
   #   Results in API_URL=http://172.50.105.217:8080/api/v2/
   #
   # 2)
-  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v2/
+  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
   #   API_SERVICE_NAME=django
   #   DJANGO_SERVICE_HOST=172.50.105.217
   #   API_PATH=/api/v2/
@@ -91,9 +91,9 @@ getApiUrl (){
   # 3)
   #   If either API_SERVICE_NAME or *_SERVICE_HOST are not defined...
   #
-  #   API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v2/
+  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
   #
-  #   Results in API_URL=https://django-devex-von-dev.pathfinder.gov.bc.ca/api/v2/
+  #   Results in API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
   # ================================================================================
   if [ ! -z "${API_SERVICE_NAME}" ]; then
     _SERVICE_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${API_SERVICE_NAME/-/_})"

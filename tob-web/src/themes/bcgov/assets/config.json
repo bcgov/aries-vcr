@@ -1,4 +1,4 @@
 {
-  "APPLICATION_URL": "${APPLICATION_URL-https://angular-on-nginx-devex-von-bc-tob-dev.pathfinder.gov.bc.ca}",
+  "APPLICATION_URL": "${APPLICATION_URL-https://dev.orgbook.gov.bc.ca}",
   "TOPIC_CREDS_FORMAT": "timeline"
 }

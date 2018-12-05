@@ -54,7 +54,7 @@ To run in debug mode, append DEBUG=true to your run command. For example, `./man
 To deploy TheOrgBook on an instance of OpenShift, see [the instructions](../RunningLocal.md) in the file RunningLocal.md.
 
 - [Schema Spy](http://schema-spy-devex-von-dev.pathfinder.gov.bc.ca/)
-- [Open API (Swagger) API Explorer](http://django-devex-von-dev.pathfinder.gov.bc.ca/api/v1/)
+- [Open API (Swagger) API Explorer](http://dev-demo-api.orgbook.gov.bc.ca/api/v1/)
 
 ## Database Migrations
 
