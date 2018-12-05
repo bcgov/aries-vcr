@@ -15,7 +15,6 @@ export class TimelineFormatterService {
 
   getCredentialUrl(cred: Model.Credential) {
     let parts = [...cred.topic.link, '/cred/', cred.id];
-    console.log(parts);
     let url = <string[]>this._localize.translateRoute(parts);
     return url.join('');
   }
