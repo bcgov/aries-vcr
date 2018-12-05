@@ -53,8 +53,8 @@
       </div>
 
       <div class="row form-group mt-2">
-        <label class="control-label col-sm-3">Contact Reason</label>
-        <div class="col-sm-9">
+        <div class="col">
+          <label class="control-label mb-0">Contact Reason</label>
           <div class="form-check">
             <input class="form-check-input" type="radio" name="reason" value="incorrect" id="reason_incorrect" required [(ngModel)]="feedback.reason">
             <label class="form-check-label" for="reason_incorrect">Report incorrect information</label>
@@ -75,22 +75,22 @@
       </div>
 
       <div class="row form-group">
-        <label class="control-label col-sm-3">Name</label>
-        <div class="col-sm-9">
+        <div class="col">
+          <label class="control-label mb-0">Name</label>
           <input class="form-control" size="30" name="from_name" type="text" required [(ngModel)]="feedback.from_name">
         </div>
       </div>
 
       <div class="row form-group">
-        <label class="control-label col-sm-3">Email address</label>
-        <div class="col-sm-9">
+        <div class="col">
+          <label class="control-label mb-0">Email address</label>
           <input class="form-control" size="30" name="from_email" type="email" required [(ngModel)]="feedback.from_email">
         </div>
       </div>
 
       <div class="row form-group">
-        <label class="control-label col-sm-3">Question</label>
-        <div class="col-sm-9">
+        <div class="col">
+          <label class="control-label mb-0">Question <span class="text-help">(optional)</span></label>
           <textarea class="form-control" name="comments" rows="6" cols="40" [(ngModel)]="feedback.comments"></textarea>
         </div>
       </div>

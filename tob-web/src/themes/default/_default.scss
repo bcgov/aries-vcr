@@ -71,6 +71,11 @@ $indicator-thickness: 0.2em;
 	font-size: 95%;
 }
 
+.text-help {
+  font-weight: normal;
+  color: $text-muted;
+}
+
 @keyframes loading {
     from {left: -100%; }
     to { left: 100%; }
