@@ -13,7 +13,7 @@
 # IpFilterRules=
 APPLICATION_DOMAIN=www.von.gov.on.ca
 TAG_NAME=prod
-# HTTP_BASIC=auth_basic 'restricted';
+HTTP_BASIC=
 # TOB_THEME=ongov
 # CPU_REQUEST=10m
 # CPU_LIMIT=250m
