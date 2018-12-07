@@ -14,3 +14,4 @@ class Name(Auditable):
 
     class Meta:
         db_table = "name"
+        ordering = ('id',)

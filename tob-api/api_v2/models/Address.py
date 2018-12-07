@@ -16,3 +16,4 @@ class Address(Auditable):
 
     class Meta:
         db_table = "address"
+        ordering = ('id',)

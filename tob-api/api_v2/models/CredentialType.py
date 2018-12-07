@@ -21,6 +21,7 @@ class CredentialType(Auditable):
     class Meta:
         db_table = "credential_type"
         unique_together = (("schema", "issuer"),)
+        ordering = ('id',)
 
     def get_has_logo(self):
         return bool(self.logo_b64 or (self.issuer and self.issuer.logo_b64))

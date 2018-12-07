@@ -13,3 +13,4 @@ class TopicRelationship(Auditable):
 
     class Meta:
         db_table = "topic_relationship"
+        ordering = ('id',)

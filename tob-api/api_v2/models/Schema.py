@@ -12,3 +12,4 @@ class Schema(Auditable):
     class Meta:
         db_table = "schema"
         unique_together = (("name", "version", "origin_did"),)
+        ordering = ('id',)

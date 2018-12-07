@@ -18,3 +18,4 @@ class CredentialSet(Auditable):
         unique_together = (
             ("topic", "credential_type", "cardinality_hash"),
         )
+        ordering = ('id',)

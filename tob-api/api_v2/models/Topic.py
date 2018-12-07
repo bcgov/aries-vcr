@@ -29,6 +29,7 @@ class Topic(Auditable):
     class Meta:
         db_table = "topic"
         unique_together = (("source_id", "type"),)
+        ordering = ('id',)
 
     def save(self, *args, **kwargs):
         """

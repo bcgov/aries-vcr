@@ -12,3 +12,4 @@ class Claim(Auditable):
 
     class Meta:
         db_table = "claim"
+        ordering = ('id',)

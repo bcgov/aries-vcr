@@ -14,3 +14,4 @@ class Attribute(Auditable):
     class Meta:
         db_table = "attribute"
         unique_together = (("credential", "type"),)
+        ordering = ('id',)

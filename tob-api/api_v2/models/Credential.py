@@ -31,6 +31,7 @@ class Credential(Auditable):
 
     class Meta:
         db_table = "credential"
+        ordering = ('id',)
 
     _cache = None
     def _cached(self, key, val):
