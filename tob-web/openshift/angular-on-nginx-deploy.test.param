@@ -11,7 +11,7 @@
 # API_PATH=/api/v2/
 # AdditionalRealIpFromRules=
 # IpFilterRules=
-APPLICATION_DOMAIN=demo.orgbook.gov.bc.ca
+APPLICATION_DOMAIN=devex-von-test.pathfinder.gov.bc.ca
 TAG_NAME=test
 # HTTP_BASIC=
 # TOB_THEME=bcgov
