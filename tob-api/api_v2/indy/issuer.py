@@ -103,7 +103,6 @@ class IssuerManager:
             schemas.append(schema)
 
             # Get or create credential type
-            credential_type_description = credential_type_def.get("name")
             credential_type_processor_config = {}
             credential_type_processor_config[
                 "mapping"
@@ -122,10 +121,11 @@ class IssuerManager:
                 schema=schema, issuer=issuer
             )
 
-            credential_type.description = credential_type_description
+            credential_type.description = credential_type_def.get("name")
             credential_type.processor_config = credential_type_processor_config
             credential_type.logo_b64 = credential_type_def.get("logo_b64")
             credential_type.credential_def_id = credential_type_def.get("credential_def_id")
+            credential_type.url = credential_type_def.get("endpoint")
             visible_fields = credential_type_def.get("visible_fields")
             if isinstance(visible_fields, list):
                 visible_fields = ",".join(x.strip() for x in filter(None, visible_fields))
