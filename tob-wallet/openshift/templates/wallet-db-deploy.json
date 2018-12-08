@@ -17,7 +17,8 @@
                 "generation": 1,
                 "labels": {
                     "app": "${NAME}-persistent",
-                    "template": "${NAME}-persistent-template"
+                    "template": "${NAME}-persistent-template",          
+                    "app-group": "${APP_GROUP}"
                 }
             },
             "spec": {
@@ -177,7 +178,8 @@
                 "name": "${NAME}",
                 "labels": {
                     "app": "${NAME}-persistent",
-                    "template": "${NAME}-persistent-template"
+                    "template": "${NAME}-persistent-template",          
+                    "app-group": "${APP_GROUP}"
                 }
             },
             "spec": {
@@ -198,7 +200,8 @@
             "metadata": {
                 "name": "${NAME}",
                 "labels": {
-                    "app": "${NAME}-persistent"
+                    "app": "${NAME}-persistent",          
+                    "app-group": "${APP_GROUP}"
                 }
             },
             "data": {
@@ -215,7 +218,8 @@
                 "name": "${NAME}",
                 "labels": {
                     "app": "${NAME}-persistent",
-                    "template": "${NAME}-persistent-template"
+                    "template": "${NAME}-persistent-template",          
+                    "app-group": "${APP_GROUP}"
                 },
                 "annotations": {
                     "template.openshift.io/expose-uri": "postgres://{.spec.clusterIP}:{.spec.ports[?(.name==\"postgresql\")].port}"
@@ -245,6 +249,13 @@
             "description": "The name assigned to all of the OpenShift resources associated to the server instance.",
             "required": true,
             "value": "wallet-db"
+        },
+        {
+          "name": "APP_GROUP",
+          "displayName": "App Group",
+          "description": "The name assigned to all of the deployments in this project.",
+          "required": true,
+          "value": "tob"
         },
         {
             "name": "IMAGE_NAMESPACE",

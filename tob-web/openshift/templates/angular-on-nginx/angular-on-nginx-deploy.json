@@ -15,7 +15,8 @@
       "metadata": {
         "creationTimestamp": null,
         "labels": {
-          "app": "${NAME}"
+          "app": "${NAME}",
+          "app-group": "${APP_GROUP}"
         },
         "name": "${NAME}"
       },
@@ -177,7 +178,8 @@
       "metadata": {
         "creationTimestamp": null,
         "labels": {
-          "app": "${NAME}"
+          "app": "${NAME}",
+          "app-group": "${APP_GROUP}"
         },
         "name": "${NAME}"
       },
@@ -203,7 +205,8 @@
       "kind": "Route",
       "metadata": {
         "labels": {
-          "app": "${NAME}"
+          "app": "${NAME}",
+          "app-group": "${APP_GROUP}"
         },
         "name": "${NAME}"
       },
@@ -229,7 +232,8 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "app": "${NAME}"
+          "app": "${NAME}",
+          "app-group": "${APP_GROUP}"
         }
       },
       "spec": {
@@ -249,6 +253,14 @@
       "name": "NAME",
       "required": true,
       "value": "angular-scaffold"
+    },
+    {
+      "name": "APP_GROUP",
+      "displayName": "App Group",
+      "description": "The name assigned to all of the deployments in this project.",
+      "required": true,
+
+      "value": "tob"
     },
     {
       "description": "The namespace where to get the above image name",

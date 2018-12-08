@@ -11,7 +11,8 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "app": "${NAME}"
+          "app": "${NAME}",          
+          "app-group": "${APP_GROUP}"
         }
       },
       "spec": {
@@ -38,7 +39,8 @@
         "name": "${NAME}",
         "labels": {
           "app": "${NAME}",
-          "template": "${NAME}-deployment-template"
+          "template": "${NAME}-deployment-template",          
+          "app-group": "${APP_GROUP}"
         }
       },
       "spec": {
@@ -58,7 +60,8 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "app": "${NAME}"
+          "app": "${NAME}",          
+          "app-group": "${APP_GROUP}"
         }
       },
       "spec": {
@@ -168,6 +171,13 @@
       "description": "The name assigned to all of the resources defined in this template.",
       "required": true,
       "value": "solr"
+    },
+    {
+      "name": "APP_GROUP",
+      "displayName": "App Group",
+      "description": "The name assigned to all of the deployments in this project.",
+      "required": true,
+      "value": "tob"
     },
     {
       "name": "IMAGE_NAMESPACE",

@@ -15,7 +15,8 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "app": "${NAME}"
+          "app": "${NAME}",          
+          "app-group": "${APP_GROUP}"
         }
       },
       "data": {
@@ -51,7 +52,11 @@
       "kind": "Route",
       "apiVersion": "v1",
       "metadata": {
-        "name": "${NAME}"
+        "name": "${NAME}",
+        "labels": {
+          "app": "${NAME}",          
+          "app-group": "${APP_GROUP}"
+        }
       },
       "spec": {
         "host": "${NAME}-${APPLICATION_DOMAIN}",
@@ -72,6 +77,10 @@
         "name": "${NAME}",
         "annotations": {
           "description": "Defines how to deploy the container."
+        },
+        "labels": {
+          "app": "${NAME}",          
+          "app-group": "${APP_GROUP}"
         }
       },
       "spec": {
@@ -237,6 +246,13 @@
       "description": "The name assigned to all of the schema spy objects defined in this template.",
       "required": true,
       "value": "schema-spy"
+    },
+    {
+      "name": "APP_GROUP",
+      "displayName": "App Group",
+      "description": "The name assigned to all of the deployments in this project.",
+      "required": true,
+      "value": "tob"
     },
     {
       "name": "IMAGE_NAMESPACE",

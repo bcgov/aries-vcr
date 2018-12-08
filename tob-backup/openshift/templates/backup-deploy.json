@@ -12,7 +12,8 @@
         "name": "${PERSISTENT_VOLUME_NAME}",
         "labels": {
           "app": "${NAME}-persistent",
-          "template": "${NAME}-persistent-template"
+          "template": "${NAME}-persistent-template",          
+          "app-group": "${APP_GROUP}"
         }
       },
       "spec": {
@@ -33,7 +34,8 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "template": "${NAME}-deployment"
+          "template": "${NAME}-deployment",          
+          "app-group": "${APP_GROUP}"
         },
         "annotations": {
           "description": "Defines how to deploy the ${NAME} server"
@@ -204,6 +206,13 @@
       "description": "The name assigned to all of the resources defined in this template.",
       "required": true,
       "value": "backup"
+    },
+    {
+      "name": "APP_GROUP",
+      "displayName": "App Group",
+      "description": "The name assigned to all of the deployments in this project.",
+      "required": true,
+      "value": "tob"
     },
     {
       "name": "SOURCE_IMAGE_NAME",
