@@ -279,6 +279,10 @@ SEARCH_SKIP_WORDS = [
     'limited', 'limitée',
 ]
 
+# Return partial matches
+SEARCH_TERMS_EXCLUSIVE = False
+
+
 #
 # Read settings from a custom settings file
 # based on the path provided as an input parameter

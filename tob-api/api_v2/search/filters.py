@@ -65,8 +65,9 @@ class AutocompleteFilterBuilder(BaseQueryBuilder):
 
     def build_name_query(self, term):
         SQ = self.view.query_object
+        match_any = not settings.SEARCH_TERMS_EXCLUSIVE
         return SQ(name_suggest=Proximate(term)) \
-               | SQ(name_precise=Proximate(term, boost=10, any=True))
+               | SQ(name_precise=Proximate(term, boost=10, any=match_any))
 
     def build_query(self, **filters):
         inclusions = []
