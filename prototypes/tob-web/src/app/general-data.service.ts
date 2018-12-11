@@ -20,6 +20,7 @@ export class GeneralDataService {
   private _currentResultSubj = new BehaviorSubject<Fetch.BaseResult<any>>(null);
   private _loaderSub: Subscription = null;
   private _defaultTopicType = 'registration';
+  private _showDebugMsg = false;
 
   constructor(
     private _http: HttpClient,
@@ -29,6 +30,10 @@ export class GeneralDataService {
 
   get language() {
     return this._translate.currentLang;
+  }
+
+  get showDebugMsg() {
+    return this._showDebugMsg;
   }
 
   getRequestUrl(path: string) : string {
@@ -113,6 +118,9 @@ export class GeneralDataService {
           for (let k in data.records) {
             this._orgData[k] = data.records[k];
           }
+        }
+        if(data.debug) {
+          this._showDebugMsg = true;
         }
         this._quickLoaded = true;
         resolve(1);

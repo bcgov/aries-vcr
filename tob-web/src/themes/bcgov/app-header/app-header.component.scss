@@ -54,3 +54,9 @@
 .navbar-toggler-label {
   font-size: 80%;
 }
+
+.debug-msg {
+  text-align: center;
+  background: theme-color-level(danger, -9);
+  border-bottom: 2px solid theme-color-level(danger, -4);
+}

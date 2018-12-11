@@ -303,7 +303,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  public restoreMeta() {
+  get showDebugMsg() {
+    return this._dataService.showDebugMsg;
   }
 }
 

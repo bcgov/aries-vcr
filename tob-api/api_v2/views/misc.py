@@ -1,6 +1,7 @@
 import logging
 
 from django.db import connection
+from django.conf import settings
 from django.http import JsonResponse
 
 from drf_yasg import openapi
@@ -42,6 +43,7 @@ def quickload(request, *args, **kwargs):
         {
             "counts": counts,
             "credential_counts": cred_counts,
+            "debug": settings.DEBUG,
         }
     )
 
