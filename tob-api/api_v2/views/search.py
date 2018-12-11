@@ -163,12 +163,13 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
             type=openapi.TYPE_STRING,
         ),
     ]
-    list = swagger_auto_schema(
-        manual_parameters=_swagger_params,
-    )(HaystackViewSet.list)
-    retrieve = swagger_auto_schema(
-        manual_parameters=_swagger_params,
-    )(HaystackViewSet.retrieve)
+    @swagger_auto_schema(manual_parameters=_swagger_params)
+    def list(self, *args, **kwargs):
+        return super(CredentialSearchView, self).list(*args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=_swagger_params)
+    def retrieve(self, *args, **kwargs):
+        return super(CredentialSearchView, self).retrieve(*args, **kwargs)
 
     index_models = [Credential]
     load_all = True
