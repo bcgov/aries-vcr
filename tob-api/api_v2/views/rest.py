@@ -48,8 +48,8 @@ class IssuerViewSet(ReadOnlyModelViewSet):
     @swagger_auto_schema(method='get')
     @detail_route(url_path="credentialtype", methods=["get"])
     def list_credential_types(self, request, pk=None):
-        queryset = CredentialType.objects.filter(issuer__id=pk)
-        get_object_or_404(queryset, pk=pk)
+        item = self.get_object()
+        queryset = item.credential_types
         serializer = CredentialTypeSerializer(queryset, many=True)
         return Response(serializer.data)
 
