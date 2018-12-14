@@ -18,7 +18,10 @@ export class DateFormatPipe extends DatePipe implements PipeTransform {
     let timezone = arguments[2] || this._config.getConfig().DISPLAY_TIMEZONE || undefined;
     if(format === 'effectiveDate') format = 'mediumDate';
     else if(format === 'effectiveDateTime') format = 'MMM d, y, h:mm a';
-    // may want to automatically strip off time if equal to midnight
+    if(value && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      // do not perform timezone offset when no time is given
+      timezone = undefined;
+    }
     return super.transform(value, format, timezone);
   }
 }
