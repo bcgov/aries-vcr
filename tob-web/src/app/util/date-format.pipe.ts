@@ -19,8 +19,8 @@ export class DateFormatPipe extends DatePipe implements PipeTransform {
     if(format === 'effectiveDate') format = 'mediumDate';
     else if(format === 'effectiveDateTime') format = 'MMM d, y, h:mm a';
     if(value && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      // do not perform timezone offset when no time is given
-      timezone = undefined;
+      // prevent date from being shifted forward or backward
+      timezone = 'UTC';
     }
     return super.transform(value, format, timezone);
   }
