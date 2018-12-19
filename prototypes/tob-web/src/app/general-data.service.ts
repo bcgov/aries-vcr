@@ -119,7 +119,7 @@ export class GeneralDataService {
             this._orgData[k] = data.records[k];
           }
         }
-        if(data.debug) {
+        if(data.demo) {
           this._showDebugMsg = true;
         }
         this._quickLoaded = true;

@@ -43,7 +43,7 @@ def quickload(request, *args, **kwargs):
         {
             "counts": counts,
             "credential_counts": cred_counts,
-            "debug": settings.DEBUG,
+            "demo": settings.DEMO_SITE,
         }
     )
 
