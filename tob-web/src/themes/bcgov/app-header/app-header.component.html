@@ -35,6 +35,10 @@
     </div>
   </nav>
   <div *ngIf="parent.showDebugMsg" class="debug-msg">
-    Development site
+    <div class="msg-body">
+      <small><span class="fa fa-exclamation-circle mr-2"></span></small>
+      {{ 'general.demo-site' | translate }}
+      <small><span class="fa fa-exclamation-circle ml-2"></span></small>
+    </div>
   </div>
 </header>
