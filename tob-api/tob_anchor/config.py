@@ -15,7 +15,7 @@ def indy_general_wallet_config():
 
     ret = {"type": wallet_type}
 
-    if wallet_type == 'postgres':
+    if wallet_type == 'postgres_storage':
         LOGGER.info("Using Postgres storage ...")
 
         # postgresql wallet-db configuration

@@ -205,7 +205,7 @@ build-api() {
   #
   # tob-api
   #
-  BASE_IMAGE="bcgovimages/von-image:py36-1.6-ew-13-s2i"
+  BASE_IMAGE="bcgovimages/von-image:py36-1.6-ew-14-s2i"
   echo -e "\nBuilding django image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -281,7 +281,7 @@ configureEnvironment() {
   export ENABLE_REALTIME_INDEXING="1"
 
   # wallet-db
-  export WALLET_TYPE="postgres"
+  export WALLET_TYPE="postgres_storage"
   export WALLET_ENCRYPTION_KEY="key"
   export POSTGRESQL_WALLET_HOST="wallet-db"
   export POSTGRESQL_WALLET_PORT="5432"
@@ -445,7 +445,7 @@ case "${COMMAND}" in
 start|up)
   _startupParams=$(getStartupParams $@)
   configureEnvironment $@
-  docker-compose up -d ${_startupParams}
+  docker-compose up -d ${_startupParams} 
   docker-compose logs -f
  ;;
 logs)
@@ -460,8 +460,17 @@ web-dev)
   ;;
 stop)
   configureEnvironment
-  docker-compose stop
+  docker-compose stop 
   ;;
+startdb)
+  configureEnvironment $@
+  docker-compose up -d wallet-db
+  docker-compose logs -f
+ ;;
+stopdb)
+  configureEnvironment
+  docker-compose stop wallet-db
+ ;;
 rm|down)
   configureEnvironment
   deleteVolumes
