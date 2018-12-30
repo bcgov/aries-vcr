@@ -6,16 +6,19 @@
 # Table of Contents <!-- omit in toc -->
 
 - [Introduction](#introduction)
-- [Decentralized Identity / Self-Soverign Identity](#decentralized-identity--self-soverign-identity)
-  - [Emerging Open Standards](#emerging-open-standards)
+- [Decentralized Identity / Self-Sovereign Identity](#decentralized-identity--self-sovereign-identity)
+  - [Open Standards](#open-standards)
     - [Decentralized Identifiers (DID)](#decentralized-identifiers-did)
     - [Verifiable Credentials](#verifiable-credentials)
-    - [Links to Emerging DID and Verifable Credentials Standards](#links-to-emerging-did-and-verifable-credentials-standards)
-  - [Emerging Technology](#emerging-technology)
-    - [Distributed Ledger Technology](#distributed-ledger-technology)
+    - [Links to Emerging DID and Verifiable Credentials Standards](#links-to-emerging-did-and-verifiable-credentials-standards)
+      - [DID Standards](#did-standards)
+      - [Verifiable Credentials Standards](#verifiable-credentials-standards)
+  - [General Model](#general-model)
+  - [Technology](#technology)
+    - [Distributed Ledger Technology / Blockchain](#distributed-ledger-technology--blockchain)
     - [Decentralized Key Management Systems](#decentralized-key-management-systems)
     - [Zero Knowledge Proofs](#zero-knowledge-proofs)
-  - [General Model of Verifiable Credential based networks](#general-model-of-verifiable-credential-based-networks)
+  - [Summary: Decentralized Identity / Self-Sovereign Identity Architecture](#summary-decentralized-identity--self-sovereign-identity-architecture)
 - [Hyperledger Indy](#hyperledger-indy)
   - [Overview](#overview)
   - [Technical information for Hyperledger Indy](#technical-information-for-hyperledger-indy)
@@ -25,75 +28,94 @@
   - [Key Technical Elements](#key-technical-elements)
 - [Endnotes](#endnotes)
 
-
 # Introduction
 
-**Hyperledger Indy Catalyst** is a set of application level software components designed to accelerate the adoption of trustworthy entity to entity[^1] communications. Indy Catalyst is builds upon globally available open standards and open source software. At present, Indy Catalyst builds upon [Hyperledger Indy](https://www.hyperledger.org/projects) and common enterprise open source software such as PostgreSQL, Python, and RESTful principles. Efforts will be taken to design the software to facilitate the incorporation of evolving open standards and technology.
+**Hyperledger Indy Catalyst** is a set of application level software components designed to accelerate the adoption of trustworthy entity to entity[^1] communications based on Decentralized Identity / Self-Sovereign Identity technology and architecture. Indy Catalyst is builds upon globally available open standards and open source software. At present, Indy Catalyst builds upon [Hyperledger Indy](https://www.hyperledger.org/projects), common enterprise open source software, frameworks and patterns such as PostgreSQL, Python, Angular and RESTful APIs. Efforts will be taken to design the software to facilitate the incorporation of evolving open standards and technology.
 
-In order to understand the goals and context of Hyperledger Indy Catalyst, it is advisable to become familiar with the general model of trustworthy entity to entity communications. This model is most commonly described using the terms decentralized identity or self-soverign identity. The key standards and technologies enabling this new this model are presented below and annotated with references.
+In order to understand the goals and context of Hyperledger Indy Catalyst, it is advisable to become familiar with the model of decentralized identity or self-sovereign identity which enables trustworthy entity to entity communications. The open standards and technologies enabling this new this model are presented below and annotated with references.
 
-# Decentralized Identity / Self-Soverign Identity
+# Decentralized Identity / Self-Sovereign Identity
 
-Self-Sovereign Identity is a term coined by [Christoper Allen in 2016](http://www.lifewithalacrity.com/2016/04/the-path-to-self-soverereign-identity.html) to describe a new phase in digital identity. One which "requires that users be the rulers of their own identity." The intent behind the concept of "self-sovereign" is one of control over the data associated to oneself. It is intended to suggest that one can and should have full control over the holding and disclosing of one's personally identifiable data as issued by themselves or issued to them by others. Others may include authoritative issuers such as governments or a local sports club membership. It is not intended to suggest a "digital self-declaration" of ones identity in opposition to officially issued identity attributes. The details of how this can be technically achieved are describe briefly in the following sections along with appropriate references for further study.
+Self-Sovereign Identity is a term coined by [Christoper Allen in 2016](http://www.lifewithalacrity.com/2016/04/the-path-to-self-soverereign-identity.html) to describe a new generation of digital identity systems. One which "requires that users be the rulers of their own identity." In order to truly understand the intent of this statement, which at first may sound rather radical, it is important to reflect upon the design of current identity systems and contrast that to the emerging design of decentralized identity systems.
 
-It is important to note that while these emerging standards and technologies are being designed to tackle the very difficult challenges of secure and privacy respecting digital identity for people, they are not limited to the narrow context of personal identity. This new model can be applied to a broader set of use cases beyond those involving personally identifiable information. The model offers a generalized capability enabling highly secure entity to entity communications.
+The excellent paper, ["Self-sovereign Identity: A position paper on blockchain enabled identity and the road ahead"](https://www.bundesblock.de/wp-content/uploads/2018/10/ssi-paper.pdf), published in October 2018 by the [German Blockchain Association](https://www.bundesblock.de) highlights the key differentiators between current digital identity systems and emerging self-sovereign identity systems.
 
-## Emerging Open Standards
+The key differentiator pertains to the means by which current centralized identity systems keep track of individual entities in their databases. Centralized identity systems create and assign an identifer for each individual entity and associate data about that individual entity to that identifier. This is a familiar idea to most of us. In the analog world these identifiers have names such as drivers licence number, credit card number, bank account number, social insurance number, etc. The identity system owner creates and is in control of the *identifiers* and associated data for individual entities and not the individual entities themselves. Identity system operators have the ability to unilaterally make changes to these identifiers are associated data.
+
+In contrast, the design of a decentralized or "self-sovereign" identity system is to put individual entities in control of the *identifiers* used to keep track of them as well as the holding and disclosure of the data associated to these new identifiers. These new identifiers, described below, are called ["Decentralized Identifiers" (DID)](#decentralized-identifiers-did). The data associated to these identifiers is encoded into a new format called a [Verifiable Credential](#verifiable-credentials). These Verifiable Credentials are issued to and held by individual entities.
+
+Using this new approach to identity systems design means a person would be in full control of data issued to them by third parties. People would be in control of disclosing of their personally identifiable data as issued by themselves (e.g. personal preferences, messages, etc) or issued to them by third parties. These third parties may include authoritative issuers such as governments (e.g. identity documents, licences) or they could be issuers such as a local sports club (e.g. membership). Critically, "self-sovereign" is not intended to suggest a "digital self-declaration" of ones identity in opposition to or as a substitute for authoritative and officially issued identity attributes from a government. Rather, that one is both "in control" of the relationship (the decentralized identifier) and the data (verifiable credential) issued to them. Therefore, once one is holding this officially issued data, one can choose when and what one would like to disclose to third parties. The details of how this can be technically achieved are described briefly in the following sections along with appropriate references for further study.
+
+It is important to note that while these emerging standards and technologies are being designed to tackle the very difficult challenges of secure and privacy respecting digital identity for people, they are not limited to the narrow context of personal identity. This new model can be applied to a broader set of use cases beyond those involving personally identifiable information. The model offers a generalized capability enabling highly secure entity to entity communications and it is this generalized capability that has led to the creation of Hyperledger Indy Catalyst. Indy Catalyst components enable enterprises to issue, hold and verify data about entities.
+
+## Open Standards
 
 There are two emerging open standards aimed at enabling interoperable secure and privacy respecting entity to entity data exchange.
 
 ### Decentralized Identifiers (DID)
 
-A DID is a globally unique and resolvable indentifier created by a entity. A entity could be any sort of real world actor such as an individual person, a legal entity, a government authority, a thing. DIDs are created and issued by software under the control of a entity. DIDs are bound with the necessary information to allow a entity to demonstrate cryptographic control over the DID and to enable secure communications with that entity.  With these basic primitives, secure and privacy respecting entity to entity data exchange becomes possible. DIDs are under the control of the creating entity and do not require any centralized issuing or resolution authority.
+A DID is a globally unique and resolvable identifier created by a entity. A entity could be any sort of real world actor such as an individual person, a legal entity, a government authority, a thing. DIDs are created and issued by software under the control of a entity. DIDs are bound with the necessary information to allow a entity to demonstrate cryptographic control over the DID and to enable secure communications with that entity.  With these basic primitives, secure and privacy respecting entity to entity data exchange becomes possible. DIDs do not require any centralized issuing or resolution authority.
 
 ### Verifiable Credentials
 
-A verifiable credential is data issued to, and held by an entity. Verifable indicates the credential is rendered tamper-evident and in a manner whereby the issuer can be cryptographically verified.[^2] Data contained in a verifiable credential is organized into individual claims. Claims within a credential can be about different subjects (e.g entities).
+A verifiable credential is data issued to, and held by an entity. Verifiable indicates the credential is rendered tamper-evident and in a manner whereby the issuer can be cryptographically verified.[^2] Data contained in a verifiable credential is organized into individual claims. Claims within a credential can be about different subjects (e.g entities) and may be verifiable individually.
 
-### Links to Emerging DID and Verifable Credentials Standards
+### Links to Emerging DID and Verifiable Credentials Standards
 
-These emerging open standards are being incubated within the [W3C Credentials Community Group](https://www.w3.org/community/credentials/)
+The DID and Verifiable Credential emerging open standards are being incubated within the [W3C Credentials Community Group](https://www.w3.org/community/credentials/)
 
-**DID**
+#### DID Standards
 
 - [W3C DID Primer](https://w3c-ccg.github.io/did-primer/)
 - [W3C DID Spec](https://w3c-ccg.github.io/did-spec/)
 
-**Verifiable Credentials**
+#### Verifiable Credentials Standards
 
 - [W3C Verifiable Claims Working Group](https://www.w3.org/2017/vc/WG/)
 - [W3C Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/)
 
-## Emerging Technology
+## General Model
 
-The technologies described in this document provide the core functionality required to implement and complement the emerging open standards described above. Together this suite of open standards and technologies create a fundementally new approach for entity to entity communication.
+Stemming from the work in the Verifiable Credentials is a general model for describing the roles of the main actors in a Decentralized Identity / Self-Sovereign Identity ecosystem.
 
-### Distributed Ledger Technology
+The roles and information flows are described in the [W3C Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/#dfn-verifiable-data-registries). The roles are:
+  
+1. Issuer
+2. Holder (also known as the Prover at verification time)
+3. Verifier
+4. A [Verifiable Data Registry](https://w3c.github.io/vc-data-model/#dfn-verifiable-data-registries) - commonly a decentralized ledger which serves as a system "mediating the creation and verification of issuer identifiers, keys and other relevant data like verifiable credential schemas and revocation registries".
+
+/* Insert picture here */
+
+These roles can be fulfilled by a number of "real world" actors including people, legal entities,or things.
+
+## Technology
+
+The technologies described in this document provide the core functionality required to implement and complement the emerging open standards described above. Together this suite of open standards and technologies create a fundamentally new approach for privacy respecting and secure entity to entity communication. 
+
+### Distributed Ledger Technology / Blockchain
+
+The high integrity and global availability of a public blockchain combined with the concept of a DID creates a new decentralized root of trust capability. This new capability tackles a long standing problem with centralized identity systems, in particular those based on Public Key Infrastructure (PKI) models. The following sections provide links to in-depth explorations of these new approaches.
 
 ### Decentralized Key Management Systems
 
-Distributed ledger purpose-built for decentralized identity
+As stated in a the [Decentralized Key Management Systems](https://github.com/hyperledger/indy-sdk/blob/677a0439487a1b7ce64c2e62671ed3e0079cc11f/doc/design/005-dkms/DKMS%20Design%20and%20Architecture%20V3.md) research paper for the Department of Homeland Security.
 
-Correlation-resistant by design
+>```"DKMS inverts a core assumption of conventional PKI (public key infrastructure) architecture, namely that public key certificates will be issued by centralized or federated certificate authorities (CAs)."``` (DKMS = Decentralized Key Management System)
 
-Pairwise Identifiers create secure, 1:1 relationships between any two entities
+This paper provides an in-depth on the benefits of DMKS and its design.
 
 ### Zero Knowledge Proofs
 
-A self-sovereign architecture for verifiable claims is one where the holder of a verifiable claim is in complete control of their identifier, where their verifiable claims are stored, and how they are used. There is currently no widely used self-sovereign, privacy-enhancing standard for expressing and transacting verifiable claims (aka: credentials, attestations) via the Web.
+A [Zero Knowledge Proof](https://medium.com/coinmonks/introduction-to-zero-knowledge-proof-the-protocol-of-next-generation-blockchain-305b2fc7f8e5) protocol is an optional but useful complimentary capability for decentralized identity systems.
 
-Zero Knowledge Proofs which prove that some or all of the data in a set of Claims is true without revealing any additional information, including the identity of the Prover
+Hyperledger Indy does include an implementation of zero knowledge proofs. The implementation is described in this GitHub repository -> [indy-anoncreds](https://github.com/hyperledger/indy-anoncreds)
 
-## General Model of Verifiable Credential based networks
+Zero Knowledge Proofs allow the holder to prove that some or all of the data in a set of claims is true without revealing any additional information, including the identity of the holder. During these interactions the holder is referred to as a "Prover" as they are offering a proof of knowledge rather than transfering the claim directly to the verifier. This is a powerful capability enabling the holder to selectively disclose (e.g. prove "I am over 25" or "I am holding a valid drivers licence") without revealing to the verifier any other facts about themselves.
 
-At the level of actors, Verifiable Credential based systems are characterized by the presence of four key actors. Theses are:
-  
-1. Issuers
-2. Holders
-3. Verifiers
-4. A [Verifiable Data Registry](https://w3c.github.io/vc-data-model/#dfn-verifiable-data-registries) - commonly a decentralized ledger which serves as a system "mediating the creation and verification of issuer identifiers, keys and other relevant data like verifiable credential schemas and revocation registries".
+## Summary: Decentralized Identity / Self-Sovereign Identity Architecture
 
-
+Decentralized Identity / Self-Sovereign Identity systems make use of DIDs, Verifiable Credentials, and a Verifiable Data Registry (Decentralized Key Management System). Such an architecture is one where the holder of verifiable credentials (a set of verifiable claims) is in complete control of their identifier, where their verifiable credentials are stored, and how they are used.
 
 # Hyperledger Indy
 
@@ -109,12 +131,9 @@ More broadly, Hyperledger Indy based networks create the technical conditions fo
 
 The technical means by which this is accomplished include a number of new open emerging standards and technologies.
 
-
 ## Technical information for Hyperledger Indy
 
 * [Technical information for Hyperledger Indy](https://indy.readthedocs.io/en/latest/)
-
-
 
 # Hyperledger Indy Catalyst
 
