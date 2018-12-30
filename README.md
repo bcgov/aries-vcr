@@ -85,7 +85,7 @@ The roles and information flows are described in the [W3C Verifiable Credentials
 3. Verifier
 4. A [Verifiable Data Registry](https://w3c.github.io/vc-data-model/#dfn-verifiable-data-registries) - commonly a decentralized ledger which serves as a system "mediating the creation and verification of issuer identifiers, keys and other relevant data like verifiable credential schemas and revocation registries".
 
-/* Insert picture here */
+![verifiable credential general model](assets/verifiable-credential-model-ForWhiteBK.png)
 
 These roles can be fulfilled by a number of "real world" actors including people, legal entities,or things.
 
