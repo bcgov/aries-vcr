@@ -30,7 +30,7 @@
 
 # Introduction
 
-**Hyperledger Indy Catalyst** is a set of application level software components designed to accelerate the adoption of trustworthy entity to entity[^1] communications based on Decentralized Identity / Self-Sovereign Identity technology and architecture. Indy Catalyst is builds upon globally available open standards and open source software. At present, Indy Catalyst builds upon [Hyperledger Indy](https://www.hyperledger.org/projects), common enterprise open source software, frameworks and patterns such as PostgreSQL, Python, Angular and RESTful APIs. Efforts will be taken to design the software to facilitate the incorporation of evolving open standards and technology.
+**Hyperledger Indy Catalyst** is a set of application level software components designed to accelerate the adoption of trustworthy entity to entity<sup id="a1">[1](#f1)</sup> communications based on Decentralized Identity / Self-Sovereign Identity technology and architecture. Indy Catalyst is builds upon globally available open standards and open source software. At present, Indy Catalyst builds upon [Hyperledger Indy](https://www.hyperledger.org/projects), common enterprise open source software, frameworks and patterns such as PostgreSQL, Python, Angular and RESTful APIs. Efforts will be taken to design the software to facilitate the incorporation of evolving open standards and technology.
 
 In order to understand the goals and context of Hyperledger Indy Catalyst, it is advisable to become familiar with the model of decentralized identity or self-sovereign identity which enables trustworthy entity to entity communications. The open standards and technologies enabling this new this model are presented below and annotated with references.
 
@@ -58,7 +58,7 @@ A DID is a globally unique and resolvable identifier created by a entity. A enti
 
 ### Verifiable Credentials
 
-A verifiable credential is data issued to, and held by an entity. Verifiable indicates the credential is rendered tamper-evident and in a manner whereby the issuer can be cryptographically verified.[^2] Data contained in a verifiable credential is organized into individual claims. Claims within a credential can be about different subjects (e.g entities) and may be verifiable individually.
+A verifiable credential is data issued to, and held by an entity. Verifiable indicates the credential is rendered tamper-evident and in a manner whereby the issuer can be cryptographically verified.<sup id="a2">[2](#f2)</sup> Data contained in a verifiable credential is organized into individual claims. Claims within a credential can be about different subjects (e.g entities) and may be verifiable individually.
 
 ### Links to Emerging DID and Verifiable Credentials Standards
 
@@ -161,9 +161,11 @@ Indy Catalyst components:
 
 # Endnotes
 
-[^1]: A thing with distinct and independent existence such as a person, organization, concept, or device. Source: [Verifiable Claims Data Model and Representations 1.0](https://www.w3.org/2017/05/vc-data-model/CGFR/2017-05-01/#dfn-entity).
-[^2]: A verifiable credential is a tamper-evident credential that has authorship that can be cryptographically verified. Source: [W3C
-Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/#dfn-credential)
+<b id="f1">1:</b> A thing with distinct and independent existence such as a person, organization, concept, or device. Source: [Verifiable Claims Data Model and Representations 1.0](https://www.w3.org/2017/05/vc-data-model/CGFR/2017-05-01/#dfn-entity). [↩](#a1)
+
+<b id="f2">2:</b> A verifiable credential is a tamper-evident credential that has authorship that can be cryptographically verified. Source: [W3C
+Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/#dfn-credential) [↩](#a2)
+
 
 
 
