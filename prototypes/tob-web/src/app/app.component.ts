@@ -6,7 +6,7 @@ import { LocalizeRouterService } from 'localize-router';
 import { GeneralDataService } from './general-data.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -85,11 +85,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this._router.events
       .filter((event) => event instanceof NavigationEnd)
-      .map(() => this._route)
-      .map((route) => {
+      .pipe(map(() => this._route))
+      .pipe(map((route) => {
         while (route.firstChild) route = route.firstChild;
         return route;
-      })
+      }))
       .filter((route) => route.outlet === 'primary')
       .subscribe((route) => {
         let data = route.snapshot.data;

@@ -1,6 +1,7 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
+import { map } from 'rxjs/operators';
 
 function load_data<T>(
     obj: T,
@@ -816,7 +817,7 @@ export namespace Filter {
     }
 
     get streamVisible(): Observable<Field[]> {
-      return this.stream.map(fs => fs.filter(f => ! f.hidden));
+      return this.stream.pipe(map(fs => fs.filter(f => ! f.hidden)));
     }
 
     get result(): Field[] {

@@ -14,7 +14,7 @@ import {
   LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX
   } from 'localize-router';
 import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 
 import { AppRoutingModule, ROUTES } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,7 +43,7 @@ export const appInitializerFn = (appConfig: AppConfigService) => {
 
 export class WebpackTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
-    return Observable.fromPromise(
+    return from(
       import(/* webpackMode: "eager" */ `../themes/_active/assets/i18n/${lang}.json`));
   }
 }
@@ -69,9 +69,9 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
       return params.key.substring(ROUTE_PREFIX.length);
     }
     // highlight missing translation strings in development mode
-    if(! environment.production) {
+    if(! environment.production && ! ~params.key.indexOf('??')) {
       console.warn("missing translation: " + params.key);
-      return '??' + params.key + '??';
+      // return '??' + params.key + '??';
     }
   }
 }

@@ -30,6 +30,7 @@
           <!-- a class="nav-item nav-link" href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a -->
           <a class="nav-item nav-link" [routerLink]="'/search/name' | localize" translate>search.title</a>
           <a class="nav-item nav-link" [routerLink]="'/contact' | localize" translate>connect.title</a>
+          <a class="nav-item nav-link d-none" href="#" [lang]="parent.altLang" (click)="parent.switchLanguage($event)">{{parent.altLangLabel}}</a>
         </div>
       </div>
     </div>

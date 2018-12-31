@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Model } from '../data-types';
 import { TranslateService } from '@ngx-translate/core';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'attribute-view',
@@ -26,9 +27,9 @@ export class AttributeComponent {
 
   get categoryValue() {
     let lbl = `category.${this.record.type}.${this.record.value}`;
-    return this._translate.stream(lbl).map(
+    return this._translate.stream(lbl).pipe(map(
       lbl => (! lbl || lbl.substring(0, 2) == '??') ? this.record.value : lbl
-    );
+    ));
   }
 
   get jurisdictionValue() {
@@ -38,18 +39,18 @@ export class AttributeComponent {
       if(usState) {
         let stateLbl = 'jurisdiction.us_states.' + usState[1].toUpperCase();
         let usLbl = 'jurisdiction.general.US';
-        return this._translate.stream([stateLbl, usLbl]).map(
+        return this._translate.stream([stateLbl, usLbl]).pipe(map(
           lbls => {
             if(lbls[stateLbl] && lbls[stateLbl] != stateLbl && lbls[stateLbl].substring(0, 2) != '??') {
               return lbls[stateLbl] + ', ' + lbls[usLbl];
             }
             return val;
           }
-        );
+        ));
       } else {
         let provLbl = 'jurisdiction.provinces.' + val.toUpperCase();
         let extLbl = 'jurisdiction.general.' + val.toUpperCase();
-        return this._translate.stream([provLbl, extLbl]).map(
+        return this._translate.stream([provLbl, extLbl]).pipe(map(
           lbls => {
             if(lbls[provLbl] && lbls[provLbl] != provLbl && lbls[provLbl].substring(0, 2) != '??')
               return lbls[provLbl];
@@ -57,7 +58,7 @@ export class AttributeComponent {
               return lbls[extLbl];
             return val;
           }
-        );
+        ));
       }
     }
   }
