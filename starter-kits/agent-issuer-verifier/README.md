@@ -1,7 +1,7 @@
 
 # Hyperledger Indy Catalyst Agent Issuer-Verifier Starter Kit <!-- omit in toc -->
 
-![logo](assets/indy-catalyst-logo-bw.png)
+![logo](/docs/assets/indy-catalyst-logo-bw.png)
 
 # Table of Contents <!-- omit in toc -->
 - [Introduction](#introduction)
