@@ -10,8 +10,10 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
+    parser_classes,
     permission_classes,
 )
+from rest_framework.parsers import FormParser
 from rest_framework import permissions
 
 from api_v2.feedback import email_feedback
@@ -72,6 +74,7 @@ def quickload(request, *args, **kwargs):
 @api_view(["POST"])
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
+@parser_classes((FormParser,))
 def send_feedback(request, *args, **kwargs):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
