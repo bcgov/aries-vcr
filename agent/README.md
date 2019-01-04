@@ -1,0 +1,11 @@
+
+# Hyperledger Indy Catalyst Agent <!-- omit in toc -->
+
+![logo](assets/indy-catalyst-logo-bw.png)
+
+# Table of Contents <!-- omit in toc -->
+- [Introduction](#introduction)
+
+# Introduction
+
+Placeholder README for forthcoming Indy Catalyst Agent software.
