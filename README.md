@@ -4,7 +4,6 @@
 ![logo](assets/indy-catalyst-logo-bw.png)
 
 # Table of Contents <!-- omit in toc -->
-
 - [Introduction](#introduction)
 - [Decentralized Identity / Self-Sovereign Identity](#decentralized-identity--self-sovereign-identity)
   - [Open Standards](#open-standards)
@@ -26,6 +25,12 @@
   - [Motivation](#motivation)
   - [Who is Indy Catalyst For](#who-is-indy-catalyst-for)
   - [Key Technical Elements](#key-technical-elements)
+    - [Credential Registry](#credential-registry)
+    - [Agent](#agent)
+    - [Agent Driver](#agent-driver)
+    - [Starter Kits](#starter-kits)
+      - [Credential Registry Holder-Prover](#credential-registry-holder-prover)
+      - [Agent Issuer-Verifier](#agent-issuer-verifier)
 - [Endnotes](#endnotes)
 
 # Introduction
@@ -147,16 +152,27 @@ Networks require a strategy to get them started. This is due to the challenge of
 
 ## Who is Indy Catalyst For
 
+Indy Catalyst components:
+* use standard enterprise and Internet technologies;
+* implement common integration patterns to minimize effort to adopt; and,
+* minimize the learning needed to get started.
 
 
 
 ## Key Technical Elements
 
+### Credential Registry
 
-Indy Catalyst components:
-* use standard enterprise and Internet technologies;
-* implement common integration patterns to minimize effort to adopt; and,
-* minimize the learning needed to get started.
+### Agent
+
+### Agent Driver
+
+### Starter Kits
+
+#### Credential Registry Holder-Prover
+
+#### Agent Issuer-Verifier
+
 
 
 # Endnotes
