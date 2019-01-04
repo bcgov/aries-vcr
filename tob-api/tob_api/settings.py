@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_generators",
     "drf_yasg",
+    "django_filters",
     "auditable",
     "api",
     "tob_api",

@@ -27,6 +27,8 @@ from rest_framework.serializers import SerializerMethodField
 
 from drf_yasg.utils import swagger_auto_schema
 
+from django_filters import rest_framework as filters
+
 from api_v2.serializers.search import CustomTopicSerializer
 
 from api_v2.models.Issuer import Issuer
@@ -69,6 +71,8 @@ class IssuerViewSet(ReadOnlyModelViewSet):
 class SchemaViewSet(ReadOnlyModelViewSet):
     serializer_class = SchemaSerializer
     queryset = Schema.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('id', 'name', 'version', 'origin_did',)
 
 
 class CredentialTypeViewSet(ReadOnlyModelViewSet):
