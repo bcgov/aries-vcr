@@ -12,7 +12,7 @@ Placeholder README for forthcoming Indy Catalyst Agent software.
 
 # Running the software locally
 
-The software is made available as a [Python "Egg"](https://wiki.python.org/moin/egg). Currently the best way to run the software locally is to install the egg directly using `pip`. Python3 and Pip3 are required.
+The software is made available as a [Python "Egg"](https://wiki.python.org/moin/egg). Currently the best way to run the software locally is to install the egg directly using `pip`. Python3 is required.
 
 ```
 pip3 install --upgrade -e .
