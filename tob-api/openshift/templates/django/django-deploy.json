@@ -439,6 +439,10 @@
                         "key": "smtp-host"
                       }
                     }
+                  },
+                  {
+                    "name": "DEMO_SITE",
+                    "value": "${DEMO_SITE}"
                   }
                 ],
                 "resources": {
@@ -768,6 +772,13 @@
       "description": "The SMTP server address used for sending email.",
       "required": false,
       "value": ""
+    },
+    {
+      "name": "DEMO_SITE",
+      "displayName": "Demo Site Flag",
+      "description": "Set to True to indicate the site is a Demo site, False otherwise.",
+      "required": false,
+      "value": "True"
     },
     {
       "name": "CPU_REQUEST",

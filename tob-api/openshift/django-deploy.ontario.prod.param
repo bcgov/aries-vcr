@@ -4,6 +4,7 @@
 # Template File: templates/django/django-deploy.json
 #=========================================================
 # NAME=django
+# APP_GROUP=tob
 # IMAGE_NAMESPACE=ontvon-von-tools
 APPLICATION_DOMAIN=django-ontvon-von-prod.pathfinder.gov.bc.ca
 # ROUTE_PATH=/api/v2/indy
@@ -43,6 +44,7 @@ APPLICATION_URL=https://www.von.gov.on.ca
 # EMAIL_SETTINGS_STORE_NAME=email-settings
 # FEEDBACK_TARGET_EMAIL=
 # SMTP_SERVER_ADDRESS=
+DEMO_SITE=False
 # CPU_REQUEST=100m
 # CPU_LIMIT=750m
 # MEMORY_REQUEST=100Mi
