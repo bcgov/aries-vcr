@@ -18,4 +18,8 @@ The software is made available as a [Python "Egg"](https://wiki.python.org/moin/
 pip3 install --upgrade -e .
 ```
 
+```
+icatagent --help
+```
+
 A docker environment for testing and local development will be available in the near future.

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 VERSION = "0.0.1"
-PACKAGE_NAME = "indy-agent-python"
+PACKAGE_NAME = "indy-catalyst-agent"
 
 
 def parse_requirements(filename):
@@ -17,5 +17,5 @@ if __name__ == "__main__":
         packages=find_packages(),
         include_package_data=True,
         install_requires=parse_requirements("requirements.txt"),
-        scripts=["scripts/indyagent"],
+        scripts=["scripts/icatagent"],
     )
