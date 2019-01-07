@@ -1,5 +1,5 @@
 # Main
-django>=1.11.16,<2
+django>=2.0.10,<2.1
 djangorestframework==3.9.0
 djangorestframework-bulk>=0.2.1,<1
 django-cors-headers>=2.4.0,<3
