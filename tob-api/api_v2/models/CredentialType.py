@@ -8,8 +8,8 @@ from .Schema import Schema
 
 
 class CredentialType(Auditable):
-    schema = models.ForeignKey(Schema, related_name="credential_types")
-    issuer = models.ForeignKey(Issuer, related_name="credential_types")
+    schema = models.ForeignKey(Schema, related_name="credential_types", on_delete=models.CASCADE)
+    issuer = models.ForeignKey(Issuer, related_name="credential_types", on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
     processor_config = contrib.JSONField(blank=True, null=True)
     credential_def_id = models.TextField(db_index=True, null=True)
