@@ -23,3 +23,11 @@ icatagent --help
 ```
 
 A docker environment for testing and local development will be available in the near future.
+
+# Running tests
+
+Running the test suite is pretty easy:
+
+```
+pytest
+```
