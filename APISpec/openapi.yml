@@ -1780,7 +1780,7 @@ paths:
         schema:
           type: integer
 servers:
-  - url: 'https://www.orgbook.gov.bc.ca/api'
+  - url: 'https://orgbook.gov.bc.ca/api'
 components:
   schemas:
     Address:
