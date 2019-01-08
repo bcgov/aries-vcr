@@ -2,6 +2,8 @@ import argparse
 
 from .conductor import Conductor
 
+from .version import __version__
+
 PARSER = argparse.ArgumentParser(description="Runs an Indy Agent.")
 PARSER.add_argument(
     "--transport",
