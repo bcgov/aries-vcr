@@ -5,10 +5,6 @@ from collections import namedtuple
 from tob_anchor.boot import indy_client, indy_holder_id
 from vonx.common.eventloop import run_coro
 
-from api_v2.models.Schema import Schema
-from api_v2.models.Issuer import Issuer
-from api_v2.models.CredentialType import CredentialType
-
 
 LOGGER = logging.getLogger(__name__)
 
