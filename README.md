@@ -143,7 +143,7 @@ The technical means by which this is accomplished include a number of new open e
 
 # Hyperledger Indy Catalyst
 
-{to be completed}
+{to be completed later}
 
 ## Motivation
 
