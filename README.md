@@ -35,7 +35,7 @@
 
 # Introduction
 
-**Hyperledger Indy Catalyst** is a set of application level software components designed to accelerate the adoption of trustworthy entity to entity<sup id="a1">[1](#f1)</sup> communications based on Decentralized Identity / Self-Sovereign Identity technology and architecture. Indy Catalyst is builds upon globally available open standards and open source software. At present, Indy Catalyst builds upon [Hyperledger Indy](https://www.hyperledger.org/projects), common enterprise open source software, frameworks and patterns such as PostgreSQL, Python, Angular and RESTful APIs. Efforts will be taken to design the software to facilitate the incorporation of evolving open standards and technology.
+**Hyperledger Indy Catalyst** is a set of application level software components designed to accelerate the adoption of trustworthy entity to entity<sup id="a1">[1](#f1)</sup> communications based on Decentralized Identity / Self-Sovereign Identity technology and architecture. Indy Catalyst is builds upon globally available open standards and open source software. At present, Indy Catalyst builds upon [Hyperledger Indy](https://www.hyperledger.org/projects), common enterprise open source software, frameworks and patterns such as PostgreSQL, Python, Angular and RESTful APIs. Efforts will be taken to design the software to facilitate the incorporation of evolving open standards and technology. The impetus for Indy Catalyst came from the Verifiable Organizations Network (VON) project. More information about VON can be found at [vonx.io](https://vonx.io)
 
 In order to understand the goals and context of Hyperledger Indy Catalyst, it is advisable to become familiar with the model of decentralized identity or self-sovereign identity which enables trustworthy entity to entity communications. The open standards and technologies enabling this new this model are presented below and annotated with references.
 
@@ -90,7 +90,7 @@ The roles and information flows are described in the [W3C Verifiable Credentials
 3. Verifier
 4. A [Verifiable Data Registry](https://w3c.github.io/vc-data-model/#dfn-verifiable-data-registries) - commonly a decentralized ledger which serves as a system "mediating the creation and verification of issuer identifiers, keys and other relevant data like verifiable credential schemas and revocation registries".
 
-![verifiable credential general model](assets/verifiable-credential-model-ForWhiteBK.png)
+![verifiable credential general model](/docs/assets/verifiable-credential-model-ForWhiteBK.png)
 
 These roles can be fulfilled by a number of "real world" actors including people, legal entities,or things.
 
@@ -124,7 +124,8 @@ Decentralized Identity / Self-Sovereign Identity systems make use of DIDs, Verif
 
 # Hyperledger Indy
 
-based on [indy-node](https://github.com/hyperledger/indy-node) providing the root of trust for [Decentralized Identifiers (DID)](https://w3c-ccg.github.io/did-spec/) and other artifacts to enable a decentralized (or self-sovereign) identity network.
+{to be completed}
+Based on [indy-node](https://github.com/hyperledger/indy-node) providing the root of trust for [Decentralized Identifiers (DID)](https://w3c-ccg.github.io/did-spec/) and other artifacts to enable a decentralized (or self-sovereign) identity network.
 
 ## Overview
 
@@ -141,6 +142,8 @@ The technical means by which this is accomplished include a number of new open e
 * [Technical information for Hyperledger Indy](https://indy.readthedocs.io/en/latest/)
 
 # Hyperledger Indy Catalyst
+
+{to be completed}
 
 ## Motivation
 
