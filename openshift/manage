@@ -203,13 +203,12 @@ hardReset() {
   fi
 
   # Bring the API pod back up ...
+  printAndWait "If you are resetting the ledger, wait for the ledger to completely start up before continuing."
   scaleUp ${_apiPodName}
   exitOnError
   printAndWait "Wait for the ${_apiPodName} pod to completely start up before continuing."
 
   rebuildSearchIndex ${_apiPodName}
-
-  printAndWait "If you are resetting the ledger, wait for the ledger to completely start up before continuing."
 
   echoWarning "\nThe project's database and indy wallets have been reset."  
   echoWarning "If you are using Permitify, you can now use the Permitify manage script to scale the Permitify pods up."  
