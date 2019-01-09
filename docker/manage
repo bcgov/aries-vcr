@@ -205,7 +205,7 @@ build-api() {
   #
   # tob-api
   #
-  BASE_IMAGE="bcgovimages/von-image:py36-1.6-ew-14-s2i"
+  BASE_IMAGE="bcgovimages/von-image:py36-1.7-ew-0-s2i"
   echo -e "\nBuilding django image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
