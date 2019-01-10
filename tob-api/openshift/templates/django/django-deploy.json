@@ -542,20 +542,20 @@
       "displayName": "Wallet Storage Type",
       "description": "The wallet storage type.  Your choice of 'postgres' or 'sqlite' at the moment.  If not defined, defaults to 'sqlite' for compatibility",
       "required": false,
-      "value": "postgres"
+      "value": "postgres_storage"
     },
     {
       "name": "POSTGRESQL_WALLET_HOST",
       "displayName": "PostgreSql Wallet Hostname",
       "required": true,
-      "description": "Hostname of the deployed database hosting the wallet.  Only used when WALLET_TYPE = postgre.",
+      "description": "Hostname of the deployed database hosting the wallet.  Only used when WALLET_TYPE = postgres_storage.",
       "value": "wallet-db"
     },
     {
       "name": "POSTGRESQL_WALLET_PORT",
       "displayName": "PostgreSql Wallet Port",
       "required": true,
-      "description": "The port number of the deployed database hosting the wallet.  Only used when WALLET_TYPE = postgre.",
+      "description": "The port number of the deployed database hosting the wallet.  Only used when WALLET_TYPE = postgres_storage.",
       "value": "5432"
     },
     {

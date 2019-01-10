@@ -11,7 +11,7 @@ APPLICATION_DOMAIN=django-ontvon-von-prod.pathfinder.gov.bc.ca
 # DATABASE_SERVICE_NAME=postgresql
 # DATABASE_ENGINE=postgresql
 # DATABASE_NAME=TheOrgBook_Database
-# WALLET_TYPE=postgres
+# WALLET_TYPE=postgres_storage
 # POSTGRESQL_WALLET_HOST=wallet-db
 # POSTGRESQL_WALLET_PORT=5432
 # WALLET_ENCRYPTION_KEY=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
