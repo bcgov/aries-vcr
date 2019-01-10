@@ -63,11 +63,11 @@ def indy_wallet_config(wallet_cfg: dict):
     if not wallet_seed:
         raise ValueError('INDY_WALLET_SEED must be set')
 
-    if wallet_cfg['type'] == 'postgres':
+    if wallet_cfg['type'] == 'postgres_storage':
         return {
             "name": "tob_holder",
             "seed": wallet_seed,
-            "type": "postgres",
+            "type": "postgres_storage",
             "params": wallet_cfg["params"],
             "access_creds": wallet_cfg["access_creds"],
         }
