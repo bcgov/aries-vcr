@@ -10,11 +10,11 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from django.http import Http404
 
-from api_v2.indy.issuer import IssuerManager, IssuerException
-from api_v2.indy.credential_offer import CredentialOfferManager
-from api_v2.indy.credential import Credential, CredentialManager
-from api_v2.indy.proof_request import ProofRequest
-from api_v2.indy.proof import ProofManager
+from api_indy.indy.issuer import IssuerManager, IssuerException
+from api_indy.indy.credential_offer import CredentialOfferManager
+from api_indy.indy.credential import Credential, CredentialManager
+from api_indy.indy.proof_request import ProofRequest
+from api_indy.indy.proof import ProofManager
 
 from api_v2.decorators.jsonschema import validate
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA

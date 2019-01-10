@@ -8,7 +8,7 @@ from vonx.web.view_helpers import (
     IndyCredentialProcessorException,
 )
 
-from api_v2.indy.credential import Credential, CredentialException, CredentialManager
+from api_indy.indy.credential import Credential, CredentialException, CredentialManager
 
 from .boot import run_django_proc
 
