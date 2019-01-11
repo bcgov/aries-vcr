@@ -1,6 +1,8 @@
 var childProcess = require('child_process');
 var chokidar = require('chokidar');
-var TOB_THEME = process.env.TOB_THEME || 'bcgov';
+var TOB_THEME = process.env.TOB_THEME || 'default';
+var THEME_PATH = process.env.TOB_THEME_PATH || 'src/themes';
+
 
 function runScript(scriptPath, options, callback) {
   // keep track of whether callback has been invoked to prevent multiple invocations
@@ -24,7 +26,7 @@ function runScript(scriptPath, options, callback) {
   });
 }
 
-var watcher = chokidar.watch('src/themes', {
+var watcher = chokidar.watch(['src/themes', THEME_PATH], {
   ignored: /^src\/themes\/_active(\/|$)/,
   ignoreInitial: true,
   persistent: true});
