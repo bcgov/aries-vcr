@@ -111,7 +111,7 @@ Assuming all goes well - when the Registries and TheOrgBook production launches,
 
 ## Connecting to a Ledger
 
-First get a hold of the genesis file for your ledger, and save it somewhere locally (for example save it to "/tmp/genesis.json").  For example, you can download the BCovrin Dev genesis file from "http://159.203.21.90/genesis".
+First get a hold of the genesis file for your ledger, and save it somewhere locally (for example save it to "/tmp/genesis.json").  For example, you can download the BCovrin Dev genesis file from "http://dev.dflow.bcovrin.vonx.io/genesis".
 
 Then create a pool and connect to the ledger with the following CLI commands (substitute your own pool name and genesis file location):
 
