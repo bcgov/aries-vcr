@@ -27,12 +27,17 @@ usage() {
               You need to do this first, since the builds require
               a combination of Docker and S2I builds.
     
-              You can build individual components as shown below, components that have dependencies will have these dependencies built too.
+              You can build individual components as shown below, components that have dependencies
+              will have these dependencies built too.
     
               Examples:
-               - Build the web UI only
+               - Build the web UI only.
     
                 $0 build tob-web
+
+               - Build the web UI using a custom theme.
+    
+                $0 build tob-web TOB_THEME=<theme-name> TOB_THEME_PATH=<absolute-path-to-themes-folder>
      
                - Build the API server only.
      
@@ -44,7 +49,7 @@ usage() {
     
               By default all containers that components comprise of, will be rebuilt.
     
-                $0 build
+                $0 build 
     
       up -  Creates the application containers from the built images
             and starts the services based on the docker-compose.yml file.
@@ -68,6 +73,8 @@ usage() {
       web-dev - Builds and runs a live development version of tob-web, along with
                 the required supporting components. Once started, the website is
                 automatically compiled and updated in response to file modifications.
+                To use a custom theme, use the TOB_THEME and TOB_THEME_PATH environment
+                variables described in the build step.
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
              are not deleted so they will be reused the next time you run start.
@@ -113,26 +120,48 @@ build-web() {
 
   if [ -t 0 ]; then
     # color npm output in interactive terminal
-	NPM_COLOR="always"
+	  NPM_COLOR="always"
   else
     NPM_COLOR="true"
   fi
 
+  
   echo -e "\nBuilding angular-on-nginx image ..."
-  ${S2I_EXE} build \
-    -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
-    -e "NPM_CONFIG_LOGLEVEL=timing" \
-    -e "HTTP_PROXY=${HTTP_PROXY}" \
-    -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-    -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-    -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-    -e "TOB_THEME=${TOB_THEME}" \
-    -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-    --runtime-image nginx-runtime \
-    -a /opt/app-root/src/dist:app \
-    '../tob-web' \
-    'nodejs-build' \
-    'angular-on-nginx'
+  if [ -z "$TOB_THEME_PATH" ]; then
+    # No custom theme was specified
+    ${S2I_EXE} build \
+      -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
+      -e "NPM_CONFIG_LOGLEVEL=timing" \
+      -e "HTTP_PROXY=${HTTP_PROXY}" \
+      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
+      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
+      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
+      -e "TOB_THEME=${TOB_THEME}" \
+      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      --runtime-image nginx-runtime \
+      -a /opt/app-root/src/dist:app \
+      '../tob-web' \
+      'nodejs-build' \
+      'angular-on-nginx'
+  else
+    # Use the custom theme
+    ${S2I_EXE} build \
+      -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
+      -e "NPM_CONFIG_LOGLEVEL=timing" \
+      -e "HTTP_PROXY=${HTTP_PROXY}" \
+      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
+      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
+      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
+      -e "TOB_THEME=${TOB_THEME}" \
+      -e "TOB_THEME_PATH=/tmp/tob-theme" \
+      -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
+      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      --runtime-image nginx-runtime \
+      -a /opt/app-root/src/dist:app \
+      '../tob-web' \
+      'nodejs-build' \
+      'angular-on-nginx'
+  fi
 }
 
 build-web-dev() {
@@ -147,17 +176,41 @@ build-web-dev() {
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
-  ${S2I_EXE} build \
-    -e "DEV_MODE=true" \
-    -e "HTTP_PROXY=${HTTP_PROXY}" \
-    -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-    -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-    -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-    -e "TOB_THEME=${TOB_THEME}" \
-    -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-    '../tob-web' \
-    'nodejs-build' \
-    'angular-dev'
+  if [ -z "$TOB_THEME_PATH" ]
+  then
+    # set TOB_THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
+    TOB_THEME_PATH="tob-web-empty"
+
+    # No custom theme was specified
+    ${S2I_EXE} build \
+      -e "DEV_MODE=true" \
+      -e "HTTP_PROXY=${HTTP_PROXY}" \
+      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
+      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
+      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
+      -e "TOB_THEME=${TOB_THEME}" \
+      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      '../tob-web' \
+      'nodejs-build' \
+      'angular-dev'
+  else
+    # Use the custom theme
+    export TOB_THEME_PATH_DEV="/tmp/tob-theme"
+
+    ${S2I_EXE} build \
+      -e "DEV_MODE=true" \
+      -e "HTTP_PROXY=${HTTP_PROXY}" \
+      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
+      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
+      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
+      -e "TOB_THEME=${TOB_THEME}" \
+      -e "TOB_THEME_PATH=${TOB_THEME_PATH_DEV}" \
+      -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
+      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      '../tob-web' \
+      'nodejs-build' \
+      'angular-dev'
+  fi
 }
 
 build-solr() {
@@ -325,7 +378,8 @@ configureEnvironment() {
   export APPLICATION_URL=${APPLICATION_URL-http://localhost:8080}
 
   # tob-web
-  export TOB_THEME=${TOB_THEME:-bcgov}
+  export TOB_THEME=${TOB_THEME:-default}
+  export TOB_THEME_PATH=${TOB_THEME_PATH-}
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
