@@ -351,9 +351,9 @@ configureEnvironment() {
   export CORE_NAME="the_org_book"
 
   # tob-api
-  export APP_FILE=app-no-vonx.py
+  export APP_FILE=app-vonx.py
   export APP_CONFIG=${APP_CONFIG:-}
-  export APP_MODULE=tob_anchor.boot:init_app_no_indy
+  export APP_MODULE=tob_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8081}
   export DATABASE_SERVICE_NAME="tob-db"
   export DATABASE_ENGINE="postgresql"

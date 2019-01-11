@@ -77,30 +77,6 @@ async def add_server_headers(request, response):
         response.headers["X-Served-By"] = host
 
 
-async def init_app_no_indy(on_startup=None, on_cleanup=None):
-    from aiohttp.web import Application
-    from aiohttp_wsgi import WSGIHandler
-    from tob_anchor.solrqueue import SolrQueue
-    from tob_anchor.urls import get_routes
-
-    wsgi_handler = WSGIHandler(application)
-    app = Application()
-    # all other requests forwarded to django
-    app.router.add_route("*", "/{path_info:.*}", wsgi_handler)
-
-    solrqueue = SolrQueue()
-    solrqueue.setup(app)
-
-    if on_startup:
-        app.on_startup.append(on_startup)
-    if on_cleanup:
-        app.on_cleanup.append(on_cleanup)
-    no_headers = os.environ.get("DISABLE_SERVER_HEADERS")
-    if not no_headers or no_headers == "false":
-        app.on_response_prepare.append(add_server_headers)
-
-    return app
-
 async def init_app(on_startup=None, on_cleanup=None):
     from aiohttp.web import Application
     from aiohttp_wsgi import WSGIHandler
@@ -110,6 +86,7 @@ async def init_app(on_startup=None, on_cleanup=None):
 
     wsgi_handler = WSGIHandler(application)
     app = Application()
+    app["manager"] = MANAGER
     app.router.add_routes(get_routes())
     # all other requests forwarded to django
     app.router.add_route("*", "/{path_info:.*}", wsgi_handler)
