@@ -66,6 +66,7 @@ services:
   tob-api:
     image: django
     environment:
+      - APP_FILE=${APP_FILE}
       - APP_CONFIG=${APP_CONFIG}
       - APP_MODULE=${APP_MODULE}
       - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}

@@ -298,6 +298,7 @@ configureEnvironment() {
   export CORE_NAME="the_org_book"
 
   # tob-api
+  export APP_FILE=app-vonx.py
   export APP_CONFIG=${APP_CONFIG:-}
   export APP_MODULE=tob_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8081}
