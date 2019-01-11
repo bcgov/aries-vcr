@@ -38,7 +38,7 @@ from api_indy.indy.proof import ProofManager
 
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
 
-from tob_anchor.boot import (
+from api_indy.tob_anchor.boot import (
     indy_client, indy_holder_id, run_django
 )
 

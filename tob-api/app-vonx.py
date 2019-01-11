@@ -6,7 +6,7 @@ import os
 
 from aiohttp import web
 import django
-from tob_anchor.boot import (
+from api_indy.tob_anchor.boot import (
     init_app, perform_register_services, start_indy_manager,
     run_django, run_reindex, run_migration,
 )

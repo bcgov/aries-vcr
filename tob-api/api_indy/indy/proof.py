@@ -2,7 +2,7 @@ import json
 import logging
 from collections import namedtuple
 
-from tob_anchor.boot import indy_client, indy_holder_id
+from api_indy.tob_anchor.boot import indy_client, indy_holder_id
 from vonx.common.eventloop import run_coro
 
 

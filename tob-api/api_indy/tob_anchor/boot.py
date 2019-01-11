@@ -80,9 +80,9 @@ async def add_server_headers(request, response):
 async def init_app(on_startup=None, on_cleanup=None):
     from aiohttp.web import Application
     from aiohttp_wsgi import WSGIHandler
-    from tob_anchor.processor import CredentialProcessorQueue
-    from tob_anchor.solrqueue import SolrQueue
-    from tob_anchor.urls import get_routes
+    from api_indy.tob_anchor.processor import CredentialProcessorQueue
+    from api_indy.tob_anchor.solrqueue import SolrQueue
+    from api_indy.tob_anchor.urls import get_routes
 
     wsgi_handler = WSGIHandler(application)
     app = Application()

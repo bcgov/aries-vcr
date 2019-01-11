@@ -2,7 +2,7 @@ import logging
 
 from vonx.common.eventloop import run_coro
 
-from tob_anchor.boot import indy_client, indy_holder_id
+from api_indy.tob_anchor.boot import indy_client, indy_holder_id
 
 LOGGER = logging.getLogger(__name__)
 

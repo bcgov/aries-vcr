@@ -22,7 +22,7 @@ from api_v2.jsonschema.credential_offer import CREDENTIAL_OFFER_JSON_SCHEMA
 from api_v2.jsonschema.credential import CREDENTIAL_JSON_SCHEMA
 from api_v2.jsonschema.construct_proof import CONSTRUCT_PROOF_JSON_SCHEMA
 
-from tob_anchor.boot import indy_client, indy_holder_id
+from api_indy.tob_anchor.boot import indy_client, indy_holder_id
 from vonx.common.eventloop import run_coro
 from vonx.indy.messages import (
     ProofRequest as VonxProofRequest,
