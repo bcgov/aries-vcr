@@ -83,7 +83,10 @@ class NameAutocompleteView(HaystackViewSet):
     ]
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
-        return super(NameAutocompleteView, self).list(*args, **kwargs)
+        print(' >>> calling autocomplete')
+        ret = super(NameAutocompleteView, self).list(*args, **kwargs)
+        print(' >>> autocomplete returns', ret)
+        return ret
     retrieve = None
 
     index_models = [Credential]
@@ -165,11 +168,17 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
     ]
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
-        return super(CredentialSearchView, self).list(*args, **kwargs)
+        print(" >>> calling credentialsearch")
+        ret = super(CredentialSearchView, self).list(*args, **kwargs)
+        print(" >>> credentialsearch returns", ret)
+        return ret
 
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def retrieve(self, *args, **kwargs):
-        return super(CredentialSearchView, self).retrieve(*args, **kwargs)
+        print(" >>> calling credentialsearch retrieve")
+        ret = super(CredentialSearchView, self).retrieve(*args, **kwargs)
+        print(" >>> credentialsearch retrieve returns", ret)
+        return ret
 
     index_models = [Credential]
     load_all = True
