@@ -94,8 +94,16 @@ The following **Quick Start Guide** will have you up and running in no time.  Fo
 1. Ensure TheOrgBook is running by opening a browser window to http://localhost:8080/en/home
 1. From `.../permitify/docker` run `./manage start`
 1. Wait for all of the issuer services to start up.
-1. Ensure the issuer services are running by opening a browser window to http://localhost:5000/ to start.  Each service starts up on a different port starting with 5000, the next on 5001, and so on.
-1. You should now be able to browse to http://localhost:5000 and walk though the **Permitify Demo - Starting a Restaurant Recipe** demo, starting with registering an organization.
+1. Ensure the issuer services are running by opening a browser window to http://localhost:5000/ to start.  If the dFlow application has started, you will find yourself on the **Decentralized Flow** page.
+1. To check whether the issuer services have started browse to the healthcheck endpoint of each service.  An **ok** response from the service indicates it is ready.  A full list of the services (and their urls) can be found in the [CaddyFile](https://github.com/bcgov/permitify/blob/master/caddy/Caddyfile) of the dFlow application.
+    1. http://localhost:5000/bcreg/health
+    1. http://localhost:5000/finance/health
+    1. http://localhost:5000/surrey/health
+    1. http://localhost:5000/fraser-valley/health
+    1. http://localhost:5000/liquor/health
+    1. http://localhost:5000/worksafe/health
+    1. http://localhost:5000/agri/health
+1. You should now be able to select a **Credential** from the list and walk though the registration workflow, starting with registering an organization.  Two interesting workflows to try are applying for a **City of Surrey** business license, or a **Ministry of Agriculture - Dog/Cat Breeder Licence**.  These two licenses will walk you through the most complete workflows.
 
 ## Tips and Tricks
 
