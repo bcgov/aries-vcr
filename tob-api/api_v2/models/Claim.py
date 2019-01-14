@@ -1,6 +1,6 @@
 from django.db import models
 
-from auditable.models import Auditable
+from .Auditable import Auditable
 
 from .Credential import Credential
 

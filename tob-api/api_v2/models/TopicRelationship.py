@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from auditable.models import Auditable
+from .Auditable import Auditable
 
 from .Topic import Topic
 

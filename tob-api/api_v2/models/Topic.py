@@ -3,7 +3,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from auditable.models import Auditable
+from .Auditable import Auditable
 
 from .Address import Address
 from .Attribute import Attribute

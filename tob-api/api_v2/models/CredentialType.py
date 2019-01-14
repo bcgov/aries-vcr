@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.postgres import fields as contrib
 
-from auditable.models import Auditable
+from .Auditable import Auditable
 
 from .Issuer import Issuer
 from .Schema import Schema
