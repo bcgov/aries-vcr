@@ -4,7 +4,7 @@ This project uses the scripts found in [openshift-project-tools](https://github.
 These instructions assume:
 * You have Git, Docker, and the OpenShift CLI installed on your system, and they are functioning correctly.  The recommended approach is to use either [Homebrew](https://brew.sh/) (MAC) or [Chocolatey](https://chocolatey.org/) (Windows) to install the required packages.
 * You have followed the [OpenShift Scripts](https://github.com/BCDevOps/openshift-project-tools/blob/master/bin/README.md) environment setup instructions to install and configure the scripts for use on your system.
-* You have forked and cloned a local working copy of the project source code.
+* You have forked and cloned a local working copy of this project's source code.
 * You are using a reasonable shell.  A "reasonable shell" is obvious on Linux and Mac, and is assumed to be the git-bash shell on Windows.
 * You are working from the top level `./openshift` directory for the project.
 

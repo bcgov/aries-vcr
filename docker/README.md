@@ -49,12 +49,18 @@ Each seed must be authorized on the Indy ledger. If you are running the VON Netw
 
 ## Stopping the Project
 
-To stop the project run:
+There are two commands to stop the project run:
+
 ```sh
 ./manage stop
 ```
+and
 
-This will shut down all of the containers in the project.
+```sh
+./manage down
+```
+
+`stop` merely stops the containers, but leaves the rest of the `docker-compose` structure in place - volumes (and the Indy wallets they store) and networking.  `down` is destructive, removing the volumes and network elements. Often in a debugging session, `stop` is sufficient. If you use down, you likely will have to restart the prerequisite Indy network.
 
 ## Using the Application
 
@@ -73,47 +79,9 @@ To load sample data into the running application use the `loadData.sh` script:
 
 This will load sample data directly into the exposed REST API.
 
-# Running a Complete Provisional VON Network
+# Running a Complete VON Network
 
-A "complete" provisional VON Network consists of the following components;
-- A Provisional Ledger Node Pool; [von-network](https://github.com/bcgov/von-network)
-- An instance of TheOrgBook; [TheOrgBook](https://github.com/bcgov/TheOrgBook)
-- And a set of Issuer Services; [Permitify](https://github.com/bcgov/permitify)
-
-The following **Quick Start Guide** will have you up and running in no time.  For specific details on the features and operation of the individual components refer to the docker compose documentation of the given projects.  For now, let's get you started with a working set of applications ...
-
-## Quick Start Guide
-
-1. Open shell windows (Git Bash for instance) to your working copies of `.../von-network`, `.../TheOrgBook/docker`, and `.../permitify/docker`.
-1. In turn, run `./manage build` in each of the shell windows.
-1. Wait for the builds to complete.
-1. From `.../von-network` run `./manage start`, and wait for the von-network components to fully start.
-1. Ensure the node pool is running by opening a browser window to http://localhost:9000
-1. From `.../TheOrgBook/docker` run `./manage start seed=the_org_book_0000000000000000000`
-1. Wait for the TheOrgBook's components to start up.
-1. Ensure TheOrgBook is running by opening a browser window to http://localhost:8080/en/home
-1. From `.../permitify/docker` run `./manage start`
-1. Wait for all of the issuer services to start up.
-1. Ensure the issuer services are running by opening a browser window to http://localhost:5000/ to start.  If the dFlow application has started, you will find yourself on the **Decentralized Flow** page.
-1. To check whether the issuer services have started browse to the healthcheck endpoint of each service.  An **ok** response from the service indicates it is ready.  A full list of the services (and their urls) can be found in the [CaddyFile](https://github.com/bcgov/permitify/blob/master/caddy/Caddyfile) of the dFlow application.
-    1. http://localhost:5000/bcreg/health
-    1. http://localhost:5000/finance/health
-    1. http://localhost:5000/surrey/health
-    1. http://localhost:5000/fraser-valley/health
-    1. http://localhost:5000/liquor/health
-    1. http://localhost:5000/worksafe/health
-    1. http://localhost:5000/agri/health
-1. You should now be able to select a **Credential** from the list and walk though the registration workflow, starting with registering an organization.  Two interesting workflows to try are applying for a **City of Surrey** business license, or a **Ministry of Agriculture - Dog/Cat Breeder Licence**.  These two licenses will walk you through the most complete workflows.
-
-## Tips and Tricks
-
-The component containers use persistent volumes, which can be a bit of an issue from time to time during testing as the various ledgers and wallets may get out of sync.  To clear out the volumes and start again you can use the following management command included in each of the projects.
-
-```sh
-./manage rm
-```
-
-This command will stop and remove any project related containers, and then remove their associated volumes.
+A quick start guide for running a local Indy Network, an instance of TheOrgBook and the dFlow issuer verifiers can be found in this [VON Network Quick Start Guide](https://github.com/bcgov/permitify/blob/master/docker/VONNetworkQuickStartGuide.md).
 
 ### Live Web Development
 
