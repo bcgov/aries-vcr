@@ -10,23 +10,21 @@ Zap Results:
 
 # TheOrgBook
 
-A public repository of verifiable claims about organizations. Verifiable claims are issued by trusted public services such as corporate registries, permitting services, licencing services, procurement services and the like.
+TheOrgBook is a **Credential Registry** of verifiable credentials about entities. A public instance of TheOrgBook, such as [BC's OrgBook(https://orgbook.gov.bc.ca)] contains a verifiable credentials about organizations (incorporations, professionals, etc.) issued by trusted public services such as Corporate Registries, regulatory agencies, permitting services, licencing services, procurement services and the like.
 
-The Verifiable Organizations Network envisions the possibility of a number of public repositories of Verifiable Claims as a way of bootstrapping a trusted digital ecosystem.
+The Verifiable Organizations Network (VON) envisions the possibility of a number of public repositories of Verifiable Claims as a way of bootstrapping a trusted digital ecosystem.
 
-See https://bcgov.github.io/TheOrgBook for more information about this project.
+`TheOrgBook` is being developed as part of the Verifiable Organizations Network (VON). For more information on VON see https://vonx.io.  Even, better - join in with what we are doing and contribute to VON and the Indy community.
 
-See https://github.com/bcgov/von for more information about the concept of a Verifiable Organizations Network.
+## Quick Start Guide
 
-## Getting Started
+The best way to get started with a new project is by working with a running instance.  The VON [Quick Start Guide](https://github.com/bcgov/permitify/blob/master/docker/VONNetworkQuickStartGuide.md) will get you started with an [Indy Network](https://github.com/bcgov/von-network), an instance of [TheOrgBook (this repo)](https://github.com/bcgov/TheOrgBook) and an instance of [dFlow](https://github.com/bcgov/permitify) running on your local machine in Docker.  Give it a try!
 
-The best way to get started is with a working application.  The [Quick Start Guide](./docker/README.md#running-a-complete-provisional-von-network) for **Running a Complete Provisional VON Network** will get you started with a complete set of applications running on your local machine in Docker.
+## Running TheOrgBook on OpenShift
 
-## Running on OpenShift
+To deploy TheOrgBook on a local instance of OpenShift, refer to [Running TheOrgBook Locally on OpenShift](./RunningLocal.md).  These instructions, apart from the steps that are specific to setting up your local environment, can also be used to get the project deployed to a production OpenShift environment.
 
-To deploy TheOrgBook on a local instance of OpenShift, refer to [Running TheOrgBook Locally on OpenShift](./RunningLocal.md).  These instructions, apart from the steps that are specific to setting up your local environment, can be used to get the project deployed to a production OpenShift environment.
-
-## Running on Docker
+## Running TheOrgBook on Docker
 
 The project can also be run locally using Docker and Docker Compose.  Refer to [Running TheOrgBook with Docker Compose](./docker/README.md) for instructions.
 
