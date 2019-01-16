@@ -150,7 +150,7 @@ resetDatabase() {
   rebuildSearchIndex ${_apiPodName}
 
   echoWarning "\nThe project's database has been reset."
-  echoWarning "You can now use the Permitify manage script to recycle the Permitify pods."  
+  echoWarning "You can now use the dFlow manage script to recycle the dFlow pods."  
 }
 
 deleteDatabase() {
@@ -179,7 +179,7 @@ hardReset() {
     exit 1
   fi
 
-  printAndWait "If you are using Permitify, use the Permitify manage script to reset the Permitify pods.\nWait for all of the pods to completely shut down before continuing."
+  printAndWait "If you are using dFlow, use the dFlow manage script to reset the dFlow pods.\nWait for all of the pods to completely shut down before continuing."
 
   switchProject
   exitOnError
@@ -211,7 +211,7 @@ hardReset() {
   rebuildSearchIndex ${_apiPodName}
 
   echoWarning "\nThe project's database and indy wallets have been reset."  
-  echoWarning "If you are using Permitify, you can now use the Permitify manage script to scale the Permitify pods up."  
+  echoWarning "If you are using dFlow, you can now use the dFlow manage script to scale the dFlow pods up."  
 }
 
 resetSearchIndex() {
