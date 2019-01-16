@@ -81,7 +81,7 @@ This will load sample data directly into the exposed REST API.
 
 # Running a Complete VON Network
 
-A quick start guide for running a local Indy Network, an instance of TheOrgBook and the dFlow issuer verifiers can be found in this [VON Network Quick Start Guide](https://github.com/bcgov/permitify/blob/master/docker/VONNetworkQuickStartGuide.md).
+A quick start guide for running a local Indy Network, an instance of TheOrgBook and the dFlow issuer verifiers can be found in this [VON Network Quick Start Guide](https://github.com/bcgov/dFlow/blob/master/docker/VONNetworkQuickStartGuide.md).
 
 ### Live Web Development
 
