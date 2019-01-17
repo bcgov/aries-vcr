@@ -66,27 +66,6 @@
       "value": "latest"
     },
     {
-      "name": "GIT_REPO_URL",
-      "displayName": "GIT Source Repo URL",
-      "description": "A GIT URL to your source code.",
-      "required": true,
-      "value": "https://github.com/bcgov/TheOrgBook.git"
-    },
-    {
-      "name": "GIT_REF",
-      "displayName": "Git Reference",
-      "description": "The git reference or branch.",
-      "required": true,
-      "value": "master"
-    },
-    {
-      "name": "SOURCE_CONTEXT_DIR",
-      "displayName": "Source Context Directory",
-      "description": "The source context directory.",
-      "required": false,
-      "value": "tob-web"
-    },
-    {
       "name": "CPU_LIMIT",
       "displayName": "Resources CPU Limit",
       "description": "The resources CPU limit (in cores) for this build.",

@@ -27,9 +27,9 @@ def DEPLOYMENT_CONFIG_NAME = 'angular-on-nginx'
 // The Git repositories we will be pulling source and themes from
 def TOB_SOURCE_REPO = "https://github.com/esune/TheOrgBook.git"
 def TOB_SOURCE_REPO_BRANCH = "credential-registry"
-def TOB_THEME_REPO = ""
-def TOB_THEME_REPO_BRANCH = ""
-def TOB_THEME_NAME = ""
+def TOB_THEME_REPO = "https://github.com/esune/CredentialRegistryThemes.git"
+def TOB_THEME_REPO_BRANCH = "master"
+def TOB_THEME_NAME = "bcgov"
 
 // The namespace of you dev deployment environment.
 def DEV_NAME_SPACE = 'devex-von-dev'
