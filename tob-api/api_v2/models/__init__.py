@@ -1,3 +1,4 @@
+from .User import User
 from .Address import Address
 from .Attribute import Attribute
 from .Claim import Claim
