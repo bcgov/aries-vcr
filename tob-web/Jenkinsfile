@@ -22,7 +22,14 @@ def RUNTIME_BUILD_CONFIG = 'nginx-runtime'
 def CHAINED_BUILD_CONFIG = 'angular-on-nginx-build'
 
 // The name of your deployment configuration; used to verify the deployment
-def DEPLOYMENT_CONFIG_NAME= 'angular-on-nginx'
+def DEPLOYMENT_CONFIG_NAME = 'angular-on-nginx'
+
+// The Git repositories we will be pulling source and themes from
+def TOB_SOURCE_REPO = "https://github.com/esune/TheOrgBook.git"
+def TOB_SOURCE_REPO_BRANCH = "credential-registry"
+def TOB_THEME_REPO = "https://github.com/esune/CredentialRegistryThemes.git"
+def TOB_THEME_REPO_BRANCH = "master"
+def TOB_THEME_NAME = "bcgov"
 
 // The namespace of you dev deployment environment.
 def DEV_NAME_SPACE = 'devex-von-dev'
@@ -73,6 +80,41 @@ String getImageTagHash(String imageName, String tag = "") {
 node {
   if( triggerBuild(CONTEXT_DIRECTORY) ) {
 
+    stage('Checkout Source') {
+      echo "Checking out source code ..."
+      // Check out main source code
+      checkout([
+        $class: 'GitSCM',
+        branches: [[name: "*/${TOB_SOURCE_REPO_BRANCH}"]],
+        extensions: [
+          [$class: 'RelativeTargetDirectory', relativeTargetDir: 'credential-registry']
+        ],
+        userRemoteConfigs: [[url: "${TOB_SOURCE_REPO}"]]
+      ])
+
+      if (TOB_THEME_REPO) {
+        // We are using a custom theme, checkout the repository
+        echo "Checking out custom theme source code from ${TOB_THEME_REPO}#${TOB_THEME_REPO_BRANCH}..."
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: "*/${TOB_THEME_REPO_BRANCH}"]],
+          extensions: [
+            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'custom-themes']
+          ],
+          userRemoteConfigs: [[url: "${TOB_THEME_REPO}"]]
+        ])
+      }
+    }
+
+    if (TOB_THEME_REPO) {
+      // set environemnt variables used by the build, if we are using a custom theme
+      environment {
+        TOB_THEME_PATH = "${WORKSPACE}/custom-themes"
+        TOB_THEME = "${TOB_THEME_NAME}"
+      }
+    }
+
+    // build arifacts - binary source build
     stage("Build ${BUILD_CONFIG}") {
       script {
         openshift.withCluster() {
@@ -80,7 +122,7 @@ node {
 
             echo "Building the application artifacts ..."
             def build = openshift.selector("bc", "${BUILD_CONFIG}")
-            build.startBuild().logs("-f")
+            build.startBuild().logs("--from-dir='./credential-registry/tob-web' -f")
           }
         }
       }

@@ -29,32 +29,7 @@
         ],
         "runPolicy": "Serial",
         "source": {
-          "type": "Git",
-          "contextDir": "${SOURCE_CONTEXT_DIR}",
-          "git": {
-            "uri": "${GIT_REPO_URL}",
-            "ref": "${GIT_REF}"
-          }
-        },
-        "strategy": {
-          "type": "Source",
-          "sourceStrategy": {
-            "from": {
-              "kind": "ImageStreamTag",
-              "namespace": "${SOURCE_IMAGE_NAMESPACE}",
-              "name": "${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
-            },
-            "env": [
-              {
-                "name": "TOB_THEME",
-                "value": "${TOB_THEME}"
-              },
-              {
-                "name": "TOB_THEME_PATH",
-                "value": "${TOB_THEME_PATH}"
-              }
-            ]
-          }
+          "type": "Binary"
         },
         "output": {
           "to": {
@@ -110,39 +85,6 @@
       "description": "The source context directory.",
       "required": false,
       "value": "tob-web"
-    },
-    {
-      "name": "SOURCE_IMAGE_NAMESPACE",
-      "displayName": "Source Image Namespace",
-      "description": "The namespace containing the source image.",
-      "required": true,
-      "value": "openshift"
-    },
-    {
-      "name": "SOURCE_IMAGE_NAME",
-      "displayName": "Source Image Name",
-      "description": "The name of the source image.",
-      "required": true,
-      "value": "nodejs"
-    },
-    {
-      "name": "SOURCE_IMAGE_TAG",
-      "displayName": "Source Image Tag",
-      "description": "The tag of the source image.",
-      "required": true,
-      "value": "8"
-    },
-    {
-      "name": "TOB_THEME",
-      "displayName": "TheOrgBook Theme Name",
-      "description": "The name of the theme to be used for the site.",
-      "value": "default"
-    },
-    {
-      "name": "TOB_THEME_PATH",
-      "displayName": "TheOrgBook Theme Path",
-      "description": "The path to the folder containing the theme to be used for the site.",
-      "value": "./tob-web/src/themes"
     },
     {
       "name": "CPU_LIMIT",
