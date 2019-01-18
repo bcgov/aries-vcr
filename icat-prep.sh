@@ -45,7 +45,7 @@ mv starter-kits/credential-registry/server/tob-api/api_v2 credential-registry/se
 mv starter-kits/credential-registry/server/tob-api/api_indy credential-registry/server/python-indy-api/
 mv starter-kits/credential-registry/server/tob-web credential-registry/client/
 mkdir starter-kits/credential-registry/client/tob-web/
-cp -r credential-registry/server/tob-web/src/themes/ starter-kits/credential-registry/client/tob-web/
+cp -r credential-registry/client/tob-web/src/themes/ starter-kits/credential-registry/client/tob-web/
 mv starter-kits/credential-registry/server/dockerstarter-kits/credential-registry/
 
 rm starter-kits/credential-registry/server/Deploy*
