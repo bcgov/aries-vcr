@@ -16,7 +16,7 @@
 #
 # To build the starter kit (server):
 # - cd to credential-registry/server
-# - ./icat-prep.sh # builds packages for tob-api
+# - ./icat-py-build.sh # builds packages for tob-api
 # - cd to starter-kits/credential-registry/server/docker
 # - update manage script (see README files in the above credential-registry/server sub-directories)
 # - ./manage build
