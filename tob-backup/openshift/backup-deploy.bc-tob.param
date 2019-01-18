@@ -4,6 +4,7 @@
 # Template File: templates/backup-deploy.json
 #=========================================================
 NAME=backup
+APP_GROUP=tob
 SOURCE_IMAGE_NAME=backup
 IMAGE_NAMESPACE=devex-von-tools
 TAG_NAME=dev
@@ -11,6 +12,9 @@ DATABASE_SERVICE_NAME=postgresql
 DATABASE_DEPLOYMENT_NAME=postgresql
 WALLET_DB_HOST_NAME=wallet-db
 BACKUP_STRATEGY=rolling
+# WEBHOOK_URL=
+ENVIRONMENT_FRIENDLY_NAME=TheOrgBook-BC (dev)
+ENVIRONMENT_NAME=devex-von-bc-tob-dev
 BACKUP_DIR=/backups/
 NUM_BACKUPS=
 DAILY_BACKUPS=

@@ -12,7 +12,7 @@
         "name": "${PERSISTENT_VOLUME_NAME}",
         "labels": {
           "app": "${NAME}-persistent",
-          "template": "${NAME}-persistent-template",          
+          "template": "${NAME}-persistent-template",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -34,7 +34,7 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "template": "${NAME}-deployment",          
+          "template": "${NAME}-deployment",
           "app-group": "${APP_GROUP}"
         },
         "annotations": {
@@ -131,10 +131,6 @@
                     "value": "${BACKUP_PERIOD}"
                   },
                   {
-                    "name": "DATABASE_SERVICE_NAME",
-                    "value": "${DATABASE_SERVICE_NAME}"
-                  },
-                  {
                     "name": "POSTGRESQL_USER",
                     "valueFrom": {
                       "secretKeyRef": {
@@ -169,6 +165,18 @@
                         "key": "database-password"
                       }
                     }
+                  },
+                  {
+                    "name": "WEBHOOK_URL",
+                    "value": "${WEBHOOK_URL}"
+                  },
+                  {
+                    "name": "ENVIRONMENT_FRIENDLY_NAME",
+                    "value": "${ENVIRONMENT_FRIENDLY_NAME}"
+                  },
+                  {
+                    "name": "ENVIRONMENT_NAME",
+                    "value": "${ENVIRONMENT_NAME}"
                   }
                 ],
                 "resources": {
@@ -264,6 +272,27 @@
       "value": "rolling"
     },
     {
+      "name": "WEBHOOK_URL",
+      "displayName": "Webhook URL",
+      "description": "The URL of the webhook to use for notifications.  If not specified, the webhook integration feature is disabled.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "ENVIRONMENT_FRIENDLY_NAME",
+      "displayName": "Friendly Environment Name",
+      "description": "The human readable name of the environment.  This variable is used by the webhook integration to identify the environment in which the backup notifications originate.",
+      "required": false,
+      "value": ""
+    },
+    {
+      "name": "ENVIRONMENT_NAME",
+      "displayName": "Environment Name (Environment Id)",
+      "description": "The name or Id of the environment.  This variable is used by the webhook integration to identify the environment in which the backup notifications originate.",
+      "required": false,
+      "value": ""
+    },
+    {
       "name": "BACKUP_DIR",
       "displayName": "The root backup directory",
       "description": "The name of the root backup directory",
@@ -345,7 +374,7 @@
       "displayName": "Persistent Volume Class name",
       "description": "The class of the volume; gluster-file, gluster-block, gluster-file-db",
       "required": false,
-      "value": ""
+      "value": "gluster-file"
     },
     {
       "name": "CPU_REQUEST",

@@ -4,6 +4,7 @@
 # Template File: templates/backup-deploy.json
 #=========================================================
 # NAME=backup
+# APP_GROUP=tob
 # SOURCE_IMAGE_NAME=backup
 # IMAGE_NAMESPACE=ontvon-von-tools
 TAG_NAME=test
@@ -11,6 +12,9 @@ TAG_NAME=test
 # DATABASE_DEPLOYMENT_NAME=postgresql
 # WALLET_DB_HOST_NAME=wallet-db
 # BACKUP_STRATEGY=rolling
+# WEBHOOK_URL=
+ENVIRONMENT_FRIENDLY_NAME=Ontario's Verifiable Organizations (test)
+ENVIRONMENT_NAME=ontvon-von-test
 # BACKUP_DIR=/backups/
 # NUM_BACKUPS=
 # DAILY_BACKUPS=
