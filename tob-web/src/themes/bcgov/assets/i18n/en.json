@@ -26,7 +26,12 @@
     "reason_description": "Credential Reason",
     "registered_jurisdiction": "Registered Jurisdiction",
     "registration_date": "Registration Date",
-    "status_short": "Status"
+    "reason_description": "Credential Issue Reason",
+    "status_short": "Status",
+    "relationship": "Relationship",
+    "relationship_description": "Description",
+    "relationship_status": "Status",
+    "relationship_status_effective": "Status Effective"
   },
   "category": {
     "address_type": {
@@ -555,6 +560,13 @@
       "Filing:STRCC": "Correction - Transition Application Correction",
       "Filing:CHGJU": "Create a Link with a New West Partner (NWPTA)",
       "Filing:RIPFL": "Remove NWPTA Indicator for a New West Partner (NWPTA)"
+    },
+    "relationship": {
+      "Owns": "Owns"
+    },
+    "relationship_status": {
+      "ACT": "Active",
+      "HIS": "Historical"
     }
   },
   "home": {
