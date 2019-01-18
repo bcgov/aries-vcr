@@ -46,7 +46,7 @@ mv starter-kits/credential-registry/server/tob-api/api_indy credential-registry/
 mv starter-kits/credential-registry/server/tob-web credential-registry/client/
 mkdir starter-kits/credential-registry/client/tob-web/
 cp -r credential-registry/client/tob-web/src/themes/ starter-kits/credential-registry/client/tob-web/
-mv starter-kits/credential-registry/server/dockers tarter-kits/credential-registry/
+mv starter-kits/credential-registry/server/docker starter-kits/credential-registry/
 
 rm starter-kits/credential-registry/server/Deploy*
 rm starter-kits/credential-registry/server/SonarQube-*
