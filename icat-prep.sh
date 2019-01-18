@@ -12,7 +12,7 @@
 # - start on a new branch (for safety)
 # - git remote add orgbook https://github.com/bcgov/TheOrgBook.git
 # - git fetch orgbook
-# - git merge orgbook/merge-test (or whatever you called your branch)
+# - git merge orgbook/merge-test --allow-unrelated-histories (or whatever you called your branch)
 #
 # To build the starter kit (server):
 # - cd to credential-registry/server
@@ -43,8 +43,10 @@ mkdir credential-registry/server/python-indy-api
 
 mv starter-kits/credential-registry/server/tob-api/api_v2 credential-registry/server/django-icat-api/
 mv starter-kits/credential-registry/server/tob-api/api_indy credential-registry/server/python-indy-api/
-# TODO figure out where the tob-web code needs to live
-#mv starter-kits/credential-registry/server/tob-web starter-kits/credential-registry/client/
+mv starter-kits/credential-registry/server/tob-web credential-registry/client/
+mkdir starter-kits/credential-registry/client/tob-web/
+cp -r credential-registry/server/tob-web/src/themes/ starter-kits/credential-registry/client/tob-web/
+mv starter-kits/credential-registry/server/dockerstarter-kits/credential-registry/
 
 rm starter-kits/credential-registry/server/Deploy*
 rm starter-kits/credential-registry/server/SonarQube-*
@@ -52,3 +54,6 @@ rm starter-kits/credential-registry/server/Zap-*
 rm -rf starter-kits/credential-registry/server/openshift
 rm -rf starter-kits/credential-registry/server/sonar-runner
 rm -rf starter-kits/credential-registry/server/tob-backup
+rm -rf starter-kits/credential-registry/client/tob-web/themes/default
+rm -rf credential-registry/client/tob-web/src/themes/bcgov
+rm -rf credential-registry/client/tob-web/src/themes/ongov
