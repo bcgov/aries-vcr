@@ -9,7 +9,8 @@ import logging
 from .dispatcher import Dispatcher
 
 from .transport.http import Http as HttpTransport
-from .transport import InvalidTransportError
+from .transport.ws import Ws as WsTransport
+from .transport import InvalidTransportError, VALID_TRANSPORTS
 
 from .storage.basic import BasicStorage
 
@@ -29,6 +30,11 @@ class Conductor:
         for transport in self.transports:
             if transport["transport"] == "http":
                 transport = HttpTransport(
+                    transport["host"], transport["port"], self.message_handler
+                )
+                await transport.start()
+            elif transport["transport"] == "ws":
+                transport = WsTransport(
                     transport["host"], transport["port"], self.message_handler
                 )
                 await transport.start()
