@@ -32,6 +32,11 @@
                 "glob": "favicon.ico",
                 "input": "src/themes/_active",
                 "output": "/"
+              },
+              {
+                "glob": "robots.txt",
+                "input": "src/themes/_active",
+                "output": "/"
               }
             ],
             "styles": [
