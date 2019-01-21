@@ -16,7 +16,7 @@
       "metadata": {
         "name": "${EMAIL_SETTINGS_STORE_NAME}",
         "labels": {
-          "app": "${NAME}",          
+          "app": "${NAME}",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -32,7 +32,7 @@
       "metadata": {
         "name": "${WALLET_CREDENTIAL_STORE_NAME}",
         "labels": {
-          "app": "${NAME}",          
+          "app": "${NAME}",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -49,7 +49,7 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "app": "${NAME}",          
+          "app": "${NAME}",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -71,7 +71,7 @@
           "service.alpha.openshift.io/dependencies": "[{\"name\": \"${DATABASE_SERVICE_NAME}\", \"kind\": \"Service\"},{\"name\": \"${SOLR_SERVICE_NAME}\", \"kind\": \"Service\"}]"
         },
         "labels": {
-          "app": "${NAME}",          
+          "app": "${NAME}",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -94,7 +94,7 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "app": "${NAME}",          
+          "app": "${NAME}",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -122,7 +122,7 @@
         "name": "${NAME}",
         "labels": {
           "app": "${NAME}",
-          "template": "${NAME}-deployment-template",          
+          "template": "${NAME}-deployment-template",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -146,7 +146,7 @@
           "description": "Defines how to deploy the application server"
         },
         "labels": {
-          "app": "${NAME}",          
+          "app": "${NAME}",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -327,6 +327,10 @@
                     }
                   },
                   {
+                    "name": "APP_FILE",
+                    "value": "${APP_FILE}"
+                  },
+                  {
                     "name": "APP_CONFIG",
                     "value": "${APP_CONFIG}"
                   },
@@ -467,7 +471,7 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "app": "${NAME}",          
+          "app": "${NAME}",
           "app-group": "${APP_GROUP}"
         }
       },
@@ -588,6 +592,12 @@
       "description": "The name of the wallet credential store (aka The name of the secret that contains the wallet credentials).",
       "required": true,
       "value": "wallet-credentials"
+    },
+    {
+      "name": "APP_FILE",
+      "displayName": "Application File",
+      "description": "Used to run the application from a Python script. This should be a path to a Python file (defaults to app.py unless set to null) that will be passed to the Python interpreter to start the application (optional).",
+      "value": "app-vonx.py"
     },
     {
       "name": "APP_CONFIG",

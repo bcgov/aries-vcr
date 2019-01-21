@@ -18,6 +18,7 @@ APPLICATION_DOMAIN=django-ontvon-von-dev.pathfinder.gov.bc.ca
 # INDY_WALLET_SEED=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # INDY_WALLET_DID=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # WALLET_CREDENTIAL_STORE_NAME=wallet-credentials
+# APP_FILE=app-vonx.py
 # APP_CONFIG=
 # #DJANGO_SECRET_KEY=[\w]{50}
 # DJANGO_DEBUG=False
