@@ -28,7 +28,7 @@ from vonx.web.view_helpers import (
 )
 import vonx.web.views as vonx_views
 
-from api_v2.models.User import User
+from api.models.User import User
 
 from api_v2.models.Credential import Credential as CredentialModel
 

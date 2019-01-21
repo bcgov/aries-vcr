@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import permissions
 
-from api_v2.models.User import User
+from api.models.User import User
 
 
 ISSUERS_GROUP_NAME = "issuers"
