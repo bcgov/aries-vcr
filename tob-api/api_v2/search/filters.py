@@ -75,7 +75,8 @@ class AutocompleteFilterBuilder(BaseQueryBuilder):
         SQ = self.view.query_object
         if self.query_param in filters:
             for qval in filters[self.query_param]:
-                inclusions.append(self.build_name_query(qval))
+                if len(qval):
+                    inclusions.append(self.build_name_query(qval))
         inclusions = functools.reduce(operator.and_, inclusions) if inclusions else None
         return inclusions, exclusions
 
