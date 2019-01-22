@@ -1,5 +1,6 @@
 import logging
 
+from django.http import Http404
 from rest_framework import permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -169,6 +170,10 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
         print(" >>> calling credentialsearch")
+        if self.object_class is TopicSearchQuerySet:
+            query = self.request.GET.get('name')
+            if not isinstance(query, str) or len(query.strip()) < 2:
+                raise Http404()
         ret = super(CredentialSearchView, self).list(*args, **kwargs)
         print(" >>> credentialsearch returns", ret)
         return ret
