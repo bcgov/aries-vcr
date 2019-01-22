@@ -82,6 +82,7 @@ else:
     print("Realtime indexing has been disabled ...")
 
 HAYSTACK_DOCUMENT_FIELD = "document"
+HAYSTACK_MAX_RESULTS = 200
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -30,6 +30,7 @@ from api_v2.serializers.search import (
     CredentialTopicSearchSerializer,
 )
 from tob_api.pagination import ResultLimitPagination
+from django.conf import settings
 
 LOGGER = logging.getLogger(__name__)
 
@@ -232,6 +233,8 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
         return Response(serializer.data)
 
 
+LIMIT = getattr(settings, 'HAYSTACK_MAX_RESULTS', 200)
+
 class TopicSearchQuerySet(RelatedSearchQuerySet):
     """
     Optimize queries when fetching topic-oriented credential search results
@@ -241,6 +244,13 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
         super(TopicSearchQuerySet, self).__init__(*args, **kwargs)
         self._load_all_querysets[Credential] = self.topic_queryset()
 
+    def __len__(self):
+        ret = super(TopicSearchQuerySet, self).__len__()
+        if ret > LIMIT:
+            print(" >>> Limiting the query LEN", ret, LIMIT)
+            ret = LIMIT
+        return ret
+
     def topic_queryset(self):
         return Credential.objects.select_related(
             "credential_type",
@@ -248,6 +258,23 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
             "credential_type__schema",
             "topic",
         ).all()
+
+    def _fill_cache(self, start, end, **kwargs):
+        print(" >>> Limiting the cache results", start, end, LIMIT)
+        if start is not None:
+            if start > LIMIT:
+                start = LIMIT
+        if end is not None:
+            if end > LIMIT:
+                end = LIMIT
+        super(TopicSearchQuerySet, self)._fill_cache(start, end, **kwargs)
+
+    def count():
+        ret = super(TopicSearchQuerySet, self).count()
+        if ret > LIMIT:
+            print(" >>> Limiting the query count", ret, LIMIT)
+            ret = LIMIT
+        return ret
 
 
 class CredentialTopicSearchView(CredentialSearchView):
