@@ -173,7 +173,8 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
         print(" >>> calling credentialsearch")
         if self.object_class is TopicSearchQuerySet:
             query = self.request.GET.get('name')
-            if not isinstance(query, str) or len(query.strip()) < 2:
+            topic_id = self.request.GET.get('topic_id')
+            if not self.valid_search_query(query, topic_id):
                 raise Http404()
         ret = super(CredentialSearchView, self).list(*args, **kwargs)
         print(" >>> credentialsearch returns", ret)
@@ -185,6 +186,14 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
         ret = super(CredentialSearchView, self).retrieve(*args, **kwargs)
         print(" >>> credentialsearch retrieve returns", ret)
         return ret
+
+    def valid_search_query(self, query, topic_id):
+        is_valid = False
+        if isinstance(query, str) and len(query.strip()) >= 2:
+            is_valid = True
+        if isinstance(topic_id, str) and len(topic_id.strip()) > 0:
+            is_valid = True
+        return is_valid
 
     index_models = [Credential]
     load_all = True
