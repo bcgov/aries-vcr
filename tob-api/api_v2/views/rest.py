@@ -92,6 +92,16 @@ class CredentialTypeViewSet(ReadOnlyModelViewSet):
         # FIXME - need to store the logo mime type
         return HttpResponse(logo, content_type="image/jpg")
 
+    @detail_route(url_path="language", methods=["get"])
+    def fetch_language(self, request, pk=None):
+        cred_type = get_object_or_404(self.queryset, pk=pk)
+        lang = {
+            "category_labels": cred_type.category_labels,
+            "claim_descriptions": cred_type.claim_descriptions,
+            "claim_labels": cred_type.claim_labels,
+        }
+        return Response(lang)
+
 
 class TopicViewSet(ReadOnlyModelViewSet):
     serializer_class = TopicSerializer

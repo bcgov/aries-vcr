@@ -1,4 +1,4 @@
-from rest_framework.serializers import BooleanField, ModelSerializer
+from rest_framework.serializers import BooleanField, ModelSerializer, SerializerMethodField
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.models.CredentialType import CredentialType
@@ -46,6 +46,9 @@ class CredentialTypeSerializer(ModelSerializer):
         model = CredentialType
         depth = 1
         exclude = (
+            "category_labels",
+            "claim_descriptions",
+            "claim_labels",
             "logo_b64",
             "processor_config",
             "visible_fields",
@@ -114,9 +117,17 @@ class CredentialNamedTopicSerializer(CredentialTopicSerializer):
     class Meta(CredentialTopicSerializer.Meta):
         fields = CredentialTopicSerializer.Meta.fields + ("names",)
 
+class TopicAttributeSerializer(AttributeSerializer):
+    credential_type_id = SerializerMethodField()
+    class Meta(CredentialAttributeSerializer.Meta):
+        fields = ("id", "type", "format", "value", "credential_id", "credential_type_id")
+
+    def get_credential_type_id(self, obj):
+        return obj.credential.credential_type_id
+
 class CredentialTopicExtSerializer(CredentialNamedTopicSerializer):
     addresses = CredentialAddressSerializer(source='get_active_addresses', many=True)
-    attributes = CredentialAttributeSerializer(source='get_active_attributes', many=True)
+    attributes = TopicAttributeSerializer(source='get_active_attributes', many=True)
 
     class Meta(CredentialNamedTopicSerializer.Meta):
         fields = CredentialNamedTopicSerializer.Meta.fields + ("addresses", "attributes")

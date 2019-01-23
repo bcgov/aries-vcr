@@ -93,14 +93,19 @@ class CustomAddressSerializer(AddressSerializer):
 
 
 class CustomAttributeSerializer(AttributeSerializer):
+    credential_type_id = SerializerMethodField()
     last_updated = SerializerMethodField()
     inactive = SerializerMethodField()
 
     class Meta(AttributeSerializer.Meta):
         fields = (
-            "id", "credential_id", "last_updated", "inactive",
+            "id", "credential_id", "credential_type_id",
+            "last_updated", "inactive",
             "type", "format", "value",
         )
+
+    def get_credential_type_id(self, obj):
+        return obj.credential.credential_type_id
 
     def get_last_updated(self, obj):
         return obj.credential.effective_date
