@@ -16,10 +16,10 @@ class HttpSetupError(Exception):
 
 
 class Http(BaseTransport):
-    def __init__(self, host: str, port: int, message_router: Callable) -> None:
+    def __init__(self, host: str, port: int, message_callback: Callable) -> None:
         self.host = host
         self.port = port
-        self.message_router = message_router
+        self.message_callback = message_callback
 
     async def start(self) -> None:
         app = web.Application()
@@ -47,7 +47,7 @@ class Http(BaseTransport):
         body = await self.parse_message(request)
 
         try:
-            self.message_router(body)
+            self.message_callback(body)
         except Exception as e:
             return web.Response(text=str(e), status=400)
 

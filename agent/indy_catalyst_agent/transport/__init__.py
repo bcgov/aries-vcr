@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 
-VALID_TRANSPORTS = ['http', 'ws']
+VALID_TRANSPORTS = ["http", "ws"]
+
 
 class InvalidTransportError(Exception):
     pass
