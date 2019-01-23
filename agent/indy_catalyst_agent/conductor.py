@@ -16,6 +16,8 @@ from .storage.basic import BasicStorage
 
 from .messaging.message_factory import MessageFactory
 
+from .connections.base import BaseConnection
+
 
 class Conductor:
     def __init__(self, parsed_transports: list) -> None:
@@ -30,18 +32,20 @@ class Conductor:
         for transport in self.transports:
             if transport["transport"] == "http":
                 transport = HttpTransport(
-                    transport["host"], transport["port"], self.transport_callback
+                    transport["host"], transport["port"], self.message_router
                 )
                 await transport.start()
             elif transport["transport"] == "ws":
                 transport = WsTransport(
-                    transport["host"], transport["port"], self.transport_callback
+                    transport["host"], transport["port"], self.message_router
                 )
                 await transport.start()
             else:
                 # TODO: make this pluggable
                 raise InvalidTransportError("Available transports: http")
 
-    async def transport_callback(self, message_dict: dict, connection) -> None:
+    async def message_router(
+        self, message_dict: dict, connection: BaseConnection
+    ) -> None:
         message = MessageFactory.make_message(message_dict)
         await self.dispatcher.dispatch(message, connection)
