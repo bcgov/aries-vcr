@@ -4,9 +4,10 @@ import logging
 import socket
 from typing import Callable
 
-from . import BaseTransport
-
 from aiohttp import web, WSMsgType
+
+from . import BaseTransport
+from ..connections.websocket import WebsocketConnection
 
 
 class InvalidMessageError(Exception):
@@ -18,17 +19,17 @@ class WsSetupError(Exception):
 
 
 class Ws(BaseTransport):
-    def __init__(self, host: str, port: int, message_callback: Callable) -> None:
+    def __init__(self, host: str, port: int, message_router: Callable) -> None:
         self.host = host
         self.port = port
-        self.message_callback = message_callback
+        self.message_router = message_router
 
         self.logger = logging.getLogger(__name__)
         self.message_queue = asyncio.Queue()
 
     async def start(self) -> None:
         app = web.Application()
-        app.add_routes([web.get("/", self.message_handler)])
+        app.add_routes([web.get("/", self.inbound_message_handler)])
         runner = web.AppRunner(app)
         await runner.setup()
         site = web.TCPSite(runner, host=self.host, port=self.port)
@@ -48,11 +49,13 @@ class Ws(BaseTransport):
             )
         return body
 
-    async def message_handler(self, request):
+    async def inbound_message_handler(self, request):
         ws = web.WebSocketResponse()
         await ws.prepare(request)
 
+        # Listen for incoming messages
         async for msg in ws:
+            self.logger.info(f"Received message: {msg.data}")
             if msg.type == WSMsgType.TEXT:
                 if msg.data == "close":
                     await ws.close()
@@ -60,27 +63,36 @@ class Ws(BaseTransport):
                     try:
                         message_dict = json.loads(msg.data)
                     except json.decoder.JSONDecodeError as e:
-                        self.logger.error(f"Could not parse message json: {str(e)}")
-                        await ws.send_json({"success": False, "message": str(e)})
+                        error_message = f"Could not parse message json: {str(e)}"
+                        self.logger.error(error_message)
+                        await ws.send_json({"success": False, "message": error_message})
                         continue
 
                     try:
-                        from ..connections.websocket import WebsocketConnection
-
-                        await self.message_callback(
-                            message_dict, WebsocketConnection(ws.send_json)
+                        # Route message and provide connection instance as means to respond
+                        await self.message_router(
+                            message_dict,
+                            WebsocketConnection(self.outbound_message_handler(ws)),
                         )
 
                     except Exception as e:
-                        self.logger.error(f"Error handling message: {str(e)}")
-                        await ws.send_json({"success": False, "message": str(e)})
+                        error_message = f"Error handling message: {str(e)}"
+                        self.logger.error(error_message)
+                        await ws.send_json({"success": False, "message": error_message})
                         continue
 
             elif msg.type == WSMsgType.ERROR:
                 self.logger.error(
-                    "ws connection closed with exception %s" % ws.exception()
+                    f"Websocket connection closed with exception {ws.exception()}"
                 )
 
-        self.logger.info("websocket connection closed")
+        self.logger.info("Websocket connection closed")
         return ws
+
+    def outbound_message_handler(self, ws: web.WebSocketResponse):
+        async def handle(message_dict: dict):
+            self.logger.info(f"Sending message: {message_dict}")
+            await ws.send_json(message_dict)
+
+        return handle
 
