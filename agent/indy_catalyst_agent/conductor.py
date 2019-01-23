@@ -30,18 +30,18 @@ class Conductor:
         for transport in self.transports:
             if transport["transport"] == "http":
                 transport = HttpTransport(
-                    transport["host"], transport["port"], self.message_handler
+                    transport["host"], transport["port"], self.transport_callback
                 )
                 await transport.start()
             elif transport["transport"] == "ws":
                 transport = WsTransport(
-                    transport["host"], transport["port"], self.message_handler
+                    transport["host"], transport["port"], self.transport_callback
                 )
                 await transport.start()
             else:
                 # TODO: make this pluggable
                 raise InvalidTransportError("Available transports: http")
 
-    def message_handler(self, message_dict: dict) -> None:
+    async def transport_callback(self, message_dict: dict, connection) -> None:
         message = MessageFactory.make_message(message_dict)
-        self.dispatcher.dispatch(message)
+        await self.dispatcher.dispatch(message, connection)

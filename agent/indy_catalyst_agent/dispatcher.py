@@ -14,11 +14,18 @@ class Dispatcher:
         self.logger = logging.getLogger(__name__)
         self.storage = storage
 
-    def dispatch(self, message):
+    async def dispatch(self, message, connection):
         # TODO:
         # Create an instance of some kind of "ThreadState" or "Context"
         # using a thread id found in the message data. Messages do not
         # yet have the notion of threading
         context = {}
+
+        # Create "connection"
+
+        # pack/unpack
+
         message.handler.handle(Lifecycle, context)
+
+        await connection.send_message(message)
 

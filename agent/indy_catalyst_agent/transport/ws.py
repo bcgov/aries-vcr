@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import socket
@@ -17,11 +18,13 @@ class WsSetupError(Exception):
 
 
 class Ws(BaseTransport):
-    def __init__(self, host: str, port: int, message_router: Callable) -> None:
+    def __init__(self, host: str, port: int, message_callback: Callable) -> None:
         self.host = host
         self.port = port
-        self.message_router = message_router
+        self.message_callback = message_callback
+
         self.logger = logging.getLogger(__name__)
+        self.message_queue = asyncio.Queue()
 
     async def start(self) -> None:
         app = web.Application()
@@ -46,32 +49,38 @@ class Ws(BaseTransport):
         return body
 
     async def message_handler(self, request):
-
         ws = web.WebSocketResponse()
         await ws.prepare(request)
 
         async for msg in ws:
             if msg.type == WSMsgType.TEXT:
                 if msg.data == "close":
-                    self.logger.info(msg.data)
                     await ws.close()
-                    await ws.send_str("/answer")
                 else:
-                    self.logger.info(ws)
-                    self.logger.info(msg.data)
-                    await ws.send_str(msg.data + "/answer")
+                    try:
+                        message_dict = json.loads(msg.data)
+                    except json.decoder.JSONDecodeError as e:
+                        self.logger.error(f"Could not parse message json: {str(e)}")
+                        await ws.send_json({"success": False, "message": str(e)})
+                        continue
+
+                    try:
+                        from ..connections.websocket import WebsocketConnection
+
+                        await self.message_callback(
+                            message_dict, WebsocketConnection(ws.send_json)
+                        )
+
+                    except Exception as e:
+                        self.logger.error(f"Error handling message: {str(e)}")
+                        await ws.send_json({"success": False, "message": str(e)})
+                        continue
+
             elif msg.type == WSMsgType.ERROR:
-                print("ws connection closed with exception %s" % ws.exception())
+                self.logger.error(
+                    "ws connection closed with exception %s" % ws.exception()
+                )
 
-        print("websocket connection closed")
-
+        self.logger.info("websocket connection closed")
         return ws
 
-        # body = await self.parse_message(request)
-
-        # try:
-        #     self.message_router(body)
-        # except Exception as e:
-        #     return web.Response(text=str(e), status=400)
-
-        # return web.Response(text="OK", status=200)
