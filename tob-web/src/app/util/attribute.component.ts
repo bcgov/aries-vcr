@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Model } from '../data-types';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
+import { GeneralDataService } from '../general-data.service';
 
 @Component({
   selector: 'attribute-view',
@@ -14,6 +15,7 @@ export class AttributeComponent {
   @Input('format') _format: string;
 
   constructor(
+    private _dataService: GeneralDataService,
     private _translate: TranslateService,
   ) {}
 
@@ -26,10 +28,8 @@ export class AttributeComponent {
   }
 
   get categoryValue() {
-    let lbl = `category.${this.record.type}.${this.record.value}`;
-    return this._translate.stream(lbl).pipe(map(
-      lbl => (! lbl || lbl.substring(0, 2) == '??') ? this.record.value : lbl
-    ));
+    return this._dataService.translateCategoryLabel(
+      this.record.credential_type_id, this.record.type, this.record.value);
   }
 
   get jurisdictionValue() {

@@ -71,6 +71,12 @@ export namespace Model {
     return result;
   }
 
+  function setCredTypeId(attrs: Attribute[], credType: CredentialType) {
+    let credTypeId = credType && credType.id;
+    for(let i = 0; attrs && i < attrs.length; i++)
+      attrs[i].credential_type_id = credTypeId;
+  }
+
   export class Address extends BaseModel {
     id: number;
     addressee: string;
@@ -92,6 +98,7 @@ export namespace Model {
     format: string;
     value: string;
     credential_id: number;
+    credential_type_id: number;
     inactive: boolean;
 
     get typeClass(): string {
@@ -148,6 +155,7 @@ export namespace Model {
       return this._attributes;
     }
     set attributes(attrs: Attribute[]) {
+      setCredTypeId(attrs, this.credential_type);
       this._attributes = attrs;
       this._attribute_map = mapByType(this._attributes);
     }
@@ -575,6 +583,7 @@ export namespace Fetch {
   }
 
   export class BaseLoader<T, R extends BaseResult<T>> {
+    _postProc = [];
     _result: BehaviorSubject<R>;
     _sub: Subscription;
 
@@ -611,6 +620,10 @@ export namespace Fetch {
       return new this._rctor(this._map, input, error, loading, meta);
     }
 
+    postProc(hook) {
+      this._postProc.push(hook);
+    }
+
     get stream(): Observable<R> {
       return this._result.asObservable();
     }
@@ -623,8 +636,22 @@ export namespace Fetch {
       return this._result.value;
     }
 
+    _runPostProc(val: R, pos = 0) {
+      let proc = this._postProc[pos];
+      let result = null;
+      if(proc)
+        result = proc(val);
+      if(! result)
+        result = Promise.resolve(val);
+      else
+        result = result.then(newval => this._runPostProc(newval, pos + 1));
+      return result;
+    }
+
     set result(val: R) {
-      this._result.next(val);
+      this._runPostProc(val).then((result) => {
+        this._result.next(result);
+      });
     }
 
     get request(): RequestParams {

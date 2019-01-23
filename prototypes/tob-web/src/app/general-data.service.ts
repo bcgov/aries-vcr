@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { BehaviorSubject, concat, of, from, Observable, Observer, Subscription } from 'rxjs';
+import { catchError, map, mergeMap, switchMap, shareReplay } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { environment } from '../environments/environment';
 import { Fetch, Filter, Model } from './data-types';
@@ -19,6 +19,7 @@ export class GeneralDataService {
   private _loaderSub: Subscription = null;
   private _defaultTopicType = 'registration';
   private _showDebugMsg = false;
+  private _credTypeLang =  {};
 
   constructor(
     private _http: HttpClient,
@@ -282,7 +283,7 @@ export class GeneralDataService {
 
   deleteRecord (mod: string, id: string) {
     return new Promise(resolve => {
-      let baseurl = this.getRequestUrl(mod + '/' + id + '/delete');
+      let baseurl = this.getRequestUrl(`${mod}/${id}/delete`);
       let req = this._http.post(baseurl, {params: {id}})
         .pipe(catchError(error => {
           console.error(error);
@@ -296,4 +297,97 @@ export class GeneralDataService {
     });
   }
 
+  loadCredentialTypeLanguage(credTypeId) {
+    return Observable.create((observer: Observer<any>) => {
+      let url = this.getRequestUrl(`credentialtype/${credTypeId}/language`);
+      this.loadJson(url).subscribe(
+        data => { observer.next(data); observer.complete(); },
+        err  => { observer.error(err); }
+      );
+    });
+  }
+
+  getCredentialTypeLanguage(id) {
+    if(! id) {
+      return of(null);
+    }
+    if(! this._credTypeLang[id]) {
+      this._credTypeLang[id] = //concat(
+        this.loadCredentialTypeLanguage(id).pipe(shareReplay(1)); /*,
+        this._translate.onLangChange.pipe(
+          switchMap((event) => null, (outer, inner) => { console.log(outer, inner); return outer; })
+        )*/
+      //);
+    }
+    return this._credTypeLang[id];
+  }
+
+  getCredentialTypeLanguageKey(credTypeId, key) {
+    return this.getCredentialTypeLanguage(credTypeId).pipe(map(data => (data && data[key])));
+  }
+
+  preloadCredentialTypeLanguage(...ids) {
+    return new Promise(resolve => {
+      let result = Promise.resolve(null);
+      if(ids) {
+        for(let i = 0; i < ids.length; i ++) {
+          result = result.then(this.getCredentialTypeLanguage(ids[i]));
+        }
+      }
+      result.then(() => resolve(null));
+    });
+  }
+
+  translateClaimDescription(credTypeId, claimName, defVal?) {
+    let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_descriptions');
+    return credLang.then(values => {
+      let lang = this.language;
+      let ret = undefined;
+      if(lang in values) {
+        ret = values[lang][claimName];
+      }
+      if(ret === undefined)
+        ret = defVal;
+      return ret;
+    });
+  }
+
+  translateClaimLabel(credTypeId, claimName, defVal?) {
+    let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_labels');
+    return credLang.then(values => {
+      let lang = this.language;
+      let ret = undefined;
+      if(lang in values) {
+        ret = values[lang][claimName];
+      }
+      if(ret === undefined)
+        ret = defVal;
+      return ret;
+    });
+  }
+
+  translateCategoryLabel(credTypeId, catType, catValue) {
+    let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'category_labels');
+    let lbl = `category.${catType}.${catValue}`;
+    return credLang.pipe(
+      map(values => {
+        let lang = this.language;
+        let ret = undefined;
+        if(values && lang in values) {
+          let labels = values[lang];
+          if(labels && catType in labels) {
+            ret = labels[catType][catValue];
+          }
+        }
+        return ret;
+      }),
+      mergeMap(val => {
+        if(val === undefined)
+          return this._translate.stream(lbl).pipe(map(
+            lbl => (! lbl || lbl.substring(0, 2) == '??') ? catValue : lbl
+          ));
+        return of(val);
+      })
+    );
+  }
 }

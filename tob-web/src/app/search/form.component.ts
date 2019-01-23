@@ -108,8 +108,26 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this._typeSub = this._route.params.subscribe(params => {
       this.filterType = params['filterType'];
     });
+    this._loader.postProc(val => new Promise(resolve => {
+      if(val && val.data) {
+        let ids = {};
+        for(let row of val.data) {
+          ids[row.credential_type.id] = 1;
+        }
+        if(ids) {
+          return this._dataService.preloadCredentialTypeLanguage(...Object.keys(ids)).then(_ => {
+            resolve(val);
+          });
+        }
+      }
+      resolve(val);
+    }));
     this._loader.ready.subscribe(this.handleFacets.bind(this));
   }
+
+  /*test(credTypeId, val) {
+    return this._dataService.translateClaimLabel(credTypeId, val);
+  }*/
 
   ngAfterViewInit() {
     if(this._searchInput) {
