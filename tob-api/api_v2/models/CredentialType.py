@@ -17,6 +17,9 @@ class CredentialType(Auditable):
     visible_fields = models.TextField(null=True)
     last_issue_date = models.DateTimeField(null=True)
     url = models.TextField(blank=True, null=True)
+    claim_descriptions = contrib.JSONField(blank=True, null=True)
+    claim_labels = contrib.JSONField(blank=True, null=True)
+    category_labels = contrib.JSONField(blank=True, null=True)
 
     class Meta:
         db_table = "credential_type"
