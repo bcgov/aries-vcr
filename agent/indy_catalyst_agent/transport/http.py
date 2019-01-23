@@ -3,7 +3,7 @@ import logging
 import socket
 from typing import Callable
 
-from aiohttp import web
+from aiohttp import web, ClientSession
 
 from . import BaseTransport
 from ..connections.http import HttpConnection
@@ -19,6 +19,7 @@ class Http(BaseTransport):
         self.port = port
         self.message_router = message_router
 
+        self.client_session = ClientSession()
         self.logger = logging.getLogger(__name__)
 
     async def start(self) -> None:
@@ -58,8 +59,11 @@ class Http(BaseTransport):
         return web.Response(status=200)
 
     def outbound_message_handler(self):
-        async def handle(message_dict: dict):
+        async def handle(message_dict: dict, url: str):
             self.logger.info(f"Sending message: {message_dict}")
+            async with self.client_session as session:
+                async with session.post(url) as response:
+                    self.logger.info(response.status)
 
         return handle
 
