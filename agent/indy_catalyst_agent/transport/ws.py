@@ -10,10 +10,6 @@ from . import BaseTransport
 from ..connections.websocket import WebsocketConnection
 
 
-class InvalidMessageError(Exception):
-    pass
-
-
 class WsSetupError(Exception):
     pass
 
@@ -39,15 +35,6 @@ class Ws(BaseTransport):
             raise WsSetupError(
                 f"Unable to start webserver with host '{self.host}' and port '{self.port}'\n"
             )
-
-    async def parse_message(self, request):
-        try:
-            body = await request.json()
-        except json.JSONDecodeError:
-            raise InvalidMessageError(
-                "Request body must contain a valid application/json payload"
-            )
-        return body
 
     async def inbound_message_handler(self, request):
         ws = web.WebSocketResponse()

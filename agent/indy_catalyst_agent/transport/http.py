@@ -1,14 +1,12 @@
 import json
+import logging
 import socket
 from typing import Callable
 
-from . import BaseTransport
-
 from aiohttp import web
 
-
-class InvalidMessageError(Exception):
-    pass
+from . import BaseTransport
+from ..connections.http import HttpConnection
 
 
 class HttpSetupError(Exception):
@@ -16,14 +14,16 @@ class HttpSetupError(Exception):
 
 
 class Http(BaseTransport):
-    def __init__(self, host: str, port: int, message_callback: Callable) -> None:
+    def __init__(self, host: str, port: int, message_router: Callable) -> None:
         self.host = host
         self.port = port
-        self.message_callback = message_callback
+        self.message_router = message_router
+
+        self.logger = logging.getLogger(__name__)
 
     async def start(self) -> None:
         app = web.Application()
-        app.add_routes([web.post("/", self.message_handler)])
+        app.add_routes([web.post("/", self.inbound_message_handler)])
         runner = web.AppRunner(app)
         await runner.setup()
         site = web.TCPSite(runner, host=self.host, port=self.port)
@@ -34,21 +34,32 @@ class Http(BaseTransport):
                 f"Unable to start webserver with host '{self.host}' and port '{self.port}'\n"
             )
 
-    async def parse_message(self, request):
+    async def inbound_message_handler(self, request):
         try:
             body = await request.json()
-        except json.JSONDecodeError:
-            raise InvalidMessageError(
-                "Request body must contain a valid application/json payload"
+        except json.decoder.JSONDecodeError as e:
+            error_message = f"Could not parse message json: {str(e)}"
+            self.logger.error(error_message)
+            return web.json_response(
+                {"success": False, "message": error_message}, status=400
             )
-        return body
-
-    async def message_handler(self, request):
-        body = await self.parse_message(request)
 
         try:
-            self.message_callback(body)
+            await self.message_router(
+                body, HttpConnection(self.outbound_message_handler())
+            )
         except Exception as e:
-            return web.Response(text=str(e), status=400)
+            error_message = f"Error handling message: {str(e)}"
+            self.logger.error(error_message)
+            return web.json_response(
+                {"success": False, "message": error_message}, status=400
+            )
 
-        return web.Response(text="OK", status=200)
+        return web.Response(status=200)
+
+    def outbound_message_handler(self):
+        async def handle(message_dict: dict):
+            self.logger.info(f"Sending message: {message_dict}")
+
+        return handle
+
