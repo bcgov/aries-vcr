@@ -4,53 +4,41 @@ over the network, communicating with the ledger, passing messages to handlers,
 and storing data in the wallet.
 """
 
-from importlib import import_module
 import logging
 
+from typing import Dict
+
 from .dispatcher import Dispatcher
-
 from .storage.basic import BasicStorage
-
 from .messaging.message_factory import MessageFactory
-
-TRANSPORT_BASE_PATH = "indy_catalyst_agent.transport"
+from .transport.inbound import InboundTransportConfiguration
+from .transport.inbound.manager import InboundTransportManager
 
 
 class Conductor:
-    def __init__(self, parsed_transports: list) -> None:
+    def __init__(self, transport_configs: InboundTransportConfiguration) -> None:
         self.logger = logging.getLogger(__name__)
-        self.transports = parsed_transports
+        self.transports_configs = transport_configs
+        self.inbound_transport_manager = InboundTransportManager()
 
     async def start(self) -> None:
         # TODO: make storage type configurable via cli params
         storage = BasicStorage()
         self.dispatcher = Dispatcher(storage)
 
-        for transport in self.transports:
-            transport_module = transport["transport"]
-            inbound_transport_path = ".".join(
-                [TRANSPORT_BASE_PATH, "inbound", transport_module]
-            )
-            try:
-                # First we try importing any built-in inbound transports by name
-                imported_transport_module = import_module(inbound_transport_path)
-            except ModuleNotFoundError:
-                try:
-                    # Then we try importing transports available in external modules
-                    imported_transport_module = import_module(transport_module)
-                except ModuleNotFoundError:
-                    self.logger.warning(
-                        "Unable to import inbound transport module {}. "
-                        + f"Module paths attempted: {inbound_transport_path}, {transport_module}"
-                    )
-                    continue
+        # Register all inbound transports
+        for transports_config in self.transports_configs:
+            module = transports_config.module
+            host = transports_config.host
+            port = transports_config.port
 
-            transport_instance = imported_transport_module.Transport(
-                transport["host"], transport["port"], self.message_router
+            self.inbound_transport_manager.register(
+                module, host, port, self.message_handler
             )
 
-            await transport_instance.start()
+        await self.inbound_transport_manager.start_all()
 
-    async def message_router(self, message_dict: dict, connection) -> None:
+    async def message_handler(self, message_dict: Dict) -> None:
         message = MessageFactory.make_message(message_dict)
-        await self.dispatcher.dispatch(message, connection)
+        await self.dispatcher.dispatch(message)
+

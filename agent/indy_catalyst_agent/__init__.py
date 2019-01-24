@@ -4,12 +4,12 @@ import signal
 
 from .conductor import Conductor
 from .logging import LoggingConfigurator
+from .transport.inbound import InboundTransportConfiguration
 
 from .version import __version__
 
-parser = argparse.ArgumentParser(description="Runs an Indy Agent.")
 
-# group = parser.add_argument_group("transports")
+parser = argparse.ArgumentParser(description="Runs an Indy Agent.")
 
 parser.add_argument(
     "--transport",
@@ -18,7 +18,7 @@ parser.add_argument(
     action="append",
     nargs=3,
     required=True,
-    metavar=("<type>", "<host>", "<port>"),
+    metavar=("<module>", "<host>", "<port>"),
     help="Choose which interface(s) to listen on",
 )
 
@@ -47,9 +47,7 @@ def print_start_banner(transports):
 
     transport_strings = []
     for transport in transports:
-        host_port_string = (
-            f"{transport['transport']}: {transport['host']}:{transport['port']}"
-        )
+        host_port_string = f"{transport.module}: {transport.host}:{transport.port}"
         host_port_spacer = " " * (banner_length - len(host_port_string))
         transport_strings.append((host_port_string, host_port_spacer))
 
@@ -73,32 +71,32 @@ def print_start_banner(transports):
     print()
 
 
-async def start(parsed_transports):
-    conductor = Conductor(parsed_transports)
+async def start(transport_configs):
+    conductor = Conductor(transport_configs)
     await conductor.start()
 
 
 def main():
     args = parser.parse_args()
 
-    parsed_transports = []
+    transport_configs = []
 
     transports = args.transports
     for transport in transports:
-        transport_type = transport[0]
+        module = transport[0]
         host = transport[1]
         port = transport[2]
-        parsed_transports.append(
-            {"transport": transport_type, "host": host, "port": port}
+        transport_configs.append(
+            InboundTransportConfiguration(module=module, host=host, port=port)
         )
 
     logging_config = args.logging_config
     LoggingConfigurator.configure(logging_config)
 
-    print_start_banner(parsed_transports)
+    print_start_banner(transport_configs)
 
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(start(parsed_transports))
+    loop.run_until_complete(start(transport_configs))
 
     try:
         loop.run_forever()

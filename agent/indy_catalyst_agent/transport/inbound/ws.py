@@ -8,6 +8,7 @@ from aiohttp import web, WSMsgType
 
 from . import BaseTransport
 
+
 class WsSetupError(Exception):
     pass
 
@@ -54,9 +55,7 @@ class Transport(BaseTransport):
 
                     try:
                         # Route message and provide connection instance as means to respond
-                        await self.message_router(
-                            message_dict, Connection(self.outbound_message_handler(ws))
-                        )
+                        await self.message_router(message_dict)
 
                     except Exception as e:
                         error_message = f"Error handling message: {str(e)}"
