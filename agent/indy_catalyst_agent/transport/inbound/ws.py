@@ -7,21 +7,18 @@ from typing import Callable
 from aiohttp import web, WSMsgType
 
 from . import BaseTransport
-from ..connections.websocket import WebsocketConnection
-
 
 class WsSetupError(Exception):
     pass
 
 
-class Ws(BaseTransport):
+class Transport(BaseTransport):
     def __init__(self, host: str, port: int, message_router: Callable) -> None:
         self.host = host
         self.port = port
         self.message_router = message_router
 
         self.logger = logging.getLogger(__name__)
-        self.message_queue = asyncio.Queue()
 
     async def start(self) -> None:
         app = web.Application()
@@ -58,8 +55,7 @@ class Ws(BaseTransport):
                     try:
                         # Route message and provide connection instance as means to respond
                         await self.message_router(
-                            message_dict,
-                            WebsocketConnection(self.outbound_message_handler(ws)),
+                            message_dict, Connection(self.outbound_message_handler(ws))
                         )
 
                     except Exception as e:

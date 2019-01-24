@@ -4,19 +4,16 @@ over the network, communicating with the ledger, passing messages to handlers,
 and storing data in the wallet.
 """
 
+from importlib import import_module
 import logging
 
 from .dispatcher import Dispatcher
-
-from .transport.http import Http as HttpTransport
-from .transport.ws import Ws as WsTransport
-from .transport import InvalidTransportError, VALID_TRANSPORTS
 
 from .storage.basic import BasicStorage
 
 from .messaging.message_factory import MessageFactory
 
-from .connections.base import BaseConnection
+TRANSPORT_BASE_PATH = "indy_catalyst_agent.transport"
 
 
 class Conductor:
@@ -30,22 +27,30 @@ class Conductor:
         self.dispatcher = Dispatcher(storage)
 
         for transport in self.transports:
-            if transport["transport"] == "http":
-                transport = HttpTransport(
-                    transport["host"], transport["port"], self.message_router
-                )
-                await transport.start()
-            elif transport["transport"] == "ws":
-                transport = WsTransport(
-                    transport["host"], transport["port"], self.message_router
-                )
-                await transport.start()
-            else:
-                # TODO: make this pluggable
-                raise InvalidTransportError("Available transports: http")
+            transport_module = transport["transport"]
+            inbound_transport_path = ".".join(
+                [TRANSPORT_BASE_PATH, "inbound", transport_module]
+            )
+            try:
+                # First we try importing any built-in inbound transports by name
+                imported_transport_module = import_module(inbound_transport_path)
+            except ModuleNotFoundError:
+                try:
+                    # Then we try importing transports available in external modules
+                    imported_transport_module = import_module(transport_module)
+                except ModuleNotFoundError:
+                    self.logger.warning(
+                        "Unable to import inbound transport module {}. "
+                        + f"Module paths attempted: {inbound_transport_path}, {transport_module}"
+                    )
+                    continue
 
-    async def message_router(
-        self, message_dict: dict, connection: BaseConnection
-    ) -> None:
+            transport_instance = imported_transport_module.Transport(
+                transport["host"], transport["port"], self.message_router
+            )
+
+            await transport_instance.start()
+
+    async def message_router(self, message_dict: dict, connection) -> None:
         message = MessageFactory.make_message(message_dict)
         await self.dispatcher.dispatch(message, connection)
