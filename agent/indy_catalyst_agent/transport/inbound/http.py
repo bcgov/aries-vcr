@@ -45,8 +45,7 @@ class Transport(BaseTransport):
             )
 
         try:
-            pass
-            # await self.message_router(body, Connection(self.outbound_message_handler()))
+            await self.message_router(body)
         except Exception as e:
             error_message = f"Error handling message: {str(e)}"
             self.logger.error(error_message)
