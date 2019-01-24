@@ -6,14 +6,13 @@ from typing import Callable
 from aiohttp import web, ClientSession
 
 from . import BaseTransport
-from ..connections.http import HttpConnection
 
 
 class HttpSetupError(Exception):
     pass
 
 
-class Http(BaseTransport):
+class Transport(BaseTransport):
     def __init__(self, host: str, port: int, message_router: Callable) -> None:
         self.host = host
         self.port = port
@@ -46,9 +45,8 @@ class Http(BaseTransport):
             )
 
         try:
-            await self.message_router(
-                body, HttpConnection(self.outbound_message_handler())
-            )
+            pass
+            # await self.message_router(body, Connection(self.outbound_message_handler()))
         except Exception as e:
             error_message = f"Error handling message: {str(e)}"
             self.logger.error(error_message)
