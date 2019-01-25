@@ -4,27 +4,34 @@ import logging
 import socket
 from typing import Callable
 
-from aiohttp import web, WSMsgType
+from aiohttp import web, ClientSession, WSMsgType
 
+from .message import OutboundMessage
 from .base import BaseOutboundTransport
 from .queue.base import BaseOutboundMessageQueue
+
+SCHEMES = ("http", "https")
 
 
 class Transport(BaseOutboundTransport):
     def __init__(self, queue: BaseOutboundMessageQueue) -> None:
         self.logger = logging.getLogger(__name__)
-        self.queue = queue
+        self._queue = queue
 
-    async def start(self) -> None:
-        async for msg in self.queue:
-            self.logger.info(msg)
+    async def __aenter__(self):
+        self.client_session = ClientSession()
+        return self
 
-    def outbound_message_handler(self):
-        async def handle(message_dict: dict, url: str):
-            self.logger.info(f"Sending message: {message_dict}")
-            async with self.client_session as session:
-                async with session.post(url) as response:
-                    self.logger.info(response.status)
+    async def __aexit__(self, *err):
+        await self.client_session.close()
+        self.client_session = None
+        self.logger.error(err)
 
-        return handle
+    @property
+    def queue(self):
+        return self._queue
+
+    async def handle_message(self, message: OutboundMessage):
+        async with self.client_session.post(message.uri) as response:
+            self.logger.info(response.status)
 

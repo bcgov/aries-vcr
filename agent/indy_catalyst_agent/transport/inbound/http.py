@@ -3,7 +3,7 @@ import logging
 import socket
 from typing import Callable
 
-from aiohttp import web, ClientSession
+from aiohttp import web
 
 from . import BaseTransport
 
@@ -18,7 +18,6 @@ class Transport(BaseTransport):
         self.port = port
         self.message_router = message_router
 
-        self.client_session = ClientSession()
         self.logger = logging.getLogger(__name__)
 
     async def start(self) -> None:

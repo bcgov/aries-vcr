@@ -6,10 +6,10 @@ class AgentMessage(ABC):
     def _type(self) -> str:
         pass
 
-    @abstractclassmethod
-    def serialize(cls) -> dict:
+    @abstractmethod
+    def serialize(self) -> dict:
         pass
 
-    @abstractmethod
-    def deserialize(self):
+    @abstractclassmethod
+    def deserialize(cls):
         pass
