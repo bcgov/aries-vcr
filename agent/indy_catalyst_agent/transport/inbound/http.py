@@ -54,13 +54,3 @@ class Transport(BaseTransport):
             )
 
         return web.Response(status=200)
-
-    def outbound_message_handler(self):
-        async def handle(message_dict: dict, url: str):
-            self.logger.info(f"Sending message: {message_dict}")
-            async with self.client_session as session:
-                async with session.post(url) as response:
-                    self.logger.info(response.status)
-
-        return handle
-
