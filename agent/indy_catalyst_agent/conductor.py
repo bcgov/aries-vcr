@@ -13,13 +13,14 @@ from .storage.basic import BasicStorage
 from .messaging.message_factory import MessageFactory
 from .transport.inbound import InboundTransportConfiguration
 from .transport.inbound.manager import InboundTransportManager
+from .transport.outbound.manager import OutboundTransportManager
+from .transport.outbound.queue.basic import BasicOutboundMessageQueue
 
 
 class Conductor:
     def __init__(self, transport_configs: InboundTransportConfiguration) -> None:
         self.logger = logging.getLogger(__name__)
         self.transports_configs = transport_configs
-        self.inbound_transport_manager = InboundTransportManager()
 
     async def start(self) -> None:
         # TODO: make storage type configurable via cli params
@@ -27,6 +28,7 @@ class Conductor:
         self.dispatcher = Dispatcher(storage)
 
         # Register all inbound transports
+        self.inbound_transport_manager = InboundTransportManager()
         for transports_config in self.transports_configs:
             module = transports_config.module
             host = transports_config.host
@@ -38,7 +40,16 @@ class Conductor:
 
         await self.inbound_transport_manager.start_all()
 
+        # TODO: Set load queue driver dynamically via cli args
+        queue = BasicOutboundMessageQueue()
+        self.outbound_transport_manager = OutboundTransportManager(queue)
+        self.outbound_transport_manager.register("http")
+
+        await self.outbound_transport_manager.start_all()
+
     async def message_handler(self, message_dict: Dict) -> None:
         message = MessageFactory.make_message(message_dict)
-        await self.dispatcher.dispatch(message)
+        await self.dispatcher.dispatch(
+            message, self.outbound_transport_manager.send_message
+        )
 

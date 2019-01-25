@@ -96,9 +96,8 @@ def main():
     print_start_banner(transport_configs)
 
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(start(transport_configs))
-
     try:
+        loop.run_until_complete(start(transport_configs))
         loop.run_forever()
     except KeyboardInterrupt:
         print("\nShutting down")

@@ -15,7 +15,7 @@ class Dispatcher:
         self.logger = logging.getLogger(__name__)
         self.storage = storage
 
-    async def dispatch(self, message: AgentMessage):
+    async def dispatch(self, message: AgentMessage, send):
         # TODO:
         # Create an instance of some kind of "ThreadState" or "Context"
         # using a thread id found in the message data. Messages do not
@@ -33,6 +33,10 @@ class Dispatcher:
         # 2. based on some logic, build a response message
 
         handler_response = message  # echo for now
+
+        await send("dogs")
+        await send("dogs2")
+        await send("dogs3")
 
         # await connection.send_message(handler_response)
 

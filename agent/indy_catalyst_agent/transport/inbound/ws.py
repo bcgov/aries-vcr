@@ -70,11 +70,3 @@ class Transport(BaseTransport):
 
         self.logger.info("Websocket connection closed")
         return ws
-
-    def outbound_message_handler(self, ws: web.WebSocketResponse):
-        async def handle(message_dict: dict):
-            self.logger.info(f"Sending message: {message_dict}")
-            await ws.send_json(message_dict)
-
-        return handle
-

@@ -1,7 +1,7 @@
 import logging
 from importlib import import_module
 
-TRANSPORT_BASE_PATH = "indy_catalyst_agent.transport.inbound"
+MODULE_BASE_PATH = "indy_catalyst_agent.transport.inbound"
 
 
 class InboundTransportManager:
@@ -10,7 +10,8 @@ class InboundTransportManager:
         self.transports = []
 
     def register(self, module_path, host, port, message_handler):
-        relative_transport_path = ".".join([TRANSPORT_BASE_PATH, module_path])
+        # TODO: move this dynamic import stuff to a shared module
+        relative_transport_path = ".".join([MODULE_BASE_PATH, module_path])
         try:
             # First we try importing any built-in inbound transports by name
             imported_transport_module = import_module(relative_transport_path)
@@ -25,6 +26,8 @@ class InboundTransportManager:
                 )
                 return
 
+        # TODO: find class based on inheritance of trusted base class instead of
+        #       looking for "Transport" attribute
         self.transports.append(
             imported_transport_module.Transport(host, port, message_handler)
         )
