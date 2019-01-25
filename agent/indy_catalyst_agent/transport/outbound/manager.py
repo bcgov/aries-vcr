@@ -1,5 +1,5 @@
+import asyncio
 import logging
-
 
 from importlib import import_module
 from typing import Type
@@ -59,12 +59,15 @@ class OutboundTransportManager:
 
         self.registered_transports[schemes] = transport_class
 
+    async def start(self, schemes, transport):
+        # All transports use the same queue implementation
+        async with transport(self.queue()) as t:
+            self.running_transports[schemes] = t
+            await t.start()
+
     async def start_all(self):
         for schemes, transport_class in self.registered_transports.items():
-            # All transports use the same queue implementation
-            async with transport_class(self.queue()) as t:
-                self.running_transports[schemes] = t
-                await t.start()
+            asyncio.create_task(self.start(schemes, transport_class))
 
     async def send_message(self, message, uri):
 

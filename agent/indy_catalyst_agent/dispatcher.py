@@ -35,9 +35,18 @@ class Dispatcher:
 
         handler_response = message  # echo for now
 
-        conn = Connection(endpoint="https://httpbin.org/status/200")
+        # conn = Connection(endpoint="wss://0bc6628c.ngrok.io")
+        conn1 = Connection(endpoint="wss://0bc6628c.ngrok.io")
+        conn2 = Connection(endpoint="https://httpbin.org/status/400")
 
-        await send(handler_response, conn)
+        # Potentially multicast to multiple 
+        await send(handler_response, conn1)
+        await send(handler_response, conn2)
+
+
+        # We also return the result to the caller.
+        # This is for persistent connections waiting on that response.
+        return handler_response
 
         # await send(OutboundMessage(uri="https://httpbin.org/status/200", data=None))
         # await send(OutboundMessage(uri="https://httpbin.org/status/200", data=None))

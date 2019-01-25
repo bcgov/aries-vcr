@@ -45,12 +45,16 @@ class Conductor:
         queue = BasicOutboundMessageQueue
         self.outbound_transport_manager = OutboundTransportManager(queue)
         self.outbound_transport_manager.register("http")
+        self.outbound_transport_manager.register("ws")
 
         await self.outbound_transport_manager.start_all()
 
     async def inbound_message_router(self, message_dict: Dict) -> None:
         message = MessageFactory.make_message(message_dict)
-        await self.dispatcher.dispatch(message, self.outbound_message_router)
+        result = await self.dispatcher.dispatch(message, self.outbound_message_router)
+        # TODO: need to use callback instead?
+        #       respond immediately after message parse in case of req-res transport?
+        return result.serialize()
 
     async def outbound_message_router(self, message: AgentMessage, connection) -> None:
         message_dict = message.serialize()

@@ -55,7 +55,8 @@ class Transport(BaseTransport):
 
                     try:
                         # Route message and provide connection instance as means to respond
-                        await self.message_router(message_dict)
+                        result = await self.message_router(message_dict)
+                        await ws.send_json({"success": True, "message": result})
 
                     except Exception as e:
                         error_message = f"Error handling message: {str(e)}"
