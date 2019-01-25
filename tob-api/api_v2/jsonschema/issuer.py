@@ -11,6 +11,7 @@ ISSUER_JSON_SCHEMA = {
                 "abbreviation": {"type": "string"},
                 "email": {"type": "string", "minLength": 1},
                 "url": {"type": "string"},
+                "endpoint": {"type": "string"},
             },
             "required": ["did", "name"],
         },

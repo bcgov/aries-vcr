@@ -68,6 +68,7 @@ class IssuerManager:
         issuer_email = issuer_def.get("email")
         issuer_url = issuer_def.get("url")
         issuer_logo = issuer_def.get("logo_b64")
+        issuer_endpoint = issuer_def.get("endpoint")
 
         issuer, created = Issuer.objects.get_or_create(did=issuer_did)
         issuer.name = issuer_name
@@ -75,6 +76,7 @@ class IssuerManager:
         issuer.email = issuer_email
         issuer.url = issuer_url
         issuer.logo_b64 = issuer_logo
+        issuer.endpoint = issuer_endpoint
         issuer.save()
 
         return issuer

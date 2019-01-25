@@ -10,6 +10,7 @@ class Issuer(Auditable):
     email = models.TextField()
     url = models.TextField()
     logo_b64 = models.TextField(null=True)
+    endpoint = models.TextField(null=True)
 
     class Meta:
         db_table = "issuer"

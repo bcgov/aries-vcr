@@ -46,5 +46,5 @@ asyncio>=3.4.3,<4
 ptvsd==4.1.1a1
 
 # aiohttp
-aiohttp~=3.3.0
+aiohttp~=3.4.0
 aiohttp-wsgi~=0.8.1
