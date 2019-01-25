@@ -5,9 +5,10 @@ hook callbacks storing state for message threads, etc.
 
 import logging
 
-from .lifecycle import Lifecycle
 from .storage.base import BaseStorage
 from .messaging.agent_message import AgentMessage
+from .transport.outbound.message import OutboundMessage
+from .connection import Connection
 
 
 class Dispatcher:
@@ -26,7 +27,7 @@ class Dispatcher:
 
         # pack/unpack
 
-        message.handler.handle(Lifecycle, context)
+        message.handler.handle(context)
 
         # 1. get handler result
         # 1a. Possibly communicate with service backend for instructions
@@ -34,9 +35,12 @@ class Dispatcher:
 
         handler_response = message  # echo for now
 
-        await send("dogs")
-        await send("dogs2")
-        await send("dogs3")
+        conn = Connection(endpoint="https://httpbin.org/status/200")
+
+        await send(handler_response, conn)
+
+        # await send(OutboundMessage(uri="https://httpbin.org/status/200", data=None))
+        # await send(OutboundMessage(uri="https://httpbin.org/status/200", data=None))
 
         # await connection.send_message(handler_response)
 

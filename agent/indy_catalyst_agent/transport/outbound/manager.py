@@ -1,15 +1,25 @@
 import logging
+
+
 from importlib import import_module
+from typing import Type
+from urllib.parse import urlparse
 
 from .queue.base import BaseOutboundMessageQueue
+from .message import OutboundMessage
 
 MODULE_BASE_PATH = "indy_catalyst_agent.transport.outbound"
 
 
+class OutboundTransportManagerError(Exception):
+    pass
+
+
 class OutboundTransportManager:
-    def __init__(self, queue: BaseOutboundMessageQueue):
+    def __init__(self, queue: Type[BaseOutboundMessageQueue]):
         self.logger = logging.getLogger(__name__)
-        self.transports = []
+        self.registered_transports = {}
+        self.running_transports = {}
 
         self.queue = queue
 
@@ -31,12 +41,49 @@ class OutboundTransportManager:
                 return
 
         # TODO: find class based on inheritance of trusted base class instead of
-        #       looking for "Transport" attribute
-        self.transports.append(imported_transport_module.Transport(self.queue))
+        #       looking for "Transport" attribute?
+        try:
+            schemes = imported_transport_module.SCHEMES
+            transport_class = imported_transport_module.Transport
+        except AttributeError:
+            self.logger.error(f"OutboundTransports must define SCHEMES and Transport.")
+            return
+
+        for scheme in schemes:
+            # A scheme can only be registered once
+            if scheme in self.registered_transports:
+                raise OutboundTransportManagerError(
+                    f"Cannot register transport '{module_path}' for '{scheme}' scheme"
+                    + f" because the scheme has already been registered."
+                )
+
+        self.registered_transports[schemes] = transport_class
 
     async def start_all(self):
-        for transport in self.transports:
-            await transport.start()
+        for schemes, transport_class in self.registered_transports.items():
+            # All transports use the same queue implementation
+            async with transport_class(self.queue()) as t:
+                self.running_transports[schemes] = t
+                await t.start()
 
-    async def send_message(self, message):
-        await self.queue.enqueue(message)
+    async def send_message(self, message, uri):
+
+        # Grab the scheme from the uri
+        scheme = urlparse(uri).scheme
+        if scheme == "":
+            self.logger.warn(f"The uri '{uri}' does not specify a scheme")
+            return
+
+        # Look up transport that is registered to handle this scheme
+        try:
+            transport = next(
+                transport
+                for schemes, transport in self.running_transports.items()
+                if scheme in schemes
+            )
+        except StopIteration:
+            self.logger.warn(f"No transport driver exists to handle scheme '{scheme}'")
+            return
+
+        message = OutboundMessage(data=message, uri=uri)
+        await transport.queue.enqueue(message)

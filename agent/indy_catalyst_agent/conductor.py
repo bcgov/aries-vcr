@@ -10,6 +10,7 @@ from typing import Dict
 
 from .dispatcher import Dispatcher
 from .storage.basic import BasicStorage
+from .messaging.agent_message import AgentMessage
 from .messaging.message_factory import MessageFactory
 from .transport.inbound import InboundTransportConfiguration
 from .transport.inbound.manager import InboundTransportManager
@@ -35,21 +36,23 @@ class Conductor:
             port = transports_config.port
 
             self.inbound_transport_manager.register(
-                module, host, port, self.message_handler
+                module, host, port, self.inbound_message_router
             )
 
         await self.inbound_transport_manager.start_all()
 
-        # TODO: Set load queue driver dynamically via cli args
-        queue = BasicOutboundMessageQueue()
+        # TODO: Set queue driver dynamically via cli args
+        queue = BasicOutboundMessageQueue
         self.outbound_transport_manager = OutboundTransportManager(queue)
         self.outbound_transport_manager.register("http")
 
         await self.outbound_transport_manager.start_all()
 
-    async def message_handler(self, message_dict: Dict) -> None:
+    async def inbound_message_router(self, message_dict: Dict) -> None:
         message = MessageFactory.make_message(message_dict)
-        await self.dispatcher.dispatch(
-            message, self.outbound_transport_manager.send_message
-        )
+        await self.dispatcher.dispatch(message, self.outbound_message_router)
 
+    async def outbound_message_router(self, message: AgentMessage, connection) -> None:
+        message_dict = message.serialize()
+        uri = connection.endpoint
+        await self.outbound_transport_manager.send_message(message_dict, uri)
