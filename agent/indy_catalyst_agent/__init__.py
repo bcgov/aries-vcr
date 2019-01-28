@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import os
 import signal
 
 from .conductor import Conductor
@@ -41,6 +42,15 @@ parser.add_argument(
     help="Specifies a custom logging configuration file",
 )
 
+parser.add_argument(
+    "--log-level",
+    dest="log_level",
+    type=str,
+    metavar="<log-level>",
+    default=None,
+    help="Specifies a custom logging level (debug, info, warning, error, critical)",
+)
+
 
 async def start(inbound_transport_configs, outbound_transports):
     conductor = Conductor(inbound_transport_configs, outbound_transports)
@@ -64,7 +74,8 @@ def main():
     outbound_transports = args.outbound_transports
 
     logging_config = args.logging_config
-    LoggingConfigurator.configure(logging_config)
+    log_level = args.log_level or os.getenv("LOG_LEVEL")
+    LoggingConfigurator.configure(logging_config, log_level)
 
     loop = asyncio.get_event_loop()
     try:
