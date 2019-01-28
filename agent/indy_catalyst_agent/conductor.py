@@ -49,10 +49,14 @@ class Conductor:
         queue = BasicOutboundMessageQueue
         self.outbound_transport_manager = OutboundTransportManager(queue)
         for outbound_transport in self.outbound_transports:
-            self.outbound_transport_manager.register(outbound_transport)
+            try:
+                self.outbound_transport_manager.register(outbound_transport)
+            except Exception as e:
+                self.logger.warning(f"Unable to register outbound transport: {str(e)}")
 
         await self.outbound_transport_manager.start_all()
 
+        # Show some details about the configuration to the user
         LoggingConfigurator.print_banner(
             self.inbound_transport_manager.transports,
             self.outbound_transport_manager.registered_transports,

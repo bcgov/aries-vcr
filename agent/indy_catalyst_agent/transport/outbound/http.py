@@ -10,10 +10,10 @@ from .message import OutboundMessage
 from .base import BaseOutboundTransport
 from .queue.base import BaseOutboundMessageQueue
 
-SCHEMES = ("http", "https")
 
+class HttpTransport(BaseOutboundTransport):
+    schemes = ("http", "https")
 
-class Transport(BaseOutboundTransport):
     def __init__(self, queue: BaseOutboundMessageQueue) -> None:
         self.logger = logging.getLogger(__name__)
         self._queue = queue

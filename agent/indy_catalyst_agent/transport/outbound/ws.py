@@ -14,10 +14,10 @@ from .message import OutboundMessage
 from .base import BaseOutboundTransport
 from .queue.base import BaseOutboundMessageQueue
 
-SCHEMES = ("ws", "wss")
 
+class WsTransport(BaseOutboundTransport):
+    schemes = ("ws", "wss")
 
-class Transport(BaseOutboundTransport):
     def __init__(self, queue: BaseOutboundMessageQueue) -> None:
         self.logger = logging.getLogger(__name__)
         self._queue = queue
@@ -43,4 +43,4 @@ class Transport(BaseOutboundTransport):
                 await ws.send_json(message.data)
         except Exception as e:
             # TODO: add retry logic
-            self.logger.error(f"Error handling outbound message: {str(e)}")
+            self.logger.error(f"error handling outbound message: {str(e)}")

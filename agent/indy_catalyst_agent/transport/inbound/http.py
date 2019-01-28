@@ -5,7 +5,7 @@ from typing import Callable
 
 from aiohttp import web
 
-from . import BaseTransport
+from .base import BaseTransport
 
 
 class HttpSetupError(Exception):
