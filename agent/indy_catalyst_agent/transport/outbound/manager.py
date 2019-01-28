@@ -70,7 +70,6 @@ class OutboundTransportManager:
             asyncio.create_task(self.start(schemes, transport_class))
 
     async def send_message(self, message, uri):
-
         # Grab the scheme from the uri
         scheme = urlparse(uri).scheme
         if scheme == "":
