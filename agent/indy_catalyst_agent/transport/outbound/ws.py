@@ -36,5 +36,11 @@ class Transport(BaseOutboundTransport):
         return self._queue
 
     async def handle_message(self, message: OutboundMessage):
-        async with self.client_session.ws_connect(message.uri) as ws:
-            await ws.send_json(message.data)
+        try:
+            # As an example, we can open a websocket channel, send a message, then
+            # close the channel immediately. This is not optimal but it works.
+            async with self.client_session.ws_connect(message.uri) as ws:
+                await ws.send_json(message.data)
+        except Exception as e:
+            # TODO: add retry logic
+            self.logger.error(f"Error handling outbound message: {str(e)}")

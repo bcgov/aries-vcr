@@ -32,6 +32,10 @@ class Transport(BaseOutboundTransport):
         return self._queue
 
     async def handle_message(self, message: OutboundMessage):
-        async with self.client_session.post(message.uri) as response:
-            self.logger.info(response.status)
+        try:
+            async with self.client_session.post(message.uri) as response:
+                self.logger.info(response.status)
+        except Exception as e:
+            # TODO: add retry logic
+            self.logger.error(f"Error handling outbound message: {str(e)}")
 
