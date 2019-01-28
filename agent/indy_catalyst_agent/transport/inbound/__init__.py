@@ -10,9 +10,3 @@ InboundTransportConfiguration = namedtuple(
 
 class InvalidTransportError(Exception):
     pass
-
-
-class BaseTransport(ABC):
-    @abstractmethod
-    def start(self, message_router: Callable) -> None:
-        pass

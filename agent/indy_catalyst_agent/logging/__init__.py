@@ -17,13 +17,25 @@ class LoggingConfigurator:
         fileConfig(config_path, disable_existing_loggers=False)
 
     @classmethod
-    def print_banner(cls, inbound_transports, outbound_transports, banner_length=40):
+    def print_banner(
+        cls,
+        inbound_transports,
+        outbound_transports,
+        banner_length=40,
+        border_character=":",
+    ):
+        def lr_pad(content):
+            return f"{border_character}{border_character} {content} {border_character}{border_character}"
 
         banner_title_string = "Indy Catalyst Agent"
         banner_title_spacer = " " * (banner_length - len(banner_title_string))
 
-        banner_border = ":" * (banner_length + 6)
-        banner_spacer = "::" + " " * (banner_length + 2) + "::"
+        banner_border = border_character * (banner_length + 6)
+        banner_spacer = (
+            f"{border_character}{border_character}"
+            + " " * (banner_length + 2)
+            + f"{border_character}{border_character}"
+        )
 
         inbound_transports_subtitle_string = "Inbound Transports:"
         inbound_transports_subtitle_spacer = " " * (
@@ -55,25 +67,29 @@ class LoggingConfigurator:
 
         print()
         print(f"{banner_border}")
-        print(f":: {banner_title_string}{banner_title_spacer} ::")
+        print(lr_pad(f"{banner_title_string}{banner_title_spacer}"))
         print(f"{banner_spacer}")
         print(f"{banner_spacer}")
         print(
-            f":: {inbound_transports_subtitle_string}{inbound_transports_subtitle_spacer} ::"
+            lr_pad(
+                f"{inbound_transports_subtitle_string}{inbound_transports_subtitle_spacer}"
+            )
         )
         print(f"{banner_spacer}")
         for transport_string in inbound_transport_strings:
-            print(f":: {transport_string[0]}{transport_string[1]} ::")
+            print(lr_pad(f"{transport_string[0]}{transport_string[1]}"))
         print(f"{banner_spacer}")
         print(f"{banner_spacer}")
         print(
-            f":: {outbound_transports_subtitle_string}{outbound_transports_subtitle_spacer} ::"
+            lr_pad(
+                f"{outbound_transports_subtitle_string}{outbound_transports_subtitle_spacer}"
+            )
         )
         print(f"{banner_spacer}")
         for transport_string in outbound_transport_strings:
-            print(f":: {transport_string[0]}{transport_string[1]} ::")
+            print(lr_pad(f"{transport_string[0]}{transport_string[1]}"))
         print(f"{banner_spacer}")
-        print(f":: {version_string_spacer}{version_string} ::")
+        print(lr_pad(f"{version_string_spacer}{version_string}"))
         print(f"{banner_border}")
         print()
         print("Listening...")

@@ -6,7 +6,7 @@ from typing import Callable
 
 from aiohttp import web, WSMsgType
 
-from . import BaseTransport
+from .base import BaseTransport
 
 
 class WsSetupError(Exception):
