@@ -27,16 +27,13 @@ class OutboundTransportManager:
         self.queue = queue
 
     def register(self, module_path):
-        # try:
         imported_class = self.class_loader.load(module_path, True)
-        # except (ModuleLoadError, ClassNotFoundError):
-            # raise OutboundTransportRegistrationError(f"Failed to load module {module_path}")
 
         try:
             schemes = imported_class.schemes
         except AttributeError:
             raise OutboundTransportRegistrationError(
-                f"imported class {imported_class} does not specify a required 'schemes' attribute"
+                f"Imported class {imported_class} does not specify a required 'schemes' attribute"
             )
 
         for scheme in schemes:
@@ -44,27 +41,28 @@ class OutboundTransportManager:
             for scheme_tuple in self.registered_transports.keys():
                 if scheme in scheme_tuple:
                     raise OutboundTransportRegistrationError(
-                        f"cannot register transport '{module_path}' for '{scheme}' scheme"
+                        f"Cannot register transport '{module_path}' for '{scheme}' scheme"
                         + f" because the scheme has already been registered"
                     )
 
         self.registered_transports[schemes] = imported_class
 
     async def start(self, schemes, transport):
-        # All transports use the same queue implementation
+        # All transports share the same queue
         async with transport(self.queue()) as t:
             self.running_transports[schemes] = t
             await t.start()
 
     async def start_all(self):
         for schemes, transport_class in self.registered_transports.items():
+            # Don't block the loop
             asyncio.create_task(self.start(schemes, transport_class))
 
     async def send_message(self, message, uri):
         # Grab the scheme from the uri
         scheme = urlparse(uri).scheme
         if scheme == "":
-            self.logger.warn(f"the uri '{uri}' does not specify a scheme")
+            self.logger.warn(f"The uri '{uri}' does not specify a scheme")
             return
 
         # Look up transport that is registered to handle this scheme
@@ -75,7 +73,7 @@ class OutboundTransportManager:
                 if scheme in schemes
             )
         except StopIteration:
-            self.logger.warn(f"no transport driver exists to handle scheme '{scheme}'")
+            self.logger.warn(f"No transport driver exists to handle scheme '{scheme}'")
             return
 
         message = OutboundMessage(data=message, uri=uri)

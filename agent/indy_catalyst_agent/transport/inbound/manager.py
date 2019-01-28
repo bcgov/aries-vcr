@@ -1,7 +1,7 @@
 import logging
 from importlib import import_module
 
-from .base import BaseTransport
+from .base import BaseInboundTransport
 from ...classloader import ClassLoader, ModuleLoadError, ClassNotFoundError
 
 MODULE_BASE_PATH = "indy_catalyst_agent.transport.inbound"
@@ -10,7 +10,7 @@ MODULE_BASE_PATH = "indy_catalyst_agent.transport.inbound"
 class InboundTransportManager:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.class_loader = ClassLoader(MODULE_BASE_PATH, BaseTransport)
+        self.class_loader = ClassLoader(MODULE_BASE_PATH, BaseInboundTransport)
 
         self.transports = []
 
