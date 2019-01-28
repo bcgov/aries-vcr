@@ -21,7 +21,7 @@ class InboundTransportManager:
                 imported_transport_module = import_module(module_path)
             except ModuleNotFoundError:
                 self.logger.warning(
-                    "Unable to import inbound transport module {}. "
+                    f"Unable to import inbound transport module {module_path}. "
                     + f"Module paths attempted: {relative_transport_path}, {module_path}"
                 )
                 return

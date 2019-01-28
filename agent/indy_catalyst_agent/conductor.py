@@ -9,6 +9,7 @@ import logging
 from typing import Dict
 
 from .dispatcher import Dispatcher
+from .logging import LoggingConfigurator
 from .storage.basic import BasicStorage
 from .messaging.agent_message import AgentMessage
 from .messaging.message_factory import MessageFactory
@@ -48,6 +49,11 @@ class Conductor:
         self.outbound_transport_manager.register("ws")
 
         await self.outbound_transport_manager.start_all()
+
+        LoggingConfigurator.print_banner(
+            self.inbound_transport_manager.transports,
+            self.outbound_transport_manager.registered_transports,
+        )
 
     async def inbound_message_router(self, message_dict: Dict) -> None:
         message = MessageFactory.make_message(message_dict)

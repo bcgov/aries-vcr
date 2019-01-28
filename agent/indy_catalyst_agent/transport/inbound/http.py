@@ -18,6 +18,7 @@ class Transport(BaseTransport):
         self.port = port
         self.message_router = message_router
 
+        self.scheme = 'http'
         self.logger = logging.getLogger(__name__)
 
     async def start(self) -> None:
