@@ -5,13 +5,15 @@ from importlib import import_module
 from typing import Type
 from urllib.parse import urlparse
 
+from .base import BaseOutboundTransport
 from .queue.base import BaseOutboundMessageQueue
 from .message import OutboundMessage
+from ...classloader import ClassLoader, ModuleLoadError, ClassNotFoundError
 
 MODULE_BASE_PATH = "indy_catalyst_agent.transport.outbound"
 
 
-class OutboundTransportManagerError(Exception):
+class OutboundTransportRegistrationError(Exception):
     pass
 
 
@@ -20,44 +22,33 @@ class OutboundTransportManager:
         self.logger = logging.getLogger(__name__)
         self.registered_transports = {}
         self.running_transports = {}
+        self.class_loader = ClassLoader(MODULE_BASE_PATH, BaseOutboundTransport)
 
         self.queue = queue
 
     def register(self, module_path):
-        # TODO: move this dynamic import stuff to a shared module
-        relative_transport_path = ".".join([MODULE_BASE_PATH, module_path])
-        try:
-            # First we try importing any built-in inbound transports by name
-            imported_transport_module = import_module(relative_transport_path)
-        except ModuleNotFoundError:
-            try:
-                # Then we try importing transports available in external modules
-                imported_transport_module = import_module(module_path)
-            except ModuleNotFoundError:
-                self.logger.warning(
-                    f"Unable to import outbound transport module {module_path}. "
-                    + f"Module paths attempted: {relative_transport_path}, {module_path}"
-                )
-                return
+        # try:
+        imported_class = self.class_loader.load(module_path, True)
+        # except (ModuleLoadError, ClassNotFoundError):
+            # raise OutboundTransportRegistrationError(f"Failed to load module {module_path}")
 
-        # TODO: find class based on inheritance of trusted base class instead of
-        #       looking for "Transport" attribute?
         try:
-            schemes = imported_transport_module.SCHEMES
-            transport_class = imported_transport_module.Transport
+            schemes = imported_class.schemes
         except AttributeError:
-            self.logger.error(f"OutboundTransports must define SCHEMES and Transport.")
-            return
+            raise OutboundTransportRegistrationError(
+                f"imported class {imported_class} does not specify a required 'schemes' attribute"
+            )
 
         for scheme in schemes:
             # A scheme can only be registered once
-            if scheme in self.registered_transports:
-                raise OutboundTransportManagerError(
-                    f"Cannot register transport '{module_path}' for '{scheme}' scheme"
-                    + f" because the scheme has already been registered."
-                )
+            for scheme_tuple in self.registered_transports.keys():
+                if scheme in scheme_tuple:
+                    raise OutboundTransportRegistrationError(
+                        f"cannot register transport '{module_path}' for '{scheme}' scheme"
+                        + f" because the scheme has already been registered"
+                    )
 
-        self.registered_transports[schemes] = transport_class
+        self.registered_transports[schemes] = imported_class
 
     async def start(self, schemes, transport):
         # All transports use the same queue implementation
@@ -73,7 +64,7 @@ class OutboundTransportManager:
         # Grab the scheme from the uri
         scheme = urlparse(uri).scheme
         if scheme == "":
-            self.logger.warn(f"The uri '{uri}' does not specify a scheme")
+            self.logger.warn(f"the uri '{uri}' does not specify a scheme")
             return
 
         # Look up transport that is registered to handle this scheme
@@ -84,7 +75,7 @@ class OutboundTransportManager:
                 if scheme in schemes
             )
         except StopIteration:
-            self.logger.warn(f"No transport driver exists to handle scheme '{scheme}'")
+            self.logger.warn(f"no transport driver exists to handle scheme '{scheme}'")
             return
 
         message = OutboundMessage(data=message, uri=uri)
