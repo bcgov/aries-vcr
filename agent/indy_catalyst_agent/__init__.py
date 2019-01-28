@@ -12,14 +12,24 @@ from .version import __version__
 parser = argparse.ArgumentParser(description="Runs an Indy Agent.")
 
 parser.add_argument(
-    "--transport",
-    dest="transports",
+    "--inbound-transport",
+    dest="inbound_transports",
     type=str,
     action="append",
     nargs=3,
     required=True,
     metavar=("<module>", "<host>", "<port>"),
     help="Choose which interface(s) to listen on",
+)
+
+parser.add_argument(
+    "--outbound-transport",
+    dest="outbound_transports",
+    type=str,
+    action="append",
+    required=True,
+    metavar="<module>",
+    help="Choose which outbound transport handlers to register",
 )
 
 parser.add_argument(
@@ -32,31 +42,33 @@ parser.add_argument(
 )
 
 
-async def start(transport_configs):
-    conductor = Conductor(transport_configs)
+async def start(inbound_transport_configs, outbound_transports):
+    conductor = Conductor(inbound_transport_configs, outbound_transports)
     await conductor.start()
 
 
 def main():
     args = parser.parse_args()
 
-    transport_configs = []
+    inbound_transport_configs = []
 
-    transports = args.transports
-    for transport in transports:
+    inbound_transports = args.inbound_transports
+    for transport in inbound_transports:
         module = transport[0]
         host = transport[1]
         port = transport[2]
-        transport_configs.append(
+        inbound_transport_configs.append(
             InboundTransportConfiguration(module=module, host=host, port=port)
         )
+
+    outbound_transports = args.outbound_transports
 
     logging_config = args.logging_config
     LoggingConfigurator.configure(logging_config)
 
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(start(transport_configs))
+        loop.run_until_complete(start(inbound_transport_configs, outbound_transports))
         loop.run_forever()
     except KeyboardInterrupt:
         print("\nShutting down")
