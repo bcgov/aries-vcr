@@ -36,7 +36,7 @@ class Dispatcher:
         handler_response = message  # echo for now
 
         # conn = Connection(endpoint="wss://0bc6628c.ngrok.io")
-        conn1 = Connection(endpoint="ws://25566605.ngrok.io")
+        conn1 = Connection(endpoint="http://25566605.ngrok.io")
         conn2 = Connection(endpoint="https://httpbin.org/status/400")
 
         # Potentially multicast to multiple 

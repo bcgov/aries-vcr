@@ -43,4 +43,4 @@ class WsTransport(BaseOutboundTransport):
                 await ws.send_json(message.data)
         except Exception as e:
             # TODO: add retry logic
-            self.logger.error(f"error handling outbound message: {str(e)}")
+            self.logger.error(f"Error handling outbound message: {str(e)}")

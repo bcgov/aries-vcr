@@ -6,21 +6,26 @@ from typing import Callable
 
 from aiohttp import web, WSMsgType
 
-from .base import BaseTransport
+from .base import BaseInboundTransport
 
 
 class WsSetupError(Exception):
     pass
 
 
-class Transport(BaseTransport):
+class Transport(BaseInboundTransport):
     def __init__(self, host: str, port: int, message_router: Callable) -> None:
         self.host = host
         self.port = port
         self.message_router = message_router
 
-        self.scheme = "ws"
+        # TODO: set scheme dynamically based on SSL settings (ws/wss)
+        self._scheme = "ws"
         self.logger = logging.getLogger(__name__)
+
+    @property
+    def scheme(self):
+        return self._scheme
 
     async def start(self) -> None:
         app = web.Application()

@@ -52,7 +52,7 @@ class Conductor:
             try:
                 self.outbound_transport_manager.register(outbound_transport)
             except Exception as e:
-                self.logger.warning(f"Unable to register outbound transport: {str(e)}")
+                self.logger.warning(f"Unable to register outbound transport. {str(e)}")
 
         await self.outbound_transport_manager.start_all()
 
