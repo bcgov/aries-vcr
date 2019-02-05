@@ -6,16 +6,21 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Google Tag Manager -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129194685-2"></script>
+  <!-- Fathom - simple website analytics - https://github.com/usefathom/fathom -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-129194685-2');
+    (function(f, a, t, h, o, m){
+      a[h]=a[h]||function(){
+        (a[h].q=a[h].q||[]).push(arguments)
+      };
+      o=f.createElement('script'),
+      m=f.getElementsByTagName('script')[0];
+      o.async=1; o.src=t; o.id='fathom-script';
+      m.parentNode.insertBefore(o,m)
+    })(document, window, '//fathom-proxy-devex-von-prod.pathfinder.gov.bc.ca/tracker.js', 'fathom');
+    fathom('set', 'siteId', 'WGWDN');
+    fathom('trackPageview');
   </script>
-  <!-- End Google Tag Manager -->
+  <!-- / Fathom -->
 
   <link rel="apple-touch-icon" href="/assets/bootstrap/bcid-apple-touch-icon.png" sizes="180x180">
   <link rel="icon" href="/assets/bootstrap/bcid-favicon-32x32.png" sizes="32x32" type="image/png">
@@ -37,10 +42,6 @@
   <meta property="og:description" content="OrgBook BC is a searchable public directory of open verifiable data about organizations legally registered in BC" />
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=UA-129194685-2"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
   <app-root class="fill-body">
     <div class="row mt-5">
       <div class="col-sm-12 page-load">
