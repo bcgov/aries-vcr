@@ -114,5 +114,12 @@ http {
             access_log off;
         }
 
+        # serve the fathom analytics tracking code, if available
+        location =/fathom.js {
+            root /tmp;
+            gzip            on;
+            gzip_min_length 1000;
+            gzip_types      *;
+        }
     }
 }

@@ -6,25 +6,7 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Fathom - simple website analytics - https://github.com/usefathom/fathom -->
-  <script>
-    var prodURLRegex = /^http(s?):\/\/(www\.)?orgbook\.gov\.bc\.ca/
-    if (prodURLRegex.test(window.location.href)) {
-      console.log('Trying to start analytics...');
-      (function(f, a, t, h, o, m){
-        a[h]=a[h]||function(){
-          (a[h].q=a[h].q||[]).push(arguments)
-        };
-        o=f.createElement('script'),
-        m=f.getElementsByTagName('script')[0];
-        o.async=1; o.src=t; o.id='fathom-script';
-        m.parentNode.insertBefore(o,m)
-      })(document, window, '//fathom-proxy-devex-von-prod.pathfinder.gov.bc.ca/tracker.js', 'fathom');
-      fathom('set', 'siteId', 'WGWDN');
-      fathom('trackPageview');
-    }
-  </script>
-  <!-- / Fathom -->
+  <script type="text/javascript" src="/fathom.js"></script>
 
   <link rel="apple-touch-icon" href="/assets/bootstrap/bcid-apple-touch-icon.png" sizes="180x180">
   <link rel="icon" href="/assets/bootstrap/bcid-favicon-32x32.png" sizes="32x32" type="image/png">
