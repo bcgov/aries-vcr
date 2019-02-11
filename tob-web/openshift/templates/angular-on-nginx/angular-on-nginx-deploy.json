@@ -45,6 +45,20 @@
             }
           },
           "spec": {
+            "volumes": [
+              {
+                "name": "${NAME}-blacklist-config-volume",
+                "configMap": {
+                  "name": "${BLACK_LIST_CONFIG_MAP_NAME}",
+                  "items": [
+                    {
+                      "key": "${BLACK_LIST_CONFIG_FILE_NAME}",
+                      "path": "${BLACK_LIST_CONFIG_FILE_NAME}"
+                    }
+                  ]
+                }
+              }
+            ],
             "containers": [
               {
                 "image": "${NAME}",
@@ -114,6 +128,13 @@
                     "memory": "${MEMORY_LIMIT}"
                   }
                 },
+                "volumeMounts": [
+                  {
+                    "name": "${NAME}-blacklist-config-volume",
+                    "mountPath": "${BLACK_LIST_CONFIG_MOUNT_PATH}${BLACK_LIST_CONFIG_FILE_NAME}",
+                    "subPath": "${BLACK_LIST_CONFIG_FILE_NAME}"
+                  }
+                ],
                 "livenessProbe": {
                   "httpGet": {
                     "path": "/nginx_status",
@@ -255,7 +276,6 @@
       "displayName": "App Group",
       "description": "The name assigned to all of the deployments in this project.",
       "required": true,
-
       "value": "tob"
     },
     {
@@ -303,6 +323,27 @@
       "displayName": "Ip Filter Rules",
       "name": "IpFilterRules",
       "value": ""
+    },
+    {
+      "name": "BLACK_LIST_CONFIG_FILE_NAME",
+      "displayName": "Config File Name",
+      "description": "The name of the configuration file.",
+      "required": true,
+      "value": "blacklist.conf"
+    },
+    {
+      "name": "BLACK_LIST_CONFIG_MAP_NAME",
+      "displayName": "Config Map Name",
+      "description": "The name of the configuration map.",
+      "required": true,
+      "value": "blacklist-conf"
+    },
+    {
+      "name": "BLACK_LIST_CONFIG_MOUNT_PATH",
+      "displayName": "Config Mount Path",
+      "description": "The path to use to mount the config file.",
+      "required": true,
+      "value": "/etc/nginx/"
     },
     {
       "description": "The exposed hostname that will route to the service, e.g., myappname.pathfinder.gov.bc.ca, if left blank a value will be defaulted.",
