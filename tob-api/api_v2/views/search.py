@@ -278,7 +278,7 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
                 end = LIMIT
         super(TopicSearchQuerySet, self)._fill_cache(start, end, **kwargs)
 
-    def count():
+    def count(self):
         ret = super(TopicSearchQuerySet, self).count()
         if ret > LIMIT:
             print(" >>> Limiting the query count", ret, LIMIT)
