@@ -7,9 +7,10 @@
 var fs = require('fs'),
   path = require('path');
 
-var THEME_NAME = process.env.TOB_THEME || 'bcgov';
+var THEME_NAME = process.env.TOB_THEME || 'default';
 if (THEME_NAME === '_active')
   throw 'Invalid theme name';
+var THEME_PATH = process.env.TOB_THEME_PATH;
 var TARGET_DIR = 'src/themes/_active';
 var THEMES_ROOT = 'src/themes';
 var LANG_ROOT = 'assets/i18n';
@@ -98,14 +99,22 @@ function populateDirSync(source_dir, target_dir) {
 }
 
 function copyThemeDir(theme_name, target_dir) {
-  var theme_dir = path.join(THEMES_ROOT, theme_name)
+  var theme_dir = path.join(THEMES_ROOT, theme_name);
+  if (theme_name !== 'default') {
+    theme_dir = path.join(THEME_PATH, theme_name);
+  }
+  try {
+    fs.accessSync(theme_dir, fs.constants.F_OK);
+  } catch (err) {
+    throw `Theme directory not found:  ${theme_dir}`
+  }
   try {
     fs.accessSync(theme_dir, fs.constants.R_OK);
   } catch (err) {
-    throw 'Theme directory not found or not readable: ' + theme_dir
+    throw `Theme directory not readable:  ${theme_dir}`
   }
   if (! fs.statSync(theme_dir).isDirectory()) {
-    throw 'Theme path is not a directory: ' + theme_dir
+    throw `Theme path is not a directory: ${theme_dir}`
   }
   populateDirSync(theme_dir, target_dir);
 }
@@ -189,9 +198,11 @@ function findLanguages(target_dir) {
 
 function resolveLangPaths(theme_name, language) {
   var ret = [];
-  var lang_path = path.join(THEMES_ROOT, theme_name, LANG_ROOT, language + '.json');
-  if (fs.existsSync(lang_path)) {
-    ret.push(lang_path);
+  if (THEME_PATH) {
+    var lang_path = path.join(THEME_PATH, theme_name, LANG_ROOT, language + '.json');
+    if (fs.existsSync(lang_path)) {
+      ret.push(lang_path);
+    }
   }
   if (theme_name !== 'default') {
     var def_path = path.join(THEMES_ROOT, 'default', LANG_ROOT, language + '.json');
@@ -223,9 +234,13 @@ function mergeDeep(target, ...sources) {
 
 // merge theme and default language files
 function combineLanguage(theme_name, target_dir) {
-  var langs = findLanguages(path.join(THEMES_ROOT, theme_name));
-  if (theme_name !== 'default')
+  var langs = new Array();
+  if (THEME_PATH) {
+    langs = findLanguages(path.join(THEME_PATH, theme_name));
+  }
+  if (theme_name !== 'default') {
     langs = langs.concat(findLanguages(path.join(THEMES_ROOT, 'default')));
+  }
   var lang_dir = path.join(target_dir, LANG_ROOT);
   for (var lang of new Set(langs)) {
     var paths = resolveLangPaths(theme_name, lang);
@@ -233,7 +248,11 @@ function combineLanguage(theme_name, target_dir) {
       paths.reverse();
       var input = [];
       for (var lang_path of paths) {
-        input.push(require('./' + lang_path));
+        if(lang_path.startsWith(THEMES_ROOT)) {
+          input.push(require('./' + lang_path));
+        } else {
+          input.push(require(lang_path));
+        }
       }
       var data = mergeDeep(...input);
       if(! ('app' in data)) data['app'] = {};
@@ -308,6 +327,9 @@ if(UPDATE_ONLY) {
 }
 else {
   console.log('Copying theme files to %s', TARGET_DIR);
+  if(THEME_PATH){
+    console.log('Custom theme directory: %s', THEME_PATH);
+  }
   console.log('Theme selected: %s', THEME_NAME);
   cleanTargetDir(TARGET_DIR);
 }

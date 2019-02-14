@@ -18,7 +18,6 @@ API_URL=https://dev-api.orgbook.gov.bc.ca/api/v2/
 APPLICATION_DOMAIN=dev.orgbook.gov.bc.ca
 TAG_NAME=dev
 # HTTP_BASIC=
-# TOB_THEME=bcgov
 # CPU_REQUEST=10m
 # CPU_LIMIT=250m
 # MEMORY_REQUEST=100Mi

@@ -116,10 +116,6 @@
                         "key": "api-password"
                       }
                     }
-                  },
-                  {
-                    "name": "TOB_THEME",
-                    "value": "${TOB_THEME}"
                   }
                 ],
                 "resources": {
@@ -366,12 +362,6 @@
       "displayName": "HTTP Basic Nginx Config Line",
       "name": "HTTP_BASIC",
       "value": ""
-    },
-    {
-      "name": "TOB_THEME",
-      "displayName": "TheOrgBook Theme Name",
-      "description": "The name of the theme to be used for the site.",
-      "value": "default"
     },
     {
       "name": "CPU_REQUEST",

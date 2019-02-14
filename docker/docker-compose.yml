@@ -12,7 +12,6 @@ services:
       - RealIpFrom=${RealIpFrom}
       - HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME}
       - HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD}
-      - TOB_THEME=${TOB_THEME}
       - WEB_BASE_HREF=${WEB_BASE_HREF}
       - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
     networks:
@@ -36,6 +35,7 @@ services:
       - NPM_CONFIG_LOGLEVEL=notice
       - NPM_RUN=dev
       - TOB_THEME=${TOB_THEME}
+      - TOB_THEME_PATH_DEV=${TOB_THEME_PATH_DEV}
       - WEB_BASE_HREF=${WEB_BASE_HREF}
       - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
     networks:
@@ -45,6 +45,7 @@ services:
       - 5858:5858
     volumes:
       - "../tob-web/src:/opt/app-root/src/src"
+      - "${TOB_THEME_PATH}:/tmp/tob-theme"
     depends_on:
       - tob-api
 
@@ -220,3 +221,4 @@ volumes:
   tob-data:
   tob-wallet:
   tob-wallet-db:
+  tob-web-empty:

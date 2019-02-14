@@ -132,7 +132,6 @@ if [ -n "$HTTP_BASIC_USERNAME" ] && [ -n "$HTTP_BASIC_PASSWORD" ]; then
 fi
 
 export RealIpFrom="${RealIpFrom:-172.51.0.0/16}"
-export TOB_THEME="${TOB_THEME:-}"
 export WEB_BASE_HREF="${WEB_BASE_HREF:-/}"
 export REMOVE_BASE_HREF=$(getRemoveBaseHref ${WEB_BASE_HREF})
 export API_URL=$(getApiUrl)
@@ -164,12 +163,11 @@ echo "IpFilterRules = ${IpFilterRules}"
 echo "AdditionalRealIpFromRules = ${AdditionalRealIpFromRules}"
 echo "API_URL = ${API_URL}"
 echo "HTTP_BASIC = ${HTTP_BASIC}"
-echo "TOB_THEME = ${TOB_THEME}"
 echo "WEB_BASE_HREF = ${WEB_BASE_HREF}"
 
 REPLACE_VARS="
   RealIpFrom IpFilterRules AdditionalRealIpFromRules
-  HTTP_BASIC TOB_THEME WEB_BASE_HREF REMOVE_BASE_HREF API_CONFIG_SECTION
+  HTTP_BASIC WEB_BASE_HREF REMOVE_BASE_HREF API_CONFIG_SECTION
 "
 
 sed "$(makeReplacementPattern $REPLACE_VARS)" /tmp/nginx.conf.template > /etc/nginx/nginx.conf
