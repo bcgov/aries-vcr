@@ -138,6 +138,7 @@ Icon
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
+.settings
 
 # Directories potentially created on remote AFP share
 .AppleDB
@@ -179,3 +180,34 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Indy Agent - genesis transaction file(s)
+genesis
+
+# Visual Studio Code
+.vscode
+.idea/*
+.vs
+
+out
+
+.gradle
+/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+*.crt
+*.key
+/tob-api/Pipfile
+/tob-api/Pipfile.lock
+
