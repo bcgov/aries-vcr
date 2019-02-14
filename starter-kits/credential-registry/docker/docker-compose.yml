@@ -44,7 +44,7 @@ services:
       - "${WEB_HTTP_PORT}:8080"
       - 5858:5858
     volumes:
-      - "../tob-web/src:/opt/app-root/src/src"
+      - "../client/tob-web/src:/opt/app-root/src/src"
       - "${TOB_THEME_PATH}:/tmp/tob-theme"
     depends_on:
       - tob-api
@@ -111,9 +111,9 @@ services:
       - ENABLE_REALTIME_INDEXING=${ENABLE_REALTIME_INDEXING}
       - APPLICATION_URL=${APPLICATION_URL}
     volumes:
-      - ../tob-api/api:/home/indy/api
-      - ../tob-api/tob_api:/home/indy/tob_api
-      - ../tob-api/api_v2:/home/indy/api_v2
+      - ../server/tob-api/api:/home/indy/api
+      - ../server/tob-api/tob_api:/home/indy/tob_api
+      - ../server/tob-api/api_v2:/home/indy/api_v2
       - tob-wallet:/home/indy/.indy_client/wallet
     networks:
       - tob
