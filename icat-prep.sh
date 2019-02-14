@@ -1,18 +1,18 @@
 # This script re-orgs the OrgBook repo in preparation for merge into indy-catalyst
 #
 # Before running this script:
-# - create a new branch (e.g. merge_test) so a to not screw up master
+# - create a new branch (icat_merge_pre) so as to not screw up master
 #
 # Run this script from TheOrgBook root
 #
 # After running this script:
-# - commit into github (into the new branch)
+# - commit into github (into the new branch icat_merge_pre)
 #
 # In the indy-catalyst repo:
-# - start on a new branch (for safety)
+# - start on a new branch (for safety = icat_merge_post)
 # - git remote add orgbook https://github.com/bcgov/TheOrgBook.git
 # - git fetch orgbook
-# - git merge orgbook/merge-test --allow-unrelated-histories (or whatever you called your branch)
+# - git merge orgbook/icat_merge_pre --allow-unrelated-histories 
 #
 # To build the starter kit (server):
 # - cd to credential-registry/server
