@@ -109,14 +109,14 @@ build-web() {
   echo -e "\nBuilding nginx-runtime image ..."
   docker build -q \
     -t 'nginx-runtime' \
-    -f '../tob-web/openshift/templates/nginx-runtime/Dockerfile' '../tob-web/openshift/templates/nginx-runtime/'
+    -f '../../../credential-registry/client/tob-web/openshift/templates/nginx-runtime/Dockerfile' '../../../credential-registry/client/tob-web/openshift/templates/nginx-runtime/'
 
   # This image only exists to pre-create the npm cache directory
   # so it can be properly used as a volume, it doesn't apply to openshift
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
-    -f '../tob-web/openshift/templates/nodejs-build/Dockerfile' '../tob-web/openshift/templates/nodejs-build/'
+    -f '../../../credential-registry/client/tob-web/openshift/templates/nodejs-build/Dockerfile' '../../../credential-registry/client/tob-web/openshift/templates/nodejs-build/'
 
   if [ -t 0 ]; then
     # color npm output in interactive terminal
@@ -140,7 +140,7 @@ build-web() {
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
-      '../tob-web' \
+      '../../../credential-registry/client/tob-web' \
       'nodejs-build' \
       'angular-on-nginx'
   else
@@ -158,7 +158,7 @@ build-web() {
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
-      '../tob-web' \
+      '../../../credential-registry/client/tob-web' \
       'nodejs-build' \
       'angular-on-nginx'
   fi
@@ -172,7 +172,7 @@ build-web-dev() {
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
-    -f '../tob-web/openshift/templates/nodejs-build/Dockerfile' '../tob-web/openshift/templates/nodejs-build/'
+    -f '../client/tob-web/openshift/templates/nodejs-build/Dockerfile' '../client/tob-web/openshift/templates/nodejs-build/'
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
@@ -190,7 +190,7 @@ build-web-dev() {
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../tob-web' \
+      '../client/tob-web' \
       'nodejs-build' \
       'angular-dev'
   else
@@ -207,7 +207,7 @@ build-web-dev() {
       -e "TOB_THEME_PATH=${TOB_THEME_PATH_DEV}" \
       -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../tob-web' \
+      '../client/tob-web' \
       'nodejs-build' \
       'angular-dev'
   fi
@@ -226,7 +226,7 @@ build-solr() {
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-    '../tob-solr/cores' \
+    '../server/tob-solr/cores' \
     'solr-base' \
     'solr'
 }
@@ -239,7 +239,7 @@ build-db() {
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-    '../tob-db/config' \
+    '../server/tob-db/config' \
     'registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest' \
     'postgresql'
 }
@@ -258,14 +258,23 @@ build-api() {
   #
   # tob-api
   #
-  BASE_IMAGE="bcgovimages/von-image:py36-1.7-ew-0-s2i"
+  echo -e "\nBuilding indy cat api image ..."
+  docker build -q \
+    -t 'indycat-api-build' \
+    -f '../../../credential-registry/server/django-icat-api/Dockerfile' '../../../credential-registry/server/django-icat-api/'
+  echo -e "\nBuilding indy cat indy api image ..."
+  docker build -q \
+    -t 'indycat-indyapi-build' \
+    -f '../../../credential-registry/server/python-indy-api/Dockerfile' '../../../credential-registry/server/python-indy-api/'
+  BASE_IMAGE="indycat-indyapi-build"
+  #BASE_IMAGE="bcgovimages/von-image:py36-1.7-ew-0-s2i"
   echo -e "\nBuilding django image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     -e "PIP_NO_CACHE_DIR=" \
     -v "${COMPOSE_PROJECT_NAME}_tob-pip-cache:/home/indy/.cache/pip" \
-    '../tob-api' \
+    '../server/tob-api' \
     "$BASE_IMAGE" \
     'django'
 }
@@ -432,7 +441,7 @@ deleteVolumes() {
   fi
 
   echo "Removing build cache ..."
-  rm -Rf ../tob-web/.cache
+  rm -Rf ../client/tob-web/.cache
 }
 
 registerDids() {
