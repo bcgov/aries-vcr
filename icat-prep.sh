@@ -2,6 +2,8 @@
 #
 # Before running this script:
 # - create a new branch (icat_merge_pre) so as to not screw up master
+# - git checkout -b icat_merge_pre
+# - git push --set-upstream origin icat_merge_pre
 #
 # Run this script from TheOrgBook root
 #
