@@ -19,7 +19,7 @@
 # To build the starter kit (server):
 # - cd to credential-registry/server
 # - ./icat-py-build.sh # builds packages for tob-api
-# - cd to starter-kits/credential-registry/server/docker
+# - cd to starter-kits/credential-registry/docker
 # - update manage script (see README files in the above credential-registry/server sub-directories)
 # - ./manage build
 # - ./manage start
@@ -49,6 +49,7 @@ mv starter-kits/credential-registry/server/tob-web credential-registry/client/
 mkdir starter-kits/credential-registry/client/tob-web/
 mkdir starter-kits/credential-registry/client/tob-web/themes/
 cp -r credential-registry/client/tob-web/src/themes/ starter-kits/credential-registry/client/tob-web/themes/
+mv credential-registry/client/tob-web/openshift/ starter-kits/credential-registry/client/tob-web/
 mv starter-kits/credential-registry/server/docker starter-kits/credential-registry/
 
 rm starter-kits/credential-registry/server/Deploy*
