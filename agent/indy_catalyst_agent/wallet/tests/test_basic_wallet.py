@@ -33,11 +33,7 @@ class TestBasicWallet:
     test_message_bytes = b"test message bytes"
     missing_did = "YVnYBGTdjZUoQXKQjHV87i"
     missing_verkey = "JAfHCRDH9ZW5E7m4mofjr8cpAHaZdiRQ94it75aXUPK3"
-    test_signature = (
-        b"\xd6\x98\x04\x88\xd2-\xc1D\x02\x15\xc9Z\x9bK \x8f\xe0\x8b5\xd0Z$"
-        b"\xe3\x02\x19\xa1\xb3\x86\xfa2\x07\xc8\xbd3-\x1c\xc4\x8d\x8e\xa3\x9be"
-        b"\xea\xcf\x8bc\xfa_\x0c\xb2jE\xe4}\x12+\xbc0\x01l\xdb\x97\xf6\x02"
-    )
+    test_signature = b"\xd6\x98\x04\x88\xd2-\xc1D\x02\x15\xc9Z\x9bK \x8f\xe0\x8b5\xd0Z$" b"\xe3\x02\x19\xa1\xb3\x86\xfa2\x07\xc8\xbd3-\x1c\xc4\x8d\x8e\xa3\x9be" b"\xea\xcf\x8bc\xfa_\x0c\xb2jE\xe4}\x12+\xbc0\x01l\xdb\x97\xf6\x02"
 
     @pytest.mark.asyncio
     async def test_create_signing_key_random(self, wallet):
@@ -85,7 +81,7 @@ class TestBasicWallet:
         with pytest.raises(WalletDuplicateError):
             await wallet.create_local_did(self.test_seed, None)
         with pytest.raises(WalletError):
-            _ = await wallet.create_local_did("invalid-seed", None)
+            _info = await wallet.create_local_did("invalid-seed", None)
 
     @pytest.mark.asyncio
     async def test_create_local_with_did(self, wallet):
@@ -110,9 +106,9 @@ class TestBasicWallet:
         assert info3.verkey == self.test_verkey
 
         with pytest.raises(WalletNotFoundError):
-            _ = await wallet.get_local_did(self.missing_did)
+            _info = await wallet.get_local_did(self.missing_did)
         with pytest.raises(WalletNotFoundError):
-            _ = await wallet.get_local_did_for_verkey(self.missing_verkey)
+            _info = await wallet.get_local_did_for_verkey(self.missing_verkey)
 
     @pytest.mark.asyncio
     async def test_local_metadata(self, wallet):
@@ -169,7 +165,7 @@ class TestBasicWallet:
     @pytest.mark.asyncio
     async def test_pairwise_metadata(self, wallet):
         await wallet.create_local_did(self.test_seed, self.test_did)
-        _ = await wallet.create_pairwise(
+        _pair_created = await wallet.create_pairwise(
             self.test_target_did, self.test_target_verkey, None, self.test_metadata
         )
 
@@ -223,9 +219,9 @@ class TestBasicWallet:
         assert to_verkey == self.test_target_verkey
 
         with pytest.raises(WalletError):
-            unpacked_auth, from_verkey, to_verkey = await wallet.unpack_message(b"bad")
+            unpacked_auth, from_verkey, to_verkey = await wallet.unpack_message(b'bad')
         with pytest.raises(WalletError):
-            unpacked_auth, from_verkey, to_verkey = await wallet.unpack_message(b"{}")
+            unpacked_auth, from_verkey, to_verkey = await wallet.unpack_message(b'{}')
 
     @pytest.mark.asyncio
     async def test_encrypt_decrypt_dids(self, wallet):
@@ -237,7 +233,7 @@ class TestBasicWallet:
             encrypted_msg, self.test_verkey, False
         )
         assert decrypted_msg == self.test_message_bytes
-        assert sender_verkey is None
+        assert sender_verkey == None
 
         await wallet.create_local_did(self.test_target_seed, self.test_target_did)
         encrypted_msg = await wallet.encrypt_message(
@@ -259,7 +255,7 @@ class TestBasicWallet:
             encrypted_msg, key_info.verkey, False
         )
         assert decrypted_msg == self.test_message_bytes
-        assert sender_verkey is None
+        assert sender_verkey == None
 
         target_key_info = await wallet.create_signing_key()
         encrypted_msg = await wallet.encrypt_message(

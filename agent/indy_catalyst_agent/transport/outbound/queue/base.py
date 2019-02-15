@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class BaseOutboundMessageQueue(ABC):
-    """ """
     @abstractmethod
     async def enqueue(self, message):
         pass

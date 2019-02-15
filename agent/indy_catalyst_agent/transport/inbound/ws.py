@@ -1,4 +1,7 @@
+import asyncio
+import json
 import logging
+import socket
 from typing import Callable
 
 from aiohttp import web, WSMsgType
@@ -35,8 +38,7 @@ class Transport(BaseInboundTransport):
             await site.start()
         except OSError:
             raise WsSetupError(
-                "Unable to start webserver with host "
-                + f"'{self.host}' and port '{self.port}'\n"
+                f"Unable to start webserver with host '{self.host}' and port '{self.port}'\n"
             )
 
     async def inbound_message_handler(self, request):

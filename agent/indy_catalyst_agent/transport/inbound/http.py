@@ -1,4 +1,6 @@
+import json
 import logging
+import socket
 from typing import Callable
 
 from aiohttp import web
@@ -36,8 +38,7 @@ class Transport(BaseInboundTransport):
             await site.start()
         except OSError:
             raise HttpSetupError(
-                "Unable to start webserver with host "
-                + f"'{self.host}' and port '{self.port}'\n"
+                f"Unable to start webserver with host '{self.host}' and port '{self.port}'\n"
             )
 
     async def inbound_message_handler(self, request: web.BaseRequest):
@@ -49,8 +50,8 @@ class Transport(BaseInboundTransport):
         try:
             await self.message_router(body, self._scheme)
         except Exception as e:
-            self.logger.exception("Error handling message")
             error_message = f"Error handling message: {str(e)}"
+            self.logger.error(error_message)
             return web.json_response(
                 {"success": False, "message": error_message}, status=400
             )
@@ -58,10 +59,10 @@ class Transport(BaseInboundTransport):
         return web.Response(status=200)
 
     async def invite_message_handler(self, request: web.BaseRequest):
-        invite = request.query.get("invite")
+        invite = request.query.get("c_i")
         if invite:
             invite = b64_to_bytes(invite, urlsafe=True)
             await self.message_router(invite, "invitation")
             return web.Response(text="Invitation received")
         else:
-            return web.Response(text="To send an invitation add ?invite=<base64invite>")
+            return web.Response(text="To send an invitation add ?c_i=<base64invite>")

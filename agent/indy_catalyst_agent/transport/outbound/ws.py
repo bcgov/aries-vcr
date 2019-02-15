@@ -1,11 +1,14 @@
 """
-Connects to another agent as a websocket client.
+This can be used to connect and send messages as a websocket _client_ only
 """
 
-
+import asyncio
+import json
 import logging
+import socket
+from typing import Callable
 
-from aiohttp import ClientSession
+from aiohttp import web, ClientSession, WSMsgType
 
 from .message import OutboundMessage
 from .base import BaseOutboundTransport
@@ -13,7 +16,6 @@ from .queue.base import BaseOutboundMessageQueue
 
 
 class WsTransport(BaseOutboundTransport):
-
     schemes = ("ws", "wss")
 
     def __init__(self, queue: BaseOutboundMessageQueue) -> None:

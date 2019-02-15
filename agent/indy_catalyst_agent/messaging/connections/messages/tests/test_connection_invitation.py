@@ -35,8 +35,7 @@ class TestConnectionInvitation(TestCase):
         assert connection_invitation._type == MessageTypes.CONNECTION_INVITATION.value
 
     @mock.patch(
-        "indy_catalyst_agent.messaging.connections.messages."
-        + "connection_invitation.ConnectionInvitationSchema.load"
+        "indy_catalyst_agent.messaging.connections.messages.connection_invitation.ConnectionInvitationSchema.load"
     )
     def test_deserialize(self, mock_connection_invitation_schema_load):
         obj = {"obj": "obj"}
@@ -49,8 +48,7 @@ class TestConnectionInvitation(TestCase):
         )
 
     @mock.patch(
-        "indy_catalyst_agent.messaging.connections.messages."
-        + "connection_invitation.ConnectionInvitationSchema.dump"
+        "indy_catalyst_agent.messaging.connections.messages.connection_invitation.ConnectionInvitationSchema.dump"
     )
     def test_serialize(self, mock_connection_invitation_schema_dump):
         connection_invitation = ConnectionInvitation(
@@ -72,12 +70,12 @@ class TestConnectionInvitation(TestCase):
 
 
 class TestConnectionInvitationSchema(TestCase):
-
     connection_invitation = ConnectionInvitation(
-        label="label", did="did:sov:QmWbsNYhMrjHiqZDTUTEJs"
+        label="label",
+        did="did:sov:QmWbsNYhMrjHiqZDTUTEJs"
     )
 
     def test_make_model(self):
         data = self.connection_invitation.serialize()
         model_instance = ConnectionInvitation.deserialize(data)
-        assert isinstance(model_instance, ConnectionInvitation)
+        assert type(model_instance) is type(self.connection_invitation)

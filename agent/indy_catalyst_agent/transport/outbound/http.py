@@ -1,6 +1,10 @@
+import asyncio
+import json
 import logging
+import socket
+from typing import Callable
 
-from aiohttp import ClientSession
+from aiohttp import web, ClientSession, WSMsgType
 
 from .message import OutboundMessage
 from .base import BaseOutboundTransport
@@ -8,7 +12,6 @@ from .queue.base import BaseOutboundMessageQueue
 
 
 class HttpTransport(BaseOutboundTransport):
-
     schemes = ("http", "https")
 
     def __init__(self, queue: BaseOutboundMessageQueue) -> None:
@@ -30,15 +33,11 @@ class HttpTransport(BaseOutboundTransport):
 
     async def handle_message(self, message: OutboundMessage):
         try:
-            headers = {}
-            if isinstance(message.data, bytes):
-                headers["Content-Type"] = "application/ssi-agent-wire"
-            else:
-                headers["Content-Type"] = "application/json"
             async with self.client_session.post(
-                message.uri, data=message.data, headers=headers,
+                message.uri, data=message.data
             ) as response:
                 self.logger.info(response.status)
         except Exception:
             # TODO: add retry logic
             self.logger.exception("Error handling outbound message")
+

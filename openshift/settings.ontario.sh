@@ -1,1 +1,0 @@
-export PROJECT_NAMESPACE="ontvon-von"

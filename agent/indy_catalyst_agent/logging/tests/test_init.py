@@ -24,3 +24,4 @@ class TestLoggingConfigurator:
         LoggingConfigurator.configure(path)
 
         mock_file_config.assert_called_once_with(path, disable_existing_loggers=True)
+
