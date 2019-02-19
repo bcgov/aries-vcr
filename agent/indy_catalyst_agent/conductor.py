@@ -42,6 +42,7 @@ class Conductor:
         message_factory: MessageFactory, settings: dict,
     ) -> None:
         self.context = None
+        self.connection_mgr = None
         self.logger = logging.getLogger(__name__)
         self.message_factory = message_factory
         self.inbound_transport_configs = transport_configs
@@ -68,6 +69,7 @@ class Conductor:
         context.storage = ClassLoader.load_class(storage_type)(context.wallet)
 
         self.context = context
+        self.connection_mgr = ConnectionManager(context)
         self.dispatcher = Dispatcher()
 
         # Register all inbound transports
@@ -106,27 +108,52 @@ class Conductor:
             if not test_seed:
                 test_seed = "testseed000000000000000000000001"
         if test_seed:
-            _did_info = await context.wallet.create_local_did(test_seed)
+            await context.wallet.create_local_did(test_seed)
+
+        # Print an invitation to the terminal
+        if self.settings.get("debug.print_invitation"):
+            try:
+                invitation = await self.connection_mgr.create_invitation(
+                    context.default_label, context.default_endpoint
+                )
+                await self.connection_mgr.store_invitation(invitation, False)
+                invite_url = invitation.to_url()
+                print("\nCreated invitation:")
+                print(invite_url)
+            except Exception:
+                self.logger.exception("Error sending invitation")
 
         # Auto-send an invitation to another agent
         send_invite_to = self.settings.get("debug.send_invitation_to")
-        try:
-            if send_invite_to:
-                mgr = ConnectionManager(context)
-                invitation = await mgr.create_invitation(context.default_label, context.default_endpoint)
-                await mgr.store_invitation(invitation, False)
-                await mgr.send_invitation(invitation, send_invite_to)
-        except Exception:
-            self.logger.exception("Error sending invitation")
+        if send_invite_to:
+            try:
+                invitation = await self.connection_mgr.create_invitation(
+                    context.default_label, context.default_endpoint
+                )
+                await self.connection_mgr.store_invitation(invitation, False)
+                await self.connection_mgr.send_invitation(invitation, send_invite_to)
+            except Exception:
+                self.logger.exception("Error sending invitation")
 
-
-    async def inbound_message_router(self, message_body: Union[str, bytes], transport_type: str, reply: Coroutine = None):
-        context = await self.context.expand_message(message_body, transport_type)
-        result = await self.dispatcher.dispatch(context, self.outbound_message_router, reply)
+    async def inbound_message_router(
+        self,
+        message_body: Union[str, bytes],
+        transport_type: str,
+        reply: Coroutine = None,
+    ):
+        """
+        Routes inbound messages.
+        """
+        context = await self.connection_mgr.expand_message(message_body, transport_type)
+        result = await self.dispatcher.dispatch(
+            context, self.outbound_message_router, reply
+        )
         # TODO: need to use callback instead?
         #       respond immediately after message parse in case of req-res transport?
         return result.serialize() if result else None
 
-    async def outbound_message_router(self, message: AgentMessage, target: ConnectionTarget) -> None:
-        payload = await self.context.compact_message(message, target)
+    async def outbound_message_router(
+        self, message: AgentMessage, target: ConnectionTarget
+    ) -> None:
+        payload = await self.connection_mgr.compact_message(message, target)
         await self.outbound_transport_manager.send_message(payload, target.endpoint)
