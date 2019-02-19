@@ -5,17 +5,21 @@ Connection management
 import json
 import logging
 
-import aiohttp
+from typing import Tuple, Union
 
 from .error import BaseError
+from .messaging.agent_message import AgentMessage
 from .messaging.connections.messages.connection_invitation import ConnectionInvitation
 from .messaging.connections.messages.connection_request import ConnectionRequest
 from .messaging.connections.messages.connection_response import ConnectionResponse
+from .messaging.message_factory import MessageParseError
 from .messaging.request_context import RequestContext
 from .models.connection_detail import ConnectionDetail
 from .models.connection_target import ConnectionTarget
 from .models.thread_decorator import ThreadDecorator
-from .storage import StorageRecord, StorageNotFoundError
+from .storage.error import StorageNotFoundError
+from .storage.record import StorageRecord
+from .wallet.error import WalletError, WalletNotFoundError
 from .wallet.util import bytes_to_b64
 
 from von_anchor.a2a import DIDDoc
@@ -23,8 +27,21 @@ from von_anchor.a2a.publickey import PublicKey, PublicKeyType
 from von_anchor.a2a.service import Service
 
 
-class ConnectionError(BaseError):
-    pass
+class ConnectionManagerError(BaseError):
+    """Connection error."""
+
+
+class ConnectionRecord:
+    STATE_INVITED = "invited"
+    STATE_REQUESTED = "requested"
+    STATE_RESPONDED = "responded"
+    STATE_COMPLETE = "complete"
+
+    """Assembles connection state and target information"""
+
+    def __init__(self, state: str, target: ConnectionTarget):
+        self.state = state
+        self.target = target
 
 
 class ConnectionManager:
@@ -80,8 +97,8 @@ class ConnectionManager:
         """
         Deliver an invitation to an HTTP endpoint
         """
-        self._logger.debug(f"Sending invitation to {endpoint}")
-        invite_json = json.dumps(invitation.serialize())
+        self._logger.debug("Sending invitation to %s", endpoint)
+        invite_json = invitation.to_json()
         invite_b64 = bytes_to_b64(invite_json.encode("ascii"), urlsafe=True)
         async with aiohttp.ClientSession() as session:
             await session.get(endpoint, params={"c_i": invite_b64})
@@ -112,8 +129,12 @@ class ConnectionManager:
         """
         Locate a previously-received invitation
         """
-        self._logger.debug("Looking up %s invitation: %s", "incoming" if received else "outgoing", invitation_id)
-        # raises exception if not found
+        self._logger.debug(
+            "Looking up %s invitation: %s",
+            "incoming" if received else "outgoing",
+            invitation_id,
+        )
+        # raises StorageNotFoundError if not found
         result = await self.context.storage.get_record(
             "received_invitation" if received else "sent_invitation",
             invitation_id,
@@ -125,11 +146,8 @@ class ConnectionManager:
         """
         Remove a previously-stored invitation
         """
-        # raises exception if not found
-        await self.context.storage.delete_record(
-            "invitation",
-            invitation_id,
-        )
+        # raises StorageNotFoundError if not found
+        await self.context.storage.delete_record("invitation", invitation_id)
 
     async def accept_invitation(
             self,
@@ -159,7 +177,9 @@ class ConnectionManager:
         did_doc = DIDDoc(did=my_info.did)
         controller = my_info.did
         value = my_info.verkey
-        pk = PublicKey(my_info.did, "1", PublicKeyType.ED25519_SIG_2018, controller, value, False)
+        pk = PublicKey(
+            my_info.did, "1", PublicKeyType.ED25519_SIG_2018, controller, value, True
+        )
         did_doc.verkeys.append(pk)
         service = Service(my_info.did, "indy", "IndyAgent", my_endpoint)
         did_doc.services.append(service)
@@ -224,10 +244,11 @@ class ConnectionManager:
             try:
                 invitation, _inv_tags = await self.find_invitation(connection_key, False)
             except StorageNotFoundError:
-                #temporarily disabled
-                #raise ConnectionError("No invitation found for pairwise connection")
+                # temporarily disabled - not requiring an existing invitation
+                # raise ConnectionManagerError(
+                #   "No invitation found for pairwise connection")
                 pass
-        self._logger.debug(f"Found invitation: {invitation}")
+        self._logger.debug("Found invitation: %s", invitation)
         if not my_endpoint:
             my_endpoint = self.context.default_endpoint
 
@@ -245,6 +266,7 @@ class ConnectionManager:
             {
                 "label": their_label,
                 "endpoint": their_endpoint,
+                "state": ConnectionRecord.STATE_RESPONDED,
                 # TODO: store established & last active dates
             }
         )
@@ -253,7 +275,9 @@ class ConnectionManager:
         did_doc = DIDDoc(did=my_did)
         controller = my_did
         value = pairwise.my_verkey
-        pk = PublicKey(my_did, "1", PublicKeyType.ED25519_SIG_2018, controller, value, False)
+        pk = PublicKey(
+            my_did, "1", PublicKeyType.ED25519_SIG_2018, controller, value, True
+        )
         did_doc.verkeys.append(pk)
         service = Service(my_did, "indy", "IndyAgent", my_endpoint)
         did_doc.services.append(service)
@@ -268,7 +292,7 @@ class ConnectionManager:
             self.context.recipient_verkey,
             self.context.wallet
         )
-        self._logger.debug(f"Created connection response for {their_did}")
+        self._logger.debug("Created connection response for %s", their_did)
 
         # response must be sent to their_endpoint, packed with their_verkey and pairwise.my_verkey
         target = ConnectionTarget(
@@ -283,6 +307,14 @@ class ConnectionManager:
         Process a ConnectionResponse message by looking up
         the connection request and setting up the pairwise connection
         """
+        if response._thread:
+            request_id = response._thread.thid
+            request = await self.find_request(request_id)
+            my_did = request.connection.did
+        else:
+            my_did = self.context.recipient_did
+        if not my_did:
+            raise ConnectionManagerError(f"No DID associated with connection response")
 
         request_id = response._thread.thid
         request = await self.find_request(request_id)
@@ -298,8 +330,9 @@ class ConnectionManager:
         if not their_endpoint:
             their_endpoint = my_info.metadata.get("their_endpoint")
         if not their_label:
-            # local DID not associated with a connection
-            raise ConnectionError()
+            raise ConnectionManagerError(
+                f"DID not associated with a connection: {my_did}"
+            )
 
         # update local DID metadata to mark connection as accepted, prevent multiple responses?
         # may also set a creation time on the local DID to allow request expiry
@@ -318,10 +351,17 @@ class ConnectionManager:
             {
                 "label": their_label,
                 "endpoint": their_endpoint,
+                "state": ConnectionRecord.STATE_RESPONDED,
                 # TODO: store established & last active dates
             }
         )
-        self._logger.debug(f"Accepted connection response from {their_did}")
+
+        # Store their_verkey on the local DID so we can find the pairwise record
+        upd_did_meta = my_info.metadata.copy()
+        upd_did_meta["their_verkey"] = their_verkey
+        await self.context.wallet.replace_local_did_metadata(my_did, upd_did_meta)
+
+        self._logger.debug("Accepted connection response from %s", their_did)
 
         target = ConnectionTarget(
             endpoint=their_endpoint,
@@ -331,3 +371,154 @@ class ConnectionManager:
         # Caller may wish to send a Trust Ping to verify the endpoint
         # and confirm the connection
         return target
+
+    async def find_connection(
+        self, my_verkey: str, their_verkey: str, auto_complete=False
+    ) -> dict:
+        """Look up existing connection information for a sender verkey"""
+        try:
+            pairwise = await self.context.wallet.get_pairwise_for_verkey(their_verkey)
+        except WalletNotFoundError:
+            pairwise = None
+
+        if pairwise:
+            pairwise_state = pairwise.metadata.get("state")
+            pair_meta = pairwise.metadata
+            pair_endp = pair_meta.get("endpoint")
+            if pairwise_state == ConnectionRecord.STATE_RESPONDED and auto_complete:
+                # automatically promote state when a subsequent message is received
+                pairwise_state = ConnectionRecord.STATE_COMPLETE
+                pair_meta = pair_meta.copy()
+                pair_meta.update({"state": pairwise_state})
+                await self.context.wallet.replace_pairwise_metadata(
+                    pairwise.their_did, pair_meta
+                )
+                self._logger.debug("Connection promoted to active: %s", their_verkey)
+            elif pairwise_state != ConnectionRecord.STATE_COMPLETE or not pair_endp:
+                # something wrong with the state
+                self._logger.error("Discarding pairwise record, unexpected state")
+                return None
+            return ConnectionRecord(
+                pairwise_state,
+                ConnectionTarget(
+                    did=pairwise.their_did,
+                    endpoint=pair_endp,
+                    label=pair_meta.get("label"),
+                    recipient_keys=[pairwise.their_verkey],
+                    sender_key=pairwise.my_verkey,
+                ),
+            )
+
+        try:
+            did_info = await self.context.wallet.get_local_did(my_verkey)
+        except WalletNotFoundError:
+            did_info = None
+        if did_info:
+            did_meta = did_info.metadata
+            if did_meta.get("their_verkey"):
+                # their_verkey indicates that the connection has been completed,
+                # but we didn't find a pairwise record so it must not be active
+                self._logger.error("Discarding connection record, missing pairwise")
+                return None
+
+            if did_meta.get("their_did") or did_meta.get("their_endpoint"):
+                return ConnectionRecord(
+                    ConnectionRecord.STATE_REQUESTED,
+                    ConnectionTarget(
+                        did=did_meta.get("their_did"),
+                        endpoint=did_info.metadata.get("their_endpoint"),
+                        label=did_meta.get("their_label"),
+                        recipient_keys=[their_verkey],
+                        sender_key=my_verkey,
+                    ),
+                )
+            else:
+                self._logger.error("Discarding connection record, no DID or endpoint")
+                return None
+
+        try:
+            invitation, _tags = await self.find_invitation(my_verkey, False)
+        except StorageNotFoundError:
+            return None
+        return ConnectionRecord(
+            ConnectionRecord.STATE_INVITED, None  # no target information available
+        )
+
+    async def expand_message(
+        self, message_body: Union[str, bytes], transport_type: str
+    ) -> RequestContext:
+        """
+        Deserialize an incoming message and further populate the request context
+        """
+        if not self.context.message_factory:
+            raise MessageParseError("Message factory not defined")
+        if not self.context.wallet:
+            raise MessageParseError("Wallet not defined")
+
+        message_dict = None
+        message_json = message_body
+        from_verkey = None
+        to_verkey = None
+
+        if isinstance(message_body, bytes):
+            try:
+                message_json, from_verkey, to_verkey = \
+                    await self.context.wallet.unpack_message(
+                        message_body
+                    )
+            except WalletError:
+                self._logger.debug("Message unpack failed, trying JSON")
+
+        try:
+            message_dict = json.loads(message_json)
+        except ValueError:
+            raise MessageParseError("Message JSON parsing failed")
+        self._logger.debug(f"Extracted message: {message_dict}")
+
+        ctx = self.context.copy()
+        ctx.message = ctx.message_factory.make_message(message_dict)
+        ctx.transport_type = transport_type
+
+        if from_verkey:
+            # must be a packed message for from_verkey to be populated
+            ctx.sender_verkey = from_verkey
+            conn = await self.find_connection(to_verkey, from_verkey, True)
+            if conn:
+                ctx.connection_active = conn.state == conn.STATE_COMPLETE
+                ctx.connection_target = conn.target
+                if conn.target:
+                    ctx.sender_did = conn.target.did
+
+        if to_verkey:
+            ctx.recipient_verkey = to_verkey
+            try:
+                did_info = await self.context.wallet.get_local_did_for_verkey(to_verkey)
+            except WalletNotFoundError:
+                did_info = None
+            if did_info:
+                ctx.recipient_did = did_info.did
+            # TODO set ctx.recipient_did_public if DID is published to the ledger
+            # could also choose to set ctx.default_endpoint and ctx.default_label
+            # (these things could be stored on did_info.metadata)
+
+        # look up thread information
+
+        # handle any other decorators having special behaviour (timing, trace, etc)
+
+        return ctx
+
+    async def compact_message(
+        self, message: AgentMessage, target: ConnectionTarget
+    ) -> Union[str, bytes]:
+        """
+        Serialize an outgoing message for transport
+        """
+        message_dict = message.serialize()
+        message_json = json.dumps(message_dict)
+        if target.sender_key and target.recipient_keys:
+            message = await self.context.wallet.pack_message(
+                message_json, target.recipient_keys, target.sender_key
+            )
+        else:
+            message = message_json
+        return message

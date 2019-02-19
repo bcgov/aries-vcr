@@ -1,7 +1,9 @@
 from .messaging.message_factory import MessageFactory
 from .messaging.message_types import MessageTypes
 
-from .messaging.connections import MESSAGE_TYPES as CONNECTION_MESSAGES
+from .messaging.basicmessage.message_types import MESSAGE_TYPES as BASICMESSAGE_MESSAGES
+from .messaging.connections.message_types import MESSAGE_TYPES as CONNECTION_MESSAGES
+from .messaging.trustping.message_types import MESSAGE_TYPES as TRUSTPING_MESSAGES
 
 # TODO move message registration to the module level
 
@@ -34,7 +36,8 @@ def default_message_factory() -> MessageFactory:
         CONNECTION_MESSAGES,
         CREDENTIAL_MESSAGES,
         PROOF_MESSAGES,
-        ROUTING_MESSAGES
+        ROUTING_MESSAGES,
+        TRUSTPING_MESSAGES,
     )
 
     return factory
