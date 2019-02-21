@@ -254,24 +254,10 @@ build-schema-spy() {
     -t 'schema-spy'
 }
 
-build-api-pre-requisites() {
-  #
-  # Create the python package that will be installed in tob-api
-  # TODO: replace this once the package is published on PyPi
-  #
-  PRE_WORKING_DIR=`pwd`  
-  echo -e "\nBuilding pre-requisites for indy cat api image ..."
-  cd '../../../credential-registry/server' 
-  ./icat-py-build.sh
-  cd $PRE_WORKING_DIR
-}
-
 build-api() {
   #
   # tob-api
   #
-  build-api-pre-requisites
-
   echo -e "\nBuilding indy cat api image ..."
   docker build -q \
     -t 'indycat-api-build' \
