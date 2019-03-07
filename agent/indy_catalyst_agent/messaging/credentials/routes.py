@@ -8,6 +8,7 @@ from marshmallow import fields, Schema
 from .manager import CredentialManager
 
 from ..connections.models.connection_record import ConnectionRecord
+
 # from ..connections.manager import ConnectionManager
 
 # from .messages.connection_invitation import (
@@ -16,6 +17,14 @@ from ..connections.models.connection_record import ConnectionRecord
 # )
 # from .models.connection_record import ConnectionRecord, ConnectionRecordSchema
 # from ...storage.error import StorageNotFoundError
+
+
+class CredentialOfferRequestSchema(Schema):
+    """Result schema for a new connection invitation."""
+
+    connection_id = fields.Str(required=True)
+    schema_name = fields.Str(required=True)
+    schema_version = fields.Str(required=True)
 
 
 class CredentialOfferResultSchema(Schema):
@@ -37,6 +46,7 @@ class CredentialIssueResultSchema(Schema):
 
 
 @docs(tags=["credential"], summary="Sends a credential offer")
+@request_schema(CredentialOfferRequestSchema())
 @response_schema(CredentialOfferResultSchema(), 200)
 async def credentials_send_offer(request: web.BaseRequest):
     """
@@ -51,21 +61,25 @@ async def credentials_send_offer(request: web.BaseRequest):
     """
 
     context = request.app["request_context"]
+    outbound_message_router = request.app["outbound_message_router"]
 
     body = await request.json()
-    credential_definition_id = body.get("credential_definition_id")
+
     connection_id = body.get("connection_id")
+    schema_name = body.get("schema_name")
+    schema_version = body.get("schema_version")
 
     credential_manager = CredentialManager(context)
+
     connection_record = await ConnectionRecord.retrieve_by_id(
         context.storage, connection_id
     )
 
-    credential_offer = await credential_manager.send_credential_offer(
-        connection_record, credential_definition_id
+    credential_id, credential_offer = await credential_manager.create_credential_offer(
+        schema_name, schema_version
     )
 
-    result = {"credential_offer": credential_offer}
+    result = {"credential_id": credential_id, "credential_offer": credential_offer}
     return web.json_response(result)
 
 
@@ -82,6 +96,10 @@ async def credentials_send_request(request: web.BaseRequest):
         The credential request details.
 
     """
+
+    # TODO: Once the entire credential flow is not automatic, we can allow
+    #       manual triggering of sending a credential request
+    #       (in response to an existing credential offer)
     pass
 
 
@@ -98,6 +116,8 @@ async def credentials_issue(request: web.BaseRequest):
         The credential details.
 
     """
+    # TODO: Once the entire credential flow is not automatic, we can allow
+    #       manual triggering of issueing a credential
     pass
 
 
