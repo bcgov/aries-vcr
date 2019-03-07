@@ -90,6 +90,17 @@ PARSER.add_argument(
 )
 
 PARSER.add_argument(
+    "--pool-name", type=str, metavar="<pool-name>", help="Specify the pool name"
+)
+
+PARSER.add_argument(
+    "--genesis-transactions",
+    type=str,
+    metavar="<genesis-transactions>",
+    help="Specify the genesis transactions as a string",
+)
+
+PARSER.add_argument(
     "--admin",
     type=str,
     nargs=2,
