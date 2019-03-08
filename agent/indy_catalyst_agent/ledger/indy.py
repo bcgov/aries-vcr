@@ -4,7 +4,7 @@ import json
 import logging
 
 from indy.error import IndyError, ErrorCode
-import indy.ledger, indy.pool
+import indy.ledger, indy.pool, indy.anoncreds
 
 from .base import BaseLedger
 from .error import ClosedPoolError, LedgerTransactionError
@@ -79,3 +79,23 @@ class IndyLedger(BaseLedger):
             )
 
         return request_result
+
+    async def send_schema(self, schema_name, schema_version, attribute_names):
+        """
+        Send schema to ledger.
+
+        Args:
+            name: The schema name
+            version: The schema version
+            attribute_names: A list of schema attributes
+
+        """
+
+    
+
+        _, schema_json = await indy.anoncreds.issuer_create_schema(
+            self.did, schema_name, schema_version, attribute_names
+        )
+
+        req_json = await indy.ledger.build_schema_request(self.did, schema_json)
+        await self._sign_submit(req_json)
