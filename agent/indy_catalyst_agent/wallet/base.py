@@ -114,12 +114,12 @@ class BaseWallet(ABC):
         """
 
     async def create_public_did(
-        self, seed: str = None, did: str = None, metadata: dict = None
+        self, seed: str = None, did: str = None, metadata: dict = {}
     ) -> DIDInfo:
         """
         Create and store a new public DID.
 
-        Implicitely flags all other dids as not public.
+        Implicitly flags all other dids as not public.
 
         Args:
             seed: Optional seed to use for did
@@ -137,7 +137,7 @@ class BaseWallet(ABC):
             info_meta = info.meta
             info_meta["public"] = False
             await self.replace_local_did_metadata(info.did, info_meta)
-        await self.create_local_did(seed, did, metadata)
+        return await self.create_local_did(seed, did, metadata)
 
     async def get_public_did(self) -> DIDInfo:
         """
