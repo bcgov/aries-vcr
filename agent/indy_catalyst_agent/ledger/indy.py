@@ -30,7 +30,7 @@ class IndyLedger(BaseLedger):
         # indy-sdk requires a file but it's only used once to bootstrap
         # the connection so we take a string instead of create a tmp file
         with open(GENESIS_TRANSACTION_PATH, "w") as genesis_file:
-            genesis_file.write(self.genesis_transactions)
+            genesis_file.write(genesis_transactions)
 
         self.logger = logging.getLogger(__name__)
 
@@ -85,17 +85,57 @@ class IndyLedger(BaseLedger):
         Send schema to ledger.
 
         Args:
-            name: The schema name
-            version: The schema version
+            schema_name: The schema name
+            schema_version: The schema version
             attribute_names: A list of schema attributes
 
         """
 
-    
+        public_did = await self.wallet.get_public_did()
 
-        _, schema_json = await indy.anoncreds.issuer_create_schema(
-            self.did, schema_name, schema_version, attribute_names
+        schema_id, schema_json = await indy.anoncreds.issuer_create_schema(
+            public_did, schema_name, schema_version, attribute_names
         )
 
-        req_json = await indy.ledger.build_schema_request(self.did, schema_json)
+        req_json = await indy.ledger.build_schema_request(public_did, schema_json)
         await self._sign_submit(req_json)
+
+    # async def get_schema(self, schema_name, schema_version, attribute_names):
+    #     """
+    #     Send schema to ledger.
+
+    #     Args:
+    #         name: The schema name
+    #         version: The schema version
+    #         attribute_names: A list of schema attributes
+
+    #     """
+
+    #     public_did = await self.wallet.get_public_did()
+
+    #     schema_id, schema_json = await indy.anoncreds.issuer_create_schema(
+    #         public_did, schema_name, schema_version, attribute_names
+    #     )
+
+    #     req_json = await indy.ledger.build_schema_request(public_did, schema_json)
+    #     await self._sign_submit(req_json)
+
+    # async def get_schema(self, schema_name, schema_version, attribute_names):
+    #     """
+    #     Send schema to ledger.
+
+    #     Args:
+    #         name: The schema name
+    #         version: The schema version
+    #         attribute_names: A list of schema attributes
+
+    #     """
+
+    #     public_did = await self.wallet.get_public_did()
+
+    #     schema_id, schema_json = await indy.anoncreds.issuer_create_schema(
+    #         public_did, schema_name, schema_version, attribute_names
+    #     )
+
+    #     req_json = await indy.ledger.build_schema_request(public_did, schema_json)
+    #     await self._sign_submit(req_json)

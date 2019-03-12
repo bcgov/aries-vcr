@@ -36,7 +36,7 @@ class Conductor:
     """
     Conductor class.
 
-    Class responsible for initalizing concrete implementations
+    Class responsible for initializing concrete implementations
     of our require interfaces and routing inbound and outbound message data.
     """
 
@@ -93,6 +93,12 @@ class Conductor:
             wallet_cfg["name"] = self.settings["wallet.name"]
         context.wallet = ClassLoader.load_class(wallet_type)(wallet_cfg)
 
+        wallet_seed = self.settings.get("wallet.seed")
+
+        public_did_info = await context.wallet.get_public_did()
+        if not public_did_info:
+            public_did_info = await context.wallet.create_public_did(seed=wallet_seed)
+
         storage_type = self.settings.get("storage.type", "basic").lower()
         storage_type = self.STORAGE_TYPES.get(storage_type, storage_type)
         context.storage = ClassLoader.load_class(storage_type)(context.wallet)
@@ -141,6 +147,7 @@ class Conductor:
         LoggingConfigurator.print_banner(
             self.inbound_transport_manager.transports,
             self.outbound_transport_manager.registered_transports,
+            public_did_info,
             self.admin_server,
         )
 
