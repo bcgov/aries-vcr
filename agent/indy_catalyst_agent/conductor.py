@@ -17,6 +17,7 @@ from .classloader import ClassLoader
 from .dispatcher import Dispatcher
 from .error import BaseError
 from .logging import LoggingConfigurator
+from .ledger.indy import IndyLedger
 from .messaging.agent_message import AgentMessage
 from .messaging.connections.manager import ConnectionManager
 from .messaging.connections.models.connection_target import ConnectionTarget
@@ -86,18 +87,28 @@ class Conductor:
 
         wallet_type = self.settings.get("wallet.type", "basic").lower()
         wallet_type = self.WALLET_TYPES.get(wallet_type, wallet_type)
+
+        self.logger.info(wallet_type)
+
         wallet_cfg = {}
         if "wallet.key" in self.settings:
             wallet_cfg["key"] = self.settings["wallet.key"]
         if "wallet.name" in self.settings:
             wallet_cfg["name"] = self.settings["wallet.name"]
         context.wallet = ClassLoader.load_class(wallet_type)(wallet_cfg)
+        await context.wallet.open()
 
         wallet_seed = self.settings.get("wallet.seed")
-
         public_did_info = await context.wallet.get_public_did()
         if not public_did_info:
             public_did_info = await context.wallet.create_public_did(seed=wallet_seed)
+
+
+        # TODO: Load ledger implementation from command line args
+        genesis_transactions = self.settings.get("ledger.genesis_transactions")
+        if genesis_transactions:
+            async with IndyLedger("default", context.wallet, genesis_transactions) as ledger:
+                await ledger.send_schema('a', '0.0.1', ['attribute'])
 
         storage_type = self.settings.get("storage.type", "basic").lower()
         storage_type = self.STORAGE_TYPES.get(storage_type, storage_type)
