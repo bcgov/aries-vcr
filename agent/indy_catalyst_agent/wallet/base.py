@@ -328,7 +328,7 @@ class BaseWallet(ABC):
         Decrypt a message assembled by auth_crypt or anon_crypt.
 
         Args:
-            message: The encrypted message content
+            enc_message: The encrypted message content
             to_verkey: The verkey of the recipient. If provided then auth_decrypt is
                 used, otherwise anon_decrypt is used.
 

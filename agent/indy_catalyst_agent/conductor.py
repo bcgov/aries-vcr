@@ -107,8 +107,7 @@ class Conductor:
         # TODO: Load ledger implementation from command line args
         genesis_transactions = self.settings.get("ledger.genesis_transactions")
         if genesis_transactions:
-            async with IndyLedger("default", context.wallet, genesis_transactions) as ledger:
-                await ledger.send_schema('a', '0.0.1', ['attribute'])
+            context.ledger = IndyLedger("default", context.wallet, genesis_transactions)
 
         storage_type = self.settings.get("storage.type", "basic").lower()
         storage_type = self.STORAGE_TYPES.get(storage_type, storage_type)
