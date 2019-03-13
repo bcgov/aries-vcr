@@ -5,39 +5,26 @@ from aiohttp_apispec import docs, request_schema, response_schema
 
 from marshmallow import fields, Schema
 
-# from .manager import CredentialManager
 
-from ..connections.models.connection_record import ConnectionRecord
-
-# from ..connections.manager import ConnectionManager
-
-# from .messages.connection_invitation import (
-#     ConnectionInvitation,
-#     ConnectionInvitationSchema,
-# )
-# from .models.connection_record import ConnectionRecord, ConnectionRecordSchema
-# from ...storage.error import StorageNotFoundError
-
-
-class CredentialOfferRequestSchema(Schema):
+class SchemaRequestSchema(Schema):
     """Result schema for a new connection invitation."""
 
-    connection_id = fields.Str(required=True)
     schema_name = fields.Str(required=True)
     schema_version = fields.Str(required=True)
+    attributes = fields.List(fields.Str(), required=True)
 
 
-class CredentialOfferResultSchema(Schema):
+class SchemaResultsSchema(Schema):
     """Result schema for a new connection invitation."""
 
-    credential_id = fields.Str()
+    schema_id = fields.Int()
+    schema_json = fields.Str()
 
 
-
-@docs(tags=["credential"], summary="Sends a credential offer")
-@request_schema(CredentialOfferRequestSchema())
-@response_schema(CredentialOfferResultSchema(), 200)
-async def credentials_send_offer(request: web.BaseRequest):
+@docs(tags=["schema"], summary="Sends a schema to the ledger")
+@request_schema(SchemaRequestSchema())
+@response_schema(SchemaResultsSchema(), 200)
+async def schemas_send_schema(request: web.BaseRequest):
     """
     Request handler for sending a credential offer.
 
@@ -50,32 +37,21 @@ async def credentials_send_offer(request: web.BaseRequest):
     """
 
     context = request.app["request_context"]
-    outbound_message_router = request.app["outbound_message_router"]
 
     body = await request.json()
 
-    connection_id = body.get("connection_id")
     schema_name = body.get("schema_name")
     schema_version = body.get("schema_version")
+    attributes = body.get("attributes")
 
-    credential_manager = CredentialManager(context)
+    async with context.ledger:
+        schema_id, schema = await context.ledger.send_schema(
+            schema_name, schema_version, attributes
+        )
 
-    connection_record = await ConnectionRecord.retrieve_by_id(
-        context.storage, connection_id
-    )
-
-    credential_id, credential_offer = await credential_manager.create_credential_offer(
-        schema_name, schema_version
-    )
-
-    result = {"credential_id": credential_id, "credential_offer": credential_offer}
-    return web.json_response(result)
+    return web.json_response({"schema_id": schema_id, "schema_json": schema})
 
 
 async def register(app: web.Application):
     """Register routes."""
-    app.add_routes([web.post("/credentials/send-offer", credentials_send_offer)])
-    app.add_routes(
-        [web.post("/credentials/{id}/send-request", credentials_send_request)]
-    )
-    app.add_routes([web.post("/credentials/{id}/issue", credentials_issue)])
+    app.add_routes([web.post("/schemas", schemas_send_schema)])

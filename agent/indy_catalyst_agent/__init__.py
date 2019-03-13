@@ -2,8 +2,6 @@
 
 import os
 
-os.environ['PYTHONASYNCIODEBUG'] = '1'
-
 import argparse
 import asyncio
 
@@ -125,7 +123,11 @@ PARSER.add_argument(
 PARSER.add_argument("--debug", action="store_true", help="Enable debugging features")
 
 PARSER.add_argument(
-    "--debug-seed", dest="debug_seed", type=str, metavar="<debug-did-seed>", help="Specify the debug seed to use"
+    "--debug-seed",
+    dest="debug_seed",
+    type=str,
+    metavar="<debug-did-seed>",
+    help="Specify the debug seed to use",
 )
 
 PARSER.add_argument(
@@ -211,7 +213,9 @@ def main():
         # asyncio.ensure_future(
         #     start(inbound_transport_configs, outbound_transports, settings), loop=loop
         # )
-        loop.run_until_complete(start(inbound_transport_configs, outbound_transports, settings))
+        loop.run_until_complete(
+            start(inbound_transport_configs, outbound_transports, settings)
+        )
         loop.run_forever()
     except KeyboardInterrupt:
         print("\nShutting down")
