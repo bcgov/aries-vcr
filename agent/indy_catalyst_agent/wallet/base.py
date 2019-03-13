@@ -134,7 +134,7 @@ class BaseWallet(ABC):
         metadata["public"] = True
         dids = await self.get_local_dids()
         for info in dids:
-            info_meta = info.meta
+            info_meta = info.metadata
             info_meta["public"] = False
             await self.replace_local_did_metadata(info.did, info_meta)
         return await self.create_local_did(seed, did, metadata)
@@ -150,7 +150,7 @@ class BaseWallet(ABC):
 
         dids = await self.get_local_dids()
         for info in dids:
-            if info.meta["public"] is True:
+            if info.metadata["public"] is True:
                 return info
 
         return None

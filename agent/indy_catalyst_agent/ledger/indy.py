@@ -2,6 +2,9 @@
 
 import json
 import logging
+import tempfile
+
+from os import path
 
 from indy.error import IndyError, ErrorCode
 import indy.ledger, indy.pool, indy.anoncreds
@@ -9,7 +12,8 @@ import indy.ledger, indy.pool, indy.anoncreds
 from .base import BaseLedger
 from .error import ClosedPoolError, LedgerTransactionError
 
-GENESIS_TRANSACTION_PATH = "/tmp/indy_genesis_transactions"
+GENESIS_TRANSACTION_PATH  = tempfile.gettempdir()
+GENESIS_TRANSACTION_PATH = path.join(GENESIS_TRANSACTION_PATH, "indy_genesis_transactions.txt")
 
 
 class IndyLedger(BaseLedger):
@@ -24,15 +28,20 @@ class IndyLedger(BaseLedger):
             genesis_transactions: String of genesis transactions
 
         """
+        self.logger = logging.getLogger(__name__)
+
         self.name = name
         self.wallet = wallet
+
+        self.logger.info('\n\n\n------')
+        self.logger.info(self.wallet)
+        self.logger.info(self.wallet.handle)
 
         # indy-sdk requires a file but it's only used once to bootstrap
         # the connection so we take a string instead of create a tmp file
         with open(GENESIS_TRANSACTION_PATH, "w") as genesis_file:
             genesis_file.write(genesis_transactions)
 
-        self.logger = logging.getLogger(__name__)
 
     async def __aenter__(self) -> "IndyLedger":
         """
@@ -43,11 +52,12 @@ class IndyLedger(BaseLedger):
 
         """
         pool_config = json.dumps({"genesis_txn": GENESIS_TRANSACTION_PATH})
+        await indy.pool.set_protocol_version(2)
         await indy.pool.create_pool_ledger_config(self.name, pool_config)
-        self.pool_handle = await indy.pool.open_pool_ledger(self.name)
+        self.pool_handle = await indy.pool.open_pool_ledger(self.name, "{}")
         return self
 
-    async def __aexit__(self):
+    async def __aexit__(self, exc_type, exc, tb):
         """Context manager exit."""
         await indy.pool.close_pool_ledger(self.pool_handle)
         self.pool_handle = None
@@ -68,8 +78,10 @@ class IndyLedger(BaseLedger):
                 )
             )
 
+        public_did = await self.wallet.get_public_did()
+
         request_result_json = await indy.ledger.sign_and_submit_request(
-            self.pool_handle, self.wallet.handle, self.did, request_json
+            self.pool_handle, self.wallet.handle, public_did.did, request_json
         )
         request_result = json.loads(request_result_json)
 
@@ -80,7 +92,7 @@ class IndyLedger(BaseLedger):
 
         return request_result
 
-    async def send_schema(self, schema_name, schema_version, attribute_names):
+    async def send_schema(self, schema_name, schema_version, attribute_names: list):
         """
         Send schema to ledger.
 
@@ -94,11 +106,11 @@ class IndyLedger(BaseLedger):
         public_did = await self.wallet.get_public_did()
 
         schema_id, schema_json = await indy.anoncreds.issuer_create_schema(
-            public_did, schema_name, schema_version, attribute_names
+            public_did.did, schema_name, schema_version, json.dumps(attribute_names)
         )
 
-        req_json = await indy.ledger.build_schema_request(public_did, schema_json)
-        await self._sign_submit(req_json)
+        req_json = await indy.ledger.build_schema_request(public_did.did, schema_json)
+        await self._submit(req_json)
 
     # async def get_schema(self, schema_name, schema_version, attribute_names):
     #     """

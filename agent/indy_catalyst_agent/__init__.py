@@ -1,8 +1,11 @@
 """Entrypoint."""
 
+import os
+
+os.environ['PYTHONASYNCIODEBUG'] = '1'
+
 import argparse
 import asyncio
-import os
 
 from .conductor import Conductor
 from .defaults import default_message_factory
@@ -106,6 +109,7 @@ PARSER.add_argument(
 PARSER.add_argument(
     "--genesis-transactions",
     type=str,
+    dest="genesis_transactions",
     metavar="<genesis-transactions>",
     help="Specify the genesis transactions as a string",
 )
@@ -176,6 +180,9 @@ def main():
     if args.label:
         settings["default_label"] = args.label
 
+    if args.genesis_transactions:
+        settings["ledger.genesis_transactions"] = args.genesis_transactions
+
     if args.seed:
         settings["wallet.seed"] = args.seed
     if args.wallet_key:
@@ -192,7 +199,7 @@ def main():
 
     if args.debug:
         settings["debug.enabled"] = True
-    if args.seed:
+    if args.debug_seed:
         settings["debug.seed"] = args.debug_seed
     if args.invite:
         settings["debug.print_invitation"] = True
