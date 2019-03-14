@@ -54,13 +54,20 @@ class IndyLedger(BaseLedger):
 
         """
         pool_config = json.dumps({"genesis_txn": GENESIS_TRANSACTION_PATH})
+
+        # We only support proto ver 2
         await indy.pool.set_protocol_version(2)
 
+        self.logger.debug("Creating pool ledger...")
         try:
             await indy.pool.create_pool_ledger_config(self.name, pool_config)
-        except Exception as e:
-            self.logger.error(e)
+        except IndyError as error:
+            if error.error_code == ErrorCode.PoolLedgerConfigAlreadyExistsError:
+                self.logger.debug("Pool ledger already created.")
+            else:
+                raise
 
+        # TODO: allow ledger config in init?
         self.pool_handle = await indy.pool.open_pool_ledger(self.name, "{}")
         return self
 
@@ -80,9 +87,7 @@ class IndyLedger(BaseLedger):
 
         if not self.pool_handle:
             raise ClosedPoolError(
-                "Cannot sign and submit request to closed pool {}".format(
-                    self.pool.name
-                )
+                "Cannot sign and submit request to closed pool {}".format(self.name)
             )
 
         public_did = await self.wallet.get_public_did()
@@ -92,12 +97,18 @@ class IndyLedger(BaseLedger):
         )
         request_result = json.loads(request_result_json)
 
-        if request_result.get("op", "") in ("REQNACK", "REJECT"):
+        operation = request_result.get("op", "")
+
+        if operation in ("REQNACK", "REJECT"):
             raise LedgerTransactionError(
                 f"Ledger rejected transaction request: {request_result['reason']}"
             )
 
-        return request_result
+        elif operation == "REPLY":
+            return request_result["result"]
+
+        else:
+            raise LedgerTransactionError(f"Unexpected operation code from ledger: {operation}")
 
     async def send_schema(self, schema_name, schema_version, attribute_names: list):
         """
@@ -119,7 +130,7 @@ class IndyLedger(BaseLedger):
         req_json = await indy.ledger.build_schema_request(public_did.did, schema_json)
         await self._submit(req_json)
 
-        return schema_id, await self.get_schema(schema_id)
+        return schema_id
 
     async def get_schema(self, schema_id):
         """
@@ -131,6 +142,8 @@ class IndyLedger(BaseLedger):
         """
 
         public_did = await self.wallet.get_public_did()
-        req_json = await indy.ledger.build_get_schema_request(public_did.did, schema_id)
-        response = await self._submit(req_json)
-        return response
+
+        req_json = await indy.ledger.build_get_schema_request(None, schema_id)
+        parsed_response = await self._submit(req_json)
+
+        return parsed_response
