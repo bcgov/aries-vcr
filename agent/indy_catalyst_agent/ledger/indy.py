@@ -108,7 +108,9 @@ class IndyLedger(BaseLedger):
             return request_result["result"]
 
         else:
-            raise LedgerTransactionError(f"Unexpected operation code from ledger: {operation}")
+            raise LedgerTransactionError(
+                f"Unexpected operation code from ledger: {operation}"
+            )
 
     async def send_schema(self, schema_name, schema_version, attribute_names: list):
         """
@@ -127,8 +129,12 @@ class IndyLedger(BaseLedger):
             public_did.did, schema_name, schema_version, json.dumps(attribute_names)
         )
 
-        req_json = await indy.ledger.build_schema_request(public_did.did, schema_json)
-        await self._submit(req_json)
+        request_json = await indy.ledger.build_schema_request(
+            public_did.did, schema_json
+        )
+        await self._submit(request_json)
+
+        # TODO: validate response
 
         return schema_id
 
@@ -143,7 +149,54 @@ class IndyLedger(BaseLedger):
 
         public_did = await self.wallet.get_public_did()
 
-        req_json = await indy.ledger.build_get_schema_request(None, schema_id)
-        parsed_response = await self._submit(req_json)
+        request_json = await indy.ledger.build_get_schema_request(
+            public_did.did, schema_id
+        )
+        parsed_response = await self._submit(request_json)
+
+        return parsed_response
+
+    async def send_credential_definition(self, schema_id):
+        """
+        Send credential definition to ledger and store relevant key matter in wallet.
+
+        Args:
+            schema_id: The schema id of the schema to create cred def for
+
+        """
+
+        public_did = await self.wallet.get_public_did()
+        schema = await self.get_schema(schema_id)
+
+        credential_definition_id, credential_definition_json = await indy.anoncreds.issuer_create_and_store_credential_def(
+            self.wallet.handle, public_did.did, json.dumps(schema)
+        )
+
+        request_json = await indy.ledger.build_cred_def_request(
+            public_did.did, credential_definition_json
+        )
+
+        await self._submit(request_json)
+
+        # TODO: validate response
+
+        return credential_definition_id
+
+    async def get_credential_definition(self, credential_definition_id):
+        """
+        Get a credential definition from the ledger by id.
+
+        Args:
+            credential_definition_id: The schema id of the schema to create cred def for
+
+        """
+
+        public_did = await self.wallet.get_public_did()
+
+        request_json = await indy.ledger.build_get_cred_def_request(
+            public_did.did, credential_definition_id
+        )
+
+        parsed_response = await self._submit(request_json)
 
         return parsed_response
