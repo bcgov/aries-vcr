@@ -5,6 +5,11 @@ from marshmallow import fields
 from ...agent_message import AgentMessage, AgentMessageSchema
 from ...message_types import MessageTypes
 
+HANDLER_CLASS = (
+    "indy_catalyst_agent.messaging.credentials.handlers."
+    + "credential_request_handler.CredentialRequestHandler"
+)
+
 
 class CredentialRequest(AgentMessage):
     """Class representing a credential request."""
@@ -12,30 +17,24 @@ class CredentialRequest(AgentMessage):
     class Meta:
         """CredentialRequest metadata."""
 
-        # handler_class = CredentialRequestHandler
+        handler_class = HANDLER_CLASS
         schema_class = "CredentialRequestSchema"
         message_type = MessageTypes.CREDENTIAL_REQUEST.value
 
     def __init__(
-        self,
-        *,
-        offer_json: str = None,
-        credential_request_json: str = None,
-        credential_values_json: str = None,
-        **kwargs
+        self, *, offer_json: dict = None, credential_request_json: dict = None, **kwargs
     ):
         """
         Initialize credential request object.
 
         Args:
-            offer_json (str): Credential offer json string
+            offer_json: Credential offer json string
             credential_request_json: Credential request json string
-            credential_values_json: Credential values json string
+            
         """
         super(CredentialRequest, self).__init__(**kwargs)
         self.offer_json = offer_json
         self.credential_request_json = credential_request_json
-        self.credential_values_json = credential_values_json
 
 
 class CredentialRequestSchema(AgentMessageSchema):
@@ -46,6 +45,5 @@ class CredentialRequestSchema(AgentMessageSchema):
 
         model_class = CredentialRequest
 
-    offer_json = fields.Str(required=True)
-    credential_request_json = fields.Str(required=True)
-    credential_values_json = fields.Str(required=True)
+    offer_json = fields.Dict(required=True)
+    credential_request_json = fields.Dict(required=True)

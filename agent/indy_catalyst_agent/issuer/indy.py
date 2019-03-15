@@ -1,5 +1,6 @@
 """Indy issuer implementation."""
 
+import json
 import logging
 
 import indy.anoncreds
@@ -32,7 +33,10 @@ class IndyIssuer(BaseIssuer):
             A credential offer
             
         """
-        credential_offer = await indy.anoncreds.issuer_create_credential_offer(
+        credential_offer_json = await indy.anoncreds.issuer_create_credential_offer(
             self.wallet.handle, credential_definition_id
         )
+
+        credential_offer = json.loads(credential_offer_json)
+
         return credential_offer
