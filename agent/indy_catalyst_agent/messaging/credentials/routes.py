@@ -1,30 +1,21 @@
 """Connection handling admin routes."""
 
+import json
+
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
-
 from marshmallow import fields, Schema
 
-from .manager import CredentialManager
-
+from .messages.credential_offer import CredentialOffer
+from ..connections.manager import ConnectionManager
 from ..connections.models.connection_record import ConnectionRecord
-
-# from ..connections.manager import ConnectionManager
-
-# from .messages.connection_invitation import (
-#     ConnectionInvitation,
-#     ConnectionInvitationSchema,
-# )
-# from .models.connection_record import ConnectionRecord, ConnectionRecordSchema
-# from ...storage.error import StorageNotFoundError
 
 
 class CredentialOfferRequestSchema(Schema):
     """Result schema for a new connection invitation."""
 
     connection_id = fields.Str(required=True)
-    schema_name = fields.Str(required=True)
-    schema_version = fields.Str(required=True)
+    credential_definition_id = fields.Str(required=True)
 
 
 class CredentialOfferResultSchema(Schema):
@@ -61,25 +52,34 @@ async def credentials_send_offer(request: web.BaseRequest):
     """
 
     context = request.app["request_context"]
-    outbound_message_router = request.app["outbound_message_router"]
+    outbound_handler = request.app["outbound_message_router"]
 
     body = await request.json()
 
     connection_id = body.get("connection_id")
-    schema_name = body.get("schema_name")
-    schema_version = body.get("schema_version")
+    credential_definition_id = body.get("credential_definition_id")
 
-    credential_manager = CredentialManager(context)
+    connection_manager = ConnectionManager(context)
 
     connection_record = await ConnectionRecord.retrieve_by_id(
         context.storage, connection_id
     )
 
-    credential_id, credential_offer = await credential_manager.create_credential_offer(
-        schema_name, schema_version
+    connection_target = await connection_manager.get_connection_target(
+        connection_record
     )
 
-    result = {"credential_id": credential_id, "credential_offer": credential_offer}
+    # TODO: validate connection_record valid
+
+    credential_offer = await context.issuer.create_credential_offer(
+        credential_definition_id
+    )
+
+    credential_offer = CredentialOffer(offer_json=json.dumps(credential_offer))
+
+    await outbound_handler(credential_offer, connection_target)
+
+    result = {"success": True}
     return web.json_response(result)
 
 

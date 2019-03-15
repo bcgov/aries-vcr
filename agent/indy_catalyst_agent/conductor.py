@@ -18,6 +18,7 @@ from .dispatcher import Dispatcher
 from .error import BaseError
 from .logging import LoggingConfigurator
 from .ledger.indy import IndyLedger
+from .issuer.indy import IndyIssuer
 from .messaging.agent_message import AgentMessage
 from .messaging.connections.manager import ConnectionManager
 from .messaging.connections.models.connection_target import ConnectionTarget
@@ -103,11 +104,13 @@ class Conductor:
         if not public_did_info:
             public_did_info = await context.wallet.create_public_did(seed=wallet_seed)
 
-
         # TODO: Load ledger implementation from command line args
         genesis_transactions = self.settings.get("ledger.genesis_transactions")
         if genesis_transactions:
             context.ledger = IndyLedger("default", context.wallet, genesis_transactions)
+
+        # TODO: Load issuer implementation from command line args
+        context.issuer = IndyIssuer(context.wallet)
 
         storage_type = self.settings.get("storage.type", "basic").lower()
         storage_type = self.STORAGE_TYPES.get(storage_type, storage_type)

@@ -553,7 +553,7 @@ class ConnectionManager:
             try:
                 my_info = await self.context.wallet.get_local_did_for_verkey(to_verkey)
                 ctx.recipient_did = my_info.did
-                if my_info.metadata["public"] is True:
+                if "public" in my_info.metadata and my_info.metadata["public"] is True:
                     ctx.recipient_did_public = True
 
             except WalletNotFoundError:
