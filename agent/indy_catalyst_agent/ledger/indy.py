@@ -1,16 +1,14 @@
 """Indy ledger implementation."""
 
-import asyncio
 import json
 import logging
 import tempfile
-
-from time import time
 from os import path
 
-
+import indy.anoncreds
+import indy.ledger
+import indy.pool
 from indy.error import IndyError, ErrorCode
-import indy.ledger, indy.pool, indy.anoncreds
 
 from .base import BaseLedger
 from .error import ClosedPoolError, LedgerTransactionError

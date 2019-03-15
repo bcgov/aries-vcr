@@ -2,9 +2,9 @@
 
 import logging
 
-from ...error import BaseError
-from ..request_context import RequestContext
 from ..connections.manager import ConnectionManager
+from ..request_context import RequestContext
+from ...error import BaseError
 
 
 class CredentialManagerError(BaseError):
@@ -24,6 +24,9 @@ class CredentialManager:
         self._context = context
         self._logger = logging.getLogger(__name__)
 
+    async def create_credential_offer(self, credential_definition_id):
+        await indy.anoncreds.issuer_create_credential_offer(self.wallet.handle, cd_id)
+
     async def send_credential_offer(
         self, context, connection_record, schema_name, schema_version
     ):
@@ -39,5 +42,5 @@ class CredentialManager:
         """
 
         connection_manager = ConnectionManager(context)
-        
+
         pass

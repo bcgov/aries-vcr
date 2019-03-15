@@ -150,7 +150,7 @@ class BaseWallet(ABC):
 
         dids = await self.get_local_dids()
         for info in dids:
-            if info.metadata["public"] is True:
+            if "public" in info.metadata and info.metadata["public"] is True:
                 return info
 
         return None
