@@ -6,22 +6,28 @@ from ...agent_message import AgentMessage, AgentMessageSchema
 from ...message_types import MessageTypes
 
 
+HANDLER_CLASS = (
+    "indy_catalyst_agent.messaging.credentials.handlers."
+    + "credential_offer_handler.CredentialOfferHandler"
+)
+
+
 class CredentialOffer(AgentMessage):
     """Class representing a credential offer."""
 
     class Meta:
         """CredentialOffer metadata."""
 
-        # handler_class = CredentialOfferHandler
+        handler_class = HANDLER_CLASS
         schema_class = "CredentialOfferSchema"
         message_type = MessageTypes.CREDENTIAL_OFFER.value
 
-    def __init__(self, *, offer_json: str = None, **kwargs):
+    def __init__(self, *, offer_json: dict = None, **kwargs):
         """
         Initialize credential offer object.
 
         Args:
-            offer_json (str): Credential offer json
+            offer_json: Credential offer json
         """
         super(CredentialOffer, self).__init__(**kwargs)
         self.offer_json = offer_json
@@ -35,4 +41,4 @@ class CredentialOfferSchema(AgentMessageSchema):
 
         model_class = CredentialOffer
 
-    offer_json = fields.Str(required=True)
+    offer_json = fields.Dict(required=True)

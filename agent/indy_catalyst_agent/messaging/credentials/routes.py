@@ -75,7 +75,7 @@ async def credentials_send_offer(request: web.BaseRequest):
         credential_definition_id
     )
 
-    credential_offer = CredentialOffer(offer_json=json.dumps(credential_offer))
+    credential_offer = CredentialOffer(offer_json=credential_offer)
 
     await outbound_handler(credential_offer, connection_target)
 
