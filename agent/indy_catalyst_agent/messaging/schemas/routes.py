@@ -6,24 +6,30 @@ from aiohttp_apispec import docs, request_schema, response_schema
 from marshmallow import fields, Schema
 
 
-class SchemaRequestSchema(Schema):
-    """Result schema for a new connection invitation."""
+class SchemaSendRequestSchema(Schema):
+    """Request schema for schema send request."""
 
     schema_name = fields.Str(required=True)
     schema_version = fields.Str(required=True)
     attributes = fields.List(fields.Str(), required=True)
 
 
-class SchemaResultsSchema(Schema):
-    """Result schema for a new connection invitation."""
+class SchemaSendResultsSchema(Schema):
+    """Results schema for schema send request."""
 
-    schema_id = fields.Int()
-    schema_json = fields.Str()
+    schema_id = fields.Str()
+
+
+
+class SchemaGetResultsSchema(Schema):
+    """Results schema for schema get request."""
+
+    schema_json = fields.Dict()
 
 
 @docs(tags=["schema"], summary="Sends a schema to the ledger")
-@request_schema(SchemaRequestSchema())
-@response_schema(SchemaResultsSchema(), 200)
+@request_schema(SchemaSendRequestSchema())
+@response_schema(SchemaSendResultsSchema(), 200)
 async def schemas_send_schema(request: web.BaseRequest):
     """
     Request handler for sending a credential offer.
@@ -53,7 +59,7 @@ async def schemas_send_schema(request: web.BaseRequest):
 
 
 @docs(tags=["schema"], summary="Gets a schema from the ledger")
-@response_schema(SchemaResultsSchema(), 200)
+@response_schema(SchemaGetResultsSchema(), 200)
 async def schemas_get_schema(request: web.BaseRequest):
     """
     Request handler for sending a credential offer.
@@ -73,7 +79,7 @@ async def schemas_get_schema(request: web.BaseRequest):
     async with context.ledger:
         schema = await context.ledger.get_schema(schema_id)
 
-    return web.json_response({"schema_id": schema_id, "schema_json": schema})
+    return web.json_response({"schema_json": schema})
 
 
 async def register(app: web.Application):
