@@ -76,12 +76,13 @@ class IndyLedger(BaseLedger):
         await indy.pool.close_pool_ledger(self.pool_handle)
         self.pool_handle = None
 
-    async def _submit(self, request_json: str) -> str:
+    async def _submit(self, request_json: str, sign=True) -> str:
         """
         Sign and submit request to ledger.
 
         Args:
             request_json: The json string to submit
+            sign: whether or not to sign the request
 
         """
 
@@ -92,9 +93,15 @@ class IndyLedger(BaseLedger):
 
         public_did = await self.wallet.get_public_did()
 
-        request_result_json = await indy.ledger.sign_and_submit_request(
-            self.pool_handle, self.wallet.handle, public_did.did, request_json
-        )
+        if sign:
+            request_result_json = await indy.ledger.sign_and_submit_request(
+                self.pool_handle, self.wallet.handle, public_did.did, request_json
+            )
+        else:
+            request_result_json = await indy.ledger.submit_request(
+                self.pool_handle, request_json
+            )
+
         request_result = json.loads(request_result_json)
 
         operation = request_result.get("op", "")
@@ -105,7 +112,7 @@ class IndyLedger(BaseLedger):
             )
 
         elif operation == "REPLY":
-            return request_result["result"]
+            return request_result_json
 
         else:
             raise LedgerTransactionError(
@@ -152,24 +159,36 @@ class IndyLedger(BaseLedger):
         request_json = await indy.ledger.build_get_schema_request(
             public_did.did, schema_id
         )
-        parsed_response = await self._submit(request_json)
+
+        response_json = await self._submit(request_json)
+        _, parsed_schema_json = await indy.ledger.parse_get_schema_response(
+            response_json
+        )
+        parsed_response = json.loads(parsed_schema_json)
 
         return parsed_response
 
-    async def send_credential_definition(self, schema_id):
+    async def send_credential_definition(self, schema_id, tag="default"):
         """
         Send credential definition to ledger and store relevant key matter in wallet.
 
         Args:
             schema_id: The schema id of the schema to create cred def for
+            tag: Option tag to distinguish multiple credential definitions
 
         """
 
         public_did = await self.wallet.get_public_did()
         schema = await self.get_schema(schema_id)
 
+        # TODO: add support for tag, sig type, and config
         credential_definition_id, credential_definition_json = await indy.anoncreds.issuer_create_and_store_credential_def(
-            self.wallet.handle, public_did.did, json.dumps(schema)
+            self.wallet.handle,
+            public_did.did,
+            json.dumps(schema),
+            tag,
+            "CL",
+            json.dumps({"support_revocation": False}),
         )
 
         request_json = await indy.ledger.build_cred_def_request(
@@ -197,6 +216,11 @@ class IndyLedger(BaseLedger):
             public_did.did, credential_definition_id
         )
 
-        parsed_response = await self._submit(request_json)
+        response_json = await self._submit(request_json)
+
+        _, parsed_credential_definition_json = await indy.ledger.parse_get_cred_def_response(
+            response_json
+        )
+        parsed_response = json.loads(parsed_credential_definition_json)
 
         return parsed_response
