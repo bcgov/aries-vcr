@@ -6,7 +6,7 @@ from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
 from marshmallow import fields, Schema
 
-from .messages.credential_offer import CredentialOffer
+from .manager import CredentialManager
 from ..connections.manager import ConnectionManager
 from ..connections.models.connection_record import ConnectionRecord
 
@@ -60,6 +60,7 @@ async def credentials_send_offer(request: web.BaseRequest):
     credential_definition_id = body.get("credential_definition_id")
 
     connection_manager = ConnectionManager(context)
+    credential_manager = CredentialManager(context)
 
     connection_record = await ConnectionRecord.retrieve_by_id(
         context.storage, connection_id
@@ -71,16 +72,13 @@ async def credentials_send_offer(request: web.BaseRequest):
 
     # TODO: validate connection_record valid
 
-    credential_offer = await context.issuer.create_credential_offer(
+    credential_exchange_record, credential_offer_message = await credential_manager.create_offer(
         credential_definition_id
     )
 
-    credential_offer = CredentialOffer(offer_json=credential_offer)
+    await outbound_handler(credential_offer_message, connection_target)
 
-    await outbound_handler(credential_offer, connection_target)
-
-    result = {"success": True}
-    return web.json_response(result)
+    return web.json_response(credential_exchange_record.serialize())
 
 
 @docs(tags=["credential"], summary="Sends a credential request")

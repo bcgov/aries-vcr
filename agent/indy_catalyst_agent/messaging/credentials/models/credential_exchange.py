@@ -25,7 +25,6 @@ class CredentialExchange(BaseModel):
     INITIATOR_SELF = "self"
     INITIATOR_EXTERNAL = "external"
 
-    STATE_INIT = "init"
     STATE_OFFER_SENT = "offer_sent"
     STATE_OFFER_RECEIVED = "offer_received"
 
@@ -35,12 +34,18 @@ class CredentialExchange(BaseModel):
         credential_exchange_id: str = None,
         initiator: str = None,
         state: str = None,
+        credential_definition_id: str = None,
+        schema_id: str = None,
+        credential_offer: dict = None,
         error_msg: str = None,
     ):
         """Initialize a new CredentialExchange."""
         self._id = credential_exchange_id
         self.initiator = initiator
-        self.state = state or self.STATE_INIT
+        self.state = state
+        self.credential_definition_id = credential_definition_id
+        self.schema_id = schema_id
+        self.credential_offer = credential_offer
         self.error_msg = error_msg
 
     @property
@@ -69,7 +74,13 @@ class CredentialExchange(BaseModel):
     def tags(self) -> dict:
         """Accessor for the record tags generated for this credential exchange."""
         result = {}
-        for prop in ("initiator", "state", "routing_state"):
+        for prop in (
+            "initiator",
+            "state",
+            "credential_definition_id",
+            "schema_id",
+            "credential_offer",
+        ):
             val = getattr(self, prop)
             if val:
                 result[prop] = val
@@ -151,4 +162,7 @@ class CredentialExchangeSchema(BaseModelSchema):
 
     initiator = fields.Str(required=False)
     state = fields.Str(required=False)
+    credential_definition_id = fields.Str(required=False)
+    schema_id = fields.Str(required=False)
+    credential_offer = fields.Dict(required=False)
     error_msg = fields.Str(required=False)
