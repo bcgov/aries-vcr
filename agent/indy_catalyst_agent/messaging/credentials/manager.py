@@ -5,6 +5,9 @@ import logging
 from ..request_context import RequestContext
 from ...error import BaseError
 
+from .messages.credential_offer import CredentialOffer
+from .models.credential_exchange import CredentialExchange
+
 
 class CredentialManagerError(BaseError):
     """Credential error."""
@@ -23,12 +26,35 @@ class CredentialManager:
         self._context = context
         self._logger = logging.getLogger(__name__)
 
+    @property
+    def context(self) -> RequestContext:
+        """
+        Accessor for the current request context.
+
+        Returns:
+            The request context for this connection
+
+        """
+        return self._context
+
     async def create_offer(self, credential_definition_id):
 
-        pass
+        credential_offer = await self.context.issuer.create_credential_offer(
+            credential_definition_id
+        )
+        credential_exchange = CredentialExchange(
+            initiator=CredentialExchange.INITIATOR_SELF,
+            state=CredentialExchange.STATE_OFFER_SENT,
+            credential_definition_id=credential_definition_id,
+            schema_id=credential_offer["schema_id"],
+            credential_offer=credential_offer,
+        )
+        await credential_exchange.save(self.context.storage)
 
+        credential_offer_message = CredentialOffer(offer_json=credential_offer)
+
+        return credential_exchange, credential_offer_message
 
     async def receive_offer(self, credential_offer):
 
         pass
-
