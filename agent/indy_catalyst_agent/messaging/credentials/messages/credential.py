@@ -5,6 +5,11 @@ from marshmallow import fields
 from ...agent_message import AgentMessage, AgentMessageSchema
 from ...message_types import MessageTypes
 
+HANDLER_CLASS = (
+    "indy_catalyst_agent.messaging.credentials.handlers."
+    + "credential_handler.CredentialHandler"
+)
+
 
 class Credential(AgentMessage):
     """Class representing a credential."""
@@ -12,14 +17,14 @@ class Credential(AgentMessage):
     class Meta:
         """Credential metadata."""
 
-        # handler_class = CredentialHandler
+        handler_class = HANDLER_CLASS
         schema_class = "CredentialSchema"
         message_type = MessageTypes.CREDENTIAL.value
 
     def __init__(
         self,
         *,
-        credential_json: str = None,
+        credential_json: dict = None,
         revocation_registry_id: str = None,
         **kwargs
     ):
@@ -43,5 +48,5 @@ class CredentialSchema(AgentMessageSchema):
 
         model_class = Credential
 
-    credential_json = fields.Str(required=True)
-    revocation_registry_id = fields.Str(required=True)
+    credential_json = fields.Dict(required=True)
+    revocation_registry_id = fields.Str()
