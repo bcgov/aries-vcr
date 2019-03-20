@@ -1,5 +1,6 @@
 """Classes to manage credentials."""
 
+import json
 import logging
 
 from ..request_context import RequestContext
@@ -70,18 +71,19 @@ class CredentialManager:
 
     async def create_request(self, credential_exchange_record: CredentialExchange):
 
+        credential_definition_id = credential_exchange_record.credential_definition_id
         credential_offer = credential_exchange_record.credential_offer
 
         async with self.context.ledger:
             credential_definition = await self.context.ledger.get_credential_definition(
-                credential_offer
+                credential_definition_id
             )
 
         credential_request = await self.context.holder.create_credential_request(
             credential_offer, credential_definition
         )
 
-        credential_request = CredentialRequest(
+        credential_request_message = CredentialRequest(
             offer_json=credential_offer, credential_request_json=credential_request
         )
 
@@ -89,4 +91,4 @@ class CredentialManager:
         credential_exchange_record.credential_request = credential_request
         await credential_exchange_record.save(self.context.storage)
 
-        return credential_exchange_record, credential_request
+        return credential_exchange_record, credential_request_message
