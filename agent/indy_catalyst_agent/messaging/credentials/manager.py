@@ -92,3 +92,10 @@ class CredentialManager:
         await credential_exchange_record.save(self.context.storage)
 
         return credential_exchange_record, credential_request_message
+
+    async def receive_request(self, credential_exchange_record: CredentialExchange, credential_request: dict):
+        # TODO: just take in prover did, cred def id, and cred_req?
+        #       do the hard work in here
+        credential_exchange_record.credential_request = credential_request
+        credential_exchange_record.state = CredentialExchange.STATE_REQUEST_RECEIVED
+        await credential_exchange_record.save(self.context.storage)
