@@ -12,6 +12,8 @@ from .models.credential_exchange import CredentialExchange
 from ..connections.manager import ConnectionManager
 from ..connections.models.connection_record import ConnectionRecord
 
+from ...storage.error import StorageNotFoundError
+
 
 class CredentialOfferRequestSchema(Schema):
     """Result schema for a new connection invitation."""
@@ -38,7 +40,59 @@ class CredentialIssueResultSchema(Schema):
     credential_id = fields.Str()
 
 
-@docs(tags=["credential"], summary="Sends a credential offer")
+@docs(tags=["credential_exchange"], summary="Fetch all credential exchange records")
+# @response_schema(ConnectionListSchema(), 200)
+async def credential_exchange_list(request: web.BaseRequest):
+    """
+    Request handler for searching connection records.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The connection list response
+
+    """
+    context = request.app["request_context"]
+    tag_filter = {}
+    for param_name in (
+        "connection_id",
+        "initiator",
+        "state",
+        "credential_definition_id",
+        "schema_id",
+    ):
+        if param_name in request.query and request.query[param_name] != "":
+            tag_filter[param_name] = request.query[param_name]
+    records = await CredentialExchange.query(context.storage, tag_filter)
+    return web.json_response({"results": [record.serialize() for record in records]})
+
+
+@docs(tags=["credential_exchange"], summary="Fetch a single credential exchange record")
+# @response_schema(ConnectionRecordSchema(), 200)
+async def credential_exchange_retrieve(request: web.BaseRequest):
+    """
+    Request handler for fetching a single connection record.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The connection record response
+
+    """
+    context = request.app["request_context"]
+    credential_exchange_id = request.match_info["id"]
+    try:
+        record = await CredentialExchange.retrieve_by_id(
+            context.storage, credential_exchange_id
+        )
+    except StorageNotFoundError:
+        return web.HTTPNotFound()
+    return web.json_response(record.serialize())
+
+
+@docs(tags=["credential_exchange"], summary="Sends a credential offer")
 @request_schema(CredentialOfferRequestSchema())
 @response_schema(CredentialOfferResultSchema(), 200)
 async def credential_exchange_send_offer(request: web.BaseRequest):
@@ -83,7 +137,7 @@ async def credential_exchange_send_offer(request: web.BaseRequest):
     return web.json_response(credential_exchange_record.serialize())
 
 
-@docs(tags=["credential"], summary="Sends a credential request")
+@docs(tags=["credential_exchange"], summary="Sends a credential request")
 @response_schema(CredentialRequestResultSchema(), 200)
 async def credential_exchange_send_request(request: web.BaseRequest):
     """
@@ -105,6 +159,8 @@ async def credential_exchange_send_request(request: web.BaseRequest):
         context.storage, credential_exchange_id
     )
 
+    assert(credential_exchange_record.state, CredentialExchange.STATE_OFFER_RECEIVED)
+
     credential_manager = CredentialManager(context)
     connection_manager = ConnectionManager(context)
 
@@ -124,8 +180,7 @@ async def credential_exchange_send_request(request: web.BaseRequest):
     return web.json_response(credential_exchange_record.serialize())
 
 
-
-@docs(tags=["credential"], summary="Sends a credential")
+@docs(tags=["credential_exchange"], summary="Sends a credential")
 @response_schema(CredentialIssueResultSchema(), 200)
 async def credential_exchange_issue(request: web.BaseRequest):
     """
@@ -145,6 +200,8 @@ async def credential_exchange_issue(request: web.BaseRequest):
 
 async def register(app: web.Application):
     """Register routes."""
+    app.add_routes([web.get("/credential_exchange", credential_exchange_list)])
+    app.add_routes([web.get("/credential_exchange/{id}", credential_exchange_retrieve)])
     app.add_routes(
         [web.post("/credential_exchange/send-offer", credential_exchange_send_offer)]
     )
