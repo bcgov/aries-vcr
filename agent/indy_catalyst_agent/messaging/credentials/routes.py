@@ -34,6 +34,11 @@ class CredentialRequestResultSchema(Schema):
     credential_id = fields.Str()
 
 
+class CredentialIssueRequestSchema(Schema):
+
+    credential_values = fields.Dict(required=True)
+
+
 class CredentialIssueResultSchema(Schema):
     """Result schema for a new connection invitation."""
 
@@ -159,7 +164,7 @@ async def credential_exchange_send_request(request: web.BaseRequest):
         context.storage, credential_exchange_id
     )
 
-    assert(credential_exchange_record.state, CredentialExchange.STATE_OFFER_RECEIVED)
+    assert (credential_exchange_record.state, CredentialExchange.STATE_OFFER_RECEIVED)
 
     credential_manager = CredentialManager(context)
     connection_manager = ConnectionManager(context)
@@ -173,7 +178,7 @@ async def credential_exchange_send_request(request: web.BaseRequest):
     )
 
     credential_exchange_record, credential_request_message = await credential_manager.create_request(
-        credential_exchange_record
+        credential_exchange_record, connection_record
     )
 
     await outbound_handler(credential_request_message, connection_target)
@@ -181,6 +186,7 @@ async def credential_exchange_send_request(request: web.BaseRequest):
 
 
 @docs(tags=["credential_exchange"], summary="Sends a credential")
+@request_schema(CredentialIssueRequestSchema())
 @response_schema(CredentialIssueResultSchema(), 200)
 async def credential_exchange_issue(request: web.BaseRequest):
     """
@@ -193,9 +199,36 @@ async def credential_exchange_issue(request: web.BaseRequest):
         The credential details.
 
     """
-    # TODO: Once the entire credential flow is not automatic, we can allow
-    #       manual triggering of issueing a credential
-    pass
+    context = request.app["request_context"]
+    outbound_handler = request.app["outbound_message_router"]
+
+    body = await request.json()
+    credential_values = body["credential_values"]
+
+    credential_exchange_id = request.match_info["id"]
+    credential_exchange_record = await CredentialExchange.retrieve_by_id(
+        context.storage, credential_exchange_id
+    )
+
+    assert (credential_exchange_record.state, CredentialExchange.STATE_REQUEST_RECEIVED)
+
+    credential_manager = CredentialManager(context)
+    connection_manager = ConnectionManager(context)
+
+    connection_record = await ConnectionRecord.retrieve_by_id(
+        context.storage, credential_exchange_record.connection_id
+    )
+
+    connection_target = await connection_manager.get_connection_target(
+        connection_record
+    )
+
+    credential_exchange_record, credential_request_message = await credential_manager.issue_credential(
+        credential_exchange_record, credential_values
+    )
+
+    await outbound_handler(credential_request_message, connection_target)
+    return web.json_response(credential_exchange_record.serialize())
 
 
 async def register(app: web.Application):
