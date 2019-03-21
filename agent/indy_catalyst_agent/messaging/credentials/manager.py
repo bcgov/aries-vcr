@@ -43,10 +43,10 @@ class CredentialManager:
         return self._context
 
     async def create_offer(self, credential_definition_id, connection_id):
-
         credential_offer = await self.context.issuer.create_credential_offer(
             credential_definition_id
         )
+
         credential_exchange = CredentialExchange(
             connection_id=connection_id,
             initiator=CredentialExchange.INITIATOR_SELF,
@@ -103,7 +103,6 @@ class CredentialManager:
         return credential_exchange_record, credential_request_message
 
     async def receive_request(self, credential_request: dict):
-
         credential_definition_id = credential_request["cred_def_id"]
 
         prover_did = credential_request["prover_did"]
@@ -111,6 +110,9 @@ class CredentialManager:
             self.context.storage, their_did=prover_did
         )
 
+        # TODO: We need a way to identify the record we are concerned with deterministically
+        #       We can probably use the thread_id once that is available. Until then, if multiple
+        #       credential negotiations are active at the same time, and error will be raised
         credential_exchange_record = await CredentialExchange.retrieve_by_tag_filter(
             self.context.storage,
             tag_filter={
@@ -147,3 +149,19 @@ class CredentialManager:
         )
 
         return credential_exchange_record, credential_message
+
+    async def store_credential(self, credential):
+        async with self.context.ledger:
+            credential_definition = await self.context.ledger.get_credential_definition(
+                credential["cred_def_id"]
+            )
+
+        credential_id = await self.context.holder.store_credential(
+            credential_definition, credential
+        )
+
+        # TODO: We need a way to identify and retrieve the current credential exchange record
+        #       so that we can set the state to "stored". We can likely use the thread id
+        #       once that is generalized and available on the request context
+
+        return credential_id

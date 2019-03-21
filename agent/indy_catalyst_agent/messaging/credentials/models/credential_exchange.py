@@ -30,6 +30,8 @@ class CredentialExchange(BaseModel):
     STATE_REQUEST_SENT = "request_sent"
     STATE_REQUEST_RECEIVED = "request_received"
     STATE_ISSUED = "issued"
+    STATE_STORED = "stored"
+    STATE_INVALIDATED = "invalidatedÒ"
 
     def __init__(
         self,
