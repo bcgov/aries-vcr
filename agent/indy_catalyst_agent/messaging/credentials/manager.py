@@ -6,6 +6,9 @@ import logging
 from ..request_context import RequestContext
 from ...error import BaseError
 
+from ..connections.models.connection_record import ConnectionRecord
+
+from .messages.credential import Credential
 from .messages.credential_request import CredentialRequest
 from .messages.credential_offer import CredentialOffer
 from .models.credential_exchange import CredentialExchange
@@ -69,10 +72,12 @@ class CredentialManager:
         )
         await credential_exchange.save(self.context.storage)
 
-    async def create_request(self, credential_exchange_record: CredentialExchange):
+    async def create_request(self, credential_exchange_record: CredentialExchange, connection_record: ConnectionRecord):
 
         credential_definition_id = credential_exchange_record.credential_definition_id
         credential_offer = credential_exchange_record.credential_offer
+
+        did = connection_record.my_did
 
         async with self.context.ledger:
             credential_definition = await self.context.ledger.get_credential_definition(
@@ -80,7 +85,7 @@ class CredentialManager:
             )
 
         credential_request = await self.context.holder.create_credential_request(
-            credential_offer, credential_definition
+            credential_offer, credential_definition, did
         )
 
         credential_request_message = CredentialRequest(
@@ -93,9 +98,35 @@ class CredentialManager:
 
         return credential_exchange_record, credential_request_message
 
-    async def receive_request(self, credential_exchange_record: CredentialExchange, credential_request: dict):
+    async def receive_request(
+        self, credential_exchange_record: CredentialExchange, credential_request: dict
+    ):
         # TODO: just take in prover did, cred def id, and cred_req?
         #       do the hard work in here
         credential_exchange_record.credential_request = credential_request
         credential_exchange_record.state = CredentialExchange.STATE_REQUEST_RECEIVED
         await credential_exchange_record.save(self.context.storage)
+
+    async def issue_credential(
+        self, credential_exchange_record: CredentialExchange, credential_values: dict
+    ):
+
+        schema_id = credential_exchange_record.schema_id
+        credential_offer = credential_exchange_record.credential_offer
+        credential_request = credential_exchange_record.credential_request
+
+        async with self.context.ledger:
+            schema = await self.context.ledger.get_schema(schema_id)
+
+        credential, credential_revocation_id = await self.context.issuer.create_credential(
+            schema, credential_offer, credential_request, credential_values
+        )
+
+        credential_exchange_record.state = CredentialExchange.STATE_ISSUED
+        await credential_exchange_record.save(self.context.storage)
+
+        credential_message = Credential(
+            credential_json=credential, revocation_registry_id=credential_revocation_id
+        )
+
+        return credential_exchange_record, credential_message

@@ -24,7 +24,9 @@ class IndyHolder(BaseHolder):
 
         self.last_credential_request_metadata_json = None
 
-    async def create_credential_request(self, credential_offer, credential_definition):
+    async def create_credential_request(
+        self, credential_offer, credential_definition, did
+    ):
         """
         Create a credential offer for the given credential definition id.
 
@@ -37,11 +39,9 @@ class IndyHolder(BaseHolder):
 
         """
 
-        public_did = await self.wallet.get_public_did()
-
         credential_request_json, credential_request_metadata_json = await indy.anoncreds.prover_create_credential_req(
             self.wallet.handle,
-            public_did.did,
+            did,
             json.dumps(credential_offer),
             json.dumps(credential_definition),
             self.wallet.master_secret_id,
