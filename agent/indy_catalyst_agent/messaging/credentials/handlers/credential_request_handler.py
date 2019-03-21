@@ -41,19 +41,3 @@ class CredentialRequestHandler(BaseHandler):
 
         credential_manager = CredentialManager(context)
         await credential_manager.receive_request(credential_exchange_record, credential_request)
-
-        # async with context.ledger:
-        #     schema = await context.ledger.get_schema(credential_offer["schema_id"])
-        #
-        # credential, credential_revocation_id = await context.issuer.create_credential(
-        #     schema,
-        #     credential_offer,
-        #     credential_request,
-        #     {"attr1": True, "attr2": 123, "test": "test"},
-        # )
-        #
-        # credential_message = Credential(
-        #     credential_json=credential, revocation_registry_id=credential_revocation_id
-        # )
-        #
-        # await responder.send_reply(credential_message)
