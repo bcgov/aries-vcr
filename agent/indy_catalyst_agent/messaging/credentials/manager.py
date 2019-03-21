@@ -72,7 +72,11 @@ class CredentialManager:
         )
         await credential_exchange.save(self.context.storage)
 
-    async def create_request(self, credential_exchange_record: CredentialExchange, connection_record: ConnectionRecord):
+    async def create_request(
+        self,
+        credential_exchange_record: CredentialExchange,
+        connection_record: ConnectionRecord,
+    ):
 
         credential_definition_id = credential_exchange_record.credential_definition_id
         credential_offer = credential_exchange_record.credential_offer
@@ -98,11 +102,24 @@ class CredentialManager:
 
         return credential_exchange_record, credential_request_message
 
-    async def receive_request(
-        self, credential_exchange_record: CredentialExchange, credential_request: dict
-    ):
-        # TODO: just take in prover did, cred def id, and cred_req?
-        #       do the hard work in here
+    async def receive_request(self, credential_request: dict):
+
+        credential_definition_id = credential_request["cred_def_id"]
+
+        prover_did = credential_request["prover_did"]
+        connection_record = await ConnectionRecord.retrieve_by_did(
+            self.context.storage, their_did=prover_did
+        )
+
+        credential_exchange_record = await CredentialExchange.retrieve_by_tag_filter(
+            self.context.storage,
+            tag_filter={
+                "state": CredentialExchange.STATE_OFFER_SENT,
+                "credential_definition_id": credential_definition_id,
+                "connection_id": connection_record.connection_id,
+            },
+        )
+
         credential_exchange_record.credential_request = credential_request
         credential_exchange_record.state = CredentialExchange.STATE_REQUEST_RECEIVED
         await credential_exchange_record.save(self.context.storage)
