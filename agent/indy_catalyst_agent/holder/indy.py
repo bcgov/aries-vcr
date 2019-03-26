@@ -54,7 +54,9 @@ class IndyHolder(BaseHolder):
 
         credential_request = json.loads(credential_request_json)
 
-        # Temporary
+        # HACK
+        # TODO: Once we are tracking cred exchange state via thread id we can store
+        #       this on the cred exchange object
         self.last_credential_request_metadata_json = credential_request_metadata_json
 
         return credential_request
@@ -78,3 +80,37 @@ class IndyHolder(BaseHolder):
         )
 
         return credential_id
+
+    async def get_credentials(self, start, count, wql):
+        """
+        Get credentials stored in the wallet.
+
+        """
+        search_handle, record_count = await indy.anoncreds.prover_search_credentials(
+            self.wallet.handle, json.dumps(wql)
+        )
+
+        # We need to move the database cursor position manually...
+        if start > 0:
+            # TODO: move cursor in chunks to avoid exploding memory
+            await indy.anoncreds.prover_fetch_credentials(search_handle, start)
+
+        credentials_json = await indy.anoncreds.prover_fetch_credentials(
+            search_handle, count
+        )
+        await indy.anoncreds.prover_close_credentials_search(search_handle)
+
+        credentials = json.loads(credentials_json)
+        return credentials
+
+    async def get_credential(self, credential_id: str):
+        """
+        Get credentials stored in the wallet.
+
+        """
+        credential_json = await indy.anoncreds.prover_get_credential(
+            self.wallet.handle, credential_id
+        )
+
+        credential = json.loads(credential_json)
+        return credential
