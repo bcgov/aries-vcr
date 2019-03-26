@@ -30,7 +30,7 @@ class CredentialRequest(AgentMessage):
         Args:
             offer_json: Credential offer json string
             credential_request_json: Credential request json string
-            
+
         """
         super(CredentialRequest, self).__init__(**kwargs)
         self.offer_json = offer_json

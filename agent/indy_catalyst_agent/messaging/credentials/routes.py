@@ -1,8 +1,5 @@
 """Connection handling admin routes."""
 
-import json
-
-
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
 from marshmallow import fields, Schema
@@ -18,31 +15,32 @@ from ...storage.error import StorageNotFoundError
 
 
 class CredentialOfferRequestSchema(Schema):
-    """Result schema for a new connection invitation."""
+    """Request schema for sending a credential offer admin message."""
 
     connection_id = fields.Str(required=True)
     credential_definition_id = fields.Str(required=True)
 
 
 class CredentialOfferResultSchema(Schema):
-    """Result schema for a new connection invitation."""
+    """Result schema for sending a credential offer admin message."""
 
     credential_id = fields.Str()
 
 
 class CredentialRequestResultSchema(Schema):
-    """Result schema for a new connection invitation."""
+    """Result schema for sending a credential request admin message."""
 
     credential_id = fields.Str()
 
 
 class CredentialIssueRequestSchema(Schema):
+    """Request schema for sending a credential issue admin message."""
 
     credential_values = fields.Dict(required=True)
 
 
 class CredentialIssueResultSchema(Schema):
-    """Result schema for a new connection invitation."""
+    """Result schema for sending a credential issue admin message."""
 
     credential_id = fields.Str()
 
@@ -206,9 +204,10 @@ async def credential_exchange_send_offer(request: web.BaseRequest):
 
     # TODO: validate connection_record valid
 
-    credential_exchange_record, credential_offer_message = await credential_manager.create_offer(
-        credential_definition_id, connection_id
-    )
+    (
+        credential_exchange_record,
+        credential_offer_message,
+    ) = await credential_manager.create_offer(credential_definition_id, connection_id)
 
     await outbound_handler(credential_offer_message, connection_target)
 
@@ -237,7 +236,7 @@ async def credential_exchange_send_request(request: web.BaseRequest):
         context.storage, credential_exchange_id
     )
 
-    assert (credential_exchange_record.state, CredentialExchange.STATE_OFFER_RECEIVED)
+    assert credential_exchange_record.state == CredentialExchange.STATE_OFFER_RECEIVED
 
     credential_manager = CredentialManager(context)
     connection_manager = ConnectionManager(context)
@@ -250,7 +249,10 @@ async def credential_exchange_send_request(request: web.BaseRequest):
         connection_record
     )
 
-    credential_exchange_record, credential_request_message = await credential_manager.create_request(
+    (
+        credential_exchange_record,
+        credential_request_message,
+    ) = await credential_manager.create_request(
         credential_exchange_record, connection_record
     )
 
@@ -283,7 +285,7 @@ async def credential_exchange_issue(request: web.BaseRequest):
         context.storage, credential_exchange_id
     )
 
-    assert (credential_exchange_record.state, CredentialExchange.STATE_REQUEST_RECEIVED)
+    assert credential_exchange_record.state == CredentialExchange.STATE_REQUEST_RECEIVED
 
     credential_manager = CredentialManager(context)
     connection_manager = ConnectionManager(context)
@@ -296,7 +298,10 @@ async def credential_exchange_issue(request: web.BaseRequest):
         connection_record
     )
 
-    credential_exchange_record, credential_request_message = await credential_manager.issue_credential(
+    (
+        credential_exchange_record,
+        credential_request_message,
+    ) = await credential_manager.issue_credential(
         credential_exchange_record, credential_values
     )
 
