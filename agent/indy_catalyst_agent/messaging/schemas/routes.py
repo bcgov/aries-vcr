@@ -20,7 +20,6 @@ class SchemaSendResultsSchema(Schema):
     schema_id = fields.Str()
 
 
-
 class SchemaGetResultsSchema(Schema):
     """Results schema for schema get request."""
 
