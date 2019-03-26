@@ -2,9 +2,11 @@
 
 import json
 
+
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
 from marshmallow import fields, Schema
+from urllib.parse import parse_qs
 
 from .manager import CredentialManager
 from .models.credential_exchange import CredentialExchange
@@ -43,6 +45,77 @@ class CredentialIssueResultSchema(Schema):
     """Result schema for a new connection invitation."""
 
     credential_id = fields.Str()
+
+
+@docs(tags=["credentials"], summary="Fetch a credential from wallet by id")
+# @response_schema(ConnectionListSchema(), 200)
+async def credentials_get(request: web.BaseRequest):
+    """
+    Request handler for searching connection records.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The connection list response
+
+    """
+    context = request.app["request_context"]
+
+    credential_id = request.match_info["id"]
+
+    credential = await context.holder.get_credential(credential_id)
+
+    return web.json_response(credential)
+
+
+@docs(
+    tags=["credentials"],
+    parameters=[
+        {
+            "name": "start",
+            "in": "query",
+            "schema": {"type": "string"},
+            "required": False,
+        },
+        {
+            "name": "count",
+            "in": "query",
+            "schema": {"type": "string"},
+            "required": False,
+        },
+        {"name": "wql", "in": "query", "schema": {"type": "string"}, "required": False},
+    ],
+    summary="Fetch credentials from wallet",
+)
+# @response_schema(ConnectionListSchema(), 200)
+async def credentials_list(request: web.BaseRequest):
+    """
+    Request handler for searching connection records.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The connection list response
+
+    """
+    context = request.app["request_context"]
+
+    start = request.query.get("start")
+    count = request.query.get("count")
+
+    # url encoded json wql
+    encoded_wql = request.query.get("wql") or ""
+    wql = parse_qs(encoded_wql)
+
+    # defaults
+    start = int(start) if isinstance(start, str) else 0
+    count = int(count) if isinstance(count, str) else 10
+
+    credentials = await context.holder.get_credentials(start, count, wql)
+
+    return web.json_response(credentials)
 
 
 @docs(tags=["credential_exchange"], summary="Fetch all credential exchange records")
@@ -233,6 +306,9 @@ async def credential_exchange_issue(request: web.BaseRequest):
 
 async def register(app: web.Application):
     """Register routes."""
+
+    app.add_routes([web.get("/credential/{id}", credentials_get)])
+    app.add_routes([web.get("/credentials", credentials_list)])
     app.add_routes([web.get("/credential_exchange", credential_exchange_list)])
     app.add_routes([web.get("/credential_exchange/{id}", credential_exchange_retrieve)])
     app.add_routes(

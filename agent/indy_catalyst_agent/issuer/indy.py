@@ -3,12 +3,12 @@
 import json
 import logging
 
-from hashlib import sha256
 
 import indy.anoncreds
 
 from ..error import BaseError
 from .base import BaseIssuer
+from .util import encode
 
 
 class IssuerError(BaseError):
@@ -55,8 +55,7 @@ class IndyIssuer(BaseIssuer):
         encoded_values = {}
         schema_attributes = schema["attrNames"]
         for attribute in schema_attributes:
-
-            # Force every attribute present in schema to be set. Extraneous attribute names are ignored.
+            # Ensure every attribute present in schema to be set. Extraneous attribute names are ignored.
             try:
                 credential_value = credential_values[attribute]
             except KeyError:
@@ -65,27 +64,9 @@ class IndyIssuer(BaseIssuer):
                     + f"'{attribute}'"
                 )
 
-            credential_value_string = str(credential_value)
             encoded_values[attribute] = {}
-
-            # If the value can be represented as an integer, we set the raw and encoded values
-            # to the integer representation as a string - str(int(val))
-            try:
-                encoded_credential_value = int(credential_value)
-                encoded_credential_value_string = str(encoded_credential_value)
-                credential_value_string = encoded_credential_value_string
-            except ValueError:
-                # If the value can't be represented as an integer, we encode the raw value as an integer
-                # representation as the SHA256 hash value
-                credential_value_bytes = credential_value.encode()
-                credential_value_hash_bytes = sha256(credential_value_bytes).digest()
-                credential_value_as_int = int.from_bytes(
-                    credential_value_hash_bytes, byteorder="big"
-                )
-                encoded_credential_value_string = str(credential_value_as_int)
-
-            encoded_values[attribute]["raw"] = credential_value_string
-            encoded_values[attribute]["encoded"] = encoded_credential_value_string
+            encoded_values[attribute]["raw"] = str(credential_value)
+            encoded_values[attribute]["encoded"] = encode(credential_value)
 
         (
             credential_json,
