@@ -16,7 +16,6 @@ MESSAGE_TYPES = {
         + "credential_request.CredentialRequest"
     ),
     CREDENTIAL: (
-        "indy_catalyst_agent.messaging.credentials.messages."
-        + "credential.Credential"
+        "indy_catalyst_agent.messaging.credentials.messages." + "credential.Credential"
     ),
 }
