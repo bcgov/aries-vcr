@@ -4,7 +4,6 @@ from ...base_handler import BaseHandler, BaseResponder, RequestContext
 
 from ..manager import CredentialManager
 from ..messages.credential_offer import CredentialOffer
-from ..messages.credential_request import CredentialRequest
 
 
 class CredentialOfferHandler(BaseHandler):
@@ -32,8 +31,8 @@ class CredentialOfferHandler(BaseHandler):
             credential_offer, context.connection_record.connection_id
         )
 
-        # TODO: allow automatic response by config. Currently, admin interface must be use to
-        #       continue flow
+        # TODO: allow automatic response by config. Currently,
+        #       admin interface must be use to continue flow
 
         #
         # async with context.ledger:

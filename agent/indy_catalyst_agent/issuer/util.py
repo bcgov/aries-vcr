@@ -1,3 +1,5 @@
+"""Issuer utils."""
+
 from hashlib import sha256
 from typing import Any
 
@@ -6,12 +8,20 @@ I32_BOUND = 2 ** 31
 
 def encode(orig: Any) -> str:
     """
-    Encode credential attribute value, purely stringifying any int32 and leaving numeric int32 strings alone,
-    but mapping any other input to a stringified 256-bit (but not 32-bit) integer. Predicates in indy-sdk operate
+    Encode a credential value as an int.
+
+    Encode credential attribute value, purely stringifying any int32
+    and leaving numeric int32 strings alone, but mapping any other
+    input to a stringified 256-bit (but not 32-bit) integer.
+    Predicates in indy-sdk operate
     on int32 values properly only when their encoded values match their raw values.
 
-    :param orig: original value to encode
-    :return: encoded value
+    Args:
+        orig: original value to encode
+
+    Returns:
+        encoded value
+
     """
 
     if isinstance(orig, int) and -I32_BOUND <= orig < I32_BOUND:

@@ -180,7 +180,10 @@ class IndyLedger(BaseLedger):
         schema = await self.get_schema(schema_id)
 
         # TODO: add support for tag, sig type, and config
-        credential_definition_id, credential_definition_json = await indy.anoncreds.issuer_create_and_store_credential_def(
+        (
+            credential_definition_id,
+            credential_definition_json,
+        ) = await indy.anoncreds.issuer_create_and_store_credential_def(
             self.wallet.handle,
             public_did.did,
             json.dumps(schema),
@@ -216,9 +219,10 @@ class IndyLedger(BaseLedger):
 
         response_json = await self._submit(request_json)
 
-        _, parsed_credential_definition_json = await indy.ledger.parse_get_cred_def_response(
-            response_json
-        )
+        (
+            _,
+            parsed_credential_definition_json,
+        ) = await indy.ledger.parse_get_cred_def_response(response_json)
         parsed_response = json.loads(parsed_credential_definition_json)
 
         return parsed_response
