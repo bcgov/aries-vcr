@@ -8,3 +8,4 @@ from .Name import Name
 from .Schema import Schema
 from .Topic import Topic
 from .TopicRelationship import TopicRelationship
+from .User import User

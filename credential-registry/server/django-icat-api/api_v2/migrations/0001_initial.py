@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('api_v2', '0004_auto_20190107_2203'),
     ]
 
     operations = [

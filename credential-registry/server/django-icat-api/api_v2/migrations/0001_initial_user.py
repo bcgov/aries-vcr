@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
                 ('latLong', models.CharField(blank=True, max_length=255, null=True)),
                 ('effectiveDate', models.DateField(default=django.utils.timezone.now)),
                 ('endDate', models.DateField(blank=True, null=True)),
-                ('doingBusinessAsId', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='api.DoingBusinessAs')),
+                ('doingBusinessAsId', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='api_v2.DoingBusinessAs')),
             ],
             options={
                 'db_table': 'LOCATION',
@@ -175,7 +175,7 @@ class Migration(migrations.Migration):
                 ('schemaName', models.CharField(blank=True, max_length=255, null=True)),
                 ('schemaVersion', models.CharField(blank=True, max_length=255, null=True)),
                 ('endDate', models.DateField(blank=True, null=True)),
-                ('issuerServiceId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='issuerServices', to='api.IssuerService')),
+                ('issuerServiceId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='issuerServices', to='api_v2.IssuerService')),
             ],
             options={
                 'db_table': 'VERIFIABLE_CLAIM_TYPE',
@@ -191,7 +191,7 @@ class Migration(migrations.Migration):
                 ('legalName', models.CharField(max_length=255)),
                 ('effectiveDate', models.DateField(default=django.utils.timezone.now)),
                 ('endDate', models.DateField(blank=True, null=True)),
-                ('jurisdictionId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='verifiableOrgJurisdictions', to='api.Jurisdiction')),
+                ('jurisdictionId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='verifiableOrgJurisdictions', to='api_v2.Jurisdiction')),
             ],
             options={
                 'db_table': 'VERIFIABLE_ORG',
@@ -216,41 +216,41 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='verifiableorg',
             name='orgTypeId',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='verifiableOrgTypes', to='api.VerifiableOrgType'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='verifiableOrgTypes', to='api_v2.VerifiableOrgType'),
         ),
         migrations.AddField(
             model_name='verifiableclaim',
             name='claimType',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='claimTypes', to='api.VerifiableClaimType'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='claimTypes', to='api_v2.VerifiableClaimType'),
         ),
         migrations.AddField(
             model_name='verifiableclaim',
             name='inactiveClaimReasonId',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='inactiveClaimReasons', to='api.InactiveClaimReason'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='inactiveClaimReasons', to='api_v2.InactiveClaimReason'),
         ),
         migrations.AddField(
             model_name='verifiableclaim',
             name='verifiableOrgId',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='claims', to='api.VerifiableOrg'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='claims', to='api_v2.VerifiableOrg'),
         ),
         migrations.AddField(
             model_name='location',
             name='locationTypeId',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='locationTypes', to='api.LocationType'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='locationTypes', to='api_v2.LocationType'),
         ),
         migrations.AddField(
             model_name='location',
             name='verifiableOrgId',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='api.VerifiableOrg'),
+            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='api_v2.VerifiableOrg'),
         ),
         migrations.AddField(
             model_name='issuerservice',
             name='jurisdictionId',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='issuerServiceJurisdictions', to='api.Jurisdiction'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='issuerServiceJurisdictions', to='api_v2.Jurisdiction'),
         ),
         migrations.AddField(
             model_name='doingbusinessas',
             name='verifiableOrgId',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='doingBusinessAs', to='api.VerifiableOrg'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='doingBusinessAs', to='api_v2.VerifiableOrg'),
         ),
     ]
