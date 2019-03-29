@@ -61,7 +61,6 @@ def registration_create(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @swagger_auto_schema(methods=('get','put','delete'), query_serializer=RegistrationSerializer, operation_id='v2_hook_registration')
 @api_view(['GET', 'PUT', 'DELETE'])
 def registration(request, userid):
@@ -72,7 +71,6 @@ def registration(request, userid):
     elif request.method == 'DELETE':
         pass
 
-
 @swagger_auto_schema(methods=('get','post'), query_serializer=NewRegistrationSerializer, operation_id='v2_hook_subscription_create')
 @api_view(['GET', 'POST'])
 @authentication_classes(())
@@ -82,7 +80,6 @@ def subscription_create(request, userid):
         pass
     elif request.method == 'POST':
         pass
-"""
 
 @swagger_auto_schema(methods=('get','put','delete'), query_serializer=NewRegistrationSerializer, operation_id='v2_hook_subscription')
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -93,4 +90,4 @@ def subscription(request, userid, pk):
         pass
     elif request.method == 'DELETE':
         pass
-
+"""
