@@ -2,6 +2,8 @@ from django.conf import settings
 from django.urls import include, path
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.routers import SimpleRouter
+# see https://github.com/alanjds/drf-nested-routers
+from rest_framework_nested import routers
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, AllowAny
 
 from api_v2.views import misc, rest, search, hooks
@@ -65,24 +67,13 @@ router.register(
     hooks.RegistrationViewSet,
     "Web Hook Registration",
 )
-router.register(
-    r"subscription",
-    hooks.SubscriptionViewSet,
-    "Web Hook Subscription Management",
-)
-#hookPatterns = [
-    #path('registration/', hooks.registration_list, name='registration-list'),
-    #path('registration/<int:pk>/', hooks.registration_detail, name='registration-detail'),
-    #path("hook_registration/", hooks.registration_create),
-    #path("hook_registration/<str:userid>/", hooks.registration),
-    #path("hook_subscription/", hooks.subscription_create),
-    #path("hook_subscription/<str:userid>/<pk>/", hooks.subscription),
-#]
+registrations_router = routers.NestedSimpleRouter(router, r'registration', lookup='registration')
+registrations_router.register(r'subscriptions', hooks.SubscriptionViewSet, basename='subscriptions')
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
 ]
 
 urlpatterns = format_suffix_patterns(
-    router.urls + miscPatterns + swaggerPatterns
+    router.urls + registrations_router.urls + miscPatterns + swaggerPatterns
 )
