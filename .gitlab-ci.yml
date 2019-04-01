@@ -12,3 +12,4 @@ Run Agent Tests:
   stage: test
   script:
     - pytest
+  coverage: '/^TOTAL\s+\d+\s+\d+\s+(\d+\%)$/'
