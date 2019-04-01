@@ -1,6 +1,8 @@
 image: bcgovimages/von-image:py36-1.8-0
 
 before_script:
+  - mkdir test-reports
+  - mkdir test-reports/pytest
   - cd agent
   - python3 -m venv venv
   - . venv/bin/activate
@@ -9,8 +11,4 @@ before_script:
 Run Agent Tests:
   stage: test
   script:
-    - mkdir test-reports
-    - mkdir test-reports/pytest
-    - cd agent
-    - . venv/bin/activate
     - pytest
