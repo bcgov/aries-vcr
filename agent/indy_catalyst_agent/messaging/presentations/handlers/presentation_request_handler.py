@@ -22,3 +22,9 @@ class PresentationRequestHandler(BaseHandler):
         assert isinstance(context.message, PresentationRequest)
 
         self._logger.info("Received presentation request: %s", context.message.request)
+
+        presentation_manager = PresentationManager(context)
+
+        await presentation_manager.receive_request(
+            context.message.request, context.connection_record.connection_id
+        )
