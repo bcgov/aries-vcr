@@ -35,7 +35,7 @@ class PresentationExchange(BaseModel):
         connection_id: str = None,
         initiator: str = None,
         state: str = None,
-        proof_request: dict = None,
+        presentation_request: dict = None,
         error_msg: str = None,
     ):
         """Initialize a new PresentationExchange."""
@@ -43,7 +43,7 @@ class PresentationExchange(BaseModel):
         self.connection_id = connection_id
         self.initiator = initiator
         self.state = state
-        self.proof_request = proof_request
+        self.presentation_request = presentation_request
         self.error_msg = error_msg
 
     @property
@@ -76,7 +76,7 @@ class PresentationExchange(BaseModel):
             "connection_id",
             "initiator",
             "state",
-            "proof_request",
+            "presentation_request",
         ):
             val = getattr(self, prop)
             if val:
@@ -163,5 +163,5 @@ class PresentationExchangeSchema(BaseModelSchema):
     connection_id = fields.Str(required=False)
     initiator = fields.Str(required=False)
     state = fields.Str(required=False)
-    proof_request = fields.Dict(required=False)
+    presentation_request = fields.Dict(required=False)
     error_msg = fields.Str(required=False)

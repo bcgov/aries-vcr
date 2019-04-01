@@ -23,17 +23,17 @@ class CredentialPresentation(AgentMessage):
         message_type = CREDENTIAL_PRESENTATION
 
     def __init__(
-        self, credential_presentation_json: str = None, comment: str = None, **kwargs
+        self, presentation: str = None, comment: str = None, **kwargs
     ):
         """
         Initialize credential presentation object.
 
         Args:
-            credential_presentation_json (str): Credential presentation json string
+            presentation: Credential presentation json string
             comment: Comment
         """
         super(CredentialPresentation, self).__init__(**kwargs)
-        self.presentation = credential_presentation_json
+        self.presentation = presentation
         self.comment = comment
 
 
