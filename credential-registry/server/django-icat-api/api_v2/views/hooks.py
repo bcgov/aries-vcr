@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -27,12 +28,15 @@ class RegistrationViewSet(ModelViewSet):
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
     """
-    queryset = User.objects.all()
+    #queryset = User.objects.all()
     serializer_class = RegistrationSerializer
     lookup_field = 'username'
     #permission_classes = (permissions.IsAuthenticatedOrReadOnly,
     #                      IsOwnerOrReadOnly,)
     permission_classes = ()
+
+    def get_queryset(self):
+        return get_user_model().objects.filter(groups__name=SUBSCRIBERS_GROUP_NAME).all()
 
     def perform_create(self, serializer):
         serializer.save()
@@ -52,5 +56,5 @@ class SubscriptionViewSet(ModelViewSet):
         return Subscription.objects.filter(owner__username=self.kwargs['registration_username']).all()
     
     def perform_create(self, serializer):
-        serializer.save()
+        erializer.save(owner=self.request.user)
 
