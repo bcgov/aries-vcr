@@ -35,8 +35,6 @@ class PresentationExchange(BaseModel):
         connection_id: str = None,
         initiator: str = None,
         state: str = None,
-        credential_definition_id: str = None,
-        schema_id: str = None,
         proof_request: dict = None,
         error_msg: str = None,
     ):
@@ -45,8 +43,6 @@ class PresentationExchange(BaseModel):
         self.connection_id = connection_id
         self.initiator = initiator
         self.state = state
-        self.credential_definition_id = credential_definition_id
-        self.schema_id = schema_id
         self.proof_request = proof_request
         self.error_msg = error_msg
 
@@ -80,8 +76,6 @@ class PresentationExchange(BaseModel):
             "connection_id",
             "initiator",
             "state",
-            "credential_definition_id",
-            "schema_id",
             "proof_request",
         ):
             val = getattr(self, prop)
@@ -169,7 +163,5 @@ class PresentationExchangeSchema(BaseModelSchema):
     connection_id = fields.Str(required=False)
     initiator = fields.Str(required=False)
     state = fields.Str(required=False)
-    credential_definition_id = fields.Str(required=False)
-    schema_id = fields.Str(required=False)
     proof_request = fields.Dict(required=False)
     error_msg = fields.Str(required=False)

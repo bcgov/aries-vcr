@@ -1,9 +1,31 @@
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
+from marshmallow import fields, Schema
 
+from .manager import PresentationManager
 from .models.presentation_exchange import PresentationExchange
+from ..connections.manager import ConnectionManager
 
 from ...storage.error import StorageNotFoundError
+from ..connections.models.connection_record import ConnectionRecord
+
+
+class PresentationRequestRequestSchema(Schema):
+    """Request schema for sending a proof request."""
+
+    class RequestedAttribute(Schema):
+        name = fields.Str(required=True)
+        restrictions = fields.List(fields.Dict(), required=False)
+
+    class RequestedPredicate(Schema):
+        name = fields.Str(required=True)
+        p_type = fields.Str(required=True)
+        p_value = fields.Str(required=True)
+        restrictions = fields.List(fields.Dict(), required=False)
+
+    connection_id = fields.Str(required=True)
+    requested_attributes = fields.Nested(RequestedAttribute, many=True)
+    requested_predicates = fields.Nested(RequestedPredicate, many=True)
 
 
 @docs(tags=["presentation_exchange"], summary="Fetch all presentation exchange records")
@@ -61,10 +83,64 @@ async def presentation_exchange_retrieve(request: web.BaseRequest):
     return web.json_response(record.serialize())
 
 
+@docs(tags=["presentation_exchange"], summary="Sends a presentation request")
+@request_schema(PresentationRequestRequestSchema())
+async def presentation_exchange_send_request(request: web.BaseRequest):
+    """
+    Request handler for sending a presentation request.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The presentation exchange details.
+
+    """
+
+    context = request.app["request_context"]
+    outbound_handler = request.app["outbound_message_router"]
+
+    body = await request.json()
+
+    connection_id = body.get("connection_id")
+    requested_attributes = body.get("requested_attributes")
+    requested_predicates = body.get("requested_predicates")
+
+    connection_manager = ConnectionManager(context)
+    presentation_manager = PresentationManager(context)
+
+    connection_record = await ConnectionRecord.retrieve_by_id(
+        context.storage, connection_id
+    )
+
+    connection_target = await connection_manager.get_connection_target(
+        connection_record
+    )
+
+    (
+        presentation_exchange_record,
+        presentation_request_message,
+    ) = await presentation_manager.create_request(
+        requested_attributes, requested_predicates
+    )
+
+    await outbound_handler(presentation_request_message, connection_target)
+
+    return web.json_response(presentation_exchange_record.serialize())
+
+
 async def register(app: web.Application):
     """Register routes."""
 
     app.add_routes([web.get("/presentation_exchange", presentation_exchange_list)])
     app.add_routes(
         [web.get("/presentation_exchange/{id}", presentation_exchange_retrieve)]
+    )
+    app.add_routes(
+        [
+            web.post(
+                "/presentation_exchange/send_request",
+                presentation_exchange_send_request,
+            )
+        ]
     )
