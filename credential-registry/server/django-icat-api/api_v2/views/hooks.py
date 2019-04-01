@@ -33,7 +33,6 @@ class RegistrationViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-
 class SubscriptionViewSet(ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
