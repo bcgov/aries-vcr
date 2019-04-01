@@ -1,0 +1,47 @@
+"""A presentation request content message."""
+
+from marshmallow import fields
+
+from ...agent_message import AgentMessage, AgentMessageSchema
+from ..message_types import PRESENTATION_REQUEST
+
+HANDLER_CLASS = (
+    "indy_catalyst_agent.messaging.connections.handlers."
+    + "connection_invitation_handler.ConnectionInvitationHandler"
+)
+
+
+class PresentationRequest(AgentMessage):
+    """Class representing a presentation request."""
+
+    class Meta:
+        """PresentationRequest metadata."""
+
+        handler_class = HANDLER_CLASS
+        message_type = PRESENTATION_REQUEST
+        schema_class = "PresentationRequestSchema"
+
+    def __init__(
+        self, presentation_request_json: str = None, comment: str = None, **kwargs
+    ):
+        """
+        Initialize presentation request object.
+
+        Args:
+            presentation_request_json (str): Presentation request json string
+        """
+        super(PresentationRequest, self).__init__(**kwargs)
+        self.request = presentation_request_json
+        self.comment = comment
+
+
+class PresentationRequestSchema(AgentMessageSchema):
+    """PresentationRequest schema."""
+
+    class Meta:
+        """PresentationRequestSchema metadata."""
+
+        model_class = PresentationRequest
+
+    request = fields.Str(required=True)
+    comment = fields.Str(required=False)
