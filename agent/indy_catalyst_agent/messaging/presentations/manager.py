@@ -80,12 +80,19 @@ class PresentationManager:
 
         return presentation_exchange, presentation_request_message
 
-    async def receive_request(self, proof_request: dict):
+    async def receive_request(self, presentation_request_json: str, connection_id: str):
         """
         Receive a presentation request.
 
         Args:
-            proof_request: Proof request to receive
+            presentation_request_json: Presentation request to receive
+            connection_id: Connection id for this connection
 
         """
-        pass
+        presentation_exchange = PresentationExchange(
+            connection_id=connection_id,
+            initiator=PresentationExchange.INITIATOR_EXTERNAL,
+            state=PresentationExchange.STATE_REQUEST_RECEIVED,
+            presentation_request=json.loads(presentation_request_json),
+        )
+        await presentation_exchange.save(self.context.storage)
