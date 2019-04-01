@@ -15,4 +15,4 @@ Run Agent Tests:
   coverage: '/^TOTAL\s+\d+\s+\d+\s+(\d+\%)$/'
 
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Code-Quality.gitlab-ci.yml'
