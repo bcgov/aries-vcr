@@ -22,16 +22,16 @@ class PresentationRequest(AgentMessage):
         schema_class = "PresentationRequestSchema"
 
     def __init__(
-        self, presentation_request_json: str = None, comment: str = None, **kwargs
+        self, request: str = None, comment: str = None, **kwargs
     ):
         """
         Initialize presentation request object.
 
         Args:
-            presentation_request_json (str): Presentation request json string
+            request: Presentation request json string
         """
         super(PresentationRequest, self).__init__(**kwargs)
-        self.request = presentation_request_json
+        self.request = request
         self.comment = comment
 
 

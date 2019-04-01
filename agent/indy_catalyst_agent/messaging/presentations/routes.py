@@ -121,7 +121,7 @@ async def presentation_exchange_send_request(request: web.BaseRequest):
         presentation_exchange_record,
         presentation_request_message,
     ) = await presentation_manager.create_request(
-        requested_attributes, requested_predicates
+        requested_attributes, requested_predicates, connection_id
     )
 
     await outbound_handler(presentation_request_message, connection_target)
