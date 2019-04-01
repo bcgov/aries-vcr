@@ -1,13 +1,13 @@
 from django.conf import settings
 from django.urls import include, path
-from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework.routers import SimpleRouter
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, AllowAny
-
-from api_v2.views import misc, rest, search, hooks
-
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework.permissions import (AllowAny,
+                                        DjangoModelPermissionsOrAnonReadOnly)
+from rest_framework.routers import SimpleRouter
+from rest_framework.urlpatterns import format_suffix_patterns
+
+from api_v2.views import hooks, misc, rest, search
 
 API_METADATA = settings.API_METADATA
 schema_view = get_schema_view(
@@ -35,6 +35,7 @@ router.register(r"attribute", rest.AttributeViewSet)
 router.register(r"credential", rest.CredentialViewSet)
 router.register(r"name", rest.NameViewSet)
 router.register(r"topic", rest.TopicViewSet)
+router.register(r"webhooks", hooks.HookViewSet, "webhook")
 
 # Search endpoints
 router.register(
@@ -42,47 +43,30 @@ router.register(
     search.CredentialTopicSearchView,
     "Credential Topic Search",
 )
+router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
 router.register(
-    r"search/credential",
-    search.CredentialSearchView,
-    "Credential Search",
-)
-router.register(
-    r"search/autocomplete",
-    search.NameAutocompleteView,
-    "Name Autocomplete",
+    r"search/autocomplete", search.NameAutocompleteView, "Name Autocomplete"
 )
 
 # Misc endpoints
-miscPatterns = [
-    path("feedback", misc.send_feedback),
-    path("quickload", misc.quickload),
-]
+miscPatterns = [path("feedback", misc.send_feedback), path("quickload", misc.quickload)]
 
 # hook management (registration, add/update/delete hooks)
+router.register(r"registration", hooks.RegistrationViewSet, "Web Hook Registration")
 router.register(
-    r"registration",
-    hooks.RegistrationViewSet,
-    "Web Hook Registration",
+    r"subscription", hooks.SubscriptionViewSet, "Web Hook Subscription Management"
 )
-router.register(
-    r"subscription",
-    hooks.SubscriptionViewSet,
-    "Web Hook Subscription Management",
-)
-#hookPatterns = [
-    #path('registration/', hooks.registration_list, name='registration-list'),
-    #path('registration/<int:pk>/', hooks.registration_detail, name='registration-detail'),
-    #path("hook_registration/", hooks.registration_create),
-    #path("hook_registration/<str:userid>/", hooks.registration),
-    #path("hook_subscription/", hooks.subscription_create),
-    #path("hook_subscription/<str:userid>/<pk>/", hooks.subscription),
-#]
+# hookPatterns = [
+# path('registration/', hooks.registration_list, name='registration-list'),
+# path('registration/<int:pk>/', hooks.registration_detail, name='registration-detail'),
+# path("hook_registration/", hooks.registration_create),
+# path("hook_registration/<str:userid>/", hooks.registration),
+# path("hook_subscription/", hooks.subscription_create),
+# path("hook_subscription/<str:userid>/<pk>/", hooks.subscription),
+# ]
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
 ]
 
-urlpatterns = format_suffix_patterns(
-    router.urls + miscPatterns + swaggerPatterns
-)
+urlpatterns = format_suffix_patterns(router.urls + miscPatterns + swaggerPatterns)

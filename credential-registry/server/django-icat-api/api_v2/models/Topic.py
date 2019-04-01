@@ -11,7 +11,7 @@ from .Name import Name
 
 
 class Topic(Auditable):
-    source_id = models.TextField()
+    source_id = models.TextField(unique=True)
     type = models.TextField()
 
     # Topics I have a verifiable relationship to

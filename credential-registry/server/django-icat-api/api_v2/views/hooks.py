@@ -1,12 +1,9 @@
 import logging
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+
 from django.http import JsonResponse
-from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-
+from rest_framework import permissions, status
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
@@ -14,12 +11,17 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework.parsers import FormParser
-from rest_framework import permissions
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet
+from rest_hooks.models import Hook
 
-from api_v2.models.User import User
 from api_v2.models.Subscription import Subscription
-from api_v2.serializers.hooks import *
+from api_v2.models.User import User
+from api_v2.serializers.hooks import (
+    HookSerializer,
+    RegistrationSerializer,
+    SubscriptionSerializer,
+)
 
 
 class RegistrationViewSet(ModelViewSet):
@@ -27,26 +29,43 @@ class RegistrationViewSet(ModelViewSet):
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
     """
+
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
-    #permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,
     #                      IsOwnerOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 class SubscriptionViewSet(ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
     """
+
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
-    #permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,
     #                      IsOwnerOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
+class HookViewSet(ModelViewSet):
+    """
+    Retrieve, create, update or destroy webhooks.
+    """
+
+    queryset = Hook.objects.all()
+    model = Hook
+    serializer_class = HookSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 """
 @swagger_auto_schema(method='post', query_serializer=NewRegistrationSerializer, operation_id='v2_hook_registration_create')
