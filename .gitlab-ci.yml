@@ -14,6 +14,9 @@ Run Agent Tests:
     - pytest
   coverage: '/^TOTAL\s+\d+\s+\d+\s+(\d+\%)$/'
 
+include:
+  template: Dependency-Scanning.gitlab-ci.yml
+
 code_quality:
   image: docker:stable
   allow_failure: true
