@@ -6,8 +6,8 @@ from ...agent_message import AgentMessage, AgentMessageSchema
 from ..message_types import PRESENTATION_REQUEST
 
 HANDLER_CLASS = (
-    "indy_catalyst_agent.messaging.connections.handlers."
-    + "connection_invitation_handler.ConnectionInvitationHandler"
+    "indy_catalyst_agent.messaging.presentations.handlers."
+    + "presentation_request_handler.PresentationRequestHandler"
 )
 
 
