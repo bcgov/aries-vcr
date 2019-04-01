@@ -2,50 +2,23 @@
 
 from ...base_handler import BaseHandler, BaseResponder, RequestContext
 
-from ..manager import CredentialManager
-from ..messages.credential_offer import CredentialOffer
+from ..manager import PresentationManager
+from ..messages.presentation_request import PresentationRequest
 
 
-class CredentialOfferHandler(BaseHandler):
-    """Message handler class for credential offers."""
+class PresentationRequestHandler(BaseHandler):
+    """Message handler class for presentation requests."""
 
     async def handle(self, context: RequestContext, responder: BaseResponder):
         """
-        Message handler logic for credential offers.
+        Message handler logic for presentation requests.
 
         Args:
             context: request context
             responder: responder callback
         """
-        self._logger.debug(f"CredentialOfferHandler called with context {context}")
+        self._logger.debug(f"PresentationRequestHandler called with context {context}")
 
-        assert isinstance(context.message, CredentialOffer)
+        assert isinstance(context.message, PresentationRequest)
 
-        self._logger.info("Received credential offer: %s", context.message.offer_json)
-
-        credential_manager = CredentialManager(context)
-
-        credential_offer = context.message.offer_json
-
-        await credential_manager.receive_offer(
-            credential_offer, context.connection_record.connection_id
-        )
-
-        # TODO: allow automatic response by config. Currently,
-        #       admin interface must be use to continue flow
-
-        #
-        # async with context.ledger:
-        #     credential_definition = await context.ledger.get_credential_definition(
-        #         credential_offer["cred_def_id"]
-        #     )
-        #
-        # credential_request = await context.holder.create_credential_request(
-        #     credential_offer, credential_definition
-        # )
-        #
-        # credential_request = CredentialRequest(
-        #     offer_json=credential_offer, credential_request_json=credential_request
-        # )
-        #
-        # await responder.send_reply(credential_request)
+        self._logger.info("Received presentation request: %s", context.message.request)

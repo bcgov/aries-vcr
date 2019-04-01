@@ -17,11 +17,10 @@ class CredentialPresentationHandler(BaseHandler):
             context: request context
             responder: responder callback
         """
-        self._logger.debug(f"CredentialPresentationHandler called with context {context}")
+        self._logger.debug(
+            f"CredentialPresentationHandler called with context {context}"
+        )
         assert isinstance(context.message, CredentialPresentation)
-        self._logger.info(f"Received credential presentation: {context.message.}")
-
-        credential = context.message.credential_json
-        credential_manager = CredentialManager(context)
-
-        await credential_manager.store_credential(credential)
+        self._logger.info(
+            f"Received credential presentation: {context.message.presentation}"
+        )
