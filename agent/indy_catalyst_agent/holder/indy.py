@@ -126,21 +126,32 @@ class IndyHolder(BaseHolder):
             extra_query: wql query dict
 
         """
-        search_handle, record_count = await indy.anoncreds.prover_search_credentials_for_proof_req(
-            self.wallet.handle,
-            json.dumps(presentation_request),
-            json.dumps(extra_query),
+
+        credentials_json = await indy.anoncreds.prover_get_credentials_for_proof_req(
+            self.wallet.handle, json.dumps(presentation_request)
         )
 
-        # We need to move the database cursor position manually...
-        if start > 0:
-            # TODO: move cursor in chunks to avoid exploding memory
-            await indy.anoncreds.prover_fetch_credentials(search_handle, start)
+        # TODO: use prover_search_credentials_for_proof_req instead of getting all
+        #       creds at once. The API is odd, need to collate all referents from
+        #       proof request then make n calls to prover_fetch_credentials_for_proof_req?
+        #       Each request has the same extra_query filters applied to it?
 
-        credentials_json = await indy.anoncreds.prover_fetch_credentials(
-            search_handle, count
-        )
-        await indy.anoncreds.prover_close_credentials_search(search_handle)
+        #
+        # search_handle = await indy.anoncreds.prover_search_credentials_for_proof_req(
+        #     self.wallet.handle,
+        #     json.dumps(presentation_request),
+        #     json.dumps(extra_query),
+        # )
+        #
+        # # We need to move the database cursor position manually...
+        # if start > 0:
+        #     # TODO: move cursor in chunks to avoid exploding memory
+        #     await indy.anoncreds.prover_fetch_credentials(search_handle, start)
+        #
+        # credentials_json = await indy.anoncreds.prover_fetch_credentials_for_proof_req(
+        #     search_handle, count
+        # )
+        # await indy.anoncreds.prover_close_credentials_search(search_handle)
 
         credentials = json.loads(credentials_json)
         return credentials
