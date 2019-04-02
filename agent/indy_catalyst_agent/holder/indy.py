@@ -114,7 +114,7 @@ class IndyHolder(BaseHolder):
         return credentials
 
     async def get_credentials_for_presentation_request(
-        self, presentation_request: dict, start: int, count: int, wql: dict
+        self, presentation_request: dict, start: int, count: int, extra_query: dict
     ):
         """
         Get credentials stored in the wallet.
@@ -123,11 +123,13 @@ class IndyHolder(BaseHolder):
             presentation_request: Valid presentation request from issuer
             start: Starting index
             count: Number of records to return
-            wql: wql query dict
+            extra_query: wql query dict
 
         """
         search_handle, record_count = await indy.anoncreds.prover_search_credentials_for_proof_req(
-            self.wallet.handle, json.dumps(presentation_request)
+            self.wallet.handle,
+            json.dumps(presentation_request),
+            json.dumps(extra_query),
         )
 
         # We need to move the database cursor position manually...
