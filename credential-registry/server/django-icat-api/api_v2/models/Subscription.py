@@ -1,4 +1,5 @@
 from django.db import models
+from rest_hooks.models import Hook
 
 from .Auditable import Auditable
 from .User import User
@@ -19,3 +20,5 @@ class Subscription(Auditable):
     target_url = models.TextField(max_length=240, blank=True, null=True)
     # token to provide with hook calls (optional - can be provided per registration)
     hook_token = models.TextField(max_length=240, blank=True, null=True)
+
+    hook = models.ForeignKey(Hook, related_name="credential_subscription", on_delete=models.CASCADE, blank=True, null=True)
