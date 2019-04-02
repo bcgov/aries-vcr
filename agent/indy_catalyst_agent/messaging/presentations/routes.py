@@ -99,7 +99,12 @@ async def presentation_exchange_retrieve(request: web.BaseRequest):
             "schema": {"type": "string"},
             "required": False,
         },
-        {"name": "wql", "in": "query", "schema": {"type": "string"}, "required": False},
+        {
+            "name": "extra_query",
+            "in": "query",
+            "schema": {"type": "string"},
+            "required": False,
+        },
     ],
     summary="Fetch credentials for a presentation request from wallet",
 )
@@ -128,16 +133,16 @@ async def presentation_exchange_credentials_list(request: web.BaseRequest):
     start = request.query.get("start")
     count = request.query.get("count")
 
-    # url encoded json wql
-    encoded_wql = request.query.get("wql") or ""
-    wql = parse_qs(encoded_wql)
+    # url encoded json extra_query
+    encoded_extra_query = request.query.get("extra_query") or ""
+    extra_query = parse_qs(encoded_extra_query)
 
     # defaults
     start = int(start) if isinstance(start, str) else 0
     count = int(count) if isinstance(count, str) else 10
 
     credentials = await context.holder.get_credentials_for_presentation_request(
-        presentation_exchange_record.presentation_request, start, count, wql
+        presentation_exchange_record.presentation_request, start, count, extra_query
     )
 
     return web.json_response(credentials)
@@ -243,7 +248,12 @@ async def register(app: web.Application):
         [web.get("/presentation_exchange/{id}", presentation_exchange_retrieve)]
     )
     app.add_routes(
-        [web.get("/presentation_exchange/{id}/credentials", presentation_exchange_credentials_list)]
+        [
+            web.get(
+                "/presentation_exchange/{id}/credentials",
+                presentation_exchange_credentials_list,
+            )
+        ]
     )
     app.add_routes(
         [
