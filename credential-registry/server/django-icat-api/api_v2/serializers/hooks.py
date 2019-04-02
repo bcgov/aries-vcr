@@ -1,32 +1,36 @@
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group, Permission
-from django.utils import timezone
-
-from datetime import datetime, date, timedelta
-import pytz
 import random
+from datetime import datetime, timedelta
 from string import ascii_lowercase, digits
 
-from api_v2.models.User import User
-from api_v2.models.Subscription import Subscription
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Schema import Schema
-from api_v2.auth import generate_random_username
+import pytz
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.core import exceptions
+from rest_framework import serializers
+from rest_hooks.models import Hook
 
+from api_v2.auth import generate_random_username
+from api_v2.models.CredentialType import CredentialType
+from api_v2.models.Subscription import Subscription
+from api_v2.models.User import User
 
 SUBSCRIBERS_GROUP_NAME = "subscriber"
+
 
 def get_subscribers_group():
     group, created = Group.objects.get_or_create(name=SUBSCRIBERS_GROUP_NAME)
     return group
 
+
 def get_random_password():
-    return "".join([random.choice(ascii_lowercase+digits) for i in range(32)])
+    return "".join([random.choice(ascii_lowercase + digits) for i in range(32)])
+
 
 def get_password_expiry():
     now = datetime.utcnow().replace(tzinfo=pytz.utc)
     return now + +timedelta(days=90)
+
 
 class NewRegistrationSerializer(serializers.Serializer):
     org_name = serializers.CharField(required=True, max_length=240)
@@ -38,13 +42,11 @@ class NewRegistrationSerializer(serializers.Serializer):
         """
         Create and return a new instance, given the validated data.
         """
-        if 'username' in validated_data and 0 < len(validated_data['username']):
-            prefix = validated_data['username'][:16] + "-"
+        if "username" in validated_data and 0 < len(validated_data["username"]):
+            prefix = validated_data["username"][:16] + "-"
         else:
             prefix = "hook-"
-        username = generate_random_username(
-                length=32, prefix=prefix, split=None
-            )
+        username = generate_random_username(length=32, prefix=prefix, split=None)
         return User.objects.create(**validated_data)
 
 
@@ -61,21 +63,19 @@ class RegistrationSerializer(serializers.Serializer):
         """
         Create and return a new instance, given the validated data.
         """
-        if 'username' in validated_data and 0 < len(validated_data['username']):
-            prefix = validated_data['username'][:16] + "-"
+        if "username" in validated_data and 0 < len(validated_data["username"]):
+            prefix = validated_data["username"][:16] + "-"
         else:
             prefix = "hook-"
-        self.username = generate_random_username(
-                length=32, prefix=prefix, split=None
-            )
-        validated_data['username'] = self.username
+        self.username = generate_random_username(length=32, prefix=prefix, split=None)
+        validated_data["username"] = self.username
 
         # TODO must populate unique DID due to database constraints
-        validated_data['DID'] = "not:a:did:" + self.username
+        validated_data["DID"] = "not:a:did:" + self.username
 
         # generate password
-        validated_data['password'] = get_random_password()
-        validated_data['registration_expiry'] = get_password_expiry()
+        validated_data["password"] = get_random_password()
+        validated_data["registration_expiry"] = get_password_expiry()
 
         user = get_user_model().objects.create(**validated_data)
 
@@ -84,19 +84,18 @@ class RegistrationSerializer(serializers.Serializer):
 
         return user
 
-
     def update(self, instance, validated_data):
         """
         Update and return an existing instance, given the validated data.
         """
-        instance.org_name = validated_data.get('org_name', instance.org_name)
-        instance.email = validated_data.get('email', instance.email)
-        instance.target_url = validated_data.get('target_url', instance.target_url)
-        instance.hook_token = validated_data.get('hook_token', instance.hook_token)
+        instance.org_name = validated_data.get("org_name", instance.org_name)
+        instance.email = validated_data.get("email", instance.email)
+        instance.target_url = validated_data.get("target_url", instance.target_url)
+        instance.hook_token = validated_data.get("hook_token", instance.hook_token)
 
         # TODO potentially update password on each update?
-        instance['password'] = get_random_password()
-        validated_data['registration_expiry'] = get_password_expiry()
+        instance["password"] = get_random_password()
+        validated_data["registration_expiry"] = get_password_expiry()
 
         instance.save()
         return instance
@@ -114,17 +113,19 @@ class SubscriptionSerializer(serializers.Serializer):
         """
         Create and return a new instance, given the validated data.
         """
-        owner = User.objects.filter(username=validated_data['owner']).first()
-        validated_data['owner'] = owner
-        credential_type = CredentialType.objects.filter(schema__name=validated_data['credential_type']).first()
-        validated_data['credential_type'] = credential_type
+        owner = User.objects.filter(username=validated_data["owner"]).first()
+        validated_data["owner"] = owner
+        credential_type = CredentialType.objects.filter(
+            schema__name=validated_data["credential_type"]
+        ).first()
+        validated_data["credential_type"] = credential_type
         return Subscription.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         """
         Update and return an existing instance, given the validated data.
         """
-        # TODO 
+        # TODO
         pass
 
 
@@ -135,3 +136,15 @@ class SubscriptionResponseSerializer(SubscriptionSerializer):
 class RegistrationResponseSerializer(RegistrationSerializer):
     subscriptions = SubscriptionSerializer(many=True)
 
+
+class HookSerializer(serializers.ModelSerializer):
+    def validate_event(self, event):
+        if event not in settings.HOOK_EVENTS:
+            err_msg = "Unexpected event {}".format(event)
+            raise exceptions.ValidationError(detail=err_msg, code=400)
+        return event
+
+    class Meta:
+        model = Hook
+        fields = "__all__"
+        read_only_fields = ("user",)

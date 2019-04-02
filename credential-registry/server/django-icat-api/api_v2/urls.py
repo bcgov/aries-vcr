@@ -1,10 +1,10 @@
 from django.conf import settings
-from django.urls import include, path
+from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.routers import SimpleRouter
 # see https://github.com/alanjds/drf-nested-routers
 from rest_framework_nested import routers
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, AllowAny
+from rest_framework.permissions import AllowAny
 
 from api_v2.views import misc, rest, search, hooks
 
@@ -37,6 +37,7 @@ router.register(r"attribute", rest.AttributeViewSet)
 router.register(r"credential", rest.CredentialViewSet)
 router.register(r"name", rest.NameViewSet)
 router.register(r"topic", rest.TopicViewSet)
+router.register(r"webhooks", hooks.HookViewSet, "webhook")
 
 # Search endpoints
 router.register(

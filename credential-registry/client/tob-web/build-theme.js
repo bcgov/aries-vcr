@@ -99,8 +99,9 @@ function populateDirSync(source_dir, target_dir) {
 }
 
 function copyThemeDir(theme_name, target_dir) {
+  console.log(`Copying ${theme_name}`);
   var theme_dir = path.join(THEMES_ROOT, theme_name);
-  if (theme_name !== 'default') {
+  if (theme_name !== 'default' && THEME_PATH) {
     theme_dir = path.join(THEME_PATH, theme_name);
   }
   try {
