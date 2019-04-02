@@ -6,26 +6,20 @@ from rest_framework.permissions import *
 from rest_framework.exceptions import *
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
-from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    parser_classes,
-    permission_classes,
-)
-from rest_framework.parsers import FormParser
-from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
+from rest_hooks.models import Hook
 
-from api_v2.models.User import User
 from api_v2.models.Subscription import Subscription
-from api_v2.serializers.hooks import *
+from api_v2.serializers.hooks import (
+    HookSerializer,
+    RegistrationSerializer,
+    SubscriptionSerializer,
+)
+
+SUBSCRIBERS_GROUP_NAME = "subscriber"
 
 
-class IsOwnerOrCreateOnly(permissions.BasePermission):
+class IsOwnerOrCreateOnly(BasePermission):
     """
     Permission check for subscription ownership.
     """
@@ -52,7 +46,7 @@ class IsOwnerOrCreateOnly(permissions.BasePermission):
         print("IsOwnerOrCreateOnly obj permission check returns False")
         return False
 
-class IsOwnerOnly(permissions.BasePermission):
+class IsOwnerOnly(BasePermission):
     """
     Permission check for subscription ownership.
     """
@@ -114,8 +108,27 @@ class SubscriptionViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, IsOwnerOnly,)
 
     def get_queryset(self):
-        return Subscription.objects.filter(owner__username=self.kwargs['registration_username']).all()
-    
-    def perform_create(self, serializer):
-        erializer.save(owner=self.request.user)
+        if 'registration_username' in self.kwargs:
+            return Subscription.objects.filter(
+                owner__username=self.kwargs["registration_username"]
+            ).all()
+        elif 'username' in self.kwargs:
+            return Subscription.objects.filter(
+                owner__username=self.kwargs["username"]
+            ).all()
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class HookViewSet(ModelViewSet):
+    """
+    Retrieve, create, update or destroy webhooks.
+    """
+
+    queryset = Hook.objects.all()
+    model = Hook
+    serializer_class = HookSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

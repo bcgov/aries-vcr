@@ -12,11 +12,9 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import os.path
-
 from pathlib import Path
 
-from . import permissions
-from . import authentication
+from . import authentication, permissions
 
 try:
     from . import database
@@ -28,8 +26,10 @@ try:
 except:
     import haystack
 
+
 def parse_bool(val):
-    return val and val != '0' and str(val).lower() != "false"
+    return val and val != "0" and str(val).lower() != "false"
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -67,11 +67,18 @@ INSTALLED_APPS = [
     "drf_generators",
     "drf_yasg",
     "django_filters",
+    "rest_hooks",
     "api",
     "api_v2",
     "tob_api",
     "corsheaders",
 ]
+
+HOOK_EVENTS = {
+    # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
+    "hookable_cred.added": "api_v2.HookableCredential.created+",
+    "hookable_cred.changed": "api_v2.HookableCredential.updated+",
+}
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 
@@ -152,7 +159,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
 }
 
@@ -257,9 +264,9 @@ API_METADATA = {
     "title": "OrgBook BC API",
     "description":
         "OrgBook BC is a public, searchable directory of digital records for registered "
-        "businesses in the Province of British Columbia. Over time, other government "
-        "organizations and businesses will also begin to issue digital records through "
-        "OrgBook BC. For example, permits and licenses issued by various government services.",
+    "businesses in the Province of British Columbia. Over time, other government "
+    "organizations and businesses will also begin to issue digital records through "
+    "OrgBook BC. For example, permits and licenses issued by various government services.",
     "terms": {
         "url": "https://www2.gov.bc.ca/gov/content/data/open-data",
     },
@@ -274,11 +281,20 @@ API_METADATA = {
 
 # Words 4 characters and over that shouldn't be considered significant when searching
 SEARCH_SKIP_WORDS = [
-    'assoc', 'association',
-    'company', 'corp', 'corporation',
-    'enterprise', 'enterprises', 'entreprise', 'entreprises',
-    'incorporated', 'incorporée', 'incorporation',
-    'limited', 'limitée',
+    "assoc",
+    "association",
+    "company",
+    "corp",
+    "corporation",
+    "enterprise",
+    "enterprises",
+    "entreprise",
+    "entreprises",
+    "incorporated",
+    "incorporée",
+    "incorporation",
+    "limited",
+    "limitée",
 ]
 
 # Return partial matches
@@ -297,7 +313,5 @@ custom_settings_file = Path(
 )
 if custom_settings_file.exists():
     with open(custom_settings_file) as source_file:
-        print(
-            "Loading custom settings file: {}".format(custom_settings_file.name)
-        )
+        print("Loading custom settings file: {}".format(custom_settings_file.name))
         exec(source_file.read())

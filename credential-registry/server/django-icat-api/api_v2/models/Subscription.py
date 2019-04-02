@@ -13,7 +13,7 @@ class Subscription(Auditable):
     # Topic source id (required for 'Stream' and 'Topic' subscriptions)
     topic_source_id = models.TextField(blank=True, null=True)
     # Credential type (required for 'Stream' subscriptions)
-    credential_type = models.ForeignKey("CredentialType", related_name="credentials", on_delete=models.CASCADE, blank=True, null=True)
+    credential_type = models.ForeignKey("CredentialType", related_name="credential_subscription", on_delete=models.CASCADE, blank=True, null=True)
 
     # url to call (optional - can be provided per registration)
     target_url = models.TextField(max_length=240, blank=True, null=True)
