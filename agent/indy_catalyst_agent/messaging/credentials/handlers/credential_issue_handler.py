@@ -3,10 +3,10 @@
 from ...base_handler import BaseHandler, BaseResponder, RequestContext
 
 from ..manager import CredentialManager
-from ..messages.credential import Credential
+from ..messages.credential_issue import CredentialIssue
 
 
-class CredentialHandler(BaseHandler):
+class CredentialIssueHandler(BaseHandler):
     """Message handler class for credential offers."""
 
     async def handle(self, context: RequestContext, responder: BaseResponder):
@@ -18,7 +18,7 @@ class CredentialHandler(BaseHandler):
             responder: responder callback
         """
         self._logger.debug(f"CredentialHandler called with context {context}")
-        assert isinstance(context.message, Credential)
+        assert isinstance(context.message, CredentialIssue)
         self._logger.info(f"Received credential: {context.message.credential_json}")
 
         credential = context.message.credential_json

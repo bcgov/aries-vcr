@@ -3,7 +3,7 @@
 from marshmallow import fields
 
 from ...agent_message import AgentMessage, AgentMessageSchema
-from ...message_types import MessageTypes
+from ..message_types import CREDENTIAL_REQUEST
 
 HANDLER_CLASS = (
     "indy_catalyst_agent.messaging.credentials.handlers."
@@ -19,7 +19,7 @@ class CredentialRequest(AgentMessage):
 
         handler_class = HANDLER_CLASS
         schema_class = "CredentialRequestSchema"
-        message_type = MessageTypes.CREDENTIAL_REQUEST.value
+        message_type = CREDENTIAL_REQUEST
 
     def __init__(
         self, *, offer_json: dict = None, credential_request_json: dict = None, **kwargs

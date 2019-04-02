@@ -1,10 +1,10 @@
 """Message type identifiers for Connections."""
 
-MESSAGE_FAMILY = "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/credentials/1.0/"
+MESSAGE_FAMILY = "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/credential-issuance/"
 
-CREDENTIAL_OFFER = f"{MESSAGE_FAMILY}credential_offer"
-CREDENTIAL_REQUEST = f"{MESSAGE_FAMILY}credential_request"
-CREDENTIAL = f"{MESSAGE_FAMILY}credential"
+CREDENTIAL_OFFER = f"{MESSAGE_FAMILY}credential-offer"
+CREDENTIAL_REQUEST = f"{MESSAGE_FAMILY}credential-request"
+CREDENTIAL_ISSUE = f"{MESSAGE_FAMILY}credential-issue"
 
 MESSAGE_TYPES = {
     CREDENTIAL_OFFER: (
@@ -15,7 +15,8 @@ MESSAGE_TYPES = {
         "indy_catalyst_agent.messaging.credentials.messages."
         + "credential_request.CredentialRequest"
     ),
-    CREDENTIAL: (
-        "indy_catalyst_agent.messaging.credentials.messages." + "credential.Credential"
+    CREDENTIAL_ISSUE: (
+        "indy_catalyst_agent.messaging.credentials.messages."
+        + "credential_issue.CredentialIssue"
     ),
 }

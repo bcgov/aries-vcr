@@ -3,7 +3,7 @@
 from marshmallow import fields
 
 from ...agent_message import AgentMessage, AgentMessageSchema
-from ...message_types import MessageTypes
+from ..message_types import CREDENTIAL_OFFER
 
 
 HANDLER_CLASS = (
@@ -20,7 +20,7 @@ class CredentialOffer(AgentMessage):
 
         handler_class = HANDLER_CLASS
         schema_class = "CredentialOfferSchema"
-        message_type = MessageTypes.CREDENTIAL_OFFER.value
+        message_type = CREDENTIAL_OFFER
 
     def __init__(self, *, offer_json: dict = None, **kwargs):
         """
