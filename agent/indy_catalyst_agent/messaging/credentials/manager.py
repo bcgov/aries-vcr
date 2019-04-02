@@ -7,7 +7,7 @@ from ...error import BaseError
 
 from ..connections.models.connection_record import ConnectionRecord
 
-from .messages.credential import Credential
+from .messages.credential_issue import CredentialIssue
 from .messages.credential_request import CredentialRequest
 from .messages.credential_offer import CredentialOffer
 from .models.credential_exchange import CredentialExchange
@@ -197,7 +197,7 @@ class CredentialManager:
         credential_exchange_record.state = CredentialExchange.STATE_ISSUED
         await credential_exchange_record.save(self.context.storage)
 
-        credential_message = Credential(
+        credential_message = CredentialIssue(
             credential_json=credential, revocation_registry_id=credential_revocation_id
         )
 

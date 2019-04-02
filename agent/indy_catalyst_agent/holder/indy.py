@@ -113,6 +113,36 @@ class IndyHolder(BaseHolder):
         credentials = json.loads(credentials_json)
         return credentials
 
+    async def get_credentials_for_presentation_request(
+        self, presentation_request: dict, start: int, count: int, wql: dict
+    ):
+        """
+        Get credentials stored in the wallet.
+
+        Args:
+            presentation_request: Valid presentation request from issuer
+            start: Starting index
+            count: Number of records to return
+            wql: wql query dict
+
+        """
+        search_handle, record_count = await indy.anoncreds.prover_search_credentials_for_proof_req(
+            self.wallet.handle, json.dumps(presentation_request)
+        )
+
+        # We need to move the database cursor position manually...
+        if start > 0:
+            # TODO: move cursor in chunks to avoid exploding memory
+            await indy.anoncreds.prover_fetch_credentials(search_handle, start)
+
+        credentials_json = await indy.anoncreds.prover_fetch_credentials(
+            search_handle, count
+        )
+        await indy.anoncreds.prover_close_credentials_search(search_handle)
+
+        credentials = json.loads(credentials_json)
+        return credentials
+
     async def get_credential(self, credential_id: str):
         """
         Get credentials stored in the wallet.
