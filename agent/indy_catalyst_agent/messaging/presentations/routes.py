@@ -1,6 +1,7 @@
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
 from marshmallow import fields, Schema
+from urllib.parse import parse_qs
 
 from .manager import PresentationManager
 from .models.presentation_exchange import PresentationExchange
@@ -83,9 +84,114 @@ async def presentation_exchange_retrieve(request: web.BaseRequest):
     return web.json_response(record.serialize())
 
 
+@docs(
+    tags=["presentation_exchange"],
+    parameters=[
+        {
+            "name": "start",
+            "in": "query",
+            "schema": {"type": "string"},
+            "required": False,
+        },
+        {
+            "name": "count",
+            "in": "query",
+            "schema": {"type": "string"},
+            "required": False,
+        },
+        {"name": "wql", "in": "query", "schema": {"type": "string"}, "required": False},
+    ],
+    summary="Fetch credentials for a presentation request from wallet",
+)
+# @response_schema(ConnectionListSchema(), 200)
+async def presentation_exchange_credentials_list(request: web.BaseRequest):
+    """
+    Request handler for searching connection records.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The connection list response
+
+    """
+    context = request.app["request_context"]
+
+    presentation_exchange_id = request.match_info["id"]
+    try:
+        presentation_exchange_record = await PresentationExchange.retrieve_by_id(
+            context.storage, presentation_exchange_id
+        )
+    except StorageNotFoundError:
+        return web.HTTPNotFound()
+
+    start = request.query.get("start")
+    count = request.query.get("count")
+
+    # url encoded json wql
+    encoded_wql = request.query.get("wql") or ""
+    wql = parse_qs(encoded_wql)
+
+    # defaults
+    start = int(start) if isinstance(start, str) else 0
+    count = int(count) if isinstance(count, str) else 10
+
+    credentials = await context.holder.get_credentials_for_presentation_request(
+        presentation_exchange_record.presentation_request, start, count, wql
+    )
+
+    return web.json_response(credentials)
+
+
 @docs(tags=["presentation_exchange"], summary="Sends a presentation request")
 @request_schema(PresentationRequestRequestSchema())
 async def presentation_exchange_send_request(request: web.BaseRequest):
+    """
+    Request handler for sending a presentation request.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The presentation exchange details.
+
+    """
+
+    context = request.app["request_context"]
+    outbound_handler = request.app["outbound_message_router"]
+
+    body = await request.json()
+
+    connection_id = body.get("connection_id")
+    requested_attributes = body.get("requested_attributes")
+    requested_predicates = body.get("requested_predicates")
+
+    connection_manager = ConnectionManager(context)
+    presentation_manager = PresentationManager(context)
+
+    connection_record = await ConnectionRecord.retrieve_by_id(
+        context.storage, connection_id
+    )
+
+    connection_target = await connection_manager.get_connection_target(
+        connection_record
+    )
+
+    (
+        presentation_exchange_record,
+        presentation_request_message,
+    ) = await presentation_manager.create_request(
+        requested_attributes, requested_predicates, connection_id
+    )
+
+    await outbound_handler(presentation_request_message, connection_target)
+
+    return web.json_response(presentation_exchange_record.serialize())
+
+
+@docs(tags=["presentation_exchange"], summary="Sends a credential presentation")
+# @request_schema(CredentialPresentationRequestSchema())
+async def presentation_exchange_send_credential_presentation(request: web.BaseRequest):
     """
     Request handler for sending a presentation request.
 
@@ -135,6 +241,9 @@ async def register(app: web.Application):
     app.add_routes([web.get("/presentation_exchange", presentation_exchange_list)])
     app.add_routes(
         [web.get("/presentation_exchange/{id}", presentation_exchange_retrieve)]
+    )
+    app.add_routes(
+        [web.get("/presentation_exchange/{id}/credentials", presentation_exchange_credentials_list)]
     )
     app.add_routes(
         [
