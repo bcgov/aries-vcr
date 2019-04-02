@@ -67,17 +67,17 @@ INSTALLED_APPS = [
     "drf_generators",
     "drf_yasg",
     "django_filters",
+    "rest_hooks",
     "api",
     "api_v2",
     "tob_api",
     "corsheaders",
-    "rest_hooks",
 ]
 
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
-    "hookable_cred.added": "api_v2.models.HookableCredential.created",
-    "hookable_cred.changed": "api_v2.models.HookableCredential.updated+",
+    "hookable_cred.added": "api_v2.HookableCredential.created+",
+    "hookable_cred.changed": "api_v2.HookableCredential.updated+",
 }
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
