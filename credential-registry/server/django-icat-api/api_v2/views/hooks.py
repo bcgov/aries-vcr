@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_hooks.models import Hook
 
 from api_v2.models.Subscription import Subscription
+from api_v2.models.CredentialHook import CredentialHook
 from api_v2.serializers.hooks import (
     HookSerializer,
     RegistrationSerializer,
@@ -158,7 +159,7 @@ class SubscriptionViewSet(ModelViewSet):
             owner = get_user_model().objects.filter(username=username).all()[0]
             subscription = serializer.save(owner=owner)
         if subscription:
-            hook = Hook(user=owner, event='hookable_cred.added', target=subscription.target_url)
+            hook = CredentialHook(user=owner, event='hookable_cred.added', target=subscription.target_url)
             hook.save()
             subscription.hook = hook
             subscription.save()

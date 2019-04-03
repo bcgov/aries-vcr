@@ -3,6 +3,7 @@ from rest_hooks.models import Hook
 
 from .Auditable import Auditable
 from .User import User
+from .CredentialHook import CredentialHook
 
 
 # web hook subscriptions
@@ -21,4 +22,7 @@ class Subscription(Auditable):
     # token to provide with hook calls (optional - can be provided per registration)
     hook_token = models.TextField(max_length=240, blank=True, null=True)
 
-    hook = models.ForeignKey(Hook, related_name="credential_subscription", on_delete=models.CASCADE, blank=True, null=True)
+    hook = models.ForeignKey(CredentialHook, related_name="credential_subscription", on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return str(id) + " " + self.owner.username + " " + self.subscription_type + " " + self.target_url + " " + str(self.hook.id)

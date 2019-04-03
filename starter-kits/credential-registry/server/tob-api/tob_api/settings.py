@@ -74,6 +74,10 @@ INSTALLED_APPS = [
     "corsheaders",
 ]
 
+HOOK_CUSTOM_MODEL = 'api_v2.models.CredentialHook'
+
+HOOK_FINDER = 'api_v2.hook_utils.find_and_fire_hook'
+
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
     "hookable_cred.added": "api_v2.HookableCredential.created+",
