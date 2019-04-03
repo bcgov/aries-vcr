@@ -32,6 +32,7 @@ def get_password_expiry():
     return now + timedelta(days=90)
 
 class RegistrationSerializer(serializers.Serializer):
+    reg_id = serializers.ReadOnlyField(source='id')
     org_name = serializers.CharField(required=True, max_length=240)
     email = serializers.CharField(required=True, max_length=128)
     target_url = serializers.CharField(required=False, max_length=240)
@@ -90,11 +91,11 @@ class RegistrationSerializer(serializers.Serializer):
 
 
 class SubscriptionSerializer(serializers.Serializer):
+    sub_id = serializers.ReadOnlyField(source='id')
     owner = serializers.ReadOnlyField(source='owner.username')
-    owner = serializers.CharField(required=True, max_length=40)
     subscription_type = serializers.CharField(required=True, max_length=20)
     topic_source_id = serializers.CharField(required=False, max_length=240)
-    credential_type = serializers.CharField(required=False, max_length=240)
+    credential_type = serializers.CharField(source='credential_type.schema.name', required=False, max_length=240)
     target_url = serializers.CharField(required=False, max_length=240)
     hook_token = serializers.CharField(required=False, max_length=240)
 
@@ -102,8 +103,7 @@ class SubscriptionSerializer(serializers.Serializer):
         """
         Create and return a new instance, given the validated data.
         """
-        owner = request.user
-        validated_data['owner'] = owner
+        # note owner is assigned in the view
         credential_type = CredentialType.objects.filter(schema__name=validated_data['credential_type']).first()
         validated_data['credential_type'] = credential_type
         return Subscription.objects.create(**validated_data)

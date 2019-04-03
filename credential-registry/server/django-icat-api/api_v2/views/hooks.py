@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_hooks.models import Hook
 
 from api_v2.models.Subscription import Subscription
+from api_v2.models.CredentialHook import CredentialHook
 from api_v2.serializers.hooks import (
     HookSerializer,
     RegistrationSerializer,
@@ -70,20 +71,33 @@ class IsOwnerOnly(BasePermission):
         print("IsOwnerOnly obj permission check returns False")
         return False
 
+
 class RegistrationViewSet(ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
+
+    {
+      "org_name": "Anon Solutions Inc",
+      "email": "anon@anon-solutions.ca",
+      "target_url": "https://anon-solutions.ca/api/hook",
+      "hook_token": "ashdkjahsdkjhaasd88a7d9a8sd9asasda",
+      "username": "anon",
+      "password": "pass12345"
+    }
     """
     serializer_class = RegistrationSerializer
     lookup_field = 'username'
-    permission_classes = (IsOwnerOrCreateOnly,)
+    # TODO enable permissions on subscriptions
+    #permission_classes = (IsOwnerOrCreateOnly,)
+    permission_classes = ()
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return get_user_model().objects.filter(groups__name=SUBSCRIBERS_GROUP_NAME, username=self.request.user.username).all()
         else:
-            raise NotAuthenticated()
+            return get_user_model().objects.filter(groups__name=SUBSCRIBERS_GROUP_NAME).all()
+            #raise NotAuthenticated()
 
     def get_object(self):
         if self.request.user.is_authenticated:
@@ -92,20 +106,33 @@ class RegistrationViewSet(ModelViewSet):
                 self.check_object_permissions(self.request, obj)
                 return obj
             else:
-                raise PermissionDenied()
+                self.check_object_permissions(self.request, obj)
+                #raise PermissionDenied()
         else:
-            raise NotAuthenticated()
+            self.check_object_permissions(self.request, obj)
+            #raise NotAuthenticated()
 
     def perform_create(self, serializer):
         serializer.save()
+
 
 class SubscriptionViewSet(ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
+
+    {
+      "subscription_type": "New",
+      "topic_source_id": "BC0123456",
+      "credential_type": "registration.registries.ca",
+      "target_url": "https://anon-solutions.ca/api/hook",
+      "hook_token": "ashdkjahsdkjhaasd88a7d9a8sd9asasda"
+    }
     """
     serializer_class = SubscriptionSerializer
-    permission_classes = (IsAuthenticated, IsOwnerOnly,)
+    # TODO enable permissions on subscriptions
+    #permission_classes = (IsAuthenticated, IsOwnerOnly,)
+    permission_classes = ()
 
     def get_queryset(self):
         if 'registration_username' in self.kwargs:
@@ -118,7 +145,24 @@ class SubscriptionViewSet(ModelViewSet):
             ).all()
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        subscription = None
+        if self.request.user.is_authenticated:
+            subscription = serializer.save(owner=self.request.user, hook=hook)
+        else:
+            username = None
+            if 'registration_username' in self.kwargs:
+                username = self.kwargs["registration_username"]
+            elif 'username' in self.kwargs:
+                username = self.kwargs["username"]
+            else:
+                username = serializer['owner']
+            owner = get_user_model().objects.filter(username=username).all()[0]
+            subscription = serializer.save(owner=owner)
+        if subscription:
+            hook = CredentialHook(user=owner, event='hookable_cred.added', target=subscription.target_url)
+            hook.save()
+            subscription.hook = hook
+            subscription.save()
 
 
 class HookViewSet(ModelViewSet):

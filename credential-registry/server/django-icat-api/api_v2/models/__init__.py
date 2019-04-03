@@ -5,6 +5,7 @@ from .Credential import Credential
 from .CredentialSet import CredentialSet
 from .CredentialType import CredentialType
 from .HookableCredential import HookableCredential
+from .CredentialHook import CredentialHook
 from .Name import Name
 from .Schema import Schema
 from .Topic import Topic
