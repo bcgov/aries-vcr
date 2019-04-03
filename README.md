@@ -1,9 +1,8 @@
 # Hyperledger Indy Catalyst <!-- omit in toc -->
 
-[![pipeline status](https://gitlab.com/WadeBarnes/indy-catalyst/badges/gitlab-integration/pipeline.svg)](https://gitlab.com/WadeBarnes/indy-catalyst/pipelines) [![Coverage report](https://gitlab.com/WadeBarnes/indy-catalyst/badges/gitlab-integration/coverage.svg)](https://wadebarnes.gitlab.io/indy-catalyst/coverage) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-
-
 ![logo](/docs/assets/indy-catalyst-logo-bw.png)
+
+[![pipeline status](https://gitlab.com/WadeBarnes/indy-catalyst/badges/master/pipeline.svg)](https://gitlab.com/WadeBarnes/indy-catalyst/pipelines) [![Coverage report](https://gitlab.com/WadeBarnes/indy-catalyst/badges/master/coverage.svg)](https://wadebarnes.gitlab.io/indy-catalyst/coverage) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 # Table of Contents <!-- omit in toc -->
 
