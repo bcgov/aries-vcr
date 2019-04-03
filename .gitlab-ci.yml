@@ -16,10 +16,9 @@ Agent Tests:
   artifacts:
     name: "$CI_JOB_NAME"
     paths:
-      - ../test-reports/
-      - ./coverage.*
+      - test-reports/
     reports:
-      junit: ../test-reports/pytest/junit.xml
+      junit: test-reports/pytest/junit.xml
     expire_in: 1 week
 
 # Dependency Scanning
