@@ -50,8 +50,8 @@ pages:
   dependencies:
     - Agent Tests
   script:
-    - mkdir public
-    - cp -r test-reports/cov_html/* public
+    - mkdir -p public/coverage
+    - cp -r test-reports/cov_html/* public/coverage
   artifacts:
     paths:
       - public
