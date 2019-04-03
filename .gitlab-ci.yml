@@ -44,3 +44,15 @@ code_quality:
     reports:
       codequality: gl-code-quality-report.json
     expire_in: 1 week
+
+pages:
+  stage: deploy
+  dependencies:
+    - Agent Tests
+  script:
+    - mkdir public
+    - cp -r test-reports/cov_html/* public
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week
