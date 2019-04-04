@@ -27,6 +27,7 @@ class PresentationExchange(BaseModel):
 
     STATE_REQUEST_SENT = "request_sent"
     STATE_REQUEST_RECEIVED = "request_received"
+    STATE_PRESENTATION_SENT = "presentation_sent"
 
     def __init__(
         self,
@@ -36,6 +37,7 @@ class PresentationExchange(BaseModel):
         initiator: str = None,
         state: str = None,
         presentation_request: dict = None,
+        presentation: dict = None,
         error_msg: str = None,
     ):
         """Initialize a new PresentationExchange."""
@@ -44,6 +46,7 @@ class PresentationExchange(BaseModel):
         self.initiator = initiator
         self.state = state
         self.presentation_request = presentation_request
+        self.presentation = presentation
         self.error_msg = error_msg
 
     @property
@@ -77,6 +80,7 @@ class PresentationExchange(BaseModel):
             "initiator",
             "state",
             "presentation_request",
+            "presentation",
         ):
             val = getattr(self, prop)
             if val:
@@ -147,7 +151,9 @@ class PresentationExchange(BaseModel):
         for record in found:
             vals = json.loads(record.value)
             vals.update(record.tags)
-            result.append(PresentationExchange(presentation_exchange_id=record.id, **vals))
+            result.append(
+                PresentationExchange(presentation_exchange_id=record.id, **vals)
+            )
         return result
 
 
@@ -164,4 +170,5 @@ class PresentationExchangeSchema(BaseModelSchema):
     initiator = fields.Str(required=False)
     state = fields.Str(required=False)
     presentation_request = fields.Dict(required=False)
+    presentation = fields.Dict(required=False)
     error_msg = fields.Str(required=False)
