@@ -22,7 +22,14 @@ class CredentialOffer(AgentMessage):
         schema_class = "CredentialOfferSchema"
         message_type = CREDENTIAL_OFFER
 
-    def __init__(self, *, offer_json: dict = None, **kwargs):
+    def __init__(
+        self,
+        *,
+        offer_json: str = None,
+        credential_preview: dict = None,
+        comment: str = None,
+        **kwargs
+    ):
         """
         Initialize credential offer object.
 
@@ -31,6 +38,8 @@ class CredentialOffer(AgentMessage):
         """
         super(CredentialOffer, self).__init__(**kwargs)
         self.offer_json = offer_json
+        self.credential_preview = credential_preview
+        self.comment = comment
 
 
 class CredentialOfferSchema(AgentMessageSchema):
@@ -41,4 +50,6 @@ class CredentialOfferSchema(AgentMessageSchema):
 
         model_class = CredentialOffer
 
-    offer_json = fields.Dict(required=True)
+    offer_json = fields.Str(required=True)
+    credential_preview = fields.Dict(required=False)
+    comment = fields.Str(required=False)

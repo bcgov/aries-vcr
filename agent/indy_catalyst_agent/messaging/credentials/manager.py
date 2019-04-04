@@ -1,9 +1,11 @@
 """Classes to manage credentials."""
 
+import json
 import logging
 
 from ..request_context import RequestContext
 from ...error import BaseError
+from ...models.thread_decorator import ThreadDecorator
 
 from ..connections.models.connection_record import ConnectionRecord
 
@@ -57,8 +59,13 @@ class CredentialManager:
             credential_definition_id
         )
 
+        credential_offer_message = CredentialOffer(
+            offer_json=json.dumps(credential_offer)
+        )
+
         credential_exchange = CredentialExchange(
             connection_id=connection_id,
+            thread_id=credential_offer_message._thread_id,
             initiator=CredentialExchange.INITIATOR_SELF,
             state=CredentialExchange.STATE_OFFER_SENT,
             credential_definition_id=credential_definition_id,
@@ -66,12 +73,11 @@ class CredentialManager:
             credential_offer=credential_offer,
         )
         await credential_exchange.save(self.context.storage)
-
-        credential_offer_message = CredentialOffer(offer_json=credential_offer)
-
         return credential_exchange, credential_offer_message
 
-    async def receive_offer(self, credential_offer, connection_id):
+    async def receive_offer(
+        self, credential_offer_message: CredentialOffer, connection_id
+    ):
         """
         Receive a credential offer.
 
@@ -80,8 +86,12 @@ class CredentialManager:
             connection_id: Connection to receive offer on
 
         """
+
+        credential_offer = json.loads(credential_offer_message.offer_json)
+
         credential_exchange = CredentialExchange(
             connection_id=connection_id,
+            thread_id=credential_offer_message._thread_id,
             initiator=CredentialExchange.INITIATOR_EXTERNAL,
             state=CredentialExchange.STATE_OFFER_RECEIVED,
             credential_definition_id=credential_offer["cred_def_id"],
@@ -117,47 +127,41 @@ class CredentialManager:
                 credential_definition_id
             )
 
-        credential_request = await self.context.holder.create_credential_request(
+        credential_request, credential_request_metadata = await self.context.holder.create_credential_request(
             credential_offer, credential_definition, did
         )
 
         credential_request_message = CredentialRequest(
-            offer_json=credential_offer, credential_request_json=credential_request
+            request=json.dumps(credential_request)
         )
+
+        # TODO: Find a more elegant way to do this
+        thread = ThreadDecorator(thid=credential_exchange_record.thread_id)
+        credential_request_message._thread = thread
 
         credential_exchange_record.state = CredentialExchange.STATE_REQUEST_SENT
         credential_exchange_record.credential_request = credential_request
+        credential_exchange_record.credential_request_metadata = (
+            credential_request_metadata
+        )
         await credential_exchange_record.save(self.context.storage)
 
         return credential_exchange_record, credential_request_message
 
-    async def receive_request(self, credential_request: dict):
+    async def receive_request(self, credential_request_message: CredentialRequest):
         """
         Receive a credential request.
 
         Args:
-            credential_request: Credential request to receive
+            credential_request_message: Credential request to receive
 
         """
 
-        credential_definition_id = credential_request["cred_def_id"]
+        credential_request = json.loads(credential_request_message.request)
 
-        prover_did = credential_request["prover_did"]
-        connection_record = await ConnectionRecord.retrieve_by_did(
-            self.context.storage, their_did=prover_did
-        )
-
-        # TODO: We need a way to identify the record we are concerned with
-        #       deterministically We can probably use the thread_id
-        #       once that is available. Until then, if multiple credential
-        #       negotiations are active at the same time, and error will be raised
         credential_exchange_record = await CredentialExchange.retrieve_by_tag_filter(
             self.context.storage,
-            tag_filter={
-                "state": CredentialExchange.STATE_OFFER_SENT,
-                "credential_definition_id": credential_definition_id,
-                "connection_id": connection_record.connection_id,
-            },
+            tag_filter={"thread_id": credential_request_message._thread_id},
         )
 
         credential_exchange_record.credential_request = credential_request
@@ -197,35 +201,40 @@ class CredentialManager:
         credential_exchange_record.state = CredentialExchange.STATE_ISSUED
         await credential_exchange_record.save(self.context.storage)
 
-        credential_message = CredentialIssue(
-            credential_json=credential, revocation_registry_id=credential_revocation_id
-        )
+        credential_message = CredentialIssue(issue=json.dumps(credential))
+
+        # TODO: Find a more elegant way to do this
+        thread = ThreadDecorator(thid=credential_exchange_record.thread_id)
+        credential_message._thread = thread
 
         return credential_exchange_record, credential_message
 
-    async def store_credential(self, credential):
+    async def store_credential(self, credential_message: CredentialIssue):
         """
         Store a credential in the wallet.
 
         Args:
-            credential: credential to store
-
-        Returns:
-            credential wallet id
+            credential_message: credential to store
 
         """
+        credential = json.loads(credential_message.issue)
+
+        credential_exchange_record = await CredentialExchange.retrieve_by_tag_filter(
+            self.context.storage,
+            tag_filter={"thread_id": credential_message._thread_id},
+        )
+
         async with self.context.ledger:
             credential_definition = await self.context.ledger.get_credential_definition(
                 credential["cred_def_id"]
             )
 
         credential_id = await self.context.holder.store_credential(
-            credential_definition, credential
+            credential_definition,
+            credential,
+            credential_exchange_record.credential_request_metadata,
         )
 
-        # TODO: We need a way to identify and retrieve the current credential
-        #       exchange record so that we can set the state to "stored".
-        #       We can likely use the thread id once that is generalized
-        #       and available on the request context
-
-        return credential_id
+        credential_exchange_record.state = CredentialExchange.STATE_STORED
+        credential_exchange_record.credential_id = credential_id
+        await credential_exchange_record.save(self.context.storage)
