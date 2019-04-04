@@ -29,6 +29,14 @@ class PresentationRequestRequestSchema(Schema):
     requested_predicates = fields.Nested(RequestedPredicate, many=True)
 
 
+class SendPresentationRequestSchema(Schema):
+    """Request schema for sending a presentation."""
+
+    self_attested_attributes = fields.Dict(required=True)
+    requested_attributes = fields.Dict(required=True)
+    requested_predicates = fields.Dict(required=True)
+
+
 @docs(tags=["presentation_exchange"], summary="Fetch all presentation exchange records")
 # @response_schema(ConnectionListSchema(), 200)
 async def presentation_exchange_list(request: web.BaseRequest):
@@ -195,7 +203,7 @@ async def presentation_exchange_send_request(request: web.BaseRequest):
 
 
 @docs(tags=["presentation_exchange"], summary="Sends a credential presentation")
-# @request_schema(CredentialPresentationRequestSchema())
+@request_schema(SendPresentationRequestSchema())
 async def presentation_exchange_send_credential_presentation(request: web.BaseRequest):
     """
     Request handler for sending a presentation request.
@@ -210,18 +218,24 @@ async def presentation_exchange_send_credential_presentation(request: web.BaseRe
 
     context = request.app["request_context"]
     outbound_handler = request.app["outbound_message_router"]
+    presentation_exchange_id = request.match_info["id"]
 
     body = await request.json()
 
-    connection_id = body.get("connection_id")
-    requested_attributes = body.get("requested_attributes")
-    requested_predicates = body.get("requested_predicates")
+    presentation_exchange_record = await PresentationExchange.retrieve_by_id(
+        context.storage, presentation_exchange_id
+    )
+
+    assert (
+        presentation_exchange_record.state
+        == presentation_exchange_record.STATE_REQUEST_RECEIVED
+    )
 
     connection_manager = ConnectionManager(context)
     presentation_manager = PresentationManager(context)
 
     connection_record = await ConnectionRecord.retrieve_by_id(
-        context.storage, connection_id
+        context.storage, presentation_exchange_record.connection_id
     )
 
     connection_target = await connection_manager.get_connection_target(
@@ -230,13 +244,12 @@ async def presentation_exchange_send_credential_presentation(request: web.BaseRe
 
     (
         presentation_exchange_record,
-        presentation_request_message,
-    ) = await presentation_manager.create_request(
-        requested_attributes, requested_predicates, connection_id
+        presentation_message,
+    ) = await presentation_manager.create_presentation(
+        presentation_exchange_record, body
     )
 
-    await outbound_handler(presentation_request_message, connection_target)
-
+    await outbound_handler(presentation_message, connection_target)
     return web.json_response(presentation_exchange_record.serialize())
 
 
@@ -260,6 +273,14 @@ async def register(app: web.Application):
             web.post(
                 "/presentation_exchange/send_request",
                 presentation_exchange_send_request,
+            )
+        ]
+    )
+    app.add_routes(
+        [
+            web.post(
+                "/presentation_exchange/{id}/send_presentation",
+                presentation_exchange_send_credential_presentation,
             )
         ]
     )
