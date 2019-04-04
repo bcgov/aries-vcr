@@ -21,7 +21,6 @@ class CredentialIssueHandler(BaseHandler):
         assert isinstance(context.message, CredentialIssue)
         self._logger.info(f"Received credential: {context.message.credential_json}")
 
-        credential = context.message.credential_json
         credential_manager = CredentialManager(context)
 
-        await credential_manager.store_credential(credential)
+        await credential_manager.store_credential(context.message)

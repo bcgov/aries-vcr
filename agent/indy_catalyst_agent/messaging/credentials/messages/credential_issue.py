@@ -21,23 +21,15 @@ class CredentialIssue(AgentMessage):
         schema_class = "CredentialIssueSchema"
         message_type = CREDENTIAL_ISSUE
 
-    def __init__(
-        self,
-        *,
-        credential_json: dict = None,
-        revocation_registry_id: str = None,
-        **kwargs
-    ):
+    def __init__(self, *, issue: str = None, **kwargs):
         """
         Initialize credential object.
 
         Args:
-            credential_json (str): Credential offer json string
-            revocation_registry_id (str): Credential registry id
+            issue (str): Credential issue json string
         """
         super(CredentialIssue, self).__init__(**kwargs)
-        self.credential_json = credential_json
-        self.revocation_registry_id = revocation_registry_id
+        self.issue = issue
 
 
 class CredentialIssueSchema(AgentMessageSchema):
@@ -48,5 +40,4 @@ class CredentialIssueSchema(AgentMessageSchema):
 
         model_class = CredentialIssue
 
-    credential_json = fields.Dict(required=True)
-    revocation_registry_id = fields.Str()
+    issue = fields.Str(required=True)

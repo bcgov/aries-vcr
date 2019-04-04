@@ -22,8 +22,6 @@ class IndyHolder(BaseHolder):
         self.logger = logging.getLogger(__name__)
         self.wallet = wallet
 
-        self.last_credential_request_metadata_json = None
-
     async def create_credential_request(
         self, credential_offer, credential_definition, did
     ):
@@ -52,20 +50,18 @@ class IndyHolder(BaseHolder):
 
         self.logger.debug(
             "Created credential request. "
-            + "credential_request_json={credential_request_json} "
+            + f"credential_request_json={credential_request_json} "
             + f"credential_request_metadata_json={credential_request_metadata_json}"
         )
 
         credential_request = json.loads(credential_request_json)
+        credential_request_metadata = json.loads(credential_request_metadata_json)
 
-        # HACK
-        # TODO: Once we are tracking cred exchange state via thread id we can store
-        #       this on the cred exchange object
-        self.last_credential_request_metadata_json = credential_request_metadata_json
+        return credential_request, credential_request_metadata
 
-        return credential_request
-
-    async def store_credential(self, credential_definition, credential_data):
+    async def store_credential(
+        self, credential_definition, credential_data, credential_request_metadata
+    ):
         """
         Store a credential in the wallet.
 
@@ -78,7 +74,7 @@ class IndyHolder(BaseHolder):
         credential_id = await indy.anoncreds.prover_store_credential(
             self.wallet.handle,
             None,  # Always let indy set the id for now
-            self.last_credential_request_metadata_json,
+            json.dump(credential_request_metadata),
             json.dumps(credential_data),
             json.dumps(credential_definition),
             None,  # We don't support revocation yet
