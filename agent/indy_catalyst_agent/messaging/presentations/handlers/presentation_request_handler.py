@@ -28,7 +28,6 @@ class PresentationRequestHandler(BaseHandler):
         presentation_manager = PresentationManager(context)
 
         await presentation_manager.receive_request(
-            json.loads(context.message.request),
-            context.connection_record.connection_id,
-            context.message._thread_id,
+            context.message,
+            context.connection_record.connection_id
         )
