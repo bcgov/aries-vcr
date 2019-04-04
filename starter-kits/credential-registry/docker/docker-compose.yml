@@ -138,7 +138,7 @@ services:
         else
           ${STI_SCRIPTS_PATH}/run;
         fi"
-  
+
   tob-worker:
     image: django
     environment:
@@ -265,7 +265,7 @@ services:
       - tob-wallet-db:/var/lib/pgsql/data     
     #command:
     #  postgres -c 'log_statement=all' -c 'logging_collector=on' -c 'log_destination=stderr'
-  
+
   rabbitmq:
     image: rabbitmq:3-management
     environment:

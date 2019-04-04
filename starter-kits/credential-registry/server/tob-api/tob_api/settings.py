@@ -76,7 +76,7 @@ INSTALLED_APPS = [
 
 # django-rest-hooks settings
 
-HOOK_DELIVERER = 'api_v2.celery_tasks.deliver_hook_wrapper'
+HOOK_DELIVERER = 'api_v2.tasks.deliver_hook_wrapper'
 
 HOOK_CUSTOM_MODEL = 'api_v2.models.CredentialHook'
 
