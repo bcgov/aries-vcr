@@ -74,6 +74,10 @@ INSTALLED_APPS = [
     "corsheaders",
 ]
 
+# django-rest-hooks settings
+
+HOOK_DELIVERER = 'api_v2.celery_tasks.deliver_hook_wrapper'
+
 HOOK_CUSTOM_MODEL = 'api_v2.models.CredentialHook'
 
 HOOK_FINDER = 'api_v2.hook_utils.find_and_fire_hook'
@@ -81,7 +85,6 @@ HOOK_FINDER = 'api_v2.hook_utils.find_and_fire_hook'
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
     "hookable_cred.added": "api_v2.HookableCredential.created+",
-    "hookable_cred.changed": "api_v2.HookableCredential.updated+",
 }
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
