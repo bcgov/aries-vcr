@@ -31,30 +31,35 @@ class CredentialExchange(BaseModel):
     STATE_REQUEST_RECEIVED = "request_received"
     STATE_ISSUED = "issued"
     STATE_STORED = "stored"
-    STATE_INVALIDATED = "invalidatedÒ"
 
     def __init__(
         self,
         *,
         credential_exchange_id: str = None,
         connection_id: str = None,
+        thread_id: str = None,
         initiator: str = None,
         state: str = None,
         credential_definition_id: str = None,
         schema_id: str = None,
         credential_offer: dict = None,
         credential_request: dict = None,
+        credential_exchange_record: dict = None,
+        credential_id: str = None,
         error_msg: str = None,
     ):
         """Initialize a new CredentialExchange."""
         self._id = credential_exchange_id
         self.connection_id = connection_id
+        self.thread_id = thread_id
         self.initiator = initiator
         self.state = state
         self.credential_definition_id = credential_definition_id
         self.schema_id = schema_id
         self.credential_offer = credential_offer
         self.credential_request = credential_request
+        self.credential_exchange_record = credential_exchange_record
+        self.credential_id = credential_id
         self.error_msg = error_msg
 
     @property
@@ -85,12 +90,15 @@ class CredentialExchange(BaseModel):
         result = {}
         for prop in (
             "connection_id",
+            "thread_id",
             "initiator",
             "state",
             "credential_definition_id",
             "schema_id",
             "credential_offer",
             "credential_request",
+            "credential_exchange_record",
+            "credential_id",
         ):
             val = getattr(self, prop)
             if val:
@@ -173,10 +181,13 @@ class CredentialExchangeSchema(BaseModelSchema):
 
     credential_exchange_id = fields.Str(required=False)
     connection_id = fields.Str(required=False)
+    thread_id = fields.Str(required=False)
     initiator = fields.Str(required=False)
     state = fields.Str(required=False)
     credential_definition_id = fields.Str(required=False)
     schema_id = fields.Str(required=False)
     credential_offer = fields.Dict(required=False)
     credential_request = fields.Dict(required=False)
+    credential_exchange_record = fields.Dict(required=False)
+    credential_id = fields.Str(required=False)
     error_msg = fields.Str(required=False)

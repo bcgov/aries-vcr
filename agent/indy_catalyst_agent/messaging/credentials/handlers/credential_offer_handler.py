@@ -25,10 +25,8 @@ class CredentialOfferHandler(BaseHandler):
 
         credential_manager = CredentialManager(context)
 
-        credential_offer = context.message.offer_json
-
         await credential_manager.receive_offer(
-            credential_offer, context.connection_record.connection_id
+            context.message, context.connection_record.connection_id
         )
 
         # TODO: allow automatic response by config. Currently,
