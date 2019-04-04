@@ -67,34 +67,38 @@ class PresentationManager:
                 str(uuid4())
             ] = requested_predicates
 
+        presentation_request_message = PresentationRequest(
+            request=json.dumps(presentation_request)
+        )
+
         presentation_exchange = PresentationExchange(
             connection_id=connection_id,
             initiator=PresentationExchange.INITIATOR_SELF,
             state=PresentationExchange.STATE_REQUEST_SENT,
             presentation_request=presentation_request,
+            thread_id=presentation_request_message._thread_id,
         )
         await presentation_exchange.save(self.context.storage)
 
-        presentation_request_message = PresentationRequest(
-            request=json.dumps(presentation_request)
-        )
-
         return presentation_exchange, presentation_request_message
 
-    async def receive_request(self, presentation_request_json: str, connection_id: str):
+    async def receive_request(
+        self, presentation_request: dict, connection_id: str, thread_id: str
+    ):
         """
         Receive a presentation request.
 
         Args:
-            presentation_request_json: Presentation request to receive
+            presentation_request: Presentation request to receive
             connection_id: Connection id for this connection
 
         """
         presentation_exchange = PresentationExchange(
             connection_id=connection_id,
+            thread_id=thread_id,
             initiator=PresentationExchange.INITIATOR_EXTERNAL,
             state=PresentationExchange.STATE_REQUEST_RECEIVED,
-            presentation_request=json.loads(presentation_request_json),
+            presentation_request=presentation_request,
         )
         await presentation_exchange.save(self.context.storage)
 
@@ -191,3 +195,17 @@ class PresentationManager:
         await presentation_exchange_record.save(self.context.storage)
 
         return presentation_exchange_record, presentation_message
+
+    async def receive_presentation(self, presentation: dict, thread_id: str):
+        """
+        Receive a presentation request.
+        """
+        presentation_exchange_record = await PresentationExchange.retrieve_by_tag_filter(
+            self.context.storage, tag_filter={"thread_id": thread_id}
+        )
+
+        presentation_exchange_record.presentation = presentation
+        presentation_exchange_record.state = (
+            PresentationExchange.STATE_PRESENTATION_RECEIVED
+        )
+        await presentation_exchange_record.save(self.context.storage)

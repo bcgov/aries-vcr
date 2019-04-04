@@ -28,12 +28,14 @@ class PresentationExchange(BaseModel):
     STATE_REQUEST_SENT = "request_sent"
     STATE_REQUEST_RECEIVED = "request_received"
     STATE_PRESENTATION_SENT = "presentation_sent"
+    STATE_PRESENTATION_RECEIVED = "presentation_received"
 
     def __init__(
         self,
         *,
         presentation_exchange_id: str = None,
         connection_id: str = None,
+        thread_id: str = None,
         initiator: str = None,
         state: str = None,
         presentation_request: dict = None,
@@ -77,6 +79,7 @@ class PresentationExchange(BaseModel):
         result = {}
         for prop in (
             "connection_id",
+            "thread_id",
             "initiator",
             "state",
             "presentation_request",
@@ -167,6 +170,7 @@ class PresentationExchangeSchema(BaseModelSchema):
 
     presentation_exchange_id = fields.Str(required=False)
     connection_id = fields.Str(required=False)
+    thread_id = fields.Str(required=False)
     initiator = fields.Str(required=False)
     state = fields.Str(required=False)
     presentation_request = fields.Dict(required=False)
