@@ -26,7 +26,5 @@ class CredentialRequestHandler(BaseHandler):
             "Received credential request: %s", context.message.serialize(as_string=True)
         )
 
-        credential_request = context.message.credential_request_json
-
         credential_manager = CredentialManager(context)
-        await credential_manager.receive_request(credential_request)
+        await credential_manager.receive_request(context.message)

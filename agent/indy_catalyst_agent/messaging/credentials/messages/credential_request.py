@@ -21,9 +21,7 @@ class CredentialRequest(AgentMessage):
         schema_class = "CredentialRequestSchema"
         message_type = CREDENTIAL_REQUEST
 
-    def __init__(
-        self, *, offer_json: dict = None, credential_request_json: dict = None, **kwargs
-    ):
+    def __init__(self, *, request: str = None, comment: str = None, **kwargs):
         """
         Initialize credential request object.
 
@@ -33,8 +31,8 @@ class CredentialRequest(AgentMessage):
 
         """
         super(CredentialRequest, self).__init__(**kwargs)
-        self.offer_json = offer_json
-        self.credential_request_json = credential_request_json
+        self.request = request
+        self.comment = comment
 
 
 class CredentialRequestSchema(AgentMessageSchema):
@@ -45,5 +43,5 @@ class CredentialRequestSchema(AgentMessageSchema):
 
         model_class = CredentialRequest
 
-    offer_json = fields.Dict(required=True)
-    credential_request_json = fields.Dict(required=True)
+    request = fields.Str(required=True)
+    comment = fields.Str(required=False)
