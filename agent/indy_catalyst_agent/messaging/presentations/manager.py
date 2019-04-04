@@ -209,3 +209,48 @@ class PresentationManager:
             PresentationExchange.STATE_PRESENTATION_RECEIVED
         )
         await presentation_exchange_record.save(self.context.storage)
+
+    async def verify_presentation(
+        self, presentation_exchange_record: PresentationExchange
+    ):
+        """
+        Verify a presentation request.
+        """
+
+        presentation_request = presentation_exchange_record.presentation_request
+        presentation = presentation_exchange_record.presentation
+
+        schema_ids = []
+        credential_definition_ids = []
+
+        identifiers = presentation["identifiers"]
+        for identifier in identifiers:
+            schema_ids.append(identifier["schema_id"])
+            credential_definition_ids.append(identifier["cred_def_id"])
+
+        schemas = {}
+        credential_definitions = {}
+
+        async with self.context.ledger:
+
+            # Build schemas for anoncreds
+            for schema_id in schema_ids:
+                schema = await self.context.ledger.get_schema(schema_id)
+                schemas[schema_id] = schema
+
+            # Build credential_definitions for anoncreds
+            for credential_definition_id in credential_definition_ids:
+                credential_definition = await self.context.ledger.get_credential_definition(
+                    credential_definition_id
+                )
+                credential_definitions[credential_definition_id] = credential_definition
+
+        verified = await self.context.verifier.verify_presentation(
+            presentation_request, presentation
+        )
+
+        presentation_exchange_record.verified = verified
+        presentation_exchange_record.state = PresentationExchange.STATE_VERIFIED
+
+        await presentation_exchange_record.save(self.context.storage)
+        return presentation_exchange_record
