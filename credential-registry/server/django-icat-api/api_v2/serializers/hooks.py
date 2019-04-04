@@ -15,21 +15,27 @@ from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Subscription import Subscription
 from api_v2.models.User import User
 
+
 SUBSCRIBERS_GROUP_NAME = "subscriber"
+
+SUBSCRIPTION_TYPES = {
+        'New': 'All New Credentials', 
+        'Stream': 'All Credentials for a specific stream (Topic and Type)', 
+        'Topic': 'All Credentials for a Topic'
+    }
 
 
 def get_subscribers_group():
     group, created = Group.objects.get_or_create(name=SUBSCRIBERS_GROUP_NAME)
     return group
 
-
 def get_random_password():
     return "".join([random.choice(ascii_lowercase + digits) for i in range(32)])
-
 
 def get_password_expiry():
     now = datetime.utcnow().replace(tzinfo=pytz.utc)
     return now + timedelta(days=90)
+
 
 class RegistrationSerializer(serializers.Serializer):
     reg_id = serializers.ReadOnlyField(source='id')
@@ -98,6 +104,17 @@ class SubscriptionSerializer(serializers.Serializer):
     credential_type = serializers.CharField(source='credential_type.schema.name', required=False, max_length=240)
     target_url = serializers.CharField(required=False, max_length=240)
     hook_token = serializers.CharField(required=False, max_length=240)
+
+    def validate_subscription_type(self, value):
+        if value in SUBSCRIPTION_TYPES:
+            return value
+        raise serializers.ValidationError("Error not a valid subscription type")
+
+    def validate_credential_type(self, value):
+        credential_types = CredentialType.objects.filter(schema__name=value).all()
+        if 0 < len(credential_types):
+            return value
+        raise serializers.ValidationError("Error not a valid credential type")
 
     def create(self, validated_data):
         """
