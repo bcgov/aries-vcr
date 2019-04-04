@@ -41,7 +41,7 @@ class PresentationExchange(BaseModel):
         state: str = None,
         presentation_request: dict = None,
         presentation: dict = None,
-        verified: boolean = None,
+        verified: bool = None,
         error_msg: str = None,
     ):
         """Initialize a new PresentationExchange."""

@@ -19,7 +19,7 @@ class CredentialIssueHandler(BaseHandler):
         """
         self._logger.debug(f"CredentialHandler called with context {context}")
         assert isinstance(context.message, CredentialIssue)
-        self._logger.info(f"Received credential: {context.message.credential_json}")
+        self._logger.info(f"Received credential: {context.message.issue}")
 
         credential_manager = CredentialManager(context)
 

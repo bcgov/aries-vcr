@@ -74,7 +74,7 @@ class IndyHolder(BaseHolder):
         credential_id = await indy.anoncreds.prover_store_credential(
             self.wallet.handle,
             None,  # Always let indy set the id for now
-            json.dump(credential_request_metadata),
+            json.dumps(credential_request_metadata),
             json.dumps(credential_data),
             json.dumps(credential_definition),
             None,  # We don't support revocation yet
