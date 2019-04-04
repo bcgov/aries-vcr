@@ -253,6 +253,44 @@ async def presentation_exchange_send_credential_presentation(request: web.BaseRe
     return web.json_response(presentation_exchange_record.serialize())
 
 
+@docs(
+    tags=["presentation_exchange"], summary="Verify a received credential presentation"
+)
+async def presentation_exchange_verify_credential_presentation(
+    request: web.BaseRequest
+):
+    """
+    Request handler for verifying a presentation request.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The presentation exchange details.
+
+    """
+
+    context = request.app["request_context"]
+    presentation_exchange_id = request.match_info["id"]
+
+    presentation_exchange_record = await PresentationExchange.retrieve_by_id(
+        context.storage, presentation_exchange_id
+    )
+
+    assert (
+        presentation_exchange_record.state
+        == presentation_exchange_record.STATE_PRESENTATION_RECEIVED
+    )
+
+    presentation_manager = PresentationManager(context)
+
+    presentation_exchange_record = await presentation_manager.verify_presentation(
+        presentation_exchange_record
+    )
+
+    return web.json_response(presentation_exchange_record.serialize())
+
+
 async def register(app: web.Application):
     """Register routes."""
 
@@ -281,6 +319,14 @@ async def register(app: web.Application):
             web.post(
                 "/presentation_exchange/{id}/send_presentation",
                 presentation_exchange_send_credential_presentation,
+            )
+        ]
+    )
+    app.add_routes(
+        [
+            web.post(
+                "/presentation_exchange/{id}/verify_presentation",
+                presentation_exchange_verify_credential_presentation,
             )
         ]
     )
