@@ -7,6 +7,7 @@ from uuid import uuid4
 
 from ..request_context import RequestContext
 from ...error import BaseError
+from ...models.thread_decorator import ThreadDecorator
 
 from .models.presentation_exchange import PresentationExchange
 from .messages.presentation_request import PresentationRequest
@@ -83,22 +84,21 @@ class PresentationManager:
         return presentation_exchange, presentation_request_message
 
     async def receive_request(
-        self, presentation_request: dict, connection_id: str, thread_id: str
+        self, presentation_request_message: PresentationRequest, connection_id: str
     ):
         """
         Receive a presentation request.
 
         Args:
-            presentation_request: Presentation request to receive
-            connection_id: Connection id for this connection
-
+            presentation_request_message: Presentation message to receive
         """
+
         presentation_exchange = PresentationExchange(
             connection_id=connection_id,
-            thread_id=thread_id,
+            thread_id=presentation_request_message._thread_id,
             initiator=PresentationExchange.INITIATOR_EXTERNAL,
             state=PresentationExchange.STATE_REQUEST_RECEIVED,
-            presentation_request=presentation_request,
+            presentation_request=json.loads(presentation_request_message.request),
         )
         await presentation_exchange.save(self.context.storage)
 
@@ -187,6 +187,10 @@ class PresentationManager:
             presentation=json.dumps(presentation)
         )
 
+        # TODO: Find a more elegant way to do this
+        thread = ThreadDecorator(thid=presentation_exchange_record.thread_id)
+        presentation_message._thread = thread
+
         # save presentation exchange state
         presentation_exchange_record.state = (
             PresentationExchange.STATE_PRESENTATION_SENT
@@ -246,7 +250,7 @@ class PresentationManager:
                 credential_definitions[credential_definition_id] = credential_definition
 
         verified = await self.context.verifier.verify_presentation(
-            presentation_request, presentation
+            presentation_request, presentation, schemas, credential_definitions
         )
 
         presentation_exchange_record.verified = verified

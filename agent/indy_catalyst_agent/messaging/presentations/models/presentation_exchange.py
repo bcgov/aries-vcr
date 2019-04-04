@@ -41,6 +41,7 @@ class PresentationExchange(BaseModel):
         state: str = None,
         presentation_request: dict = None,
         presentation: dict = None,
+        verified: boolean = None,
         error_msg: str = None,
     ):
         """Initialize a new PresentationExchange."""
@@ -51,6 +52,7 @@ class PresentationExchange(BaseModel):
         self.state = state
         self.presentation_request = presentation_request
         self.presentation = presentation
+        self.verified = verified
         self.error_msg = error_msg
 
     @property
@@ -86,6 +88,7 @@ class PresentationExchange(BaseModel):
             "state",
             "presentation_request",
             "presentation",
+            "verified"
         ):
             val = getattr(self, prop)
             if val:
@@ -177,4 +180,5 @@ class PresentationExchangeSchema(BaseModelSchema):
     state = fields.Str(required=False)
     presentation_request = fields.Dict(required=False)
     presentation = fields.Dict(required=False)
+    verified = fields.Bool(required=False)
     error_msg = fields.Str(required=False)
