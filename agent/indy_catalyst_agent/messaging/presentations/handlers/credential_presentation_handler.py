@@ -1,5 +1,7 @@
 """Basic message handler."""
 
+import json
+
 from ...base_handler import BaseHandler, BaseResponder, RequestContext
 
 from ..manager import PresentationManager
@@ -23,4 +25,10 @@ class CredentialPresentationHandler(BaseHandler):
         assert isinstance(context.message, CredentialPresentation)
         self._logger.info(
             f"Received credential presentation: {context.message.presentation}"
+        )
+
+        presentation_manager = PresentationManager(context)
+
+        await presentation_manager.receive_presentation(
+            json.loads(context.message.presentation), context.message._thread_id
         )
