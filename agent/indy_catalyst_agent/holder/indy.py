@@ -170,3 +170,34 @@ class IndyHolder(BaseHolder):
 
         credential = json.loads(credential_json)
         return credential
+
+    async def create_presentation(
+        self,
+        presentation_request: dict,
+        requested_credentials: dict,
+        schemas: dict,
+        credential_definitions: dict,
+    ):
+        """
+        Get credentials stored in the wallet.
+
+        Args:
+            presentation_request: Valid indy format presentation request
+            requested_credentials: Indy format requested_credentials
+            schemas: Indy formatted schemas_json
+            credential_definitions: Indy formatted schemas_json
+
+        """
+
+        presentation_json = await indy.anoncreds.prover_create_proof(
+            self.wallet.handle,
+            json.dumps(presentation_request),
+            json.dumps(requested_credentials),
+            self.wallet.master_secret_id,
+            json.dumps(schemas),
+            json.dumps(credential_definitions),
+            json.dumps({}),  # We don't support revocation currently.
+        )
+
+        presentation = json.loads(presentation_json)
+        return presentation
