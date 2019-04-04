@@ -44,7 +44,7 @@ class CredentialExchange(BaseModel):
         schema_id: str = None,
         credential_offer: dict = None,
         credential_request: dict = None,
-        credential_exchange_record: dict = None,
+        credential_request_metadata: dict = None,
         credential_id: str = None,
         error_msg: str = None,
     ):
@@ -58,7 +58,7 @@ class CredentialExchange(BaseModel):
         self.schema_id = schema_id
         self.credential_offer = credential_offer
         self.credential_request = credential_request
-        self.credential_exchange_record = credential_exchange_record
+        self.credential_request_metadata = credential_request_metadata
         self.credential_id = credential_id
         self.error_msg = error_msg
 
@@ -97,7 +97,7 @@ class CredentialExchange(BaseModel):
             "schema_id",
             "credential_offer",
             "credential_request",
-            "credential_exchange_record",
+            "credential_request_metadata",
             "credential_id",
         ):
             val = getattr(self, prop)
@@ -188,6 +188,6 @@ class CredentialExchangeSchema(BaseModelSchema):
     schema_id = fields.Str(required=False)
     credential_offer = fields.Dict(required=False)
     credential_request = fields.Dict(required=False)
-    credential_exchange_record = fields.Dict(required=False)
+    credential_request_metadata = fields.Dict(required=False)
     credential_id = fields.Str(required=False)
     error_msg = fields.Str(required=False)
