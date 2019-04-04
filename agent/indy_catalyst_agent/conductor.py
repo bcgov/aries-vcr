@@ -21,6 +21,7 @@ from .logging import LoggingConfigurator
 from .ledger.indy import IndyLedger
 from .issuer.indy import IndyIssuer
 from .holder.indy import IndyHolder
+from .verifier.indy import IndyVerifier
 from .messaging.agent_message import AgentMessage
 from .messaging.connections.manager import ConnectionManager
 from .messaging.connections.models.connection_target import ConnectionTarget
@@ -119,6 +120,10 @@ class Conductor:
 
         # TODO: Load holder implementation from command line args
         context.holder = IndyHolder(context.wallet)
+
+        # TODO: Load holder implementation from command line args
+        context.verifier = IndyVerifier(context.wallet)
+
 
         storage_type = self.settings.get("storage.type", "basic").lower()
         storage_type = self.STORAGE_TYPES.get(storage_type, storage_type)

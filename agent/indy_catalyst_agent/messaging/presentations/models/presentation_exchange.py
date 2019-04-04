@@ -29,6 +29,7 @@ class PresentationExchange(BaseModel):
     STATE_REQUEST_RECEIVED = "request_received"
     STATE_PRESENTATION_SENT = "presentation_sent"
     STATE_PRESENTATION_RECEIVED = "presentation_received"
+    STATE_VERIFIED = "verified"
 
     def __init__(
         self,
@@ -45,6 +46,7 @@ class PresentationExchange(BaseModel):
         """Initialize a new PresentationExchange."""
         self._id = presentation_exchange_id
         self.connection_id = connection_id
+        self.thread_id = thread_id
         self.initiator = initiator
         self.state = state
         self.presentation_request = presentation_request
