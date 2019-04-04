@@ -29,6 +29,10 @@ class CredentialPresentationHandler(BaseHandler):
 
         presentation_manager = PresentationManager(context)
 
+        self._logger.info(
+            f"\n\n\n\n\n-----\n{context.message._thread_id}\n-------\n\n\n\n\n"
+        )
+
         await presentation_manager.receive_presentation(
             json.loads(context.message.presentation), context.message._thread_id
         )
