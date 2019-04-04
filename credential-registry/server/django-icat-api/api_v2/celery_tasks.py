@@ -3,6 +3,8 @@ import logging
 
 import requests
 
+from api_indy.indy.credential import Credential, CredentialManager
+from celery import app as celery
 from celery.task import Task
 
 logger = logging.getLogger(__name__)
@@ -43,3 +45,13 @@ def deliver_hook_wrapper(target, payload, instance, hook):
         target=target, payload=payload, instance_id=instance_id, hook_id=hook.id
     )
     DeliverHook.apply_async(kwargs=kwargs)
+
+
+@celery.task(ignore_result=True)
+def process_credential(cred_data, cred_req_metadata, cred_id):
+    logger.info("Processing credential: {}".format(cred_id))
+    credential = Credential(cred_data)
+    credential_manager = CredentialManager(credential, cred_req_metadata)
+
+
+credential_manager.process(cred_id)

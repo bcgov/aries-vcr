@@ -4,47 +4,26 @@ import math
 import os
 import time
 
-from aiohttp import web
 import django.db
 import jsonschema
+from aiohttp import web
 
-from vonx.indy.messages import (
-    ConstructedProof as VonxConstructedProof,
-    ProofRequest as VonxProofRequest,
-)
-from vonx.indy.errors import IndyError
-
-from vonx.web.headers import (
-    KeyCache,
-    KeyFinderBase,
-    IndyKeyFinder,
-)
-from vonx.web.view_helpers import (
-    IndyRequestError,
-    check_request_signature,
-    get_request_did,
-    get_request_json,
-    perform_store_credential,
-)
 import vonx.web.views as vonx_views
-
-from api_v2.models.User import User
-
-from api_v2.models.Credential import Credential as CredentialModel
-
-from api_indy.indy.issuer import IssuerManager, IssuerException
-from api_indy.indy.proof_request import ProofRequest
+from api_indy.indy.issuer import IssuerException, IssuerManager
 from api_indy.indy.proof import ProofManager
-
+from api_indy.indy.proof_request import ProofRequest
+from api_indy.tob_anchor.boot import indy_client, indy_holder_id, run_django
+from api_v2 import celery_tasks as tasks
+from api_v2 import celery_tasks as tasks
 from api_v2.jsonschema.issuer import ISSUER_JSON_SCHEMA
-
-from api_indy.tob_anchor.boot import (
-    indy_client, indy_holder_id, run_django
-)
-
-LOGGER = logging.getLogger(__name__)
-
-INSTRUMENT = True
+from api_v2.models.Credential import Credential as CredentialModel
+from vonx.indy.errors import IndyError
+from vonx.indy.messages import ConstructedProof as VonxConstructedProof
+from vonx.indy.messages import ProofRequest as VonxProofRequest
+from vonx.web.headers import IndyKeyFinder, KeyCache, KeyFinderBase
+from vonx.web.view_helpers import (IndyRequestError, check_request_signature,
+                                   get_request_did, get_request_json,
+                                   perform_store_credential)
 STATS = {"min": {}, "max": {}, "total": {}, "count": {}}
 
 INDY_KEYFINDER = None
@@ -56,6 +35,7 @@ class DjangoKeyFinder(KeyFinderBase):
     """
     Handle public key lookup for the issuer's DID
     """
+
     async def _lookup_key(self, key_id: str, key_type: str) -> bytes:
         if key_type == "ed25519":
             return await run_django(self._db_lookup, key_id)
@@ -66,11 +46,12 @@ class DjangoKeyFinder(KeyFinderBase):
             if user.verkey:
                 verkey = bytes(user.verkey)
                 LOGGER.info(
-                    "Found verkey for DID '%s' in users table: '%s'",
-                    key_id, verkey)
+                    "Found verkey for DID '%s' in users table: '%s'", key_id, verkey
+                )
                 return verkey
         except User.DoesNotExist:
             pass
+
 
 def _indy_client():
     try:
@@ -78,6 +59,7 @@ def _indy_client():
     except RuntimeError as e:
         raise IndyRequestError(str(e)) from e
     return result
+
 
 def get_key_finder(use_cache: bool = True) -> KeyFinderBase:
     global INDY_KEYFINDER, DJANGO_KEYFINDER, KEY_CACHE
@@ -90,6 +72,7 @@ def get_key_finder(use_cache: bool = True) -> KeyFinderBase:
         KEY_CACHE = KeyCache(DJANGO_KEYFINDER)
     return INDY_KEYFINDER
 
+
 async def _check_signature(request, use_cache: bool = True):
     """
     Check the DID-auth signature on the incoming request
@@ -100,6 +83,7 @@ async def _check_signature(request, use_cache: bool = True):
     perf = _time_end(perf)
     return result
 
+
 def _validate_schema(data, schema):
     try:
         jsonschema.validate(data, schema)
@@ -107,8 +91,10 @@ def _validate_schema(data, schema):
         LOGGER.exception("Error validating schema:")
         raise IndyRequestError("Schema validation error: {}".format(e))
 
+
 def _time_start(*tasks):
     return (tasks, time.perf_counter())
+
 
 def _time_end(timer):
     (tasks, start) = timer
@@ -150,7 +136,9 @@ async def generate_credential_request(request):
 
     try:
         await _check_signature(request)
-        response = await vonx_views.generate_credential_request(request, indy_holder_id())
+        response = await vonx_views.generate_credential_request(
+            request, indy_holder_id()
+        )
     except IndyRequestError as e:
         response = e.response
 
@@ -161,7 +149,7 @@ async def generate_credential_request(request):
 
 async def store_credential(request):
     """
-    Stores one or more verifiable credentials in the wallet.
+    Stores a verifiable credential in wallet.
 
     The data in the credential is parsed and stored in the database
     for search/display purposes based on the issuer's processor config.
@@ -177,43 +165,37 @@ async def store_credential(request):
     }
     ```
 
-    Input may also be in the form of an array of credential data:
-
-    ```json
-    [
-        {
-            "credential_data": <credential data>,
-            "credential_request_metadata": <credential request metadata>
-        },
-        {
-            "credential_data": <credential data>,
-            "credential_request_metadata": <credential request metadata>
-        }
-    ]
-    ```
-
-    Returns: the wallet ID of the stored credential or credentials
+    returns: created verified credential model
     """
 
+    ok, result = await _check_signature(request)
+    if not ok:
+        return result
+
     LOGGER.warn(">>> Store credential")
-    perf = _time_start("store_credential")
+    perf_store = _time_start("store_credential")
+    result = await vonx_views.store_credential(request, indy_holder_id())
+    LOGGER.warn("<<< Store credential (wallet): %s", _time_end(perf_store))
 
-    try:
-        await _check_signature(request)
-        issuer_did = get_request_did(request)
-        client = _indy_client()
-        params = await get_request_json(request)
-        processor = request.app["credqueue"] # CredentialProcessorQueue
-        stored, ret = await perform_store_credential(
-            client, indy_holder_id(), params, processor, issuer_did)
-        response = web.json_response(ret)
-        response["stored"] = stored
-    except IndyRequestError as e:
-        response = e.response
+    perf_proc = _time_start("process_credential")
+    if result.get("stored"):
+        stored = result["stored"]
 
-    LOGGER.warn("<<< Store credential: %s", _time_end(perf))
+        process_rabbit = os.getenv("PROCESS_RABBIT")
+        if process_rabbit:
+            tasks.process_credential.delay(
+                stored.cred.cred_data, stored.cred.cred_req_metadata, stored.cred_id
+            )
 
-    return response
+        process_memory = os.getenv("PROCESS_MEMORY")
+        if process_memory:
+            tasks.process_credential(
+                stored.cred.cred_data, stored.cred.cred_req_metadata, stored.cred_id
+            )
+
+    LOGGER.warn("<<< Store credential: %s", _time_end(perf_proc))
+
+    return result
 
 
 async def register_issuer(request):
@@ -508,7 +490,7 @@ async def verify_credential(request):
     LOGGER.warn(">>> Verify credential")
     perf = _time_start("verify_credential")
     credential_id = request.match_info.get("id")
-    headers = {'Access-Control-Allow-Origin': '*'}
+    headers = {"Access-Control-Allow-Origin": "*"}
 
     if not credential_id:
         return web.json_response(
@@ -519,13 +501,15 @@ async def verify_credential(request):
 
     def fetch_cred(credential_id):
         try:
-            return CredentialModel.objects\
-                .prefetch_related('claims')\
-                .select_related('credential_type')\
-                .select_related('credential_type__schema')\
+            return (
+                CredentialModel.objects.prefetch_related("claims")
+                .select_related("credential_type")
+                .select_related("credential_type__schema")
                 .get(id=credential_id)
+            )
         except CredentialModel.DoesNotExist:
             return None
+
     credential = await run_django(fetch_cred, credential_id)
     if not credential:
         LOGGER.warn("Credential not found: %s", credential_id)
@@ -542,21 +526,23 @@ async def verify_credential(request):
     try:
         proof = await proof_manager.construct_proof_async()
         verified = await _indy_client().verify_proof(
-                indy_holder_id(),
-                VonxProofRequest(proof_request.dict),
-                VonxConstructedProof(proof))
+            indy_holder_id(),
+            VonxProofRequest(proof_request.dict),
+            VonxConstructedProof(proof),
+        )
     except IndyError as e:
         LOGGER.exception("Credential verification error:")
         return web.json_response(
-            {"success": False, "result": "Credential verification error: {}".format(str(e))},
+            {
+                "success": False,
+                "result": "Credential verification error: {}".format(str(e)),
+            },
             headers=headers,
         )
     except:
         LOGGER.exception("Credential verification error:")
         return web.json_response(
-            {"success": False, "result": "Not available"},
-            status=403,
-            headers=headers,
+            {"success": False, "result": "Not available"}, status=403, headers=headers
         )
 
     verified = verified.verified == "true"
@@ -595,8 +581,8 @@ async def combined_health(request):
     Combined health check including Indy and the database
     """
     ok = True
-    disconnected = os.environ.get('INDY_DISABLED', 'false')
-    if not disconnected or disconnected == 'false':
+    disconnected = os.environ.get("INDY_DISABLED", "false")
+    if not disconnected or disconnected == "false":
         try:
             result = await _indy_client().get_status()
             indy_ok = result and result.get("synced")
@@ -604,6 +590,7 @@ async def combined_health(request):
                 ok = False
         except IndyRequestError as e:
             ok = False
+
     def db_check():
         try:
             User.objects.count()
@@ -611,10 +598,9 @@ async def combined_health(request):
         except django.db.Error:
             LOGGER.exception("Error during DB health check")
             return False
+
     ok = ok and await run_django(db_check)
-    return web.Response(
-        text='ok' if ok else '',
-        status=200 if ok else 451)
+    return web.Response(text="ok" if ok else "", status=200 if ok else 451)
 
 
 async def status(request):
@@ -627,6 +613,8 @@ async def status(request):
         return e.response
     if INSTRUMENT:
         stats = STATS.copy()
-        stats["avg"] = {task: stats["total"][task] / stats["count"][task] for task in stats["count"]}
+        stats["avg"] = {
+            task: stats["total"][task] / stats["count"][task] for task in stats["count"]
+        }
         result["stats"] = stats
     return web.json_response(result)
