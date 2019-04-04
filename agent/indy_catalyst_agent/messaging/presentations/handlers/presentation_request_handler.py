@@ -1,5 +1,7 @@
 """Basic message handler."""
 
+import json
+
 from ...base_handler import BaseHandler, BaseResponder, RequestContext
 
 from ..manager import PresentationManager
@@ -26,5 +28,7 @@ class PresentationRequestHandler(BaseHandler):
         presentation_manager = PresentationManager(context)
 
         await presentation_manager.receive_request(
-            context.message.request, context.connection_record.connection_id
+            json.loads(context.message.request),
+            context.connection_record.connection_id,
+            context.message._thread_id,
         )
