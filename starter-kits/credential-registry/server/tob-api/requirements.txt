@@ -52,3 +52,5 @@ aiohttp-wsgi~=0.8.1
 
 # rest hooks and related
 drf-nested-routers
+celery~=4.3.0
+rabbitmq~=0.2.0
