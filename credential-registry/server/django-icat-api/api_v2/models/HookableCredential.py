@@ -2,6 +2,7 @@ from django.contrib.postgres import fields as contrib
 from django.db import models
 
 from .Auditable import Auditable
+from .Subscription import Subscription
 
 
 class HookableCredential(Auditable):
@@ -18,13 +19,15 @@ class HookableCredential(Auditable):
     hook = Hook(user=jrrtolkien, event='hookable_cred.added', target='http://tob-api:8080/api/v2/feedback')
     hook.save()
 
-    cred = HookableCredential(corp_num='BC1234566', credential_type='122', credential_json='{}')
+    cred = HookableCredential(corp_num='BC1234568', credential_type='122', credential_json='{}')
     cred.save()
 
     ... should fire off a hook to the feedback api
     """
     # corp_num = models.ForeignKey("Topic", related_name="+", to_field="source_id", on_delete=models.DO_NOTHING)
     # credential_type = models.ForeignKey("CredentialType", related_name="+", on_delete=models.DO_NOTHING)
+    # 'New' or 'Stream' depending if it's the first credential for the Topic (corp_num)
+    topic_status = models.TextField()
     corp_num = models.TextField(null=True)
     credential_type = models.TextField(null=True)
     credential_json = contrib.JSONField(blank=True, null=True)
@@ -33,8 +36,13 @@ class HookableCredential(Auditable):
         # optional, there are serialization defaults
         # we recommend always sending the Hook
         # metadata along for the ride as well
+        subscriptions = Subscription.objects.filter(hook=hook)
+        if 0 < len(subscriptions):
+            hook_dict = subscriptions[0].dict()
+        else:
+            hook_dict = hook.dict()
         dict = {
-            'hook': hook.dict(),
+            'subscription': hook_dict,
             'data': {
                 'id': self.id,
                 'corp_num': self.corp_num,
@@ -48,5 +56,5 @@ class HookableCredential(Auditable):
 
     class Meta:
         db_table = "hookable_cred"
-        unique_together = (("corp_num", "credential_type"),)
+        #unique_together = (("corp_num", "credential_type"),)
         ordering = ("corp_num", "credential_type")
