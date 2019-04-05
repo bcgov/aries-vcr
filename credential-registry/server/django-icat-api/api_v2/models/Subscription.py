@@ -33,7 +33,7 @@ class Subscription(Auditable):
             'owner': self.owner.username,
             'subscription_type': self.subscription_type,
             'topic_id': self.topic_source_id,
-            'credential_type': self.credential_type,
+            'credential_type': self.credential_type.schema.name,
             'target_url': self.target_url,
             'hook_token': self.hook_token
         }

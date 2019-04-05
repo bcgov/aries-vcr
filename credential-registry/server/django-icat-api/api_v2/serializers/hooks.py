@@ -121,7 +121,9 @@ class SubscriptionSerializer(serializers.Serializer):
         Create and return a new instance, given the validated data.
         """
         # note owner is assigned in the view
-        credential_type = CredentialType.objects.filter(schema__name=validated_data['credential_type']).first()
+        print("validated_data['credential_type']", validated_data['credential_type'])
+        credential_type = CredentialType.objects.filter(schema__name=validated_data['credential_type']['schema']['name']).first()
+        print("credential_type", credential_type)
         validated_data['credential_type'] = credential_type
         return Subscription.objects.create(**validated_data)
 
