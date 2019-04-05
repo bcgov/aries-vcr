@@ -10,7 +10,7 @@ from celery import Celery
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tob_api.settings")
 
 app = Celery(
-    "tob_api",
+    "api_v2",
     broker="pyamqp://{}:{}@rabbitmq//".format(
         os.environ.get("RABBITMQ_USER"), os.environ.get("RABBITMQ_PASSWORD")
     ),
@@ -24,7 +24,6 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
-
 
 @app.task(bind=True)
 def debug_task(self):

@@ -322,3 +322,8 @@ if custom_settings_file.exists():
     with open(custom_settings_file) as source_file:
         print("Loading custom settings file: {}".format(custom_settings_file.name))
         exec(source_file.read())
+
+
+# celery settings
+
+CELERY_BROKER_HEARTBEAT = 0

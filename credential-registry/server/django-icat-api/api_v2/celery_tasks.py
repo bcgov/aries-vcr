@@ -2,7 +2,6 @@ import json
 import logging
 
 import requests
-
 from celery.task import Task
 
 logger = logging.getLogger(__name__)
