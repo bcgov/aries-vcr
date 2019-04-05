@@ -2,6 +2,7 @@ from django.contrib.postgres import fields as contrib
 from django.db import models
 
 from .Auditable import Auditable
+from .Subscription import Subscription
 
 
 class HookableCredential(Auditable):
@@ -35,8 +36,13 @@ class HookableCredential(Auditable):
         # optional, there are serialization defaults
         # we recommend always sending the Hook
         # metadata along for the ride as well
+        subscriptions = Subscription.objects.filter(hook=hook)
+        if 0 < len(subscriptions):
+            hook_dict = subscriptions[0].dict()
+        else:
+            hook_dict = hook.dict()
         dict = {
-            'hook': hook.dict(),
+            'subscription': hook_dict,
             'data': {
                 'id': self.id,
                 'corp_num': self.corp_num,

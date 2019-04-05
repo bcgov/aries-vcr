@@ -26,3 +26,14 @@ class Subscription(Auditable):
 
     def __str__(self):
         return str(id) + " " + self.owner.username + " " + self.subscription_type + " " + self.target_url + " " + str(self.hook.id)
+
+    def dict(self):
+        return {
+            'id': self.id,
+            'owner': self.owner.username,
+            'subscription_type': self.subscription_type,
+            'topic_id': self.topic_source_id,
+            'credential_type': self.credential_type,
+            'target_url': self.target_url,
+            'hook_token': self.hook_token
+        }
