@@ -76,15 +76,15 @@ INSTALLED_APPS = [
 
 # django-rest-hooks settings
 
-HOOK_DELIVERER = 'api_v2.celery_tasks.deliver_hook_wrapper'
+HOOK_DELIVERER = "api_v2.celery_tasks.deliver_hook_wrapper"
 
-HOOK_CUSTOM_MODEL = 'api_v2.models.CredentialHook'
+HOOK_CUSTOM_MODEL = "api_v2.models.CredentialHook"
 
-HOOK_FINDER = 'api_v2.hook_utils.find_and_fire_hook'
+HOOK_FINDER = "api_v2.hook_utils.find_and_fire_hook"
 
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
-    "hookable_cred.added": "api_v2.HookableCredential.created+",
+    "hookable_cred.added": "api_v2.HookableCredential.created+"
 }
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
@@ -148,15 +148,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 AUTH_USER_MODEL = "api_v2.User"
@@ -208,9 +202,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "filters": {
-        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}
-    },
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
@@ -225,11 +217,7 @@ LOGGING = {
         }
     },
     "loggers": {
-        "api": {
-            "handlers": ["console_handler"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
+        "api": {"handlers": ["console_handler"], "level": "DEBUG", "propagate": False},
         "django": {
             "handlers": ["console_handler"],
             "level": "INFO",
@@ -269,17 +257,12 @@ APPLICATION_URL = os.getenv("APPLICATION_URL") or "http://localhost:8080"
 
 API_METADATA = {
     "title": "OrgBook BC API",
-    "description":
-        "OrgBook BC is a public, searchable directory of digital records for registered "
+    "description": "OrgBook BC is a public, searchable directory of digital records for registered "
     "businesses in the Province of British Columbia. Over time, other government "
     "organizations and businesses will also begin to issue digital records through "
     "OrgBook BC. For example, permits and licenses issued by various government services.",
-    "terms": {
-        "url": "https://www2.gov.bc.ca/gov/content/data/open-data",
-    },
-    "contact": {
-        "email": "bcdevexchange@gov.bc.ca",
-    },
+    "terms": {"url": "https://www2.gov.bc.ca/gov/content/data/open-data"},
+    "contact": {"email": "bcdevexchange@gov.bc.ca"},
     "license": {
         "name": "Open Government License - British Columbia",
         "url": "https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information",
@@ -315,8 +298,7 @@ SEARCH_TERMS_EXCLUSIVE = False
 # variable (i.e. ongov)
 #
 custom_settings_file = Path(
-    BASE_DIR,
-    "custom_settings_" + str(os.getenv("TOB_THEME")).lower() + ".py",
+    BASE_DIR, "custom_settings_" + str(os.getenv("TOB_THEME")).lower() + ".py"
 )
 if custom_settings_file.exists():
     with open(custom_settings_file) as source_file:
@@ -328,3 +310,8 @@ if custom_settings_file.exists():
 
 # see https://github.com/celery/celery/issues/4817
 CELERY_BROKER_HEARTBEAT = 0
+
+CELERY_BROKER_URL = "pyamqp://{}:{}@rabbitmq//".format(
+    os.environ.get("RABBITMQ_USER"), os.environ.get("RABBITMQ_PASSWORD")
+)
+
