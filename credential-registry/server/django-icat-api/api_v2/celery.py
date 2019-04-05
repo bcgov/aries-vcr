@@ -11,9 +11,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tob_api.settings")
 
 app = Celery(
     "api_v2",
-    broker="pyamqp://{}:{}@rabbitmq//".format(
-        os.environ.get("RABBITMQ_USER"), os.environ.get("RABBITMQ_PASSWORD")
-    ),
 )
 
 # Using a string here means the worker doesn't have to serialize
