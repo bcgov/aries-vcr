@@ -9,10 +9,7 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tob_api.settings")
 
-celery_broker="pyamqp://{}:{}@rabbitmq//".format(
-        os.environ.get("RABBITMQ_USER"), os.environ.get("RABBITMQ_PASSWORD")
-    )
-
+celery_broker = getattr(settings, 'CELERY_BROKER_URL')
 print("Starting celery with broker", celery_broker)
 app = Celery(
     "api_v2",
