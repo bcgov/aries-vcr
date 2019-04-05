@@ -46,3 +46,4 @@ def deliver_hook_wrapper(target, payload, instance, hook):
     )
     print("   >>> ABOUT TO DELIVER A HOOK!!!!!!!!!!!")
     DeliverHook.apply_async(kwargs=kwargs)
+    print("   >>> DELIVERED ...")

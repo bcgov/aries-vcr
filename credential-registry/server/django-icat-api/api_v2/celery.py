@@ -9,11 +9,14 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tob_api.settings")
 
-app = Celery(
-    "tob_api",
-    broker="pyamqp://{}:{}@rabbitmq//".format(
+celery_broker="pyamqp://{}:{}@rabbitmq//".format(
         os.environ.get("RABBITMQ_USER"), os.environ.get("RABBITMQ_PASSWORD")
-    ),
+    )
+
+print("Starting celery with broker", celery_broker)
+app = Celery(
+    "api_v2",
+    broker=celery_broker,
 )
 
 # Using a string here means the worker doesn't have to serialize
@@ -25,7 +28,3 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
-
-@app.task(bind=True)
-def debug_task(self):
-    print("Request: {0!r}".format(self.request))
