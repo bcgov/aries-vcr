@@ -326,4 +326,5 @@ if custom_settings_file.exists():
 
 # celery settings
 
+# see https://github.com/celery/celery/issues/4817
 CELERY_BROKER_HEARTBEAT = 0
