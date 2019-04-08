@@ -16,7 +16,7 @@ except OSError:
     )
 
 from indy_catalyst_agent.wallet.basic import BasicWallet
-from indy_catalyst_agent.wallet.indy import IndyWallet
+from indy_catalyst_agent.wallet.indyvon import IndyWallet
 
 from . import test_basic_wallet
 

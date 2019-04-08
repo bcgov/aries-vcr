@@ -4,8 +4,9 @@ from typing import Sequence
 
 from ...error import BaseError
 from ..request_context import RequestContext
-from ...storage.base import StorageRecord
 from ...storage.error import StorageNotFoundError
+
+from von_anchor.wallet import StorageRecord
 
 
 class RoutingManagerError(BaseError):

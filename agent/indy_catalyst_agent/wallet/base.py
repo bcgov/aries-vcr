@@ -1,16 +1,9 @@
 """Wallet base class."""
 
 from abc import ABC, abstractmethod
-from collections import namedtuple
 from typing import Sequence
 
-KeyInfo = namedtuple("KeyInfo", "verkey metadata")
-
-DIDInfo = namedtuple("DIDInfo", "did verkey metadata")
-
-PairwiseInfo = namedtuple(
-    "PairwiseInfo", "their_did their_verkey my_did my_verkey metadata"
-)
+from von_anchor.wallet import KeyInfo, DIDInfo, PairwiseInfo
 
 
 class BaseWallet(ABC):
@@ -22,7 +15,7 @@ class BaseWallet(ABC):
         Initialize a `BaseWallet` instance.
 
         Args:
-            config: {name, key, seed, did, auto-create, auto-remove}
+            config: {name, key, seed, did, auto_create, auto_remove}
 
         """
 
