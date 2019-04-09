@@ -10,6 +10,8 @@ from ..messaging.schemas.routes import register as register_schemas
 from ..messaging.credential_definitions.routes import (
     register as register_credential_definitions,
 )
+from ..messaging.basicmessage.routes import register as register_basicmessages
+from ..messaging.trustping.routes import register as register_trustping
 
 from ..messaging.basicmessage.routes import register as register_basicmessages
 from ..messaging.trustping.routes import register as register_trustping
