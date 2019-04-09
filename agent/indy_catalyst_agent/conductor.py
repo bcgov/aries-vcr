@@ -12,11 +12,16 @@ import logging
 
 from typing import Coroutine, Union
 
+from .admin.manager import AdminManager
 from .admin.server import AdminServer
 from .classloader import ClassLoader
 from .dispatcher import Dispatcher
 from .error import BaseError
 from .logging import LoggingConfigurator
+from .ledger.indy import IndyLedger
+from .issuer.indy import IndyIssuer
+from .holder.indy import IndyHolder
+from .verifier.indy import IndyVerifier
 from .messaging.agent_message import AgentMessage
 from .messaging.connections.manager import ConnectionManager
 from .messaging.connections.models.connection_target import ConnectionTarget
@@ -36,7 +41,7 @@ class Conductor:
     """
     Conductor class.
 
-    Class responsible for initalizing concrete implementations
+    Class responsible for initializing concrete implementations
     of our require interfaces and routing inbound and outbound message data.
     """
 
@@ -81,17 +86,44 @@ class Conductor:
         context.default_endpoint = self.settings.get(
             "default_endpoint", "http://localhost:10001"
         )
-        context.default_label = self.settings.get("default_name", "Indy Catalyst Agent")
+        context.default_label = self.settings.get(
+            "default_label", "Indy Catalyst Agent"
+        )
         context.message_factory = self.message_factory
+        context.settings = self.settings
 
         wallet_type = self.settings.get("wallet.type", "basic").lower()
         wallet_type = self.WALLET_TYPES.get(wallet_type, wallet_type)
+
+        self.logger.info(wallet_type)
+
         wallet_cfg = {}
         if "wallet.key" in self.settings:
             wallet_cfg["key"] = self.settings["wallet.key"]
         if "wallet.name" in self.settings:
             wallet_cfg["name"] = self.settings["wallet.name"]
         context.wallet = ClassLoader.load_class(wallet_type)(wallet_cfg)
+        await context.wallet.open()
+
+        wallet_seed = self.settings.get("wallet.seed")
+        public_did_info = await context.wallet.get_public_did()
+        if not public_did_info:
+            public_did_info = await context.wallet.create_public_did(seed=wallet_seed)
+
+        # TODO: Load ledger implementation from command line args
+        genesis_transactions = self.settings.get("ledger.genesis_transactions")
+        if genesis_transactions:
+            context.ledger = IndyLedger("default", context.wallet, genesis_transactions)
+
+        # TODO: Load issuer implementation from command line args
+        context.issuer = IndyIssuer(context.wallet)
+
+        # TODO: Load holder implementation from command line args
+        context.holder = IndyHolder(context.wallet)
+
+        # TODO: Load holder implementation from command line args
+        context.verifier = IndyVerifier(context.wallet)
+
 
         storage_type = self.settings.get("storage.type", "basic").lower()
         storage_type = self.STORAGE_TYPES.get(storage_type, storage_type)
@@ -130,8 +162,11 @@ class Conductor:
             try:
                 admin_host = self.settings.get("admin.host", "0.0.0.0")
                 admin_port = self.settings.get("admin.port", "80")
-                self.admin_server = AdminServer(admin_host, admin_port, context)
+                self.admin_server = AdminServer(
+                    admin_host, admin_port, context, self.outbound_message_router
+                )
                 await self.admin_server.start()
+                AdminManager.set_server(self.admin_server)
             except Exception:
                 self.logger.exception("Unable to start administration API")
 
@@ -139,6 +174,7 @@ class Conductor:
         LoggingConfigurator.print_banner(
             self.inbound_transport_manager.transports,
             self.outbound_transport_manager.registered_transports,
+            public_did_info,
             self.admin_server,
         )
 
