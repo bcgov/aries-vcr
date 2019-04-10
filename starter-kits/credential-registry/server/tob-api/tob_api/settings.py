@@ -110,6 +110,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+AUTHENTICATION_BACKENDS = ['api_v2.icatrestauth.IcatAuthBackend']
+
 ROOT_URLCONF = "tob_api.urls"
 
 CORS_URLS_REGEX = r"^/api/.*$"
@@ -166,7 +168,7 @@ REST_FRAMEWORK = {
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {"basic": {"type": "basic"}},
-    "USE_SESSION_AUTH": True,
+    "USE_SESSION_AUTH": False,
 }
 
 LOGIN_URL = "rest_framework:login"

@@ -64,6 +64,11 @@ miscPatterns = [
 
 # hook management (registration, add/update/delete hooks)
 router.register(
+    r"register",
+    hooks.RegistrationCreateViewSet,
+    "Web Hook Registration",
+)
+router.register(
     r"registration",
     hooks.RegistrationViewSet,
     "Web Hook Registration",

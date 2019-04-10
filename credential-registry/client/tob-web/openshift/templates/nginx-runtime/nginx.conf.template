@@ -53,7 +53,7 @@ http {
     limit_req zone=bra5 burst=100;
 
     # HTTP Basic rules
-    auth_basic_user_file /tmp/.htpasswd;
+    #auth_basic_user_file /tmp/.htpasswd;
 
     # Set variable for API proxy
     map $http_x_forwarded_proto $proxy_scheme {
@@ -90,7 +90,7 @@ http {
             gzip_types      *;
 
             # Deploy-time configurable
-            %HTTP_BASIC%
+            #%HTTP_BASIC%
         }
 
         # redirect server error pages to the static page /50x.html
