@@ -27,6 +27,10 @@ class TestBasicWallet:
     test_target_seed = "testseed000000000000000000000002"
     test_target_did = "GbuDUYXaUZRfHD2jeDuQuP"
     test_target_verkey = "9WCgWKUaAJj3VWxxtzvvMQN3AoFxoBtBDo9ntwJnVVCC"
+    test_baseline_tags = {
+        'non_secret': ('since', 'modified'),
+        'pairwise': ('their_did', 'their_verkey', 'my_did', 'my_verkey')
+    }
     test_metadata = {"meta": True}
     test_update_metadata = {"meta": False}
     test_message = "test message"
@@ -57,14 +61,17 @@ class TestBasicWallet:
     @pytest.mark.asyncio
     async def test_signing_key_metadata(self, wallet):
         info = await wallet.create_signing_key(self.test_seed, self.test_metadata)
-        assert info.metadata == self.test_metadata
+        assert {k: v for (k, v) in info.metadata.items()
+            if k not in self.test_baseline_tags['non_secret']} == self.test_metadata
         info2 = await wallet.get_signing_key(self.test_verkey)
-        assert info2.metadata == self.test_metadata
+        assert {k: v for (k, v) in info2.metadata.items()
+            if k not in self.test_baseline_tags['non_secret']} == self.test_metadata
         await wallet.replace_signing_key_metadata(
             self.test_verkey, self.test_update_metadata
         )
         info3 = await wallet.get_signing_key(self.test_verkey)
-        assert info3.metadata == self.test_update_metadata
+        assert {k: v for (k, v) in info3.metadata.items()
+            if k not in self.test_baseline_tags['non_secret']} == self.test_update_metadata
 
         with pytest.raises(WalletNotFoundError):
             await wallet.replace_signing_key_metadata(
@@ -119,14 +126,17 @@ class TestBasicWallet:
         info = await wallet.create_local_did(
             self.test_seed, self.test_did, self.test_metadata
         )
-        assert info.metadata == self.test_metadata
+        assert {k: v for (k, v) in info.metadata.items()
+            if k not in self.test_baseline_tags['non_secret']} == self.test_metadata
         info2 = await wallet.get_local_did(self.test_did)
-        assert info2.metadata == self.test_metadata
+        assert {k: v for (k, v) in info2.metadata.items()
+            if k not in self.test_baseline_tags['non_secret']} == self.test_metadata
         await wallet.replace_local_did_metadata(
             self.test_did, self.test_update_metadata
         )
         info3 = await wallet.get_local_did(self.test_did)
-        assert info3.metadata == self.test_update_metadata
+        assert {k: v for (k, v) in info3.metadata.items()
+            if k not in self.test_baseline_tags['non_secret']} == self.test_update_metadata
 
         with pytest.raises(WalletNotFoundError):
             await wallet.replace_local_did_metadata(
@@ -143,7 +153,8 @@ class TestBasicWallet:
         assert pair_created.their_verkey == self.test_target_verkey
         assert pair_created.my_did
         assert pair_created.my_verkey
-        assert pair_created.metadata == self.test_metadata
+        assert {k: str(v) for (k, v) in self.test_metadata.items()} == {
+            k: str(v) for (k, v) in pair_created.metadata.items() if k not in self.test_baseline_tags['pairwise']}
 
         pair_info = await wallet.get_pairwise_for_did(self.test_target_did)
         assert pair_info == pair_created
@@ -177,7 +188,8 @@ class TestBasicWallet:
             self.test_target_did, self.test_update_metadata
         )
         pair_info = await wallet.get_pairwise_for_did(self.test_target_did)
-        assert pair_info.metadata == self.test_update_metadata
+        assert ({k: v for (k, v) in pair_info.metadata.items() if k not in self.test_baseline_tags['pairwise']} ==
+            {k: str(v) for (k, v) in self.test_update_metadata.items()})
 
         with pytest.raises(WalletNotFoundError):
             await wallet.replace_pairwise_metadata(

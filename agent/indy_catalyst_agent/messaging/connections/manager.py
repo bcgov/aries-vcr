@@ -17,14 +17,15 @@ from .models.connection_record import ConnectionRecord
 from .models.connection_target import ConnectionTarget
 from ..request_context import RequestContext
 from ..routing.messages.forward import Forward
+from ...storage.base import StorageRecord
 from ...storage.error import StorageError, StorageNotFoundError
+from ...wallet.base import DIDInfo
 from ...wallet.error import WalletError, WalletNotFoundError
 from ...wallet.util import bytes_to_b64
 
 from von_anchor.a2a import DIDDoc
 from von_anchor.a2a.publickey import PublicKey, PublicKeyType
 from von_anchor.a2a.service import Service
-from von_anchor.wallet import DIDInfo, StorageRecord
 
 
 class ConnectionManagerError(BaseError):

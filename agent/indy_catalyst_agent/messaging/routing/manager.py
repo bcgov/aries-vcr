@@ -4,9 +4,8 @@ from typing import Sequence
 
 from ...error import BaseError
 from ..request_context import RequestContext
+from ...storage.base import StorageRecord
 from ...storage.error import StorageNotFoundError
-
-from von_anchor.wallet import StorageRecord
 
 
 class RoutingManagerError(BaseError):
@@ -96,5 +95,5 @@ class RoutingManager:
         removes = set(exist_routes).intersection(routes)
         for route in removes:
             await self._context.storage.delete_record(
-                StorageRecord(self.RECORD_TYPE, route, id=route)
+                StorageRecord(self.RECORD_TYPE, route, ident=route)
             )

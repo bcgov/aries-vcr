@@ -13,9 +13,7 @@ from ....admin.manager import AdminManager
 from ..messages.connection_invitation import ConnectionInvitation
 from ..messages.connection_request import ConnectionRequest
 from ....models.base import BaseModel, BaseModelSchema
-from ....storage.base import BaseStorage
-
-from von_anchor.wallet import StorageRecord
+from ....storage.base import BaseStorage, StorageRecord
 
 
 def time_now() -> str:

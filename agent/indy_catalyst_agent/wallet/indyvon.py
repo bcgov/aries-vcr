@@ -17,7 +17,7 @@ from von_anchor.wallet import WalletManager
 from indy.error import IndyError, ErrorCode
 
 from .base import BaseWallet, KeyInfo, DIDInfo, PairwiseInfo
-from .crypto import validate_seed
+from .crypto import random_seed, validate_seed
 from .error import WalletError, WalletDuplicateError, WalletNotFoundError
 from .util import bytes_to_b64
 
@@ -60,7 +60,7 @@ class IndyWallet(BaseWallet):
             A handle to the wallet
 
         """
-        return self._von_wallet.handle
+        return self.von_wallet.handle
 
     @property
     def opened(self) -> bool:
@@ -71,7 +71,7 @@ class IndyWallet(BaseWallet):
             True if open, else False
 
         """
-        return self._von_wallet.opened
+        return self.von_wallet.opened
 
     @property
     def name(self) -> str:
@@ -82,7 +82,18 @@ class IndyWallet(BaseWallet):
             The wallet name
 
         """
-        return self._von_wallet.name
+        return self.von_wallet.name
+
+    @property
+    def von_wallet(self):
+        """
+        Get internal VON anchor wallet reference.
+
+        Returns:
+            A VON anchor wallet reference
+
+        """
+        return self._von_wallet
 
     async def create(self, replace: bool = False):
         """
@@ -98,8 +109,8 @@ class IndyWallet(BaseWallet):
         """
         try:
             await IndyWallet.W_MGR.create(
-                self._von_wallet.config,
-                access=self._von_wallet.access,
+                self.von_wallet.config,
+                access=self.von_wallet.access,
                 replace=replace)
         except ExtantWallet:
             raise WalletError(
@@ -118,7 +129,7 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            await IndyWallet.W_MGR.remove(self._von_wallet)
+            await IndyWallet.W_MGR.remove(self.von_wallet)
         except WalletState as x_von:
             raise WalletError(str(x_von))
         except IndyError as x_indy:
@@ -139,19 +150,20 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            await self._von_wallet.open()
+            await self.von_wallet.open()
         except AbsentWallet:
             raise WalletError('Wallet not found after creation: {}'.format(self.name))
         except WalletState:
             raise WalletError("Wallet is already open: {}".format(self.name))
         except BadAccess:
-            raise WalletError("Cannot open wallet {}: bad access credentials value".format(self.name))
+            raise WalletError(
+                "Cannot open wallet {}: bad access credentials value".format(self.name))
         except IndyError as x_indy:
             raise WalletError(str(x_indy))
 
     async def close(self):
         """Close previously-opened wallet, removing it if so configured."""
-        await self._von_wallet.close()
+        await self.von_wallet.close()
 
     async def create_signing_key(
         self, seed: str = None, metadata: dict = None
@@ -172,8 +184,8 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            return await self._von_wallet.create_signing_key(
-                bytes_to_b64(validate_seed(seed)),
+            return await self.von_wallet.create_signing_key(
+                bytes_to_b64(validate_seed(seed) if seed else random_seed()),
                 metadata=metadata)
         except ExtantRecord:
             raise WalletDuplicateError(
@@ -199,7 +211,7 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            return await self._von_wallet.get_signing_key(verkey)
+            return await self.von_wallet.get_signing_key(verkey)
         except AbsentRecord:
             raise WalletNotFoundError(
                 'Wallet {} has no signing key pair for verkey {}'.format(
@@ -223,7 +235,7 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            await self._von_wallet.replace_signing_key_metadata(verkey, metadata)
+            await self.von_wallet.replace_signing_key_metadata(verkey, metadata)
         except AbsentRecord:
             raise WalletNotFoundError(
                 'Wallet {} has no signing key pair for verkey {}'.format(
@@ -254,8 +266,8 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            return await self._von_wallet.create_local_did(
-                bytes_to_b64(validate_seed(seed)),
+            return await self.von_wallet.create_local_did(
+                bytes_to_b64(validate_seed(seed) if seed else random_seed()),
                 did,
                 metadata)
         except WalletState:
@@ -273,7 +285,7 @@ class IndyWallet(BaseWallet):
             A list of locally stored DIDs as `DIDInfo` instances
 
         """
-        return await self._von_wallet.get_local_dids()
+        return await self.von_wallet.get_local_dids()
 
     async def get_local_did(self, did: str) -> DIDInfo:
         """
@@ -292,7 +304,7 @@ class IndyWallet(BaseWallet):
         """
 
         try:
-            return await self._von_wallet.get_local_did(did)
+            return await self.von_wallet.get_local_did(did)
         except WalletState:
             raise WalletError('Wallet {} is closed'.format(self.name))
         except AbsentRecord:
@@ -319,7 +331,7 @@ class IndyWallet(BaseWallet):
         """
 
         try:
-            return await self._von_wallet.get_local_did(verkey)
+            return await self.von_wallet.get_local_did(verkey)
         except WalletState:
             raise WalletError('Wallet {} is closed'.format(self.name))
         except AbsentRecord:
@@ -338,8 +350,16 @@ class IndyWallet(BaseWallet):
             did: The DID to replace metadata for
             metadata: The new metadata
 
+        Raises:
+            WalletNotFoundError: If the local DID is not present
+
         """
-        await self._von_wallet.replace_local_did_metadata(did, metadata)
+        try:
+            await self.von_wallet.replace_local_did_metadata(did, metadata)
+        except AbsentRecord:
+            raise WalletNotFoundError('Wallet {} has no local DID {}'.format(
+                self.name,
+                did))
 
     async def create_pairwise(
         self,
@@ -366,14 +386,14 @@ class IndyWallet(BaseWallet):
 
         """
 
-        if their_did in await self._von_wallet.get_pairwise(their_did):
+        if their_did in await self.von_wallet.get_pairwise(their_did):
             raise WalletDuplicateError(
                 'Pairwise DID for {} already present in wallet {}'.format(
                     their_did,
                     self.name))
 
         try:
-            return await self._von_wallet.write_pairwise(
+            return await self.von_wallet.write_pairwise(
                 their_did,
                 their_verkey,
                 my_did,
@@ -390,7 +410,7 @@ class IndyWallet(BaseWallet):
             A list of `PairwiseInfo` instances for all pairwise relationships
 
         """
-        return [pwinfo for pwinfo in (await self._von_wallet.get_pairwise()).values]
+        return [pwinfo for pwinfo in (await self.von_wallet.get_pairwise()).values()]
 
     async def get_pairwise_for_did(self, their_did: str) -> PairwiseInfo:
         """
@@ -406,7 +426,7 @@ class IndyWallet(BaseWallet):
             WalletNotFoundError: If no pairwise DID defined for target
 
         """
-        found = await self._von_wallet.get_pairwise(their_did)
+        found = await self.von_wallet.get_pairwise(their_did)
         if not found:
             raise WalletNotFoundError(
                 'No pairwise DID defined for target: {}'.format(their_did))
@@ -426,7 +446,7 @@ class IndyWallet(BaseWallet):
             WalletNotFoundError: If no pairwise DID is defined for verkey
 
         """
-        found = await self._von_wallet.get_pairwise(json.dumps({
+        found = await self.von_wallet.get_pairwise(json.dumps({
             'their_verkey': their_verkey
         }))
         if not found:
@@ -447,7 +467,7 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            await self._von_wallet.write_pairwise(
+            await self.von_wallet.write_pairwise(
                 their_did,
                 metadata=metadata,
                 replace_meta=True)
@@ -476,7 +496,7 @@ class IndyWallet(BaseWallet):
             raise WalletError("Verkey not provided")
 
         try:
-            result = await self._von_wallet.sign(message, from_verkey)
+            result = await self.von_wallet.sign(message, from_verkey)
         except AbsentMessage:
             raise WalletError("Message not provided")
         except WalletState:
@@ -511,7 +531,7 @@ class IndyWallet(BaseWallet):
             raise WalletError("Verkey not provided")
 
         try:
-            result = await self._von_wallet.verify(message, signature, from_verkey)
+            result = await self.von_wallet.verify(message, signature, from_verkey)
         except AbsentMessage:
             raise WalletError("Message not provided")
         except WalletState:
@@ -550,7 +570,7 @@ class IndyWallet(BaseWallet):
             raise WalletError("Recipient verkey not provided")
 
         try:
-            return await self._von_wallet.encrypt(
+            return await self.von_wallet.encrypt(
                 message,
                 authn=bool(from_verkey),
                 to_verkey=to_verkey,
@@ -584,7 +604,7 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            return await self._von_wallet.decrypt(
+            return await self.von_wallet.decrypt(
                 ciphertext=enc_message,
                 authn_check=False if use_auth else None,
                 to_verkey=to_verkey,
@@ -616,7 +636,7 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            return await self._von_wallet.pack(message, to_verkeys, from_verkey)
+            return await self.von_wallet.pack(message, to_verkeys, from_verkey)
         except AbsentMessage:
             raise WalletError("Message not provided")
         except WalletState:
@@ -641,7 +661,7 @@ class IndyWallet(BaseWallet):
 
         """
         try:
-            return await self._von_wallet.unpack(enc_message)
+            return await self.von_wallet.unpack(enc_message)
         except AbsentMessage:
             raise WalletError("Message not provided")
         except WalletState:
