@@ -15,7 +15,6 @@ from ..message_factory import MessageParseError
 from .models.connection_detail import ConnectionDetail
 from .models.connection_record import ConnectionRecord
 from .models.connection_target import ConnectionTarget
-from ...models.thread_decorator import ThreadDecorator
 from ..request_context import RequestContext
 from ..routing.messages.forward import Forward
 from ...storage.error import StorageError, StorageNotFoundError
@@ -398,8 +397,9 @@ class ConnectionManager:
         response = ConnectionResponse(
             connection=ConnectionDetail(did=my_info.did, did_doc=did_doc)
         )
-        if request._id:
-            response._thread = ThreadDecorator(thid=request._id)
+        # Assign thread information
+        response.assign_thread_from(request)
+        # Sign connection field using the invitation key
         await response.sign_field(
             "connection", connection.invitation_key, self.context.wallet
         )
@@ -446,7 +446,7 @@ class ConnectionManager:
         connection = None
         if response._thread:
             # identify the request by the thread ID
-            request_id = response._thread.thid
+            request_id = response._thread_id
             try:
                 connection = await ConnectionRecord.retrieve_by_request_id(
                     self.context.storage, request_id
@@ -613,9 +613,9 @@ class ConnectionManager:
             try:
                 my_info = await self.context.wallet.get_local_did_for_verkey(to_verkey)
                 ctx.recipient_did = my_info.did
-                # TODO set ctx.recipient_did_public if DID is published to the ledger
-                # could also choose to set ctx.default_endpoint and ctx.default_label
-                # (these things could be stored on did_info.metadata)
+                if "public" in my_info.metadata and my_info.metadata["public"] is True:
+                    ctx.recipient_did_public = True
+
             except WalletNotFoundError:
                 pass
 
