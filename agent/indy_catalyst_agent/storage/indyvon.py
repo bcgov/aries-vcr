@@ -4,8 +4,8 @@ from typing import Mapping, Sequence
 
 from indy.error import IndyError
 
-from von_anchor.error import WalletState
-from von_anchor.wallet import Wallet as VONWallet
+from von_anchor.error import BadSearch, WalletState
+from von_anchor.wallet import StorageRecordSearch, Wallet as VONWallet
 
 from .base import BaseStorage, BaseStorageRecordSearch, StorageRecord
 from .error import (
@@ -247,15 +247,13 @@ class IndyStorageRecordSearch(BaseStorageRecordSearch):
             store: `BaseStorage` to search
             type_filter: Filter string
             tag_query: Tags to search
-            page_size: Size of page to return
+            page_size: page size to fetch on async iteration
 
         """
         super(IndyStorageRecordSearch, self).__init__(
             store, type_filter, tag_query, page_size
         )
-        self._handle = None
-        self._results = None
-        self._cursor = 0
+        self._von_search = StorageRecordSearch(store.von_wallet, type_filter, tag_query)
 
     @property
     def opened(self) -> bool:
@@ -266,7 +264,7 @@ class IndyStorageRecordSearch(BaseStorageRecordSearch):
             True if opened, else False
 
         """
-        return self._handle is not None
+        return self._von_search.opened()
 
     @property
     def handle(self):
@@ -277,7 +275,7 @@ class IndyStorageRecordSearch(BaseStorageRecordSearch):
             The handle
 
         """
-        return self._handle
+        return self._von_search.handle
 
     async def fetch(self, max_count: int) -> Sequence[StorageRecord]:
         """
@@ -293,28 +291,22 @@ class IndyStorageRecordSearch(BaseStorageRecordSearch):
             StorageSearchError: If the search query has not been opened
 
         """
-        if not self.opened:
-            raise StorageSearchError("Search query has not been opened")
-        last = self._cursor + min(max_count, len(self._results) - self._cursor)
-        ret = self._results[self._cursor:last]
-        self._cursor = last
-        return ret
+        try:
+            return await self._von_search.fetch(max_count)
+        except (BadSearch, WalletState) as x_von:
+            raise StorageSearchError(str(x_von))
+        except IndyError as x_indy:
+            raise StorageSearchError(str(x_indy))
 
     async def open(self):
         """Start the search query."""
         try:
-            self._results = [
-                v for v in (await self.store.von_wallet.get_non_secret(
-                    self.type_filter,
-                    self.tag_query)).values()]
-            self._cursor = 0
+            await self._von_search.open()
         except WalletState as x_von:
-            raise StorageError(str(x_von))
+            raise StorageSearchError(str(x_von))
         except IndyError as x_indy:
-            raise StorageError(str(x_indy))
-        self._handle = 1
+            raise StorageSearchError(str(x_indy))
 
     async def close(self):
         """Dispose of the search query."""
-        self._handle = None
-        self._cursor = 0
+        await self._von_search.close()
