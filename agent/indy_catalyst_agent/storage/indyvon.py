@@ -264,7 +264,7 @@ class IndyStorageRecordSearch(BaseStorageRecordSearch):
             True if opened, else False
 
         """
-        return self._von_search.opened()
+        return self._von_search.opened
 
     @property
     def handle(self):
