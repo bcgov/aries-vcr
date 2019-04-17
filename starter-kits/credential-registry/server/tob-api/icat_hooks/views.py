@@ -33,27 +33,6 @@ def get_request_user(request):
                     return user
     return None
 
-class IsOwnerOrCreateOnly(BasePermission):
-    """
-    Permission check for subscription ownership.
-    """
-
-    def has_permission(self, request, view):
-        request_user = get_request_user(request)
-        ret = super().has_permission(request, view)
-        return ret
-
-    def has_object_permission(self, request, view, obj):
-        request_user = get_request_user(request)
-        if isinstance(obj, get_user_model()):
-            if request.user.is_authenticated:
-                return obj == request.user
-            elif request.method == "POST":
-                # creating a new user is ok
-                return True
-        return False
-
-
 class IsOwnerOnly(BasePermission):
     """
     Permission check for subscription ownership.
@@ -64,8 +43,10 @@ class IsOwnerOnly(BasePermission):
         return ret
 
     def has_object_permission(self, request, view, obj):
-        if isinstance(obj, Subscription):
-            if request.user.is_authenticated:
+        if request.user.is_authenticated:
+            if isinstance(obj, HookUser):
+                return obj.user == request.user
+            if isinstance(obj, Subscription):
                 return obj.owner == request.user
         return False
 
@@ -110,7 +91,7 @@ class RegistrationViewSet(mixins.RetrieveModelMixin,
     serializer_class = RegistrationSerializer
     lookup_field = "username"
     authentication_classes = (IcatRestAuthentication,)
-    permission_classes = (IsOwnerOrCreateOnly,)
+    permission_classes = (IsOwnerOnly,)
 
     def get_queryset(self):
         get_request_user(self.request)
@@ -130,7 +111,7 @@ class RegistrationViewSet(mixins.RetrieveModelMixin,
         if self.request.user.is_authenticated:
             if self.request.user.username == self.kwargs["username"]:
                 obj = get_object_or_404(
-                    self.get_queryset(), username=self.kwargs["username"]
+                    self.get_queryset(), user__username=self.kwargs["username"]
                 )
                 self.check_object_permissions(self.request, obj)
                 return obj
