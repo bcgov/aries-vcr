@@ -93,5 +93,5 @@ class ConnectionDetailSchema(BaseModelSchema):
 
         model_class = "ConnectionDetail"
 
-    did = fields.Str(data_key="DID")
-    did_doc = DIDDocWrapper(data_key="DIDDoc", required=False)
+    did = fields.Str()
+    did_doc = DIDDocWrapper(required=False)
