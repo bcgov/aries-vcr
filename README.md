@@ -41,7 +41,7 @@ In order to understand the goals and context of Hyperledger Indy Catalyst, it is
 
 # Decentralized Identity / Self-Sovereign Identity
 
-Self-Sovereign Identity is a term coined by [Christoper Allen in 2016](http://www.lifewithalacrity.com/2016/04/the-path-to-self-soverereign-identity.html) to describe a new generation of digital identity systems. One which "requires that users be the rulers of their own identity." In order to truly understand the intent of this statement, which at first may sound rather radical, it is important to reflect upon the design of current identity systems and contrast that to the emerging design of decentralized identity systems.
+Self-Sovereign Identity is a term coined by [Moxy Marlinspike in 2016](https://www.moxytongue.com/2016/02/self-sovereign-identity.html) and further defined by [Christoper Allen](http://www.lifewithalacrity.com/2016/04/the-path-to-self-soverereign-identity.html) to describe a new generation of digital identity systems. One which "requires that users be the rulers of their own identity." In order to truly understand the intent of this statement, which at first may sound rather radical, it is important to reflect upon the design of current identity systems and contrast that to the emerging design of decentralized identity systems.
 
 The excellent paper, ["Self-sovereign Identity: A position paper on blockchain enabled identity and the road ahead"](https://www.bundesblock.de/wp-content/uploads/2018/10/ssi-paper.pdf), published in October 2018 by the [German Blockchain Association](https://www.bundesblock.de) highlights the key differentiators between current digital identity systems and emerging self-sovereign identity systems.
 
