@@ -15,8 +15,8 @@ except OSError:
         allow_module_level=True,
     )
 
-from indy_catalyst_agent.wallet.indy import IndyWallet
-from indy_catalyst_agent.storage.indy import IndyStorage
+from indy_catalyst_agent.wallet.indyvon import IndyWallet
+from indy_catalyst_agent.storage.indyvon import IndyStorage
 
 from . import test_basic_storage
 

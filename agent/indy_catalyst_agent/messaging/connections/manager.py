@@ -18,8 +18,8 @@ from .models.connection_record import ConnectionRecord
 from .models.connection_target import ConnectionTarget
 from ..request_context import RequestContext
 from ..routing.messages.forward import Forward
+from ...storage.base import StorageRecord
 from ...storage.error import StorageError, StorageNotFoundError
-from ...storage.record import StorageRecord
 from ...wallet.base import DIDInfo
 from ...wallet.error import WalletError, WalletNotFoundError
 from ...wallet.util import bytes_to_b64

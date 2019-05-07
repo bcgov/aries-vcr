@@ -2,6 +2,10 @@
 
 from typing import Sequence
 
+from von_anchor.wallet import pairwise_info2tags, storage_record2pairwise_info
+from von_anchor.wallet.record import TYPE_PAIRWISE
+
+from ..storage.base import StorageRecord
 from .base import BaseWallet, KeyInfo, DIDInfo, PairwiseInfo
 from .crypto import (
     create_keypair,
@@ -28,7 +32,7 @@ class BasicWallet(BaseWallet):
         Initialize a `BasicWallet` instance.
 
         Args:
-            config: {name, key, seed, did, auto-create, auto-remove}
+            config: {name, key, seed, did, auto_create, auto_remove}
 
         """
         if not config:
@@ -269,11 +273,18 @@ class BasicWallet(BaseWallet):
                 "Pairwise DID already present in wallet: {}".format(their_did)
             )
 
-        self._pair_dids[their_did] = {
-            "my_did": my_info.did,
-            "their_verkey": their_verkey,
-            "metadata": metadata.copy() if metadata else {},
-        }
+        pairwise = PairwiseInfo(
+            their_did,
+            their_verkey,
+            my_info.did,
+            my_info.verkey,
+            metadata)
+        self._pair_dids[their_did] = StorageRecord(
+            TYPE_PAIRWISE,
+            their_verkey,
+            tags=pairwise_info2tags(pairwise),
+            ident=their_did)
+
         return self._get_pairwise_info(their_did)
 
     def _get_pairwise_info(self, their_did: str) -> PairwiseInfo:
@@ -286,15 +297,15 @@ class BasicWallet(BaseWallet):
         Returns:
             A `PairwiseInfo` instance
 
+        Raises:
+            WalletNotFoundError: If the pairwise DID is unknown
+
         """
-        info = self._pair_dids[their_did]
-        return PairwiseInfo(
-            their_did=their_did,
-            their_verkey=info["their_verkey"],
-            my_did=info["my_did"],
-            my_verkey=self._local_dids[info["my_did"]]["verkey"],
-            metadata=info["metadata"].copy(),
-        )
+        storec = self._pair_dids.get(their_did)
+        if not storec:
+            raise WalletNotFoundError("Unknown pairwise DID: {}".format(their_did))
+
+        return storage_record2pairwise_info(storec)  # mute leading ~ from tags
 
     async def get_pairwise_list(self) -> Sequence[PairwiseInfo]:
         """
@@ -340,7 +351,7 @@ class BasicWallet(BaseWallet):
 
         """
         for did, info in self._pair_dids.items():
-            if info["their_verkey"] == their_verkey:
+            if storage_record2pairwise_info(info).their_verkey == their_verkey:
                 return self._get_pairwise_info(did)
         raise WalletNotFoundError("Verkey not found: {}".format(their_verkey))
 
@@ -358,7 +369,14 @@ class BasicWallet(BaseWallet):
         """
         if their_did not in self._pair_dids:
             raise WalletNotFoundError("Unknown target DID: {}".format(their_did))
-        self._pair_dids[their_did]["metadata"] = metadata.copy() if metadata else {}
+
+        pairwise = self._get_pairwise_info(their_did)
+        pairwise.metadata = metadata
+        self._pair_dids[their_did] = StorageRecord(
+            TYPE_PAIRWISE,
+            pairwise.their_verkey,
+            tags=pairwise_info2tags(pairwise),
+            ident=their_did)
 
     def _get_private_key(self, verkey: str, long=False) -> bytes:
         """

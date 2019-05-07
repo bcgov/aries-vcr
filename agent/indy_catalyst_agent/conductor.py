@@ -47,11 +47,11 @@ class Conductor:
 
     STORAGE_TYPES = {
         "basic": "indy_catalyst_agent.storage.basic.BasicStorage",
-        "indy": "indy_catalyst_agent.storage.indy.IndyStorage",
+        "indy": "indy_catalyst_agent.storage.indyvon.IndyStorage",
     }
     WALLET_TYPES = {
         "basic": "indy_catalyst_agent.wallet.basic.BasicWallet",
-        "indy": "indy_catalyst_agent.wallet.indy.IndyWallet",
+        "indy": "indy_catalyst_agent.wallet.indyvon.IndyWallet",
     }
 
     def __init__(

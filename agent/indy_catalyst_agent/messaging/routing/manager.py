@@ -95,5 +95,5 @@ class RoutingManager:
         removes = set(exist_routes).intersection(routes)
         for route in removes:
             await self._context.storage.delete_record(
-                StorageRecord(self.RECORD_TYPE, route, id=route)
+                StorageRecord(self.RECORD_TYPE, route, ident=route)
             )

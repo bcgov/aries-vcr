@@ -3,14 +3,13 @@
 from collections import OrderedDict
 from typing import Mapping, Sequence
 
-from .base import BaseStorage, BaseStorageRecordSearch
+from .base import BaseStorage, BaseStorageRecordSearch, StorageRecord
 from .error import (
     StorageError,
     StorageDuplicateError,
     StorageNotFoundError,
     StorageSearchError,
 )
-from .record import StorageRecord
 from ..wallet.base import BaseWallet
 
 
@@ -83,7 +82,8 @@ class BasicStorage(BaseStorage):
         oldrec = self._records.get(record.id)
         if not oldrec:
             raise StorageNotFoundError("Record not found: {}".format(record.id))
-        self._records[record.id] = oldrec._replace(value=value)
+        oldrec.value = value
+        self._records[record.id] = oldrec
 
     async def update_record_tags(self, record: StorageRecord, tags: Mapping):
         """
@@ -100,7 +100,8 @@ class BasicStorage(BaseStorage):
         oldrec = self._records.get(record.id)
         if not oldrec:
             raise StorageNotFoundError("Record not found: {}".format(record.id))
-        self._records[record.id] = oldrec._replace(tags=dict(tags or {}))
+        oldrec.tags = {str(k): str(v) for (k, v) in (tags or {}).items()}
+        self._records[record.id] = oldrec
 
     async def delete_record_tags(
         self, record: StorageRecord, tags: (Sequence, Mapping)
@@ -109,8 +110,9 @@ class BasicStorage(BaseStorage):
         Update an existing stored record's tags.
 
         Args:
-            record: `StorageRecord` to delete
-            tags: Tags
+            record: `StorageRecord` whose tags to delete
+            tags: Tags list-like or dict-like structure: if dict-like,
+                implementation ignores its values and deletes by dict key match
 
         Raises:
             StorageNotFoundError: If record not found
@@ -119,12 +121,12 @@ class BasicStorage(BaseStorage):
         oldrec = self._records.get(record.id)
         if not oldrec:
             raise StorageNotFoundError("Record not found: {}".format(record.id))
-        newtags = dict(oldrec.tags or {})
-        if tags:
-            for tag in tags:
-                if tag in newtags:
-                    del newtags[tag]
-        self._records[record.id] = oldrec._replace(tags=newtags)
+        newtags = {str(k): str(v) for (k, v) in (oldrec.tags or {}).items()}
+        for tag in tags or []:
+            if str(tag) in newtags:
+                del newtags[str(tag)]
+        oldrec.tags = newtags
+        self._records[record.id] = oldrec
 
     async def delete_record(self, record: StorageRecord):
         """
@@ -169,7 +171,7 @@ def basic_tag_query_match(tags: dict, tag_query: dict) -> bool:
         tags = {}
     if tag_query:
         for k, v in tag_query.items():
-            if isinstance(v, str):  # not handling complex queries
+            if isinstance(k, str) and isinstance(v, str):  # tags must be {str:str}
                 if tags.get(k) != v:
                     result = False
                     break

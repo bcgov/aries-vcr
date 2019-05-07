@@ -3,8 +3,9 @@
 from abc import ABC, abstractmethod
 from typing import Mapping, Sequence
 
+from von_anchor.wallet.record import StorageRecord
+
 from .error import StorageDuplicateError, StorageNotFoundError
-from .record import StorageRecord
 
 DEFAULT_PAGE_SIZE = 100
 

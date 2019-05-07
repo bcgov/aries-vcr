@@ -14,8 +14,7 @@ from ..messages.connection_invitation import ConnectionInvitation
 from ..messages.connection_request import ConnectionRequest
 from ....models.base import BaseModel, BaseModelSchema
 from ....service.base import BaseServiceFactory
-from ....storage.base import BaseStorage
-from ....storage.record import StorageRecord
+from ....storage.base import BaseStorage, StorageRecord
 
 
 def time_now() -> str:

@@ -7,7 +7,7 @@ from indy_catalyst_agent.storage.error import (
     StorageSearchError,
 )
 
-from indy_catalyst_agent.storage.record import StorageRecord
+from indy_catalyst_agent.storage.base import StorageRecord
 
 from indy_catalyst_agent.storage.basic import BasicStorage
 
@@ -17,12 +17,12 @@ def store():
     yield BasicStorage()
 
 
-def test_record(tags={}):
-    return StorageRecord(type="TYPE", value="TEST", tags=tags)
+def test_record(tags=None):
+    return StorageRecord(typ="TYPE", value="TEST", tags=tags)
 
 
-def test_missing_record(tags={}):
-    return StorageRecord(type="__MISSING__", value="000000000")
+def test_missing_record(tags=None):
+    return StorageRecord(typ="__MISSING__", value="000000000")
 
 
 class TestBasicStorage:
@@ -33,7 +33,8 @@ class TestBasicStorage:
 
     @pytest.mark.asyncio
     async def test_add_id_required(self, store):
-        record = test_record()._replace(id=None)
+        record = test_record()
+        record.id = None
         with pytest.raises(StorageError):
             await store.add_record(record)
 
@@ -75,7 +76,8 @@ class TestBasicStorage:
     async def test_update_value(self, store):
         init_value = "a"
         upd_value = "b"
-        record = test_record()._replace(value=init_value)
+        record = test_record()
+        record.value = init_value
         await store.add_record(record)
         assert record.value == init_value
         await store.update_record_value(record, upd_value)
@@ -91,7 +93,7 @@ class TestBasicStorage:
     @pytest.mark.asyncio
     async def test_update_tags(self, store):
         record = test_record({})
-        assert record.tags == {}
+        assert not record.tags
         await store.add_record(record)
         await store.update_record_tags(record, {"a": "A"})
         result = await store.get_record(record.type, record.id)
@@ -109,7 +111,7 @@ class TestBasicStorage:
         await store.add_record(record)
         await store.delete_record_tags(record, {"a": "A"})
         result = await store.get_record(record.type, record.id)
-        assert result.tags.get("a") is None
+        assert (result.tags or {}).get("a") is None
 
     @pytest.mark.asyncio
     async def test_delete_tags_missing(self, store):
