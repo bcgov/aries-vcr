@@ -30,7 +30,7 @@ PYTHONPATH=.. ../scripts/icatagent \
     my_env = os.environ.copy()
     my_env["PYTHONPATH"] = ".."
 
-    with open('/tmp/atria-genesis.txt', 'r') as genesis_file:
+    with open('local-genesis.txt', 'r') as genesis_file:
         genesis = genesis_file.read()
     print(genesis)
 
