@@ -41,6 +41,7 @@ PYTHONPATH=.. ../scripts/icatagent \
                             '--outbound-transport', 'ws', 
                             '--outbound-transport', 'http', 
                             '--genesis-transactions', genesis,
+                            '--wallet-type', 'indy',
                             '--seed', 'my_seed_000000000000000000000666',
                             '--admin', '0.0.0.0', '8080'],
                             stdout=subprocess.PIPE,
