@@ -12,6 +12,8 @@ from .agent_message import AgentMessage
 from .connections.models.connection_record import ConnectionRecord
 from .connections.models.connection_target import ConnectionTarget
 from .message_factory import MessageFactory
+from ..ledger.base import BaseLedger
+from ..service.base import BaseServiceFactory
 from ..storage.base import BaseStorage
 from ..wallet.base import BaseWallet
 
@@ -26,6 +28,7 @@ class RequestContext:
         self._connection_target = None
         self._default_endpoint = None
         self._default_label = None
+        self._ledger = None
         self._logger = logging.getLogger(__name__)
         self._recipient_verkey = None
         self._recipient_did = None
@@ -35,6 +38,7 @@ class RequestContext:
         self._transport_type = None
         self._message_factory = None
         self._message = None
+        self._service_factory = None
         self._settings = {}
         self._storage = None
         self._wallet = None
@@ -340,6 +344,28 @@ class RequestContext:
         self._message = msg
 
     @property
+    def service_factory(self) -> BaseServiceFactory:
+        """
+        Accessor for the service factory instance.
+
+        Returns:
+            This context's service factory
+
+        """
+        return self._service_factory
+
+    @service_factory.setter
+    def service_factory(self, factory: BaseServiceFactory):
+        """
+        Setter for the service factory instance.
+
+        Args:
+            factory: This context's new service factory
+
+        """
+        self._service_factory = factory
+
+    @property
     def settings(self) -> dict:
         """
         Accessor for the server settings.
@@ -401,6 +427,27 @@ class RequestContext:
             wallet: This context's new wallet implementation
         """
         self._wallet = wallet
+
+    @property
+    def ledger(self) -> BaseLedger:
+        """
+        Accessor for the BaseLedger implementation.
+
+        Returns:
+            This context's ledger implementation
+
+        """
+        return self._ledger
+
+    @ledger.setter
+    def ledger(self, ledger: BaseLedger):
+        """
+        Setter for the BaseLedger implementation.
+
+        Args:
+            ledger: This context's new ledger implementation
+        """
+        self._ledger = ledger
 
     # Missing:
     # - NodePool

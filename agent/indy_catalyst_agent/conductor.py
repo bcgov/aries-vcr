@@ -12,29 +12,29 @@ import logging
 
 from typing import Coroutine, Union
 
-from .admin.manager import AdminManager
 from .admin.server import AdminServer
+from .admin.service import AdminService
 from .classloader import ClassLoader
 from .dispatcher import Dispatcher
-from .error import BaseError
+from .error import StartupError
 from .logging import LoggingConfigurator
 from .ledger.indy import IndyLedger
 from .issuer.indy import IndyIssuer
 from .holder.indy import IndyHolder
 from .verifier.indy import IndyVerifier
 from .messaging.agent_message import AgentMessage
+from .messaging.actionmenu.driver_service import DriverMenuService
 from .messaging.connections.manager import ConnectionManager
 from .messaging.connections.models.connection_target import ConnectionTarget
+from .messaging.introduction.demo_service import DemoIntroductionService
 from .messaging.message_factory import MessageFactory
 from .messaging.request_context import RequestContext
+from .service.factory import ServiceRegistry
 from .transport.inbound import InboundTransportConfiguration
 from .transport.inbound.manager import InboundTransportManager
 from .transport.outbound.manager import OutboundTransportManager
 from .transport.outbound.queue.basic import BasicOutboundMessageQueue
-
-
-class ConductorError(BaseError):
-    """Conductor error."""
+from .wallet.crypto import seed_to_did
 
 
 class Conductor:
@@ -78,6 +78,7 @@ class Conductor:
         self.message_factory = message_factory
         self.inbound_transport_configs = transport_configs
         self.outbound_transports = outbound_transports
+        self.service_registry = None
         self.settings = settings.copy() if settings else {}
 
     async def start(self) -> None:
@@ -93,7 +94,7 @@ class Conductor:
         context.settings = self.settings
 
         wallet_type = self.settings.get("wallet.type", "basic").lower()
-        wallet_type = self.WALLET_TYPES.get(wallet_type, wallet_type)
+        wallet_class = self.WALLET_TYPES.get(wallet_type, wallet_type)
 
         self.logger.info(wallet_type)
 
@@ -102,13 +103,25 @@ class Conductor:
             wallet_cfg["key"] = self.settings["wallet.key"]
         if "wallet.name" in self.settings:
             wallet_cfg["name"] = self.settings["wallet.name"]
-        context.wallet = ClassLoader.load_class(wallet_type)(wallet_cfg)
+        context.wallet = ClassLoader.load_class(wallet_class)(wallet_cfg)
         await context.wallet.open()
 
         wallet_seed = self.settings.get("wallet.seed")
         public_did_info = await context.wallet.get_public_did()
-        if not public_did_info:
+        public_did = None
+        if public_did_info:
+            public_did = public_did_info.did
+            # If we already have a registered public did and it doesn't match
+            # the one derived from `wallet_seed` then we error out.
+            # TODO: Add a command to change public did explicitly
+            if seed_to_did(wallet_seed) != public_did_info.did:
+                raise StartupError(
+                    "New seed provided which doesn't match the registered"
+                    + f" public did {public_did_info.did}"
+                )
+        elif wallet_seed:
             public_did_info = await context.wallet.create_public_did(seed=wallet_seed)
+            public_did = public_did_info.did
 
         # TODO: Load ledger implementation from command line args
         genesis_transactions = self.settings.get("ledger.genesis_transactions")
@@ -124,13 +137,17 @@ class Conductor:
         # TODO: Load holder implementation from command line args
         context.verifier = IndyVerifier(context.wallet)
 
-        storage_type = self.settings.get("storage.type", "basic").lower()
-        storage_type = self.STORAGE_TYPES.get(storage_type, storage_type)
-        context.storage = ClassLoader.load_class(storage_type)(context.wallet)
+        storage_default_type = "indy" if wallet_type == "indy" else "basic"
+        storage_type = self.settings.get("storage.type", storage_default_type).lower()
+        storage_class = self.STORAGE_TYPES.get(storage_type, storage_type)
+        context.storage = ClassLoader.load_class(storage_class)(context.wallet)
 
         self.context = context
         self.connection_mgr = ConnectionManager(context)
         self.dispatcher = Dispatcher()
+        self.service_registry = ServiceRegistry[RequestContext]()
+        # Replaced in expand_message when context is cloned
+        context.service_factory = self.service_registry.get_factory(context)
 
         # Register all inbound transports
         self.inbound_transport_manager = InboundTransportManager()
@@ -165,7 +182,9 @@ class Conductor:
                     admin_host, admin_port, context, self.outbound_message_router
                 )
                 await self.admin_server.start()
-                AdminManager.set_server(self.admin_server)
+                self.service_registry.register_service_handler(
+                    "admin", AdminService.service_handler(self.admin_server)
+                )
             except Exception:
                 self.logger.exception("Unable to start administration API")
 
@@ -173,7 +192,7 @@ class Conductor:
         LoggingConfigurator.print_banner(
             self.inbound_transport_manager.transports,
             self.outbound_transport_manager.registered_transports,
-            public_did_info,
+            public_did,
             self.admin_server,
         )
 
@@ -204,6 +223,14 @@ class Conductor:
             except Exception:
                 self.logger.exception("Error sending invitation")
 
+        # Allow action menu to be provided by driver
+        self.service_registry.register_service_handler(
+            "actionmenu", DriverMenuService.service_handler()
+        )
+        self.service_registry.register_service_handler(
+            "introduction", DemoIntroductionService.service_handler()
+        )
+
     async def inbound_message_router(
         self,
         message_body: Union[str, bytes],
@@ -221,7 +248,7 @@ class Conductor:
         """
         try:
             context = await self.connection_mgr.expand_message(
-                message_body, transport_type
+                message_body, transport_type, self.service_registry.get_factory
             )
         except Exception:
             self.logger.exception("Error expanding message")
