@@ -73,8 +73,8 @@ def main():
     # TODO seed from input parameter; optionally register the DID
     rand_name = str(random.randint(100000, 999999))
     seed = ('my_seed_000000000000000000000000' + rand_name)[-32:]
-    alias = 'My Test Company'
-    register_did = True
+    alias = 'Alice Agent'
+    register_did = False # Alice doesn't need to register her did
     if register_did:
         print("Registering", alias, "with seed", seed)
         ledger_url = 'http://localhost:9000'
@@ -98,8 +98,8 @@ def main():
                             '--outbound-transport', 'http', 
                             '--genesis-transactions', genesis,
                             '--wallet-type', 'indy',
-                            '--wallet-name', 'faber'+rand_name,
-                            '--wallet-key', 'faber'+rand_name,
+                            '--wallet-name', 'alice'+rand_name,
+                            '--wallet-key', 'alice'+rand_name,
                             '--seed', seed,
                             '--admin', '0.0.0.0', str(admin_port)],
                             stdout=subprocess.PIPE,
@@ -120,31 +120,6 @@ def main():
         p = resp.text
         assert 'Indy Catalyst Agent' in p
 
-        # create a schema
-        version = format("%d.%d.%d" % (random.randint(1, 101), random.randint(1, 101), random.randint(1, 101)))
-        schema_body = {
-                "schema_name": "iiw_attendance",
-                "schema_version": version,
-                "attributes": ["email", "full_name", "time"],
-            }
-        schema_response = requests.post(admin_url+"/schemas", json=schema_body)
-        print(schema_response.text)
-        schema_response_body = schema_response.json()
-        schema_id = schema_response_body["schema_id"]
-        print(schema_id)
-
-        # create a cred def for the schema
-        credential_definition_body = {"schema_id": schema_id}
-        credential_definition_response = requests.post(
-            admin_url+"/credential-definitions", json=credential_definition_body
-        )
-        credential_definition_response_body = credential_definition_response.json()
-        credential_definition_id = credential_definition_response_body[
-            "credential_definition_id"
-        ]
-
-        print(f"cred def id: {credential_definition_id}")
-
         # run app and respond to agent webhook callbacks (run in background)
         webhook_thread = threading.Thread(target=background_hook_service)
         webhook_thread.daemon = True
@@ -152,13 +127,12 @@ def main():
 
         print("Stuff is running!")
 
-        # generate an invitation
-        headers = {"accept": "application/json"}
-        resp = requests.post(admin_url+'/connections/create-invitation', headers=headers)
+        # respond to an invitation
+        print("#9 Input faber.py invitation details")
+        details = input('invite details: ')
+        resp = requests.post(admin_url+'/connections/receive-invitation', json=details)
         p = resp.text
-        print("*****************")
-        print("Invitation:", p)
-        print("*****************")
+        print(p)
 
         val = input("<Enter> to Exit :-D") 
 
