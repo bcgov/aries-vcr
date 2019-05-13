@@ -1,99 +1,171 @@
-import sys
-import asyncio
-import json
+import subprocess
+import time
+import requests
 import random
-from ctypes import cdll, CDLL
-from time import sleep
-import platform
-
-import logging
-
-from indy import wallet
-from indy.error import ErrorCode, IndyError
-
-from vcx.api.connection import Connection
-from vcx.api.credential import Credential
-from vcx.api.disclosed_proof import DisclosedProof
-from vcx.api.utils import vcx_agent_provision, vcx_messages_download
-from vcx.api.vcx_init import vcx_init_with_config
-from vcx.state import State
-
+import sys
+import json
 from demo_utils import *
 
-# logging.basicConfig(level=logging.DEBUG) uncomment to get logs
+
+"""
+Docker version:
+PORTS="5000:5000 10000:10000" ../scripts/run_docker -it http 0.0.0.0 10000 -ot http --admin 0.0.0.0 5000 -e "http://host.docker.internal:10000" --accept-requests --accept-invites
+"""
 
 
-provisionConfig = {
-    'agency_url': 'http://dummy-cloud-agent:8080',
-    'agency_did': 'VsKV7grR1BUE29mG2Fm2kX',
-    'agency_verkey': 'Hezce2UWMZ3wUhVkh2LfKSs8nDzWwzs2Win7EzNN3YaR',
-    'wallet_name': 'alice_wallet_' + str(random.randint(100, 999)),
-    'wallet_key': '123',
-    'payment_method': 'null',
-    'enterprise_seed': '000000000000000000000000Trustee1'
-}
+# some globals that are required by the hook code
+webhook_port = int(sys.argv[1])
+in_port_1  = webhook_port + 1
+in_port_2  = webhook_port + 2
+in_port_3  = webhook_port + 3
+admin_port = webhook_port + 4
+admin_url  = 'http://127.0.0.1:' + str(admin_port)
 
-check_args(sys.argv, provisionConfig)
-genesis_path = check_network(sys.argv, '../genesis.txn')
+# url mapping for rest hook callbacks
+urls = (
+  '/webhooks/topic/(.*)/', 'alice_webhooks'
+)
+
+# agent webhook callbacks
+class alice_webhooks(webhooks):
+    def handle_credentials(self, state, message):
+        global admin_url
+        credential_exchange_id = message['credential_exchange_id']
+        s_print("Credential: state=", state, ", credential_exchange_id=", credential_exchange_id)
+
+        if state == 'offer_received':
+            print("#15 After receiving credential offer, send credential request")
+            resp = requests.post(admin_url + '/credential_exchange/' + credential_exchange_id + '/send-request')
+            assert resp.status_code == 200
+            return ""
+
+        return ""
+
+    def handle_presentations(self, state, message):
+        global admin_url
+        presentation_exchange_id = message['presentation_exchange_id']
+        s_print("Presentation: state=", state, ", presentation_exchange_id=", presentation_exchange_id)
+
+        if state == 'request_received':
+            print("#24 Query for credentials in the wallet that satisfy the proof request")
+            # select credentials to provide for the proof
+            creds = requests.get(admin_url + '/presentation_exchange/' + presentation_exchange_id + '/credentials')
+            assert creds.status_code == 200
+            credentials = json.loads(creds.text)
+
+            # include self-attested attributes (not included in credentials)
+            revealed = {}
+            self_attested = {}
+            predicates = {}
+
+            # Use the first available credentials to satisfy the proof request
+            for attr in credentials['attrs']:
+                if 0 < len(credentials['attrs'][attr]):
+                    revealed[attr] = {
+                        'cred_id': credentials['attrs'][attr][0]['cred_info']['referent'],
+                        'revealed': True
+                    }
+                else:
+                    self_attested[attr] = 'my self-attested value'
+
+            for attr in credentials['predicates']:
+                predicates[attr] = {'cred_id': credentials['predicates'][attr][0]['cred_info']['referent']}
+
+            print("#25 Generate the proof")
+            proof = {
+                "name": message["presentation_request"]["name"],
+                "version": message["presentation_request"]["version"], 
+                "requested_predicates": predicates, 
+                "requested_attributes": revealed, 
+                "self_attested_attributes": self_attested
+            }
+            print("#26 Send the proof to X")
+            resp = requests.post(admin_url + '/presentation_exchange/' + presentation_exchange_id + '/send_presentation',
+                json=proof)
+            assert resp.status_code == 200
+
+            return ""
+
+        return ""
 
 
-async def main():
-    if len(sys.argv) > 1 and sys.argv[1] == '--postgres':
-        # create wallet in advance
-        await create_postgres_wallet(provisionConfig)
+def main():
+    # TODO genesis transactions from file or url
+    with open('local-genesis.txt', 'r') as genesis_file:
+        genesis = genesis_file.read()
+    #print(genesis)
 
-    payment_plugin = cdll.LoadLibrary("libnullpay" + file_ext())
-    payment_plugin.nullpay_init()
+    # TODO seed from input parameter; optionally register the DID
+    rand_name = str(random.randint(100000, 999999))
+    seed = ('my_seed_000000000000000000000000' + rand_name)[-32:]
+    alias = 'Alice Agent'
+    register_did = False # Alice doesn't need to register her did
+    if register_did:
+        print("Registering", alias, "with seed", seed)
+        ledger_url = 'http://localhost:9000'
+        headers = {"accept": "application/json"}
+        data = {"alias": alias, "seed": seed, "role": "TRUST_ANCHOR"}
+        resp = requests.post(ledger_url+'/register', json=data)
+        assert resp.status_code == 200
+        nym_info = resp.text
+        print(nym_info)
 
-    handled_offers = []
-    handled_requests = []
+    # run app and respond to agent webhook callbacks (run in background)
+    g_vars = globals()
+    webhook_thread = background_hook_thread(urls, g_vars)
+    time.sleep(3.0)
+    print("Web hooks is running!")
 
     print("#7 Provision an agent and wallet, get back configuration details")
-    config = await vcx_agent_provision(json.dumps(provisionConfig))
-    config = json.loads(config)
-    # Set some additional configuration options specific to alice
-    config['institution_name'] = 'alice'
-    config['institution_logo_url'] = 'http://robohash.org/456'
-    config['genesis_path'] = genesis_path
+    # start agent sub-process
+    endpoint_url  = 'http://127.0.0.1:' + str(in_port_1)
+    wallet_name = 'alice'+rand_name
+    wallet_key  = 'alice'+rand_name
+    python_path = ".."
+    webhook_url = "http://localhost:" + str(webhook_port) + "/webhooks"
+    (agent_proc, t1, t2) =  start_agent_subprocess(genesis, seed, endpoint_url, in_port_1, in_port_2, in_port_3, admin_port,
+                                            'indy', wallet_name, wallet_key, python_path, webhook_url)
+    time.sleep(3.0)
+    print("Admin url is at:", admin_url)
+    print("Endpoint url is at:", endpoint_url)
 
-    print("#8 Initialize libvcx with new configuration")
-    await vcx_init_with_config(json.dumps(config))
+    try:
+        # check swagger content
+        resp = requests.get(admin_url+'/api/docs/swagger.json')
+        assert resp.status_code == 200
+        p = resp.text
+        assert 'Indy Catalyst Agent' in p
 
-    print("#9 Input faber.py invitation details")
-    details = input('invite details: ')
+        # respond to an invitation
+        print("#9 Input faber.py invitation details")
+        details = input('invite details: ')
+        resp = requests.post(admin_url+'/connections/receive-invitation', json=details)
+        assert resp.status_code == 200
+        connection = json.loads(resp.text)
+        print('invitation response:', connection)
+        conn_id = connection['connection_id']
 
-    print("#10 Convert to valid json and string and create a connection to faber")
-    jdetails = json.loads(details)
-    connection_to_faber = await Connection.create_with_details('faber', json.dumps(jdetails))
-    await connection_to_faber.connect('{"use_public_did": true}')
-    await connection_to_faber.update_state()
+        time.sleep(3.0)
+        option = input('(3) Send Message (X) Exit? [3/X]')
+        while option != 'X' and option != 'x':
+            if option == '3':
+                msg = input('Enter message:')
+                resp = requests.post(admin_url+'/connections/' + conn_id + '/send-message', json={'content': msg})
+                assert resp.status_code == 200
 
-    print("Serialize connection")
-    connection_data = await connection_to_faber.serialize()
-    connection_to_faber.release()
-    connection_to_faber = None
+            option = input('(3) Send Message (X) Exit? [3/X]')
 
-    option = input('Poll messages? [Y/n] ')
-    while option != 'N' and option != 'n':
-        print("Deserialize connection")
-        my_connection = await Connection.deserialize(connection_data)
-        sleep(2)
+    except Exception as e:
+        print(e)
+    finally:
+        time.sleep(2.0)
+        agent_proc.terminate()
+        try:
+            agent_proc.wait(timeout=0.5)
+            print('== subprocess exited with rc =', agent_proc.returncode)
+        except subprocess.TimeoutExpired:
+            print('subprocess did not terminate in time')
+        sys.exit()
 
-        await handle_messages(my_connection, handled_offers, handled_requests)
-
-        sleep(2)
-        print("Serialize connection")
-        connection_data = await my_connection.serialize()
-        my_connection.release()
-        my_connection = None
-
-        option = input('Poll messages? [Y/n] ')
-
-    print("Done, pause before exiting program")
-    sleep(2)
-
-
-if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-
+if __name__ == "__main__":
+    main()
