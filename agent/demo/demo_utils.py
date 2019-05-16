@@ -140,7 +140,7 @@ def start_agent_subprocess(agent_name, genesis, seed, endpoint_url, in_port_1, i
             '--wallet-name', wallet_name,
             '--wallet-key', wallet_key,
             '--storage-type', 'postgres_storage',
-            '--storage-config', '{"url":"localhost:5432"}', 
+            '--storage-config', '{"url":"localhost:5432", "max_connections":5}', 
             '--storage-creds',  '{"account":"postgres","password":"mysecretpassword","admin_account":"postgres","admin_password":"mysecretpassword"}', 
             '--seed', seed,
             '--admin', '0.0.0.0', str(admin_port)]
