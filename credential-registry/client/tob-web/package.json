@@ -39,7 +39,7 @@
     "localize-router": "https://github.com/cywolf/localize-router/releases/download/v2.0.0-RC.2/localize-router-2.0.0-RC.2.tgz",
     "localize-router-http-loader": "~1.0.2",
     "rxjs": "~6.3.0",
-    "rxjs-compat": "^6.0.0",
+    "rxjs-compat": "~6.3.0",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
