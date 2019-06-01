@@ -13,7 +13,6 @@ def list_related_to(self, request, pk=None):
     from django.shortcuts import get_object_or_404
     from api_v2.views.rest import CustomTopicSerializer
     from api_v2.models.Topic import Topic
-    from api_v2.models.TopicRelationship import TopicRelationship
     from rest_framework.response import Response
 
     parent_queryset = Topic.objects.all()
@@ -29,7 +28,6 @@ def list_related_from(self, request, pk=None):
     from django.shortcuts import get_object_or_404
     from api_v2.views.rest import CustomTopicSerializer
     from api_v2.models.Topic import Topic
-    from api_v2.models.TopicRelationship import TopicRelationship
     from rest_framework.response import Response
 
     parent_queryset = Topic.objects.all()
