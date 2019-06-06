@@ -47,6 +47,9 @@ class CredentialExchange(BaseModel):
         credential_request: dict = None,
         credential_request_metadata: dict = None,
         credential_id: str = None,
+        credential: dict = None,
+        credential_values: dict = None,
+        auto_issue: bool = False,
         error_msg: str = None,
     ):
         """Initialize a new CredentialExchange."""
@@ -61,6 +64,9 @@ class CredentialExchange(BaseModel):
         self.credential_request = credential_request
         self.credential_request_metadata = credential_request_metadata
         self.credential_id = credential_id
+        self.credential = credential
+        self.credential_values = credential_values
+        self.auto_issue = auto_issue
         self.error_msg = error_msg
 
     @property
@@ -87,6 +93,9 @@ class CredentialExchange(BaseModel):
             "credential_request",
             "credential_request_metadata",
             "error_msg",
+            "auto_issue",
+            "credential_values",
+            "credential",
         ):
             val = getattr(self, prop)
             if val:
@@ -210,4 +219,7 @@ class CredentialExchangeSchema(BaseModelSchema):
     credential_request = fields.Dict(required=False)
     credential_request_metadata = fields.Dict(required=False)
     credential_id = fields.Str(required=False)
+    credential = fields.Dict(required=False)
+    auto_issue = fields.Bool(required=False)
+    credential_values = fields.Dict(required=False)
     error_msg = fields.Str(required=False)

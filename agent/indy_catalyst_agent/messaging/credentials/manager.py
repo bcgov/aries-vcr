@@ -5,6 +5,7 @@ import json
 import logging
 
 from ...error import BaseError
+from ...cache.base import BaseCache
 from ...holder.base import BaseHolder
 from ...issuer.base import BaseIssuer
 from ...ledger.base import BaseLedger
@@ -18,6 +19,7 @@ from .messages.credential_request import CredentialRequest
 from .messages.credential_offer import CredentialOffer
 from .models.credential_exchange import CredentialExchange
 
+from ...storage.error import StorageNotFoundError
 from ..util import send_webhook
 
 
@@ -49,6 +51,82 @@ class CredentialManager:
         """
         return self._context
 
+    async def prepare_send(
+        self, credential_definition_id, connection_id, credential_values
+    ):
+        """
+        Create an offer.
+
+        Args:
+            credential_definition_id: Credential definition id for offer
+            connection_id: Connection to create offer for
+            credential_values: The credential values to use if auto_issue is enabled
+
+        Returns:
+            A tuple (
+                credential_exchange,
+                credential_offer_message
+            )
+
+        """
+
+        cache: BaseCache = await self._context.inject(BaseCache)
+
+        # This cache is populated in credential_request_handler.py
+        # Do we have a source (parent) credential exchange for which
+        # we can re-use the credential request/offer?
+        source_credential_exchange_id = await cache.get(
+            "credential_exchange::"
+            + f"{credential_definition_id}::"
+            + f"{connection_id}"
+        )
+
+        if source_credential_exchange_id:
+
+            # Since we have the source exchange cache, we can re-use the schema_id,
+            # credential_offer, and credential_request to save a roundtrip
+            source_credential_exchange = await CredentialExchange.retrieve_by_id(
+                self._context, source_credential_exchange_id
+            )
+
+            credential_exchange = CredentialExchange(
+                connection_id=connection_id,
+                initiator=CredentialExchange.INITIATOR_SELF,
+                credential_definition_id=credential_definition_id,
+                schema_id=source_credential_exchange.schema_id,
+                credential_offer=source_credential_exchange.credential_offer,
+                credential_request=source_credential_exchange.credential_request,
+            )
+            await credential_exchange.save(self.context)
+
+            (
+                credential_exchange_record,
+                credential_message,
+            ) = await self.issue_credential(credential_exchange, credential_values)
+
+            # We use the source credential exchange's thread id as the parent thread id.
+            # This thread is a branch of that parent so that the other agent can use the
+            # parent thread id to look up its corresponding source credential exchange
+            # object as needed
+            thread = ThreadDecorator(pthid=source_credential_exchange.thread_id)
+            credential_message._thread = thread
+
+            return credential_exchange_record, credential_message
+
+        else:
+            # If the cache is empty, we must use the normal credential flow while
+            # also instructing the agent to automatically issue the credential
+            # once it receives the credential request
+            credential_exchange, credential_offer_message = await self.create_offer(
+                credential_definition_id, connection_id
+            )
+
+            credential_exchange.auto_issue = True
+            credential_exchange.credential_values = credential_values
+            await credential_exchange.save(self.context)
+
+            return credential_exchange, credential_offer_message
+
     async def create_offer(self, credential_definition_id, connection_id):
         """
         Create an offer.
@@ -61,6 +139,7 @@ class CredentialManager:
             A tuple (credential_exchange, credential_offer_message)
 
         """
+
         issuer: BaseIssuer = await self.context.inject(BaseIssuer)
         credential_offer = await issuer.create_credential_offer(
             credential_definition_id
@@ -95,6 +174,9 @@ class CredentialManager:
             credential_offer: Credential offer to receive
             connection_id: Connection to receive offer on
 
+        Returns:
+            The credential_exchange_record
+
         """
 
         credential_offer = json.loads(credential_offer_message.offer_json)
@@ -112,6 +194,8 @@ class CredentialManager:
         asyncio.ensure_future(
             send_webhook("credentials", credential_exchange.serialize())
         )
+
+        return credential_exchange
 
     async def create_request(
         self,
@@ -192,6 +276,8 @@ class CredentialManager:
             send_webhook("credentials", credential_exchange_record.serialize())
         )
 
+        return credential_exchange_record
+
     async def issue_credential(
         self, credential_exchange_record: CredentialExchange, credential_values: dict
     ):
@@ -245,9 +331,32 @@ class CredentialManager:
         """
         credential = json.loads(credential_message.issue)
 
-        credential_exchange_record = await CredentialExchange.retrieve_by_tag_filter(
-            self.context, tag_filter={"thread_id": credential_message._thread_id}
-        )
+        try:
+            (
+                credential_exchange_record
+            ) = await CredentialExchange.retrieve_by_tag_filter(
+                self.context, tag_filter={"thread_id": credential_message._thread_id}
+            )
+        except StorageNotFoundError:
+
+            if not credential_message._thread or not credential_message._thread.pthid:
+                raise
+
+            # If the thread_id does not return any results, we check the
+            # parent thread id to see if this exchange is nested and is
+            # re-using information from parent. In this case, we need the parent
+            # exchange state object to retrieve and re-use the
+            # credential_request_metadata
+            (
+                credential_exchange_record
+            ) = await CredentialExchange.retrieve_by_tag_filter(
+                self.context, tag_filter={"thread_id": credential_message._thread.pthid}
+            )
+
+            credential_exchange_record._id = None
+            credential_exchange_record.thread_id = credential_message._thread_id
+            credential_exchange_record.credential_id = None
+            credential_exchange_record.credential = None
 
         ledger: BaseLedger = await self.context.inject(BaseLedger)
         async with ledger:
@@ -262,8 +371,11 @@ class CredentialManager:
             credential_exchange_record.credential_request_metadata,
         )
 
+        wallet_credential = await holder.get_credential(credential_id)
+
         credential_exchange_record.state = CredentialExchange.STATE_STORED
         credential_exchange_record.credential_id = credential_id
+        credential_exchange_record.credential = wallet_credential
         await credential_exchange_record.save(self.context)
         asyncio.ensure_future(
             send_webhook("credentials", credential_exchange_record.serialize())
