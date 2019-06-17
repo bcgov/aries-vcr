@@ -1,9 +1,9 @@
 import pytest
 
 from ....base_handler import HandlerException
-from ....message_factory import MessageFactory
+from ....protocol_registry import ProtocolRegistry
 from ....request_context import RequestContext
-from ....responder import BaseResponder
+from ....responder import MockResponder
 
 from ...handlers.query_handler import QueryHandler
 from ...messages.disclose import Disclose
@@ -16,21 +16,10 @@ TEST_MESSAGE_TYPE = TEST_MESSAGE_FAMILY + "/MESSAGE"
 @pytest.fixture()
 def request_context() -> RequestContext:
     ctx = RequestContext()
-    factory = MessageFactory()
-    factory.register_message_types({TEST_MESSAGE_TYPE: object()})
-    ctx.injector.bind_instance(MessageFactory, factory)
+    registry = ProtocolRegistry()
+    registry.register_message_types({TEST_MESSAGE_TYPE: object()})
+    ctx.injector.bind_instance(ProtocolRegistry, registry)
     yield ctx
-
-
-class MockResponder(BaseResponder):
-    def __init__(self):
-        self.messages = []
-
-    async def send_reply(self, message):
-        self.messages.append((message, None))
-
-    async def send_outbound(self, message, target):
-        self.messages.append((message, target))
 
 
 class TestQueryHandler:
@@ -43,7 +32,6 @@ class TestQueryHandler:
         messages = responder.messages
         assert len(messages) == 1
         result, target = messages[0]
-        assert isinstance(result, Disclose) and result.protocols == {
-            TEST_MESSAGE_FAMILY: {}
-        }
+        assert isinstance(result, Disclose) and result.protocols
+        assert result.protocols[0]["pid"] == TEST_MESSAGE_FAMILY
         assert target is None

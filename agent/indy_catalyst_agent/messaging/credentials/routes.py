@@ -6,14 +6,28 @@ from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
 from marshmallow import fields, Schema
 
+from ...holder.base import BaseHolder
+from ...storage.error import StorageNotFoundError
+from ...wallet.error import WalletNotFoundError
+
+from ..connections.models.connection_record import ConnectionRecord
+
 from .manager import CredentialManager
 from .models.credential_exchange import CredentialExchange, CredentialExchangeSchema
 
-from ..connections.manager import ConnectionManager
-from ..connections.models.connection_record import ConnectionRecord
 
-from ...holder.base import BaseHolder
-from ...storage.error import StorageNotFoundError
+class CredentialSendRequestSchema(Schema):
+    """Request schema for sending a credential offer admin message."""
+
+    connection_id = fields.Str(required=True)
+    credential_definition_id = fields.Str(required=True)
+    credential_values = fields.Dict(required=False)
+
+
+class CredentialSendResultSchema(Schema):
+    """Result schema for sending a credential offer admin message."""
+
+    credential_id = fields.Str()
 
 
 class CredentialOfferRequestSchema(Schema):
@@ -21,8 +35,6 @@ class CredentialOfferRequestSchema(Schema):
 
     connection_id = fields.Str(required=True)
     credential_definition_id = fields.Str(required=True)
-    auto_issue = fields.Bool(required=False, default=False)
-    credential_values = fields.Dict(required=False)
 
 
 class CredentialOfferResultSchema(Schema):
@@ -71,6 +83,31 @@ class CredentialListSchema(Schema):
 @response_schema(CredentialSchema(), 200)
 async def credentials_get(request: web.BaseRequest):
     """
+    Request handler for retrieving a credential.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The credential response
+
+    """
+    context = request.app["request_context"]
+
+    credential_id = request.match_info["id"]
+
+    holder: BaseHolder = await context.inject(BaseHolder)
+    try:
+        credential = await holder.get_credential(credential_id)
+    except WalletNotFoundError:
+        return web.HTTPNotFound()
+
+    return web.json_response(credential)
+
+
+@docs(tags=["credentials"], summary="Remove a credential from the wallet by id")
+async def credentials_remove(request: web.BaseRequest):
+    """
     Request handler for searching connection records.
 
     Args:
@@ -85,9 +122,12 @@ async def credentials_get(request: web.BaseRequest):
     credential_id = request.match_info["id"]
 
     holder: BaseHolder = await context.inject(BaseHolder)
-    credential = await holder.get_credential(credential_id)
+    try:
+        await holder.delete_credential(credential_id)
+    except WalletNotFoundError:
+        return web.HTTPNotFound()
 
-    return web.json_response(credential)
+    return web.HTTPOk()
 
 
 @docs(
@@ -112,13 +152,13 @@ async def credentials_get(request: web.BaseRequest):
 @response_schema(CredentialListSchema(), 200)
 async def credentials_list(request: web.BaseRequest):
     """
-    Request handler for searching connection records.
+    Request handler for searching credential records.
 
     Args:
         request: aiohttp request object
 
     Returns:
-        The connection list response
+        The credential list response
 
     """
     context = request.app["request_context"]
@@ -144,13 +184,13 @@ async def credentials_list(request: web.BaseRequest):
 @response_schema(CredentialExchangeListSchema(), 200)
 async def credential_exchange_list(request: web.BaseRequest):
     """
-    Request handler for searching connection records.
+    Request handler for searching credential exchange records.
 
     Args:
         request: aiohttp request object
 
     Returns:
-        The connection list response
+        The credential exchange list response
 
     """
     context = request.app["request_context"]
@@ -172,13 +212,13 @@ async def credential_exchange_list(request: web.BaseRequest):
 @response_schema(CredentialExchangeSchema(), 200)
 async def credential_exchange_retrieve(request: web.BaseRequest):
     """
-    Request handler for fetching a single connection record.
+    Request handler for fetching a single credential exchange record.
 
     Args:
         request: aiohttp request object
 
     Returns:
-        The connection record response
+        The credential exchange record response
 
     """
     context = request.app["request_context"]
@@ -190,6 +230,48 @@ async def credential_exchange_retrieve(request: web.BaseRequest):
     except StorageNotFoundError:
         return web.HTTPNotFound()
     return web.json_response(record.serialize())
+
+
+@docs(
+    tags=["credential_exchange"],
+    summary="Sends a credential and automates the entire flow",
+)
+@request_schema(CredentialSendRequestSchema())
+@response_schema(CredentialSendResultSchema(), 200)
+async def credential_exchange_send(request: web.BaseRequest):
+    """
+    Request handler for sending a credential offer.
+
+    Args:
+        request: aiohttp request object
+
+    Returns:
+        The credential offer details.
+
+    """
+
+    context = request.app["request_context"]
+    outbound_handler = request.app["outbound_message_router"]
+
+    body = await request.json()
+
+    connection_id = body.get("connection_id")
+    credential_definition_id = body.get("credential_definition_id")
+    credential_values = body.get("credential_values")
+
+    credential_manager = CredentialManager(context)
+    connection_record = await ConnectionRecord.retrieve_by_id(context, connection_id)
+
+    if not connection_record.is_active:
+        return web.HTTPForbidden()
+
+    (credential_exchange_record, message) = await credential_manager.prepare_send(
+        credential_definition_id, connection_id, credential_values
+    )
+
+    await outbound_handler(message, connection_id=connection_id)
+
+    return web.json_response(credential_exchange_record.serialize())
 
 
 @docs(tags=["credential_exchange"], summary="Sends a credential offer")
@@ -214,34 +296,19 @@ async def credential_exchange_send_offer(request: web.BaseRequest):
 
     connection_id = body.get("connection_id")
     credential_definition_id = body.get("credential_definition_id")
-    auto_issue = body.get("auto_issue")
-    credential_values = body.get("credential_values")
 
-    if auto_issue and not credential_values:
-        raise web.HTTPBadRequest(
-            reason="If auto_issue is set to"
-            + " true then credential_values must also be provided."
-        )
-
-    connection_manager = ConnectionManager(context)
     credential_manager = CredentialManager(context)
-
     connection_record = await ConnectionRecord.retrieve_by_id(context, connection_id)
 
-    connection_target = await connection_manager.get_connection_target(
-        connection_record
-    )
-
-    # TODO: validate connection_record valid
+    if not connection_record.is_active:
+        return web.HTTPForbidden()
 
     (
         credential_exchange_record,
         credential_offer_message,
-    ) = await credential_manager.create_offer(
-        credential_definition_id, connection_id, auto_issue, credential_values
-    )
+    ) = await credential_manager.create_offer(credential_definition_id, connection_id)
 
-    await outbound_handler(context, credential_offer_message, connection_target)
+    await outbound_handler(credential_offer_message, connection_id=connection_id)
 
     return web.json_response(credential_exchange_record.serialize())
 
@@ -267,19 +334,16 @@ async def credential_exchange_send_request(request: web.BaseRequest):
     credential_exchange_record = await CredentialExchange.retrieve_by_id(
         context, credential_exchange_id
     )
+    connection_id = credential_exchange_record.connection_id
 
     assert credential_exchange_record.state == CredentialExchange.STATE_OFFER_RECEIVED
 
     credential_manager = CredentialManager(context)
-    connection_manager = ConnectionManager(context)
 
-    connection_record = await ConnectionRecord.retrieve_by_id(
-        context, credential_exchange_record.connection_id
-    )
+    connection_record = await ConnectionRecord.retrieve_by_id(context, connection_id)
 
-    connection_target = await connection_manager.get_connection_target(
-        connection_record
-    )
+    if not connection_record.is_active:
+        return web.HTTPForbidden()
 
     (
         credential_exchange_record,
@@ -288,7 +352,7 @@ async def credential_exchange_send_request(request: web.BaseRequest):
         credential_exchange_record, connection_record
     )
 
-    await outbound_handler(context, credential_request_message, connection_target)
+    await outbound_handler(credential_request_message, connection_id=connection_id)
     return web.json_response(credential_exchange_record.serialize())
 
 
@@ -316,19 +380,15 @@ async def credential_exchange_issue(request: web.BaseRequest):
     credential_exchange_record = await CredentialExchange.retrieve_by_id(
         context, credential_exchange_id
     )
+    connection_id = credential_exchange_record.connection_id
 
     assert credential_exchange_record.state == CredentialExchange.STATE_REQUEST_RECEIVED
 
     credential_manager = CredentialManager(context)
-    connection_manager = ConnectionManager(context)
 
-    connection_record = await ConnectionRecord.retrieve_by_id(
-        context, credential_exchange_record.connection_id
-    )
-
-    connection_target = await connection_manager.get_connection_target(
-        connection_record
-    )
+    connection_record = await ConnectionRecord.retrieve_by_id(context, connection_id)
+    if not connection_record.is_active:
+        return web.HTTPForbidden()
 
     (
         credential_exchange_record,
@@ -337,7 +397,7 @@ async def credential_exchange_issue(request: web.BaseRequest):
         credential_exchange_record, credential_values
     )
 
-    await outbound_handler(context, credential_issue_message, connection_target)
+    await outbound_handler(credential_issue_message, connection_id=connection_id)
     return web.json_response(credential_exchange_record.serialize())
 
 
@@ -371,9 +431,11 @@ async def register(app: web.Application):
     app.add_routes(
         [
             web.get("/credential/{id}", credentials_get),
+            web.post("/credential/{id}/remove", credentials_remove),
             web.get("/credentials", credentials_list),
             web.get("/credential_exchange", credential_exchange_list),
             web.get("/credential_exchange/{id}", credential_exchange_retrieve),
+            web.post("/credential_exchange/send", credential_exchange_send),
             web.post("/credential_exchange/send-offer", credential_exchange_send_offer),
             web.post(
                 "/credential_exchange/{id}/send-request",

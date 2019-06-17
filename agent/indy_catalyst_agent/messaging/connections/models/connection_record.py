@@ -10,16 +10,18 @@ from marshmallow import fields
 
 from ....admin.service import AdminService
 from ....config.injection_context import InjectionContext
-from ..messages.connection_invitation import ConnectionInvitation
-from ..messages.connection_request import ConnectionRequest
-from ....models.base import BaseModel, BaseModelSchema
 from ....storage.base import BaseStorage
 from ....storage.record import StorageRecord
+
+from ...models.base import BaseModel, BaseModelSchema
 from ...util import time_now
+
+from ..messages.connection_invitation import ConnectionInvitation
+from ..messages.connection_request import ConnectionRequest
 
 
 class ConnectionRecord(BaseModel):
-    """Represents a single connection."""
+    """Represents a single pairwise connection."""
 
     class Meta:
         """ConnectionRecord metadata."""
@@ -47,16 +49,15 @@ class ConnectionRecord(BaseModel):
     STATE_INACTIVE = "inactive"
 
     ROUTING_STATE_NONE = "none"
-    ROUTING_STATE_REQUIRED = "required"
-    ROUTING_STATE_PENDING = "pending"
+    ROUTING_STATE_REQUEST = "request"
     ROUTING_STATE_ACTIVE = "active"
+    ROUTING_STATE_ERROR = "error"
 
     def __init__(
         self,
         *,
         connection_id: str = None,
         my_did: str = None,
-        my_router_did: str = None,
         their_did: str = None,
         their_label: str = None,
         their_role: str = None,
@@ -64,16 +65,15 @@ class ConnectionRecord(BaseModel):
         invitation_key: str = None,
         request_id: str = None,
         state: str = None,
-        routing_state: str = None,
-        direct_response: str = None,
+        inbound_connection_id: str = None,
         error_msg: str = None,
+        routing_state: str = None,
         created_at: str = None,
         updated_at: str = None,
     ):
         """Initialize a new ConnectionRecord."""
         self._id = connection_id
         self.my_did = my_did
-        self.my_router_did = my_router_did
         self.their_did = their_did
         self.their_label = their_label
         self.their_role = their_role
@@ -81,9 +81,9 @@ class ConnectionRecord(BaseModel):
         self.invitation_key = invitation_key
         self.request_id = request_id
         self.state = state or self.STATE_INIT
-        self.routing_state = routing_state or self.ROUTING_STATE_NONE
-        self.direct_response = direct_response
         self.error_msg = error_msg
+        self.inbound_connection_id = inbound_connection_id
+        self.routing_state = routing_state or self.ROUTING_STATE_NONE
         self.created_at = created_at
         self.updated_at = updated_at
         self._admin_timer = None
@@ -106,7 +106,6 @@ class ConnectionRecord(BaseModel):
         ret = self.tags
         ret.update(
             {
-                "direct_response": self.direct_response,
                 "error_msg": self.error_msg,
                 "their_label": self.their_label,
                 "created_at": self.created_at,
@@ -121,9 +120,9 @@ class ConnectionRecord(BaseModel):
         result = {}
         for prop in (
             "my_did",
-            "my_router_did",
             "their_did",
             "their_role",
+            "inbound_connection_id",
             "initiator",
             "invitation_key",
             "request_id",
@@ -450,12 +449,9 @@ class ConnectionRecord(BaseModel):
         )
 
     @property
-    def requires_routing(self) -> bool:
-        """Accessor to check if routing actions are needed."""
-        return self.routing_state in (
-            self.ROUTING_STATE_REQUIRED,
-            self.ROUTING_STATE_PENDING,
-        )
+    def is_active(self) -> bool:
+        """Accessor to check if the connection is active."""
+        return self.state == self.STATE_ACTIVE
 
     def __eq__(self, other) -> bool:
         """Comparison between records."""
@@ -473,12 +469,11 @@ class ConnectionRecordSchema(BaseModelSchema):
         model_class = ConnectionRecord
 
     connection_id = fields.Str(required=False)
-    direct_response = fields.Str(required=False)
     my_did = fields.Str(required=False)
-    my_router_did = fields.Str(required=False)
     their_did = fields.Str(required=False)
     their_label = fields.Str(required=False)
     their_role = fields.Str(required=False)
+    inbound_connection_id = fields.Str(required=False)
     initiator = fields.Str(required=False)
     invitation_key = fields.Str(required=False)
     request_id = fields.Str(required=False)
