@@ -20,15 +20,15 @@
 
 # Introduction
 
-Indy Catalyst Agent is a configurable instance of a Hyperledger Indy "Cloud Agent".
+Indy Catalyst Agent is a configurable instance of a "Cloud Agent".
 
 # Installing
 
-Instructions forthcoming. `indy_catalyst_agent` will be made available as a python package at [pypi.org](https://pypi.org).
+Instructions forthcoming. `indy_catalyst_agent` will be made available in the future as a python package at [pypi.org](https://pypi.org).
 
 # Running
 
-After install the package, `icatagent` should be available in your PATH.
+After installing the package, `icatagent` should be available in your PATH.
 
 Find out more about the available command line parameters by running:
 
@@ -60,21 +60,23 @@ Currently, Indy Catalyst Agent ships with both inbound and outbound transport dr
 
 To run the locally, we recommend using the provided Docker images to run the software.
 
-```bash
+```
 ./scripts/run_docker <args>
 ```
 
-To enable the [ptvsd](https://github.com/Microsoft/ptvsd) Python debugger for Visual Studio/VSCode set the `ENABLE_PTVSD` environment variable, for example:
+```
+./scripts/run_docker --inbound-transport http 0.0.0.0 10000 --outbound-transport http --debug --log-level DEBUG
+```
 
-```bash
-ENABLE_PTVSD=1 ./scripts/run_docker --inbound-transport http 0.0.0.0 10000 --outbound-transport http
+To enable the [ptvsd](https://github.com/Microsoft/ptvsd) Python debugger for Visual Studio/VSCode use the `debug` flag
+
+For any ports you will be using, you can publish these ports from the docker container using the PORTS environment variable. For example:
+
+```
+PORTS="5000:5000 8000:8000 1000:1000" ./scripts/run_docker --inbound-transport http 0.0.0.0 10000 --outbound-transport http --debug --log-level DEBUG
 ```
 
 Refer to [the previous section](#Running) for instructions on how to run the software.
-
-### Caveats
-
-The development docker environment exposes ports 10000 - 10050. When specifying inbound transport ports, you must use ports in that range if you want to make a connection from outside the docker network.
 
 ## Running Tests
 
@@ -105,3 +107,11 @@ There are some good examples of various test scenarios for you to work from incl
 The test suite also displays the current code coverage after each run so you can see how much of your work is covered by tests. Use your best judgement for how much coverage is sufficient.
 
 Please also refer to the [contributing guidelines](/CONTRIBUTING.md) and [code of conduct](/CODE_OF_CONDUCT.md).
+
+## Dynamic Injection of Services
+
+The Agent employs a dynamic injection system whereby providers of base classes are registered with the `RequestContext` instance, currently within `conductor.py`. Message handlers and services request an instance of the selected implementation using `await context.inject(BaseClass)`; for instance the wallet instance may be injected using `wallet = await context.inject(BaseWallet)`. The `inject` method normally throws an exception if no implementation of the base class is provided, but can be called with `required=False` for optional dependencies (in which case a value of `None` may be returned).
+
+Providers are registered with either `context.injector.bind_instance(BaseClass, instance)` for previously-constructed (singleton) object instances, or `context.injector.bind_provider(BaseClass, provider)` for dynamic providers. In some cases it may be desirable to write a custom provider which switches implementations based on configuration settings, such as the wallet provider.
+
+The `BaseProvider` classes in the `config.provider` module include `ClassProvider`, which can perform dynamic module inclusion when given the combined module and class name as a string (for instance `indy_catalyst_agent.wallet.indy.IndyWallet`). `ClassProvider` accepts additional positional and keyword arguments to be passed into the class constructor. Any of these arguments may be an instance of `ClassProvider.Inject(BaseClass)`, allowing dynamic injection of dependencies when the class instance is instantiated.

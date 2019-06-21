@@ -5,7 +5,6 @@ from aiohttp_apispec import docs, request_schema
 
 from marshmallow import fields, Schema
 
-from ..connections.manager import ConnectionManager
 from ..connections.models.connection_record import ConnectionRecord
 from .messages.basicmessage import BasicMessage
 from ...storage.error import StorageNotFoundError
@@ -29,25 +28,20 @@ async def connections_send_message(request: web.BaseRequest):
     """
     context = request.app["request_context"]
     connection_id = request.match_info["id"]
-    connection_mgr = ConnectionManager(context)
     outbound_handler = request.app["outbound_message_router"]
     params = await request.json()
 
     try:
-        connection = await ConnectionRecord.retrieve_by_id(
-            context.storage, connection_id
-        )
+        connection = await ConnectionRecord.retrieve_by_id(context, connection_id)
     except StorageNotFoundError:
         return web.HTTPNotFound()
 
-    if connection.state == "active":
+    if connection.is_active:
         msg = BasicMessage(content=params["content"])
-        target = await connection_mgr.get_connection_target(connection)
-        await outbound_handler(msg, target)
+        await outbound_handler(msg, connection_id=connection_id)
 
         await connection.log_activity(
-            context.storage,
-            context.service_factory,
+            context,
             "message",
             connection.DIRECTION_SENT,
             {"content": params["content"]},
@@ -69,20 +63,16 @@ async def connections_expire_message(request: web.BaseRequest):
     connection_id = request.match_info["id"]
 
     try:
-        connection = await ConnectionRecord.retrieve_by_id(
-            context.storage, connection_id
-        )
+        connection = await ConnectionRecord.retrieve_by_id(context, connection_id)
     except StorageNotFoundError:
         return web.HTTPNotFound()
 
     activity_id = request.match_info["activity_id"]
-    activity = await connection.retrieve_activity(context.storage, activity_id)
+    activity = await connection.retrieve_activity(context, activity_id)
     meta = activity.get("meta") or {}
     if meta.get("copy_invite"):
         meta["copied"] = 1
-        await connection.update_activity_meta(
-            context.storage, context.service_factory, activity_id, meta
-        )
+        await connection.update_activity_meta(context, activity_id, meta)
 
     return web.HTTPOk()
 

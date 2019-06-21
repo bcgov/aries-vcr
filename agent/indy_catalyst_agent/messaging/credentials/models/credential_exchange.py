@@ -7,9 +7,11 @@ from typing import Sequence
 
 from marshmallow import fields
 
-from ....models.base import BaseModel, BaseModelSchema
+from ....config.injection_context import InjectionContext
 from ....storage.base import BaseStorage
 from ....storage.record import StorageRecord
+
+from ...models.base import BaseModel, BaseModelSchema
 
 
 class CredentialExchange(BaseModel):
@@ -46,6 +48,9 @@ class CredentialExchange(BaseModel):
         credential_request: dict = None,
         credential_request_metadata: dict = None,
         credential_id: str = None,
+        credential: dict = None,
+        credential_values: dict = None,
+        auto_issue: bool = False,
         error_msg: str = None,
     ):
         """Initialize a new CredentialExchange."""
@@ -60,6 +65,9 @@ class CredentialExchange(BaseModel):
         self.credential_request = credential_request
         self.credential_request_metadata = credential_request_metadata
         self.credential_id = credential_id
+        self.credential = credential
+        self.credential_values = credential_values
+        self.auto_issue = auto_issue
         self.error_msg = error_msg
 
     @property
@@ -86,6 +94,9 @@ class CredentialExchange(BaseModel):
             "credential_request",
             "credential_request_metadata",
             "error_msg",
+            "auto_issue",
+            "credential_values",
+            "credential",
         ):
             val = getattr(self, prop)
             if val:
@@ -110,12 +121,13 @@ class CredentialExchange(BaseModel):
                 result[prop] = val
         return result
 
-    async def save(self, storage: BaseStorage):
+    async def save(self, context: InjectionContext):
         """Persist the credential exchange record to storage.
 
         Args:
-            storage: The `BaseStorage` instance to use
+            context: The `InjectionContext` instance to use
         """
+        storage: BaseStorage = await context.inject(BaseStorage)
         if not self._id:
             self._id = str(uuid.uuid4())
             await storage.add_record(self.storage_record)
@@ -126,14 +138,15 @@ class CredentialExchange(BaseModel):
 
     @classmethod
     async def retrieve_by_id(
-        cls, storage: BaseStorage, credential_exchange_id: str
+        cls, context: InjectionContext, credential_exchange_id: str
     ) -> "CredentialExchange":
         """Retrieve a credential exchange record by ID.
 
         Args:
-            storage: The `BaseStorage` instance to use
+            context: The `InjectionContext` instance to use
             credential_exchange_id: The ID of the credential exchange record to find
         """
+        storage: BaseStorage = await context.inject(BaseStorage)
         result = await storage.get_record(cls.RECORD_TYPE, credential_exchange_id)
         vals = json.loads(result.value)
         if result.tags:
@@ -142,14 +155,15 @@ class CredentialExchange(BaseModel):
 
     @classmethod
     async def retrieve_by_tag_filter(
-        cls, storage: BaseStorage, tag_filter: dict
+        cls, context: InjectionContext, tag_filter: dict
     ) -> "CredentialExchange":
         """Retrieve a credential exchange record by tag filter.
 
         Args:
-            storage: The `BaseStorage` instance to use
+            context: The `InjectionContext` instance to use
             tag_filter: The filter dictionary to apply
         """
+        storage: BaseStorage = await context.inject(BaseStorage)
         result = await storage.search_records(
             cls.RECORD_TYPE, tag_filter
         ).fetch_single()
@@ -159,14 +173,15 @@ class CredentialExchange(BaseModel):
 
     @classmethod
     async def query(
-        cls, storage: BaseStorage, tag_filter: dict = None
+        cls, context: InjectionContext, tag_filter: dict = None
     ) -> Sequence["CredentialExchange"]:
         """Query existing credential exchange records.
 
         Args:
-            storage: Storage implementation to use
+            context: The `InjectionContext` instance to use
             tag_filter: An optional dictionary of tag filter clauses
         """
+        storage: BaseStorage = await context.inject(BaseStorage)
         found = await storage.search_records(cls.RECORD_TYPE, tag_filter).fetch_all()
         result = []
         for record in found:
@@ -175,13 +190,14 @@ class CredentialExchange(BaseModel):
             result.append(CredentialExchange(credential_exchange_id=record.id, **vals))
         return result
 
-    async def delete_record(self, storage: BaseStorage):
+    async def delete_record(self, context: InjectionContext):
         """Remove the credential exchange record.
 
         Args:
-            storage: The `BaseStorage` instance to use
+            context: The `InjectionContext` instance to use
         """
         if self.credential_exchange_id:
+            storage: BaseStorage = await context.inject(BaseStorage)
             await storage.delete_record(self.storage_record)
 
 
@@ -204,4 +220,7 @@ class CredentialExchangeSchema(BaseModelSchema):
     credential_request = fields.Dict(required=False)
     credential_request_metadata = fields.Dict(required=False)
     credential_id = fields.Str(required=False)
+    credential = fields.Dict(required=False)
+    auto_issue = fields.Bool(required=False)
+    credential_values = fields.Dict(required=False)
     error_msg = fields.Str(required=False)

@@ -1,19 +1,19 @@
 """Admin routes for presentations."""
 
+import json
+
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
 from marshmallow import fields, Schema
-from urllib.parse import parse_qs
 
 from .manager import PresentationManager
 from .models.presentation_exchange import (
     PresentationExchange,
     PresentationExchangeSchema,
 )
-from ..connections.manager import ConnectionManager
 
+from ...holder.base import BaseHolder
 from ...storage.error import StorageNotFoundError
-from ..connections.models.connection_record import ConnectionRecord
 
 
 class PresentationExchangeListSchema(Schema):
@@ -40,6 +40,8 @@ class PresentationRequestRequestSchema(Schema):
         restrictions = fields.List(fields.Dict(), required=False)
 
     connection_id = fields.Str(required=True)
+    name = fields.String(required=True)
+    version = fields.String(required=True)
     requested_attributes = fields.Nested(RequestedAttribute, many=True)
     requested_predicates = fields.Nested(RequestedPredicate, many=True)
 
@@ -47,8 +49,6 @@ class PresentationRequestRequestSchema(Schema):
 class SendPresentationRequestSchema(Schema):
     """Request schema for sending a presentation."""
 
-    name = fields.String(required=True)
-    version = fields.String(required=True)
     self_attested_attributes = fields.Dict(required=True)
     requested_attributes = fields.Dict(required=True)
     requested_predicates = fields.Dict(required=True)
@@ -78,7 +78,7 @@ async def presentation_exchange_list(request: web.BaseRequest):
     ):
         if param_name in request.query and request.query[param_name] != "":
             tag_filter[param_name] = request.query[param_name]
-    records = await PresentationExchange.query(context.storage, tag_filter)
+    records = await PresentationExchange.query(context, tag_filter)
     return web.json_response({"results": [record.serialize() for record in records]})
 
 
@@ -102,7 +102,7 @@ async def presentation_exchange_retrieve(request: web.BaseRequest):
     presentation_exchange_id = request.match_info["id"]
     try:
         record = await PresentationExchange.retrieve_by_id(
-            context.storage, presentation_exchange_id
+            context, presentation_exchange_id
         )
     except StorageNotFoundError:
         return web.HTTPNotFound()
@@ -136,21 +136,23 @@ async def presentation_exchange_retrieve(request: web.BaseRequest):
 # @response_schema(ConnectionListSchema(), 200)
 async def presentation_exchange_credentials_list(request: web.BaseRequest):
     """
-    Request handler for searching connection records.
+    Request handler for searching applicable credential records.
 
     Args:
         request: aiohttp request object
 
     Returns:
-        The connection list response
+        The credential list response
 
     """
     context = request.app["request_context"]
 
     presentation_exchange_id = request.match_info["id"]
+    presentation_referent = request.match_info["referent"]
+
     try:
         presentation_exchange_record = await PresentationExchange.retrieve_by_id(
-            context.storage, presentation_exchange_id
+            context, presentation_exchange_id
         )
     except StorageNotFoundError:
         return web.HTTPNotFound()
@@ -159,15 +161,20 @@ async def presentation_exchange_credentials_list(request: web.BaseRequest):
     count = request.query.get("count")
 
     # url encoded json extra_query
-    encoded_extra_query = request.query.get("extra_query") or ""
-    extra_query = parse_qs(encoded_extra_query)
+    encoded_extra_query = request.query.get("extra_query") or "{}"
+    extra_query = json.loads(encoded_extra_query)
 
     # defaults
     start = int(start) if isinstance(start, str) else 0
     count = int(count) if isinstance(count, str) else 10
 
-    credentials = await context.holder.get_credentials_for_presentation_request(
-        presentation_exchange_record.presentation_request, start, count, extra_query
+    holder: BaseHolder = await context.inject(BaseHolder)
+    credentials = await holder.get_credentials_for_presentation_request_by_referent(
+        presentation_exchange_record.presentation_request,
+        presentation_referent,
+        start,
+        count,
+        extra_query,
     )
 
     return web.json_response(credentials)
@@ -199,16 +206,7 @@ async def presentation_exchange_send_request(request: web.BaseRequest):
     requested_attributes = body.get("requested_attributes")
     requested_predicates = body.get("requested_predicates")
 
-    connection_manager = ConnectionManager(context)
     presentation_manager = PresentationManager(context)
-
-    connection_record = await ConnectionRecord.retrieve_by_id(
-        context.storage, connection_id
-    )
-
-    connection_target = await connection_manager.get_connection_target(
-        connection_record
-    )
 
     (
         presentation_exchange_record,
@@ -217,7 +215,7 @@ async def presentation_exchange_send_request(request: web.BaseRequest):
         name, version, requested_attributes, requested_predicates, connection_id
     )
 
-    await outbound_handler(presentation_request_message, connection_target)
+    await outbound_handler(presentation_request_message, connection_id=connection_id)
 
     return web.json_response(presentation_exchange_record.serialize())
 
@@ -227,7 +225,7 @@ async def presentation_exchange_send_request(request: web.BaseRequest):
 @response_schema(PresentationExchangeSchema())
 async def presentation_exchange_send_credential_presentation(request: web.BaseRequest):
     """
-    Request handler for sending a presentation request.
+    Request handler for sending a credential presentation.
 
     Args:
         request: aiohttp request object
@@ -244,24 +242,16 @@ async def presentation_exchange_send_credential_presentation(request: web.BaseRe
     body = await request.json()
 
     presentation_exchange_record = await PresentationExchange.retrieve_by_id(
-        context.storage, presentation_exchange_id
+        context, presentation_exchange_id
     )
+    connection_id = presentation_exchange_record.connection_id
 
     assert (
         presentation_exchange_record.state
         == presentation_exchange_record.STATE_REQUEST_RECEIVED
     )
 
-    connection_manager = ConnectionManager(context)
     presentation_manager = PresentationManager(context)
-
-    connection_record = await ConnectionRecord.retrieve_by_id(
-        context.storage, presentation_exchange_record.connection_id
-    )
-
-    connection_target = await connection_manager.get_connection_target(
-        connection_record
-    )
 
     (
         presentation_exchange_record,
@@ -270,7 +260,7 @@ async def presentation_exchange_send_credential_presentation(request: web.BaseRe
         presentation_exchange_record, body
     )
 
-    await outbound_handler(presentation_message, connection_target)
+    await outbound_handler(presentation_message, connection_id=connection_id)
     return web.json_response(presentation_exchange_record.serialize())
 
 
@@ -296,7 +286,7 @@ async def presentation_exchange_verify_credential_presentation(
     presentation_exchange_id = request.match_info["id"]
 
     presentation_exchange_record = await PresentationExchange.retrieve_by_id(
-        context.storage, presentation_exchange_id
+        context, presentation_exchange_id
     )
 
     assert (
@@ -329,11 +319,11 @@ async def presentation_exchange_remove(request: web.BaseRequest):
     try:
         presentation_exchange_id = request.match_info["id"]
         presentation_exchange_record = await PresentationExchange.retrieve_by_id(
-            context.storage, presentation_exchange_id
+            context, presentation_exchange_id
         )
     except StorageNotFoundError:
         return web.HTTPNotFound()
-    await presentation_exchange_record.delete_record(context.storage)
+    await presentation_exchange_record.delete_record(context)
     return web.HTTPOk()
 
 
@@ -345,7 +335,7 @@ async def register(app: web.Application):
             web.get("/presentation_exchange", presentation_exchange_list),
             web.get("/presentation_exchange/{id}", presentation_exchange_retrieve),
             web.get(
-                "/presentation_exchange/{id}/credentials",
+                "/presentation_exchange/{id}/credentials/{referent}",
                 presentation_exchange_credentials_list,
             ),
             web.post(

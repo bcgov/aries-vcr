@@ -2,33 +2,35 @@
 
 import asyncio
 import aiohttp
-import json
 import logging
 
-from typing import Callable, Tuple, Union
-
-from ...error import BaseError
-from ..agent_message import AgentMessage
-from .messages.connection_invitation import ConnectionInvitation
-from .messages.connection_request import ConnectionRequest
-from .messages.connection_response import ConnectionResponse
-from ..message_factory import MessageParseError
-from .models.connection_detail import ConnectionDetail
-from .models.connection_record import ConnectionRecord
-from .models.connection_target import ConnectionTarget
-from ..request_context import RequestContext
-from ..routing.messages.forward import Forward
-from ...storage.error import StorageError, StorageNotFoundError
-from ...storage.record import StorageRecord
-from ...wallet.base import DIDInfo
-from ...wallet.error import WalletError, WalletNotFoundError
-from ...wallet.util import bytes_to_b64
-
-from ..util import send_webhook
+from typing import Tuple
 
 from von_anchor.a2a import DIDDoc
 from von_anchor.a2a.publickey import PublicKey, PublicKeyType
 from von_anchor.a2a.service import Service
+
+from ...error import BaseError
+from ...config.base import InjectorError
+from ...config.injection_context import InjectionContext
+from ...storage.base import BaseStorage
+from ...storage.error import StorageError, StorageNotFoundError
+from ...storage.record import StorageRecord
+from ...wallet.base import BaseWallet, DIDInfo
+from ...wallet.error import WalletNotFoundError
+from ...wallet.util import bytes_to_b64
+
+from ..message_delivery import MessageDelivery
+from ..routing.manager import RoutingManager
+from ..util import send_webhook
+
+from .messages.connection_invitation import ConnectionInvitation
+from .messages.connection_request import ConnectionRequest
+from .messages.connection_response import ConnectionResponse
+from .messages.problem_report import ProblemReportReason
+from .models.connection_detail import ConnectionDetail
+from .models.connection_record import ConnectionRecord
+from .models.connection_target import ConnectionTarget
 
 
 class ConnectionManagerError(BaseError):
@@ -41,7 +43,7 @@ class ConnectionManager:
     RECORD_TYPE_DID_DOC = "did_doc"
     RECORD_TYPE_DID_KEY = "did_key"
 
-    def __init__(self, context: RequestContext):
+    def __init__(self, context: InjectionContext):
         """
         Initialize a ConnectionManager.
 
@@ -60,12 +62,12 @@ class ConnectionManager:
         print()
 
     @property
-    def context(self) -> RequestContext:
+    def context(self) -> InjectionContext:
         """
-        Accessor for the current request context.
+        Accessor for the current injection context.
 
         Returns:
-            The request context for this connection
+            The injection context for this connection
 
         """
         return self._context
@@ -75,7 +77,6 @@ class ConnectionManager:
         my_label: str = None,
         my_endpoint: str = None,
         their_role: str = None,
-        my_router_did: str = None,
     ) -> Tuple[ConnectionRecord, ConnectionInvitation]:
         """
         Generate new connection invitation.
@@ -105,10 +106,9 @@ class ConnectionManager:
         Currently, only peer DID is supported.
 
         Args:
-            label: Label for this connection
-            my_endpoint: Endpoint where other party can reach me
-            seed: Seed for key
-            metadata: Metadata for key
+            my_label: label for this connection
+            my_endpoint: endpoint where other party can reach me
+            their_role: a role to assign the connection
 
         Returns:
             A tuple of the new `ConnectionRecord` and `ConnectionInvitation` instances
@@ -117,26 +117,23 @@ class ConnectionManager:
         self._log_state("Creating invitation")
 
         if not my_endpoint:
-            my_endpoint = self.context.default_endpoint
+            my_endpoint = self.context.settings.get("default_endpoint")
         if not my_label:
-            my_label = self.context.default_label
+            my_label = self.context.settings.get("default_label")
 
         # Create and store new invitation key
-        connection_key = await self.context.wallet.create_signing_key()
+        wallet: BaseWallet = await self.context.inject(BaseWallet)
+        connection_key = await wallet.create_signing_key()
 
         # Create connection record
         connection = ConnectionRecord(
-            my_router_did=my_router_did,
             initiator=ConnectionRecord.INITIATOR_SELF,
             invitation_key=connection_key.verkey,
             their_role=their_role,
             state=ConnectionRecord.STATE_INVITATION,
-            routing_state=ConnectionRecord.ROUTING_STATE_REQUIRED
-            if my_router_did
-            else ConnectionRecord.ROUTING_STATE_NONE,
         )
 
-        await connection.save(self.context.storage, self.context.service_factory)
+        await connection.save(self.context)
         asyncio.ensure_future(send_webhook("connections", connection.serialize()))
 
         self._log_state(
@@ -145,15 +142,15 @@ class ConnectionManager:
         )
 
         # Create connection invitation message
-        # Note: routing keys would need to be filled in later
+        # Note: Need to split this into two stages to support inbound routing of invites
+        # Would want to reuse create_did_document and convert the result
         invitation = ConnectionInvitation(
             label=my_label, recipient_keys=[connection_key.verkey], endpoint=my_endpoint
         )
-        await connection.attach_invitation(self.context.storage, invitation)
+        await connection.attach_invitation(self.context, invitation)
 
         await connection.log_activity(
-            self.context.storage, self.context.service_factory, "invitation",
-            connection.DIRECTION_SENT,
+            self.context, "invitation", connection.DIRECTION_SENT
         )
 
         return connection, invitation
@@ -176,7 +173,6 @@ class ConnectionManager:
         self,
         invitation: ConnectionInvitation,
         their_role: str = None,
-        my_router_did: str = None,
     ) -> ConnectionRecord:
         """
         Create a new connection record to track a received invitation.
@@ -184,7 +180,6 @@ class ConnectionManager:
         Args:
             invitation: The `ConnectionInvitation` to store
             their_role: The role assigned to this connection
-            my_router_did: The DID of the router connection to use
 
         Returns:
             The new `ConnectionRecord` instance
@@ -198,35 +193,29 @@ class ConnectionManager:
 
         # Create connection record
         connection = ConnectionRecord(
-            my_router_did=my_router_did,
             initiator=ConnectionRecord.INITIATOR_EXTERNAL,
             invitation_key=invitation.recipient_keys[0],
             their_label=invitation.label,
             their_role=their_role,
             state=ConnectionRecord.STATE_INVITATION,
-            routing_state=ConnectionRecord.ROUTING_STATE_REQUIRED
-            if my_router_did
-            else ConnectionRecord.ROUTING_STATE_NONE,
         )
 
-        await connection.save(self.context.storage, self.context.service_factory)
+        await connection.save(self.context)
         asyncio.ensure_future(send_webhook("connections", connection.serialize()))
 
         self._log_state(
             "Created new connection record",
             {
                 "id": connection.connection_id,
-                "routing_state": connection.routing_state,
                 "state": connection.state,
             },
         )
 
         # Save the invitation for later processing
-        await connection.attach_invitation(self.context.storage, invitation)
+        await connection.attach_invitation(self.context, invitation)
 
         await connection.log_activity(
-            self.context.storage, self.context.service_factory, "invitation",
-            connection.DIRECTION_RECEIVED,
+            self.context, "invitation", connection.DIRECTION_RECEIVED
         )
 
         return connection
@@ -249,17 +238,20 @@ class ConnectionManager:
             A new `ConnectionRequest` message to send to the other agent
 
         """
+        wallet: BaseWallet = await self.context.inject(BaseWallet)
         if connection.my_did:
-            my_info = await self.context.wallet.get_local_did(connection.my_did)
+            my_info = await wallet.get_local_did(connection.my_did)
         else:
             # Create new DID for connection
-            my_info = await self.context.wallet.create_local_did()
+            my_info = await wallet.create_local_did()
             connection.my_did = my_info.did
 
         # Create connection request message
-        did_doc = await self.create_did_document(my_info, connection.my_router_did)
+        did_doc = await self.create_did_document(
+            my_info, connection.inbound_connection_id
+        )
         if not my_label:
-            my_label = self.context.default_label
+            my_label = self.context.settings.get("default_label")
         request = ConnectionRequest(
             label=my_label,
             connection=ConnectionDetail(did=connection.my_did, did_doc=did_doc),
@@ -269,23 +261,25 @@ class ConnectionManager:
         connection.request_id = request._id
         connection.state = ConnectionRecord.STATE_REQUEST
 
-        await connection.save(self.context.storage, self.context.service_factory)
+        await connection.save(self.context)
         asyncio.ensure_future(send_webhook("connections", connection.serialize()))
         self._log_state("Updated connection state", {"connection": connection})
 
         await connection.log_activity(
-            self.context.storage, self.context.service_factory, "request",
-            connection.DIRECTION_SENT,
+            self.context, "request", connection.DIRECTION_SENT
         )
 
         return request
 
-    async def receive_request(self, request: ConnectionRequest) -> ConnectionRecord:
+    async def receive_request(
+        self, request: ConnectionRequest, delivery: MessageDelivery
+    ) -> ConnectionRecord:
         """
         Receive and store a connection request.
 
         Args:
             request: The `ConnectionRequest` to accept
+            delivery: The message delivery metadata
 
         Returns:
             The new or updated `ConnectionRecord` instance
@@ -297,18 +291,15 @@ class ConnectionManager:
         connection_key = None
 
         # Determine what key will need to sign the response
-        if self.context.recipient_did_public:
-            my_info = await self.context.wallet.get_local_did(
-                self.context.recipient_did
-            )
+        if delivery.recipient_did_public:
+            wallet: BaseWallet = await self.context.inject(BaseWallet)
+            my_info = await wallet.get_local_did(self.context.recipient_did)
             connection_key = my_info.verkey
         else:
-            connection_key = self.context.recipient_verkey
+            connection_key = delivery.recipient_verkey
             try:
                 connection = await ConnectionRecord.retrieve_by_invitation_key(
-                    self.context.storage,
-                    connection_key,
-                    ConnectionRecord.INITIATOR_SELF,
+                    self.context, connection_key, ConnectionRecord.INITIATOR_SELF
                 )
             except StorageNotFoundError:
                 raise ConnectionManagerError(
@@ -317,13 +308,20 @@ class ConnectionManager:
 
         invitation = None
         if connection:
-            invitation = await connection.retrieve_invitation(self.context.storage)
+            invitation = await connection.retrieve_invitation(self.context)
             connection_key = connection.invitation_key
             self._log_state("Found invitation", {"invitation": invitation})
 
         conn_did_doc = request.connection.did_doc
+        if not conn_did_doc:
+            raise ConnectionManagerError(
+                "No DIDDoc provided; cannot connect to public DID"
+            )
         if request.connection.did != conn_did_doc.did:
-            raise ConnectionManagerError("Connection DID does not match DIDDoc id")
+            raise ConnectionManagerError(
+                "Connection DID does not match DIDDoc id",
+                error_code=ProblemReportReason.REQUEST_NOT_ACCEPTED.value,
+            )
         await self.store_did_document(conn_did_doc)
 
         if connection:
@@ -331,37 +329,33 @@ class ConnectionManager:
             connection.their_did = request.connection.did
             connection.state = ConnectionRecord.STATE_REQUEST
 
-            await connection.save(self.context.storage, self.context.service_factory)
+            await connection.save(self.context)
             asyncio.ensure_future(send_webhook("connections", connection.serialize()))
             self._log_state("Updated connection state", {"connection": connection})
         else:
             connection = ConnectionRecord(
-                my_router_did=None,
                 initiator=ConnectionRecord.INITIATOR_EXTERNAL,
                 invitation_key=connection_key,
                 their_label=request.label,
                 state=ConnectionRecord.STATE_REQUEST,
-                routing_state=ConnectionRecord.ROUTING_STATE_NONE,
             )
 
-            await connection.save(self.context.storage, self.context.service_factory)
+            await connection.save(self.context)
             asyncio.ensure_future(send_webhook("connections", connection.serialize()))
 
             self._log_state(
                 "Created new connection record",
                 {
                     "id": connection.connection_id,
-                    "routing_state": connection.routing_state,
                     "state": connection.state,
                 },
             )
 
         # Attach the connection request so it can be found and responded to
-        await connection.attach_request(self.context.storage, request)
+        await connection.attach_request(self.context, request)
 
         await connection.log_activity(
-            self.context.storage, self.context.service_factory, "request",
-            connection.DIRECTION_RECEIVED,
+            self.context, "request", connection.DIRECTION_RECEIVED
         )
 
         return connection
@@ -370,8 +364,6 @@ class ConnectionManager:
         self,
         connection: ConnectionRecord,
         my_endpoint: str = None,
-        my_router_did: str = None,
-        their_role: str = None,
     ) -> ConnectionResponse:
         """
         Create a connection response for a received connection request.
@@ -379,8 +371,6 @@ class ConnectionManager:
         Args:
             connection: The `ConnectionRecord` with a pending connection request
             my_endpoint: The endpoint I can be reached at
-            my_router_did: The DID of my router connection to use
-            their_role: The role to assign to this connection
 
         Returns:
             A tuple of the updated `ConnectionRecord` new `ConnectionResponse` message
@@ -398,25 +388,17 @@ class ConnectionManager:
                 "Connection is not in the request or response state"
             )
 
-        request = await connection.retrieve_request(self.context.storage)
+        request = await connection.retrieve_request(self.context)
+        wallet: BaseWallet = await self.context.inject(BaseWallet)
         if connection.my_did:
-            my_info = await self.context.wallet.get_local_did(connection.my_did)
+            my_info = await wallet.get_local_did(connection.my_did)
         else:
-            my_info = await self.context.wallet.create_local_did()
+            my_info = await wallet.create_local_did()
             connection.my_did = my_info.did
-
-        if my_router_did:
-            connection.my_router_did = my_router_did
-            connection.routing_state = ConnectionRecord.ROUTING_STATE_REQUIRED
-        if their_role:
-            connection.their_role = their_role
-
-        if not my_endpoint:
-            my_endpoint = self.context.default_endpoint
 
         # Create connection response message
         did_doc = await self.create_did_document(
-            my_info, connection.my_router_did, my_endpoint
+            my_info, connection.inbound_connection_id, my_endpoint
         )
         response = ConnectionResponse(
             connection=ConnectionDetail(did=my_info.did, did_doc=did_doc)
@@ -424,9 +406,8 @@ class ConnectionManager:
         # Assign thread information
         response.assign_thread_from(request)
         # Sign connection field using the invitation key
-        await response.sign_field(
-            "connection", connection.invitation_key, self.context.wallet
-        )
+        wallet: BaseWallet = await self.context.inject(BaseWallet)
+        await response.sign_field("connection", connection.invitation_key, wallet)
         self._log_state(
             "Created connection response",
             {
@@ -439,18 +420,19 @@ class ConnectionManager:
         # Update connection state
         connection.state = ConnectionRecord.STATE_RESPONSE
 
-        await connection.save(self.context.storage, self.context.service_factory)
+        await connection.save(self.context)
         asyncio.ensure_future(send_webhook("connections", connection.serialize()))
         self._log_state("Updated connection state", {"connection": connection})
 
         await connection.log_activity(
-            self.context.storage, self.context.service_factory, "response",
-            connection.DIRECTION_SENT,
+            self.context, "response", connection.DIRECTION_SENT
         )
 
         return response
 
-    async def accept_response(self, response: ConnectionResponse) -> ConnectionRecord:
+    async def accept_response(
+        self, response: ConnectionResponse, delivery: MessageDelivery
+    ) -> ConnectionRecord:
         """
         Accept a connection response.
 
@@ -459,6 +441,7 @@ class ConnectionManager:
 
         Args:
             response: The `ConnectionResponse` to accept
+            delivery: The message delivery metadata
 
         Returns:
             The updated `ConnectionRecord` representing the connection
@@ -474,28 +457,26 @@ class ConnectionManager:
         connection = None
         if response._thread:
             # identify the request by the thread ID
-            request_id = response._thread_id
             try:
                 connection = await ConnectionRecord.retrieve_by_request_id(
-                    self.context.storage, request_id
+                    self.context, response._thread_id
                 )
             except StorageNotFoundError:
                 pass
 
-        if not connection:
+        if not connection and delivery.sender_did:
             # identify connection by the DID they used for us
             try:
                 connection = await ConnectionRecord.retrieve_by_did(
-                    self.context.storage,
-                    self.context.sender_did,
-                    self.context.recipient_did,
+                    self.context, delivery.sender_did, delivery.recipient_did
                 )
             except StorageNotFoundError:
                 pass
 
         if not connection:
             raise ConnectionManagerError(
-                "No connection associated with connection response"
+                "No corresponding connection request found",
+                error_code=ProblemReportReason.RESPONSE_FOR_UNKNOWN_REQUEST.value,
             )
 
         if connection.state not in (
@@ -509,6 +490,10 @@ class ConnectionManager:
 
         their_did = response.connection.did
         conn_did_doc = response.connection.did_doc
+        if not conn_did_doc:
+            raise ConnectionManagerError(
+                "No DIDDoc provided; cannot connect to public DID"
+            )
         if their_did != conn_did_doc.did:
             raise ConnectionManagerError("Connection DID does not match DIDDoc id")
         await self.store_did_document(conn_did_doc)
@@ -516,12 +501,11 @@ class ConnectionManager:
         connection.their_did = their_did
         connection.state = ConnectionRecord.STATE_RESPONSE
 
-        await connection.save(self.context.storage, self.context.service_factory)
+        await connection.save(self.context)
         asyncio.ensure_future(send_webhook("connections", connection.serialize()))
 
         await connection.log_activity(
-            self.context.storage, self.context.service_factory, "response",
-            connection.DIRECTION_RECEIVED,
+            self.context, "response", connection.DIRECTION_RECEIVED
         )
 
         return connection
@@ -543,7 +527,7 @@ class ConnectionManager:
             auto_complete: Should this connection automatically be promoted to active
 
         Returns:
-            The found `ConnectionRecord`
+            The located `ConnectionRecord`, if any
 
         """
         # self._log_state(
@@ -554,7 +538,7 @@ class ConnectionManager:
         if their_did:
             try:
                 connection = await ConnectionRecord.retrieve_by_did(
-                    self.context.storage, their_did, my_did
+                    self.context, their_did, my_did
                 )
             except StorageNotFoundError:
                 pass
@@ -566,12 +550,12 @@ class ConnectionManager:
         ):
             connection.state = ConnectionRecord.STATE_ACTIVE
 
-            await connection.save(self.context.storage, self.context.service_factory)
+            await connection.save(self.context)
             asyncio.ensure_future(send_webhook("connections", connection.serialize()))
             self._log_state("Connection promoted to active", {"connection": connection})
         elif connection and connection.state == ConnectionRecord.STATE_INACTIVE:
             connection.state = ConnectionRecord.STATE_ACTIVE
-            await connection.save(self.context.storage, self.context.service_factory)
+            await connection.save(self.context)
             asyncio.ensure_future(send_webhook("connections", connection.serialize()))
 
             self._log_state("Connection restored to active", {"connection": connection})
@@ -579,144 +563,77 @@ class ConnectionManager:
         if not connection and my_verkey:
             try:
                 connection = await ConnectionRecord.retrieve_by_invitation_key(
-                    self.context.storage, my_verkey, ConnectionRecord.INITIATOR_SELF
+                    self.context, my_verkey, ConnectionRecord.INITIATOR_SELF
                 )
             except StorageError:
                 pass
 
         return connection
 
-    async def expand_message(
-        self,
-        message_body: Union[str, bytes],
-        transport_type: str,
-        svc_factory_init: Callable,
-    ) -> RequestContext:
+    async def find_message_connection(
+        self, delivery: MessageDelivery
+    ) -> ConnectionRecord:
         """
         Deserialize an incoming message and further populate the request context.
 
-        message_body: The body of the message
-        transport_type: The transport the message was received on
-
-        Returns:
-            The `RequestContext` of the expanded message
-
-        Raises:
-            MessageParseError: If there is no message factory defined
-            MessageParseError: If there is no wallet defined
-            MessageParseError: If the JSON parsing failed
-
-        """
-        if not self.context.message_factory:
-            raise MessageParseError("Message factory not defined")
-        if not self.context.wallet:
-            raise MessageParseError("Wallet not defined")
-
-        message_dict = None
-        message_json = message_body
-        from_verkey = None
-        to_verkey = None
-
-        try:
-            message_dict = json.loads(message_json)
-        except ValueError:
-            raise MessageParseError("Message JSON parsing failed")
-
-        if "@type" not in message_dict:
-            try:
-                unpacked = await self.context.wallet.unpack_message(message_body)
-                message_json, from_verkey, to_verkey = unpacked
-            except WalletError:
-                self._logger.debug("Message unpack failed, falling back to JSON")
-            else:
-                try:
-                    message_dict = json.loads(message_json)
-                except ValueError:
-                    raise MessageParseError("Message JSON parsing failed")
-
-        self._logger.debug(f"Expanded message: {message_dict}")
-
-        ctx = self.context.copy()
-        ctx.message = ctx.message_factory.make_message(message_dict)
-        ctx.transport_type = transport_type
-        ctx.service_factory = svc_factory_init(ctx)
-
-        if from_verkey and to_verkey:
-            # must be a packed message for from_verke and to_verkey to be populated
-            ctx.recipient_verkey = to_verkey
-            ctx.sender_verkey = from_verkey
-            try:
-                ctx.sender_did = await self.find_did_for_key(from_verkey)
-            except StorageNotFoundError:
-                pass
-
-            try:
-                my_info = await self.context.wallet.get_local_did_for_verkey(to_verkey)
-                ctx.recipient_did = my_info.did
-                if "public" in my_info.metadata and my_info.metadata["public"] is True:
-                    ctx.recipient_did_public = True
-
-            except WalletNotFoundError:
-                pass
-
-            connection = await self.find_connection(
-                ctx.sender_did, ctx.recipient_did, to_verkey, True
-            )
-            if connection:
-                self._log_state("Found connection", {"connection": connection})
-                ctx.connection_active = (
-                    connection.state == ConnectionRecord.STATE_ACTIVE
-                )
-                ctx.connection_record = connection
-                ctx.connection_target = await self.get_connection_target(connection)
-
-        # look up thread information
-
-        # handle any other decorators having special behaviour (timing, trace, etc)
-
-        return ctx
-
-    async def compact_message(
-        self, message: Union[AgentMessage, str, bytes], target: ConnectionTarget
-    ) -> Union[str, bytes]:
-        """
-        Serialize an outgoing message for transport.
-
         Args:
-            message: The `AgentMessage` to compact, or a pre-packed string or bytes
-            target: The `ConnectionTarget` you are compacting for
+            delivery: The message delivery details
 
         Returns:
-            The compacted message
+            The `ConnectionRecord` associated with the expanded message, if any
 
         """
-        if isinstance(message, AgentMessage):
-            message_json = message.to_json()
-            if target.sender_key and target.recipient_keys:
-                message = await self.context.wallet.pack_message(
-                    message_json, target.recipient_keys, target.sender_key
+
+        if delivery.sender_verkey:
+            try:
+                delivery.sender_did = await self.find_did_for_key(
+                    delivery.sender_verkey
                 )
-                if target.routing_keys:
-                    recip_keys = target.recipient_keys
-                    for router_key in target.routing_keys:
-                        fwd_msg = Forward(to=recip_keys[0], msg=message)
-                        # Forwards are anon packed
-                        recip_keys = [router_key]
-                        message = await self.context.wallet.pack_message(
-                            fwd_msg.to_json(), recip_keys
-                        )
-            else:
-                message = message_json
-        return message
+            except StorageNotFoundError:
+                self._logger.warning(
+                    "No corresponding DID found for sender verkey: %s",
+                    delivery.sender_verkey,
+                )
+
+        if delivery.recipient_verkey:
+            try:
+                wallet: BaseWallet = await self.context.inject(BaseWallet)
+                my_info = await wallet.get_local_did_for_verkey(
+                    delivery.recipient_verkey
+                )
+                delivery.recipient_did = my_info.did
+                if "public" in my_info.metadata and my_info.metadata["public"] is True:
+                    delivery.recipient_did_public = True
+            except InjectorError:
+                self._logger.warning(
+                    "Cannot resolve recipient verkey, no wallet defined by context: %s",
+                    delivery.recipient_verkey,
+                )
+            except WalletNotFoundError:
+                self._logger.warning(
+                    "No corresponding DID found for recipient verkey: %s",
+                    delivery.recipient_verkey,
+                )
+
+        connection = await self.find_connection(
+            delivery.sender_did, delivery.recipient_did, delivery.recipient_verkey, True
+        )
+        if connection:
+            self._log_state("Found connection", {"connection": connection})
+
+        return connection
 
     async def create_did_document(
-        self, my_info: DIDInfo, my_router_did: str = None, my_endpoint: str = None
+        self,
+        my_info: DIDInfo,
+        inbound_connection_id: str = None,
+        my_endpoint: str = None
     ) -> DIDDoc:
         """Create our DID document for a given DID.
 
         Args:
             my_info: The DID I am using in this connection
-            my_router_did: The DID of the router connection to use
+            inbound_connection_id: The DID of the inbound routing connection to use
             my_endpoint: A custom endpoint for the DID Document
 
         Returns:
@@ -730,17 +647,56 @@ class ConnectionManager:
         pk = PublicKey(
             my_info.did,
             "1",
+            did_key,
             PublicKeyType.ED25519_SIG_2018,
             did_controller,
-            did_key,
             True,
         )
-        did_doc.verkeys.append(pk)
+        did_doc.set(pk)
+
+        router_id = inbound_connection_id
+        routing_keys = []
+        router_idx = 1
+        while router_id:
+            # look up routing connection information
+            router = await ConnectionRecord.retrieve_by_id(self.context, router_id)
+            if router.state != ConnectionRecord.STATE_ACTIVE:
+                raise ConnectionManagerError(
+                    f"Router connection not active: {router_id}"
+                )
+            routing_doc = await self.fetch_did_document(router.their_did)
+            if not routing_doc.service:
+                raise ConnectionManagerError(
+                    f"No services defined by routing DIDDoc: {router_id}"
+                )
+            for service in routing_doc.service.values():
+                if not service.endpoint:
+                    raise ConnectionManagerError(
+                        "Routing DIDDoc service has no service endpoint"
+                    )
+                if not service.recip_keys:
+                    raise ConnectionManagerError(
+                        "Routing DIDDoc service has no recipient key(s)"
+                    )
+                rk = PublicKey(
+                    my_info.did,
+                    f"routing-{router_idx}",
+                    service.recip_keys[0].value,
+                    PublicKeyType.ED25519_SIG_2018,
+                    did_controller,
+                    True,
+                )
+                routing_keys.append(rk)
+                my_endpoint = service.endpoint
+                break
+            router_id = router.inbound_connection_id
 
         if not my_endpoint:
-            my_endpoint = self.context.default_endpoint
-        service = Service(my_info.did, "indy", "IndyAgent", [did_key], [], my_endpoint)
-        did_doc.services.append(service)
+            my_endpoint = self.context.settings.get("default_endpoint")
+        service = Service(
+            my_info.did, "indy", "IndyAgent", [pk], routing_keys, my_endpoint
+        )
+        did_doc.set(service)
 
         return did_doc
 
@@ -750,7 +706,8 @@ class ConnectionManager:
         Args:
             did: The DID to search for
         """
-        record = await self.context.storage.search_records(
+        storage: BaseStorage = await self.context.inject(BaseStorage)
+        record = await storage.search_records(
             self.RECORD_TYPE_DID_DOC, {"did": did}
         ).fetch_single()
         return DIDDoc.from_json(record.value)
@@ -762,17 +719,18 @@ class ConnectionManager:
             did_doc: The `DIDDoc` instance to be persisted
         """
         assert did_doc.did
+        storage: BaseStorage = await self.context.inject(BaseStorage)
         try:
             record = await self.fetch_did_document(did_doc.did)
         except StorageNotFoundError:
             record = StorageRecord(
                 self.RECORD_TYPE_DID_DOC, did_doc.to_json(), {"did": did_doc.did}
             )
-            await self.context.storage.add_record(record)
+            await storage.add_record(record)
         else:
-            await self.context.storage.update_record_value(record, did_doc.value)
+            await storage.update_record_value(record, did_doc.value)
         await self.remove_keys_for_did(did_doc.did)
-        for key in did_doc.verkeys:
+        for key in did_doc.pubkey.values():
             if key.controller == did_doc.did:
                 await self.add_key_for_did(did_doc.did, key.value)
 
@@ -784,7 +742,8 @@ class ConnectionManager:
             key: The verkey to be added
         """
         record = StorageRecord(self.RECORD_TYPE_DID_KEY, key, {"did": did, "key": key})
-        await self.context.storage.add_record(record)
+        storage: BaseStorage = await self.context.inject(BaseStorage)
+        await storage.add_record(record)
 
     async def find_did_for_key(self, key: str) -> str:
         """Find the DID previously associated with a key.
@@ -792,7 +751,8 @@ class ConnectionManager:
         Args:
             key: The verkey to look up
         """
-        record = await self.context.storage.search_records(
+        storage: BaseStorage = await self.context.inject(BaseStorage)
+        record = await storage.search_records(
             self.RECORD_TYPE_DID_KEY, {"key": key}
         ).fetch_single()
         return record.tags["did"]
@@ -803,11 +763,12 @@ class ConnectionManager:
         Args:
             did: The DID to remove keys for
         """
-        keys = await self.context.storage.search_records(
+        storage: BaseStorage = await self.context.inject(BaseStorage)
+        keys = await storage.search_records(
             self.RECORD_TYPE_DID_KEY, {"did": did}
         ).fetch_all()
         for record in keys:
-            await self.context.storage.delete_record(record)
+            await storage.delete_record(record)
 
     async def get_connection_target(
         self, connection: ConnectionRecord
@@ -822,13 +783,14 @@ class ConnectionManager:
             self._logger.debug("No local DID associated with connection")
             return None
 
-        my_info = await self.context.wallet.get_local_did(connection.my_did)
+        wallet: BaseWallet = await self.context.inject(BaseWallet)
+        my_info = await wallet.get_local_did(connection.my_did)
 
         if (
             connection.state in (connection.STATE_INVITATION, connection.STATE_REQUEST)
             and connection.initiator == connection.INITIATOR_EXTERNAL
         ):
-            invitation = await connection.retrieve_invitation(self.context.storage)
+            invitation = await connection.retrieve_invitation(self.context)
             return ConnectionTarget(
                 did=connection.their_did,
                 endpoint=invitation.endpoint,
@@ -843,15 +805,118 @@ class ConnectionManager:
             return None
 
         doc = await self.fetch_did_document(connection.their_did)
-        if not doc.services:
+        return self.diddoc_connection_target(
+            doc, my_info.verkey, connection.their_label
+        )
+
+    def diddoc_connection_target(
+        self, doc: DIDDoc, sender_verkey: str, their_label: str = None
+    ) -> ConnectionTarget:
+        """Create a connection target from a DID Document.
+
+        Args:
+            doc: The DID Document to create the target from
+            sender_verkey: The verkey we are using
+            their_label: The connection label they are using
+        """
+
+        if not doc:
+            raise ConnectionManagerError("No DIDDoc provided for connection target")
+        if not doc.did:
+            raise ConnectionManagerError("DIDDoc has no DID")
+        if not doc.service:
             raise ConnectionManagerError("No services defined by DIDDoc")
 
-        service = doc.services[0]
-        return ConnectionTarget(
-            did=doc.did,
-            endpoint=service.endpoint,
-            label=connection.their_label,
-            recipient_keys=service.recip_keys,
-            routing_keys=service.routing_keys,
-            sender_key=my_info.verkey,
+        for service in doc.service.values():
+            if not service.recip_keys:
+                raise ConnectionManagerError("DIDDoc service has no recipient key(s)")
+            if not service.endpoint:
+                raise ConnectionManagerError("DIDDoc service has no service endpoint")
+
+            return ConnectionTarget(
+                did=doc.did,
+                endpoint=service.endpoint,
+                label=their_label,
+                recipient_keys=[key.value for key in (service.recip_keys or ())],
+                routing_keys=[key.value for key in (service.routing_keys or ())],
+                sender_key=sender_verkey,
+            )
+
+    async def establish_inbound(
+        self,
+        connection: ConnectionRecord,
+        inbound_connection_id: str,
+        outbound_handler
+    ) -> str:
+        """Assign the inbound routing connection for a connection record.
+
+        Returns: the current routing state (request or done)
+
+        """
+
+        # The connection must have a verkey, but in the case of a received
+        # invitation we might not have created one yet
+        wallet: BaseWallet = await self.context.inject(BaseWallet)
+        if connection.my_did:
+            my_info = await wallet.get_local_did(connection.my_did)
+        else:
+            # Create new DID for connection
+            my_info = await wallet.create_local_did()
+            connection.my_did = my_info.did
+
+        try:
+            router = await ConnectionRecord.retrieve_by_id(
+                self.context,
+                inbound_connection_id
+            )
+        except StorageNotFoundError:
+            raise ConnectionManagerError(
+                f"Routing connection not found: {inbound_connection_id}"
+            )
+        if not router.is_active:
+            raise ConnectionManagerError(
+                f"Routing connection is not active: {inbound_connection_id}"
+            )
+        connection.inbound_connection_id = inbound_connection_id
+
+        route_mgr = RoutingManager(self.context)
+
+        await route_mgr.send_create_route(
+            inbound_connection_id,
+            my_info.verkey,
+            outbound_handler
         )
+        connection.routing_state = ConnectionRecord.ROUTING_STATE_REQUEST
+        await connection.save(self.context)
+        asyncio.ensure_future(send_webhook("connections", connection.serialize()))
+        return connection.routing_state
+
+    async def update_inbound(
+        self,
+        inbound_connection_id: str,
+        recip_verkey: str,
+        routing_state: str
+    ):
+        """Activate connections once a route has been established.
+
+        Looks up pending connections associated with the inbound routing
+        connection and marks the routing as complete.
+        """
+        conns = await ConnectionRecord.query(
+            self.context, {
+                "inbound_connection_id": inbound_connection_id,
+            }
+        )
+        wallet: BaseWallet = await self.context.inject(BaseWallet)
+
+        for connection in conns:
+            # check the recipient key
+            if not connection.my_did:
+                continue
+            conn_info = await wallet.get_local_did(connection.my_did)
+            if conn_info.verkey == recip_verkey:
+                connection.routing_state = routing_state
+                await connection.save(self.context)
+                asyncio.ensure_future(
+                    send_webhook("connections", connection.serialize())
+                )

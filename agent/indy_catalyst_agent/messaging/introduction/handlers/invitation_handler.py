@@ -16,15 +16,12 @@ class InvitationHandler(BaseHandler):
         if not context.connection_active:
             raise HandlerException("No connection established for invitation message")
 
-        svc_factory = context.service_factory
-        service: BaseIntroductionService = await svc_factory.resolve_service(
-            "introduction"
+        service: BaseIntroductionService = await context.inject(
+            BaseIntroductionService, required=False
         )
         if service:
             await service.return_invitation(
-                context.connection_record.connection_id,
-                context.message,
-                responder.send_outbound,
+                context.connection_record.connection_id, context.message, responder.send
             )
         else:
             raise HandlerException(
