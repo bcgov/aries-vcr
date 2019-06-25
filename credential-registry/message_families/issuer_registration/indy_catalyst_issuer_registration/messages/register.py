@@ -86,8 +86,8 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                     )
                     value = fields.Nested(CredentialMapping, required=False)
 
-                fields = fields.Nested(Fields, required=True)
-                # model = fields.Str(required=True)
+                _fields = fields.Nested(Fields, data_key="fields", required=True)
+                model = fields.Str(required=True)
 
             class Topic(Schema):
                 """Nested topic schema."""
