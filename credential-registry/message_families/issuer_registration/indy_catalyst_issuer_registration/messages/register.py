@@ -87,7 +87,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                     value = fields.Nested(CredentialMapping, required=False)
 
                 fields = fields.Nested(Fields, required=True)
-                # model = fields.Str(required=True)
+                model = fields.Str(required=True)
 
             class Topic(Schema):
                 """Nested topic schema."""
@@ -113,8 +113,8 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             version = fields.Str(required=True)
             description = fields.Str(required=False)
 
-            mapping = fields.List(MappingEntry, required=False)
-            topic = fields.List(Topic, required=True)
+            mapping = fields.List(fields.Nested(MappingEntry), required=False)
+            topic = fields.List(fields.Nested(Topic), required=True)
 
             logo_b64 = fields.Str(required=False)
             credential_def_id = fields.Str(required=True)
