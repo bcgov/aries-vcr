@@ -35,6 +35,13 @@ class IssuerRegistration(AgentMessage):
         self.issuer_registration = issuer_registration
 
 
+class CredentialMapping(Schema):
+    """Nested mapping."""
+
+    _from = fields.String(data_key="from", required=True)
+    _input = fields.String(data_key="input", required=True)
+
+
 class IssuerRegistrationSchema(AgentMessageSchema):
     """Issuer registration schema class."""
 
@@ -59,12 +66,6 @@ class IssuerRegistrationSchema(AgentMessageSchema):
 
         class CredentialType(Schema):
             """Isuer credential type schema."""
-
-            class CredentialMapping(Schema):
-                """Nested mapping."""
-
-                _from = fields.String(data_key="from", required=True)
-                _input = fields.String(data_key="input", required=True)
 
             class Credential(Schema):
                 """Nested credential schema."""
