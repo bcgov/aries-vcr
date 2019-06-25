@@ -112,7 +112,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             version = fields.Str(required=True)
             description = fields.Str(required=False)
 
-            mapping = fields.Dict(required=False)
+            mapping = fields.List(MappingEntry, required=False)
             topic = fields.List(Topic, required=True)
 
             logo_b64 = fields.Str(required=False)
