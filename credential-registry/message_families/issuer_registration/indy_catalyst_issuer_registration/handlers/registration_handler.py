@@ -1,6 +1,6 @@
 """Issuer registration handler."""
 
-from indy_catalyst_agent.messaging.base_handler import (
+from aries_cloudagent.messaging.base_handler import (
     BaseHandler,
     BaseResponder,
     RequestContext,

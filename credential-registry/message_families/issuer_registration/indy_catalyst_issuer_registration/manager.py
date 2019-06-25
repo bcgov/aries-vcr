@@ -3,12 +3,12 @@
 import asyncio
 import logging
 
-from indy_catalyst_agent.error import BaseError
+from aries_cloudagent.error import BaseError
 
-# from indy_catalyst_agent.messaging.decorators.thread_decorator import ThreadDecorator
+# from aries_cloudagent.messaging.decorators.thread_decorator import ThreadDecorator
 
-from indy_catalyst_agent.messaging.request_context import RequestContext
-from indy_catalyst_agent.messaging.util import send_webhook
+from aries_cloudagent.messaging.request_context import RequestContext
+from aries_cloudagent.messaging.util import send_webhook
 
 from .models.issuer_registration_state import IssuerRegistrationState
 from .messages.register import IssuerRegistration

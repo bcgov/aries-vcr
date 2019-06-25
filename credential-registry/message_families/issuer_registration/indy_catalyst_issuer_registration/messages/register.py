@@ -2,7 +2,7 @@
 
 from marshmallow import fields, Schema
 
-from indy_catalyst_agent.messaging.agent_message import AgentMessage, AgentMessageSchema
+from aries_cloudagent.messaging.agent_message import AgentMessage, AgentMessageSchema
 
 from ..message_types import REGISTER
 

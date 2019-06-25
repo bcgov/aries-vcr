@@ -5,10 +5,10 @@ from aiohttp_apispec import docs, request_schema
 
 from marshmallow import fields, Schema
 
-from indy_catalyst_agent.messaging.connections.models.connection_record import (
+from aries_cloudagent.messaging.connections.models.connection_record import (
     ConnectionRecord,
 )
-from indy_catalyst_agent.storage.error import StorageNotFoundError
+from aries_cloudagent.storage.error import StorageNotFoundError
 
 from .manager import IssuerRegistrationManager
 
