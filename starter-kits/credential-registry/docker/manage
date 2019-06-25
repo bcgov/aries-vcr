@@ -322,7 +322,7 @@ configureEnvironment() {
 
   seed=${INDY_WALLET_SEED:-$seed}
 
-  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "registerdids" ]; then
+  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "restart" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
       echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
       exit 1
@@ -575,12 +575,12 @@ build)
   esac
   ;;
 shell)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   docker-compose run tob-api bash
   ;;
 django)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   docker-compose run tob-api python manage.py $@
   ;;
