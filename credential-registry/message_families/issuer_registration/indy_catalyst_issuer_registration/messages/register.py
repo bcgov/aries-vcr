@@ -60,17 +60,61 @@ class IssuerRegistrationSchema(AgentMessageSchema):
         class CredentialType(Schema):
             """Isuer credential type schema."""
 
+            class CredentialMapping(Schema):
+                """Nested mapping."""
+
+                _from = fields.String(data_key="from", required=True)
+                _input = fields.String(data_key="input", required=True)
+
+            class Credential(Schema):
+                """Nested credential schema."""
+
+                effective_date = fields.Nested(CredentialMapping, required=True)
+
+            class MappingEntry(Schema):
+                """Nested mapping entry schema."""
+
+                class Fields(Schema):
+                    """Nested fields schema."""
+
+                    _format = fields.Nested(
+                        CredentialMapping, data_key="format", required=False
+                    )
+                    _type = fields.Nested(
+                        CredentialMapping, data_key="type", required=False
+                    )
+                    value = fields.Nested(CredentialMapping, required=False)
+
+                fields = fields.Nested(Fields, required=True)
+                model = fields.String(required=True)
+
+            class Topic(Schema):
+                """Nested topic schema."""
+
+                source_id = fields.Nested(CredentialMapping, required=False)
+                _type = fields.Nested(
+                    CredentialMapping, data_key="type", required=False
+                )
+                name = fields.Nested(CredentialMapping, required=False)
+                related_source_id = fields.Nested(CredentialMapping, required=False)
+                related_type = fields.Nested(CredentialMapping, required=False)
+                related_name = fields.Nested(CredentialMapping, required=False)
+
+            cardinality_fields = fields.Dict(required=False)
+            caregory_labels = fields.Dict(required=False)
+            claim_descriptions = fields.Dict(required=False)
+            claim_labels = fields.Dict(required=False)
+
+            credential = fields.Nested(Credential, required=False)
+
             name = fields.Str(required=True)
             schema = fields.Str(required=True)
             version = fields.Str(required=True)
             description = fields.Str(required=False)
-            cardinality_fields = fields.List(fields.Dict, required=False)
-            credential = fields.Str(required=False)
+
             mapping = fields.Dict(required=False)
-            topic = fields.Str(required=False)
-            caregory_labels = fields.List(fields.Str, required=False)
-            claim_descriptions = fields.List(fields.Str, required=False)
-            claim_labels = fields.List(fields.Str, required=False)
+            topic = fields.List(Topic, required=True)
+
             logo_b64 = fields.Str(required=False)
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
