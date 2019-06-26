@@ -168,7 +168,9 @@ async def issuer_registration_send(request: web.BaseRequest):
 
     import json
 
+    LOGGER.info("\n\n\n\n\n\n\n\n")
     LOGGER.info(json.dumps(issuer_registration))
+    LOGGER.info("\n\n\n\n\n\n\n\n")
 
     issuer_registration_manager = IssuerRegistrationManager(context)
 
