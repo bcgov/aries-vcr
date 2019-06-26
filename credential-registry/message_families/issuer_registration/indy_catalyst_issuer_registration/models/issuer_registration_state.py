@@ -7,10 +7,10 @@ from typing import Sequence
 
 from marshmallow import fields
 
-from indy_catalyst_agent.config.injection_context import InjectionContext
-from indy_catalyst_agent.messaging.models.base import BaseModel, BaseModelSchema
-from indy_catalyst_agent.storage.base import BaseStorage
-from indy_catalyst_agent.storage.record import StorageRecord
+from aries_cloudagent.config.injection_context import InjectionContext
+from aries_cloudagent.messaging.models.base import BaseModel, BaseModelSchema
+from aries_cloudagent.storage.base import BaseStorage
+from aries_cloudagent.storage.record import StorageRecord
 
 
 class IssuerRegistrationState(BaseModel):

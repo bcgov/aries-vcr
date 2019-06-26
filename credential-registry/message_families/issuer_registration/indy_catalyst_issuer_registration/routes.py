@@ -5,22 +5,30 @@ from aiohttp_apispec import docs, request_schema
 
 from marshmallow import fields, Schema
 
-from indy_catalyst_agent.messaging.connections.models.connection_record import (
+from aries_cloudagent.messaging.connections.models.connection_record import (
     ConnectionRecord,
 )
-from indy_catalyst_agent.storage.error import StorageNotFoundError
+from aries_cloudagent.storage.error import StorageNotFoundError
 
 from .manager import IssuerRegistrationManager
 
 
+class CredentialMapping(Schema):
+    """Nested mapping."""
+
+    _from = fields.String(data_key="from", required=True)
+    _input = fields.String(data_key="input", required=True)
+
+
+# TODO: Create method in AgentSchema to extract this raw schema instead of duplicating
 class IssuerRegistrationRequestSchema(Schema):
-    """Request schema for issuer registration."""
+    """Issuer registration schema class."""
 
     class IssuerRegistrationNestedSchema(Schema):
         """Issuer registration nested schema."""
 
         class IssuerSchema(Schema):
-            """Isuer nested schema."""
+            """Issuer schema."""
 
             did = fields.Str(required=True)
             name = fields.Str(required=True)
@@ -33,26 +41,64 @@ class IssuerRegistrationRequestSchema(Schema):
         class CredentialType(Schema):
             """Isuer credential type schema."""
 
+            class Credential(Schema):
+                """Nested credential schema."""
+
+                effective_date = fields.Nested(CredentialMapping(), required=True)
+
+            class MappingEntry(Schema):
+                """Nested mapping entry schema."""
+
+                class Fields(Schema):
+                    """Nested fields schema."""
+
+                    _format = fields.Nested(
+                        CredentialMapping, data_key="format", required=False
+                    )
+                    _type = fields.Nested(
+                        CredentialMapping, data_key="type", required=False
+                    )
+                    value = fields.Nested(CredentialMapping(), required=False)
+
+                _fields = fields.Nested(Fields(), data_key="fields", required=True)
+                model = fields.Str(required=True)
+
+            class Topic(Schema):
+                """Nested topic schema."""
+
+                source_id = fields.Nested(CredentialMapping(), required=False)
+                _type = fields.Nested(
+                    CredentialMapping(), data_key="type", required=False
+                )
+                name = fields.Nested(CredentialMapping, required=False)
+                related_source_id = fields.Nested(CredentialMapping(), required=False)
+                related_type = fields.Nested(CredentialMapping(), required=False)
+                related_name = fields.Nested(CredentialMapping(), required=False)
+
+            cardinality_fields = fields.Dict(required=False)
+            caregory_labels = fields.Dict(required=False)
+            claim_descriptions = fields.Dict(required=False)
+            claim_labels = fields.Dict(required=False)
+
+            credential = fields.Nested(Credential(), required=False)
+
             name = fields.Str(required=True)
             schema = fields.Str(required=True)
             version = fields.Str(required=True)
             description = fields.Str(required=False)
-            cardinality_fields = fields.List(fields.Dict, required=False)
-            credential = fields.Str(required=False)
-            mapping = fields.Dict(required=False)
-            topic = fields.Str(required=False)
-            caregory_labels = fields.List(fields.Str, required=False)
-            claim_descriptions = fields.List(fields.Str, required=False)
-            claim_labels = fields.List(fields.Str, required=False)
+
+            mapping = fields.List(fields.Nested(MappingEntry()), required=False)
+            topic = fields.List(fields.Nested(Topic()), required=True)
+
             logo_b64 = fields.Str(required=False)
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
             visible_fields = fields.List(fields.Str, required=False)
 
-        issuer = fields.Nested(IssuerSchema, required=True)
-        credential_types = fields.List(fields.Nested(CredentialType), required=False)
+        issuer = fields.Nested(IssuerSchema(), required=True)
+        credential_types = fields.List(fields.Nested(CredentialType()), required=False)
 
-    issuer_registration = fields.Nested(IssuerRegistrationNestedSchema, required=True)
+    issuer_registration = fields.Nested(IssuerRegistrationNestedSchema(), required=True)
     connection_id = fields.Str(required=True)
 
 

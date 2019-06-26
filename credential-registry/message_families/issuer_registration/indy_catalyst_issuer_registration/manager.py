@@ -1,14 +1,11 @@
 """Classes to manage issuer registrations."""
 
-import asyncio
 import logging
 
-from indy_catalyst_agent.error import BaseError
+from aries_cloudagent.error import BaseError
 
-# from indy_catalyst_agent.messaging.decorators.thread_decorator import ThreadDecorator
-
-from indy_catalyst_agent.messaging.request_context import RequestContext
-from indy_catalyst_agent.messaging.util import send_webhook
+from aries_cloudagent.messaging.request_context import RequestContext
+from aries_cloudagent.messaging.util import send_webhook
 
 from .models.issuer_registration_state import IssuerRegistrationState
 from .messages.register import IssuerRegistration
@@ -69,10 +66,7 @@ class IssuerRegistrationManager:
             issuer_registration=issuer_registration,
         )
         await issuer_registration_state.save(self.context)
-
-        asyncio.ensure_future(
-            send_webhook("issuer_registration", issuer_registration_state.serialize())
-        )
+        await self.updated_record(issuer_registration_state)
 
         return issuer_registration_state, issuer_registration_message
 
@@ -98,9 +92,12 @@ class IssuerRegistrationManager:
             issuer_registration=issuer_registration_message.issuer_registration,
         )
         await issuer_registration_state.save(self.context)
-
-        asyncio.ensure_future(
-            send_webhook("issuer_registration", issuer_registration_state.serialize())
-        )
+        await self.updated_record(issuer_registration_state)
 
         return issuer_registration_state
+
+    async def updated_record(self, issuer_registration_state: IssuerRegistrationState):
+        """Call webhook when the record is updated."""
+        send_webhook(
+            self._context, "issuer_registration", issuer_registration_state.serialize()
+        )
