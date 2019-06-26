@@ -65,7 +65,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             logo_b64 = fields.Str(required=False)
 
         class CredentialType(Schema):
-            """Isuer credential type schema."""
+            """Issuer credential type schema."""
 
             class Credential(Schema):
                 """Nested credential schema."""
@@ -79,13 +79,13 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                     """Nested fields schema."""
 
                     _format = fields.Nested(
-                        CredentialMapping,
+                        CredentialMapping(),
                         data_key="format",
                         attribute="format",
                         required=False,
                     )
                     _type = fields.Nested(
-                        CredentialMapping,
+                        CredentialMapping(),
                         data_key="type",
                         attribute="type",
                         required=False,
@@ -107,7 +107,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                     attribute="type",
                     required=False,
                 )
-                name = fields.Nested(CredentialMapping, required=False)
+                name = fields.Nested(CredentialMapping(), required=False)
                 related_source_id = fields.Nested(CredentialMapping(), required=False)
                 related_type = fields.Nested(CredentialMapping(), required=False)
                 related_name = fields.Nested(CredentialMapping(), required=False)
