@@ -1,11 +1,8 @@
 """Classes to manage issuer registrations."""
 
-import asyncio
 import logging
 
 from aries_cloudagent.error import BaseError
-
-# from aries_cloudagent.messaging.decorators.thread_decorator import ThreadDecorator
 
 from aries_cloudagent.messaging.request_context import RequestContext
 from aries_cloudagent.messaging.util import send_webhook
