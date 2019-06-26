@@ -66,7 +66,22 @@ usage() {
             $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start tob-api
 
-      start - Same as up
+      start - Same as up 
+    
+      restart - Re-starts the application containers, 
+                useful when updating one of the container images during development.
+
+            You can pass in a list of containers to be restarted.  
+            By default all containers will be restarted.
+            
+            The API_URL used by tob-web can also be redirected.
+
+            Examples:
+            $0 start
+            $0 start tob-solr
+            $0 start tob-web
+            $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
+            $0 start tob-api
 
       logs - Display the logs from the docker compose run (ctrl-c to exit).
 
@@ -307,7 +322,7 @@ configureEnvironment() {
 
   seed=${INDY_WALLET_SEED:-$seed}
 
-  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "registerdids" ]; then
+  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "restart" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
       echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
       exit 1
@@ -390,7 +405,7 @@ configureEnvironment() {
 
 getStartupParams() {
   CONTAINERS=""
-  ARGS="--force-recreate"
+  ARGS=""
 
   for arg in $@; do
     case "$arg" in
@@ -496,17 +511,23 @@ shift || COMMAND=usage
 
 case "${COMMAND}" in
 start|up)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   docker-compose up --scale tob-worker=2 -d ${_startupParams} 
   docker-compose logs -f
  ;;
+restart)
+  _startupParams=$(getStartupParams $@)
+  configureEnvironment $@
+  docker-compose stop ${_startupParams}
+  docker-compose up -d ${_startupParams}
+  ;;
 logs)
   configureEnvironment $@
   docker-compose logs -f
   ;;
 web-dev)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   [ -z "$SKIP_BUILD" ] && build-web-dev
   docker-compose run --rm --service-ports tob-web-dev
@@ -533,7 +554,7 @@ registerdids)
   registerDids $(generateSeeds)
   ;;
 build)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   case "$@" in
   tob-api)
@@ -554,12 +575,12 @@ build)
   esac
   ;;
 shell)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   docker-compose run tob-api bash
   ;;
 django)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   docker-compose run tob-api python manage.py $@
   ;;
