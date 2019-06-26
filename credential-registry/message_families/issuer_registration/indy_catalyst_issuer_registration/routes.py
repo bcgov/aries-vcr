@@ -12,6 +12,10 @@ from aries_cloudagent.storage.error import StorageNotFoundError
 
 from .manager import IssuerRegistrationManager
 
+import logging
+
+LOGGER = logging.getLogger(__name__)
+
 
 class IssuerRegistrationRequestSchema(Schema):
     """Request schema for issuer registration."""
@@ -72,6 +76,10 @@ async def issuer_registration_send(request: web.BaseRequest):
 
     connection_id = body.get("connection_id")
     issuer_registration = body.get("issuer_registration")
+
+    import json
+
+    LOGGER.info(json.dumps(issuer_registration))
 
     issuer_registration_manager = IssuerRegistrationManager(context)
 
