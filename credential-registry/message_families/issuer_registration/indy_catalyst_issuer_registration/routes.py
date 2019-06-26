@@ -166,12 +166,6 @@ async def issuer_registration_send(request: web.BaseRequest):
     connection_id = body.get("connection_id")
     issuer_registration = body.get("issuer_registration")
 
-    import json
-
-    LOGGER.info("\n\n\n\n\n\n\n\n")
-    LOGGER.info(json.dumps(issuer_registration))
-    LOGGER.info("\n\n\n\n\n\n\n\n")
-
     issuer_registration_manager = IssuerRegistrationManager(context)
 
     try:
@@ -186,6 +180,13 @@ async def issuer_registration_send(request: web.BaseRequest):
         ) = await issuer_registration_manager.prepare_send(
             connection_id, issuer_registration
         )
+
+
+        import json
+
+        LOGGER.info("\n\n\n\n\n\n\n\n")
+        LOGGER.info(json.dumps(issuer_registration))
+        LOGGER.info("\n\n\n\n\n\n\n\n")
 
         await outbound_handler(issuer_registration_message, connection_id=connection_id)
 

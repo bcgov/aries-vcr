@@ -38,8 +38,8 @@ class IssuerRegistration(AgentMessage):
 class CredentialMapping(Schema):
     """Nested mapping."""
 
-    _from = fields.String(data_key="from", required=True)
-    _input = fields.String(data_key="input", required=True)
+    _from = fields.String(data_key="from", attribute="from", required=True)
+    _input = fields.String(data_key="input", attribute="input", required=True)
 
 
 class IssuerRegistrationSchema(AgentMessageSchema):
@@ -79,14 +79,22 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                     """Nested fields schema."""
 
                     _format = fields.Nested(
-                        CredentialMapping, data_key="format", required=False
+                        CredentialMapping,
+                        data_key="format",
+                        attribute="format",
+                        required=False,
                     )
                     _type = fields.Nested(
-                        CredentialMapping, data_key="type", required=False
+                        CredentialMapping,
+                        data_key="type",
+                        attribute="type",
+                        required=False,
                     )
                     value = fields.Nested(CredentialMapping(), required=False)
 
-                _fields = fields.Nested(Fields(), data_key="fields", required=True)
+                _fields = fields.Nested(
+                    Fields(), data_key="fields", attribute="fields", required=True
+                )
                 model = fields.Str(required=True)
 
             class Topic(Schema):
@@ -94,7 +102,10 @@ class IssuerRegistrationSchema(AgentMessageSchema):
 
                 source_id = fields.Nested(CredentialMapping(), required=False)
                 _type = fields.Nested(
-                    CredentialMapping(), data_key="type", required=False
+                    CredentialMapping(),
+                    data_key="type",
+                    attribute="type",
+                    required=False,
                 )
                 name = fields.Nested(CredentialMapping, required=False)
                 related_source_id = fields.Nested(CredentialMapping(), required=False)
