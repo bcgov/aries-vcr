@@ -283,6 +283,10 @@ build-agent() {
   # tob-agent
   #
   docker build -q \
+    -t 'aries-agent' \
+    -f '../../../../aries-cloudagent-python/docker/Dockerfile.run' '../../../../aries-cloudagent-python'
+
+  docker build -q \
     -t 'tob-agent' \
     -f '../../../agent/docker/Dockerfile.run' '../../../agent'
 

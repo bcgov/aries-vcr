@@ -24,11 +24,12 @@ class IssuerManager:
     """
 
     def register_issuer(self, spec):
-        issuer = spec["issuer_registration"]["issuer"]
+        issuer_registration = spec["issuer_registration"]
+        issuer = issuer_registration["issuer"]
         self.update_user(issuer)
-        issuer = self.update_issuer(spec["issuer_registration"]["issuer"])
+        issuer = self.update_issuer(issuer_registration["issuer"])
         schemas, credential_types = self.update_schemas_and_ctypes(
-            issuer, spec.get("credential_types", [])
+            issuer, issuer_registration.get("credential_types", [])
         )
 
         # TODO: use a serializer to return consistent data with REST API?
@@ -80,7 +81,6 @@ class IssuerManager:
         Update schema records if they exist, otherwise create.
         Create related CredentialType records.
         """
-
         schemas = []
         credential_types = []
 
