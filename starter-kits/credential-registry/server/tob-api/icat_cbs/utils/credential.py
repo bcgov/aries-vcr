@@ -95,30 +95,30 @@ class Credential(object):
         self._schema_id = credential_data["schema_id"]
         self._cred_def_id = credential_data["cred_def_id"]
         self._rev_reg_id = credential_data["rev_reg_id"]
-        self._signature = credential_data["signature"]
-        self._signature_correctness_proof = credential_data[
-            "signature_correctness_proof"
-        ]
+        #self._signature = credential_data["signature"]
+        #self._signature_correctness_proof = credential_data[
+        #    "signature_correctness_proof"
+        #]
         self._req_metadata = request_metadata
-        self._rev_reg = credential_data["rev_reg"]
+        #self._rev_reg = credential_data["rev_reg"]
         self._wallet_id = wallet_id
-        self._witness = credential_data["witness"]
+        #self._witness = credential_data["witness"]
 
         self._claim_attributes = []
 
         # Parse claim attributes into array
         # Values are available as class attributes
-        claim_data = credential_data["values"]
+        claim_data = credential_data["attrs"]
         for claim_attribute in claim_data:
             self._claim_attributes.append(claim_attribute)
 
     def __getattr__(self, name: str):
         """Make claim values accessible on class instance"""
         try:
-            if isinstance(self.raw["values"][name], dict):
-                claim_value = self.raw["values"][name]["raw"]
+            if isinstance(self.raw["attrs"][name], dict):
+                claim_value = self.raw["attrs"][name]["raw"]
             else:
-                claim_value = self.raw["values"][name]
+                claim_value = self.raw["attrs"][name]
             return claim_value
         except KeyError:
             raise AttributeError(

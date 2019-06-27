@@ -179,10 +179,13 @@ services:
         --outbound-transport ws \
         --outbound-transport http \
         --genesis-url '${LEDGER_URL}/genesis' \
-        --auto-respond-messages \
         --accept-invites \
         --accept-requests \
         --auto-ping-connection \
+        --auto-respond-messages \
+        --auto-respond-credential-offer \
+        --auto-respond-presentation-request \
+        --auto-verify-presentation \
         --wallet-type 'indy' \
         --wallet-name 'icat_agent_wallet' \
         --wallet-key '${WALLET_ENCRYPTION_KEY}' \
