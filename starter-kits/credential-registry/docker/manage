@@ -6,8 +6,8 @@ set -e
 S2I_EXE=s2i
 if [ -z $(type -P "$S2I_EXE") ]; then
   echo -e "The ${S2I_EXE} executable is needed and not on your path."
-  echo -e "It can be downloaded from here: https://github.com/openshift/source-to-image"
-  echo -e "Make sure you place it in a directory on your path."
+  echo -e "It can be downloaded from here: https://github.com/openshift/source-to-image/releases"
+  echo -e "Make sure you extract the binary and place it in a directory on your path."
   exit 1
 fi
 
@@ -66,7 +66,22 @@ usage() {
             $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start tob-api
 
-      start - Same as up
+      start - Same as up 
+    
+      restart - Re-starts the application containers, 
+                useful when updating one of the container images during development.
+
+            You can pass in a list of containers to be restarted.  
+            By default all containers will be restarted.
+            
+            The API_URL used by tob-web can also be redirected.
+
+            Examples:
+            $0 start
+            $0 start tob-solr
+            $0 start tob-web
+            $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
+            $0 start tob-api
 
       logs - Display the logs from the docker compose run (ctrl-c to exit).
 
@@ -120,11 +135,12 @@ build-web() {
 
   if [ -t 0 ]; then
     # color npm output in interactive terminal
-    NPM_COLOR="always"
+	  NPM_COLOR="always"
   else
     NPM_COLOR="true"
   fi
 
+  
   echo -e "\nBuilding angular-on-nginx image ..."
   if [ -z "$TOB_THEME_PATH" ]; then
     # No custom theme was specified
@@ -175,7 +191,8 @@ build-web-dev() {
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
-  if [ -z "$TOB_THEME_PATH" ]; then
+  if [ -z "$TOB_THEME_PATH" ]
+  then
     # set TOB_THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
     TOB_THEME_PATH="tob-web-empty"
 
@@ -257,7 +274,7 @@ build-api() {
   # tob-api
   #
   BASE_IMAGE="bcgovimages/von-image:py36-1.7-ew-0-s2i"
-
+  
   echo -e "\nBuilding django image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -282,6 +299,7 @@ build-agent() {
   #
   # tob-agent
   #
+  echo -e "\nBuilding tob-agent image..."
   docker build -q \
     -t 'tob-agent' \
     -f '../../../agent/docker/Dockerfile.run' '../../../agent'
@@ -310,22 +328,22 @@ configureEnvironment() {
   if [ -f .env ]; then
     while read line; do
       if [[ ! "$line" =~ ^\# ]] && [[ "$line" =~ .*= ]]; then
-        export ${line//[$'\r\n']/}
+        export ${line//[$'\r\n']}
       fi
     done <.env
   fi
 
   for arg in $@; do
     case "$arg" in
-    *=*)
-      export ${arg}
-      ;;
+      *=*)
+        export ${arg}
+        ;;
     esac
   done
 
   seed=${INDY_WALLET_SEED:-$seed}
 
-  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "registerdids" ]; then
+  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "restart" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
       echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
       exit 1
@@ -418,7 +436,7 @@ configureEnvironment() {
 
 getStartupParams() {
   CONTAINERS=""
-  ARGS="--force-recreate"
+  ARGS=""
 
   for arg in $@; do
     case "$arg" in
@@ -523,36 +541,42 @@ COMMAND=$(toLower ${1})
 shift || COMMAND=usage
 
 case "${COMMAND}" in
-start | up)
+start|up)
+  _startupParams=$(getStartupParams --force-recreate $@)
+  configureEnvironment $@
+  docker-compose up --scale tob-worker=2 -d ${_startupParams} 
+  docker-compose logs -f
+  ;;
+restart)
   _startupParams=$(getStartupParams $@)
   configureEnvironment $@
-  docker-compose up --scale tob-worker=2 -d ${_startupParams}
-  docker-compose logs -f
+  docker-compose stop ${_startupParams}
+  docker-compose up -d ${_startupParams}
   ;;
 logs)
   configureEnvironment $@
   docker-compose logs -f
   ;;
 web-dev)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   [ -z "$SKIP_BUILD" ] && build-web-dev
   docker-compose run --rm --service-ports tob-web-dev
   ;;
 stop)
   configureEnvironment
-  docker-compose stop
+  docker-compose stop 
   ;;
 startdb)
   configureEnvironment $@
   docker-compose up -d wallet-db
   docker-compose logs -f
-  ;;
+ ;;
 stopdb)
   configureEnvironment
   docker-compose stop wallet-db
-  ;;
-rm | down)
+ ;;
+rm|down)
   configureEnvironment
   deleteVolumes
   ;;
@@ -561,7 +585,7 @@ registerdids)
   registerDids $(generateSeeds)
   ;;
 build)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   case "$@" in
   tob-agent)
@@ -585,12 +609,12 @@ build)
   esac
   ;;
 shell)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   docker-compose run tob-api bash
   ;;
 django)
-  _startupParams=$(getStartupParams $@)
+  _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   docker-compose run tob-api python manage.py $@
   ;;
