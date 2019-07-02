@@ -299,10 +299,20 @@ build-agent() {
   #
   # tob-agent
   #
+  AGENT_BASE_IMAGE_NAME='aries-agent'
+  AGENT_BASE_IMAGE_AVAILABLE=`docker images | grep $AGENT_BASE_IMAGE_NAME | awk '{print $1}'`
+
+  if [ -z "$AGENT_BASE_IMAGE_AVAILABLE" ]; then
+    echo "The base $AGENT_BASE_IMAGE_NAME image was not found on this system."
+    echo "To continue, please check out the agent repository https://github.com/hyperledger/aries-cloudagent-python and run the following command:"    
+    echo "docker build -t $AGENT_BASE_IMAGE_NAME -f docker/Dockerfile.run ."
+    exit 1
+  fi
+
   echo -e "\nBuilding tob-agent image..."
   docker build -q \
     -t 'tob-agent' \
-    -f '../../../agent/docker/Dockerfile.run' '../../../agent'
+    -f '../../../docker/tob-agent/Dockerfile' '../../../docker/tob-agent'
 
   # this is only required in Windows
   if [[ "$OSTYPE" == "msys" ]]; then
