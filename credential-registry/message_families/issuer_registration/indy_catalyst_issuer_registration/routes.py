@@ -52,6 +52,9 @@ class IssuerRegistrationRequestSchema(Schema):
                 class Fields(Schema):
                     """Nested fields schema."""
 
+                    _text = fields.Nested(
+                        CredentialMapping, data_key="text", required=False
+                    )
                     _format = fields.Nested(
                         CredentialMapping, data_key="format", required=False
                     )

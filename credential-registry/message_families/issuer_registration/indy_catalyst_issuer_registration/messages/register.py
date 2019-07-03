@@ -78,6 +78,12 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                 class Fields(Schema):
                     """Nested fields schema."""
 
+                    _text = fields.Nested(
+                        CredentialMapping(),
+                        data_key="text",
+                        attribute="text",
+                        required=False,
+                    )
                     _format = fields.Nested(
                         CredentialMapping(),
                         data_key="format",
