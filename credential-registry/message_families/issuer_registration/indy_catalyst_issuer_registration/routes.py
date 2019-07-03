@@ -80,8 +80,9 @@ class IssuerRegistrationRequestSchema(Schema):
 
             cardinality_fields = fields.Dict(required=False)
             caregory_labels = fields.Dict(required=False)
-            claim_descriptions = fields.Dict(required=False)
-            claim_labels = fields.Dict(required=False)
+
+            claim_descriptions = fields.Dict(keys=fields.Str(), values=fields.Nested(fields.Dict()), required=False)
+            claim_labels = fields.Dict(keys=fields.Str(), values=fields.Nested(fields.Dict()), required=False)
 
             credential = fields.Nested(Credential(), required=False)
 
