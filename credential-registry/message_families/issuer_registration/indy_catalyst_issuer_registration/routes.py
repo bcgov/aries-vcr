@@ -36,7 +36,7 @@ class IssuerRegistrationRequestSchema(Schema):
             email = fields.Str(required=False)
             url = fields.Str(required=False)
             endpoint = fields.Str(required=False)
-            logo_b64 = fields.Str(required=False)
+            logo_path = fields.Str(required=False)
 
         class CredentialType(Schema):
             """Isuer credential type schema."""
