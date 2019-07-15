@@ -144,7 +144,10 @@ async def issuer_registration_send(request: web.BaseRequest):
             context, "issuer_registration", connection.DIRECTION_SENT
         )
 
-    return web.json_response(issuer_registration_state.serialize())
+        return web.json_response(issuer_registration_state.serialize())
+
+    else:
+        return web.BaseRequest("ERROR connection is not ready")
 
 
 async def register(app: web.Application):
