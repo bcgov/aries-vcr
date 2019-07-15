@@ -78,7 +78,7 @@ class IssuerRegistrationRequestSchema(Schema):
                 related_type = fields.Nested(CredentialMapping(), required=False)
                 related_name = fields.Nested(CredentialMapping(), required=False)
 
-            cardinality_fields = fields.Dict(required=False)
+            cardinality_fields = fields.List(fields.Str(), required=False)
             category_labels = fields.Dict(required=False)
 
             claim_descriptions = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
@@ -97,7 +97,7 @@ class IssuerRegistrationRequestSchema(Schema):
             logo_b64 = fields.Str(required=False, allow_none=True)
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
-            visible_fields = fields.List(fields.Str, required=False)
+            visible_fields = fields.List(fields.Str(), required=False)
 
         issuer = fields.Nested(IssuerSchema(), required=True)
         credential_types = fields.List(fields.Nested(CredentialType()), required=False)
@@ -130,7 +130,7 @@ async def issuer_registration_send(request: web.BaseRequest):
     except StorageNotFoundError:
         return web.BaseRequest("Connection not found.")
 
-    if connection.is_active:
+    if connection.is_ready:
         (
             issuer_registration_state,
             issuer_registration_message,

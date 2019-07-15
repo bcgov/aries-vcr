@@ -118,7 +118,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                 related_type = fields.Nested(CredentialMapping(), required=False)
                 related_name = fields.Nested(CredentialMapping(), required=False)
 
-            cardinality_fields = fields.Dict(required=False)
+            cardinality_fields = fields.List(fields.Str(), required=False)
             category_labels = fields.Dict(required=False)
 
             claim_descriptions = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
@@ -137,7 +137,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             logo_b64 = fields.Str(required=False, allow_none=True)
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
-            visible_fields = fields.List(fields.Str, required=False)
+            visible_fields = fields.List(fields.Str(), required=False)
 
         issuer = fields.Nested(IssuerSchema(), required=True)
         credential_types = fields.List(fields.Nested(CredentialType()), required=False)
