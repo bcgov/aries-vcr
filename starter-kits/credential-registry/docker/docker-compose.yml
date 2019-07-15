@@ -172,7 +172,7 @@ services:
     entrypoint: /bin/bash
     command: [
         "-c",
-        "acagent \
+        "aca-py \
         --inbound-transport http '0.0.0.0' ${HTTP_INTERFACE_PORT} \
         --inbound-transport ws '0.0.0.0' ${WS_INTERFACE_PORT} \
         --endpoint ${AGENT_ENDPOINT} \
