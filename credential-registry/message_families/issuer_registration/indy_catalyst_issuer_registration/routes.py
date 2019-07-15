@@ -128,7 +128,7 @@ async def issuer_registration_send(request: web.BaseRequest):
     try:
         connection = await ConnectionRecord.retrieve_by_id(context, connection_id)
     except StorageNotFoundError:
-        return web.BaseRequest("Connection not found.")
+        return web.BaseResponse("Connection not found.")
 
     if connection.is_ready:
         (
@@ -147,7 +147,7 @@ async def issuer_registration_send(request: web.BaseRequest):
         return web.json_response(issuer_registration_state.serialize())
 
     else:
-        return web.BaseRequest("ERROR connection is not ready")
+        return web.BaseResponse("ERROR connection is not ready.")
 
 
 async def register(app: web.Application):
