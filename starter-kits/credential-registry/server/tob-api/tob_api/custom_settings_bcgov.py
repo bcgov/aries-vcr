@@ -43,7 +43,7 @@ def list_related_from(self, request, pk=None):
 @detail_route(url_path="related_to_relations")
 def list_related_to_relations(self, request, pk=None):
     # We load most at runtime because ORM isn't loaded at setup time
-    from api_v2.views.rest import CustomTopicRelationshipSerializer
+    from api_v2.serializers.search import CustomTopicRelationshipSerializer
     from api_v2.models.TopicRelationship import TopicRelationship
     from rest_framework.response import Response
 
@@ -57,7 +57,7 @@ def list_related_to_relations(self, request, pk=None):
 @detail_route(url_path="related_from_relations")
 def list_related_from_relations(self, request, pk=None):
     # We load most at runtime because ORM isn't loaded at setup time
-    from api_v2.views.rest import CustomTopicRelationshipSerializer
+    from api_v2.serializers.search import CustomTopicRelationshipSerializer
     from api_v2.models.TopicRelationship import TopicRelationship
     from rest_framework.response import Response
 
