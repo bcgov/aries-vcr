@@ -113,6 +113,20 @@ DEFAULT_CONTAINERS="wallet-db tob-db tob-solr tob-api tob-agent schema-spy tob-w
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
+function echoRed (){
+  _msg=${1}
+  _red='\e[31m'
+  _nc='\e[0m' # No Color
+  echo -e "${_red}${_msg}${_nc}"
+}
+
+function echoYellow (){
+  _msg=${1}
+  _yellow='\e[33m'
+  _nc='\e[0m' # No Color
+  echo -e "${_yellow}${_msg}${_nc}"
+}
+
 build-web() {
   #
   # tob-web
@@ -303,9 +317,9 @@ build-agent() {
   AGENT_BASE_IMAGE_AVAILABLE=`docker images | grep $AGENT_BASE_IMAGE_NAME | awk '{print $1}'`
 
   if [ -z "$AGENT_BASE_IMAGE_AVAILABLE" ]; then
-    echo "The base $AGENT_BASE_IMAGE_NAME image was not found on this system."
-    echo "To continue, please check out the agent repository https://github.com/hyperledger/aries-cloudagent-python and run the following command:"    
-    echo "docker build -t $AGENT_BASE_IMAGE_NAME -f docker/Dockerfile.run ."
+    echoRed "\nThe base $AGENT_BASE_IMAGE_NAME image was not found on this system."
+    echoRed "To continue, please check out the agent repository https://github.com/hyperledger/aries-cloudagent-python and run the following command:"    
+    echoYellow "docker build -t $AGENT_BASE_IMAGE_NAME -f docker/Dockerfile.run ."
     exit 1
   fi
 
