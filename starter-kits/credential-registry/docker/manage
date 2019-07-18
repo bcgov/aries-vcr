@@ -109,10 +109,24 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db tob-db tob-solr tob-api schema-spy tob-web rabbitmq tob-worker"
+DEFAULT_CONTAINERS="wallet-db tob-db tob-solr tob-api tob-agent schema-spy tob-web rabbitmq tob-worker"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
+function echoRed (){
+  _msg=${1}
+  _red='\e[31m'
+  _nc='\e[0m' # No Color
+  echo -e "${_red}${_msg}${_nc}"
+}
+
+function echoYellow (){
+  _msg=${1}
+  _yellow='\e[33m'
+  _nc='\e[0m' # No Color
+  echo -e "${_yellow}${_msg}${_nc}"
+}
+
 build-web() {
   #
   # tob-web
@@ -289,8 +303,42 @@ build-api() {
   if [[ "$OSTYPE" == "msys" ]]; then
     echo -e "\nFixing file permissions in final tob-api (django) image"
     docker build -q \
+      --build-arg BASE_IMAGE='django:latest' \
       -t 'django' \
-      -f '../../../credential-registry/server/Dockerfile' '../../../credential-registry/server'
+      -f '../../../docker/utils/Dockerfile.fixpermissions' '../../../docker/utils/'
+  fi
+}
+
+build-agent() {
+  #
+  # tob-agent
+  #
+  AGENT_BASE_IMAGE_NAME='aries-agent'
+  AGENT_BASE_IMAGE_AVAILABLE=`docker images | grep $AGENT_BASE_IMAGE_NAME | awk '{print $1}'`
+
+  if [ -z "$AGENT_BASE_IMAGE_AVAILABLE" ]; then
+    echoRed "\nThe base $AGENT_BASE_IMAGE_NAME image was not found on this system."
+    echoRed "To continue, please check out the agent repository https://github.com/hyperledger/aries-cloudagent-python and run the following command:"    
+    echoYellow "docker build -t $AGENT_BASE_IMAGE_NAME -f docker/Dockerfile.run ."
+    exit 1
+  fi
+
+  echo -e "\nBuilding tob-agent image..."
+  docker build -q \
+    -t 'aries-agent' \
+    -f '../../../../aries-cloudagent-python/docker/Dockerfile.run' '../../../../aries-cloudagent-python'
+
+  docker build -q \
+    -t 'tob-agent' \
+    -f '../../../docker/tob-agent/Dockerfile' '../../../docker/tob-agent'
+
+  # this is only required in Windows
+  if [[ "$OSTYPE" == "msys" ]]; then
+    echo -e "\nFixing file permissions in final tob-agent image"
+    docker build -q \
+      --build-arg BASE_IMAGE='tob-agent:latest' \
+      -t 'tob-agent' \
+      -f '../../../docker/utils/Dockerfile.fixpermissions' '../../../docker/utils/'
   fi
 }
 
@@ -300,6 +348,7 @@ buildImages() {
   build-db
   build-schema-spy
   build-api
+  build-agent
 }
 
 configureEnvironment() {
@@ -401,6 +450,16 @@ configureEnvironment() {
   # rabbitmq
   export RABBITMQ_USER="RABBITMQ_USER"
   export RABBITMQ_PASSWORD="RABBITMQ_PASSWORD"
+
+  # tob-agent
+  export AGENT_ADMIN_PORT=8024
+  export AGENT_WEBHOOK_PORT=8020
+  # export INDY_WALLET_DID=...
+  export WEBHOOK_URL=${WEBHOOK_URL:-http://$DOCKERHOST:$API_HTTP_PORT}
+  export HTTP_INTERFACE_PORT=8021
+  export WS_INTERFACE_PORT=8023
+  export AGENT_NAME="tob-agent"
+  export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://$DOCKERHOST:$HTTP_INTERFACE_PORT}
 }
 
 getStartupParams() {
@@ -515,7 +574,7 @@ start|up)
   configureEnvironment $@
   docker-compose up --scale tob-worker=2 -d ${_startupParams} 
   docker-compose logs -f
- ;;
+  ;;
 restart)
   _startupParams=$(getStartupParams $@)
   configureEnvironment $@
@@ -557,6 +616,9 @@ build)
   _startupParams=$(getStartupParams --force-recreate $@)
   configureEnvironment $@
   case "$@" in
+  tob-agent)
+    build-agent
+    ;;
   tob-api)
     build-api
     ;;
