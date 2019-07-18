@@ -36,8 +36,9 @@ if __name__ == "__main__":
     if not args.socket and not args.port:
         args.port = 8080
 
+    app = init_app(None)
     web.run_app(
-        init_app(None),
+        app,
         host=args.host,
         port=args.port,
         path=args.socket,

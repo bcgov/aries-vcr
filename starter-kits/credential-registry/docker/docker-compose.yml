@@ -179,8 +179,8 @@ services:
         --outbound-transport ws \
         --outbound-transport http \
         --genesis-url '${LEDGER_URL}/genesis' \
-        --accept-invites \
-        --accept-requests \
+        --auto-accept-invites \
+        --auto-accept-requests \
         --auto-ping-connection \
         --auto-respond-messages \
         --auto-respond-credential-offer \
@@ -194,8 +194,8 @@ services:
         --wallet-storage-creds '{\"account\":\"${POSTGRESQL_USER}\",\"password\":\"${POSTGRESQL_PASSWORD}\",\"admin_account\":\"postgres\",\"admin_password\":\"${POSTGRESQL_ADMIN_PASSWORD}\"}' \
         --seed '${INDY_WALLET_SEED}' \
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
+        --admin-insecure-mode \
         --label ${AGENT_NAME} \
-        --log-level debug \
         --protocol indy_catalyst_issuer_registration",
       ]
 

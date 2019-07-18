@@ -34,7 +34,7 @@ class SolrQueue:
             LOGGER.warning("Solr queue full")
 
     def setup(self, app=None):
-        if app:
+        if app is not None:
             app["solrqueue"] = self
             app.on_startup.append(self.app_start)
             app.on_cleanup.append(self.app_stop)

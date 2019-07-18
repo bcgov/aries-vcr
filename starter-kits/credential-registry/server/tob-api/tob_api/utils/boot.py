@@ -75,7 +75,7 @@ async def init_app(on_startup=None, on_cleanup=None):
     app.router.add_route("*", "/{path_info:.*}", wsgi_handler)
 
     solrqueue = SolrQueue()
-    solrqueue.setup(app)
+    solrqueue.setup(app=app)
 
     if on_startup:
         app.on_startup.append(on_startup)
