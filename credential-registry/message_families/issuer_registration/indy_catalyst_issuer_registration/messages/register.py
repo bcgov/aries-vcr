@@ -112,7 +112,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                 related_type = fields.Nested(CredentialMapping(), required=False)
                 related_name = fields.Nested(CredentialMapping(), required=False)
 
-            cardinality_fields = fields.Dict(required=False)
+            cardinality_fields = fields.List(fields.String(), required=False)
             caregory_labels = fields.Dict(required=False)
             claim_descriptions = fields.Dict(required=False)
             claim_labels = fields.Dict(required=False)
