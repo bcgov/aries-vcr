@@ -69,6 +69,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
 
             class Credential(Schema):
                 """Nested credential schema."""
+                schema_name_resolver = "IssuerRegistrationCredential"
 
                 effective_date = fields.Nested(CredentialMapping(), required=True)
 
