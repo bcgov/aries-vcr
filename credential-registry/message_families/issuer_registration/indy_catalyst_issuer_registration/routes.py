@@ -41,7 +41,7 @@ class IssuerRegistrationRequestSchema(Schema):
         class CredentialType(Schema):
             """Isuer credential type schema."""
 
-            class Credential(Schema):
+            class IssuerRegistrationCredential(Schema):
                 """Nested credential schema."""
 
                 effective_date = fields.Nested(CredentialMapping(), required=True)
@@ -78,13 +78,13 @@ class IssuerRegistrationRequestSchema(Schema):
                 related_type = fields.Nested(CredentialMapping(), required=False)
                 related_name = fields.Nested(CredentialMapping(), required=False)
 
-            cardinality_fields = fields.List(fields.Str(), required=False)
+            cardinality_fields = fields.List(fields.String(), required=False)
             category_labels = fields.Dict(required=False)
 
             claim_descriptions = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
             claim_labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
 
-            credential = fields.Nested(Credential(), required=False)
+            credential = fields.Nested(IssuerRegistrationCredential(), required=False)
 
             name = fields.Str(required=True)
             schema = fields.Str(required=True)
@@ -130,8 +130,7 @@ async def issuer_registration_send(request: web.BaseRequest):
     except StorageNotFoundError:
         return web.BaseResponse(text="Connection not found.", status=418)
 
-    # TODO this message is current;y processed before the connection has been confirmed
-    if connection.is_ready or True:
+    if connection.is_ready:
         (
             issuer_registration_state,
             issuer_registration_message,
