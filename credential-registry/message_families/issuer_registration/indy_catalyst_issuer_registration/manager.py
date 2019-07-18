@@ -5,7 +5,8 @@ import logging
 from aries_cloudagent.error import BaseError
 
 from aries_cloudagent.messaging.request_context import RequestContext
-from aries_cloudagent.messaging.util import send_webhook
+from aries_cloudagent.messaging.responder import BaseResponder
+
 
 from .models.issuer_registration_state import IssuerRegistrationState
 from .messages.register import IssuerRegistration
@@ -98,6 +99,10 @@ class IssuerRegistrationManager:
 
     async def updated_record(self, issuer_registration_state: IssuerRegistrationState):
         """Call webhook when the record is updated."""
-        send_webhook(
-            self._context, "issuer_registration", issuer_registration_state.serialize()
+        responder: BaseResponder = await self._context.inject(
+            BaseResponder, required=False
         )
+        if responder:
+            await responder.send_webhook(
+                "issuer_registration", issuer_registration_state.serialize()
+            )
