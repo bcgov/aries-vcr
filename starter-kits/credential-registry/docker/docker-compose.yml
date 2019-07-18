@@ -172,7 +172,9 @@ services:
     entrypoint: /bin/bash
     command: [
         "-c",
-        "aca-py \
+        "curl -d '{\"seed\":\"${INDY_WALLET_SEED}\", \"role\":\"TRUST_ANCHOR\", \"alias\":\"${AGENT_NAME}\"}' -X POST ${LEDGER_URL}/register; \
+        sleep 2; \
+        aca-py \
         --inbound-transport http '0.0.0.0' ${HTTP_INTERFACE_PORT} \
         --inbound-transport ws '0.0.0.0' ${WS_INTERFACE_PORT} \
         --endpoint ${AGENT_ENDPOINT} \
