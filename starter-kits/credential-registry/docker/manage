@@ -325,6 +325,10 @@ build-agent() {
 
   echo -e "\nBuilding tob-agent image..."
   docker build -q \
+    -t 'aries-agent' \
+    -f '../../../../aries-cloudagent-python/docker/Dockerfile.run' '../../../../aries-cloudagent-python'
+
+  docker build -q \
     -t 'tob-agent' \
     -f '../../../docker/tob-agent/Dockerfile' '../../../docker/tob-agent'
 

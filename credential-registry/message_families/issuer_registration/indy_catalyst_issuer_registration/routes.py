@@ -36,12 +36,12 @@ class IssuerRegistrationRequestSchema(Schema):
             email = fields.Str(required=False)
             url = fields.Str(required=False)
             endpoint = fields.Str(required=False)
-            logo_b64 = fields.Str(required=False)
+            logo_path = fields.Str(required=False, allow_none=True)
 
         class CredentialType(Schema):
             """Isuer credential type schema."""
 
-            class Credential(Schema):
+            class IssuerRegistrationCredential(Schema):
                 """Nested credential schema."""
 
                 effective_date = fields.Nested(CredentialMapping(), required=True)
@@ -52,6 +52,9 @@ class IssuerRegistrationRequestSchema(Schema):
                 class Fields(Schema):
                     """Nested fields schema."""
 
+                    _text = fields.Nested(
+                        CredentialMapping, data_key="text", required=False
+                    )
                     _format = fields.Nested(
                         CredentialMapping, data_key="format", required=False
                     )
@@ -75,12 +78,13 @@ class IssuerRegistrationRequestSchema(Schema):
                 related_type = fields.Nested(CredentialMapping(), required=False)
                 related_name = fields.Nested(CredentialMapping(), required=False)
 
-            cardinality_fields = fields.Dict(required=False)
-            caregory_labels = fields.Dict(required=False)
-            claim_descriptions = fields.Dict(required=False)
-            claim_labels = fields.Dict(required=False)
+            cardinality_fields = fields.List(fields.String(), required=False)
+            category_labels = fields.Dict(required=False)
 
-            credential = fields.Nested(Credential(), required=False)
+            claim_descriptions = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+            claim_labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+
+            credential = fields.Nested(IssuerRegistrationCredential(), required=False)
 
             name = fields.Str(required=True)
             schema = fields.Str(required=True)
@@ -90,10 +94,10 @@ class IssuerRegistrationRequestSchema(Schema):
             mapping = fields.List(fields.Nested(MappingEntry()), required=False)
             topic = fields.List(fields.Nested(Topic()), required=True)
 
-            logo_b64 = fields.Str(required=False)
+            logo_b64 = fields.Str(required=False, allow_none=True)
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
-            visible_fields = fields.List(fields.Str, required=False)
+            visible_fields = fields.List(fields.Str(), required=False)
 
         issuer = fields.Nested(IssuerSchema(), required=True)
         credential_types = fields.List(fields.Nested(CredentialType()), required=False)
@@ -124,9 +128,9 @@ async def issuer_registration_send(request: web.BaseRequest):
     try:
         connection = await ConnectionRecord.retrieve_by_id(context, connection_id)
     except StorageNotFoundError:
-        return web.BaseRequest("Connection not found.")
+        return web.BaseResponse(text="Connection not found.", status=418)
 
-    if connection.is_active:
+    if connection.is_ready:
         (
             issuer_registration_state,
             issuer_registration_message,
@@ -140,7 +144,10 @@ async def issuer_registration_send(request: web.BaseRequest):
             context, "issuer_registration", connection.DIRECTION_SENT
         )
 
-    return web.json_response(issuer_registration_state.serialize())
+        return web.json_response(issuer_registration_state.serialize())
+
+    else:
+        return web.Response(text="ERROR connection is not ready.", status=418)
 
 
 async def register(app: web.Application):

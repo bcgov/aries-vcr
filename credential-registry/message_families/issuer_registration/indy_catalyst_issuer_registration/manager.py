@@ -2,10 +2,10 @@
 
 import logging
 
+from aries_cloudagent.config.injection_context import InjectionContext
 from aries_cloudagent.error import BaseError
-
 from aries_cloudagent.messaging.request_context import RequestContext
-from aries_cloudagent.messaging.util import send_webhook
+from aries_cloudagent.messaging.responder import BaseResponder
 
 from .models.issuer_registration_state import IssuerRegistrationState
 from .messages.register import IssuerRegistration
@@ -18,7 +18,7 @@ class IssuerRegistrationManagerError(BaseError):
 class IssuerRegistrationManager:
     """Class for managing issuer registrations."""
 
-    def __init__(self, context: RequestContext):
+    def __init__(self, context: InjectionContext):
         """
         Initialize a IssuerRegistrationManager.
 
@@ -29,12 +29,12 @@ class IssuerRegistrationManager:
         self._logger = logging.getLogger(__name__)
 
     @property
-    def context(self) -> RequestContext:
+    def context(self) -> InjectionContext:
         """
-        Accessor for the current request context.
+        Accessor for the current injection context.
 
         Returns:
-            The request context for this connection
+            The injection context for this connection
 
         """
         return self._context
@@ -98,6 +98,10 @@ class IssuerRegistrationManager:
 
     async def updated_record(self, issuer_registration_state: IssuerRegistrationState):
         """Call webhook when the record is updated."""
-        send_webhook(
-            self._context, "issuer_registration", issuer_registration_state.serialize()
+        responder: BaseResponder = await self._context.inject(
+            BaseResponder, required=False
         )
+        if responder:
+            await responder.send_webhook(
+                "issuer_registration", issuer_registration_state.serialize()
+            )
