@@ -41,9 +41,8 @@ class IssuerRegistrationRequestSchema(Schema):
         class CredentialType(Schema):
             """Isuer credential type schema."""
 
-            class Credential(Schema):
+            class IssuerRegistrationCredential(Schema):
                 """Nested credential schema."""
-                schema_name_resolver = "IssuerRegistrationCredential"
 
                 effective_date = fields.Nested(CredentialMapping(), required=True)
 
@@ -81,7 +80,7 @@ class IssuerRegistrationRequestSchema(Schema):
             claim_descriptions = fields.Dict(required=False)
             claim_labels = fields.Dict(required=False)
 
-            credential = fields.Nested(Credential(), required=False)
+            credential = fields.Nested(IssuerRegistrationCredential(), required=False)
 
             name = fields.Str(required=True)
             schema = fields.Str(required=True)
