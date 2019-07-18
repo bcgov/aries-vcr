@@ -126,7 +126,7 @@ async def issuer_registration_send(request: web.BaseRequest):
     except StorageNotFoundError:
         return web.BaseRequest("Connection not found.")
 
-    if connection.is_active:
+    if connection.is_ready:
         (
             issuer_registration_state,
             issuer_registration_message,
