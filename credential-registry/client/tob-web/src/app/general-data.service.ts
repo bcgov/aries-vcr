@@ -92,6 +92,7 @@ export class GeneralDataService {
         return;
       }
       let baseurl = this.getRequestUrl('');
+      //console.log('base url: ' + baseurl);
       if(! baseurl) {
         reject("Base URL not defined");
         return;
@@ -219,6 +220,7 @@ export class GeneralDataService {
     else {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
+      //console.log("loadData(url)", url);
       if(params.primary) {
         if(this._loaderSub)
           this._loaderSub.unsubscribe();
@@ -232,11 +234,13 @@ export class GeneralDataService {
 
   public loadFacetOptions(data) {
     let fields = data.info && data.info.facets && data.info.facets.fields || {};
+    //console.log(fields);
     let options = {
       credential_type_id: [],
       issuer_id: [],
       'category:entity_type': [],
     };
+    //console.log(options);
     if(fields) {
       for(let optname in fields) {
         for(let optitem of fields[optname]) {

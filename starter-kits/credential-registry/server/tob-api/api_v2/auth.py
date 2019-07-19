@@ -2,12 +2,10 @@ import logging
 import random
 from string import ascii_lowercase, digits
 
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group
 from rest_framework import permissions
 
 from api_v2.models.User import User
-
 
 ISSUERS_GROUP_NAME = "issuers"
 
@@ -20,7 +18,6 @@ def create_issuer_user(
     display_name="",
     first_name="",
     last_name="",
-    verkey=None,
 ):
     logger = logging.getLogger(__name__)
     try:
@@ -28,15 +25,12 @@ def create_issuer_user(
     except User.DoesNotExist:
         logger.debug("Creating user for DID '{0}' ...".format(issuer_did))
         if not username:
-            username = generate_random_username(
-                length=12, prefix="issuer-", split=None
-            )
+            username = generate_random_username(length=12, prefix="issuer-", split=None)
         user = User.objects.create_user(
             username,
             email=email,
             password=password,
             DID=issuer_did,
-            verkey=verkey,
             display_name=display_name,
             first_name=first_name,
             last_name=last_name,
@@ -44,12 +38,11 @@ def create_issuer_user(
         user.groups.add(get_issuers_group())
     else:
         user.DID = issuer_did
-        user.verkey = verkey
         user.email = email
         user.display_name = display_name
-        if first_name != None:
+        if first_name is not None:
             user.first_name = first_name
-        if last_name != None:
+        if last_name is not None:
             user.last_name = last_name
         user.save()
     return user
@@ -61,11 +54,7 @@ def get_issuers_group():
 
 
 def generate_random_username(
-    length=16,
-    chars=ascii_lowercase + digits,
-    split=4,
-    delimiter="-",
-    prefix="",
+    length=16, chars=ascii_lowercase + digits, split=4, delimiter="-", prefix=""
 ):
     username = "".join([random.choice(chars) for i in range(length)])
 
