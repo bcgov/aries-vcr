@@ -1,6 +1,6 @@
 import {
   Component, AfterViewInit, ElementRef, EventEmitter,
-  Input, Output, Renderer2, ViewChild } from '@angular/core';
+  Input, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import {Observable} from 'rxjs';
 import {catchError, debounceTime, distinctUntilChanged, map, tap, switchMap} from 'rxjs/operators';
 import {GeneralDataService} from 'app/general-data.service';
@@ -8,7 +8,8 @@ import {GeneralDataService} from 'app/general-data.service';
 @Component({
   selector: 'search-input',
   templateUrl: '../../themes/_active/search/input.component.html',
-  styleUrls: ['../../themes/_active/search/input.component.scss']
+  styleUrls: ['../../themes/_active/search/input.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 
