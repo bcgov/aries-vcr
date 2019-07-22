@@ -185,6 +185,23 @@ export class AppComponent implements OnInit, OnDestroy {
     if(evt) {
       evt.preventDefault();
     }
+    /* Timerpoke integration (wet-boew)
+     * @compatiblity: WET v3.14 - 4+
+     * @implementation: <tagname data-wb-reinit="<nodequery>@<classes-to-remove>">...</tagname>
+     * @description: WET-BOEW timerpoke custom event bound to the change language to allow for
+     *   identified (via data attribute) elements to react to language changes
+     */
+    if ( evt.target.dataset.wbReinit )
+    {
+        let wrkrdr = evt.target.dataset.wbReinit.split('@');
+
+        [].forEach.call( document.querySelectorAll( wrkrdr[0] ), function(elm) {
+          // Remove WET-BOEW specific init traps
+          elm.className = wrkrdr[1]
+          // dispatch internal WET-BOEW component init
+          elm.dispatchEvent( new CustomEvent('timerpoke.wb', { bubbles: true, detail: new Date()}) )
+        });
+    }
   }
 
   /**
