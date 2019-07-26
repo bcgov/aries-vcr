@@ -233,7 +233,7 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "latest",
             "revoked",
             "revoked_date",
-            "wallet_id",
+            "credential_exchange_id",
             "credential_set",
             "credential_type",
             "addresses",
@@ -251,7 +251,7 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
             "schema_version",
             "topic_id",
             "topic_type",
-            "wallet_id",
+            "credential_exchange_id",
         )
         # used by HaystackFilter
         search_fields = ("location", "effective_date", "revoked_date", "score")
@@ -285,7 +285,7 @@ class CredentialTopicSearchSerializer(CredentialSearchSerializer):
             "latest",
             "revoked",
             "revoked_date",
-            "wallet_id",
+            "credential_exchange_id",
             "credential_set",
             "credential_type",
             "attributes",

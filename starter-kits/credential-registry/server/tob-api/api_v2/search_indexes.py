@@ -31,7 +31,7 @@ class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
     issuer_id = indexes.IntegerField(model_attr="credential_type__issuer_id")
     schema_name = indexes.CharField(model_attr="credential_type__schema__name")
     schema_version = indexes.CharField(model_attr="credential_type__schema__version")
-    wallet_id = indexes.CharField(model_attr="wallet_id")
+    credential_exchange_id = indexes.CharField(model_attr="credential_exchange_id")
 
     @staticmethod
     def prepare_name(obj):

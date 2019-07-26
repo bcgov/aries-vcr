@@ -216,7 +216,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         pk = self.kwargs.get("pk")
         if not pk:
             raise Http404()
-        filter = {"wallet_id": pk}
+        filter = {"credential_exchange_id": pk}
         try:
             filter = {"pk": int(pk)}
         except (ValueError, TypeError):

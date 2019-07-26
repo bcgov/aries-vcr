@@ -89,7 +89,7 @@ class Credential(object):
         self,
         credential_data: object,
         request_metadata: dict = None,
-        wallet_id: str = None,
+        credential_exchange_id: str = None,
     ) -> None:
         self._raw = credential_data
         self._schema_id = credential_data["schema_id"]
@@ -101,7 +101,7 @@ class Credential(object):
         #]
         self._req_metadata = request_metadata
         #self._rev_reg = credential_data["rev_reg"]
-        self._wallet_id = wallet_id
+        self._credential_exchange_id = credential_exchange_id
         #self._witness = credential_data["witness"]
 
         self._claim_attributes = []
@@ -205,17 +205,17 @@ class Credential(object):
         return self._request_metadata
 
     @property
-    def wallet_id(self) -> str:
+    def credential_exchange_id(self) -> str:
         """Accessor for credential wallet ID, after storage
 
         Returns:
             str -- the wallet ID of the credential
         """
-        return self._wallet_id
+        return self._credential_exchange_id
 
-    @wallet_id.setter
-    def wallet_id(self, val: str):
-        self._wallet_id = val
+    @credential_exchange_id.setter
+    def credential_exchange_id(self, val: str):
+        self._credential_exchange_id = val
 
 
 class CredentialClaims:
@@ -792,7 +792,7 @@ class CredentialManager(object):
                 "cardinality_hash": cardinality["hash"] if cardinality else None,
                 "credential_def_id": credential.cred_def_id,
                 "credential_type": credential_type,
-                "wallet_id": credential.wallet_id,
+                "credential_exchange_id": credential.credential_exchange_id,
             }
             credential_args.update(
                 cls.process_credential_properties(credential, processor_config)
