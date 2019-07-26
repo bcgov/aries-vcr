@@ -2,7 +2,7 @@
   <table class="table attribute-table">
     <tr class="attribute-row" *ngFor="let row of rows">
       <td>
-        <label class="control-label attribute-type">{{row.label}}</label>
+        <label class="control-label attribute-type">{{ getAttributeLabel(row) | async }}</label>
       </td>
       <td>
         <attribute-view [record]="row.attr"></attribute-view>
