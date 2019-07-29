@@ -112,7 +112,7 @@ services:
       - APPLICATION_URL=${APPLICATION_URL}
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - AGENT_ADMIN_URL=http://tob-api:${AGENT_ADMIN_PORT}
+      - AGENT_ADMIN_URL=http://tob-agent:${AGENT_ADMIN_PORT}
       - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
     volumes:
       - ../server/tob-api/tob_api:/home/indy/tob_api
@@ -198,6 +198,7 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --admin-insecure-mode \
         --label ${AGENT_NAME} \
+        --label debug \
         --protocol indy_catalyst_issuer_registration",
       ]
 

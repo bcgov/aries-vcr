@@ -134,22 +134,36 @@ def handle_credentials(state, message):
         for attr in raw_credential["values"]:
             credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-        credential = Credential(
-            credential_data, credential_exchange_id=credential_exchange_id
+        try:
+            credential = Credential(
+                credential_data, credential_exchange_id=credential_exchange_id
+            )
+
+            credential_manager = CredentialManager()
+            credential_manager.process(credential)
+        except Exception as e:
+            LOGGER.error(str(e))
+            # Send a problem report for the error
+            resp = requests.post(
+                f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+                json={"explain_ltxt": str(e)},
+            )
+            assert resp.status_code == 200
+            return Response({"success": False, "error": str(e)})
+
+        # Instruct the agent to store the credential in wallet
+        resp = requests.post(
+            f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store"
         )
-
-        credential_manager = CredentialManager()
-        credential_manager.process(credential)
-
-        # resp = requests.get(
-        #     f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store"
-        # )
-
-        # assert resp.status_code == 200
+        assert resp.status_code == 200
 
         return Response({"success": True})
 
     # TODO other scenarios
+    elif state == "stored":
+        print("credential stored: \n\n")
+        print(message)
+
     return Response("")
 
 

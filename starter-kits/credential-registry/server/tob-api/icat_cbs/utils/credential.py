@@ -401,6 +401,7 @@ class CredentialManager(object):
         Returns:
             Credential -- the processed database credential
         """
+
         if check_from_did and check_from_did != credential.origin_did:
             raise CredentialException(
                 "Credential origin DID '{}' does not match request origin DID '{}'".format(
