@@ -1,4 +1,7 @@
+import os
 import logging
+
+import requests
 
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
@@ -6,6 +9,8 @@ from rest_framework.response import Response
 
 from icat_cbs.utils.credential import Credential, CredentialManager
 from icat_cbs.utils.issuer import IssuerManager
+
+AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
 
 LOGGER = logging.getLogger(__name__)
 
@@ -100,6 +105,7 @@ def handle_credentials(state, message):
             "thread_id": "..."
         }
     """
+
     # global admin_url
     credential_exchange_id = message["credential_exchange_id"]
     print(
@@ -112,29 +118,52 @@ def handle_credentials(state, message):
         # assert resp.status_code == 200
         return Response("")
 
-    elif state == "stored":
-        print("After stored credential in wallet")
-        # TBD credential info should come with the message
-        # resp = requests.get(admin_url + '/credential/' + message['credential_id'])
-        # assert resp.status_code == 200
-        print("Stored credential:")
-        print(message["credential"])
-        print("credential_id", message["credential_id"])
-        print("credential_definition_id", message["credential_definition_id"])
-        print("schema_id", message["schema_id"])
-        print("credential_request_metadata", message["credential_request_metadata"])
+    elif state == "credential_received":
+        raw_credential = message["raw_credential"]
 
-        credential_data = message["credential"]
+        print("Received credential:")
+        print(raw_credential)
 
-        LOGGER.info(credential_data)
+        credential_data = {
+            "schema_id": raw_credential["schema_id"],
+            "cred_def_id": raw_credential["cred_def_id"],
+            "rev_reg_id": raw_credential["rev_reg_id"],
+            "attrs": {},
+        }
 
-        credential = Credential(credential_data, wallet_id=credential_data["referent"])
-        credential_manager = CredentialManager()
-        credential_manager.process(credential)
+        for attr in raw_credential["values"]:
+            credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-        return Response({"success": True, "result": credential_data["referent"]})
+        try:
+            credential = Credential(
+                credential_data, credential_exchange_id=credential_exchange_id
+            )
+
+            credential_manager = CredentialManager()
+            credential_manager.process(credential)
+        except Exception as e:
+            LOGGER.error(str(e))
+            # Send a problem report for the error
+            resp = requests.post(
+                f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+                json={"explain_ltxt": str(e)},
+            )
+            assert resp.status_code == 200
+            return Response({"success": False, "error": str(e)})
+
+        # Instruct the agent to store the credential in wallet
+        resp = requests.post(
+            f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store"
+        )
+        assert resp.status_code == 200
+
+        return Response({"success": True})
 
     # TODO other scenarios
+    elif state == "stored":
+        print("credential stored: \n\n")
+        print(message)
+
     return Response("")
 
 

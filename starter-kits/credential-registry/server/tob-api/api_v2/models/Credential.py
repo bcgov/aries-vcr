@@ -14,7 +14,7 @@ class Credential(Auditable):
     credential_type = models.ForeignKey(
         "CredentialType", related_name="credentials", on_delete=models.CASCADE
     )
-    wallet_id = models.TextField(db_index=True)
+    credential_exchange_id = models.TextField(db_index=True)
     credential_def_id = models.TextField(db_index=True, null=True)
     cardinality_hash = models.TextField(db_index=True, null=True)
 
