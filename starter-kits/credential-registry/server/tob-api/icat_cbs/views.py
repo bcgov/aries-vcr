@@ -119,33 +119,32 @@ def handle_credentials(state, message):
         return Response("")
 
     elif state == "credential_received":
-        credential_data = message["raw_credential"]
+        raw_credential = message["raw_credential"]
 
-        # print("After stored credential in wallet")
-        # TBD credential info should come with the message
-        # resp = requests.get(admin_url + '/credential/' + message['credential_id'])
-        # assert resp.status_code == 200
         print("Received credential:")
-        print(credential_data)
-        # print("credential_id", message["credential_id"])
-        # print("credential_definition_id", message["credential_definition_id"])
-        # print("schema_id", message["schema_id"])
-        # print("credential_request_metadata", message["credential_request_metadata"])
+        print(raw_credential)
 
-        # credential_data = message["raw_credential"]
+        credential_data = {
+            "schema_id": raw_credential["schema_id"],
+            "cred_def_id": raw_credential["cred_def_id"],
+            "rev_reg_id": raw_credential["rev_reg_id"],
+            "attrs": {},
+        }
 
-        # LOGGER.info(credential_data)
+        for attr in raw_credential["values"]:
+            credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-        # credential = Credential(
-        #     credential_data, credential_exchange_id=credential_exchange_id
-        # )
-        # credential_manager = CredentialManager()
-        # credential_manager.process(credential)
+        credential = Credential(
+            credential_data, credential_exchange_id=credential_exchange_id
+        )
+
+        credential_manager = CredentialManager()
+        credential_manager.process(credential)
 
         # resp = requests.get(
         #     f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store"
         # )
-        
+
         # assert resp.status_code == 200
 
         return Response({"success": True})
