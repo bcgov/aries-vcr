@@ -1,4 +1,7 @@
+import os
 import logging
+
+import requests
 
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
@@ -6,6 +9,8 @@ from rest_framework.response import Response
 
 from icat_cbs.utils.credential import Credential, CredentialManager
 from icat_cbs.utils.issuer import IssuerManager
+
+AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
 
 LOGGER = logging.getLogger(__name__)
 
@@ -113,29 +118,37 @@ def handle_credentials(state, message):
         # assert resp.status_code == 200
         return Response("")
 
-    elif state == "stored":
+    elif state == "credential_received":
         credential_data = message["raw_credential"]
 
-        print("After stored credential in wallet")
+        # print("After stored credential in wallet")
         # TBD credential info should come with the message
         # resp = requests.get(admin_url + '/credential/' + message['credential_id'])
         # assert resp.status_code == 200
         print("Received credential:")
         print(credential_data)
-        print("credential_id", message["credential_id"])
-        print("credential_definition_id", message["credential_definition_id"])
-        print("schema_id", message["schema_id"])
-        print("credential_request_metadata", message["credential_request_metadata"])
+        # print("credential_id", message["credential_id"])
+        # print("credential_definition_id", message["credential_definition_id"])
+        # print("schema_id", message["schema_id"])
+        # print("credential_request_metadata", message["credential_request_metadata"])
 
-        credential_data = message["raw_credential"]
+        # credential_data = message["raw_credential"]
 
-        LOGGER.info(credential_data)
+        # LOGGER.info(credential_data)
 
-        credential = Credential(credential_data, credential_exchange_id=credential_data["referent"])
-        credential_manager = CredentialManager()
-        credential_manager.process(credential)
+        # credential = Credential(
+        #     credential_data, credential_exchange_id=credential_exchange_id
+        # )
+        # credential_manager = CredentialManager()
+        # credential_manager.process(credential)
 
-        return Response({"success": True, "result": credential_data["referent"]})
+        # resp = requests.get(
+        #     f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store"
+        # )
+        
+        # assert resp.status_code == 200
+
+        return Response({"success": True})
 
     # TODO other scenarios
     return Response("")
