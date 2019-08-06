@@ -112,7 +112,7 @@ getApiUrl (){
   #   Results in API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
   # ================================================================================
   if [ ! -z "${API_SERVICE_NAME}" ]; then
-    _SERVICE_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${API_SERVICE_NAME/-/_})"
+    _SERVICE_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${API_SERVICE_NAME//-/_})"
     _SERVICE_HOST_NAME=${_SERVICE_NAME}_SERVICE_HOST
     _SERVICE_PORT_NAME=${_SERVICE_NAME}_SERVICE_PORT
 
