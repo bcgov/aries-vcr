@@ -316,7 +316,7 @@ HOOK_EVENTS = {
 # celery settings
 CELERY_BROKER_HEARTBEAT = 0  # see https://github.com/celery/celery/issues/4817
 
-CELERY_BROKER_URL = "pyamqp://{}:{}@{}}//".format(
+CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
     os.environ.get("RABBITMQ_USER"), 
     os.environ.get("RABBITMQ_PASSWORD"), 
     os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq")
