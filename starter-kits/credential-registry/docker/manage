@@ -371,7 +371,7 @@ configureEnvironment() {
 
   seed=${INDY_WALLET_SEED:-$seed}
 
-  if [ "$COMMAND" == "start" ] || [ "$COMMAND" == "restart" ] || [ "$COMMAND" == "registerdids" ]; then
+  if [ "$COMMAND" == "up" ] || [ "$COMMAND" == "start" ] || [ "$COMMAND" == "restart" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
       echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
       exit 1
