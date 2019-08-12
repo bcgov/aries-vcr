@@ -112,57 +112,61 @@ def handle_credentials(state, message):
         "Credential: state=", state, ", credential_exchange_id=", credential_exchange_id
     )
 
-    if state == "offer_received":
-        print("After receiving credential offer, send credential request")
-        # resp = requests.post(admin_url + '/credential_exchange/' + credential_exchange_id + '/send-request')
-        # assert resp.status_code == 200
-        return Response("")
+    try:
+        if state == "offer_received":
+            print("After receiving credential offer, send credential request")
+            # resp = requests.post(admin_url + '/credential_exchange/' + credential_exchange_id + '/send-request')
+            # assert resp.status_code == 200
+            return Response("")
 
-    elif state == "credential_received":
-        raw_credential = message["raw_credential"]
+        elif state == "credential_received":
+            raw_credential = message["raw_credential"]
 
-        print("Received credential:")
-        print(raw_credential)
+            print("Received credential:")
+            #print(raw_credential)
 
-        credential_data = {
-            "schema_id": raw_credential["schema_id"],
-            "cred_def_id": raw_credential["cred_def_id"],
-            "rev_reg_id": raw_credential["rev_reg_id"],
-            "attrs": {},
-        }
+            # TODO can include this exception to test error reporting
+            #raise Exception("Depliberate error to test problem reporting")
 
-        for attr in raw_credential["values"]:
-            credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
+            credential_data = {
+                "schema_id": raw_credential["schema_id"],
+                "cred_def_id": raw_credential["cred_def_id"],
+                "rev_reg_id": raw_credential["rev_reg_id"],
+                "attrs": {},
+            }
 
-        try:
+            for attr in raw_credential["values"]:
+                credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
+
             credential = Credential(
                 credential_data, credential_exchange_id=credential_exchange_id
             )
 
             credential_manager = CredentialManager()
             credential_manager.process(credential)
-        except Exception as e:
-            LOGGER.error(str(e))
-            # Send a problem report for the error
+
+            # Instruct the agent to store the credential in wallet
             resp = requests.post(
-                f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
-                json={"explain_ltxt": str(e)},
+                f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store"
             )
             assert resp.status_code == 200
-            return Response({"success": False, "error": str(e)})
 
-        # Instruct the agent to store the credential in wallet
+            return Response({"success": True})
+
+        # TODO other scenarios
+        elif state == "stored":
+            print("credential stored")
+            #print(message)
+
+    except Exception as e:
+        LOGGER.error(str(e))
+        # Send a problem report for the error
         resp = requests.post(
-            f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store"
+            f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+            json={"explain_ltxt": str(e)},
         )
         assert resp.status_code == 200
-
-        return Response({"success": True})
-
-    # TODO other scenarios
-    elif state == "stored":
-        print("credential stored: \n\n")
-        print(message)
+        return Response({"success": False, "error": str(e)})
 
     return Response("")
 
