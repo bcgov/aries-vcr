@@ -3,14 +3,6 @@ export MSYS_NO_PATHCONV=1
 export DOCKERHOST=${APPLICATION_URL-$(docker run --rm --net=host codenvy/che-ip)}
 set -e
 
-S2I_EXE=s2i
-if [ -z $(type -P "$S2I_EXE") ]; then
-  echo -e "The ${S2I_EXE} executable is needed and not on your path."
-  echo -e "It can be downloaded from here: https://github.com/openshift/source-to-image"
-  echo -e "Make sure you place it in a directory on your path."
-  exit 1
-fi
-
 SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd)"
 
 # =================================================================================================================
