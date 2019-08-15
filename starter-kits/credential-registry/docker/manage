@@ -33,23 +33,23 @@ usage() {
               Examples:
                - Build the web UI only.
     
-                $0 build tob-web
+                $0 build web
 
                - Build the web UI using a custom theme.
     
-                $0 build tob-web TOB_THEME=<theme-name> TOB_THEME_PATH=<absolute-path-to-themes-folder>
-     
-               - Build the API server only.
-     
-                $0 build tob-api
-    
-               - Build the Solr Search Engine server only.
-           
-                $0 build tob-solr
-    
+                $0 build web TOB_THEME=<theme-name> TOB_THEME_PATH=<absolute-path-to-themes-folder>
+         
               By default all containers that components comprise of, will be rebuilt.
     
-                $0 build 
+                $0 build
+
+              Containers:
+                - web
+                - solr
+                - db
+                - schema-spy
+                - api
+                - agent
     
       up -  Creates the application containers from the built images
             and starts the services based on the docker-compose.yml file.
@@ -138,14 +138,14 @@ build-web() {
   echo -e "\nBuilding nginx-runtime image ..."
   docker build -q \
     -t 'nginx-runtime' \
-    -f '../../../credential-registry/client/tob-web/openshift/templates/nginx-runtime/Dockerfile' '../../../credential-registry/client/tob-web/openshift/templates/nginx-runtime/'
+    -f '../../../docker/nginx-runtime/Dockerfile' '../../../docker/nginx-runtime/'
 
   # This image only exists to pre-create the npm cache directory
   # so it can be properly used as a volume, it doesn't apply to openshift
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
-    -f '../../../credential-registry/client/tob-web/openshift/templates/nodejs-build/Dockerfile' '../../../credential-registry/client/tob-web/openshift/templates/nodejs-build/'
+    -f '../../../docker/nodejs-build/Dockerfile' '../../../docker/nodejs-build/'
 
   if [ -t 0 ]; then
     # color npm output in interactive terminal
@@ -201,12 +201,11 @@ build-web-dev() {
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
-    -f '../client/tob-web/openshift/templates/nodejs-build/Dockerfile' '../client/tob-web/openshift/templates/nodejs-build/'
+    -f '../../../docker/nodejs-build/Dockerfile' '../../../docker/nodejs-build/'
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
-  if [ -z "$TOB_THEME_PATH" ]
-  then
+  if [ -z "$TOB_THEME_PATH" ]; then
     # set TOB_THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
     TOB_THEME_PATH="tob-web-empty"
 
@@ -219,7 +218,7 @@ build-web-dev() {
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../client/tob-web' \
+      '../../../credential-registry/client/tob-web' \
       'nodejs-build' \
       'angular-dev'
   else
@@ -236,7 +235,7 @@ build-web-dev() {
       -e "TOB_THEME_PATH=${TOB_THEME_PATH_DEV}" \
       -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../client/tob-web' \
+      '../../../credential-registry/client/tob-web' \
       'nodejs-build' \
       'angular-dev'
   fi
@@ -313,21 +312,6 @@ build-agent() {
   #
   # tob-agent
   #
-  AGENT_BASE_IMAGE_NAME='aries-agent'
-  AGENT_BASE_IMAGE_AVAILABLE=`docker images | grep $AGENT_BASE_IMAGE_NAME | awk '{print $1}'`
-
-  if [ -z "$AGENT_BASE_IMAGE_AVAILABLE" ]; then
-    echoRed "\nThe base $AGENT_BASE_IMAGE_NAME image was not found on this system."
-    echoRed "To continue, please check out the agent repository https://github.com/hyperledger/aries-cloudagent-python and run the following command:"    
-    echoYellow "docker build -t $AGENT_BASE_IMAGE_NAME -f docker/Dockerfile.run ."
-    exit 1
-  fi
-
-  echo -e "\nBuilding tob-agent image..."
-  docker build -q \
-    -t 'aries-agent' \
-    -f '../../../../aries-cloudagent-python/docker/Dockerfile.run' '../../../../aries-cloudagent-python'
-
   docker build -q \
     -t 'tob-agent' \
     -f '../../../docker/tob-agent/Dockerfile' '../../../docker/tob-agent'
@@ -342,7 +326,7 @@ build-agent() {
   fi
 }
 
-buildImages() {
+build-all() {
   build-web
   build-solr
   build-db
@@ -361,10 +345,22 @@ configureEnvironment() {
     done <.env
   fi
 
-  for arg in $@; do
+  for arg in "$@"; do
+    # Remove recognized arguments from the list after processing.
+    shift
+
+    # echo "arg: ${arg}"
+    # echo "Remaining: ${@}"
+
     case "$arg" in
       *=*)
-        export ${arg}
+        # echo "Exporting ..."
+        export "${arg}"
+        ;;
+      *)
+        # echo "Saving for later ..."
+        # If not recognized, save it for later procesing ...
+        set -- "$@" "$arg"
         ;;
     esac
   done
@@ -373,7 +369,7 @@ configureEnvironment() {
 
   if [ "$COMMAND" == "up" ] || [ "$COMMAND" == "start" ] || [ "$COMMAND" == "restart" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
-      echo "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
+      echoError "You must provide a seed parameter. For example: seed=my_seed_000000000000000000000000."
       exit 1
     fi
   fi
@@ -562,6 +558,23 @@ getLedgerRegistrationUrl() {
 toLower() {
   echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
 }
+
+echoError (){
+  _msg=${1}
+  _red='\033[0;31m'
+  _nc='\033[0m' # No Color
+  echo -e "${_red}${_msg}${_nc}" >&2
+}
+
+functionExists() {
+  (
+    if [ ! -z ${1} ] && type ${1} &>/dev/null; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
 # =================================================================================================================
 
 pushd ${SCRIPT_HOME} >/dev/null
@@ -569,86 +582,82 @@ COMMAND=$(toLower ${1})
 shift || COMMAND=usage
 
 case "${COMMAND}" in
-start|up)
-  _startupParams=$(getStartupParams --force-recreate $@)
-  configureEnvironment $@
-  docker-compose up --scale tob-worker=2 -d ${_startupParams} 
-  docker-compose logs -f
-  ;;
-restart)
-  _startupParams=$(getStartupParams $@)
-  configureEnvironment $@
-  docker-compose stop ${_startupParams}
-  docker-compose up -d ${_startupParams}
-  ;;
-logs)
-  configureEnvironment $@
-  docker-compose logs -f
-  ;;
-web-dev)
-  _startupParams=$(getStartupParams --force-recreate $@)
-  configureEnvironment $@
-  [ -z "$SKIP_BUILD" ] && build-web-dev
-  docker-compose run --rm --service-ports tob-web-dev
-  ;;
-stop)
-  configureEnvironment
-  docker-compose stop 
-  ;;
-startdb)
-  configureEnvironment $@
-  docker-compose up -d wallet-db
-  docker-compose logs -f
- ;;
-stopdb)
-  configureEnvironment
-  docker-compose stop wallet-db
- ;;
-rm|down)
-  configureEnvironment
-  deleteVolumes
-  ;;
-registerdids)
-  configureEnvironment $@
-  registerDids $(generateSeeds)
-  ;;
-build)
-  _startupParams=$(getStartupParams --force-recreate $@)
-  configureEnvironment $@
-  case "$@" in
-  tob-agent)
-    build-agent
+  start|up)
+    _startupParams=$(getStartupParams --force-recreate $@)
+    configureEnvironment "$@"
+    docker-compose up --scale tob-worker=2 -d ${_startupParams} 
+    docker-compose logs -f
     ;;
-  tob-api)
-    build-api
+  restart)
+    _startupParams=$(getStartupParams $@)
+    configureEnvironment "$@"
+    docker-compose stop ${_startupParams}
+    docker-compose up -d ${_startupParams}
     ;;
-  tob-web)
-    build-web
+  logs)
+    configureEnvironment "$@"
+    docker-compose logs -f
     ;;
-  tob-solr)
-    build-solr
+  web-dev)
+    _startupParams=$(getStartupParams --force-recreate $@)
+    configureEnvironment "$@"
+    [ -z "$SKIP_BUILD" ] && build-web-dev
+    docker-compose run --rm --service-ports tob-web-dev
     ;;
-  tob-db)
-    build-db
+  stop)
+    configureEnvironment
+    docker-compose stop 
+    ;;
+  startdb)
+    configureEnvironment "$@"
+    docker-compose up -d wallet-db
+    docker-compose logs -f
+  ;;
+  stopdb)
+    configureEnvironment
+    docker-compose stop wallet-db
+  ;;
+  rm|down)
+    configureEnvironment
+    deleteVolumes
+    ;;
+  registerdids)
+    configureEnvironment "$@"
+    registerDids $(generateSeeds)
+    ;;
+  build)
+    _startupParams=$(getStartupParams --force-recreate $@)
+    configureEnvironment "$@"
+
+    buildImage=$(toLower ${1})
+    shift || buildImage=all
+    buildImage=$(echo ${buildImage} | sed s~^tob-~~)
+    case "$buildImage" in
+      *=*)
+        buildImage=all
+        ;;
+    esac
+
+    if functionExists "build-${buildImage}"; then
+      eval "build-${buildImage}"
+    else
+      echoError "\nThe build function, build-${buildImage}, does not exist.  Please check your build parameters and try again.\nUse '-h' to get full help details."
+      exit 1
+    fi
+    ;;
+  shell)
+    _startupParams=$(getStartupParams --force-recreate $@)
+    configureEnvironment "$@"
+    docker-compose run tob-api bash
+    ;;
+  django)
+    _startupParams=$(getStartupParams --force-recreate $@)
+    configureEnvironment "$@"
+    docker-compose run tob-api python manage.py $@
     ;;
   *)
-    buildImages
+    usage
     ;;
-  esac
-  ;;
-shell)
-  _startupParams=$(getStartupParams --force-recreate $@)
-  configureEnvironment $@
-  docker-compose run tob-api bash
-  ;;
-django)
-  _startupParams=$(getStartupParams --force-recreate $@)
-  configureEnvironment $@
-  docker-compose run tob-api python manage.py $@
-  ;;
-*)
-  usage
-  ;;
 esac
 
 popd >/dev/null

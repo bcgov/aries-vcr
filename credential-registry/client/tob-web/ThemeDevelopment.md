@@ -12,15 +12,6 @@ For example, to change the active theme from BC to Ontario, set the value of $TO
 
 ``` export TOB_THEME=ongov ```
 
-For the TheOrgBook instance deployed in OpenShift, set $TOB_THEME value in **. param* files under *tob-web/openshift* directory.
-
-```
-angular-build.param
-angular-on-nginx-deploy.dev.param
-angular-on-nginx-deploy.test.param
-angular-on-nginx-deploy.prod.param
-```
-
 The component **html** templates in the *default* directory get overwritten with corresponding templates from the *_active* theme directory if present.
 
 The default *scss* files contain an import of a custom scss file at the bottom of each file. 

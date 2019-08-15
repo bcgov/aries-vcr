@@ -49,18 +49,6 @@ TheOrgBook is configured for debugging while running in its Docker environment u
 
 To run in debug mode, append DEBUG=true to your run command. For example, `./manage start seed=the_org_book_0000000000000000000 DEBUG=true`. This will start Django's development server instead of running Gunicorn. It will also start the debugger software to allow a remote debugger to be attached. Using Visual Studio Code's debugging feature, you can connect to application running in docker by navigating to the debug tab and running the "Python Experimental: Attach" debug configuration.
 
-## Development Deployment Environment
-
-To deploy TheOrgBook on an instance of OpenShift, see [the instructions](../RunningLocal.md) in the file RunningLocal.md.
-
-- [Schema Spy](http://schema-spy-devex-von-dev.pathfinder.gov.bc.ca/)
-- [Open API (Swagger) API Explorer](http://dev-demo-api.orgbook.gov.bc.ca/api/v1/)
-
 ## Database Migrations
 
 Migrations are triggered automatically when the Django/Python container is deployed.  The process it triggered by wrapper code injected as part of the s2i-python-container build; https://github.com/sclorg/s2i-python-container/blob/master/3.6/s2i/bin/run
-
-## ToDo:
-- The auto-generated views are constructed using generics and a number of mixins.
-  - Determine if there is a better way to do this.  Since it's not as clean as something constructed from ModelSerializer or HyperlinkedModelSerializer.
-- Logging; ref gwells
