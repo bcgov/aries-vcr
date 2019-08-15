@@ -70,15 +70,6 @@ and
 * Solr is exposed at; http://localhost:8983/
 * The database is exposed at; localhost:5432
 
-## Loading Data
-
-To load sample data into the running application use the `loadData.sh` script:
-```sh
-../openshift/loadData.sh -e http://localhost:8081
-```
-
-This will load sample data directly into the exposed REST API.
-
 # Running a Complete VON Network
 
 A quick start guide for running a local Indy Network, an instance of TheOrgBook and the dFlow issuer verifiers can be found in this [VON Network Quick Start Guide](https://github.com/bcgov/dFlow/blob/master/docker/VONNetworkQuickStartGuide.md).
@@ -91,13 +82,7 @@ TheOrgBook can also be brought up in a state where local modifications to the to
 ./manage web-dev
 ```
 
-# Current State
-
-The project is fully wired together and functional.
-
-None of the services define persistent storage.  If the images change and/or the containers from a previous run are removed, the data in the containers will be lost.
-
-## Start-up Orchestration
+# Start-up Orchestration
 
 The API server manages the database schema and indexes, therefore it must wait until the database and search engine (Solr) services are up and running AND fully initialized.  Likewise, the Schema-Spy service must wait until the API service has created/migrated the database schema to the most recent version before it starts.
 
