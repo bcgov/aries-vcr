@@ -22,12 +22,8 @@ The best way to get started with a new project is by working with a running inst
 
 ## Running TheOrgBook on OpenShift
 
-To deploy TheOrgBook on a local instance of OpenShift, refer to [Running TheOrgBook Locally on OpenShift](./RunningLocal.md).  These instructions, apart from the steps that are specific to setting up your local environment, can also be used to get the project deployed to a production OpenShift environment.
+Please refer to the [orgbook-configurations](https://github.com/bcgov/orgbook-configurations) repository.
 
 ## Running TheOrgBook on Docker
 
 The project can also be run locally using Docker and Docker Compose.  Refer to [Running TheOrgBook with Docker Compose](./docker/README.md) for instructions.
-
-## Resetting the Ledger
-
-For information on the process of resetting the ledger and wallets refer to the [Resetting the Ledger and Wallets](./ResettingTheLedger.md) documentation.
