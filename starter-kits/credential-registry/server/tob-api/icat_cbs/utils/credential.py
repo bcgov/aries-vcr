@@ -782,7 +782,13 @@ class CredentialManager(object):
         with transaction.atomic():
             # Acquire a lock on the topic to block competing credentials
             # This lock is released when the transaction ends
-            Topic.objects.select_for_update().get(pk=topic.id)
+            topic_ids = []
+            topic_ids.append(topic.id)
+            if related_topic is not None:
+                topic_ids.append(related_topic.id)
+            topic_ids.sort()
+            for topic_id in topic_ids:
+                Topic.objects.select_for_update().get(pk=topic_id)
 
             cardinality = cls.credential_cardinality(credential, processor_config)
 
