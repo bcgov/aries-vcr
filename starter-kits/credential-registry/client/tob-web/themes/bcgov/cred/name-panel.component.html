@@ -49,9 +49,12 @@
         <div class="form-field">
           <div class="row mb-2 mb-sm-1">
             <label class="col-md-4 mb-0" translate>cred.date</label>
-            <div class="col-md-8"  *ngIf="name.last_updated > '0100-01-01'">
+            <div class="col-md-8"  *ngIf="name.last_updated > '0100-01-01'; else ifBlank">
               <span class="claim-info date">{{name.last_updated | dateFormat: 'effectiveDateTime'}}</span>
             </div>
+            <ng-template #ifBlank>
+              <div class="col-sm-8">{{'cred.empty-attribute' | translate}}</div>
+            </ng-template>
           </div>
           <div class="row mb-2 mb-sm-1">
             <label class="col-md-4 mb-0" translate>attribute.entity_name_effective</label>

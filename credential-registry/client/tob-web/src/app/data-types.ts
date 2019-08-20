@@ -166,6 +166,14 @@ export namespace Model {
       this._attribute_map = mapByType(this._attributes);
     }
 
+    get attributes_ext(): Attribute[] {
+      let ret_attrs = this._attributes;
+      if (this.local_name) {
+        ret_attrs.push(new Attribute({id: this.local_name.id, type: "name_short", value: this.local_name.text, credential_id: this.local_name.credential_id, inactive: this.local_name.inactive, format: "name", credential_type_id: this.credential_type.id }));
+      }
+      return ret_attrs;
+    }
+
     get attribute_map(): {[key: string]: Attribute} {
       return this._attribute_map || {};
     }
@@ -371,6 +379,14 @@ export namespace Model {
       this._attribute_map = mapByType(this._attributes);
     }
 
+    get attributes_ext(): Attribute[] {
+      let ret_attrs = this._attributes;
+      if (this.local_name) {
+        ret_attrs.push(new Attribute({id: this.local_name.id, type: "name_short", value: this.local_name.text, credential_id: this.local_name.credential_id, inactive: this.local_name.inactive, format: "name", credential_type_id: null }));
+      }
+      return ret_attrs;
+    }
+
     get attribute_map(): {[key: string]: Attribute} {
       return this._attribute_map || {};
     }
@@ -460,6 +476,11 @@ export namespace Model {
     set attributes(attrs: Attribute[]) {
       this._attributes = attrs;
       this._attribute_map = mapByType(this._attributes);
+    }
+
+    get attributes_ext(): Attribute[] {
+      let ret_attrs = this._attributes;
+      return ret_attrs;
     }
 
     get attribute_map(): {[key: string]: Attribute} {

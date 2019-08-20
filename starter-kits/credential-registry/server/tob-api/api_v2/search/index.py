@@ -10,17 +10,20 @@ class TxnAwareSearchIndex(indexes.SearchIndex):
     _backend_queue = None
 
     def __init__(self, *args, **kwargs):
+        LOGGER.debug("Initializing TxnAwareSearchIndex ...")
         super(TxnAwareSearchIndex, self).__init__(*args, **kwargs)
         self._transaction_added = {}
         self._transaction_removed = {}
         self._transaction_savepts = None
 
     def reset(self):
+        LOGGER.debug("Resetting TxnAwareSearchIndex ...")
         self._transaction_added = {}
         self._transaction_removed = {}
         self._transaction_savepts = None
 
     def update_object(self, instance, using=None, **kwargs):
+        LOGGER.debug("Updating object; %s ...", instance.id)
         conn = transaction.get_connection()
         if conn.in_atomic_block:
             if self._transaction_savepts != conn.savepoint_ids:
@@ -44,6 +47,7 @@ class TxnAwareSearchIndex(indexes.SearchIndex):
                 )
 
     def remove_object(self, instance, using=None, **kwargs):
+        LOGGER.debug("Removing object; %s ...", instance.id)
         conn = transaction.get_connection()
         if conn.in_atomic_block:
             if self._transaction_savepts != conn.savepoint_ids:
@@ -66,6 +70,7 @@ class TxnAwareSearchIndex(indexes.SearchIndex):
                 )
 
     def transaction_committed(self):
+        LOGGER.debug("Committing transaction(s) ...")
         conn = transaction.get_connection()
         if conn.in_atomic_block:
             # committed nested transaction - ensure hook is attached
@@ -75,7 +80,7 @@ class TxnAwareSearchIndex(indexes.SearchIndex):
             for using, instances in self._transaction_removed.items():
                 if instances:
                     LOGGER.debug(
-                        "Committing %d deferred Solr delete(s) after transaction.",
+                        "Committing %d deferred Solr delete(s) after transaction...",
                         len(instances),
                     )
                     if self._backend_queue:

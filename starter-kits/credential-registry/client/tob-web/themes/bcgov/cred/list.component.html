@@ -14,7 +14,7 @@
           {{cred.relatedPreferredName}}
         </a>
       </p>
-      <p class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'">
+      <p class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'; else ifBlank">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </p>
       <p class="cred-issuer" *ngIf="cred.issuer">
@@ -35,7 +35,7 @@
           {{cred.credential_type.description}}
         </a>
       </div>
-      <div class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'">
+      <div class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'; else ifBlank">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </div>
     </div>
@@ -95,9 +95,12 @@
         <label>
           <span translate>cred.start-date</span>:
         </label>
-        <div *ngIf="cred.effective_date > '0100-01-01'">
+        <div *ngIf="cred.effective_date > '0100-01-01'; else ifBlank">
           <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
         </div>
+        <ng-template #ifBlank>
+          <div class="col-sm-8">{{'cred.empty-attribute' | translate}}</div>
+        </ng-template>
       </small>
       <div class="badge badge-warning" *ngIf="cred.inactive" translate>cred.inactive</div>
       <div class="badge badge-danger" *ngIf="cred.revoked" translate>cred.expired</div>
