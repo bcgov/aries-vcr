@@ -380,6 +380,7 @@ configureEnvironment() {
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   export RUST_LOG=${RUST_LOG:-warn}
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
+  export DEBUG=${DEBUG}
 
   # tob-db
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
@@ -414,7 +415,6 @@ configureEnvironment() {
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
   export DATABASE_USER=${POSTGRESQL_USER}
   export DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
-  export DEBUG=${DEBUG}
   export DEMO_SITE=${DEMO_SITE-True}
   export DJANGO_SECRET_KEY=wpn1GZrouOryH2FshRrpVHcEhMfMLtmTWMC2K5Vhx8MAi74H5y
   export DJANGO_DEBUG=True

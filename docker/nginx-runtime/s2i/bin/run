@@ -64,7 +64,28 @@ read -r -d '' _CONFIG_SECTION << EOF
         }
 EOF
 
-echo "${_CONFIG_SECTION}"
+read -r -d '' _DEBUG_SECTION << EOF
+        location /agentcb/ {
+            limit_except OPTIONS {
+                ${HTTP_BASIC}
+            }
+            #proxy_set_header Authorization "";
+            ${_FORWARDED_HEADERS}
+            proxy_pass ${1%api/v2/}agentcb/;
+        }
+        location = /agentcb/ {
+            # allow access to swagger
+            #proxy_set_header Authorization "";
+            ${_FORWARDED_HEADERS}
+            proxy_pass ${1%api/v2/}agentcb/;
+        }
+EOF
+
+if [[ ! -z "${DEBUG}" ]]; then
+  echo "${_CONFIG_SECTION}${_DEBUG_SECTION}"
+else
+  echo "${_CONFIG_SECTION}"
+fi
 }
 
 getApiUrl (){
