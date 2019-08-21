@@ -1,8 +1,8 @@
-import os
 import logging
+import os
 
 import requests
-
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -22,6 +22,7 @@ TOPIC_PERFORM_MENU_ACTION = "perform-menu-action"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
 
 
+@swagger_auto_schema(method="post", auto_schema=None)
 @api_view(["POST"])
 @permission_classes((permissions.AllowAny,))
 def agent_callback(request, topic):
@@ -123,10 +124,10 @@ def handle_credentials(state, message):
             raw_credential = message["raw_credential"]
 
             print("Received credential:")
-            #print(raw_credential)
+            # print(raw_credential)
 
             # TODO can include this exception to test error reporting
-            #raise Exception("Depliberate error to test problem reporting")
+            # raise Exception("Depliberate error to test problem reporting")
 
             credential_data = {
                 "schema_id": raw_credential["schema_id"],
@@ -156,7 +157,7 @@ def handle_credentials(state, message):
         # TODO other scenarios
         elif state == "stored":
             print("credential stored")
-            #print(message)
+            # print(message)
 
     except Exception as e:
         LOGGER.error(str(e))
