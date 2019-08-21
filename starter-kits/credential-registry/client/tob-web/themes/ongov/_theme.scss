@@ -15,11 +15,11 @@ header .navbar {
 }
 
 .header-logo {
-  width: 90px;
+  width: 120px;
   height: 30px;
 
   @include media-breakpoint-up(md) {
-    width: 135px;
+    width: 180px;
     height: 45px;
   }
 }

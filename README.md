@@ -166,6 +166,10 @@ Indy Catalyst components:
 
 ### Credential Registry
 
+TODO
+
+Credential Registry provides a set of RESTful web services you can use to query data from your third-party application, an introduction to use of these API's is available [here](docs/IndyCat-REST-Services.md).
+
 ### Agent
 
 ### Agent Driver
