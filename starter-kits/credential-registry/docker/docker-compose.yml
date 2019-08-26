@@ -115,6 +115,7 @@ services:
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - AGENT_ADMIN_URL=http://tob-agent:${AGENT_ADMIN_PORT}
       - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
+      - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
     volumes:
       - ../server/tob-api/tob_api:/home/indy/tob_api
       - ../server/tob-api/api_v2:/home/indy/api_v2
@@ -197,7 +198,7 @@ services:
         --wallet-storage-creds '{\"account\":\"${POSTGRESQL_USER}\",\"password\":\"${POSTGRESQL_PASSWORD}\",\"admin_account\":\"postgres\",\"admin_password\":\"${POSTGRESQL_ADMIN_PASSWORD}\"}' \
         --seed '${INDY_WALLET_SEED}' \
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
-        --admin-insecure-mode \
+        --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
         --label debug \
         --protocol indy_catalyst_issuer_registration",
