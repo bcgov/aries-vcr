@@ -1,5 +1,6 @@
 import os
 import logging
+from urllib.parse import urlencode
 
 import requests
 
@@ -168,9 +169,100 @@ def handle_credentials(state, message):
 
 
 def handle_presentations(state, message):
-    # TODO auto-respond to proof requests
-    print("handle_presentations()", state)
-    return Response(some_data)
+    print("handle_presentations()", state, message)
+    presentation_request = message["presentation_request"]
+
+    found_credentials = {"requested_attributes": {}, "requested_predicates": {}}
+    """
+    found_credentials looks like:
+    {
+        "requested_attributes": {
+            "57281247-2a1e-4fde-9583-6e3f35b9c329": [
+                {
+                    "cred_info": {
+                    "referent": "d4dbd617-15b2-4956-b898-559be7387566", // cred id
+                    "attrs": {
+                        "registration_date": "2019-01-01",
+                        "province": "Random Text JFBEPF7A87OMXNNOND RCUFD3",
+                        "address_line_1": "Random Text NQBG9FGHZS IB1RC3EE 6SGKL",
+                        "registered_jurisdiction": "Random Text 52NVLRZMSPMEBGQHXQQ0",
+                        "entity_status": "OPT1",
+                        "city": "Random Text J572VD PN1M9H 74UJYSQVNXD",
+                        "addressee": "Random Text S6RE6 YG7OO72L0LN4SIFPS51",
+                        "entity_name": "Random Name 9BUKOAOGHJ",
+                        "entity_status_effective": "2019-01-01",
+                        "entity_name_effective": "2019-01-01",
+                        "country": "Random Text GQ PVQ4BPS06JGAV1P39M0PC2",
+                        "effective_date": "2019-01-01",
+                        "entity_type": "Random Text ANU8VVI7ZOALW5XIXCOWCY4UV",
+                        "corp_num": "b7c74cb8-93c6-4955-9d47-0389fa79b670",
+                        "expiry_date": "2019-01-01",
+                        "postal_code": "Random Text M9W4CZ H6XTUX2NQ54SFNL338"
+                    },
+                    "schema_id": "52Po5igEeRht8Qmhow:2:my-registration.nick-org:1.0.0",
+                    "cred_def_id": "52Po5igEeRht8Qmhow:3:CL:10:default",
+                    "rev_reg_id": null,
+                    "cred_rev_id": null
+                    },
+                    "interval": null,
+                    "presentation_referents": [
+                        "57281247-2a1e-4fde-9583-6e3f35b9c329"
+                    ]
+                }
+            ]
+        },
+        "requested_predicates": {}
+    }
+    """
+
+    # Shim to add missing libindy functionality https://jira.hyperledger.org/browse/IS-1363
+    for referent in presentation_request["requested_attributes"]:
+        requested_attribute = presentation_request["requested_attributes"][referent]
+        credentials_for_attr = []
+        for restriction in requested_attribute["restrictions"]:
+            query_params = {}
+            query_params["extra_query"] = restriction
+            query_params_enc = urlencode(query_params)
+            resp = requests.get(
+                f"{AGENT_ADMIN_URL}/presentation_exchange/"
+                + f"{message['presentation_exchange_id']}/credentials/"
+                + f"{referent}?{query_params_enc}"
+            )
+
+            credentials = resp.json()
+            credentials_for_attr.extend(credentials)
+
+        found_credentials["requested_attributes"][referent] = credentials_for_attr
+
+    for referent in presentation_request["requested_predicates"]:
+        requested_predicate = presentation_request["requested_predicates"][referent]
+        credentials_for_pred = []
+        for restriction in requested_predicate["restrictions"]:
+            query_params = {}
+            query_params["extra_query"] = restriction
+            query_params_enc = urlencode(query_params)
+            resp = requests.get(
+                f"{AGENT_ADMIN_URL}/presentation_exchange/"
+                + f"{message['presentation_exchange_id']}/credentials/"
+                + f"{referent}?{query_params_enc}"
+            )
+
+            credentials = resp.json()
+            credentials_for_pred.extend(credentials)
+
+        found_credentials["requested_predicates"][referent] = credentials_for_pred
+    # end shim
+
+    # 
+
+
+    credentials_for_pr = {
+        "self_attested_attributes": {},
+        "requested_attributes": {},
+        "requested_predicates": {},
+    }
+
+    return Response("some_data")
 
 
 def handle_get_active_menu(message):

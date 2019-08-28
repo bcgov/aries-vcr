@@ -198,7 +198,7 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --admin-insecure-mode \
         --label ${AGENT_NAME} \
-        --label debug \
+        --log-level debug \
         --protocol indy_catalyst_issuer_registration",
       ]
 

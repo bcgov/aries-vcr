@@ -99,16 +99,3 @@ def send_feedback(request, *args, **kwargs):
     comments = request.POST.get("comments")
     email_feedback(ip_addr, from_name, from_email, reason, comments)
     return JsonResponse({"status": "ok"})
-
-
-@swagger_auto_schema(
-    method="get",
-    operation_id="api_v2_verify_credential",
-    operation_description="verify credential",
-)
-@api_view(["GET"])
-@authentication_classes(())
-@permission_classes((permissions.AllowAny,))
-def verify_credential(request, *args, **kwargs):
-    # TODO: implement functionality
-    return JsonResponse({"status": "501", "message": "Not Implemented"})

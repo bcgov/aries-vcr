@@ -1,5 +1,9 @@
+import os
 import base64
 
+import requests
+
+import django
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -33,6 +37,12 @@ from api_v2.serializers.rest import (
     TopicSerializer,
 )
 from api_v2.serializers.search import CustomTopicSerializer
+
+from logging import getLogger
+
+logger = getLogger(__name__)
+
+AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
 
 
 class IssuerViewSet(ReadOnlyModelViewSet):
@@ -200,6 +210,49 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         queryset = self.queryset.filter(Q(revoked=True) | Q(inactive=True))
         serializer = CredentialSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    @detail_route(url_path="verify", methods=["get"])
+    def verify(self, request, pk=None):
+        item = self.get_object()
+
+        connection_response = requests.get(
+            f"{AGENT_ADMIN_URL}/connections?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}"
+        )
+        connection_response_dict = connection_response.json()
+        assert connection_response_dict["results"]
+
+        self_connection = connection_response_dict["results"][0]
+
+        response = requests.get(
+            f"{AGENT_ADMIN_URL}/credential_exchange/{item.credential_exchange_id}"
+        )
+        response_body = response.json()
+
+        assert response_body["state"] == "stored"
+
+        presentation_request = {
+            "version": "1.0",
+            "name": "self-verify",
+            "requested_predicates": [],
+            "connection_id": self_connection["connection_id"],
+            "requested_attributes": [],
+        }
+        restrictions = [{}]
+
+        for attr in response_body["credential"]["attrs"]:
+            claim_val = response_body["credential"]["attrs"][attr]
+            restrictions[0][f"attr::{attr}::value"] = claim_val
+
+        for attr in response_body["credential"]["attrs"]:
+            requested_attribute = {"name": attr, "restrictions": restrictions}
+            presentation_request["requested_attributes"].append(requested_attribute)
+
+        presentation_request_response = requests.post(
+            f"{AGENT_ADMIN_URL}/presentation_exchange/send_request",
+            json=presentation_request,
+        )
+
+        return Response(presentation_request_response.json())
 
     @detail_route(url_path="latest", methods=["get"])
     def get_latest(self, request, pk=None):
