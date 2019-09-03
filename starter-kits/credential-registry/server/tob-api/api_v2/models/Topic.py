@@ -55,7 +55,7 @@ class Topic(Auditable):
     def get_active_attributes(self):
         creds = self.get_active_credential_ids()
         if creds:
-            return Attribute.objects.filter(credential_id__in=creds)
+            return Attribute.objects.filter(credential_id__in=creds, credential__credential_type__description='Registration')
         return []
 
     def get_active_names(self):
