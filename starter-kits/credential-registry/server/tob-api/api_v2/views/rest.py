@@ -132,7 +132,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
     @swagger_auto_schema(responses={200: TopicSerializer(many=False)})
     @list_route(
         methods=["get"], 
-        url_path="ident/(?P<type>[^/.]+)/(?P<source_id>[^/.]+)"
+        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)"
     )
     def retrieve_by_type(self, request, type=None, source_id=None):
         return self.retrieve(request)
@@ -140,7 +140,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
     @swagger_auto_schema(responses={200: CustomTopicSerializer(many=False)})
     @list_route(
         methods=["get"],
-        url_path="ident/(?P<type>[^/.]+)/(?P<source_id>[^/.]+)/formatted"
+        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)/formatted"
     )
     def retrieve_by_type_formatted(self, request, type=None, source_id=None):
         return self.retrieve_formatted(request)
@@ -196,19 +196,19 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         serializer = ExpandedCredentialSerializer(item)
         return Response(serializer.data)
 
-    @swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
-    @list_route(url_path="active", methods=["get"])
-    def list_active(self, request, pk=None):
-        queryset = self.queryset.filter(revoked=False, inactive=False, latest=True)
-        serializer = CredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
+    #@swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
+    #@list_route(url_path="active", methods=["get"])
+    #def list_active(self, request, pk=None):
+    #   queryset = self.queryset.filter(revoked=False, inactive=False, latest=True)
+    #    serializer = CredentialSerializer(queryset, many=True)
+    #    return Response(serializer.data)
 
-    @swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
-    @list_route(url_path="historical", methods=["get"])
-    def list_historical(self, request, pk=None):
-        queryset = self.queryset.filter(Q(revoked=True) | Q(inactive=True))
-        serializer = CredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
+    #@swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
+    #@list_route(url_path="historical", methods=["get"])
+    #def list_historical(self, request, pk=None):
+    #    queryset = self.queryset.filter(Q(revoked=True) | Q(inactive=True))
+    #    serializer = CredentialSerializer(queryset, many=True)
+    #    return Response(serializer.data)
 
     @detail_route(url_path="latest", methods=["get"])
     def get_latest(self, request, pk=None):
@@ -239,24 +239,24 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         return obj
 
 
-class AddressViewSet(ReadOnlyModelViewSet):
-    serializer_class = AddressSerializer
-    queryset = Address.objects.all()
+#class AddressViewSet(ReadOnlyModelViewSet):
+#    serializer_class = AddressSerializer
+#    queryset = Address.objects.all()
 
 
-class AttributeViewSet(ReadOnlyModelViewSet):
-    serializer_class = AttributeSerializer
-    queryset = Attribute.objects.all()
+#class AttributeViewSet(ReadOnlyModelViewSet):
+#    serializer_class = AttributeSerializer
+#    queryset = Attribute.objects.all()
 
 
-class NameViewSet(ReadOnlyModelViewSet):
-    serializer_class = NameSerializer
-    queryset = Name.objects.all()
+#class NameViewSet(ReadOnlyModelViewSet):
+#    serializer_class = NameSerializer
+#    queryset = Name.objects.all()
 
 
 # Add environment specific endpoints
 try:
-    utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
+    #utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
     utils.apply_custom_methods(
         TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
     )
