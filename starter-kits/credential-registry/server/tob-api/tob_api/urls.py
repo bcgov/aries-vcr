@@ -15,6 +15,7 @@ urlpatterns = [
     path("", RedirectView.as_view(url="api/v2/")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("api/v2/", include("api_v2.urls")),
+    #path("api/", include("api.urls")),
     path("health", views.health),
     path("hooks/", include("icat_hooks.urls")),
     path("agentcb/", include("icat_cbs.urls")),
