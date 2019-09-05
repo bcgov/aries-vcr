@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from .Address import Address
 from .Attribute import Attribute
@@ -53,7 +55,7 @@ class Topic(Auditable):
     def get_active_attributes(self):
         creds = self.get_active_credential_ids()
         if creds:
-            return Attribute.objects.filter(credential_id__in=creds)
+            return Attribute.objects.filter(credential_id__in=creds, credential__credential_type__description=self.type)
         return []
 
     def get_active_names(self):

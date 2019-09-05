@@ -7,7 +7,7 @@
       <p class="cred-title">
         <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">{{cred.credential_type.description}}</a>
       </p>
-      <p class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'">
+      <p class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'; else ifBlank">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </p>
       <p class="cred-issuer" *ngIf="cred.issuer">
@@ -26,7 +26,7 @@
       <div class="cred-title">
         <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">{{cred.credential_type.description}}</a>
       </div>
-      <div class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'">
+      <div class="cred-date" *ngIf="cred.effective_date && cred.effective_date > '0100-01-01'; else ifBlank">
         <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
       </div>
     </div>
@@ -59,9 +59,12 @@
         <label>
           <span translate>cred.last-updated</span>:
         </label>
-        <div *ngIf="cred.effective_date > '0100-01-01'">
+        <div *ngIf="cred.effective_date > '0100-01-01'; else ifBlank">
           <span class="claim-info date">{{cred.effective_date | dateFormat: 'effectiveDate'}}</span>
         </div>
+        <ng-template #ifBlank>
+          <div class="col-sm-8">{{'cred.empty-attribute' | translate}}</div>
+        </ng-template>
       </small>
     </div>
     <div class="col-md-5">

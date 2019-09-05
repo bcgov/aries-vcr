@@ -21,17 +21,17 @@ var UPDATE_ONLY = process.env.UPDATE_ONLY || false;
 var REPLACE_VAR_PATHS = ['index.html', 'assets/bootstrap/manifest.json'];
 
 
-if(! fs.copyFileSync) {
+if (!fs.copyFileSync) {
   // add stub for node.js versions before 8.5.0
   // NB: flags not implemented
-  fs.copyFileSync = function(source, target, flags) {
+  fs.copyFileSync = function (source, target, flags) {
     return fs.writeFileSync(target, fs.readFileSync(source));
   }
 }
 
 function unlinkRecursiveSync(dir) {
   if (fs.existsSync(dir)) {
-    fs.readdirSync(dir).forEach(function(file, index) {
+    fs.readdirSync(dir).forEach(function (file, index) {
       var target_path = path.join(dir, file);
       if (fs.lstatSync(target_path).isDirectory()) {
         unlinkRecursiveSync(target_path);
@@ -44,14 +44,14 @@ function unlinkRecursiveSync(dir) {
 }
 
 function populateDirSync(source_dir, target_dir) {
-  fs.readdirSync(source_dir).forEach(function(file, index) {
+  fs.readdirSync(source_dir).forEach(function (file, index) {
     var source_path = path.join(source_dir, file);
     var target_path = path.join(target_dir, file);
     var source_stats = fs.lstatSync(source_path);
     var target_stats = null;
     try {
       target_stats = fs.lstatSync(target_path);
-    } catch (err) { }
+    } catch (err) {}
     if (target_stats && USE_LINKS && target_stats.isSymbolicLink()) {
       var sync_target_stats = fs.statSync(target_path);
       var resolved_source_path = fs.realpathSync(target_path);
@@ -78,9 +78,9 @@ function populateDirSync(source_dir, target_dir) {
       }
     }
 
-    if(! USE_LINKS) {
+    if (!USE_LINKS) {
       if (source_stats.isDirectory()) {
-        if (! target_stats) {
+        if (!target_stats) {
           fs.mkdirSync(target_path);
         }
         populateDirSync(source_path, target_path);
@@ -101,7 +101,9 @@ function populateDirSync(source_dir, target_dir) {
 function copyThemeDir(theme_name, target_dir) {
   var theme_dir = path.join(THEMES_ROOT, theme_name);
   if (theme_name !== 'default') {
-    theme_dir = path.join(THEME_PATH, theme_name);
+    if (THEME_PATH && fs.existsSync(path.join(THEME_PATH, theme_name))) {
+      theme_dir = path.join(THEME_PATH, theme_name)
+    }
   }
   try {
     fs.accessSync(theme_dir, fs.constants.F_OK);
@@ -113,7 +115,7 @@ function copyThemeDir(theme_name, target_dir) {
   } catch (err) {
     throw `Theme directory not readable:  ${theme_dir}`
   }
-  if (! fs.statSync(theme_dir).isDirectory()) {
+  if (!fs.statSync(theme_dir).isDirectory()) {
     throw `Theme path is not a directory: ${theme_dir}`
   }
   populateDirSync(theme_dir, target_dir);
@@ -128,16 +130,16 @@ function cleanTargetDir(target_dir, root, depth) {
       throw err;
     }
   }
-  fs.readdirSync(target_dir).forEach(function(file, index) {
+  fs.readdirSync(target_dir).forEach(function (file, index) {
     var target_path = path.join(root || '.', target_dir, file);
     var stat = fs.lstatSync(target_path);
     if (stat.isDirectory()) {
-      cleanTargetDir(target_path, root, depth+1);
+      cleanTargetDir(target_path, root, depth + 1);
       fs.rmdirSync(target_path);
-    } else if(stat.isSymbolicLink()) {
+    } else if (stat.isSymbolicLink()) {
       fs.unlinkSync(target_path);
     } else {
-      var del = ! USE_LINKS;
+      var del = !USE_LINKS;
       if (!depth && ~RESOLVE_LINKS.indexOf(file)) {
         del = true;
       } else {
@@ -175,7 +177,7 @@ function resolveLinks(target_dir, paths) {
       } catch (err) {
         continue;
       }
-      if(real_stats.isDirectory())
+      if (real_stats.isDirectory())
         fs.mkdirSync(target_path);
       else
         fs.copyFileSync(real_path, target_path);
@@ -187,8 +189,8 @@ function findLanguages(target_dir) {
   var ret = [];
   var lang_path = path.join(target_dir, LANG_ROOT);
   if (fs.existsSync(lang_path)) {
-    fs.readdirSync(lang_path).forEach(function(file, index) {
-      if(file.endsWith('.json')) {
+    fs.readdirSync(lang_path).forEach(function (file, index) {
+      if (file.endsWith('.json')) {
         ret.push(file.substring(0, file.length - 5));
       }
     });
@@ -198,13 +200,15 @@ function findLanguages(target_dir) {
 
 function resolveLangPaths(theme_name, language) {
   var ret = [];
-  if (THEME_PATH) {
-    var lang_path = path.join(THEME_PATH, theme_name, LANG_ROOT, language + '.json');
+  if (theme_name !== 'default') {
+    var lang_path = path.join(THEMES_ROOT, theme_name, LANG_ROOT, language + '.json');
+    if (THEME_PATH && fs.existsSync(path.join(THEME_PATH, theme_name, LANG_ROOT, language + '.json'))) {
+      lang_path = path.join(THEME_PATH, theme_name, LANG_ROOT, language + '.json');
+    }
     if (fs.existsSync(lang_path)) {
       ret.push(lang_path);
     }
-  }
-  if (theme_name !== 'default') {
+
     var def_path = path.join(THEMES_ROOT, 'default', LANG_ROOT, language + '.json');
     if (fs.existsSync(def_path)) {
       ret.push(def_path);
@@ -219,13 +223,17 @@ function resolveLangPaths(theme_name, language) {
 function mergeDeep(target, ...sources) {
   if (!sources.length) return target;
   const source = sources.shift();
-  if (typeof(target) === 'object' && typeof(source) === 'object') {
+  if (typeof (target) === 'object' && typeof (source) === 'object') {
     for (const key in source) {
-      if (typeof(source[key]) === 'object') {
-        if (!target[key]) Object.assign(target, { [key]: {} });
+      if (typeof (source[key]) === 'object') {
+        if (!target[key]) Object.assign(target, {
+          [key]: {}
+        });
         mergeDeep(target[key], source[key]);
       } else {
-        Object.assign(target, { [key]: source[key] });
+        Object.assign(target, {
+          [key]: source[key]
+        });
       }
     }
   }
@@ -235,10 +243,12 @@ function mergeDeep(target, ...sources) {
 // merge theme and default language files
 function combineLanguage(theme_name, target_dir) {
   var langs = new Array();
-  if (THEME_PATH) {
-    langs = findLanguages(path.join(THEME_PATH, theme_name));
-  }
   if (theme_name !== 'default') {
+    if (THEME_PATH && fs.existsSync(path.join(THEME_PATH, theme_name))) {
+      langs.concat(findLanguages(path.join(THEME_PATH, theme_name)));
+    } else if (path.join(THEMES_ROOT, theme_name)) {
+      langs.concat(findLanguages(path.join(THEMES_ROOT, theme_name)));
+    }
     langs = langs.concat(findLanguages(path.join(THEMES_ROOT, 'default')));
   }
   var lang_dir = path.join(target_dir, LANG_ROOT);
@@ -248,21 +258,20 @@ function combineLanguage(theme_name, target_dir) {
       paths.reverse();
       var input = [];
       for (var lang_path of paths) {
-        if(lang_path.startsWith(THEMES_ROOT)) {
+        if (lang_path.startsWith(THEMES_ROOT)) {
           input.push(require('./' + lang_path));
         } else {
           input.push(require(lang_path));
         }
       }
       var data = mergeDeep(...input);
-      if(! ('app' in data)) data['app'] = {};
+      if (!('app' in data)) data['app'] = {};
       data['app']['theme-name'] = theme_name;
       var target_path = path.join(lang_dir, lang + '.json');
       var target_stats = null;
       try {
         target_stats = fs.lstatSync(target_path);
-      } catch (err) {
-      }
+      } catch (err) {}
       if (target_stats && target_stats.isSymbolicLink()) {
         fs.unlinkSync(target_path);
       }
@@ -285,20 +294,20 @@ function updateConfig(theme_name) {
   }
   let target_path = path.join(TARGET_DIR, CONFIG_NAME);
   let result = {};
-  for(let k in config) {
+  for (let k in config) {
     let v = config[k];
     result[k] = v.replace(/\$[A-Z_]+|\$\{.+?\}/g, (found) => {
       found = found.substring(1);
-      if(found[0] === '{') found = found.substring(1, found.length - 1);
+      if (found[0] === '{') found = found.substring(1, found.length - 1);
       let foundval = '';
       let splitPos = found.indexOf('-');
-      if(~splitPos) {
+      if (~splitPos) {
         foundval = found.substring(splitPos + 1);
         found = found.substring(0, splitPos);
       }
-      if(found == 'TOB_THEME')
+      if (found == 'TOB_THEME')
         foundval = THEME_NAME;
-      else if(found in process.env && process.env[found] !== '')
+      else if (found in process.env && process.env[found] !== '')
         foundval = process.env[found];
       return foundval;
     });
@@ -309,7 +318,7 @@ function updateConfig(theme_name) {
 
 // replace variable references with values from (processed) config.json
 function replaceVars(paths, config) {
-  for(let replacePath of paths) {
+  for (let replacePath of paths) {
     let sourcePath = path.join(TARGET_DIR, replacePath);
     if (fs.existsSync(sourcePath)) {
       let content = fs.readFileSync(sourcePath, 'utf8');
@@ -322,12 +331,11 @@ function replaceVars(paths, config) {
   }
 }
 
-if(UPDATE_ONLY) {
+if (UPDATE_ONLY) {
   console.log('Updating theme: %s', THEME_NAME);
-}
-else {
+} else {
   console.log('Copying theme files to %s', TARGET_DIR);
-  if(THEME_PATH){
+  if (THEME_PATH) {
     console.log('Custom theme directory: %s', THEME_PATH);
   }
   console.log('Theme selected: %s', THEME_NAME);
@@ -339,7 +347,7 @@ if (THEME_NAME !== 'default') {
   copyThemeDir(THEME_NAME, TARGET_DIR)
 }
 
-if(USE_LINKS)
+if (USE_LINKS)
   resolveLinks(TARGET_DIR, RESOLVE_LINKS);
 
 combineLanguage(THEME_NAME, TARGET_DIR);
@@ -347,5 +355,5 @@ combineLanguage(THEME_NAME, TARGET_DIR);
 let CONFIG = updateConfig(THEME_NAME);
 replaceVars(REPLACE_VAR_PATHS, CONFIG);
 
-if(! UPDATE_ONLY)
+if (!UPDATE_ONLY)
   console.log('Done.\n');
