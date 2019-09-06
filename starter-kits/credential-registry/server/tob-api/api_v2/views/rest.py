@@ -178,12 +178,13 @@ class TopicRelationshipViewSet(ReadOnlyModelViewSet):
         if self.kwargs.get("pk"):
             return super(TopicRelationshipViewSet, self).get_object()
 
-        queryset = self.filter_queryset(self.get_queryset())
-        obj = get_object_or_404(queryset, type=type, source_id=source_id)
+        # I don't think the following code is used ...
+        #queryset = self.filter_queryset(self.get_queryset())
+        #obj = get_object_or_404(queryset, type=type, source_id=source_id)
 
-        # May raise a permission denied
-        self.check_object_permissions(self.request, obj)
-        return obj
+        ## May raise a permission denied
+        #self.check_object_permissions(self.request, obj)
+        #return obj
 
 
 class CredentialViewSet(ReadOnlyModelViewSet):
@@ -195,20 +196,6 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         item = self.get_object()
         serializer = ExpandedCredentialSerializer(item)
         return Response(serializer.data)
-
-    #@swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
-    #@list_route(url_path="active", methods=["get"])
-    #def list_active(self, request, pk=None):
-    #   queryset = self.queryset.filter(revoked=False, inactive=False, latest=True)
-    #    serializer = CredentialSerializer(queryset, many=True)
-    #    return Response(serializer.data)
-
-    #@swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
-    #@list_route(url_path="historical", methods=["get"])
-    #def list_historical(self, request, pk=None):
-    #    queryset = self.queryset.filter(Q(revoked=True) | Q(inactive=True))
-    #    serializer = CredentialSerializer(queryset, many=True)
-    #    return Response(serializer.data)
 
     @detail_route(url_path="latest", methods=["get"])
     def get_latest(self, request, pk=None):
@@ -237,21 +224,6 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         # May raise a permission denied
         self.check_object_permissions(self.request, obj)
         return obj
-
-
-#class AddressViewSet(ReadOnlyModelViewSet):
-#    serializer_class = AddressSerializer
-#    queryset = Address.objects.all()
-
-
-#class AttributeViewSet(ReadOnlyModelViewSet):
-#    serializer_class = AttributeSerializer
-#    queryset = Attribute.objects.all()
-
-
-#class NameViewSet(ReadOnlyModelViewSet):
-#    serializer_class = NameSerializer
-#    queryset = Name.objects.all()
 
 
 # Add environment specific endpoints

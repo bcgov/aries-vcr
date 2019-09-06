@@ -96,6 +96,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "api_v2.middleware.routing.HTTPHeaderRoutingMiddleware",
 ]
 
 ROOT_URLCONF = "tob_api.urls"
@@ -329,3 +330,16 @@ HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
 ###########################
 # Enf of webhook settings #
 ###########################
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER = "/api"
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP = {
+    u'application/orgbook.bc.api+json': u'application/json'
+}
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
+    u'v2': u'v2',
+    u'v3': u'v3',
+    u'latest': u'v3',
+    u'default': u'v2',
+}
