@@ -1,12 +1,3 @@
-# A simple middleware component that lets you use a single Django
-# instance to serve multiple versions of your app, chosen by the client
-# using the HTTP Accept header.
-# In your settings.py, map a value you're looking for in the Accept header
-# to a urls.py file.
-# HTTP_HEADER_ROUTING_MIDDLEWARE_URLCONF_MAP = {
-#     u'application/vnd.api-name.v1': 'app.urls_v1'
-# }
-
 from django.conf import settings
 
 
