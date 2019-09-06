@@ -100,6 +100,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "api_v2.middleware.routing.HTTPHeaderRoutingMiddleware",
 ]
 
 ROOT_URLCONF = "tob_api.urls"
@@ -322,8 +323,8 @@ HOOK_EVENTS = {
 CELERY_BROKER_HEARTBEAT = 0  # see https://github.com/celery/celery/issues/4817
 
 CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
-    os.environ.get("RABBITMQ_USER"),
-    os.environ.get("RABBITMQ_PASSWORD"),
+    os.environ.get("RABBITMQ_USER"), 
+    os.environ.get("RABBITMQ_PASSWORD"), 
     os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq"),
 )
 
@@ -334,6 +335,7 @@ HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
 # Enf of webhook settings #
 ###########################
 
+
 # This string is used to alias the agent's self connection for verification
 AGENT_SELF_CONNECTION_ALIAS = "credential-registry-self"
 
@@ -343,3 +345,16 @@ AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
 ADMIN_REQUEST_HEADERS = {}
 if AGENT_ADMIN_API_KEY is not None:
     ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER = "/api"
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP = {
+    u'application/orgbook.bc.api+json': u'application/json'
+}
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
+    u'v2': u'v2',
+    u'v3': u'v3',
+    u'latest': u'v3',
+    u'default': u'v2',
+}
