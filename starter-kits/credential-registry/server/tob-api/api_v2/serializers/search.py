@@ -173,6 +173,7 @@ class CustomTopicSerializer(TopicSerializer):
     def get_attributes(self, obj):
         attributes = Attribute.objects.filter(
             credential__topic=obj,
+            credential__credential_type__description=obj.type,
             credential__latest=True,
             credential__revoked=False,
         ).order_by("credential__inactive")

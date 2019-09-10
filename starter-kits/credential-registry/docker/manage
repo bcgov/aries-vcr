@@ -380,6 +380,7 @@ configureEnvironment() {
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   export RUST_LOG=${RUST_LOG:-warn}
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
+  export DEBUG=${DEBUG}
 
   # tob-db
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
@@ -414,7 +415,6 @@ configureEnvironment() {
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
   export DATABASE_USER=${POSTGRESQL_USER}
   export DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
-  export DEBUG=${DEBUG}
   export DEMO_SITE=${DEMO_SITE-True}
   export DJANGO_SECRET_KEY=wpn1GZrouOryH2FshRrpVHcEhMfMLtmTWMC2K5Vhx8MAi74H5y
   export DJANGO_DEBUG=True
@@ -430,6 +430,7 @@ configureEnvironment() {
   export SQL_DEBUG=${SQL_DEBUG:-}
   export WEB_CONCURRENCY=${WEB_CONCURRENCY:-5}
   export APPLICATION_URL=${APPLICATION_URL-http://localhost:8080}
+  export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
 
   # tob-web
   export TOB_THEME=${TOB_THEME:-default}
@@ -450,12 +451,15 @@ configureEnvironment() {
   # tob-agent
   export AGENT_ADMIN_PORT=8024
   export AGENT_WEBHOOK_PORT=8020
-  # export INDY_WALLET_DID=...
   export WEBHOOK_URL=${WEBHOOK_URL:-http://$DOCKERHOST:$API_HTTP_PORT}
   export HTTP_INTERFACE_PORT=8021
   export WS_INTERFACE_PORT=8023
   export AGENT_NAME="tob-agent"
   export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://$DOCKERHOST:$HTTP_INTERFACE_PORT}
+  export AGENT_ADMIN_MODE="admin-insecure-mode"
+  if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
+    AGENT_ADMIN_MODE="admin-api-key ${AGENT_ADMIN_API_KEY}"
+  fi
 }
 
 getStartupParams() {

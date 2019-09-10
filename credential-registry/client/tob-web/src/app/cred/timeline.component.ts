@@ -67,7 +67,7 @@ export class CredSetTimelineComponent implements OnInit, OnDestroy {
         if(! credset.credentials) continue;
         if(credset.first_effective_date && credset.first_effective_date < range.start) {
           if (credset.first_effective_date < '0100-01-01') {
-            range.start = '1970-01-01T00:00:00-00:00';
+            //range.start = '';
           } else {
             range.start = credset.first_effective_date;
           }
@@ -80,7 +80,14 @@ export class CredSetTimelineComponent implements OnInit, OnDestroy {
           slots: []
         };
         for(let cred of credset.credentials) {
-          row.slots.push(this._formatter.getCredentialSlot(cred));
+          if(!cred.effective_date || cred.effective_date < "0100-01-01") {
+            // skip for timeline
+          } else {
+            if(cred.effective_date && cred.effective_date < range.start) {
+              range.start = cred.effective_date;
+            }
+            row.slots.push(this._formatter.getCredentialSlot(cred));
+          }
         }
         rows.push(row);
       }

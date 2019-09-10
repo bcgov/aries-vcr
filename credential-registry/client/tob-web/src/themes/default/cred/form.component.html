@@ -111,7 +111,7 @@
               <div class="col-sm-12">
                 <label class="control-label" translate>cred.attributes</label>
                 <div class="form-field attributes-outer">
-                  <attribute-list [records]="record.attributes"></attribute-list>
+                  <attribute-list [records]="record.attributes_ext"></attribute-list>
                 </div>
               </div>
             </div>
@@ -120,9 +120,12 @@
               <div class="col-sm-12">
                 <label class="control-label" translate>cred.start-date</label>
                 <!-- filter out effective dates that don't make sense, set when we can't determine a "proper" effective date -->
-                <div class="form-field" *ngIf="record.effective_date > '0100-01-01'">
+                <div class="form-field" *ngIf="record.effective_date > '0100-01-01'; else ifBlank">
                   <span class="claim-info date">{{record.effective_date | dateFormat: 'effectiveDateTime'}}</span>
                 </div>
+                <ng-template #ifBlank>
+                  <div class="col-sm-8">{{'cred.empty-attribute' | translate}}</div>
+                </ng-template>
               </div>
             </div>
 

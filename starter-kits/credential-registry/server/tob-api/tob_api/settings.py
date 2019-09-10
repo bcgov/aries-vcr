@@ -144,6 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = "api_v2.User"
 
 REST_FRAMEWORK = {
+    #"DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_PAGINATION_CLASS": "tob_api.pagination.EnhancedPageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
