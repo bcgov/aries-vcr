@@ -55,21 +55,6 @@ from api_v2.views import misc
 #     )
 
 
-class Misc_Verify_Credential_TestCase(TestCase):
-    def setUp(self):
-        self.request = HttpRequest()
-        self.request.method = "GET"
-
-    def test_verify_Credential(self):
-        result = misc.verify_credential(self.request)
-
-        self.assertEqual(
-            result.content,
-            JsonResponse({"status": "501", "message": "Not Implemented"}).content,
-            "The JsonResponse should match.",
-        )
-
-
 class Misc_Quickload_TestCase(TestCase):
     def setUp(self):
         self.request = HttpRequest()
