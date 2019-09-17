@@ -188,7 +188,6 @@ services:
         --auto-ping-connection \
         --auto-respond-messages \
         --auto-respond-credential-offer \
-        --auto-respond-presentation-request \
         --auto-verify-presentation \
         --wallet-type 'indy' \
         --wallet-name 'icat_agent_wallet' \

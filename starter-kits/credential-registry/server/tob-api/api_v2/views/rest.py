@@ -2,10 +2,11 @@ import os
 import base64
 
 import requests
+from time import sleep
 
 import django
 from django.db.models import Q
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
@@ -260,8 +261,40 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             f"{AGENT_ADMIN_URL}/presentation_exchange/send_request",
             json=presentation_request,
         )
+        presentation_request_response.raise_for_status()
+        presentation_request_response = presentation_request_response.json()
+        presentation_exchange_id = presentation_request_response[
+            "presentation_exchange_id"
+        ]
 
-        return Response(presentation_request_response.json())
+        retries = 5
+        while retries > 0:
+            sleep(5)
+            retries -= 1
+            presentation_state_response = requests.get(
+                f"{AGENT_ADMIN_URL}/presentation_exchange/{presentation_exchange_id}"
+            )
+            presentation_state = presentation_state_response.json()
+            # if presentation_state["state"] == "verified":
+            if presentation_state["state"] == "presentation_received":
+                result = {
+                    "success": True,
+                    "result": {
+                        "presentation_request": presentation_state[
+                            "presentation_request"
+                        ],
+                        "presentation": presentation_state["presentation"],
+                    },
+                }
+                break
+
+        if not result:
+            result = {
+                "success": False,
+                "results": "Presentation request timed out."
+            }
+
+        return JsonResponse(result)
 
     @detail_route(url_path="latest", methods=["get"])
     def get_latest(self, request, pk=None):
