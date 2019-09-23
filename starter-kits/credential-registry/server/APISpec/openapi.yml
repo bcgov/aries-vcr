@@ -2114,7 +2114,7 @@ components:
           type: integer
     Credential:
       required:
-        - credential_exchange_id
+        - credential_id
         - topic
         - credential_type
       type: object
@@ -2133,7 +2133,7 @@ components:
           type: string
           format: date-time
           readOnly: true
-        credential_exchange_id:
+        credential_id:
           title: Wallet id
           type: string
           minLength: 1
@@ -2588,7 +2588,7 @@ components:
             $ref: "#/components/schemas/CredentialName"
     CredentialSearch:
       required:
-        - credential_exchange_id
+        - credential_id
         - credential_set
         - credential_type
         - addresses
@@ -2630,7 +2630,7 @@ components:
           type: string
           format: date-time
           nullable: true
-        credential_exchange_id:
+        credential_id:
           title: Wallet id
           type: string
           minLength: 1
@@ -2702,7 +2702,7 @@ components:
             $ref: "#/components/schemas/CredentialAttribute"
     CredentialTopicSearch:
       required:
-        - credential_exchange_id
+        - credential_id
         - credential_set
         - credential_type
         - names
@@ -2742,7 +2742,7 @@ components:
           type: string
           format: date-time
           nullable: true
-        credential_exchange_id:
+        credential_id:
           title: Wallet id
           type: string
           minLength: 1
