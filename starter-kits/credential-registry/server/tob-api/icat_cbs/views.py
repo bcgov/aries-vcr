@@ -145,7 +145,7 @@ def handle_credentials(state, message):
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
             credential = Credential(
-                credential_data, credential_exchange_id=credential_exchange_id
+                credential_data
             )
 
             credential_manager = CredentialManager()
