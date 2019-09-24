@@ -90,7 +90,6 @@ class Credential(object):
         self,
         credential_data: object,
         request_metadata: dict = None,
-        credential_id: str = None,
     ) -> None:
         self._raw = credential_data
         self._schema_id = credential_data["schema_id"]
@@ -102,7 +101,6 @@ class Credential(object):
         # ]
         self._req_metadata = request_metadata
         # self._rev_reg = credential_data["rev_reg"]
-        self._credential_id = credential_id
         # self._witness = credential_data["witness"]
 
         self._claim_attributes = []
@@ -204,19 +202,6 @@ class Credential(object):
     @property
     def request_metadata(self) -> dict:
         return self._request_metadata
-
-    @property
-    def credential_id(self) -> str:
-        """Accessor for credential wallet ID, after storage
-
-        Returns:
-            str -- the wallet ID of the credential
-        """
-        return self._credential_id
-
-    @credential_id.setter
-    def credential_id(self, val: str):
-        self._credential_id = val
 
 
 class CredentialClaims:
