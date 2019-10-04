@@ -44,6 +44,11 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
+AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
+
+ADMIN_REQUEST_HEADERS = {}
+if AGENT_ADMIN_API_KEY is not None:
+    ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
 
 
 class IssuerViewSet(ReadOnlyModelViewSet):
@@ -141,17 +146,14 @@ class TopicViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: TopicSerializer(many=False)})
-    @list_route(
-        methods=["get"], 
-        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)"
-    )
+    @list_route(methods=["get"], url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)")
     def retrieve_by_type(self, request, type=None, source_id=None):
         return self.retrieve(request)
 
     @swagger_auto_schema(responses={200: CustomTopicSerializer(many=False)})
     @list_route(
         methods=["get"],
-        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)/formatted"
+        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)/formatted",
     )
     def retrieve_by_type_formatted(self, request, type=None, source_id=None):
         return self.retrieve_formatted(request)
@@ -207,16 +209,16 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         serializer = ExpandedCredentialSerializer(item)
         return Response(serializer.data)
 
-    #@swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
-    #@list_route(url_path="active", methods=["get"])
-    #def list_active(self, request, pk=None):
+    # @swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
+    # @list_route(url_path="active", methods=["get"])
+    # def list_active(self, request, pk=None):
     #   queryset = self.queryset.filter(revoked=False, inactive=False, latest=True)
     #    serializer = CredentialSerializer(queryset, many=True)
     #    return Response(serializer.data)
 
-    #@swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
-    #@list_route(url_path="historical", methods=["get"])
-    #def list_historical(self, request, pk=None):
+    # @swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
+    # @list_route(url_path="historical", methods=["get"])
+    # def list_historical(self, request, pk=None):
     #    queryset = self.queryset.filter(Q(revoked=True) | Q(inactive=True))
     #    serializer = CredentialSerializer(queryset, many=True)
     #    return Response(serializer.data)
@@ -226,7 +228,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         item = self.get_object()
 
         connection_response = requests.get(
-            f"{AGENT_ADMIN_URL}/connections?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}"
+            f"{AGENT_ADMIN_URL}/connections?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}",
+            headers=ADMIN_REQUEST_HEADERS,
         )
         connection_response_dict = connection_response.json()
         assert connection_response_dict["results"]
@@ -234,7 +237,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         self_connection = connection_response_dict["results"][0]
 
         response = requests.get(
-            f"{AGENT_ADMIN_URL}/credential_exchange/{item.credential_exchange_id}"
+            f"{AGENT_ADMIN_URL}/credential_exchange/{item.credential_exchange_id}",
+            headers=ADMIN_REQUEST_HEADERS,
         )
         response_body = response.json()
 
@@ -260,6 +264,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         presentation_request_response = requests.post(
             f"{AGENT_ADMIN_URL}/presentation_exchange/send_request",
             json=presentation_request,
+            headers=ADMIN_REQUEST_HEADERS,
         )
         presentation_request_response.raise_for_status()
         presentation_request_response = presentation_request_response.json()
@@ -272,7 +277,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             sleep(5)
             retries -= 1
             presentation_state_response = requests.get(
-                f"{AGENT_ADMIN_URL}/presentation_exchange/{presentation_exchange_id}"
+                f"{AGENT_ADMIN_URL}/presentation_exchange/{presentation_exchange_id}",
+                headers=ADMIN_REQUEST_HEADERS,
             )
             presentation_state = presentation_state_response.json()
             # if presentation_state["state"] == "verified":
@@ -289,10 +295,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
                 break
 
         if not result:
-            result = {
-                "success": False,
-                "results": "Presentation request timed out."
-            }
+            result = {"success": False, "results": "Presentation request timed out."}
 
         return JsonResponse(result)
 
@@ -325,24 +328,24 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         return obj
 
 
-#class AddressViewSet(ReadOnlyModelViewSet):
+# class AddressViewSet(ReadOnlyModelViewSet):
 #    serializer_class = AddressSerializer
 #    queryset = Address.objects.all()
 
 
-#class AttributeViewSet(ReadOnlyModelViewSet):
+# class AttributeViewSet(ReadOnlyModelViewSet):
 #    serializer_class = AttributeSerializer
 #    queryset = Attribute.objects.all()
 
 
-#class NameViewSet(ReadOnlyModelViewSet):
+# class NameViewSet(ReadOnlyModelViewSet):
 #    serializer_class = NameSerializer
 #    queryset = Name.objects.all()
 
 
 # Add environment specific endpoints
 try:
-    #utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
+    # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
     utils.apply_custom_methods(
         TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
     )
