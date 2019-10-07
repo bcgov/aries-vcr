@@ -22,7 +22,7 @@ class SolrQueue:
         ids = [instance.id for instance in instances]
         # Log the wallet_id to make it easy to search for the credentials when troubleshooting
         # The record ids are not indexed so they are not searchable.
-        wallet_ids = [instance.credential_exchange_id for instance in instances]
+        wallet_ids = [instance.credential_id for instance in instances]
         LOGGER.debug("Adding items to Solr queue for indexing; Class: %s, Using: %s, Instances: %s", index_cls, using, wallet_ids)
         try:
             self._queue.put((index_cls, using, ids, 0))
@@ -33,7 +33,7 @@ class SolrQueue:
         ids = [get_identifier(instance) for instance in instances]
         # Log the wallet_id to make it easy to search for the credentials when troubleshooting
         # The record ids are not indexed so they are not searchable.
-        wallet_ids = [instance.credential_exchange_id for instance in instances]
+        wallet_ids = [instance.credential_id for instance in instances]
         LOGGER.debug("Deleteing items from Solr queue/index; Class: %s, Using: %s, Instances: %s", index_cls, using, wallet_ids)
         try:
             self._queue.put((index_cls, using, ids, 1))

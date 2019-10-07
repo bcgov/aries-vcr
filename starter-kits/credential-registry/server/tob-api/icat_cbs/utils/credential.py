@@ -4,6 +4,7 @@ import json as _json
 import logging
 import re
 import time
+import uuid
 from collections import namedtuple
 from datetime import datetime
 from importlib import import_module
@@ -89,20 +90,18 @@ class Credential(object):
         self,
         credential_data: object,
         request_metadata: dict = None,
-        credential_exchange_id: str = None,
     ) -> None:
         self._raw = credential_data
         self._schema_id = credential_data["schema_id"]
         self._cred_def_id = credential_data["cred_def_id"]
         self._rev_reg_id = credential_data["rev_reg_id"]
-        #self._signature = credential_data["signature"]
-        #self._signature_correctness_proof = credential_data[
+        # self._signature = credential_data["signature"]
+        # self._signature_correctness_proof = credential_data[
         #    "signature_correctness_proof"
-        #]
+        # ]
         self._req_metadata = request_metadata
-        #self._rev_reg = credential_data["rev_reg"]
-        self._credential_exchange_id = credential_exchange_id
-        #self._witness = credential_data["witness"]
+        # self._rev_reg = credential_data["rev_reg"]
+        # self._witness = credential_data["witness"]
 
         self._claim_attributes = []
 
@@ -203,19 +202,6 @@ class Credential(object):
     @property
     def request_metadata(self) -> dict:
         return self._request_metadata
-
-    @property
-    def credential_exchange_id(self) -> str:
-        """Accessor for credential wallet ID, after storage
-
-        Returns:
-            str -- the wallet ID of the credential
-        """
-        return self._credential_exchange_id
-
-    @credential_exchange_id.setter
-    def credential_exchange_id(self, val: str):
-        self._credential_exchange_id = val
 
 
 class CredentialClaims:
@@ -795,11 +781,12 @@ class CredentialManager(object):
             # We always create a new credential model to represent the current credential
             # The issuer may specify an effective date from a claim. Otherwise, defaults to now.
 
+            credential_id = str(uuid.uuid4())
             credential_args = {
                 "cardinality_hash": cardinality["hash"] if cardinality else None,
                 "credential_def_id": credential.cred_def_id,
                 "credential_type": credential_type,
-                "credential_exchange_id": credential.credential_exchange_id,
+                "credential_id": credential_id,
             }
             credential_args.update(
                 cls.process_credential_properties(credential, processor_config)
