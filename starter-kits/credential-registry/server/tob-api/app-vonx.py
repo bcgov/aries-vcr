@@ -5,6 +5,7 @@ import argparse
 import os
 
 import django
+from django.conf import settings
 import requests
 from aiohttp import web
 
@@ -35,24 +36,24 @@ if __name__ == "__main__":
 
     # Make agent connection to self to send self presentation requests later
     response = requests.get(
-        f"{django.conf.settings.AGENT_ADMIN_URL}/connections"
-        + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}",
-        headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
+        f"{settings.AGENT_ADMIN_URL}/connections"
+        + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+        headers=settings.ADMIN_REQUEST_HEADERS,
     )
     connections = response.json()
 
     # We only need to form a self connection once
     if not connections["results"]:
         response = requests.post(
-            f"{django.conf.settings.AGENT_ADMIN_URL}/connections/create-invitation"
-            + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}",
-            headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
+            f"{settings.AGENT_ADMIN_URL}/connections/create-invitation"
+            + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+            headers=settings.ADMIN_REQUEST_HEADERS,
         )
         response_body = response.json()
         requests.post(
-            f"{django.conf.settings.AGENT_ADMIN_URL}/connections/receive-invitation",
+            f"{settings.AGENT_ADMIN_URL}/connections/receive-invitation",
             json=response_body["invitation"],
-            headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
+            headers=settings.ADMIN_REQUEST_HEADERS,
         )
 
     args = parser.parse_args()

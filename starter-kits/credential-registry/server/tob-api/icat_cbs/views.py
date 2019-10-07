@@ -2,6 +2,7 @@ import logging
 import os
 
 import requests
+from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
@@ -148,9 +149,9 @@ def handle_credentials(state, message):
 
             # Instruct the agent to store the credential in wallet
             resp = requests.post(
-                f"{django.conf.settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
+                f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
                 json={"credential_id": credential.credential_id},
-                headers=django.conf.settings.ADMIN_REQUEST_HEADERS
+                headers=settings.ADMIN_REQUEST_HEADERS
             )
             resp.raise_for_status()
             assert resp.status_code == 200
@@ -166,9 +167,9 @@ def handle_credentials(state, message):
         LOGGER.error(str(e))
         # Send a problem report for the error
         resp = requests.post(
-            f"{django.conf.settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+            f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
-            headers=django.conf.settings.ADMIN_REQUEST_HEADERS
+            headers=settings.ADMIN_REQUEST_HEADERS
         )
         resp.raise_for_status()
         assert resp.status_code == 200
@@ -198,7 +199,7 @@ def handle_presentations(state, message):
         )
 
         resp = requests.get(
-            f"{django.conf.settings.AGENT_ADMIN_URL}/presentation_exchange/"
+            f"{settings.AGENT_ADMIN_URL}/presentation_exchange/"
             + f"{message['presentation_exchange_id']}/credentials/"
             + f"{referents}"
         )
@@ -247,7 +248,7 @@ def handle_presentations(state, message):
             credential_result = credential_query.first()
             credential_exchange_id = credential_result.credential_exchange_id
             resp = requests.get(
-                f"{django.conf.settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}"
+                f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}"
             )
             credential_exchange_object = resp.json()
 
@@ -308,7 +309,7 @@ def handle_presentations(state, message):
         # to finish the process and send the presentation back to the verifier
         # (to be verified)
         resp = requests.post(
-            f"{django.conf.settings.AGENT_ADMIN_URL}/presentation_exchange/"
+            f"{settings.AGENT_ADMIN_URL}/presentation_exchange/"
             + f"{presentation_exchange_id}/send_presentation",
             json=credentials_for_presentation,
         )
