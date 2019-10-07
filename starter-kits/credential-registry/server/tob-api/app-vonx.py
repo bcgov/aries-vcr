@@ -5,9 +5,13 @@ import argparse
 import os
 
 import django
+import requests
 from aiohttp import web
 
 from tob_api.utils.boot import init_app, run_django, run_migration, run_reindex
+
+AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
+
 
 parser = argparse.ArgumentParser(description="aiohttp server example")
 parser.add_argument("--host", default=os.getenv("HTTP_HOST"))
@@ -32,15 +36,30 @@ if __name__ == "__main__":
             # queue in current asyncio loop
             run_django(run_reindex)
 
+    # Make agent connection to self to send self presentation requests later
+    response = requests.get(
+        f"{AGENT_ADMIN_URL}/connections"
+        + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}"
+    )
+    connections = response.json()
+
+    # We only need to form a self connection once
+    if not connections["results"]:
+        response = requests.post(
+            f"{AGENT_ADMIN_URL}/connections/create-invitation"
+            + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}"
+        )
+        response_body = response.json()
+        requests.post(
+            f"{AGENT_ADMIN_URL}/connections/receive-invitation",
+            json=response_body["invitation"],
+        )
+
     args = parser.parse_args()
     if not args.socket and not args.port:
         args.port = 8080
 
     app = init_app(None)
     web.run_app(
-        app,
-        host=args.host,
-        port=args.port,
-        path=args.socket,
-        handle_signals=True,
+        app, host=args.host, port=args.port, path=args.socket, handle_signals=True
     )

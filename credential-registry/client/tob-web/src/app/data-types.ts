@@ -242,8 +242,8 @@ export namespace Model {
 
     get claims() {
       let ret = [];
-      if(typeof this.result === 'object' && this.result.proof) {
-        let attrs = this.result.proof.requested_proof.revealed_attrs;
+      if(typeof this.result === 'object' && this.result.presentation) {
+        let attrs = this.result.presentation.requested_proof.revealed_attrs;
         for(let k in attrs) {
           ret.push({name: k, value: attrs[k].raw});
         }

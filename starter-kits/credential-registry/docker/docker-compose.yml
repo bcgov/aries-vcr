@@ -188,7 +188,6 @@ services:
         --auto-ping-connection \
         --auto-respond-messages \
         --auto-respond-credential-offer \
-        --auto-respond-presentation-request \
         --auto-verify-presentation \
         --wallet-type 'indy' \
         --wallet-name 'icat_agent_wallet' \
@@ -200,7 +199,7 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
-        --label debug \
+        --log-level debug \
         --protocol indy_catalyst_issuer_registration",
       ]
 

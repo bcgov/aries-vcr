@@ -318,9 +318,9 @@ HOOK_EVENTS = {
 CELERY_BROKER_HEARTBEAT = 0  # see https://github.com/celery/celery/issues/4817
 
 CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
-    os.environ.get("RABBITMQ_USER"), 
-    os.environ.get("RABBITMQ_PASSWORD"), 
-    os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq")
+    os.environ.get("RABBITMQ_USER"),
+    os.environ.get("RABBITMQ_PASSWORD"),
+    os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq"),
 )
 
 # custom hook settings
@@ -329,3 +329,6 @@ HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
 ###########################
 # Enf of webhook settings #
 ###########################
+
+# This string is used to alias the agent's self connection for verification
+AGENT_SELF_CONNECTION_ALIAS = "credential-registry-self"
