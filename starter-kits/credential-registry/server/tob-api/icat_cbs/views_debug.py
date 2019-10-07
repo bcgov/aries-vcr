@@ -10,8 +10,6 @@ from rest_framework.response import Response
 
 from icat_cbs.utils.credential import Credential, CredentialManager
 
-AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
-
 LOGGER = logging.getLogger(__name__)
 
 

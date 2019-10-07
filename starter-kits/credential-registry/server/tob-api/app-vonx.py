@@ -10,9 +10,6 @@ from aiohttp import web
 
 from tob_api.utils.boot import init_app, run_django, run_migration, run_reindex
 
-AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
-
-
 parser = argparse.ArgumentParser(description="aiohttp server example")
 parser.add_argument("--host", default=os.getenv("HTTP_HOST"))
 parser.add_argument("-p", "--port", default=os.getenv("HTTP_PORT"))
@@ -38,21 +35,24 @@ if __name__ == "__main__":
 
     # Make agent connection to self to send self presentation requests later
     response = requests.get(
-        f"{AGENT_ADMIN_URL}/connections"
-        + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}"
+        f"{django.conf.settings.AGENT_ADMIN_URL}/connections"
+        + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}",
+        headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
     )
     connections = response.json()
 
     # We only need to form a self connection once
     if not connections["results"]:
         response = requests.post(
-            f"{AGENT_ADMIN_URL}/connections/create-invitation"
-            + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}"
+            f"{django.conf.settings.AGENT_ADMIN_URL}/connections/create-invitation"
+            + f"?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}",
+            headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
         )
         response_body = response.json()
         requests.post(
-            f"{AGENT_ADMIN_URL}/connections/receive-invitation",
+            f"{django.conf.settings.AGENT_ADMIN_URL}/connections/receive-invitation",
             json=response_body["invitation"],
+            headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
         )
 
     args = parser.parse_args()

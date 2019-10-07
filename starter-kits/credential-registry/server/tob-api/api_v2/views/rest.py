@@ -43,14 +43,6 @@ from logging import getLogger
 
 logger = getLogger(__name__)
 
-AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
-AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
-
-ADMIN_REQUEST_HEADERS = {}
-if AGENT_ADMIN_API_KEY is not None:
-    ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
-
-
 class IssuerViewSet(ReadOnlyModelViewSet):
     serializer_class = IssuerSerializer
     queryset = Issuer.objects.all()
@@ -228,8 +220,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         item = self.get_object()
 
         connection_response = requests.get(
-            f"{AGENT_ADMIN_URL}/connections?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}",
-            headers=ADMIN_REQUEST_HEADERS,
+            f"{django.conf.settings.AGENT_ADMIN_URL}/connections?alias={django.conf.settings.AGENT_SELF_CONNECTION_ALIAS}",
+            headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
         )
         connection_response_dict = connection_response.json()
         assert connection_response_dict["results"]
@@ -237,8 +229,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         self_connection = connection_response_dict["results"][0]
 
         response = requests.get(
-            f"{AGENT_ADMIN_URL}/credential_exchange/{item.credential_exchange_id}",
-            headers=ADMIN_REQUEST_HEADERS,
+            f"{django.conf.settings.AGENT_ADMIN_URL}/credential_exchange/{item.credential_exchange_id}",
+            headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
         )
         response_body = response.json()
 
@@ -262,9 +254,9 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             presentation_request["requested_attributes"].append(requested_attribute)
 
         presentation_request_response = requests.post(
-            f"{AGENT_ADMIN_URL}/presentation_exchange/send_request",
+            f"{django.conf.settings.AGENT_ADMIN_URL}/presentation_exchange/send_request",
             json=presentation_request,
-            headers=ADMIN_REQUEST_HEADERS,
+            headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
         )
         presentation_request_response.raise_for_status()
         presentation_request_response = presentation_request_response.json()
@@ -277,8 +269,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             sleep(5)
             retries -= 1
             presentation_state_response = requests.get(
-                f"{AGENT_ADMIN_URL}/presentation_exchange/{presentation_exchange_id}",
-                headers=ADMIN_REQUEST_HEADERS,
+                f"{django.conf.settings.AGENT_ADMIN_URL}/presentation_exchange/{presentation_exchange_id}",
+                headers=django.conf.settings.ADMIN_REQUEST_HEADERS,
             )
             presentation_state = presentation_state_response.json()
             # if presentation_state["state"] == "verified":
