@@ -138,7 +138,7 @@
 
     <field name="schema_version" type="string" indexed="true" stored="true" multiValued="false" />
 
-    <field name="credential_exchange_id" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="credential_id" type="string" indexed="true" stored="true" multiValued="false" />
 
     <uniqueKey>id</uniqueKey>
 

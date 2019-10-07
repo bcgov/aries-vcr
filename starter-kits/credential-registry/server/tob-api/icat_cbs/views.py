@@ -147,15 +147,16 @@ def handle_credentials(state, message):
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
             credential = Credential(
-                credential_data, credential_exchange_id=credential_exchange_id
+                credential_data
             )
 
             credential_manager = CredentialManager()
-            credential_manager.process(credential)
+            credential = credential_manager.process(credential)
 
             # Instruct the agent to store the credential in wallet
             resp = requests.post(
                 f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
+                json={"credential_id": credential.credential_id},
                 headers=ADMIN_REQUEST_HEADERS
             )
             resp.raise_for_status()
