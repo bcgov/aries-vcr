@@ -8,16 +8,16 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
+from api_v2.models.Credential import Credential as CredentialModel
 from icat_cbs.utils.credential import Credential, CredentialManager
 from icat_cbs.utils.issuer import IssuerManager
-
-from api_v2.models.Credential import Credential as CredentialModel
 
 LOGGER = logging.getLogger(__name__)
 
 TOPIC_CONNECTIONS = "connections"
 TOPIC_CREDENTIALS = "credentials"
 TOPIC_PRESENTATIONS = "presentations"
+TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
 TOPIC_PERFORM_MENU_ACTION = "perform-menu-action"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
@@ -36,7 +36,7 @@ def agent_callback(request, topic):
     elif topic == TOPIC_CREDENTIALS:
         return handle_credentials(message["state"], message)
 
-    elif topic == TOPIC_PRESENTATIONS:
+    elif topic == TOPIC_PRESENTATIONS or topic == TOPIC_PRESENT_PROOF:
         return handle_presentations(message["state"], message)
 
     elif topic == TOPIC_GET_ACTIVE_MENU:
@@ -140,9 +140,7 @@ def handle_credentials(state, message):
             for attr in raw_credential["values"]:
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-            credential = Credential(
-                credential_data
-            )
+            credential = Credential(credential_data)
 
             credential_manager = CredentialManager()
             credential = credential_manager.process(credential)
@@ -151,7 +149,7 @@ def handle_credentials(state, message):
             resp = requests.post(
                 f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
                 json={"credential_id": credential.credential_id},
-                headers=settings.ADMIN_REQUEST_HEADERS
+                headers=settings.ADMIN_REQUEST_HEADERS,
             )
             resp.raise_for_status()
             assert resp.status_code == 200
@@ -169,7 +167,7 @@ def handle_credentials(state, message):
         resp = requests.post(
             f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
-            headers=settings.ADMIN_REQUEST_HEADERS
+            headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
         assert resp.status_code == 200
@@ -199,9 +197,10 @@ def handle_presentations(state, message):
         )
 
         resp = requests.get(
-            f"{settings.AGENT_ADMIN_URL}/presentation_exchange/"
+            f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
             + f"{message['presentation_exchange_id']}/credentials/"
-            + f"{referents}"
+            + f"{referents}",
+            headers=settings.ADMIN_REQUEST_HEADERS,
         )
 
         # All credentials from wallet that satisfy presentation request
@@ -241,18 +240,8 @@ def handle_presentations(state, message):
                     + f"{credential_query.query} was not 1, it was {results_length}"
                 )
 
-            # Since we have the credential_exchange id stored on the credential
-            # we need to call out to get the credential_id for this credential_exchange
-            # (This is added after we process the credential and it is stored in
-            # the agent's wallet)
             credential_result = credential_query.first()
-            credential_exchange_id = credential_result.credential_exchange_id
-            resp = requests.get(
-                f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}"
-            )
-            credential_exchange_object = resp.json()
-
-            credential_id = credential_exchange_object["credential_id"]
+            credential_id = credential_result.credential_id
 
             # Ensure that the credential_id we retrieved from the agent is in fact
             # in the set of credentials returned from the wallet in the first place.
@@ -309,9 +298,10 @@ def handle_presentations(state, message):
         # to finish the process and send the presentation back to the verifier
         # (to be verified)
         resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/presentation_exchange/"
-            + f"{presentation_exchange_id}/send_presentation",
+            f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
+            + f"{presentation_exchange_id}/send-presentation",
             json=credentials_for_presentation,
+            headers=settings.ADMIN_REQUEST_HEADERS
         )
 
         resp.raise_for_status()
