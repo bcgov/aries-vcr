@@ -34,11 +34,11 @@
 /connect.lock
 /coverage
 /libpeerconnection.log
-package-lock.json
 npm-debug.log
 .npm
 testem.log
 /typings
+yarn.lock
 
 # e2e
 /e2e/*.js
