@@ -28,7 +28,7 @@
     "@angular/platform-browser": "~6.1.0",
     "@angular/platform-browser-dynamic": "~6.1.0",
     "@angular/router": "~6.1.0",
-    "@bcgov/bootstrap-theme": "https://github.com/cywolf/bootstrap-theme/releases/download/v4.1.0-rc0/bcgov-bootstrap-theme-4.1.0-rc0.tgz",
+    "@bcgov/bootstrap-theme": "https://github.com/bcgov/bootstrap-theme/releases/download/v1.0.0/bcgov-bootstrap-theme-1.0.0.tgz",
     "@ng-bootstrap/ng-bootstrap": "^3.0.0",
     "@ngx-translate/core": "^10.0.0",
     "@ngx-translate/http-loader": "^3.0.0",
@@ -36,18 +36,18 @@
     "compare-versions": "~3.1.0",
     "core-js": "~2.5.4",
     "font-awesome": "^4.7.0",
-    "localize-router": "https://github.com/cywolf/localize-router/releases/download/v2.0.0-RC.2/localize-router-2.0.0-RC.2.tgz",
+    "localize-router": "https://github.com/andrewwhitehead/localize-router/releases/download/v2.0.0-RC.2/localize-router-2.0.0-RC.2.tgz",
     "localize-router-http-loader": "~1.0.2",
     "rxjs": "~6.3.0",
     "rxjs-compat": "~6.3.0",
-    "zone.js": "^0.8.26"
+    "zone.js": "~0.8.29"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.6.8",
     "@angular-devkit/build-optimizer": "~0.6.8",
-    "@angular/cli": "^6.2.0",
-    "@angular/compiler-cli": "^7.2.6",
-    "@types/jasmine": "~2.8.6",
+    "@angular/cli": "^6.2.9",
+    "@angular/compiler-cli": "~7.2.6",
+    "@types/jasmine": "~2.8.16",
     "@types/node": "~8.9.4",
     "codelyzer": "~4.4.0",
     "jasmine-core": "~2.99.1",
@@ -63,6 +63,6 @@
     "ts-node": "~5.0.1",
     "tslint": "~5.11.0",
     "typescript": "~3.1.1",
-    "webpack": "~4.4.0"
+    "webpack": "~4.6.0"
   }
 }
