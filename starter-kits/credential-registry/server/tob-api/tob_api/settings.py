@@ -319,9 +319,9 @@ HOOK_EVENTS = {
 CELERY_BROKER_HEARTBEAT = 0  # see https://github.com/celery/celery/issues/4817
 
 CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
-    os.environ.get("RABBITMQ_USER"), 
-    os.environ.get("RABBITMQ_PASSWORD"), 
-    os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq")
+    os.environ.get("RABBITMQ_USER"),
+    os.environ.get("RABBITMQ_PASSWORD"),
+    os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq"),
 )
 
 # custom hook settings
@@ -343,3 +343,14 @@ HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
     u'latest': u'v3',
     u'default': u'v2',
 }
+
+# This string is used to alias the agent's self connection for verification
+AGENT_SELF_CONNECTION_ALIAS = "credential-registry-self"
+
+AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
+AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
+
+ADMIN_REQUEST_HEADERS = {}
+if AGENT_ADMIN_API_KEY is not None:
+    ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
+

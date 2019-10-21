@@ -45,11 +45,7 @@ router.register(
 )
 
 # Misc endpoints
-miscPatterns = [
-    path("feedback", misc.send_feedback),
-    path("quickload", misc.quickload),
-    path("verify", misc.verify_credential),
-]
+miscPatterns = [path("feedback", misc.send_feedback), path("quickload", misc.quickload)]
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")

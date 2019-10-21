@@ -430,7 +430,7 @@ configureEnvironment() {
   export SQL_DEBUG=${SQL_DEBUG:-}
   export WEB_CONCURRENCY=${WEB_CONCURRENCY:-5}
   export APPLICATION_URL=${APPLICATION_URL-http://localhost:8080}
-  export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
+  export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY:-R2D2HfPM5Zwd69IjclQiuFmcMV6}
 
   # tob-web
   export TOB_THEME=${TOB_THEME:-default}

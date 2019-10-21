@@ -10,8 +10,6 @@ from rest_framework.response import Response
 
 from icat_cbs.utils.credential import Credential, CredentialManager
 
-AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -61,7 +59,7 @@ def receive_credential(request):
     - call this API
     """
     message = request.data
-    credential_exchange_id = uuid.uuid4()
+    credential_id = uuid.uuid4()
     raw_credential = message["raw_credential"]
 
     LOGGER.debug("Received raw-credential: {}".format(raw_credential))
@@ -69,7 +67,7 @@ def receive_credential(request):
     credential_data = {
         "schema_id": raw_credential["schema_id"],
         "cred_def_id": raw_credential["cred_def_id"],
-        "rev_reg_id": credential_exchange_id,  # we use the same value as credential_exchange_id
+        "rev_reg_id": credential_id,  # we use the same value as credential_id
         "attrs": raw_credential["values"],
     }
 
@@ -78,7 +76,7 @@ def receive_credential(request):
 
     try:
         credential = Credential(
-            credential_data, credential_exchange_id=credential_exchange_id
+            credential_data, credential_id=credential_id
         )
 
         credential_manager = CredentialManager()

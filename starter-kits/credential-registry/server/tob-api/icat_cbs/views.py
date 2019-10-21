@@ -2,6 +2,7 @@ import logging
 import os
 
 import requests
+from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
@@ -10,12 +11,7 @@ from rest_framework.response import Response
 from icat_cbs.utils.credential import Credential, CredentialManager
 from icat_cbs.utils.issuer import IssuerManager
 
-AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
-AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
-
-ADMIN_REQUEST_HEADERS = {}
-if AGENT_ADMIN_API_KEY is not None:
-    ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
+from api_v2.models.Credential import Credential as CredentialModel
 
 LOGGER = logging.getLogger(__name__)
 
@@ -145,16 +141,17 @@ def handle_credentials(state, message):
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
             credential = Credential(
-                credential_data, credential_exchange_id=credential_exchange_id
+                credential_data
             )
 
             credential_manager = CredentialManager()
-            credential_manager.process(credential)
+            credential = credential_manager.process(credential)
 
             # Instruct the agent to store the credential in wallet
             resp = requests.post(
-                f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
-                headers=ADMIN_REQUEST_HEADERS
+                f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
+                json={"credential_id": credential.credential_id},
+                headers=settings.ADMIN_REQUEST_HEADERS
             )
             resp.raise_for_status()
             assert resp.status_code == 200
@@ -170,9 +167,9 @@ def handle_credentials(state, message):
         LOGGER.error(str(e))
         # Send a problem report for the error
         resp = requests.post(
-            f"{AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+            f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
-            headers=ADMIN_REQUEST_HEADERS
+            headers=settings.ADMIN_REQUEST_HEADERS
         )
         resp.raise_for_status()
         assert resp.status_code == 200
@@ -182,9 +179,144 @@ def handle_credentials(state, message):
 
 
 def handle_presentations(state, message):
-    # TODO auto-respond to proof requests
-    print("handle_presentations()", state)
-    return Response(some_data)
+    print("handle_presentations()", state, message)
+
+    if state == "request_received":
+        presentation_request = message["presentation_request"]
+        presentation_exchange_id = message["presentation_exchange_id"]
+
+        # Pull referents out of presentation request
+        requested_attribute_referents = list(
+            presentation_request["requested_attributes"].keys()
+        )
+        requested_predicates_referents = list(
+            presentation_request["requested_predicates"].keys()
+        )
+
+        # Comma delimit all referents for agent API request
+        referents = ",".join(
+            requested_attribute_referents + requested_predicates_referents
+        )
+
+        resp = requests.get(
+            f"{settings.AGENT_ADMIN_URL}/presentation_exchange/"
+            + f"{message['presentation_exchange_id']}/credentials/"
+            + f"{referents}"
+        )
+
+        # All credentials from wallet that satisfy presentation request
+        credentials = resp.json()
+
+        # Prep the payload we need to send to the agent API
+        credentials_for_presentation = {
+            "self_attested_attributes": {},
+            "requested_attributes": {},
+            "requested_predicates": {},
+        }
+        for referent in requested_attribute_referents:
+            credentials_for_presentation["requested_attributes"][referent] = {}
+
+        for referent in requested_predicates_referents:
+            credentials_for_presentation["requested_predicates"][referent] = {}
+
+        # Now we need to provide a credential id for each requested_*
+        for credential in credentials:
+            # This query plus limiting by claim values below
+            # *should* return exactly one result
+            credential_query = CredentialModel.objects.filter(
+                revoked=False, inactive=False, latest=True
+            )
+            for attr in credential["cred_info"]["attrs"]:
+                credential_query = credential_query.filter(
+                    claims__name=attr,
+                    claims__value=credential["cred_info"]["attrs"][attr],
+                )
+
+            # If we don't have exactly 1 result, we can't construct a presentation
+            # deterministically
+            results_length = len(credential_query)
+            if results_length != 1:
+                raise Exception(
+                    "Number of credentials returned by query "
+                    + f"{credential_query.query} was not 1, it was {results_length}"
+                )
+
+            # Since we have the credential_exchange id stored on the credential
+            # we need to call out to get the credential_id for this credential_exchange
+            # (This is added after we process the credential and it is stored in
+            # the agent's wallet)
+            credential_result = credential_query.first()
+            credential_exchange_id = credential_result.credential_exchange_id
+            resp = requests.get(
+                f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}"
+            )
+            credential_exchange_object = resp.json()
+
+            credential_id = credential_exchange_object["credential_id"]
+
+            # Ensure that the credential_id we retrieved from the agent is in fact
+            # in the set of credentials returned from the wallet in the first place.
+            # This should be true.
+            assert credential_id in [
+                credential["cred_info"]["referent"] for credential in credentials
+            ]
+
+            # For all "presentation_referents" on this `credential` returned
+            # from the wallet, we can apply this credential_id as the selected
+            # credential for the presentation
+            for related_referent in credential["presentation_referents"]:
+                if (
+                    related_referent
+                    in credentials_for_presentation["requested_attributes"]
+                ):
+                    credentials_for_presentation["requested_attributes"][
+                        related_referent
+                    ]["cred_id"] = credential_id
+                    credentials_for_presentation["requested_attributes"][
+                        related_referent
+                    ]["revealed"] = True
+                elif (
+                    related_referent
+                    in credentials_for_presentation["requested_predicates"]
+                ):
+                    credentials_for_presentation["requested_predicates"][
+                        related_referent
+                    ]["cred_id"] = credential_id
+                    credentials_for_presentation["requested_predicates"][
+                        related_referent
+                    ]["revealed"] = True
+                else:
+                    raise Exception(
+                        f"Referent {related_referent} returned from wallet "
+                        + "was not expected in proof request."
+                    )
+
+        # We should have a fully constructed presentation now.
+        # Let's check to make sure:
+        for referent in credentials_for_presentation["requested_attributes"]:
+            if credentials_for_presentation["requested_attributes"][referent] == {}:
+                raise Exception(
+                    f"requested_attributes contains unfulfilled referent {referent}"
+                )
+
+        for referent in credentials_for_presentation["requested_predicates"]:
+            if credentials_for_presentation["requested_predicates"][referent] == {}:
+                raise Exception(
+                    f"requested_predicates contains unfulfilled referent {referent}"
+                )
+
+        # Finally, we should be able to send this payload to the agent for it
+        # to finish the process and send the presentation back to the verifier
+        # (to be verified)
+        resp = requests.post(
+            f"{settings.AGENT_ADMIN_URL}/presentation_exchange/"
+            + f"{presentation_exchange_id}/send_presentation",
+            json=credentials_for_presentation,
+        )
+
+        resp.raise_for_status()
+
+    return Response()
 
 
 def handle_get_active_menu(message):
