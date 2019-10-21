@@ -1,5 +1,4 @@
 import logging
-import os
 
 import requests
 from django.conf import settings
@@ -91,11 +90,11 @@ def handle_credentials(state, message):
                         "province": "BC",
                         "reason_description": "Filing:REGST",
                         "registration_date": "2007-08-30"
-                    }, 
-                "schema_id": "6qnvgJtqwK44D8LFYnV5Yf:2:Registered Corporation:1.0.3", 
-                "cred_def_id": "6qnvgJtqwK44D8LFYnV5Yf:3:CL:25:tag", 
-                "rev_reg_id": null, 
-                "rev_reg": null, 
+                    },
+                "schema_id": "6qnvgJtqwK44D8LFYnV5Yf:2:Registered Corporation:1.0.3",
+                "cred_def_id": "6qnvgJtqwK44D8LFYnV5Yf:3:CL:25:tag",
+                "rev_reg_id": null,
+                "rev_reg": null,
                 "witness": "Ian",
                 "cred_rev_id": null,
                 "signature": "ian costanzo, honest",
@@ -140,9 +139,7 @@ def handle_credentials(state, message):
             for attr in raw_credential["values"]:
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-            credential = Credential(
-                credential_data
-            )
+            credential = Credential(credential_data)
 
             credential_manager = CredentialManager()
             credential = credential_manager.process(credential)
@@ -151,10 +148,9 @@ def handle_credentials(state, message):
             resp = requests.post(
                 f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
                 json={"credential_id": credential.credential_id},
-                headers=settings.ADMIN_REQUEST_HEADERS
+                headers=settings.ADMIN_REQUEST_HEADERS,
             )
             resp.raise_for_status()
-            assert resp.status_code == 200
 
             return Response({"success": True})
 
@@ -169,10 +165,9 @@ def handle_credentials(state, message):
         resp = requests.post(
             f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
-            headers=settings.ADMIN_REQUEST_HEADERS
+            headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
-        assert resp.status_code == 200
         return Response({"success": False, "error": str(e)})
 
     return Response("")
@@ -333,7 +328,7 @@ def handle_perform_menu_action(message):
 
 def handle_register_issuer(message):
     """Handles the registration of a new issuing agent in the credential registry.
-       
+
        The agent registration credential will be in the following format:
        {
             "issuer_registration_id": "string",
@@ -374,4 +369,39 @@ def handle_register_issuer(message):
     """
     issuer_manager = IssuerManager()
     updated = issuer_manager.register_issuer(message)
+
+    def resolve_field_map(mapping: dict, name: str):
+        field_map = mapping.get(name, {})
+        return field_map.get("from") == "claim" and field_map.get("input")
+
+    # update tagging policy
+    tag_policy_updates = {}
+    cred_types = updated["credential_types"]
+    for ctype in cred_types:
+        pconfig = ctype.get("processor_config", {})
+        fields = set()
+        cred_map = pconfig.get("credential", {})
+        effective_f = resolve_field_map(cred_map, "effective_date")
+        if effective_f:
+            fields.add(effective_f)
+        topic_defs = pconfig.get("topic", [])
+        for topic_def in topic_defs:
+            source_id = resolve_field_map(topic_def, "source_id")
+            if source_id:
+                fields.add(source_id)
+        cardinal = pconfig.get("cardinality_fields")
+        if cardinal:
+            fields.update(cardinal)
+        if fields:
+            tag_policy_updates[ctype["credential_def_id"]] = fields
+
+    for cred_def_id, tag_fields in tag_policy_updates.items():
+        # instruct the agent to update the tag policy
+        resp = requests.post(
+            f"{settings.AGENT_ADMIN_URL}/wallet/tag-policy/{cred_def_id}",
+            json={"taggables": list(tag_fields)},
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        resp.raise_for_status()
+
     return Response(content_type="application/json", data={"result": updated})
