@@ -203,8 +203,6 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         serializer = ExpandedCredentialSerializer(item)
         return Response(serializer.data)
 
-<<<<<<< HEAD
-=======
     # @swagger_auto_schema(responses={200: CredentialSerializer(many=True)})
     # @list_route(url_path="active", methods=["get"])
     # def list_active(self, request, pk=None):
