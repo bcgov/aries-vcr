@@ -5,7 +5,7 @@ from api_v2.models.CredentialType import CredentialType
 from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 from api_v2.serializers.rest import (
-    CredentialTypeSerializer,
+    CredentialTypeExtSerializer,
     IssuerSerializer,
     SchemaSerializer,
 )
@@ -38,7 +38,7 @@ class IssuerManager:
             "issuer": IssuerSerializer(issuer).data,
             "schemas": [SchemaSerializer(schema).data for schema in schemas],
             "credential_types": [
-                CredentialTypeSerializer(credential_type).data
+                CredentialTypeExtSerializer(credential_type).data
                 for credential_type in credential_types
             ],
         }
