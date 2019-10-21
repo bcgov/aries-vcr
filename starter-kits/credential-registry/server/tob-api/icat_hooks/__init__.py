@@ -1,3 +1,7 @@
-from .celery import app as celery_app
+import sys
 
-__all__ = ["celery_app"]
+if not any(k in sys.argv for k in ("collectstatic", "makemigrations", "migrate")):
+
+    from .celery import app as celery_app
+
+    __all__ = ["celery_app"]
