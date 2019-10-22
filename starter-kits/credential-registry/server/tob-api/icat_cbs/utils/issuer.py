@@ -1,4 +1,5 @@
 import logging
+from typing import Sequence, Tuple
 
 from api_v2.auth import create_issuer_user
 from api_v2.models.CredentialType import CredentialType
@@ -13,8 +14,34 @@ from api_v2.serializers.rest import (
 LOGGER = logging.getLogger(__name__)
 
 
-class IssuerException(Exception):
-    pass
+class IssuerManagerException(Exception):
+    """Base exception for issuer manager issues."""
+
+
+class IssuerRegistrationResult:
+    """Model to represent the result of issuer registration."""
+
+    def __init__(
+        self,
+        issuer: Issuer,
+        schemas: Sequence[Schema],
+        credential_types: Sequence[CredentialType],
+    ):
+        """Initialize the issuer registration result instance."""
+        self.issuer = issuer
+        self.schemas = schemas
+        self.credential_types = credential_types
+
+    def serialize(self) -> dict:
+        """Serialize to JSON-compatible dict format."""
+        return {
+            "issuer": IssuerSerializer(self.issuer).data,
+            "schemas": [SchemaSerializer(schema).data for schema in self.schemas],
+            "credential_types": [
+                CredentialTypeExtSerializer(credential_type).data
+                for credential_type in self.credential_types
+            ],
+        }
 
 
 class IssuerManager:
@@ -23,7 +50,10 @@ class IssuerManager:
     of the issuer and updating the related tables.
     """
 
-    def register_issuer(self, spec):
+    def register_issuer(self, spec) -> IssuerRegistrationResult:
+        """
+        Perform issuer registration, updating the related database models.
+        """
         issuer_registration = spec["issuer_registration"]
         issuer = issuer_registration["issuer"]
         self.update_user(issuer)
@@ -31,18 +61,7 @@ class IssuerManager:
         schemas, credential_types = self.update_schemas_and_ctypes(
             issuer, issuer_registration.get("credential_types", [])
         )
-
-        # TODO: use a serializer to return consistent data with REST API?
-        #       Do this at the view layer instead of this manager?
-        result = {
-            "issuer": IssuerSerializer(issuer).data,
-            "schemas": [SchemaSerializer(schema).data for schema in schemas],
-            "credential_types": [
-                CredentialTypeExtSerializer(credential_type).data
-                for credential_type in credential_types
-            ],
-        }
-        return result
+        return IssuerRegistrationResult(issuer, schemas, credential_types)
 
     def update_user(self, issuer_def):
         """
@@ -53,7 +72,7 @@ class IssuerManager:
         user_email = issuer_def["email"]
         return create_issuer_user(user_email, issuer_did, display_name=display_name)
 
-    def update_issuer(self, issuer_def):
+    def update_issuer(self, issuer_def) -> Issuer:
         """
         Update issuer record if exists, otherwise create.
         """
@@ -76,7 +95,9 @@ class IssuerManager:
 
         return issuer
 
-    def update_schemas_and_ctypes(self, issuer, credential_type_defs):
+    def update_schemas_and_ctypes(
+        self, issuer, credential_type_defs
+    ) -> Tuple[Sequence[Schema], Sequence[CredentialType]]:
         """
         Update schema records if they exist, otherwise create.
         Create related CredentialType records.

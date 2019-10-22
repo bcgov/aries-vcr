@@ -370,38 +370,23 @@ def handle_register_issuer(message):
     issuer_manager = IssuerManager()
     updated = issuer_manager.register_issuer(message)
 
-    def resolve_field_map(mapping: dict, name: str):
-        field_map = mapping.get(name, {})
-        return field_map.get("from") == "claim" and field_map.get("input")
-
     # update tagging policy
     tag_policy_updates = {}
-    cred_types = updated["credential_types"]
+    cred_types = updated.credential_types
     for ctype in cred_types:
-        pconfig = ctype.get("processor_config", {})
-        fields = set()
-        cred_map = pconfig.get("credential", {})
-        effective_f = resolve_field_map(cred_map, "effective_date")
-        if effective_f:
-            fields.add(effective_f)
-        topic_defs = pconfig.get("topic", [])
-        for topic_def in topic_defs:
-            source_id = resolve_field_map(topic_def, "source_id")
-            if source_id:
-                fields.add(source_id)
-        cardinal = pconfig.get("cardinality_fields")
-        if cardinal:
-            fields.update(cardinal)
-        if fields:
-            tag_policy_updates[ctype["credential_def_id"]] = fields
+        tag_attrs = ctype.get_tagged_attributes()
+        if tag_attrs:
+            tag_policy_updates[ctype.credential_def_id] = tag_attrs
 
-    for cred_def_id, tag_fields in tag_policy_updates.items():
+    for cred_def_id, tag_attrs in tag_policy_updates.items():
         # instruct the agent to update the tag policy
         resp = requests.post(
             f"{settings.AGENT_ADMIN_URL}/wallet/tag-policy/{cred_def_id}",
-            json={"taggables": list(tag_fields)},
+            json={"taggables": list(tag_attrs)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
 
-    return Response(content_type="application/json", data={"result": updated})
+    return Response(
+        content_type="application/json", data={"result": updated.serialize()}
+    )
