@@ -15,8 +15,7 @@ import os
 import os.path
 from pathlib import Path
 
-from . import permissions
-from . import authentication
+from . import authentication, permissions
 
 try:
     from . import database
@@ -323,8 +322,8 @@ HOOK_EVENTS = {
 CELERY_BROKER_HEARTBEAT = 0  # see https://github.com/celery/celery/issues/4817
 
 CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
-    os.environ.get("RABBITMQ_USER"), 
-    os.environ.get("RABBITMQ_PASSWORD"), 
+    os.environ.get("RABBITMQ_USER"),
+    os.environ.get("RABBITMQ_PASSWORD"),
     os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq"),
 )
 
@@ -346,15 +345,17 @@ ADMIN_REQUEST_HEADERS = {}
 if AGENT_ADMIN_API_KEY is not None:
     ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
 
+
+# API routing middleware settings
 HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER = "/api"
 
 HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP = {
-    u'application/orgbook.bc.api+json': u'application/json'
+    u"application/orgbook.bc.api+json": u"application/json"
 }
 
 HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
-    u'v2': u'v2',
-    u'v3': u'v3',
-    u'latest': u'v3',
-    u'default': u'v2',
+    u"v2": u"v2",
+    u"v3": u"v3",
+    u"latest": u"v3",
+    u"default": u"v2",
 }
