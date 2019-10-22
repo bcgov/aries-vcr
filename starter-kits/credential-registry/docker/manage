@@ -103,6 +103,9 @@ usage() {
                      Examples:
                      $0 registerDids seed=the_org_book_0000000000000000000
                      - This will register the DID using the provided seed with the locally running von-network instance.
+
+      test-api - Runs the suite of tob-api unit tests in a Docker container
+
 EOF
   exit 1
 }
@@ -386,7 +389,7 @@ configureEnvironment() {
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
   export POSTGRESQL_USER="DB_USER"
   export POSTGRESQL_PASSWORD="DB_PASSWORD"
-  export ENABLE_REALTIME_INDEXING="1"
+  export ENABLE_REALTIME_INDEXING=${ENABLE_REALTIME_INDEXING:-1}
 
   # wallet-db
   export WALLET_TYPE="postgres_storage"
@@ -411,7 +414,7 @@ configureEnvironment() {
   export APP_MODULE=api_indy.tob_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8081}
   export DATABASE_SERVICE_NAME="tob-db"
-  export DATABASE_ENGINE="postgresql"
+  export DATABASE_ENGINE=${DATABASE_ENGINE-postgresql}
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
   export DATABASE_USER=${POSTGRESQL_USER}
   export DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -460,6 +463,23 @@ configureEnvironment() {
   if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
     AGENT_ADMIN_MODE="admin-api-key ${AGENT_ADMIN_API_KEY}"
   fi
+}
+
+getInputParams() {
+  ARGS=""
+
+  for arg in $@; do
+    case "$arg" in
+    *=*)
+      # Skip it
+      ;;
+    *)
+      ARGS+=" $arg"
+      ;;
+    esac
+  done
+
+  echo ${ARGS}
 }
 
 getStartupParams() {
@@ -603,7 +623,6 @@ case "${COMMAND}" in
     docker-compose logs -f
     ;;
   web-dev)
-    _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
     [ -z "$SKIP_BUILD" ] && build-web-dev
     docker-compose run --rm --service-ports tob-web-dev
@@ -630,7 +649,6 @@ case "${COMMAND}" in
     registerDids $(generateSeeds)
     ;;
   build)
-    _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
 
     buildImage=$(toLower ${1})
@@ -650,14 +668,23 @@ case "${COMMAND}" in
     fi
     ;;
   shell)
-    _startupParams=$(getStartupParams --force-recreate $@)
+    _inputParams=$(getInputParams $@)
     configureEnvironment "$@"
-    docker-compose run tob-api bash
+    docker-compose run --force-recreate tob-api bash ${_inputParams}
     ;;
   django)
-    _startupParams=$(getStartupParams --force-recreate $@)
+    _inputParams=$(getInputParams $@)
     configureEnvironment "$@"
-    docker-compose run tob-api python manage.py $@
+    docker-compose run tob-api python manage.py ${_inputParams}
+    ;;
+  test-api)
+    DATABASE_ENGINE=${DATABASE_ENGINE-sqlite}
+    DEMO_SITE=0
+    ENABLE_REALTIME_INDEXING=0
+    _inputParams=$(getInputParams $@)
+    configureEnvironment "$@"
+	build-api
+    docker-compose run --no-deps tob-api bash -c "coverage run manage.py test ${_inputParams} && coverage report -m"
     ;;
   *)
     usage
