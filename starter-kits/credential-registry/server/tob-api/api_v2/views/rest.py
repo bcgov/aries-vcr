@@ -277,7 +277,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
                 result = {
                     "success": True,
                     "result": {
-                        "presentiation_request": presentation_state["presentation_request"],
+                        "presentation_request": presentation_state["presentation_request"],
                         "presentation": presentation_state["presentation"],
                     },
                 }
