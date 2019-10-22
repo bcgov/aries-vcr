@@ -2,6 +2,8 @@
 omit =
 	*/tests/*
 	*/tests.py
+	*/custom_settings_*.py
+	*/settings.py
 source =
 	api_v2
 	icat_cbs
