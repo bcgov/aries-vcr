@@ -74,7 +74,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "icat_hooks",  # only required when using webhook subscriptions
+    "django_nose",
 ]
+
+TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 

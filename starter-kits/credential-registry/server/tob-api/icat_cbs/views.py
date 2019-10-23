@@ -335,36 +335,39 @@ def handle_register_issuer(message):
             "connection_id": "string",
             "issuer_registration": {
                 "credential_types": [
-                {
-                    "category_labels": ["string"],
-                    "claim_descriptions": ["string"],
-                    "credential_def_id": "string",
-                    "name": "string",
-                    "credential": "string",
-                    "topic": "string",
-                    "endpoint": "string",
-                    "cardinality_fields": [{}],
-                    "mapping": {},
-                    "version": "string",
-                    "visible_fields": ["string"],
-                    "description": "string",
-                    "logo_b64": "string",
-                    "schema": "string",
-                    "claim_labels": ["string"]
-                }
+                    {
+                        "category_labels": {"category": "label"},
+                        "claim_descriptions": {"claim": "description"},
+                        "claim_labels": {"claim": "label"},
+                        "credential_def_id": "string",
+                        "schema": "string",
+                        "version": "string",
+                        "name": "string",
+                        "credential": {
+                            "effective_date": {"input": "topic_id", "from": "claim"}
+                        },
+                        "topic": [
+                            {
+                                "source_id": {"input": "topic_id", "from": "claim"}
+                            }
+                        ],
+                        "endpoint": "string",
+                        "cardinality_fields": ["string"],
+                        "mapping": {},
+                        "visible_fields": ["string"],
+                        "logo_b64": "string",
+                    }
                 ],
                 "issuer": {
-                "name": "string",
-                "did": "string",
-                "abbreviation": "string",
-                "email": "string",
-                "url": "string",
-                "endpoint": "string",
-                "logo_b64": "string"
+                    "name": "string",
+                    "did": "string",
+                    "abbreviation": "string",
+                    "email": "string",
+                    "url": "string",
+                    "endpoint": "string",
+                    "logo_b64": "string"
                 }
-            },
-            "initiator": "self",
-            "state": "registration_sent"
+            }
         }
     """
     issuer_manager = IssuerManager()
