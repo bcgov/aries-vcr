@@ -99,7 +99,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "api_v2.middleware.routing.HTTPHeaderRoutingMiddleware",
+    "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware",
 ]
 
 ROOT_URLCONF = "tob_api.urls"
