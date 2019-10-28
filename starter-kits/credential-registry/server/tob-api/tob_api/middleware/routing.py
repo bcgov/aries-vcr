@@ -1,4 +1,9 @@
+import logging
+
 from django.conf import settings
+from django.http import HttpResponseBadRequest
+
+LOGGER = logging.getLogger(__name__)
 
 
 class HTTPHeaderRoutingMiddleware(object):
@@ -7,8 +12,8 @@ class HTTPHeaderRoutingMiddleware(object):
     Accept request header.  Allowable header and version values are in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP
     and settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP respectively.
 
-    If there is a version requested in the Accept header it will use it, 
-    else if there is a version requested in the URL it will use it,
+    If there is a version requested in the Accept header it will be used, 
+    else if there is a version requested in the URL it will be used,
     else it will use the version identified as "default".
 
     The Accept header (if supplied) will be rewritten as a regular content header (as mapped in settings) and the 
@@ -37,76 +42,110 @@ class HTTPHeaderRoutingMiddleware(object):
         return self.process_response(request, response)
 
     def process_request(self, request):
+        requested_version = None
+
         # only process for API calls
         if request.path_info.startswith(
             settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER + "/"
         ):
             # check the ACCEPT header for version override
-            version = None
             if "HTTP_ACCEPT" in request.META:
-                for content_type in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP:
-                    if request.META["HTTP_ACCEPT"].find(content_type) != -1:
-                        # replace the ACCEPT header with a standard resource format
-                        accept_header = request.META["HTTP_ACCEPT"]
-                        request.META[
-                            "HTTP_ACCEPT"
-                        ] = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP[
-                            content_type
-                        ]
+                LOGGER.debug(
+                    "Processing Accept headers to detect requested API version."
+                )
 
-                        # parse out version number (if available)
-                        idx = accept_header.find("version=")
-                        if 0 <= idx:
-                            version = accept_header[idx + len("version=")].lower()
+                accept_headers = request.META["HTTP_ACCEPT"].split(",")
+                accept_headers = list(map(lambda item: item.strip(), accept_headers))
 
-            # if there is a version requested in the path, use it
+                # find supported header definitions
+                supported_version_headers = list(
+                    filter(
+                        lambda item: item.split(";")[0]
+                        in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP.values(),
+                        accept_headers,
+                    )
+                )
+
+                if len(supported_version_headers) > 1:
+                    # Return error if more than one supported version is specified
+                    return HttpResponseBadRequest(
+                        content="Too many versions were specified in the Accept header."
+                    )
+
+                if "version=" in supported_version_headers[0]:
+                    # replace the ACCEPT header with a standard resource format,
+                    # and record the requested version to use it later on
+                    standard_content_header = supported_version_headers[0].split(
+                        ";"
+                    )[0]
+                    requested_version = (
+                        supported_version_headers[0]
+                        .replace(standard_content_header, "")
+                        .replace(";version=", "")
+                    )
+
+                    # ensure requested version is supported
+                    if (
+                        requested_version
+                        not in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP
+                    ):
+                        return HttpResponseBadRequest(
+                            content=f"The specified version [{requested_version}] is not supported."
+                        )
+
+                    LOGGER.debug(
+                        f"Requested API version in Accept header is: '{requested_version}'"
+                    )
+
+                    accept_headers[:] = [
+                        standard_content_header
+                        if x == supported_version_headers[0]
+                        else x
+                        for x in accept_headers
+                    ]
+
+                    # re-construct header
+                    request.META["HTTP_ACCEPT"] = ",".join(accept_headers)
+
             request_path_info = request.path_info
-            for allowed_version in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP:
-                if request_path_info.startswith(
-                    settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER
-                    + "/"
-                    + allowed_version
-                    + "/"
-                ):
-                    # remove version info from the path (we will inject it later)
-                    request_path_info = (
+            if requested_version is None:
+                LOGGER.debug("Processing URL path to detect requested API version.")
+
+                # check the URL path for supported version override
+                for (
+                    allowed_version
+                ) in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP:
+                    if request_path_info.startswith(
                         settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER
                         + "/"
-                        + request_path_info[
-                            len(
-                                settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER
-                                + "/"
-                                + allowed_version
-                                + "/"
-                            )
-                        ]
-                    )
-                    if not version:
-                        version = allowed_version
+                        + allowed_version
+                        + "/"
+                    ):
+                        # remove version info from the path (we will inject it later)
+                        request_path_info = request_path_info.replace(
+                            f"/{allowed_version}/", "/"
+                        )
+
+                        requested_version = allowed_version
+                        LOGGER.debug(
+                            f"Requested API version in PATH header is: '{requested_version}'"
+                        )
 
             # use the default version if none is specified
-            if not version:
-                version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP["default"]
-
-            # check for a valid version
-            use_version = None
-            for allowed_version in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP:
-                if version == allowed_version:
-                    use_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
-                        version
-                    ]
-            if not use_version:
-                return
+            if requested_version is None:
+                requested_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
+                    "default"
+                ]
+                LOGGER.debug("No version override detected, will be using 'default")
 
             # rewrite the requested version into the path
-            request.path_info = (
-                settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER
-                + "/"
-                + use_version
-                + request_path_info[
-                    len(settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER)
-                ]
+            request.path_info = request_path_info.replace(
+                "api/", f"api/{requested_version}/"
             )
+
+            LOGGER.debug(f"Resolved API url is {request.path_info}")
+
+            return request
 
     def process_response(self, request, response):
         return response
