@@ -1,9 +1,12 @@
 import logging
 
 from django.conf import settings
-from django.http import HttpResponseBadRequest
 
 LOGGER = logging.getLogger(__name__)
+
+
+class ApiVersionException(Exception):
+    pass
 
 
 class HTTPHeaderRoutingMiddleware(object):
@@ -43,6 +46,8 @@ class HTTPHeaderRoutingMiddleware(object):
 
     def process_request(self, request):
         requested_version = None
+        requested_version_header = None
+        requested_version_path = None
 
         # only process for API calls
         if request.path_info.startswith(
@@ -68,17 +73,18 @@ class HTTPHeaderRoutingMiddleware(object):
 
                 if len(supported_version_headers) > 1:
                     # Return error if more than one supported version is specified
-                    return HttpResponseBadRequest(
-                        content="Too many versions were specified in the Accept header."
+                    raise ApiVersionException(
+                        "Too many versions were specified in the Accept header."
                     )
 
-                if "version=" in supported_version_headers[0]:
+                elif (
+                    len(supported_version_headers) > 0
+                    and "version=" in supported_version_headers[0]
+                ):
                     # replace the ACCEPT header with a standard resource format,
                     # and record the requested version to use it later on
-                    standard_content_header = supported_version_headers[0].split(
-                        ";"
-                    )[0]
-                    requested_version = (
+                    standard_content_header = supported_version_headers[0].split(";")[0]
+                    requested_version_header = (
                         supported_version_headers[0]
                         .replace(standard_content_header, "")
                         .replace(";version=", "")
@@ -86,15 +92,15 @@ class HTTPHeaderRoutingMiddleware(object):
 
                     # ensure requested version is supported
                     if (
-                        requested_version
+                        requested_version_header
                         not in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP
                     ):
-                        return HttpResponseBadRequest(
-                            content=f"The specified version [{requested_version}] is not supported."
+                        raise ApiVersionException(
+                            f"The specified version [{requested_version_header}] is not supported."
                         )
 
                     LOGGER.debug(
-                        f"Requested API version in Accept header is: '{requested_version}'"
+                        f"Requested API version in Accept header is: '{requested_version_header}'"
                     )
 
                     accept_headers[:] = [
@@ -108,31 +114,49 @@ class HTTPHeaderRoutingMiddleware(object):
                     request.META["HTTP_ACCEPT"] = ",".join(accept_headers)
 
             request_path_info = request.path_info
-            if requested_version is None:
-                LOGGER.debug("Processing URL path to detect requested API version.")
+            LOGGER.debug("Processing URL path to detect requested API version.")
 
-                # check the URL path for supported version override
-                for (
-                    allowed_version
-                ) in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP:
-                    if request_path_info.startswith(
-                        settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER
-                        + "/"
-                        + allowed_version
-                        + "/"
-                    ):
-                        # remove version info from the path (we will inject it later)
-                        request_path_info = request_path_info.replace(
-                            f"/{allowed_version}/", "/"
-                        )
+            # check the URL path for supported version override
+            for allowed_version in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP:
+                if request_path_info.startswith(
+                    settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER
+                    + "/"
+                    + allowed_version
+                    + "/"
+                ):
+                    # remove version info from the path (we will inject it later)
+                    request_path_info = request_path_info.replace(
+                        f"/{allowed_version}/", "/"
+                    )
 
-                        requested_version = allowed_version
-                        LOGGER.debug(
-                            f"Requested API version in PATH header is: '{requested_version}'"
-                        )
+                    requested_version_path = allowed_version
+                    LOGGER.debug(
+                        f"Requested API version in PATH header is: '{requested_version_path}'"
+                    )
 
-            # use the default version if none is specified
-            if requested_version is None:
+            if (
+                requested_version_header is not None
+                and requested_version_path is not None
+                and requested_version_header != requested_version_path
+            ):
+                raise ApiVersionException(
+                    f"Conflicting API versions were requested in Accept header [{requested_version_header}] and path [{requested_version_path}]."
+                )
+            elif requested_version_header is not None:
+                requested_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
+                    requested_version_header
+                ]
+                LOGGER.debug(
+                    f"Will be using API version specified in Accept header: [{requested_version}]"
+                )
+            elif requested_version_path is not None:
+                requested_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
+                    requested_version_path
+                ]
+                LOGGER.debug(
+                    f"Will be using API version specified in URL path: [{requested_version}]"
+                )
+            else:
                 requested_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
                     "default"
                 ]
