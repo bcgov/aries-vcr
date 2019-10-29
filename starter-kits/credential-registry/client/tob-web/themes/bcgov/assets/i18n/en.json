@@ -11,6 +11,10 @@
       "logo-alt-text": "BC Government Logo"
     }
   },
+  "name": {
+    "registration.registries.ca": "Registration",
+    "relationship.registries.ca": "Relationship"
+  },
   "attribute": {
     "effective_dates": "Effective Dates",
     "effective_date-short": "Credential",
