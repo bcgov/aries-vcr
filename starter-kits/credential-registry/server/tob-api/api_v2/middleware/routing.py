@@ -75,7 +75,7 @@ class HTTPHeaderRoutingMiddleware(object):
                 return
             
             # rewrite the requested version into the path
-            request.path_info = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER + "/" + use_version + request_path_info[len(settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER:]
+            request.path_info = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER + "/" + use_version + request_path_info[len(settings.HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER):]
 
 
     def process_response(self, request, response):

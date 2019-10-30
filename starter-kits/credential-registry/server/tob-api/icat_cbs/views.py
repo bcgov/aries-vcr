@@ -1,6 +1,7 @@
 import logging
 
 import requests
+import json
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -48,7 +49,7 @@ def agent_callback(request, topic):
         return handle_register_issuer(message)
 
     else:
-        LOGGER.info("Callback: topic=", topic, ", message=", message)
+        LOGGER.info("Callback: topic=" + topic + ", message=" + json.dumps(message))
         return Response("Invalid topic: " + topic, status=status.HTTP_400_BAD_REQUEST)
 
 
