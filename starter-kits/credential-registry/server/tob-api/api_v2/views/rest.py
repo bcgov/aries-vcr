@@ -265,6 +265,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
         # TODO: if the agent was not started with the --auto-verify-presentation flag, verification will need to be initiated
         retries = 5
+        result = None
         while retries > 0:
             sleep(5)
             retries -= 1
@@ -273,8 +274,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             presentation_state = presentation_state_response.json()
-            # if presentation_state["state"] == "verified":
-            if presentation_state["state"] == "presentation_received":
+
+            if presentation_state["state"] == "verified":
                 result = {
                     "success": True,
                     "result": {
@@ -286,7 +287,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
                 }
                 break
 
-        if not result:
+        if result is None:
             result = {"success": False, "results": "Presentation request timed out."}
 
         return JsonResponse(result)
