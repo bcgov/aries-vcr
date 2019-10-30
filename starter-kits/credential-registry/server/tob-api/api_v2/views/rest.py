@@ -214,7 +214,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
     @detail_route(url_path="verify", methods=["get"])
     def verify(self, request, pk=None):
-        item = self.get_object()
+        item: Credential = self.get_object()
+        credential_type: CredentialType = item.credential_type
 
         connection_response = requests.get(
             f"{settings.AGENT_ADMIN_URL}/connections?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
@@ -243,7 +244,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         }
         restrictions = [{}]
 
-        for attr in credential["attrs"]:
+        for attr in credential_type.get_tagged_attributes():
             claim_val = credential["attrs"][attr]
             restrictions[0][f"attr::{attr}::value"] = claim_val
 
@@ -277,7 +278,9 @@ class CredentialViewSet(ReadOnlyModelViewSet):
                 result = {
                     "success": True,
                     "result": {
-                        "presentation_request": presentation_state["presentation_request"],
+                        "presentation_request": presentation_state[
+                            "presentation_request"
+                        ],
                         "presentation": presentation_state["presentation"],
                     },
                 }
