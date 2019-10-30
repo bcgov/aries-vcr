@@ -298,7 +298,7 @@ def handle_presentations(state, message):
             f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
             + f"{presentation_exchange_id}/send-presentation",
             json=credentials_for_presentation,
-            headers=settings.ADMIN_REQUEST_HEADERS
+            headers=settings.ADMIN_REQUEST_HEADERS,
         )
 
         resp.raise_for_status()
@@ -372,15 +372,6 @@ def handle_register_issuer(message):
         tag_attrs = ctype.get_tagged_attributes()
         if tag_attrs:
             tag_policy_updates[ctype.credential_def_id] = tag_attrs
-
-    for cred_def_id, tag_attrs in tag_policy_updates.items():
-        # instruct the agent to update the tag policy
-        resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/wallet/tag-policy/{cred_def_id}",
-            json={"taggables": list(tag_attrs)},
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
-        resp.raise_for_status()
 
     return Response(
         content_type="application/json", data={"result": updated.serialize()}
