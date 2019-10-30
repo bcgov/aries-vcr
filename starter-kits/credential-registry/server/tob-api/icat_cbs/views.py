@@ -1,6 +1,7 @@
 import logging
 
 import requests
+import json
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -14,6 +15,7 @@ from icat_cbs.utils.issuer import IssuerManager
 LOGGER = logging.getLogger(__name__)
 
 TOPIC_CONNECTIONS = "connections"
+TOPIC_CONNECTIONS_ACTIVITY = "connections_actvity"
 TOPIC_CREDENTIALS = "credentials"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
@@ -32,6 +34,9 @@ def agent_callback(request, topic):
     if topic == TOPIC_CONNECTIONS:
         return handle_connections(message["state"], message)
 
+    if topic == TOPIC_CONNECTIONS_ACTIVITY:
+        return Response("")
+
     elif topic == TOPIC_CREDENTIALS:
         return handle_credentials(message["state"], message)
 
@@ -48,7 +53,7 @@ def agent_callback(request, topic):
         return handle_register_issuer(message)
 
     else:
-        LOGGER.info("Callback: topic=", topic, ", message=", message)
+        LOGGER.info("Callback: topic=" + topic + ", message=" + json.dumps(message))
         return Response("Invalid topic: " + topic, status=status.HTTP_400_BAD_REQUEST)
 
 
