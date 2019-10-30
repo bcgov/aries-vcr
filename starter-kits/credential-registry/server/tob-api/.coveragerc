@@ -1,6 +1,14 @@
 [run]
-omit = */tests/*
-source = tob_api
+omit =
+	*/tests/*
+	*/tests.py
+	*/custom_settings_*.py
+	*/settings.py
+source =
+	api_v2
+	icat_cbs
+	icat_hooks
+	tob_api
 
 [report]
 exclude_lines =
