@@ -1,9 +1,16 @@
+from typing import Sequence
+
 from django.contrib.postgres import fields as contrib
 from django.db import models
 
 from .Auditable import Auditable
 from .Issuer import Issuer
 from .Schema import Schema
+
+
+def _resolve_field_mapping(mapping: dict, name: str):
+    field_map = mapping.get(name, {})
+    return field_map.get("from") == "claim" and field_map.get("input")
 
 
 class CredentialType(Auditable):
@@ -31,3 +38,20 @@ class CredentialType(Auditable):
 
     def get_has_logo(self):
         return bool(self.logo_b64 or (self.issuer and self.issuer.logo_b64))
+
+    def get_tagged_attributes(self) -> Sequence[str]:
+        pconfig = self.processor_config or {}
+        fields = set()
+        cred_map = pconfig.get("credential", {})
+        effective_f = _resolve_field_mapping(cred_map, "effective_date")
+        if effective_f:
+            fields.add(effective_f)
+        topic_defs = pconfig.get("topic", [])
+        for topic_def in topic_defs:
+            source_id = _resolve_field_mapping(topic_def, "source_id")
+            if source_id:
+                fields.add(source_id)
+        cardinal = pconfig.get("cardinality_fields")
+        if cardinal:
+            fields.update(cardinal)
+        return list(fields)

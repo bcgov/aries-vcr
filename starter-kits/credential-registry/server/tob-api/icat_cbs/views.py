@@ -1,5 +1,4 @@
 import logging
-import os
 
 import requests
 from django.conf import settings
@@ -91,11 +90,11 @@ def handle_credentials(state, message):
                         "province": "BC",
                         "reason_description": "Filing:REGST",
                         "registration_date": "2007-08-30"
-                    }, 
-                "schema_id": "6qnvgJtqwK44D8LFYnV5Yf:2:Registered Corporation:1.0.3", 
-                "cred_def_id": "6qnvgJtqwK44D8LFYnV5Yf:3:CL:25:tag", 
-                "rev_reg_id": null, 
-                "rev_reg": null, 
+                    },
+                "schema_id": "6qnvgJtqwK44D8LFYnV5Yf:2:Registered Corporation:1.0.3",
+                "cred_def_id": "6qnvgJtqwK44D8LFYnV5Yf:3:CL:25:tag",
+                "rev_reg_id": null,
+                "rev_reg": null,
                 "witness": "Ian",
                 "cred_rev_id": null,
                 "signature": "ian costanzo, honest",
@@ -140,9 +139,7 @@ def handle_credentials(state, message):
             for attr in raw_credential["values"]:
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-            credential = Credential(
-                credential_data
-            )
+            credential = Credential(credential_data)
 
             credential_manager = CredentialManager()
             credential = credential_manager.process(credential)
@@ -151,10 +148,9 @@ def handle_credentials(state, message):
             resp = requests.post(
                 f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
                 json={"credential_id": credential.credential_id},
-                headers=settings.ADMIN_REQUEST_HEADERS
+                headers=settings.ADMIN_REQUEST_HEADERS,
             )
             resp.raise_for_status()
-            assert resp.status_code == 200
 
             return Response({"success": True})
 
@@ -169,10 +165,9 @@ def handle_credentials(state, message):
         resp = requests.post(
             f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
-            headers=settings.ADMIN_REQUEST_HEADERS
+            headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
-        assert resp.status_code == 200
         return Response({"success": False, "error": str(e)})
 
     return Response("")
@@ -333,45 +328,68 @@ def handle_perform_menu_action(message):
 
 def handle_register_issuer(message):
     """Handles the registration of a new issuing agent in the credential registry.
-       
+
        The agent registration credential will be in the following format:
        {
             "issuer_registration_id": "string",
             "connection_id": "string",
             "issuer_registration": {
                 "credential_types": [
-                {
-                    "category_labels": ["string"],
-                    "claim_descriptions": ["string"],
-                    "credential_def_id": "string",
-                    "name": "string",
-                    "credential": "string",
-                    "topic": "string",
-                    "endpoint": "string",
-                    "cardinality_fields": [{}],
-                    "mapping": {},
-                    "version": "string",
-                    "visible_fields": ["string"],
-                    "description": "string",
-                    "logo_b64": "string",
-                    "schema": "string",
-                    "claim_labels": ["string"]
-                }
+                    {
+                        "category_labels": {"category": "label"},
+                        "claim_descriptions": {"claim": "description"},
+                        "claim_labels": {"claim": "label"},
+                        "credential_def_id": "string",
+                        "schema": "string",
+                        "version": "string",
+                        "name": "string",
+                        "credential": {
+                            "effective_date": {"input": "topic_id", "from": "claim"}
+                        },
+                        "topic": [
+                            {
+                                "source_id": {"input": "topic_id", "from": "claim"}
+                            }
+                        ],
+                        "endpoint": "string",
+                        "cardinality_fields": ["string"],
+                        "mapping": {},
+                        "visible_fields": ["string"],
+                        "logo_b64": "string",
+                    }
                 ],
                 "issuer": {
-                "name": "string",
-                "did": "string",
-                "abbreviation": "string",
-                "email": "string",
-                "url": "string",
-                "endpoint": "string",
-                "logo_b64": "string"
+                    "name": "string",
+                    "did": "string",
+                    "abbreviation": "string",
+                    "email": "string",
+                    "url": "string",
+                    "endpoint": "string",
+                    "logo_b64": "string"
                 }
-            },
-            "initiator": "self",
-            "state": "registration_sent"
+            }
         }
     """
     issuer_manager = IssuerManager()
     updated = issuer_manager.register_issuer(message)
-    return Response(content_type="application/json", data={"result": updated})
+
+    # update tagging policy
+    tag_policy_updates = {}
+    cred_types = updated.credential_types
+    for ctype in cred_types:
+        tag_attrs = ctype.get_tagged_attributes()
+        if tag_attrs:
+            tag_policy_updates[ctype.credential_def_id] = tag_attrs
+
+    for cred_def_id, tag_attrs in tag_policy_updates.items():
+        # instruct the agent to update the tag policy
+        resp = requests.post(
+            f"{settings.AGENT_ADMIN_URL}/wallet/tag-policy/{cred_def_id}",
+            json={"taggables": list(tag_attrs)},
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        resp.raise_for_status()
+
+    return Response(
+        content_type="application/json", data={"result": updated.serialize()}
+    )

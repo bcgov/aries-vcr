@@ -88,7 +88,7 @@ class Credential(object):
 
     def __init__(
         self,
-        credential_data: object,
+        credential_data: dict,
         request_metadata: dict = None,
     ) -> None:
         self._raw = credential_data

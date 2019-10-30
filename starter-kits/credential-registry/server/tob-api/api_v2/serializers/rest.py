@@ -63,6 +63,13 @@ class CredentialTypeSerializer(ModelSerializer):
         )
 
 
+class CredentialTypeExtSerializer(CredentialTypeSerializer):
+    class Meta:
+        model = CredentialType
+        depth = 1
+        exclude = ("logo_b64",)
+
+
 class TopicSerializer(ModelSerializer):
     class Meta:
         model = Topic

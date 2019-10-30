@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for tob_api project.
 
@@ -73,11 +74,14 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "icat_hooks",  # only required when using webhook subscriptions
+    "django_nose",
 ]
+
+TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
 HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 
-if os.getenv("ENABLE_REALTIME_INDEXING"):
+if parse_bool(os.getenv("ENABLE_REALTIME_INDEXING")):
     print("Enabling realtime indexing ...")
     HAYSTACK_SIGNAL_PROCESSOR = "api_v2.signals.RelatedRealtimeSignalProcessor"
 else:
@@ -144,7 +148,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = "api_v2.User"
 
 REST_FRAMEWORK = {
-    #"DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
+    # "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_PAGINATION_CLASS": "tob_api.pagination.EnhancedPageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
