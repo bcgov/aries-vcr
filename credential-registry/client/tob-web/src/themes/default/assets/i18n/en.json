@@ -131,7 +131,8 @@
     "doing-business-as": "Doing Business As",
     "incorporation": "Incorporation",
     "legal-name": "Legal Name",
-    "registration": "Registration"
+    "registration": "Registration",
+    "registration.registries.ca": "Registration"
   },
   "not-found": {
     "breadcrumb": "Not Found",
