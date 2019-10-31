@@ -1,10 +1,11 @@
-import os
 import base64
-
-import requests
+import os
+import uuid
+from logging import getLogger
 from time import sleep
 
 import django
+import requests
 from django.conf import settings
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -25,24 +26,19 @@ from api_v2.models.Name import Name
 from api_v2.models.Schema import Schema
 from api_v2.models.Topic import Topic
 from api_v2.models.TopicRelationship import TopicRelationship
-from api_v2.serializers.rest import (
-    AddressSerializer,
-    AttributeSerializer,
-    CredentialSerializer,
-    CredentialTypeSerializer,
-    ExpandedCredentialSerializer,
-    ExpandedCredentialSetSerializer,
-    IssuerSerializer,
-    NameSerializer,
-    SchemaSerializer,
-    TopicRelationshipSerializer,
-    TopicSerializer,
-)
+from api_v2.serializers.rest import (AddressSerializer, AttributeSerializer,
+                                     CredentialSerializer,
+                                     CredentialTypeSerializer,
+                                     ExpandedCredentialSerializer,
+                                     ExpandedCredentialSetSerializer,
+                                     IssuerSerializer, NameSerializer,
+                                     SchemaSerializer,
+                                     TopicRelationshipSerializer,
+                                     TopicSerializer)
 from api_v2.serializers.search import CustomTopicSerializer
 
-from logging import getLogger
-
 logger = getLogger(__name__)
+
 
 class IssuerViewSet(ReadOnlyModelViewSet):
     serializer_class = IssuerSerializer
@@ -218,7 +214,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
     @detail_route(url_path="verify", methods=["get"])
     def verify(self, request, pk=None):
-        item = self.get_object()
+        item: Credential = self.get_object()
+        credential_type: CredentialType = item.credential_type
 
         connection_response = requests.get(
             f"{settings.AGENT_ADMIN_URL}/connections?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
@@ -230,52 +227,55 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         self_connection = connection_response_dict["results"][0]
 
         response = requests.get(
-            f"{settings.AGENT_ADMIN_URL}/credential_exchange/{item.credential_exchange_id}",
+            f"{settings.AGENT_ADMIN_URL}/credential/{item.credential_id}",
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
-        response_body = response.json()
+        credential = response.json()
 
-        assert response_body["state"] == "stored"
-
-        presentation_request = {
+        proof_request = {
             "version": "1.0",
             "name": "self-verify",
-            "requested_predicates": [],
+            "requested_predicates": {},
+            "requested_attributes": {},
+        }
+        request_body = {
             "connection_id": self_connection["connection_id"],
-            "requested_attributes": [],
+            "proof_request": proof_request,
         }
         restrictions = [{}]
 
-        for attr in response_body["credential"]["attrs"]:
-            claim_val = response_body["credential"]["attrs"][attr]
+        for attr in credential_type.get_tagged_attributes():
+            claim_val = credential["attrs"][attr]
             restrictions[0][f"attr::{attr}::value"] = claim_val
 
-        for attr in response_body["credential"]["attrs"]:
+        for attr in credential["attrs"]:
             requested_attribute = {"name": attr, "restrictions": restrictions}
-            presentation_request["requested_attributes"].append(requested_attribute)
+            proof_request["requested_attributes"][
+                str(uuid.uuid4())
+            ] = requested_attribute
 
-        presentation_request_response = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/presentation_exchange/send_request",
-            json=presentation_request,
+        proof_request_response = requests.post(
+            f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
+            json=request_body,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
-        presentation_request_response.raise_for_status()
-        presentation_request_response = presentation_request_response.json()
-        presentation_exchange_id = presentation_request_response[
-            "presentation_exchange_id"
-        ]
+        proof_request_response.raise_for_status()
+        proof_request_response = proof_request_response.json()
+        presentation_exchange_id = proof_request_response["presentation_exchange_id"]
 
+        # TODO: if the agent was not started with the --auto-verify-presentation flag, verification will need to be initiated
         retries = 5
+        result = None
         while retries > 0:
             sleep(5)
             retries -= 1
             presentation_state_response = requests.get(
-                f"{settings.AGENT_ADMIN_URL}/presentation_exchange/{presentation_exchange_id}",
+                f"{settings.AGENT_ADMIN_URL}/present-proof/records/{presentation_exchange_id}",
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             presentation_state = presentation_state_response.json()
-            # if presentation_state["state"] == "verified":
-            if presentation_state["state"] == "presentation_received":
+
+            if presentation_state["state"] == "verified":
                 result = {
                     "success": True,
                     "result": {
@@ -287,7 +287,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
                 }
                 break
 
-        if not result:
+        if result is None:
             result = {"success": False, "results": "Presentation request timed out."}
 
         return JsonResponse(result)

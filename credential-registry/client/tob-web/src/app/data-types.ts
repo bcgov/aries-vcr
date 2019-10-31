@@ -1,24 +1,17 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 
-function load_data<T>(
-    obj: T,
-    result: any,
-    attr_map?: {[key: string]: any},
-    list_map?: {[key: string]: any}): T {
-  if(obj && result) {
-    for(let k in result) {
-      if(attr_map && k in attr_map) {
-        obj[k] = (result[k] === null || result[k] === undefined)
-          ? null : (new Model[attr_map[k]])._load(result[k]);
-      }
-      else if(list_map && k in list_map) {
-        obj[k] = (result[k] === null || result[k] === undefined)
-          ? [] : result[k].map((v) => (new Model[list_map[k]])._load(v));
-      }
-      else {
+function load_data<T>(obj: T, result: any, attr_map?: { [key: string]: any }, list_map?: { [key: string]: any }): T {
+  if (obj && result) {
+    for (let k in result) {
+      if (attr_map && k in attr_map) {
+        obj[k] = result[k] === null || result[k] === undefined ? null : new Model[attr_map[k]]()._load(result[k]);
+      } else if (list_map && k in list_map) {
+        obj[k] =
+          result[k] === null || result[k] === undefined ? [] : result[k].map(v => new Model[list_map[k]]()._load(v));
+      } else {
         obj[k] = result[k];
       }
     }
@@ -26,33 +19,31 @@ function load_data<T>(
   return obj;
 }
 
-
 export namespace Model {
-
   export interface ModelCtor<M extends BaseModel> {
     new (value?: any): M;
-    propertyMap: {[key: string]: string};
-    listPropertyMap: {[key: string]: string};
+    propertyMap: { [key: string]: string };
+    listPropertyMap: { [key: string]: string };
     resourceName: string;
     childResource: string;
     extPath: string;
   }
 
   export abstract class BaseModel {
-    static propertyMap: {[key: string]: string} = {};
-    static listPropertyMap: {[key: string]: string} = {};
+    static propertyMap: { [key: string]: string } = {};
+    static listPropertyMap: { [key: string]: string } = {};
     static resourceName: string;
     static childResource: string;
     static extPath: string;
 
     constructor(data?: any) {
-      if(data) {
+      if (data) {
         this._load(data);
       }
     }
 
     _load<T extends BaseModel>(result: any) {
-      let ctor = (this.constructor as ModelCtor<T>);
+      let ctor = this.constructor as ModelCtor<T>;
       return load_data(this, result, ctor.propertyMap, ctor.listPropertyMap);
     }
 
@@ -65,10 +56,10 @@ export namespace Model {
     }
   }
 
-  function mapByType<T extends {type: string}>(input: T[]): {[key: string]: T} {
+  function mapByType<T extends { type: string }>(input: T[]): { [key: string]: T } {
     let result = {};
-    if(input) {
-      for(let obj of input) {
+    if (input) {
+      for (let obj of input) {
         result[obj.type] = obj;
       }
     }
@@ -77,8 +68,7 @@ export namespace Model {
 
   function setCredTypeId(attrs: Attribute[], credType: CredentialType) {
     let credTypeId = credType && credType.id;
-    for(let i = 0; attrs && i < attrs.length; i++)
-      attrs[i].credential_type_id = credTypeId;
+    for (let i = 0; attrs && i < attrs.length; i++) attrs[i].credential_type_id = credTypeId;
   }
 
   export class Address extends BaseModel {
@@ -93,7 +83,7 @@ export namespace Model {
     credential_id: number;
     inactive: boolean;
 
-    static resourceName = 'address';
+    static resourceName = "address";
   }
 
   export class Attribute extends BaseModel {
@@ -106,15 +96,12 @@ export namespace Model {
     inactive: boolean;
 
     get typeClass(): string {
-      if(this.format === 'email' || this.format === 'phone' || this.format === 'name')
-        return this.format;
-      if(this.format === 'url')
-        return 'website';
+      if (this.format === "email" || this.format === "phone" || this.format === "name") return this.format;
+      if (this.format === "url") return "website";
     }
 
     get typeLabel(): string {
-      if(this.type && ! ~this.type.indexOf('.'))
-        return `attribute.${this.type}`;
+      if (this.type && !~this.type.indexOf(".")) return `attribute.${this.type}`;
       return this.type;
     }
   }
@@ -132,7 +119,7 @@ export namespace Model {
 
     addresses: Address[];
     _attributes: Attribute[];
-    _attribute_map: {[key: string]: Attribute};
+    _attribute_map: { [key: string]: Attribute };
     names: Name[];
     local_name: Name;
     remote_name: Name;
@@ -143,18 +130,18 @@ export namespace Model {
       return this.credential_type && this.credential_type.description;
     }
 
-    static resourceName = 'credential';
+    static resourceName = "credential";
 
     static propertyMap = {
-      credential_type: 'CredentialType',
-      credential_set: 'CredentialSet',
-      topic: 'Topic',
+      credential_type: "CredentialType",
+      credential_set: "CredentialSet",
+      topic: "Topic"
     };
     static listPropertyMap = {
-      addresses: 'Address',
-      attributes: 'Attribute',
-      names: 'Name',
-      related_topics: 'Topic',
+      addresses: "Address",
+      attributes: "Attribute",
+      names: "Name",
+      related_topics: "Topic"
     };
 
     get attributes(): Attribute[] {
@@ -169,20 +156,29 @@ export namespace Model {
     get attributes_ext(): Attribute[] {
       let ret_attrs = this._attributes;
       if (this.local_name) {
-        ret_attrs.push(new Attribute({id: this.local_name.id, type: "name_short", value: this.local_name.text, credential_id: this.local_name.credential_id, inactive: this.local_name.inactive, format: "name", credential_type_id: this.credential_type.id }));
+        ret_attrs.push(
+          new Attribute({
+            id: this.local_name.id,
+            type: "name_short",
+            value: this.local_name.text,
+            credential_id: this.local_name.credential_id,
+            inactive: this.local_name.inactive,
+            format: "name",
+            credential_type_id: this.credential_type.id
+          })
+        );
       }
       return ret_attrs;
     }
 
-    get attribute_map(): {[key: string]: Attribute} {
+    get attribute_map(): { [key: string]: Attribute } {
       return this._attribute_map || {};
     }
 
     get issuer(): Issuer {
       return this.credential_type && this.credential_type.issuer;
     }
-    set issuer(val: Issuer) {
-    }
+    set issuer(val: Issuer) {}
     get haveAddresses() {
       return this.topic.addresses && this.topic.addresses.length;
     }
@@ -193,20 +189,20 @@ export namespace Model {
       return this.names && this.names.length;
     }
 
-    get relatedPreferredName() : string {
-      let found = '';
-      if('associated_registration_name' in this.attribute_map) {
-        let attr = this.attribute_map['associated_registration_name'];
+    get relatedPreferredName(): string {
+      let found = "";
+      if ("associated_registration_name" in this.attribute_map) {
+        let attr = this.attribute_map["associated_registration_name"];
         return attr.value;
       }
-      if(0 < this.related_topics.length) {
-        if(0 < this.related_topics[0].names.length) {
-          for(let name of this.related_topics[0].names) {
-            if(name.type === 'entity_name_assumed') {
+      if (0 < this.related_topics.length) {
+        if (0 < this.related_topics[0].names.length) {
+          for (let name of this.related_topics[0].names) {
+            if (name.type === "entity_name_assumed") {
               found = name.text;
             }
           }
-          if(! found) {
+          if (!found) {
             found = this.related_topics[0].names[0].text;
           }
         }
@@ -215,50 +211,50 @@ export namespace Model {
     }
 
     get link() {
-      if(this.topic) {
-        return this.topic.link.concat(['/cred/', ''+this.id]);
+      if (this.topic) {
+        return this.topic.link.concat(["/cred/", "" + this.id]);
       }
     }
   }
 
   export class CredentialFormatted extends Credential {
-    static extPath = 'formatted';
+    static extPath = "formatted";
   }
 
   export class CredentialSearchResult extends Credential {
-    static resourceName = 'search/credential/topic';
+    static resourceName = "search/credential/topic";
   }
 
   export class CredentialFacetSearchResult extends Credential {
-    static resourceName = 'search/credential/topic/facets';
+    static resourceName = "search/credential/topic/facets";
   }
 
   export class CredentialVerifyResult extends BaseModel {
     success: boolean;
     result: any;
 
-    static resourceName = 'credential';
-    static extPath = 'verify';
+    static resourceName = "credential";
+    static extPath = "verify";
 
     get claims() {
       let ret = [];
-      if(typeof this.result === 'object' && this.result.presentation) {
+      if (typeof this.result === "object" && this.result.presentation) {
         let attrs = this.result.presentation.requested_proof.revealed_attrs;
-        for(let k in attrs) {
-          ret.push({name: k, value: attrs[k].raw});
+        for (let k in attrs) {
+          const attributeName = this.result.presentation_request.requested_attributes[k].name;
+          ret.push({ name: attributeName, value: attrs[k].raw });
         }
       }
-      ret.sort((a,b) => a.name.localeCompare(b.name));
+      ret.sort((a, b) => a.name.localeCompare(b.name));
       return ret;
     }
 
     get status(): string {
-      return this.success ? 'cred.verified' : 'cred.not-verified';
+      return this.success ? "cred.verified" : "cred.not-verified";
     }
 
     get text(): string {
-      if(typeof this.result === 'string')
-        return this.result;
+      if (typeof this.result === "string") return this.result;
       return JSON.stringify(this.result, null, 2);
     }
   }
@@ -273,16 +269,16 @@ export namespace Model {
     last_effective_date: string;
 
     static propertyMap = {
-      latest_credential: 'Credential',
-      credential_type: 'CredentialType',
-      topic: 'Topic',
+      latest_credential: "Credential",
+      credential_type: "CredentialType",
+      topic: "Topic"
     };
     static listPropertyMap = {
-      credentials: 'Credential',
+      credentials: "Credential"
     };
 
-    static resourceName = 'topic';
-    static childResource = 'credentialset';
+    static resourceName = "topic";
+    static childResource = "credentialset";
   }
 
   export class CredentialType extends BaseModel {
@@ -295,14 +291,14 @@ export namespace Model {
     // visible_fields: string;
     has_logo: boolean;
 
-    static resourceName = 'credentialtype';
+    static resourceName = "credentialtype";
 
     static propertyMap = {
-      issuer: 'Issuer',
+      issuer: "Issuer"
     };
 
     get logo_url(): string {
-      if(this.has_logo) {
+      if (this.has_logo) {
         return `${CredentialType.resourceName}/${this.id}/logo`;
       }
     }
@@ -317,22 +313,22 @@ export namespace Model {
     url: string;
     has_logo: boolean;
 
-    static resourceName = 'issuer';
+    static resourceName = "issuer";
 
     get pageTitle(): string {
       return this.name;
     }
 
     get logo_url(): string {
-      if(this.has_logo) {
+      if (this.has_logo) {
         return `${Issuer.resourceName}/${this.id}/logo`;
       }
     }
   }
 
   export class IssuerCredentialType extends CredentialType {
-    static resourceName = 'issuer';
-    static childResource = 'credentialtype';
+    static resourceName = "issuer";
+    static childResource = "credentialtype";
   }
 
   export class Name extends BaseModel {
@@ -342,12 +338,12 @@ export namespace Model {
     credential_id: number;
     inactive: boolean;
 
-    static resourceName = 'name';
+    static resourceName = "name";
 
     // extra API fields
     issuer: Issuer;
     static propertyMap = {
-      issuer: 'Issuer',
+      issuer: "Issuer"
     };
   }
 
@@ -358,17 +354,17 @@ export namespace Model {
 
     addresses: Address[];
     _attributes: Attribute[];
-    _attribute_map: {[key: string]: Attribute};
+    _attribute_map: { [key: string]: Attribute };
     names: Name[];
     local_name: Name;
     remote_name: Name;
 
-    static resourceName = 'topic';
+    static resourceName = "topic";
 
     static listPropertyMap = {
-      addresses: 'Address',
-      attributes: 'Attribute',
-      names: 'Name',
+      addresses: "Address",
+      attributes: "Attribute",
+      names: "Name"
     };
 
     get attributes(): Attribute[] {
@@ -382,30 +378,38 @@ export namespace Model {
     get attributes_ext(): Attribute[] {
       let ret_attrs = this._attributes;
       if (this.local_name) {
-        ret_attrs.push(new Attribute({id: this.local_name.id, type: "name_short", value: this.local_name.text, credential_id: this.local_name.credential_id, inactive: this.local_name.inactive, format: "name", credential_type_id: null }));
+        ret_attrs.push(
+          new Attribute({
+            id: this.local_name.id,
+            type: "name_short",
+            value: this.local_name.text,
+            credential_id: this.local_name.credential_id,
+            inactive: this.local_name.inactive,
+            format: "name",
+            credential_type_id: null
+          })
+        );
       }
       return ret_attrs;
     }
 
-    get attribute_map(): {[key: string]: Attribute} {
+    get attribute_map(): { [key: string]: Attribute } {
       return this._attribute_map || {};
     }
 
     get pageTitle(): string {
-      if(this.names && this.names.length) {
+      if (this.names && this.names.length) {
         return this.names[0].text;
       }
     }
 
     get preferredName(): Name {
       let found = null;
-      if(this.names) {
-        for(let name of this.names) {
-          if(name.type === 'entity_name_assumed')
-            found = name;
+      if (this.names) {
+        for (let name of this.names) {
+          if (name.type === "entity_name_assumed") found = name;
         }
-        if(! found)
-          found = this.names[0];
+        if (!found) found = this.names[0];
       }
       return found;
     }
@@ -416,10 +420,10 @@ export namespace Model {
 
     get remoteName(): Name {
       let p_name = this.preferredName;
-      if (p_name.type === 'entity_name_assumed') {
-        if(this.names) {
-          for(let name of this.names) {
-            if(name.type != 'entity_name_assumed') {
+      if (p_name.type === "entity_name_assumed") {
+        if (this.names) {
+          for (let name of this.names) {
+            if (name.type != "entity_name_assumed") {
               return name;
             }
           }
@@ -429,32 +433,31 @@ export namespace Model {
     }
 
     get typeLabel(): string {
-      if(this.type) return ('name.'+this.type).replace(/_/g, '-');
-      return '';
+      if (this.type) return ("name." + this.type).replace(/_/g, "-");
+      return "";
     }
 
     get link(): string[] {
       // FIXME need to move link generation into general data service
-      if(this.type === 'registration')
-        return ['/topic/', this.source_id];
-      return ['/topic/', this.type, this.source_id];
+      if (this.type === "registration") return ["/topic/", this.source_id];
+      return ["/topic/", this.type, this.source_id];
     }
 
     extLink(...args): string[] {
-      return this.link.concat(args)
+      return this.link.concat(args);
     }
   }
 
   export class TopicFormatted extends Topic {
-    static extPath = 'formatted';
+    static extPath = "formatted";
   }
 
   export class TopicRelatedFrom extends Topic {
-    static childResource = 'related_from';
+    static childResource = "related_from";
   }
 
   export class TopicRelatedTo extends Topic {
-    static childResource = 'related_to';
+    static childResource = "related_to";
   }
 
   export class TopicRelationship extends BaseModel {
@@ -463,12 +466,12 @@ export namespace Model {
     credential: Credential;
     topic: Topic;
     related_topic: Topic;
-    relation_type = 'to';
+    relation_type = "to";
 
     _attributes: Attribute[];
-    _attribute_map: {[key: string]: Attribute};
+    _attribute_map: { [key: string]: Attribute };
 
-    static resourceName = 'topic_relationship';
+    static resourceName = "topic_relationship";
 
     get attributes(): Attribute[] {
       return this._attributes;
@@ -483,102 +486,97 @@ export namespace Model {
       return ret_attrs;
     }
 
-    get attribute_map(): {[key: string]: Attribute} {
+    get attribute_map(): { [key: string]: Attribute } {
       return this._attribute_map || {};
     }
 
-    get other_topic() : Topic {
-      if (this.relation_type == 'to') {
+    get other_topic(): Topic {
+      if (this.relation_type == "to") {
         return this.related_topic;
       } else {
         return this.topic;
       }
     }
 
-    get preferredName() : Name {
+    get preferredName(): Name {
       let found = null;
-      if('associated_registration_name' in this._attribute_map) {
-        let attr = this._attribute_map['associated_registration_name'];
+      if ("associated_registration_name" in this._attribute_map) {
+        let attr = this._attribute_map["associated_registration_name"];
         let name = new Name({
           id: this.credential.id,
           text: attr.value,
-          type: 'Associated Registration',
+          type: "Associated Registration",
           credential_id: this.credential.id,
           inactive: false,
-          issuer: this.credential.credential_type.issuer}
-        );
+          issuer: this.credential.credential_type.issuer
+        });
         return name;
       }
       let other = this.other_topic;
-      if(other.names) {
-        for(let name of other.names) {
-          if(name.type === 'entity_name_assumed')
-            found = name;
+      if (other.names) {
+        for (let name of other.names) {
+          if (name.type === "entity_name_assumed") found = name;
         }
-        if(! found)
-          found = other.names[0];
+        if (!found) found = other.names[0];
       }
       return found;
     }
 
-    get link() : string[] {
+    get link(): string[] {
       // FIXME need to move link generation into general data service
       let other = this.other_topic;
-      if(other.type === 'registration')
-        return ['/topic/', other.source_id];
-      return ['/topic/', other.type, other.source_id];
+      if (other.type === "registration") return ["/topic/", other.source_id];
+      return ["/topic/", other.type, other.source_id];
     }
 
-    get typeLabel() : string {
+    get typeLabel(): string {
       let other = this.other_topic;
-      if(other.type) return ('name.'+other.type).replace(/_/g, '-');
-      return '';
+      if (other.type) return ("name." + other.type).replace(/_/g, "-");
+      return "";
     }
 
-    get relationLabel() : string {
-      return this._attribute_map['relationship_description'].value;
+    get relationLabel(): string {
+      return this._attribute_map["relationship_description"].value;
     }
 
-    get otherEntityStatus() : Attribute {
-      let other = this.other_topic;
-      let other_attribute_map = mapByType(other.attributes);
-      return other_attribute_map['entity_status'];
-    }
-
-    get otherEntityType() : Attribute {
+    get otherEntityStatus(): Attribute {
       let other = this.other_topic;
       let other_attribute_map = mapByType(other.attributes);
-      return other_attribute_map['entity_type'];
+      return other_attribute_map["entity_status"];
+    }
+
+    get otherEntityType(): Attribute {
+      let other = this.other_topic;
+      let other_attribute_map = mapByType(other.attributes);
+      return other_attribute_map["entity_type"];
     }
   }
 
   export class TopicRelationshipRelatedFrom extends TopicRelationship {
-    static childResource = 'related_from_relations';
-    relation_type = 'from';
+    static childResource = "related_from_relations";
+    relation_type = "from";
   }
 
   export class TopicRelationshipRelatedTo extends TopicRelationship {
-    static childResource = 'related_to_relations';
-    relation_type = 'to';
+    static childResource = "related_to_relations";
+    relation_type = "to";
   }
-
 }
 // end Model
 
-
 export namespace Fetch {
-
   export class BaseResult<T> {
     public data: T;
     public meta: any;
     protected _input: any;
 
     constructor(
-        protected _ctor: (any) => T,
-        input?: any,
-        public error?: any,
-        public loading: boolean = false,
-        meta = null) {
+      protected _ctor: (any) => T,
+      input?: any,
+      public error?: any,
+      public loading: boolean = false,
+      meta = null
+    ) {
       this.input = input;
       this.meta = meta || {};
     }
@@ -593,11 +591,11 @@ export namespace Fetch {
     }
 
     get empty(): boolean {
-      return ! this.data;
+      return !this.data;
     }
 
     get loaded(): boolean {
-      return !! this.data;
+      return !!this.data;
     }
 
     get notFound(): boolean {
@@ -615,7 +613,7 @@ export namespace Fetch {
     public timing: number = 0;
     public previous: string = null;
     public next: string = null;
-    public params: {[key: string]: any};
+    public params: { [key: string]: any };
     public facets: any;
 
     get havePrevious(): boolean {
@@ -629,7 +627,7 @@ export namespace Fetch {
     static fromResult(value: any, facets?: any): ListInfo {
       let ret = new ListInfo();
       ret.facets = facets;
-      if(value) {
+      if (value) {
         ret.pageNum = value.page || null;
         ret.firstIndex = value.first_index || null;
         ret.lastIndex = value.last_index || null;
@@ -650,30 +648,22 @@ export namespace Fetch {
 
     set input(value: any) {
       this._input = value;
-      if(value instanceof Array) {
+      if (value instanceof Array) {
         this.data = this._ctor(value);
-      }
-      else if(value && 'results' in value && value['results'] instanceof Array) {
-        this.data = this._ctor(value['results']);
+      } else if (value && "results" in value && value["results"] instanceof Array) {
+        this.data = this._ctor(value["results"]);
         this.info = ListInfo.fromResult(value);
-      }
-      else if(value && 'objects' in value) {
-        this.data = this._ctor(value['objects']['results']);
-        this.info = ListInfo.fromResult(value['objects'], value['facets']);
-      }
-      else {
+      } else if (value && "objects" in value) {
+        this.data = this._ctor(value["objects"]["results"]);
+        this.info = ListInfo.fromResult(value["objects"], value["facets"]);
+      } else {
         this.data = null;
       }
     }
   }
 
   export interface ResultCtor<T, R extends BaseResult<T>> {
-    new (
-      ctor: (any) => T,
-      input?: any,
-      error?: any,
-      loading?: boolean,
-      meta?: any): R;
+    new (ctor: (any) => T, input?: any, error?: any, loading?: boolean, meta?: any): R;
   }
 
   export class RequestParams {
@@ -695,37 +685,31 @@ export namespace Fetch {
 
     static from(params: any) {
       let req = new RequestParams();
-      if(params)
-        Object.assign(req, params);
+      if (params) Object.assign(req, params);
       return req;
     }
 
     extend(info: RequestParams | { [key: string]: any }) {
       let ret = new RequestParams();
       Object.assign(ret, this);
-      if(info)
-        Object.assign(ret, info);
+      if (info) Object.assign(ret, info);
       return ret;
     }
 
     getRecordPath(recordId?: string, childId?: string, extPath?: string): string {
       let path = null;
-      if(this.path) {
+      if (this.path) {
         path = this.path;
-      }
-      else if(this.resource) {
-        if(! recordId) recordId = this.recordId;
-        if(! extPath) extPath = this.extPath;
-        if(recordId) {
+      } else if (this.resource) {
+        if (!recordId) recordId = this.recordId;
+        if (!extPath) extPath = this.extPath;
+        if (recordId) {
           path = `${this.resource}/${recordId}`;
-          if(this.childResource) {
-            if(! childId) childId = this.childId;
-            if(childId)
-              path = `${path}/${this.childResource}/${childId}`;
-            else
-              path = null;
-          }
-          else if(extPath) {
+          if (this.childResource) {
+            if (!childId) childId = this.childId;
+            if (childId) path = `${path}/${this.childResource}/${childId}`;
+            else path = null;
+          } else if (extPath) {
             path = `${path}/${extPath}`;
           }
         }
@@ -735,20 +719,16 @@ export namespace Fetch {
 
     getListPath(recordId?: string, extPath?: string): string {
       let path = null;
-      if(this.path) {
+      if (this.path) {
         path = this.path;
-      }
-      else if(this.resource) {
-        if(! recordId) recordId = this.recordId;
-        if(! extPath) extPath = this.extPath;
+      } else if (this.resource) {
+        if (!recordId) recordId = this.recordId;
+        if (!extPath) extPath = this.extPath;
         path = this.resource;
-        if(this.childResource) {
-          if(recordId)
-            path = `${path}/${recordId}/${this.childResource}`;
-          else
-            path = null;
-        }
-        else if(extPath) {
+        if (this.childResource) {
+          if (recordId) path = `${path}/${recordId}/${this.childResource}`;
+          else path = null;
+        } else if (extPath) {
           path = `${path}/${extPath}`;
         }
       }
@@ -761,18 +741,14 @@ export namespace Fetch {
     _result: BehaviorSubject<R>;
     _sub: Subscription;
 
-    constructor(
-      protected _rctor: ResultCtor<T, R>,
-      protected _map: (any) => T,
-      protected _req?: RequestParams
-    ) {
-      if(! this._req) this._req = new RequestParams();
+    constructor(protected _rctor: ResultCtor<T, R>, protected _map: (any) => T, protected _req?: RequestParams) {
+      if (!this._req) this._req = new RequestParams();
       this._result = new BehaviorSubject(this._makeResult());
     }
 
     complete() {
       this._clearSub();
-      if(this._result) {
+      if (this._result) {
         this._result.complete();
         this._result = null;
       }
@@ -784,13 +760,13 @@ export namespace Fetch {
     }
 
     _clearSub() {
-      if(this._sub) {
+      if (this._sub) {
         this._sub.unsubscribe();
         this._sub = null;
       }
     }
 
-    protected _makeResult(input?: any, error?: any, loading: boolean = false, meta=null) {
+    protected _makeResult(input?: any, error?: any, loading: boolean = false, meta = null) {
       return new this._rctor(this._map, input, error, loading, meta);
     }
 
@@ -813,17 +789,14 @@ export namespace Fetch {
     _runPostProc(val: R, pos = 0) {
       let proc = this._postProc[pos];
       let result = null;
-      if(proc)
-        result = proc(val);
-      if(! result)
-        result = Promise.resolve(val);
-      else
-        result = result.then(newval => this._runPostProc(newval, pos + 1));
+      if (proc) result = proc(val);
+      if (!result) result = Promise.resolve(val);
+      else result = result.then(newval => this._runPostProc(newval, pos + 1));
       return result;
     }
 
     set result(val: R) {
-      this._runPostProc(val).then((result) => {
+      this._runPostProc(val).then(result => {
         this._result.next(result);
       });
     }
@@ -844,21 +817,16 @@ export namespace Fetch {
       this._clearSub();
       let input = this._req.persist ? this.result.input : null;
       this.result = this._makeResult(input, null, true, meta);
-      this._sub = obs.subscribe(
-        (result) => this.loadData(result, meta),
-        (err) => this.loadError(err, meta)
-      );
+      this._sub = obs.subscribe(result => this.loadData(result, meta), err => this.loadError(err, meta));
     }
 
     loadNotFound(meta = null) {
-      this.loadError({obj: {status: 404}});
+      this.loadError({ obj: { status: 404 } });
     }
   }
 
   export class DataLoader<T> extends BaseLoader<T, BaseResult<T>> {
-    constructor(
-        map: (any) => T,
-        req?: RequestParams) {
+    constructor(map: (any) => T, req?: RequestParams) {
       super(BaseResult, map, req);
     }
   }
@@ -870,46 +838,43 @@ export namespace Fetch {
   }
 
   export class ListLoader<T> extends BaseLoader<T[], ListResult<T>> {
-    constructor(
-        protected _mapEntry: (any) => T,
-        req?: RequestParams) {
+    constructor(protected _mapEntry: (any) => T, req?: RequestParams) {
       super(
         ListResult,
         data => {
           let list = null;
-          if(data instanceof Array) {
+          if (data instanceof Array) {
             list = [];
-            for(let row of data) {
+            for (let row of data) {
               list.push(_mapEntry(row));
             }
-          } else if(data) {
+          } else if (data) {
             console.error("Expected array");
           }
           return list;
         },
-        req);
+        req
+      );
     }
   }
 
   export class ModelLoader<M extends Model.BaseModel> extends DataLoader<M> {
     constructor(ctor: Model.ModelCtor<M>, req?: RequestParams | { [key: string]: any }) {
       let creq = RequestParams.fromModel(ctor).extend(req);
-      super((data) => new ctor(data), creq);
+      super(data => new ctor(data), creq);
     }
   }
 
   export class ModelListLoader<M extends Model.BaseModel> extends ListLoader<M> {
     constructor(ctor: Model.ModelCtor<M>, req?: RequestParams | { [key: string]: any }) {
       let creq = RequestParams.fromModel(ctor).extend(req);
-      super((data) => new ctor(data), creq);
+      super(data => new ctor(data), creq);
     }
   }
 }
 // end Fetch
 
-
 export namespace Filter {
-
   export interface Option {
     label?: string;
     tlabel?: string;
@@ -930,18 +895,18 @@ export namespace Filter {
   }
 
   export class Field implements FieldSpec {
-    public id = '';
-    public name = '';
+    public id = "";
+    public name = "";
     public alias = null;
-    public label = '';
+    public label = "";
     public hidden = false;
-    public defval = '';
+    public defval = "";
     public blank = false;
     _options: any[];
     _value: string = null;
 
     constructor(init?: FieldSpec) {
-      if(init) {
+      if (init) {
         Object.assign(this, init);
         this.options = init.options;
       }
@@ -957,8 +922,8 @@ export namespace Filter {
 
     set options(vals) {
       this._options = vals ? vals.map(o => Object.assign({}, o)) : [];
-      for(let o of this._options) {
-        if(! o.id) o.id = this.name + '_' + (o.value || 'blank');
+      for (let o of this._options) {
+        if (!o.id) o.id = this.name + "_" + (o.value || "blank");
       }
       this.setActive();
     }
@@ -968,22 +933,24 @@ export namespace Filter {
     }
 
     set value(val: string) {
-      if(val === undefined || val === null) val = this.defval;
+      if (val === undefined || val === null) val = this.defval;
       this._value = val;
       this.setActive();
     }
 
     setActive() {
       let val = this.value;
-      if(this._options) {
-        for(let o of this._options) {
-          o.active = (o.value === val);
+      if (this._options) {
+        for (let o of this._options) {
+          o.active = o.value === val;
         }
       }
     }
   }
 
-  interface StrDict {[key: string]: string}
+  interface StrDict {
+    [key: string]: string;
+  }
 
   export class FieldSet {
     _result: BehaviorSubject<Field[]>;
@@ -991,13 +958,10 @@ export namespace Filter {
     _defaults: StrDict = {};
     _values: StrDict = {};
 
-    constructor(
-      fields: FieldSpec[]
-    ) {
+    constructor(fields: FieldSpec[]) {
       let fs = [];
-      if(fields) {
-        for(let opt of fields)
-          fs.push(new Field(opt));
+      if (fields) {
+        for (let opt of fields) fs.push(new Field(opt));
       }
       this._fields = fs;
       this._result = new BehaviorSubject(this._next());
@@ -1005,10 +969,9 @@ export namespace Filter {
 
     loadQuery(params: StrDict) {
       let upd = {};
-      for(let opt of this._fields) {
+      for (let opt of this._fields) {
         let k = opt.alias || opt.name;
-        if(k in params)
-          upd[opt.name] = params[k];
+        if (k in params) upd[opt.name] = params[k];
       }
       this.update(upd);
     }
@@ -1018,7 +981,7 @@ export namespace Filter {
     }
 
     get streamVisible(): Observable<Field[]> {
-      return this.stream.pipe(map(fs => fs.filter(f => ! f.hidden)));
+      return this.stream.pipe(map(fs => fs.filter(f => !f.hidden)));
     }
 
     get result(): Field[] {
@@ -1028,8 +991,8 @@ export namespace Filter {
     get queryParams(): StrDict {
       let fs = this.result;
       let ret = {};
-      for(let opt of fs) {
-        if(opt.value !== null) {
+      for (let opt of fs) {
+        if (opt.value !== null) {
           ret[opt.alias || opt.name] = opt.value;
         }
       }
@@ -1037,7 +1000,7 @@ export namespace Filter {
     }
 
     complete() {
-      if(this._result) {
+      if (this._result) {
         this._result.complete();
         this._result = null;
       }
@@ -1051,15 +1014,15 @@ export namespace Filter {
       return this._values[key];
     }
 
-    setFieldValue(key: string, value: string|number) {
+    setFieldValue(key: string, value: string | number) {
       let upd = {};
       upd[key] = value;
       this.update(upd);
     }
 
     setOptions(key: string, value: any) {
-      for(let f of this._fields) {
-        if(f.name === key) {
+      for (let f of this._fields) {
+        if (f.name === key) {
           f.options = value;
           this.update();
           break;
@@ -1068,16 +1031,15 @@ export namespace Filter {
     }
 
     update(vals?: StrDict) {
-      let v = {... this._values};
-      if(vals)
-        Object.assign(v, vals);
+      let v = { ...this._values };
+      if (vals) Object.assign(v, vals);
       this.values = v;
     }
 
     _next() {
       let vs = this._values;
       let fs = [];
-      for(let f of this._fields) {
+      for (let f of this._fields) {
         let f2 = f.clone();
         f2.value = vs[f2.name];
         fs.push(f2);
@@ -1086,8 +1048,7 @@ export namespace Filter {
     }
 
     _update() {
-      if(this._result)
-        this._result.next(this._next());
+      if (this._result) this._result.next(this._next());
     }
 
     get defaults() {
@@ -1100,26 +1061,24 @@ export namespace Filter {
     }
 
     get values() {
-      return {... this._values};
+      return { ...this._values };
     }
 
     set values(vals: StrDict) {
       let v = {};
-      for(let f of this._fields) {
+      for (let f of this._fields) {
         let defval = f.defval;
-        if(f.name in this._defaults)
-          defval = this._defaults[f.name];
-        if(vals && f.name in vals && vals[f.name] !== null) {
+        if (f.name in this._defaults) defval = this._defaults[f.name];
+        if (vals && f.name in vals && vals[f.name] !== null) {
           let input = vals[f.name];
-          if(typeof input === 'string' || typeof input === 'number') {
-            input = ('' + input).trim();
+          if (typeof input === "string" || typeof input === "number") {
+            input = ("" + input).trim();
           }
-          if(input === '' && defval !== '' && ! f.blank) {
+          if (input === "" && defval !== "" && !f.blank) {
             input = defval;
           }
           v[f.name] = input;
-        }
-        else {
+        } else {
           v[f.name] = defval;
         }
       }
