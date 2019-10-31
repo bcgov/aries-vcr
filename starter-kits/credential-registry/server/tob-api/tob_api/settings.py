@@ -68,8 +68,8 @@ INSTALLED_APPS = [
     "drf_generators",
     "drf_yasg",
     "django_filters",
-    "api_v2",
     "tob_api",
+    "api_v2",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "icat_hooks",  # only required when using webhook subscriptions
