@@ -79,16 +79,17 @@ class HTTPHeaderRoutingMiddleware(object):
 
             LOGGER.debug(f"Resolved API url is {request.path_info}")
 
-            return request
+        return request
 
     def process_response(self, request, response):
         return response
 
     def extract_header_version(self, request):
         header_version = None
-        request_meta_accept = request.META["HTTP_ACCEPT"]
+        request_meta_accept = None
 
         if "HTTP_ACCEPT" in request.META:
+            request_meta_accept = request.META["HTTP_ACCEPT"]
             accept_headers = request.META["HTTP_ACCEPT"].split(",")
             accept_headers = list(map(lambda item: item.strip(), accept_headers))
 
@@ -141,11 +142,11 @@ class HTTPHeaderRoutingMiddleware(object):
                 # re-construct header
                 request_meta_accept = ",".join(accept_headers)
 
-                return header_version, request_meta_accept
+        return header_version, request_meta_accept
 
     def extract_path_version(self, request):
         path_version = None
-        request_path_info = None
+        request_path_info = request.path_info
 
         for allowed_version in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP:
             if request.path_info.startswith(
