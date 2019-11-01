@@ -173,23 +173,29 @@ class HTTPHeaderRoutingMiddleware(object):
         if header_version is None and path_version is None:
             LOGGER.debug("No version override detected, will be using 'default")
             use_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP["default"]
-        elif header_version != path_version:
-            raise ApiVersionException(
-                f"Conflicting API versions were requested in Accept header [{header_version}] and path [{path_version}]."
-            )
-        elif header_version is not None:
-            LOGGER.debug(
-                f"Will be using API version specified in Accept header: [{header_version}]"
-            )
-            use_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
-                header_version
-            ]
-        elif path_version is not None:
-            LOGGER.debug(
-                f"Will be using API version specified in URL path: [{path_version}]"
-            )
-            use_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
-                path_version
-            ]
+        elif header_version is not None or path_version is not None:
+            if header_version is not None and path_version is None:
+                LOGGER.debug(
+                    f"Will be using API version specified in Accept header: [{header_version}]"
+                )
+                use_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
+                    header_version
+                ]
+            elif path_version is not None and header_version is None:
+                LOGGER.debug(
+                    f"Will be using API version specified in URL path: [{path_version}]"
+                )
+                use_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
+                    path_version
+                ]
+            elif header_version != path_version:
+                raise ApiVersionException(
+                    f"Conflicting API versions were requested in Accept header [{header_version}] and path [{path_version}]."
+                )
+            else:
+                # header and path versions match
+                use_version = settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP[
+                    header_version
+                ]
 
         return use_version
