@@ -22,35 +22,16 @@ class Routing_Middleware_TestCase(TestCase):
         self.routing_middleware = None
         self.request = None
 
-    # def test_routing_non_api_call(self):
-    #     self.request.path_info = "/not-an-api/a-great-view"
-    #     result = self.routing_middleware.process_request(self.request)
+    def test_routing_non_api_call(self):
+        self.request.path_info = "/not-an-api/a-great-view"
+        result = self.routing_middleware.process_request(self.request)
 
-    #     self.assertEqual(result.path_info, self.request.path_info)
+        self.assertEqual(result.path_info, self.request.path_info)
 
-    # def test_routing_api_call_no_version(self):
-    #     result = self.routing_middleware.process_request(self.request)
+    def test_routing_api_call_no_version(self):
+        result = self.routing_middleware.process_request(self.request)
 
-    #     self.assertEqual(result.path_info, self.request.path_info)
-
-    # def test_routing_api_call_accept_header_no_version(self):
-    #     self.request.META["HTTP_ACCEPT"] = "application/json"
-    #     result = self.routing_middleware.process_request(self.request)
-
-    #     self.assertEqual(result.path_info, self.request.path_info)
-
-    # def test_routing_api_call_accept_header_unsupported_version(self):
-    #     with self.assertRaises(ApiVersionException) as cm:
-    #         self.request.META["HTTP_ACCEPT"] = "application/json;version=999"
-    #         result = self.routing_middleware.process_request(self.request)
-
-    #         self.assertEquals(str(ex), "The specified version [999] is not supported.")
-
-    # def test_routing_api_call_accept_header_supported_version(self):
-    #     self.request.META["HTTP_ACCEPT"] = "application/json;version=v2"
-    #     result = self.routing_middleware.process_request(self.request)
-
-    #     self.assertEqual(result.path_info, "/api/v2/some-incredible-method")
+        self.assertEqual(result.path_info, self.request.path_info)
 
     def test_get_coalesced_request_version_noheader_nopath(self):
         result = self.routing_middleware.get_coalesced_request_version(None, None)
