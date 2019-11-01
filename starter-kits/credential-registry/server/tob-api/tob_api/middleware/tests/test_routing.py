@@ -33,6 +33,18 @@ class Routing_Middleware_TestCase(TestCase):
 
         self.assertEqual(result.path_info, self.request.path_info)
 
+    def test_routing_api_call_header_version(self):
+        self.request.META["HTTP_ACCEPT"] = "application/json;version=v2"
+        result = self.routing_middleware.process_request(self.request)
+
+        self.assertEqual(result.path_info, "/api/v2/some-incredible-method")
+
+    def test_routing_api_call_path_version(self):
+        self.request.path_info = "/api/v3/some-incredible-method"
+        result = self.routing_middleware.process_request(self.request)
+
+        self.assertEqual(result.path_info, self.request.path_info)
+
     def test_get_coalesced_request_version_noheader_nopath(self):
         result = self.routing_middleware.get_coalesced_request_version(None, None)
 
