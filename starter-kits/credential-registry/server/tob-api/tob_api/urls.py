@@ -17,13 +17,13 @@ base_patterns = [
 ]
 
 hook_patterns = [
-    path("hooks/", include("icat_hooks.urls")),
-    path("agentcb/", include("icat_cbs.urls")),
+    path("hooks/", include("icat_hooks.urls"), name="subscriptions"),
+    path("agentcb/", include("icat_cbs.urls"), name="agent-callback"),
 ]
 
 api_patterns = [
-    path("", RedirectView.as_view(url="api/")),
-    path("api/v2/", include("api_v2.urls")),
+    path("", RedirectView.as_view(url="api/"), name="api-root"),
+    path("api/v2/", include("api_v2.urls"), name="api-v2"),
 ]
 
 urlpatterns = base_patterns + hook_patterns + api_patterns
