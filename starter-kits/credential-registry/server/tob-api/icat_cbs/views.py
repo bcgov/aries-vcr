@@ -8,6 +8,8 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
+from .tasks import handle_credential
+
 from api_v2.models.Credential import Credential as CredentialModel
 from icat_cbs.utils.credential import Credential, CredentialManager
 from icat_cbs.utils.issuer import IssuerManager
@@ -111,70 +113,7 @@ def handle_credentials(state, message):
             "thread_id": "..."
         }
     """
-
-    # global admin_url
-    credential_exchange_id = message["credential_exchange_id"]
-    print(
-        "Credential: state=", state, ", credential_exchange_id=", credential_exchange_id
-    )
-
-    try:
-        if state == "offer_received":
-            print("After receiving credential offer, send credential request")
-            # resp = requests.post(admin_url + '/credential_exchange/' + credential_exchange_id + '/send-request')
-            # assert resp.status_code == 200
-            return Response("")
-
-        elif state == "credential_received":
-            raw_credential = message["raw_credential"]
-
-            print("Received credential:")
-            # print(raw_credential)
-
-            # TODO can include this exception to test error reporting
-            # raise Exception("Depliberate error to test problem reporting")
-
-            credential_data = {
-                "schema_id": raw_credential["schema_id"],
-                "cred_def_id": raw_credential["cred_def_id"],
-                "rev_reg_id": raw_credential["rev_reg_id"],
-                "attrs": {},
-            }
-
-            for attr in raw_credential["values"]:
-                credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
-
-            credential = Credential(credential_data)
-
-            credential_manager = CredentialManager()
-            credential = credential_manager.process(credential)
-
-            # Instruct the agent to store the credential in wallet
-            resp = requests.post(
-                f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
-                json={"credential_id": credential.credential_id},
-                headers=settings.ADMIN_REQUEST_HEADERS,
-            )
-            resp.raise_for_status()
-
-            return Response({"success": True})
-
-        # TODO other scenarios
-        elif state == "stored":
-            print("credential stored")
-            # print(message)
-
-    except Exception as e:
-        LOGGER.error(str(e))
-        # Send a problem report for the error
-        resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
-            json={"explain_ltxt": str(e)},
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
-        resp.raise_for_status()
-        return Response({"success": False, "error": str(e)})
-
+    handle_credential.delay(state, message)
     return Response("")
 
 
