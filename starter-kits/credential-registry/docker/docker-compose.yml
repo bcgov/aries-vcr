@@ -201,7 +201,7 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
-        --protocol indy_catalyst_issuer_registration",
+        --plugin indy_catalyst_issuer_registration",
       ]
 
   tob-worker:
@@ -236,6 +236,8 @@ services:
       - RUST_LOG=${RUST_LOG}
       - RUST_BACKTRACE=${RUST_BACKTRACE}
       - TOB_THEME=${TOB_THEME}
+      - AGENT_ADMIN_URL=http://tob-agent:${AGENT_ADMIN_PORT}
+      - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       - APP_SCRIPT=${APP_SCRIPT:-start-celery-worker.sh}
     volumes:
       - ../server/tob-api/tob_api:/home/indy/tob_api
