@@ -2,6 +2,9 @@ import logging
 
 import requests
 import json
+import time
+from datetime import datetime
+
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -15,7 +18,7 @@ from icat_cbs.utils.issuer import IssuerManager
 LOGGER = logging.getLogger(__name__)
 
 TOPIC_CONNECTIONS = "connections"
-TOPIC_CONNECTIONS_ACTIVITY = "connections_actvity"
+TOPIC_CONNECTIONS_ACTIVITY = "connections_activity"
 TOPIC_CREDENTIALS = "credentials"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
@@ -127,9 +130,6 @@ def handle_credentials(state, message):
 
         elif state == "credential_received":
             raw_credential = message["raw_credential"]
-
-            print("Received credential:")
-            # print(raw_credential)
 
             # TODO can include this exception to test error reporting
             # raise Exception("Depliberate error to test problem reporting")
