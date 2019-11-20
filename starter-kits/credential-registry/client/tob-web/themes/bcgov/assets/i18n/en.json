@@ -591,7 +591,8 @@
       "Filing:OTXCH": "Extraprovincial Non-Share Corporation - Notice of Change of Jurisdiction and Head Office Address"
     },
     "relationship": {
-      "Owns": "Owns"
+      "Owns": "Owns",
+      "IsOwned": "Is Owned By"
     },
     "relationship_status": {
       "ACT": "Active",
