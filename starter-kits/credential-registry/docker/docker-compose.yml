@@ -201,8 +201,13 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
-        --protocol indy_catalyst_issuer_registration",
+        --log-level 'error' \
+        --plugin indy_catalyst_issuer_registration",
       ]
+
+#        --timing \
+#        --log-config '/home/indy/debug-logger.cfg' \
+#        --log-level 'debug' \
 
   tob-worker:
     image: django
