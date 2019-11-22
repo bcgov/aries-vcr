@@ -189,8 +189,9 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         instance = HookableCredential(topic_status="Stream")
 
-        with self.assertRaises(Exception):
-            hook_utils.find_and_fire_hook(self.event_name + "-stream", instance)
+        hook_utils.find_and_fire_hook(self.event_name + "-stream", instance)
+
+        assert not mock_deliver_hook.called
 
     @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
     @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
@@ -203,8 +204,9 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
             topic_status="Stream", credential_type=self.credType
         )
 
-        with self.assertRaises(Exception):
-            hook_utils.find_and_fire_hook(self.event_name + "-stream", instance)
+        hook_utils.find_and_fire_hook(self.event_name + "-stream", instance)
+
+        assert not mock_deliver_hook.called
 
     @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
     @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
@@ -215,8 +217,9 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         instance = HookableCredential(topic_status="Stream", corp_num="123")
 
-        with self.assertRaises(Exception):
-            hook_utils.find_and_fire_hook(self.event_name + "-stream", instance)
+        hook_utils.find_and_fire_hook(self.event_name + "-stream", instance)
+
+        assert not mock_deliver_hook.called
 
     @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
     @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
@@ -240,8 +243,9 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         instance = HookableCredential(topic_status="Topic")
 
-        with self.assertRaises(Exception):
-            hook_utils.find_and_fire_hook(self.event_name + "-topic", instance)
+        hook_utils.find_and_fire_hook(self.event_name + "-topic", instance)
+
+        assert not mock_deliver_hook.called
 
     @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
     @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
