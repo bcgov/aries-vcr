@@ -34,11 +34,13 @@ def find_and_fire_hook(event_name, instance, **kwargs):
                     ):
                         send_hook = True
                     else:
-                        print(
-                            "      >>> Error invalid subscription type:",
-                            subscription.subscription_type,
-                        )
-                        raise Exception("Invalid subscription type")
+                        # if we get here then we don't meet the criteria to send a hook
+                        #print(
+                        #    "      >>> Error invalid subscription type:",
+                        #    subscription.subscription_type,
+                        #)
+                        #raise Exception("Invalid subscription type")
+                        pass
 
             # logic around whether we hook or not
             if send_hook:

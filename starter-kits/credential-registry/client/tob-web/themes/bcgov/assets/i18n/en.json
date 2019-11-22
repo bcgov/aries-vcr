@@ -35,7 +35,8 @@
     "relationship": "Relationship",
     "relationship_description": "Description",
     "relationship_status": "Status",
-    "relationship_status_effective": "Status Effective"
+    "relationship_status_effective": "Status Effective",
+    "associated_registration_name": "Associated Registration Name"
   },
   "category": {
     "address_type": {
