@@ -1,3 +1,4 @@
+from django.test import modify_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -7,6 +8,9 @@ from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 
 
+@modify_settings(
+    MIDDLEWARE={"remove": "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware"}
+)
 class IssuerViewSetTest(APITestCase):
     def setUp(self):
         # create test issuers
@@ -70,6 +74,9 @@ class IssuerViewSetTest(APITestCase):
         self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
 
 
+@modify_settings(
+    MIDDLEWARE={"remove": "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware"}
+)
 class SchemaViewSetTest(APITestCase):
     def setUp(self):
         # create test schemas
@@ -132,6 +139,9 @@ class SchemaViewSetTest(APITestCase):
         self.assertEqual(response.data["origin_did"], "not:a:did:123")
 
 
+@modify_settings(
+    MIDDLEWARE={"remove": "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware"}
+)
 class CredentialTypeViewSetTest(APITestCase):
     def setUp(self):
         # create test schemas

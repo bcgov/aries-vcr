@@ -2,6 +2,9 @@ import logging
 
 import requests
 import json
+import time
+from datetime import datetime
+
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -14,10 +17,12 @@ from api_v2.models.Credential import Credential as CredentialModel
 from icat_cbs.utils.credential import Credential, CredentialManager
 from icat_cbs.utils.issuer import IssuerManager
 
+from api_v2.utils import log_timing_method
+
 LOGGER = logging.getLogger(__name__)
 
 TOPIC_CONNECTIONS = "connections"
-TOPIC_CONNECTIONS_ACTIVITY = "connections_actvity"
+TOPIC_CONNECTIONS_ACTIVITY = "connections_activity"
 TOPIC_CREDENTIALS = "credentials"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
@@ -32,31 +37,43 @@ TOPIC_ISSUER_REGISTRATION = "issuer_registration"
 def agent_callback(request, topic):
     message = request.data
 
+    start_time = time.perf_counter()
+    method = "agent_callback." + topic
+    if "state" in message:
+        method = method + "." + message["state"]
+
     # dispatch based on the topic type
     if topic == TOPIC_CONNECTIONS:
-        return handle_connections(message["state"], message)
+        response = handle_connections(message["state"], message)
 
-    if topic == TOPIC_CONNECTIONS_ACTIVITY:
-        return Response("")
+    elif topic == TOPIC_CONNECTIONS_ACTIVITY:
+        response = Response("")
 
     elif topic == TOPIC_CREDENTIALS:
-        return handle_credentials(message["state"], message)
+        response = handle_credentials(message["state"], message)
 
     elif topic == TOPIC_PRESENTATIONS or topic == TOPIC_PRESENT_PROOF:
-        return handle_presentations(message["state"], message)
+        response = handle_presentations(message["state"], message)
 
     elif topic == TOPIC_GET_ACTIVE_MENU:
-        return handle_get_active_menu(message)
+        response = handle_get_active_menu(message)
 
     elif topic == TOPIC_PERFORM_MENU_ACTION:
-        return handle_perform_menu_action(message)
+        response = handle_perform_menu_action(message)
 
     elif topic == TOPIC_ISSUER_REGISTRATION:
-        return handle_register_issuer(message)
+        response = handle_register_issuer(message)
 
     else:
         LOGGER.info("Callback: topic=" + topic + ", message=" + json.dumps(message))
+        end_time = time.perf_counter()
+        log_timing_method(method, start_time, end_time, False)
         return Response("Invalid topic: " + topic, status=status.HTTP_400_BAD_REQUEST)
+
+    end_time = time.perf_counter()
+    log_timing_method(method, start_time, end_time, True)
+
+    return response
 
 
 def handle_connections(state, message):
@@ -118,7 +135,7 @@ def handle_credentials(state, message):
 
 
 def handle_presentations(state, message):
-    print("handle_presentations()", state, message)
+    print("handle_presentations()", state)
 
     if state == "request_received":
         presentation_request = message["presentation_request"]

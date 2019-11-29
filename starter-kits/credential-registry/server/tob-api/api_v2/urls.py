@@ -7,6 +7,7 @@ from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from api_v2.views import misc, rest, search
+from api_v2.utils import get_stats, clear_stats
 
 API_METADATA = settings.API_METADATA
 schema_view = get_schema_view(
@@ -29,10 +30,7 @@ router = SimpleRouter(trailing_slash=False)
 router.register(r"issuer", rest.IssuerViewSet)
 router.register(r"schema", rest.SchemaViewSet)
 router.register(r"credentialtype", rest.CredentialTypeViewSet)
-#router.register(r"address", rest.AddressViewSet)
-#router.register(r"attribute", rest.AttributeViewSet)
 router.register(r"credential", rest.CredentialViewSet)
-#router.register(r"name", rest.NameViewSet)
 router.register(r"topic", rest.TopicViewSet)
 router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
 
@@ -48,7 +46,12 @@ router.register(
 )
 
 # Misc endpoints
-miscPatterns = [path("feedback", misc.send_feedback), path("quickload", misc.quickload)]
+miscPatterns = [
+    path("feedback", misc.send_feedback), 
+    path("quickload", misc.quickload),
+    path("status/reset", clear_stats),
+    path("status", get_stats),
+]
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
