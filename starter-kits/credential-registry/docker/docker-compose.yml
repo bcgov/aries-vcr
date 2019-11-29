@@ -116,6 +116,7 @@ services:
       - AGENT_ADMIN_URL=http://tob-agent:${AGENT_ADMIN_PORT}
       - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
+      #- RECORD_TIMINGS=true
     volumes:
       - ../server/tob-api/tob_api:/home/indy/tob_api
       - ../server/tob-api/api_v2:/home/indy/api_v2
@@ -201,8 +202,13 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
-        --protocol indy_catalyst_issuer_registration",
+        --log-level 'error' \
+        --plugin indy_catalyst_issuer_registration",
       ]
+
+#        --timing \
+#        --log-config '/home/indy/debug-logger.cfg' \
+#        --log-level 'debug' \
 
   tob-worker:
     image: django

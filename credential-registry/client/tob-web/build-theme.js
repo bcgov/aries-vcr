@@ -283,14 +283,23 @@ function combineLanguage(theme_name, target_dir) {
 // combine theme config with default config
 // and replace references to environment variables
 function updateConfig(theme_name) {
-  let source_path = path.join(THEMES_ROOT, theme_name, CONFIG_NAME);
   let default_path = path.join(THEMES_ROOT, 'default', CONFIG_NAME);
   let config = {};
   if (fs.existsSync(default_path)) {
     config = require('./' + default_path);
   }
-  if (fs.existsSync(source_path)) {
-    config = mergeDeep(config, require('./' + source_path));
+  if (THEME_PATH) {
+    // localhost, where the custom themes are under THEME_PATH
+    let source_path = path.join(THEME_PATH, theme_name, CONFIG_NAME);
+    if (fs.existsSync(source_path)) {
+      config = mergeDeep(config, require(source_path));
+    }
+  } else {
+    // special case for OpenShift, where the custom themes are under THEMES_ROOT
+    let source_path = path.join(THEMES_ROOT, theme_name, CONFIG_NAME);
+    if (fs.existsSync(source_path)) {
+      config = mergeDeep(config, require('./' + source_path));
+    }
   }
   let target_path = path.join(TARGET_DIR, CONFIG_NAME);
   let result = {};
