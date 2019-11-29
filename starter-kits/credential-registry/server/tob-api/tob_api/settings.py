@@ -15,8 +15,7 @@ import os
 import os.path
 from pathlib import Path
 
-from . import permissions
-from . import authentication
+from . import authentication, permissions
 
 try:
     from . import database
@@ -69,8 +68,8 @@ INSTALLED_APPS = [
     "drf_generators",
     "drf_yasg",
     "django_filters",
-    "api_v2",
     "tob_api",
+    "api_v2",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "icat_hooks",  # only required when using webhook subscriptions
@@ -100,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware",
 ]
 
 ROOT_URLCONF = "tob_api.urls"
@@ -338,6 +338,7 @@ HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
 # Enf of webhook settings #
 ###########################
 
+
 # This string is used to alias the agent's self connection for verification
 AGENT_SELF_CONNECTION_ALIAS = "credential-registry-self"
 
@@ -347,3 +348,18 @@ AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
 ADMIN_REQUEST_HEADERS = {}
 if AGENT_ADMIN_API_KEY is not None:
     ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
+
+
+# API routing middleware settings
+HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER = "/api"
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP = {
+    u"application/orgbook.bc.api+json": u"application/json"
+}
+
+HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
+    u"v2": u"v2",
+    u"v3": u"v3",
+    u"latest": u"v3",
+    u"default": u"v2",
+}

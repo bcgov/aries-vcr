@@ -15,6 +15,7 @@ read -r -d '' _FORWARDED_HEADERS << EOF
             proxy_set_header X-Forwarded-Proto \$proxy_scheme;
             proxy_pass_request_headers on;
             proxy_pass_header Authorization;
+            proxy_pass_header Accept;
 EOF
 
 read -r -d '' _CONFIG_SECTION << EOF
@@ -24,26 +25,12 @@ read -r -d '' _CONFIG_SECTION << EOF
         }
         location /api/static/ {
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1%v2/}static/;
+            proxy_pass ${1}static/;
         }
         location /api/ {
             limit_except OPTIONS {
                 ${HTTP_BASIC}
             }
-            proxy_set_header Authorization "";
-            ${_FORWARDED_HEADERS}
-            proxy_pass ${1};
-        }
-        location /api/v2/ {
-            limit_except OPTIONS {
-                ${HTTP_BASIC}
-            }
-            proxy_set_header Authorization "";
-            ${_FORWARDED_HEADERS}
-            proxy_pass ${1};
-        }
-        location = /api/v2/ {
-            # allow access to swagger
             proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
             proxy_pass ${1};
@@ -54,13 +41,13 @@ read -r -d '' _CONFIG_SECTION << EOF
             }
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1%api/v2/}hooks/;
+            proxy_pass ${1%api/}hooks/;
         }
         location = /hooks/ {
             # allow access to swagger
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1%api/v2/}hooks/;
+            proxy_pass ${1%api/}hooks/;
         }
 EOF
 
@@ -71,13 +58,13 @@ read -r -d '' _DEBUG_SECTION << EOF
             }
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1%api/v2/}agentcb/;
+            proxy_pass ${1}agentcb/;
         }
         location = /agentcb/ {
             # allow access to swagger
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1%api/v2/}agentcb/;
+            proxy_pass ${1}agentcb/;
         }
 EOF
 
