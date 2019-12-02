@@ -5,9 +5,7 @@ from aiohttp_apispec import docs, request_schema
 
 from marshmallow import fields, Schema
 
-from aries_cloudagent.connections.models.connection_record import (
-    ConnectionRecord,
-)
+from aries_cloudagent.connections.models.connection_record import ConnectionRecord
 from aries_cloudagent.storage.error import StorageNotFoundError
 
 from .manager import IssuerRegistrationManager
@@ -81,8 +79,12 @@ class IssuerRegistrationRequestSchema(Schema):
             cardinality_fields = fields.List(fields.String(), required=False)
             category_labels = fields.Dict(required=False)
 
-            claim_descriptions = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
-            claim_labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+            claim_descriptions = fields.Dict(
+                keys=fields.Str(), values=fields.Dict(), required=False
+            )
+            claim_labels = fields.Dict(
+                keys=fields.Str(), values=fields.Dict(), required=False
+            )
 
             credential = fields.Nested(IssuerRegistrationCredential(), required=False)
 
@@ -139,10 +141,6 @@ async def issuer_registration_send(request: web.BaseRequest):
         )
 
         await outbound_handler(issuer_registration_message, connection_id=connection_id)
-
-        await connection.log_activity(
-            context, "issuer_registration", connection.DIRECTION_SENT
-        )
 
         return web.json_response(issuer_registration_state.serialize())
 
