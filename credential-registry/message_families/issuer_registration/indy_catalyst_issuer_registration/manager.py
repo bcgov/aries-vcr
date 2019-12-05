@@ -4,8 +4,6 @@ import logging
 
 from aries_cloudagent.config.injection_context import InjectionContext
 from aries_cloudagent.error import BaseError
-from aries_cloudagent.messaging.request_context import RequestContext
-from aries_cloudagent.messaging.responder import BaseResponder
 
 from .models.issuer_registration_state import IssuerRegistrationState
 from .messages.register import IssuerRegistration
@@ -39,7 +37,7 @@ class IssuerRegistrationManager:
         """
         return self._context
 
-    async def prepare_send(self, connection_id, issuer_registration):
+    async def prepare_send(self, connection_id: str, issuer_registration: dict):
         """
         Create an issuer registration state object and agent messages.
 
@@ -66,11 +64,12 @@ class IssuerRegistrationManager:
             issuer_registration=issuer_registration,
         )
         await issuer_registration_state.save(self.context)
-        await self.updated_record(issuer_registration_state)
 
         return issuer_registration_state, issuer_registration_message
 
-    async def receive_registration(self, connection_id, issuer_registration_message):
+    async def receive_registration(
+        self, connection_id: str, issuer_registration_message: dict
+    ):
         """
         Receive an issuer registration message.
 
@@ -92,16 +91,5 @@ class IssuerRegistrationManager:
             issuer_registration=issuer_registration_message.issuer_registration,
         )
         await issuer_registration_state.save(self.context)
-        await self.updated_record(issuer_registration_state)
 
         return issuer_registration_state
-
-    async def updated_record(self, issuer_registration_state: IssuerRegistrationState):
-        """Call webhook when the record is updated."""
-        responder: BaseResponder = await self._context.inject(
-            BaseResponder, required=False
-        )
-        if responder:
-            await responder.send_webhook(
-                "issuer_registration", issuer_registration_state.serialize()
-            )
