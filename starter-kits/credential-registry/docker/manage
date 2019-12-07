@@ -610,7 +610,7 @@ case "${COMMAND}" in
   start|up)
     _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
-    docker-compose up --scale tob-worker=2 -d ${_startupParams} 
+    docker-compose up --scale tob-worker=3 -d ${_startupParams} 
     docker-compose logs -f
     ;;
   restart)

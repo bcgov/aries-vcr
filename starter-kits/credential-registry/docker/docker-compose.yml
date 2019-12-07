@@ -261,7 +261,8 @@ services:
       /bin/bash -c "
       echo waiting for solr ...;
       sleep 10;
-      ${STI_SCRIPTS_PATH}/run;"
+      # ${STI_SCRIPTS_PATH}/run;"
+      
 
   #
   # schema-spy
