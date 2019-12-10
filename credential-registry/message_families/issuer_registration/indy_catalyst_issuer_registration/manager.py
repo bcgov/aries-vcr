@@ -3,7 +3,7 @@
 import logging
 
 from aries_cloudagent.config.injection_context import InjectionContext
-from aries_cloudagent.error import BaseError
+from aries_cloudagent.core.error import BaseError
 
 from .models.issuer_registration_state import IssuerRegistrationState
 from .messages.register import IssuerRegistration
