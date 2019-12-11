@@ -9,31 +9,39 @@ getApiProxyConfigSection (){
 # API_URL:
 #  - The URL for the API endpoint.
 # ================================================================================
+proxyUrl=${1%/}
+
 read -r -d '' _FORWARDED_HEADERS << EOF
-            proxy_set_header X-Forwarded-Host \$host:\$proxy_port;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$proxy_scheme;
+
+            proxy_set_header Host               \$host;
+            proxy_set_header X-Real-IP          \$remote_addr;
+            proxy_set_header X-Forwarded-For    \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host   \$host;
+            proxy_set_header X-Forwarded-Server \$host;
+            proxy_set_header X-Forwarded-Port   \$proxy_port;
+            proxy_set_header X-Forwarded-Proto  \$proxy_scheme;
             proxy_pass_request_headers on;
             proxy_pass_header Authorization;
             proxy_pass_header Accept;
+
 EOF
 
 read -r -d '' _CONFIG_SECTION << EOF
         # proxy requests to the API
         location /api/indy/ {
-            proxy_pass ${1}indy/;
+            proxy_pass ${proxyUrl}/indy/;
         }
         location /api/static/ {
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1}static/;
+            proxy_pass ${proxyUrl}/static/;
         }
-        location /api/ {
+        location /api {
             limit_except OPTIONS {
                 ${HTTP_BASIC}
             }
             proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1};
+            proxy_pass ${proxyUrl};
         }
         location /hooks/ {
             limit_except OPTIONS {
@@ -41,13 +49,13 @@ read -r -d '' _CONFIG_SECTION << EOF
             }
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1%api/}hooks/;
+            proxy_pass ${proxyUrl%api}/hooks/;
         }
         location = /hooks/ {
             # allow access to swagger
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${1%api/}hooks/;
+            proxy_pass ${proxyUrl%api}/hooks/;
         }
 EOF
 
