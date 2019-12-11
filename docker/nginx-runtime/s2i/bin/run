@@ -9,7 +9,8 @@ getApiProxyConfigSection (){
 # API_URL:
 #  - The URL for the API endpoint.
 # ================================================================================
-proxyUrl=${1%/}
+apiUrl=${1%/}
+proxyUrl=${apiUrl%/api}
 
 read -r -d '' _FORWARDED_HEADERS << EOF
 
@@ -29,11 +30,11 @@ EOF
 read -r -d '' _CONFIG_SECTION << EOF
         # proxy requests to the API
         location /api/indy/ {
-            proxy_pass ${proxyUrl}/indy/;
+            proxy_pass ${apiUrl}/indy/;
         }
         location /api/static/ {
             ${_FORWARDED_HEADERS}
-            proxy_pass ${proxyUrl}/static/;
+            proxy_pass ${apiUrl}/static/;
         }
         location /api {
             limit_except OPTIONS {
@@ -41,7 +42,7 @@ read -r -d '' _CONFIG_SECTION << EOF
             }
             proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${proxyUrl};
+            proxy_pass ${apiUrl};
         }
         location /hooks/ {
             limit_except OPTIONS {
@@ -49,13 +50,13 @@ read -r -d '' _CONFIG_SECTION << EOF
             }
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${proxyUrl%api}/hooks/;
+            proxy_pass ${proxyUrl}/hooks/;
         }
         location = /hooks/ {
             # allow access to swagger
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
-            proxy_pass ${proxyUrl%api}/hooks/;
+            proxy_pass ${proxyUrl}/hooks/;
         }
 EOF
 
@@ -99,33 +100,33 @@ getApiUrl (){
   #
   # API_PATH:
   #  - The root path for the API.
-  #  - For example /api/v2/
+  #  - For example /api/
   # --------------------------------------------------------------------------------
   # Examples:
   #
   # 1)
-  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
+  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/
   #   API_SERVICE_NAME=django
   #   DJANGO_SERVICE_HOST=172.50.105.217
   #   DJANGO_SERVICE_PORT=8080
-  #   API_PATH=/api/v2/
+  #   API_PATH=/api/
   #
-  #   Results in API_URL=http://172.50.105.217:8080/api/v2/
+  #   Results in API_URL=http://172.50.105.217:8080/api/
   #
   # 2)
-  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
+  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/
   #   API_SERVICE_NAME=django
   #   DJANGO_SERVICE_HOST=172.50.105.217
-  #   API_PATH=/api/v2/
+  #   API_PATH=/api/
   #
-  #   Results in API_URL=http://172.50.105.217/api/v2/
+  #   Results in API_URL=http://172.50.105.217/api/
   #
   # 3)
   #   If either API_SERVICE_NAME or *_SERVICE_HOST are not defined...
   #
-  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
+  #   API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/
   #
-  #   Results in API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/v2/
+  #   Results in API_URL=https://dev-demo-api.orgbook.gov.bc.ca/api/
   # ================================================================================
   if [ ! -z "${API_SERVICE_NAME}" ]; then
     _SERVICE_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${API_SERVICE_NAME//-/_})"
