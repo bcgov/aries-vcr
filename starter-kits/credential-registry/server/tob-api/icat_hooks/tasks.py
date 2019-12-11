@@ -25,9 +25,10 @@ class DeliverHook(Task):
                 data=json.dumps(payload),
                 headers={"Content-Type": "application/json"},
             )
+            logger.info("--> response {}".format(response.status_code))
             if response.status_code >= 500:
-                response.raise_for_response()
-        except requests.ConnectionError:
+                response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
             if self.request.retries < settings.HOOK_RETRY_THRESHOLD:
                 delay_in_seconds = 2 ** self.request.retries
                 self.retry(countdown=delay_in_seconds)
