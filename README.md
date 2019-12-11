@@ -26,6 +26,7 @@
   - [Who is Indy Catalyst For](#who-is-indy-catalyst-for)
   - [Key Technical Elements](#key-technical-elements)
     - [Credential Registry](#credential-registry)
+    - [Web Hooks](#web-hooks)
     - [Agent](#agent)
     - [Agent Driver](#agent-driver)
     - [Starter Kits](#starter-kits)
@@ -169,6 +170,22 @@ Indy Catalyst components:
 TODO
 
 Credential Registry provides a set of RESTful web services you can use to query data from your third-party application, an introduction to use of these API's is available [here](docs/IndyCat-REST-Services.md).
+
+### Web Hooks
+
+Indy Catalyst provides a web hook facility for interested parties to subscribe to notifications for credential updates.
+
+There are 3 subscription types supported:
+
+- New - notification for any new credential (i.e. newly registered organization) of a specific type
+- Stream - any updates for a specific stream - organization (by topic id) and type
+- Topic - any updates for a specific organization (Topic)
+
+Interested parties must first register, which creates an ID and password they use to manage their subscriptions.  They can then add and remove subscriptions.
+
+They must also provide a REST endpoint for the notifications - they can provide an endpoint with their scubscription and/or an endpoint with each separate subscription.
+
+A test "echo" endpoint is available at https://github.com/ianco/rest-hooks-echo-service - run this service in Play With Docker or lay With VON and then you can use this service as the endpoint for the web hooks.
 
 ### Agent
 
