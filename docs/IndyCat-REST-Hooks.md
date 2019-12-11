@@ -174,3 +174,7 @@ For any matching event, Indy Catalyst will send a POST request to the target URL
 
 The `data` is the attached credential (the format will depend on the credential type) and the `subscription` will identify the subscription for which the hook was generated.
 
+## Monitoring
+
+You can monitor the rabbitmq process at `http://localhost:15672/` (for a setup running on localhost).
+
