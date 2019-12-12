@@ -118,6 +118,41 @@ $slot-radius: 5px;
     position: absolute;
     margin: 0;
   }
+  a {
+    background: theme-color(primary);
+    border-radius: 0 3px 3px 0;
+    bottom: 2px;
+    color: theme-color(light);
+    font-size: 0.8em;
+
+    left: 0;
+    line-height: 1;
+    padding: 2px;
+    position: absolute;
+    margin: 0;
+    width: 8rem;
+  }
+}
+
+.short-date-marker {
+  position: absolute;
+  box-sizing: border-box;
+  border-left: 1px solid theme-color(primary);
+  top: 0;
+  bottom: 0;
+  a {
+    background: theme-color(warn);
+    border-radius: 0 3px 3px 0;
+    bottom: 2px;
+    color: theme-color(light);
+    font-size: 0.8em;
+    left: 0;
+    line-height: 1;
+    padding: 2px;
+    position: absolute;
+    margin: 0;
+    text-decoration: none;
+  }
 }
 
 .timeline-axis {
