@@ -178,3 +178,42 @@ The `data` is the attached credential (the format will depend on the credential 
 
 You can monitor the rabbitmq process at `http://localhost:15672/` (for a setup running on localhost).
 
+## How does it Work???
+
+There are a few settings that configure how the web hooks work:
+
+```
+# authenticate REST hook services so only the subscriber can view/update their subscriptions
+AUTHENTICATION_BACKENDS = ["icat_hooks.icatrestauth.IcatAuthBackend"]
+
+# wrapper function that delivers the web hook (passes the task to a rabbitmq worker)
+HOOK_DELIVERER = "icat_hooks.tasks.deliver_hook_wrapper"
+
+# data model that triggers hooks to be sent - when a new record is added it triggers the hook services to run
+HOOK_CUSTOM_MODEL = "icat_hooks.models.CredentialHook"
+
+# for hook events, checks the credential against the subscriptions to see which hooks to fire
+HOOK_FINDER = "icat_hooks.hook_utils.find_and_fire_hook"
+
+# how to monitor for events - look for "created" events
+HOOK_EVENTS = {
+    # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
+    "hookable_cred.added": "icat_hooks.HookableCredential.created+"
+}
+```
+
+... and to configure rabbitmq and celery:
+
+```
+# celery settings
+CELERY_BROKER_HEARTBEAT = 0  # see https://github.com/celery/celery/issues/4817
+
+CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
+    os.environ.get("RABBITMQ_USER"),
+    os.environ.get("RABBITMQ_PASSWORD"),
+    os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq"),
+)
+
+# custom hook settings
+HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
+```

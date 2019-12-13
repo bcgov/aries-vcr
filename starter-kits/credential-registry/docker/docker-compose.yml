@@ -352,6 +352,15 @@ services:
     volumes:
       - tob-rabbit:/var/lib/rabbitmq
 
+  echo-app:
+    image: echo-app
+    networks:
+      - tob
+    ports:
+      - 8000:8000
+    command:
+      bash ./start.sh
+
 networks:
   tob:
 

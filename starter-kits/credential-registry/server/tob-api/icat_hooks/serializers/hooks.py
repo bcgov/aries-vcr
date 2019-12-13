@@ -264,6 +264,11 @@ class SubscriptionSerializer(serializers.Serializer):
         if "target_url" in validated_data:
             subscription.target_url = validated_data["target_url"]
 
+        # automatically reset expiry date on update
+        print("Reset subscription expiry date")
+        subscription.subscription_expiry = None
+        subscription.error_count = 0
+
         subscription.save()
 
         return subscription
