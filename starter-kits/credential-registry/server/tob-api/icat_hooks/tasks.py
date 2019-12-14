@@ -38,7 +38,7 @@ class DeliverHook(Task):
         try:
             try:
                 # TODO raise exception here to test error handling
-                raise Exception("Fake Error!!!!!")
+                #raise Exception("Fake Error!!!!!")
 
                 logger.info("Delivering hook to: {}".format(target))
                 response = requests.post(

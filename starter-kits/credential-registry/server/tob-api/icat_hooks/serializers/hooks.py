@@ -213,7 +213,7 @@ class SubscriptionSerializer(serializers.Serializer):
     def check_live_url(self, target_url, hook_token):
         if target_url is not None and hook_token is not None:
             head = {"Authorization": "Bearer " + hook_token}
-            data = {"subscription": "test"}
+            data = {"subscription": {"test": "test"}}
             response = requests.post(target_url, json=data, headers=head)
 
             if response.status_code != requests.codes.ok:

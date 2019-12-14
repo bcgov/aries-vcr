@@ -330,6 +330,15 @@ build-agent() {
   fi
 }
 
+build-echo-app() {
+  #
+  # echo-app
+  #
+  docker build -q \
+    -t 'echo-app' \
+    -f '../server/echo-service/Dockerfile' '../server/echo-service'
+}
+
 build-all() {
   build-web
   build-solr
@@ -337,6 +346,7 @@ build-all() {
   build-schema-spy
   build-api
   build-agent
+  build-echo-app
 }
 
 configureEnvironment() {

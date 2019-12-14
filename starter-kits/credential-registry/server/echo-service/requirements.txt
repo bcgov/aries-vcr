@@ -1,0 +1,9 @@
+certifi==2018.11.29
+chardet==3.0.4
+Django>=2.1.11
+django-rest-framework>=0.1.0
+djangorestframework>=3.9.2
+idna==2.8
+pytz==2018.9
+requests>=2.21.0
+urllib3>=1.24.2
