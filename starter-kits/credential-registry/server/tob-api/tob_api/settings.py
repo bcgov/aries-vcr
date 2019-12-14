@@ -348,8 +348,10 @@ CELERY_TASK_BACKEND = "db+postgresql://{}:{}@{}/{}".format(
 # custom hook settings
 # max retries for http errors
 HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
+# number of seconds to wait between retries
+HOOK_RETRY_DELAY = os.environ.get("HOOK_RETRY_DELAY", 5)
 # max errors on a subscription before "expiring" the subscription
-HOOK_MAX_SUBSCRIPTION_ERRORS = 25
+HOOK_MAX_SUBSCRIPTION_ERRORS = os.environ.get("HOOK_MAX_SUBSCRIPTION_ERRORS", 10)
 
 ###########################
 # Enf of webhook settings #

@@ -47,8 +47,7 @@ class DeliverHook(Task):
                     headers={"Content-Type": "application/json"},
                 )
                 logger.info("--> response {}".format(response.status_code))
-                if response.status_code >= 500:
-                    response.raise_for_status()
+                response.raise_for_status()
 
                 # TODO find subscription and set last successful sent date, and set error count to zero
                 subscription = Subscription.objects.get(pk=payload["subscription"]["id"])
@@ -58,17 +57,18 @@ class DeliverHook(Task):
 
             except requests.exceptions.HTTPError as e:
                 if self.request.retries < settings.HOOK_RETRY_THRESHOLD:
-                    delay_in_seconds = 60 ** self.request.retries
+                    delay_in_seconds = settings.HOOK_RETRY_DELAY ** self.request.retries
                     self.retry(countdown=delay_in_seconds)
                 else:
                     # let the error propagate
+                    print("Too many retries, propagate error")
                     raise e
         except Retry as e:
             # ignore this one
             print("Ignore Retry exception")
             pass
         except Exception as e:
-            # TODO
+            # update error status of subscription
             try:
                 """ Example payload:
                 {
@@ -95,7 +95,8 @@ class DeliverHook(Task):
                     subscription.subscription_expiry = datetime.now()
                 subscription.save()
 
-            except:
+            except Exception as e2:
+                print("Failed to update subscription error status", e2)
                 pass
             raise e
 
