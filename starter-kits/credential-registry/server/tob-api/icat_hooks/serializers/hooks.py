@@ -149,6 +149,10 @@ class SubscriptionSerializer(serializers.Serializer):
     )
     target_url = serializers.CharField(required=False, max_length=240)
     hook_token = serializers.CharField(required=False, max_length=240)
+    last_sent_date = serializers.ReadOnlyField()
+    last_error_date = serializers.ReadOnlyField()
+    error_count = serializers.ReadOnlyField()
+    subscription_expiry = serializers.ReadOnlyField()
 
     def validate_subscription_type(self, value):
         if value in SUBSCRIPTION_TYPES:
