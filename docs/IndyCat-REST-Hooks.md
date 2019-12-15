@@ -14,13 +14,13 @@ The REST endpoints to manage subscriptions are listed in the Indy Catalyst Swagg
 
 ## Setting up a Test Listener
 
-A test "echo" endpoint is available at https://github.com/ianco/rest-hooks-echo-service - run this service in Play With Docker or lay With VON and then you can use this service as the endpoint for the web hooks.
+A test "echo" endpoint is available in this project at https://github.com/bcgov/indy-catalyst/starter-kits/credential-registry/server/echo-service - you can run this service in Play With Docker or play With VON and then you can use this service as the endpoint for the web hooks.  Alternately this service will start up by default with you start Indy Catalyst using the `./manage build` and `./manage start` docker scripts.
 
 Create a session on PWD or PWV and run the following commands:
 
 ```
-git clone https://github.com/ianco/rest-hooks-echo-service.git
-cd rest-hooks-echo-service/resthooks
+git clone https://github.com/bcgov/indy-catalyst.git
+cd indy-catalyst/starter-kits/credential-registry/server/echo-service
 ./run_docker.sh
 ```
 
@@ -38,6 +38,11 @@ curl -X POST -d "{\"hello\": \"world\"}" http://ip172-18-0-6-bnomr08t969000ca90f
 
 Alternately you can run the echo service on your localhost and expose the port publicly using ngrok.
 
+Note that this service exposes two other endpoints that are useful for testing web hooks:
+
+- `/api/error` - will always respond with `500 Server Error`
+- `/api/rando` - will randomly respond with either HTTP `200` or `500` status
+
 ## Registration
 
 You must register to setup an identity (ID and password) in order to create and manage subscriptions.  Your subscritions will be protected with your ID and password.  In your own Indy Catalyst deployment you can modify the security scheme to integrate with an external security provider, such as KeyCloak or &etc ...
@@ -48,10 +53,10 @@ The registration endpoint is `/hooks/register` and you must provide the followin
 {
   "email": "ian@anon-solutions.ca",
   "org_name": "Anon Solutions Inc",
-  "target_url": "http://ip172-18-0-6-bnomr08t969000ca90fg-8000.direct.labs.play-with-docker.com/api/echo",
+  "target_url": "http://localhost:8000/api/echo",
   "hook_token": "some-random-string-0987654321",
   "credentials": {
-    "username": "anon-user",
+    "username": "anon",
     "password": "anon-password-randomstuff"
   }
 }
@@ -71,11 +76,11 @@ Note that the subscription process will return the following, including an updat
   "reg_id": 1,
   "email": "ian@anon-solutions.ca",
   "org_name": "Anon Solutions Inc",
-  "target_url": "http://ip172-18-0-6-bnomr08t969000ca90fg-8000.direct.labs.play-with-docker.com/api/echo",
+  "target_url": "http://localhost:8000/api/echo",
   "hook_token": "some-random-string-0987654321",
   "registration_expiry": "2020-03-10",
   "credentials": {
-    "username": "anon-user-gza4lvbsjomrmjolufm6u2xcy2e7o6oz"
+    "username": "anon-gza4lvbsjomrmjolufm6u2xcy2e7o6oz"
   }
 }
 ```
@@ -96,7 +101,7 @@ The endpoint to add new subscriptions is `/hooks/registration/{username}/subscri
   "subscription_type": "New",
   "topic_source_id": "BC1234567",
   "credential_type": "registration.registries.ca",
-  "target_url": "http://ip172-18-0-6-bnomr08t969000ca90fg-8000.direct.labs.play-with-docker.com/api/echo",
+  "target_url": "http://localhost:8000/api/echo",
   "hook_token": "some-random-string-0987654321"
 }
 ```
@@ -115,14 +120,29 @@ The endpoint will return:
   "owner": "anon-user-kcmpmt7ijt0rltpfnqqh4tlezwy4g2nu",
   "subscription_type": "New",
   "topic_source_id": "BC1234567",
-  "target_url": "http://ip172-18-0-6-bnomr08t969000ca90fg-8000.direct.labs.play-with-docker.com/api/echo",
-  "hook_token": "some-random-string-0987654321"
+  "target_url": "http://localhost:8000/api/echo",
+  "hook_token": "some-random-string-0987654321",
+  "last_sent_date": null,
+  "last_error_date": null,
+  "error_count": 0,
+  "subscription_expiry": null
 }
 ```
 
 Note that Indy Catalyst will do a test call to the target_url, to verify that the endpoint is valid.  (It does this for a subscription event, but not a registration event.)
 
 You can view your subscriptions at `/hooks/registration/{username}/subscriptions`, or `/hooks/registration/{username}/subscriptions/{id}` (where `id` is the `sub_id` returned from the subscription service call).
+
+The last 4 attributes are set when web hooks are sent (or attempted) to the target url:
+
+- last_sent_date - date/time of last successful web hook
+- last_error_date - date/time of last un-successful web hook
+- error_count - the number of cumulative errors since the last successful transmission (reset to zero on a successful web hook)
+- subscription_expiry - date the subscription was expired (or `null` if the subscription is active)
+
+Note that the subscription will be auto-expired if there are too many unsuccessful web hooks.
+
+You can re-activate the subscription by sending a `PUT` request for the subscription.  (It doesn't need to update any fields, a `PUT` will automatically reset the error_count and subscription_expiry fields.)
 
 ## Receiving Web Hooks
 
@@ -174,6 +194,8 @@ For any matching event, Indy Catalyst will send a POST request to the target URL
 
 The `data` is the attached credential (the format will depend on the credential type) and the `subscription` will identify the subscription for which the hook was generated.
 
+Note that when adding or updating a subscription, we send a web hook with payload `{"subscription": {"test": "test"}}` - the hook should respond to this with a `200` status.
+
 ## Monitoring
 
 You can monitor the rabbitmq process at `http://localhost:15672/` (for a setup running on localhost).
@@ -214,6 +236,19 @@ CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
     os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq"),
 )
 
+# database backend for retrieving task results
+CELERY_TASK_BACKEND = "db+postgresql://{}:{}@{}/{}".format(
+    os.environ.get("DATABASE_USER"),
+    os.environ.get("DATABASE_PASSWORD"),
+    os.environ.get("DATABASE_SERVICE_NAME"),
+    os.environ.get("DATABASE_NAME"),
+)
+
 # custom hook settings
+# max retries for http errors
 HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
+# number of seconds to wait between retries
+HOOK_RETRY_DELAY = os.environ.get("HOOK_RETRY_DELAY", 5)
+# max errors on a subscription before "expiring" the subscription
+HOOK_MAX_SUBSCRIPTION_ERRORS = os.environ.get("HOOK_MAX_SUBSCRIPTION_ERRORS", 10)
 ```
