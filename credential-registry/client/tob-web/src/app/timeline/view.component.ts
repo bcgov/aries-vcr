@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Timeline } from './models/timeline';
 import { RowSpec, MarkerSpec } from './models/i-timeline';
 import { timelineScale } from './models/scale.model';
-import { parseDate } from './models/timeline-utils';
+import { parseDate } from './models//timeline-utils';
 import { TimelineService } from './services/timeline.service';
 
 @Component({
@@ -51,6 +51,7 @@ export class TimelineViewComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this._timeline = new Timeline.TimelineView(this._outer.nativeElement, null, this._renderer);
     this._timeline.setRange(this.rangeStart, this.rangeEnd);
+    /*
     this.rows[0].slots.push(
       {
         groups: ['all'],
@@ -69,7 +70,7 @@ export class TimelineViewComponent implements AfterViewInit, OnDestroy {
         url: 'http://localhost:4300/en/organization/1a16336c-d880-4568-8e3b-306a263d83a4/cred/1',
       },
     );
-
+    */
     this._timeline.setRows(this.rows);
     const markers = [{ date: new Date(), label: 'Today' }] as MarkerSpec[];
     const scale = timelineScale(parseDate(this.rangeStart), parseDate(this.rangeEnd));
