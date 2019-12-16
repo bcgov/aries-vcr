@@ -336,7 +336,7 @@ build-echo-app() {
   #
   docker build -q \
     -t 'echo-app' \
-    -f '../server/echo-service/Dockerfile' '../server/echo-service'
+    -f '../../../echo-service/Dockerfile' '../../../echo-service'
 }
 
 build-all() {

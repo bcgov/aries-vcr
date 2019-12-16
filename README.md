@@ -185,9 +185,9 @@ Interested parties must first register, which creates an ID and password they us
 
 They must also provide a REST endpoint for the notifications - they can provide an endpoint with their scubscription and/or an endpoint with each separate subscription.
 
-A test "echo" endpoint is available at https://github.com/ianco/rest-hooks-echo-service - run this service in Play With Docker or lay With VON and then you can use this service as the endpoint for the web hooks.
+A test "echo" endpoint using the code at [echo-service](echo-service) will be started on `localhost:8000` when executing `./manage start`. The service can also be run separately in Play With Docker or Play With VON, and used as the endpoint for the web hooks.
 
-More details are available here:  ./docs/IndyCat-REST-Hooks.md
+More details are available [here](docs/IndyCat-REST-Hooks.md).
 
 ### Agent
 
