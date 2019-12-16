@@ -1,11 +1,10 @@
 
 # Running Echo Web Service
 
-Git clone this repository, and run the following commands:
+Run the following commands:
 
 ```
-git clone https://github.com/ianco/rest-hooks-echo-service.git
-cd rest-hooks-echo-service/resthooks
+cd resthooks
 ./run_docker.sh
 ```
 

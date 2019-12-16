@@ -291,7 +291,7 @@ build-api() {
   #
   BASE_IMAGE="bcgovimages/von-image:py36-1.7-ew-0-s2i"
   
-  echo -e "\nBuilding django image from ${BASE_IMAGE}..."
+  echo -e "\nBuilding tob-api image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
@@ -300,14 +300,14 @@ build-api() {
     -v "${COMPOSE_PROJECT_NAME}_tob-pip-cache:/home/indy/.cache/pip" \
     '../server/tob-api' \
     "$BASE_IMAGE" \
-    'django'
+    'tob-api'
 
   # this is only required in Windows
   if [[ "$OSTYPE" == "msys" ]]; then
-    echo -e "\nFixing file permissions in final tob-api (django) image"
+    echo -e "\nFixing file permissions in final tob-api image"
     docker build -q \
-      --build-arg BASE_IMAGE='django:latest' \
-      -t 'django' \
+      --build-arg BASE_IMAGE='tob-api:latest' \
+      -t 'tob-api' \
       -f '../../../docker/utils/Dockerfile.fixpermissions' '../../../docker/utils/'
   fi
 }
@@ -336,7 +336,7 @@ build-echo-app() {
   #
   docker build -q \
     -t 'echo-app' \
-    -f '../../../echo-service/Dockerfile' '../../../echo-service'
+    -f '../../../docker/echo-service/Dockerfile' '../../../echo-service'
 }
 
 build-all() {
@@ -683,7 +683,7 @@ case "${COMMAND}" in
     configureEnvironment "$@"
     docker-compose run --force-recreate tob-api bash ${_inputParams}
     ;;
-  django)
+  api)
     _inputParams=$(getInputParams $@)
     configureEnvironment "$@"
     docker-compose run tob-api python manage.py ${_inputParams}
