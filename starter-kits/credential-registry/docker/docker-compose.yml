@@ -66,7 +66,7 @@ services:
   # nice to implement a more deterministic solution.
   #
   tob-api:
-    image: django
+    image: tob-api
     environment:
       - APP_FILE=${APP_FILE}
       - APP_CONFIG=${APP_CONFIG}
@@ -211,7 +211,7 @@ services:
 #        --log-level 'debug' \
 
   tob-worker:
-    image: django
+    image: tob-api
     environment:
       - APP_CONFIG=${APP_CONFIG}
       - APP_MODULE=${APP_MODULE}
