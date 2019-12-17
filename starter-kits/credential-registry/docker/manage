@@ -694,7 +694,7 @@ case "${COMMAND}" in
     ENABLE_REALTIME_INDEXING=0
     _inputParams=$(getInputParams $@)
     configureEnvironment "$@"
-	  # build-api
+	  build-api
     docker-compose run --no-deps tob-api bash -c "coverage run manage.py test ${_inputParams} && coverage report -m"
     ;;
   *)

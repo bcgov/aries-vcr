@@ -172,15 +172,15 @@ class SubscriptionSerializer(serializers.Serializer):
         )
         topic_source_id = data["topic_source_id"] if "topic_source_id" in data else None
         credential_type = data["credential_type"] if "credential_type" in data else None
-        if subscription_type == "New" and topic_source_id is None:
+        if subscription_type == "Topic" and topic_source_id is None:
             raise serializers.ValidationError(
-                "A topic id is required for subscription of type 'New'"
+                "A topic id is required for subscription of type 'Topic'."
             )
         if subscription_type == "Stream" and (
             topic_source_id is None or credential_type is None
         ):
             raise serializers.ValidationError(
-                "A topic id and a credential type are required for subscription of type 'Topic'"
+                "A topic id and a credential type are required for subscription of type 'Stream'."
             )
 
         # get current user from url
