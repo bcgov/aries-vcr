@@ -3,7 +3,7 @@
 There are 3 subscription types supported:
 
 - New - notification for any new credential (i.e. newly registered organization) of a specific type
-- Stream - any updates for a specific stream - organization (by topic id) and type
+- Stream - any updates for a specific stream - organization (by Topic) and type
 - Topic - any updates for a specific organization (Topic)
 
 Interested parties must first register, which creates an ID and password they use to manage their subscriptions.  They can then add and remove subscriptions.
@@ -107,7 +107,7 @@ The endpoint to add new subscriptions is `/hooks/registration/{username}/subscri
 ```
 
 - subscription_type - `New`, `Stream` or `Topic`
-- topic_source_id - Topic ID number (for example organization number), required for subscription types `Stream` and `Topic`
+- topic_source_id - Topic (for example organization number), required for subscription types `Stream` and `Topic`
 - credential_type - schema name for the credential, e.g. `registration.registries.ca` - required for subscription type `Stream`
 - target_url - (optional) - if not provided the registration value will be used
 - hook_token - (optional) - if not provided the registration value will be used
