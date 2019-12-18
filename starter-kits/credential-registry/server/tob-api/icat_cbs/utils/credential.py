@@ -86,11 +86,7 @@ class Credential(object):
         credential_data {object} -- Valid credential data as sent by an issuer
     """
 
-    def __init__(
-        self,
-        credential_data: dict,
-        request_metadata: dict = None,
-    ) -> None:
+    def __init__(self, credential_data: dict, request_metadata: dict = None,) -> None:
         self._raw = credential_data
         self._schema_id = credential_data["schema_id"]
         self._cred_def_id = credential_data["cred_def_id"]
@@ -830,7 +826,12 @@ class CredentialManager(object):
 
             # add to the set of "hookable credentials"
             # TODO make this a configurable step of the process
-            if topic_created:
+            new_hook_exists = HookableCredential.objects.filter(
+                corp_num=topic.source_id,
+                topic_status="New",
+            ).count()
+
+            if topic_created or new_hook_exists == 0:
                 topic_status = "New"
             else:
                 topic_status = "Stream"
