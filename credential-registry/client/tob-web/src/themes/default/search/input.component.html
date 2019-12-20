@@ -18,7 +18,10 @@
     <span class="fa fa-search" *ngIf="!loading"></span>
   </button>
 </div>
-<div class="inactive-form">
-  <input type="checkbox" id="inactive" class="search-checkbox" />
-  <label class="form-check-label" for="inactive" class="search-label">Search Inactive Records</label>
+<div class="checkbox-wrapper">
+  <div class="checkbox">
+    <input type="checkbox" value="None" id="checkbox" name="check" [value]="inactive" />
+    <label for="checkbox" (click)="setInactive(inactive)"></label>
+  </div>
+  <label class="form-check-label" for="checkbox" style="margin-left: 1.8em;">Include Archived Records</label>
 </div>

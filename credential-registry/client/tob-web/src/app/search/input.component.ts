@@ -22,6 +22,13 @@ export class SearchInputComponent implements AfterViewInit {
   protected _loading: boolean = false;
   protected _query: string = '';
 
+  inactive = false;
+
+  setInactive(bool: boolean) {
+    this.inactive = !bool;
+    console.log('this inactive', this.inactive);
+  }
+
   constructor(private _renderer: Renderer2, private _dataService: GeneralDataService) {}
 
   get value(): string {
