@@ -108,7 +108,7 @@ input[type='checkbox'] {
   opacity: 0;
   content: '';
   position: absolute;
-  width: 0.9em;
+  width: 0.85em;
   height: 0.5em;
   background: transparent;
   top: 4px;
@@ -135,4 +135,9 @@ input[type='checkbox'] {
   filter: alpha(opacity=100);
   opacity: 1;
 }
+
+.form-check-label:hover {
+  cursor: pointer;
+}
+
 @import '../../_active/search/input.component.custom';

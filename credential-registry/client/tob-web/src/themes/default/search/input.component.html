@@ -20,8 +20,8 @@
 </div>
 <div class="checkbox-wrapper">
   <div class="checkbox">
-    <input type="checkbox" value="None" id="checkbox" name="check" [value]="inactive" />
-    <label for="checkbox" (click)="setInactive(inactive)"></label>
+    <input type="checkbox" id="checkbox" name="check" [value]="inactive" />
+    <label for="checkbox" (click)="setInactive(inactive)" tabindex="0" (keydown.space)="setInactive(inactive)"></label>
   </div>
   <label class="form-check-label" for="checkbox" style="margin-left: 1.8em;">Include Archived Records</label>
 </div>
