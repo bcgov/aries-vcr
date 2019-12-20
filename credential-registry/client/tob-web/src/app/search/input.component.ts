@@ -1,21 +1,16 @@
-import {
-  Component, AfterViewInit, ElementRef, EventEmitter,
-  Input, Output, Renderer2, ViewChild } from '@angular/core';
-import {Observable} from 'rxjs';
-import {catchError, debounceTime, distinctUntilChanged, map, tap, switchMap} from 'rxjs/operators';
-import {GeneralDataService} from 'app/general-data.service';
+import { Component, AfterViewInit, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
+import { GeneralDataService } from 'app/general-data.service';
 
 @Component({
   selector: 'search-input',
   templateUrl: '../../themes/_active/search/input.component.html',
-  styleUrls: ['../../themes/_active/search/input.component.scss']
+  styleUrls: ['../../themes/_active/search/input.component.scss'],
 })
-
-
 export class SearchInputComponent implements AfterViewInit {
-
-  @ViewChild('queryInput') private _input : ElementRef;
-  @ViewChild('queryButton') private _button : ElementRef;
+  @ViewChild('queryInput') private _input: ElementRef;
+  @ViewChild('queryButton') private _button: ElementRef;
   @Output() accepted = new EventEmitter<any>();
   @Output() queryChange = new EventEmitter<string>();
   @Output() focusChange = new EventEmitter<boolean>();
@@ -27,19 +22,16 @@ export class SearchInputComponent implements AfterViewInit {
   protected _loading: boolean = false;
   protected _query: string = '';
 
-  constructor(
-    private _renderer: Renderer2,
-    private _dataService: GeneralDataService,
-  ) {}
+  constructor(private _renderer: Renderer2, private _dataService: GeneralDataService) {}
 
   get value(): string {
     return this._query;
   }
 
   set value(val: string) {
-    if(typeof val !== 'string') val = '';
+    if (typeof val !== 'string') val = '';
     this._query = val;
-    if(this._input) this._input.nativeElement.value = val;
+    if (this._input) this._input.nativeElement.value = val;
   }
 
   get focused() {
@@ -48,7 +40,7 @@ export class SearchInputComponent implements AfterViewInit {
 
   focus() {
     requestAnimationFrame(() => {
-      if(this._input) this._input.nativeElement.select();
+      if (this._input) this._input.nativeElement.select();
     });
   }
 
@@ -67,32 +59,32 @@ export class SearchInputComponent implements AfterViewInit {
         this.focusSearch()
       });
     });*/
-    if(! this._input) {
+    if (!this._input) {
       console.error('search input element not found');
       return;
     }
     let input_elt = this._input.nativeElement;
-    this._renderer.listen(input_elt, 'focus', (event) => {
+    this._renderer.listen(input_elt, 'focus', event => {
       this._focused = true;
       this.focusChange.emit(this._focused);
     });
-    this._renderer.listen(input_elt, 'blur', (event) => {
+    this._renderer.listen(input_elt, 'blur', event => {
       this._focused = false;
       this.focusChange.emit(this._focused);
     });
-    this._renderer.listen(input_elt, 'input', (event) => {
+    this._renderer.listen(input_elt, 'input', event => {
       this.updateQuery(event.target.value, true);
     });
-    this._renderer.listen(input_elt, 'change', (event) => {
+    this._renderer.listen(input_elt, 'change', event => {
       this.updateQuery(event.target.value);
     });
-    this._renderer.listen(input_elt, 'keydown', (event) => {
-      if(event.keyCode === 13) {
+    this._renderer.listen(input_elt, 'keydown', event => {
+      if (event.keyCode === 13) {
         event.preventDefault();
         this.acceptInput();
       }
     });
-    this._renderer.listen(this._button.nativeElement, 'click', (event) => {
+    this._renderer.listen(this._button.nativeElement, 'click', event => {
       this.acceptInput();
     });
   }
@@ -103,13 +95,13 @@ export class SearchInputComponent implements AfterViewInit {
 
   protected updateQuery(value: string, live?: boolean) {
     let old = this._lastQuery;
-    if(value === undefined || value === null) {
+    if (value === undefined || value === null) {
       value = '';
     }
     this._query = value.trim();
-    if(old !== value) {
+    if (old !== value) {
       clearTimeout(this._inputTimer);
-      if(live) {
+      if (live) {
         this._inputTimer = setTimeout(this.updated.bind(this), this._delay);
       } else {
         this.updated();
@@ -118,7 +110,7 @@ export class SearchInputComponent implements AfterViewInit {
   }
 
   protected updated() {
-    if(this._lastQuery !== this._query) {
+    if (this._lastQuery !== this._query) {
       this._lastQuery = this._query;
       this.queryChange.emit(this._lastQuery);
     }
@@ -130,10 +122,9 @@ export class SearchInputComponent implements AfterViewInit {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(term => this._dataService.autocomplete(term)),
-        map((result: any[]) =>
-          result.map((item) => item['term']))
+        map((result: any[]) => result.map(item => item['term'])),
       );
-    }
+    };
   }
 
   typeaheadSelected(evt) {
@@ -143,5 +134,4 @@ export class SearchInputComponent implements AfterViewInit {
     this.updateQuery(val);
     this.acceptInput();
   }
-
 }
