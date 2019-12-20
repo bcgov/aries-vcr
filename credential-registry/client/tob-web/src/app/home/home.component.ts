@@ -6,37 +6,36 @@ import { GeneralDataService } from 'app/general-data.service';
 @Component({
   selector: 'app-home',
   templateUrl: '../../themes/_active/home/home.component.html',
-  styleUrls: ['../../themes/_active/home/home.component.scss']
+  styleUrls: ['../../themes/_active/home/home.component.scss'],
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-
   @ViewChild('searchInput') _searchInput: SearchInputComponent;
   public inited = false;
   public loadError = null;
   public recordCounts: any = {};
   public filterType = 'name';
+  inactive = false;
 
-  constructor(
-    private _dataService: GeneralDataService,
-    private _route: ActivatedRoute,
-    private _router: Router,
-  ) {}
+  constructor(private _dataService: GeneralDataService, private _route: ActivatedRoute, private _router: Router) {}
 
   ngOnInit() {
-    this._dataService.quickLoad().catch(err => {
-      this.loadError = err;
-      this.inited = true;
-    }).then((loaded) => {
-      if(loaded) {
-        this.recordCounts.orgs = this._dataService.getRecordCount('topic');
-        this.recordCounts.certs = this._dataService.getRecordCount('credential');
-        this.recordCounts.active = this._dataService.getRecordCount('active');
-        this.recordCounts.registrations = this._dataService.getRecordCount('registrations');
-        this.recordCounts.last_week = this._dataService.getRecordCount('last_week');
-      }
-      this.inited = true;
-      setTimeout(() => this.focus(), 50);
-    });
+    this._dataService
+      .quickLoad()
+      .catch(err => {
+        this.loadError = err;
+        this.inited = true;
+      })
+      .then(loaded => {
+        if (loaded) {
+          this.recordCounts.orgs = this._dataService.getRecordCount('topic');
+          this.recordCounts.certs = this._dataService.getRecordCount('credential');
+          this.recordCounts.active = this._dataService.getRecordCount('active');
+          this.recordCounts.registrations = this._dataService.getRecordCount('registrations');
+          this.recordCounts.last_week = this._dataService.getRecordCount('last_week');
+        }
+        this.inited = true;
+        setTimeout(() => this.focus(), 50);
+      });
   }
 
   ngAfterViewInit() {
@@ -49,7 +48,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   performSearch(evt?) {
-    let query = this._searchInput.value;
-    this._router.navigate(['../search/name'], {relativeTo: this._route, queryParams: {query}});
+    const query = this._searchInput.value;
+    console.log(query);
+    const inactive = this.inactive ? '' : false;
+    this._router.navigate(['../search/name'], { relativeTo: this._route, queryParams: { query, inactive } });
+  }
+
+  setInactive(evt: boolean) {
+    console.log('inactive run', evt);
+    this.inactive = evt;
   }
 }

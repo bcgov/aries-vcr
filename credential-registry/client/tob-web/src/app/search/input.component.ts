@@ -9,11 +9,13 @@ import { GeneralDataService } from 'app/general-data.service';
   styleUrls: ['../../themes/_active/search/input.component.scss'],
 })
 export class SearchInputComponent implements AfterViewInit {
+  @Input() showInactive = false;
   @ViewChild('queryInput') private _input: ElementRef;
   @ViewChild('queryButton') private _button: ElementRef;
   @Output() accepted = new EventEmitter<any>();
   @Output() queryChange = new EventEmitter<string>();
   @Output() focusChange = new EventEmitter<boolean>();
+  @Output() inactiveChange = new EventEmitter<boolean>();
 
   protected _delay: number = 150;
   protected _focused: boolean = false;
@@ -26,7 +28,7 @@ export class SearchInputComponent implements AfterViewInit {
 
   setInactive(bool: boolean) {
     this.inactive = !bool;
-    console.log('this inactive', this.inactive);
+    this.inactiveChange.emit(this.inactive);
   }
 
   constructor(private _renderer: Renderer2, private _dataService: GeneralDataService) {}
@@ -119,6 +121,7 @@ export class SearchInputComponent implements AfterViewInit {
   protected updated() {
     if (this._lastQuery !== this._query) {
       this._lastQuery = this._query;
+
       this.queryChange.emit(this._lastQuery);
     }
   }
