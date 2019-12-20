@@ -74,9 +74,7 @@ export class TimelineViewComponent implements AfterViewInit, OnDestroy {
     this._timeline.setRows(this.rows);
     const markers = [{ date: new Date(), label: 'Today' }] as MarkerSpec[];
     const scale = timelineScale(parseDate(this.rangeStart), parseDate(this.rangeEnd));
-    if (scale === 2) {
-      markers.push(...this.timelineSvc.genShortDateMarkers(this.rows));
-    }
+    markers.push(...this.timelineSvc.genShortDateMarkers(this.rows));
     this._timeline.setMarkers(markers);
 
     this._renderer.listen(this._timeline.container, 'slotclick', this.click.bind(this));
