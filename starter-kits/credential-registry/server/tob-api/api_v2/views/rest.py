@@ -26,15 +26,19 @@ from api_v2.models.Name import Name
 from api_v2.models.Schema import Schema
 from api_v2.models.Topic import Topic
 from api_v2.models.TopicRelationship import TopicRelationship
-from api_v2.serializers.rest import (AddressSerializer, AttributeSerializer,
-                                     CredentialSerializer,
-                                     CredentialTypeSerializer,
-                                     ExpandedCredentialSerializer,
-                                     ExpandedCredentialSetSerializer,
-                                     IssuerSerializer, NameSerializer,
-                                     SchemaSerializer,
-                                     TopicRelationshipSerializer,
-                                     TopicSerializer)
+from api_v2.serializers.rest import (
+    AddressSerializer,
+    AttributeSerializer,
+    CredentialSerializer,
+    CredentialTypeSerializer,
+    ExpandedCredentialSerializer,
+    ExpandedCredentialSetSerializer,
+    IssuerSerializer,
+    NameSerializer,
+    SchemaSerializer,
+    TopicRelationshipSerializer,
+    TopicSerializer,
+)
 from api_v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
@@ -181,12 +185,12 @@ class TopicRelationshipViewSet(ReadOnlyModelViewSet):
             return super(TopicRelationshipViewSet, self).get_object()
 
         # I don't think the following code is used ...
-        #queryset = self.filter_queryset(self.get_queryset())
-        #obj = get_object_or_404(queryset, type=type, source_id=source_id)
+        # queryset = self.filter_queryset(self.get_queryset())
+        # obj = get_object_or_404(queryset, type=type, source_id=source_id)
 
         ## May raise a permission denied
-        #self.check_object_permissions(self.request, obj)
-        #return obj
+        # self.check_object_permissions(self.request, obj)
+        # return obj
 
 
 class CredentialViewSet(ReadOnlyModelViewSet):
@@ -235,11 +239,12 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             claim_val = credential["attrs"][attr]
             restrictions[0][f"attr::{attr}::value"] = claim_val
 
-        for attr in credential["attrs"]:
-            requested_attribute = {"name": attr, "restrictions": restrictions}
-            proof_request["requested_attributes"][
-                str(uuid.uuid4())
-            ] = requested_attribute
+        # for attr in credential["attrs"]:
+        requested_attribute = {
+            "names": [attr for attr in credential["attrs"]],
+            "restrictions": restrictions,
+        }
+        proof_request["requested_attributes"][str(uuid.uuid4())] = requested_attribute
 
         proof_request_response = requests.post(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
@@ -310,7 +315,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
 # Add environment specific endpoints
 try:
-    #utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
+    # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
     utils.apply_custom_methods(
         TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
     )
