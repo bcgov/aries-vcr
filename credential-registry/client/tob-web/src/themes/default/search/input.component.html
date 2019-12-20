@@ -20,17 +20,15 @@
 </div>
 <div class="checkbox-wrapper" *ngIf="showInactive">
   <div class="checkbox">
-    <input
-      type="checkbox"
-      id="checkbox"
-      name="check"
-      [value]="inactive"
+    <input type="checkbox" id="checkbox" name="check" [value]="inactive" tabindex="0" />
+    <label
+      for="checkbox"
+      (click)="setInactive($event, inactive)"
+      (keydown.space)="setInactive($event, inactive)"
       tabindex="0"
-      (keydown)="setInactive(inactive)"
-    />
-    <label for="checkbox" (click)="setInactive(inactive)" tabindex="0"></label>
+    ></label>
   </div>
-  <label class="form-check-label" for="checkbox" style="margin-left: 1.8em;" (click)="setInactive(inactive)"
+  <label class="form-check-label" for="checkbox" style="margin-left: 1.8em;" (click)="setInactive($event, inactive)"
     >Include Archived Records</label
   >
 </div>

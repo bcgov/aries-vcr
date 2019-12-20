@@ -26,7 +26,12 @@ export class SearchInputComponent implements AfterViewInit {
 
   inactive = false;
 
-  setInactive(bool: boolean) {
+  setInactive(event, bool: boolean) {
+    const charCode = event.keyCode || event.which;
+    if (charCode === 32) {
+      event.preventDefault();
+      return event.target.click();
+    }
     this.inactive = !bool;
     this.inactiveChange.emit(this.inactive);
   }
