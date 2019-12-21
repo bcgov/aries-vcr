@@ -244,7 +244,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "names": [attr for attr in credential["attrs"]],
             "restrictions": restrictions,
         }
-        proof_request["requested_attributes"][str(uuid.uuid4())] = requested_attribute
+        proof_request["requested_attributes"]['self-verify-proof'] = requested_attribute
 
         proof_request_response = requests.post(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
