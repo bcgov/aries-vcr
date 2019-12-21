@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public recordCounts: any = {};
   public filterType = 'name';
   inactive = false;
+  credType: number;
 
   constructor(private _dataService: GeneralDataService, private _route: ActivatedRoute, private _router: Router) {}
 
@@ -51,11 +52,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const query = this._searchInput.value;
     console.log(query);
     const inactive = this.inactive ? '' : false;
-    this._router.navigate(['../search/name'], { relativeTo: this._route, queryParams: { query, inactive } });
+    const credential_type_id = this.credType;
+    this._router.navigate(['../search/name'], {
+      relativeTo: this._route,
+      queryParams: { query, inactive, credential_type_id },
+    });
   }
 
   setInactive(evt: boolean) {
     console.log('inactive run', evt);
     this.inactive = evt;
+  }
+
+  setCredType(id: number) {
+    this.credType = id;
   }
 }

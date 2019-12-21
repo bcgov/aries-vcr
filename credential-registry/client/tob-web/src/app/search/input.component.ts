@@ -2,6 +2,14 @@ import { Component, AfterViewInit, ElementRef, EventEmitter, Input, Output, Rend
 import { Observable } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
 import { GeneralDataService } from 'app/general-data.service';
+import { HttpService } from 'app/core/services/http.service';
+import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
+import { FormControl } from '@angular/forms';
+
+export interface ICredentialTypeOption {
+  id?: number;
+  description: string;
+}
 
 @Component({
   selector: 'search-input',
@@ -16,6 +24,7 @@ export class SearchInputComponent implements AfterViewInit {
   @Output() queryChange = new EventEmitter<string>();
   @Output() focusChange = new EventEmitter<boolean>();
   @Output() inactiveChange = new EventEmitter<boolean>();
+  @Output() credTypeChange = new EventEmitter<number>();
 
   protected _delay: number = 150;
   protected _focused: boolean = false;
@@ -25,6 +34,9 @@ export class SearchInputComponent implements AfterViewInit {
   protected _query: string = '';
 
   inactive = false;
+  $credentialTypeOptions: Observable<ICredentialTypeOption[]>;
+  fc: FormControl;
+  selectedCredType: ICredentialTypeOption = { description: 'Any credential type' };
 
   setInactive(event, bool: boolean) {
     const charCode = event.keyCode || event.which;
@@ -36,7 +48,11 @@ export class SearchInputComponent implements AfterViewInit {
     this.inactiveChange.emit(this.inactive);
   }
 
-  constructor(private _renderer: Renderer2, private _dataService: GeneralDataService) {}
+  setCredentialType(id: number) {
+    console.log('change', id);
+    // credential_type_id=1
+    this.credTypeChange.emit(id);
+  }
 
   get value(): string {
     return this._query;
@@ -64,6 +80,18 @@ export class SearchInputComponent implements AfterViewInit {
 
   @Input() set loading(val: boolean) {
     this._loading = val;
+  }
+  constructor(private _renderer: Renderer2, private _dataService: GeneralDataService, private httpSvc: HttpService) {
+    this.fc = new FormControl();
+  }
+
+  async ngOnInit() {
+    const $categories = this.httpSvc
+      .httpGetRequest<ICredentialTypeResult>('v2/credentialtype')
+      .pipe(map(results => results.results.map(credType => ({ id: credType.id, description: credType.description }))));
+    $categories.subscribe(obs => console.log(obs));
+    this.$credentialTypeOptions = $categories;
+    this.fc.valueChanges.subscribe(obs => console.log(obs));
   }
 
   ngAfterViewInit() {
@@ -124,6 +152,7 @@ export class SearchInputComponent implements AfterViewInit {
   }
 
   protected updated() {
+    console.log('selected', this.selectedCredType);
     if (this._lastQuery !== this._query) {
       this._lastQuery = this._query;
 

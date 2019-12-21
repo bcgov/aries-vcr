@@ -144,4 +144,10 @@ input[type='checkbox'] {
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .inline-select {
+    display: none;
+  }
+}
+
 @import '../../_active/search/input.component.custom';

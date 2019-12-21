@@ -11,20 +11,17 @@ import { SearchInputComponent } from './input.component';
 import { SearchNavComponent } from './nav.component';
 import { CredModule } from '../cred/cred.module';
 import { UtilModule } from '../util/util.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const ROUTES = [];
 
 @NgModule({
-  declarations: [
-    SearchComponent,
-    SearchFiltersComponent,
-    SearchInputComponent,
-    SearchNavComponent,
-  ],
-  providers: [
-  ],
+  declarations: [SearchComponent, SearchFiltersComponent, SearchInputComponent, SearchNavComponent],
+  providers: [],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     TranslateModule.forChild(),
     RouterModule.forChild(ROUTES),
     LocalizeRouterModule.forChild(ROUTES),
@@ -32,12 +29,6 @@ const ROUTES = [];
     UtilModule,
     NgbTypeaheadModule,
   ],
-  exports: [
-    SearchComponent,
-    SearchFiltersComponent,
-    SearchInputComponent,
-    SearchNavComponent,
-  ]
+  exports: [SearchComponent, SearchFiltersComponent, SearchInputComponent, SearchNavComponent],
 })
 export class SearchModule {}
-
