@@ -13,6 +13,12 @@
     [focusFirst]="false"
     (selectItem)="typeaheadSelected($event)"
   />
+  <select class="custom-select" id="inlineFormCustomSelect" *ngIf="showInactive">
+    <option selected>Any credential type</option>
+    <option value="1">One</option>
+    <option value="2">Two</option>
+    <option value="3">Three</option>
+  </select>
   <button #queryButton class="btn btn-primary">
     <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>
     <span class="fa fa-search" *ngIf="!loading"></span>
