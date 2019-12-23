@@ -9,8 +9,8 @@
       true,
       "check-space"
     ],
-    "curly": true,
     "eofline": true,
+    "curly": [true, "ignore-same-line"],
     "forin": true,
     "import-blacklist": [true],
     "import-spacing": true,

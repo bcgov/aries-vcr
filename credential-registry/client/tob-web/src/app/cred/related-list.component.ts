@@ -2,6 +2,9 @@ import { Component, EventEmitter, Output, OnInit, OnDestroy, Input } from '@angu
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
+import { TopicStateService } from 'app/topic/services/topic-state.service';
+import { HttpService } from 'app/core/services/http.service';
+import { ICredentialSet } from 'app/core/interfaces/i-credential-set.interface';
 
 @Component({
   selector: 'related-creds',
@@ -26,6 +29,8 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
 
   constructor(
     private _dataService: GeneralDataService,
+    public stateSvc: TopicStateService,
+    private httpSvc: HttpService
   ) { }
 
   ngOnInit() {
@@ -120,17 +125,41 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   }
 
   load() {
-    if(this._loader && this.format === 'timeline') {
-      this._loader.reset();
+      if (this._loader && this.format === 'timeline') {
+        return this._loader.reset();
+      }
+      if (this._format === 'rows' && this.stateSvc.filterActive === 'false') {
+        const credType = this._credTypeId
+          ? parseInt(this._credTypeId, null)
+          : null;
+        const issuerId = this._issuerId ? parseInt(this._issuerId, null) : null;
+        if (!issuerId && credType) return;
+
+        // console.log('topic id', topicId)
+        const path = this.httpSvc.credentialSet(this._topicId);
+
+        this.httpSvc
+          .httpGetRequest<ICredentialSet[]>(path)
+          .toPromise()
+          .then(res => {
+            const filtered = this.stateSvc.filterCredentials(
+              issuerId,
+              credType,
+              res
+            );
+            return this.stateSvc.setCredential(filtered);
+          });
+      return;
     }
     else if(this._loader && this._topicId) {
       let credsFilter = {
         credential_type_id: this._credTypeId,
         issuer_id: this._issuerId,
         topic_id: ''+this._topicId,
-        inactive: this._filterActive ? 'false': 'true',
+        inactive: this._filterActive ? 'false' : '',
+        revoked: '',
       };
-      this._dataService.loadList(this._loader, {query: credsFilter});
+      return this._dataService.loadList(this._loader, {query: credsFilter});
     }
   }
 
