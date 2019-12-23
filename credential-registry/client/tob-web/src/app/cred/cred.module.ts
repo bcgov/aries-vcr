@@ -15,6 +15,8 @@ import { TimelineFormatterService } from './timeline-formatter.service';
 import { TimelineViewComponent } from '../timeline/view.component';
 import { CredSetTimelineComponent } from './timeline.component';
 import { UtilModule } from '../util/util.module';
+import { TopicArchiveListHeaderComponent } from './topic-archive-list-header/topic-archive-list-header.component';
+import { TopicArchiveListItemComponent } from './topic-archive-list-item/topic-archive-list-item.component';
 
 
 const ROUTES = [];
@@ -30,6 +32,8 @@ const ROUTES = [];
     CredSetTimelineComponent,
     TimelineCredComponent,
     TimelineViewComponent,
+    TopicArchiveListHeaderComponent,
+    TopicArchiveListItemComponent
   ],
   entryComponents: [
     TimelineCredComponent,
@@ -55,6 +59,7 @@ const ROUTES = [];
     CredSetTimelineComponent,
     TimelineCredComponent,
     TimelineViewComponent,
+    TopicArchiveListHeaderComponent
   ]
 })
 export class CredModule {}

@@ -1,0 +1,72 @@
+<div class="row cred-row" (click)="expanded = !expanded" [ngClass]="{ dark: !bg }">
+  <div class="col-sm-4">
+    <div class="cred-title" [routerLink]="
+        genLink('cred', currentCred.topic.source_id, currentCred.topic.id)
+          | localize
+      ">
+      <a class="body-link cred-link">{{
+        currentCred.credential_type.description
+      }}</a>
+    </div>
+    <!--  -->
+    <div class="cred-date" *ngIf="
+        currentCred.effective_date && currentCred.effective_date;
+        else ifBlank
+      ">
+      <span class="claim-info date">{{
+        currentCred.effective_date | dateFormat: 'effectiveDate'
+      }}</span>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="cred-issuer">
+      <!--     -->
+      <a class="body-link issuer-link" [routerLink]="
+          ['/issuer', currentCred.credential_type.issuer.id] | localize
+        ">{{ currentCred.credential_type.issuer.name }}</a>
+    </div>
+  </div>
+
+  <div class="col-sm-3">
+    <ng-container *ngIf="
+        currentCred.related_topics?.length;
+        then relatedName;
+        else topicName
+      ">
+    </ng-container>
+    <ng-template #relatedName>
+      <a [routerLink]="currentCred.related_topics[0].link | localize" class="body-link cred-link related"
+        *ngIf="currentCred.related_topics[0].names?.length">
+        <!--
+ TODO: correct this for related credentials.
+ {{ currentCred.relatedPreferredName }}
+ -->
+        currentCred.related_topics[0].names.text
+      </a>
+    </ng-template>
+    <ng-template #topicName>
+      <!--- TODO: this is identified as an issue in github as this link does not produces the correct results.
+    --->
+
+      <a class="body-link cred-link name" [routerLink]="currentCred.topic.link | localize">
+        {{ currentCred.topic.local_name.text }}
+      </a>
+    </ng-template>
+    <ng-template #ifBlank>
+      <div class="col-sm-8">{{ 'cred.empty-attribute' | translate }}</div>
+    </ng-template>
+  </div>
+  <ng-container *ngIf="credList.length > 0">
+    <i class="fa fa-caret-up" *ngIf="expanded"></i>
+    <i class="fa fa-caret-down" *ngIf="!expanded"></i>
+  </ng-container>
+</div>
+<ng-container *ngIf="expanded">
+  <ng-container *ngIf="credList.length > 0">
+    <h5 p-1>Inactive Credentials</h5>
+    <app-topic-archive-list-item *ngFor="let cred of credList" [details]="cred.credential_type.description"
+      [endDate]="cred.credential_type.issuer.update_timestamp"
+      [registerDate]="cred.credential_type.issuer.create_timestamp" [type]="cred.topic.local_name.text">
+    </app-topic-archive-list-item>
+  </ng-container>
+</ng-container>
