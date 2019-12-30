@@ -3,7 +3,7 @@ import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
 import { Subscription } from 'rxjs/Subscription';
 import { TimelineFormatterService } from './timeline-formatter.service';
-
+import { TopicStateService } from 'app/topic/services/topic-state.service';
 
 @Component({
   selector: 'credset-timeline',
@@ -21,8 +21,8 @@ export class CredSetTimelineComponent implements OnInit, OnDestroy {
   constructor(
     private _dataService: GeneralDataService,
     private _formatter: TimelineFormatterService,
-  ) {
-  }
+    public stateSvc: TopicStateService,
+  ) {}
 
   ngOnInit() {
     this._loader = new Fetch.ModelListLoader(Model.CredentialSet);
@@ -56,34 +56,34 @@ export class CredSetTimelineComponent implements OnInit, OnDestroy {
   }
 
   updateRows(result) {
-    if(result.loaded) {
+    if (result.loaded) {
       let rows = [];
       let start = new Date();
       start.setFullYear(start.getFullYear() - 1);
       let end = new Date();
       end.setFullYear(end.getFullYear() + 1);
-      let range = {start: start.toISOString(), end: end.toISOString()};
-      for(let credset of result.data) {
-        if(! credset.credentials) continue;
-        if(credset.first_effective_date && credset.first_effective_date < range.start) {
+      let range = { start: start.toISOString(), end: end.toISOString() };
+      for (let credset of result.data) {
+        if (!credset.credentials) continue;
+        if (credset.first_effective_date && credset.first_effective_date < range.start) {
           if (credset.first_effective_date < '0100-01-01') {
             //range.start = '';
           } else {
             range.start = credset.first_effective_date;
           }
         }
-        if(credset.last_effective_date && credset.last_effective_date > range.end) {
+        if (credset.last_effective_date && credset.last_effective_date > range.end) {
           range.end = credset.last_effective_date;
         }
         let row = {
           id: `set-${credset.id}`,
-          slots: []
+          slots: [],
         };
-        for(let cred of credset.credentials) {
-          if(!cred.effective_date || cred.effective_date < "0100-01-01") {
+        for (let cred of credset.credentials) {
+          if (!cred.effective_date || cred.effective_date < '0100-01-01') {
             // skip for timeline
           } else {
-            if(cred.effective_date && cred.effective_date < range.start) {
+            if (cred.effective_date && cred.effective_date < range.start) {
               range.start = cred.effective_date;
             }
             row.slots.push(this._formatter.getCredentialSlot(cred));
@@ -99,8 +99,8 @@ export class CredSetTimelineComponent implements OnInit, OnDestroy {
   }
 
   load() {
-    if(this._loader && this._topicId) {
-      this._dataService.loadList(this._loader, {parentId: this._topicId});
+    if (this._loader && this._topicId) {
+      this._dataService.loadList(this._loader, { parentId: this._topicId });
     }
   }
 }
