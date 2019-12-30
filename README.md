@@ -184,6 +184,8 @@ Specific technical details and documentation on HyperLedger Indy can be found [h
 
 For more technical details and documentation on the Aca-Py agent go [here](https:\\github.com\hyperledger\aries-cloudagent-python\)
 
+For a broader overview of Hyperledger an EdX course is available [here](https://www.edx.org/course/identity-in-hyperledger-aries-indy-and-ursa)
+
 ### Agent Driver
 
 ### Starter Kits
