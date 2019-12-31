@@ -14,6 +14,7 @@ import { UtilModule } from '../util/util.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'app/shared/shared.module';
 import { AdvancedSearchComponent } from './advanced-search.component';
+import { AdvancedSearchRowComponent } from './components/advanced-search-row/advanced-search-row.component';
 
 const ROUTES = [];
 
@@ -24,6 +25,7 @@ const ROUTES = [];
     SearchInputComponent,
     SearchNavComponent,
     AdvancedSearchComponent,
+    AdvancedSearchRowComponent,
   ],
   providers: [],
   imports: [
