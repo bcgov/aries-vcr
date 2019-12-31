@@ -24,9 +24,10 @@ export interface IAdvancedSearchOption {
       </div>
       <form [formGroup]="fg">
         <app-advanced-search-row [label]="searchOptions[0].label" [helper]="searchOptions[0].helper">
-          <input class="form-control" />
+          <input class="form-control" formControlName="text" />
         </app-advanced-search-row>
         <app-advanced-search-row
+          formControlName="type"
           [label]="searchOptions[1].label"
           [helper]="searchOptions[1].helper"
           *ngIf="$credentialTypeOptions | async as options"
@@ -34,7 +35,7 @@ export interface IAdvancedSearchOption {
           <app-select [options]="options" [selected]="credTypeSelected"></app-select>
         </app-advanced-search-row>
         <app-advanced-search-row [label]="searchOptions[2].label" [helper]="searchOptions[2].helper">
-          <app-select [options]="yesNoOptions" [selected]="yesNoSelected"></app-select>
+          <app-select formControlName="archived" [options]="yesNoOptions" [selected]="yesNoSelected"></app-select>
         </app-advanced-search-row>
         <button type="submit" class="btn btn-primary">
           Advanced Search
@@ -81,6 +82,7 @@ export class AdvancedSearchComponent implements OnInit {
     });
 
     this.fg = fg;
+    fg.valueChanges.subscribe(obs => console.log('fg change', obs));
   }
 
   ngOnInit() {
@@ -89,13 +91,7 @@ export class AdvancedSearchComponent implements OnInit {
       .pipe(
         map(results => results.results.map(credType => ({ value: credType.id, description: credType.description }))),
       );
-    $categories.subscribe(obs => console.log(obs));
     this.$credentialTypeOptions = $categories;
-
-    this.httpSvc
-      .httpGetRequest<ICredentialTypeResult>('v2/credentialtype')
-      .toPromise()
-      .then(ret => console.log(ret));
 
     /* TODO: Parameterize these to include a method of defining the input option */
     const searchOptions = [
