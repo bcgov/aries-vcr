@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 export interface ISelectOption {
-  value: string;
+  value: string | boolean | number;
   description: string;
 }
 
@@ -12,7 +12,7 @@ export interface ISelectOption {
 })
 export class SelectComponent implements OnInit {
   @Input() options: ISelectOption[];
-  @Input() checked = false;
+  @Input() selected: ISelectOption;
 
   value: any;
   onModelChange: any;

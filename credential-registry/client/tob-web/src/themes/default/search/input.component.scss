@@ -69,6 +69,9 @@ $input-background: theme-color(light);
     }
   }
 }
+a {
+  color: white !important;
+}
 
 //place all overrides for a specific theme in this file inside your theme/search directory
 @import '../../_active/search/input.component.custom';

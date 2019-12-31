@@ -1,12 +1,19 @@
+@import '../../../node_modules/bootstrap/scss/functions';
+@import '../../../node_modules/bootstrap/scss/variables';
+@import '../../../node_modules/bootstrap/scss/mixins';
+
 :host() {
   margin: 0.5em;
 }
 
 .header-row {
   display: grid;
-  grid-template-columns: 15% 33% 52%;
+  grid-template-columns: 25% 25% 50%;
   grid-gap: 0.5em;
   .header {
     font-size: 16px;
   }
+}
+input {
+  width: 100%;
 }

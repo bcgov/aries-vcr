@@ -1,5 +1,10 @@
+@import '../../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../../node_modules/bootstrap/scss/mixins';
+
 :host() {
   display: grid;
-  grid-template-columns: 15% 33% 52%;
+  grid-template-columns: 25% 25% 50%;
   grid-gap: 0.5em;
+  height: 46px;
 }
