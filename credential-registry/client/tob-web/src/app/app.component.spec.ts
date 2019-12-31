@@ -1,19 +1,14 @@
 import { TestBed, async } from '@angular/core/testing';
-import {
-    RouterTestingModule
-} from '@angular/router/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
-import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from './util/breadcrumb.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        BreadcrumbComponent
-      ],
-      imports: [ RouterTestingModule ]
+      declarations: [AppComponent, BreadcrumbComponent],
+      imports: [RouterTestingModule],
     }).compileComponents();
   }));
 

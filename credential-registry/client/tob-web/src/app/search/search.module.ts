@@ -12,11 +12,19 @@ import { SearchNavComponent } from './nav.component';
 import { CredModule } from '../cred/cred.module';
 import { UtilModule } from '../util/util.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'app/shared/shared.module';
+import { AdvancedSearchComponent } from './advanced-search.component';
 
 const ROUTES = [];
 
 @NgModule({
-  declarations: [SearchComponent, SearchFiltersComponent, SearchInputComponent, SearchNavComponent],
+  declarations: [
+    SearchComponent,
+    SearchFiltersComponent,
+    SearchInputComponent,
+    SearchNavComponent,
+    AdvancedSearchComponent,
+  ],
   providers: [],
   imports: [
     CommonModule,
@@ -28,6 +36,7 @@ const ROUTES = [];
     CredModule,
     UtilModule,
     NgbTypeaheadModule,
+    SharedModule,
   ],
   exports: [SearchComponent, SearchFiltersComponent, SearchInputComponent, SearchNavComponent],
 })
