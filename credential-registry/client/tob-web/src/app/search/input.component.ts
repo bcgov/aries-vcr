@@ -4,7 +4,6 @@ import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } f
 import { GeneralDataService } from 'app/general-data.service';
 import { HttpService } from 'app/core/services/http.service';
 import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
-import { FormControl } from '@angular/forms';
 
 export interface ICredentialTypeOption {
   id?: number;
@@ -35,8 +34,6 @@ export class SearchInputComponent implements AfterViewInit {
 
   inactive = false;
   $credentialTypeOptions: Observable<ICredentialTypeOption[]>;
-  fc: FormControl;
-  selectedCredType: ICredentialTypeOption = { description: 'Any credential type' };
 
   setInactive(event, bool: boolean) {
     const charCode = event.keyCode || event.which;
@@ -81,9 +78,7 @@ export class SearchInputComponent implements AfterViewInit {
   @Input() set loading(val: boolean) {
     this._loading = val;
   }
-  constructor(private _renderer: Renderer2, private _dataService: GeneralDataService, private httpSvc: HttpService) {
-    this.fc = new FormControl();
-  }
+  constructor(private _renderer: Renderer2, private _dataService: GeneralDataService, private httpSvc: HttpService) {}
 
   async ngOnInit() {
     const $categories = this.httpSvc
@@ -91,7 +86,6 @@ export class SearchInputComponent implements AfterViewInit {
       .pipe(map(results => results.results.map(credType => ({ id: credType.id, description: credType.description }))));
     $categories.subscribe(obs => console.log(obs));
     this.$credentialTypeOptions = $categories;
-    this.fc.valueChanges.subscribe(obs => console.log(obs));
   }
 
   ngAfterViewInit() {
@@ -152,7 +146,6 @@ export class SearchInputComponent implements AfterViewInit {
   }
 
   protected updated() {
-    console.log('selected', this.selectedCredType);
     if (this._lastQuery !== this._query) {
       this._lastQuery = this._query;
 

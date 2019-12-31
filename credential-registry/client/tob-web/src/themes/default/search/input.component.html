@@ -10,8 +10,8 @@
     autocapitalize="off"
     spellcheck="false"
     [ngbTypeahead]="typeaheadSearch"
-    [focusFirst]="false"
     (selectItem)="typeaheadSelected($event)"
+    [focusFirst]="false"
   />
   <button #queryButton class="btn btn-primary">
     <span class="load" *ngIf="loading"><div class="loading-indicator"></div></span>

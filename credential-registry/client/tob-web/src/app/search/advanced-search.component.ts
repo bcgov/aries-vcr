@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from 'app/core/services/http.service';
 import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
-import { map } from 'rxjs/operators';
+import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ICredentialTypeOption } from './input.component';
 import { ISelectOption } from 'app/shared/components/select/select.component';
 import { FormGroup, FormControl } from '@angular/forms';
+import { GeneralDataService } from 'app/general-data.service';
 
 export interface IAdvancedSearchOption {
   label: string;
@@ -24,7 +25,12 @@ export interface IAdvancedSearchOption {
       </div>
       <form [formGroup]="fg">
         <app-advanced-search-row [label]="searchOptions[0].label" [helper]="searchOptions[0].helper">
-          <input class="form-control" formControlName="text" />
+          <input
+            class="form-control"
+            formControlName="text"
+            [ngbTypeahead]="typeaheadSearch"
+            (selectItem)="typeaheadSelected($event)"
+          />
         </app-advanced-search-row>
         <app-advanced-search-row
           formControlName="type"
@@ -55,7 +61,7 @@ export class AdvancedSearchComponent implements OnInit {
   yesNoOptions: ISelectOption[];
   fg: FormGroup;
 
-  constructor(private httpSvc: HttpService) {
+  constructor(private httpSvc: HttpService, private dataSvc: GeneralDataService) {
     this.title = 'Advanced Search';
 
     this.yesNoOptions = [
@@ -100,5 +106,23 @@ export class AdvancedSearchComponent implements OnInit {
       { label: 'historical credentials', helper: 'Include results that have expired or are no longer active.' },
     ];
     this.searchOptions = searchOptions;
+  }
+
+  get typeaheadSearch() {
+    return (text$: Observable<string>) => {
+      return text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(term => this.dataSvc.autocomplete(term)),
+        map((result: any[]) => result.map(item => item['term'])),
+      );
+    };
+  }
+
+  typeaheadSelected(evt) {
+    evt.preventDefault();
+    const val = evt.item;
+    this.fg.controls.text.patchValue(val);
+    this.fg.updateValueAndValidity({ emitEvent: true });
   }
 }
