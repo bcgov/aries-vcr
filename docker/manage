@@ -141,14 +141,14 @@ build-web() {
   echo -e "\nBuilding nginx-runtime image ..."
   docker build -q \
     -t 'nginx-runtime' \
-    -f '../../../docker/nginx-runtime/Dockerfile' '../../../docker/nginx-runtime/'
+    -f './nginx-runtime/Dockerfile' './nginx-runtime/'
 
   # This image only exists to pre-create the npm cache directory
   # so it can be properly used as a volume, it doesn't apply to openshift
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
-    -f '../../../docker/nodejs-build/Dockerfile' '../../../docker/nodejs-build/'
+    -f './nodejs-build/Dockerfile' './nodejs-build/'
 
   if [ -t 0 ]; then
     # color npm output in interactive terminal
@@ -172,7 +172,7 @@ build-web() {
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
-      '../../../credential-registry/client/tob-web' \
+      '../client/tob-web' \
       'nodejs-build' \
       'angular-on-nginx'
   else
@@ -190,7 +190,7 @@ build-web() {
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
-      '../../../credential-registry/client/tob-web' \
+      '../client/tob-web' \
       'nodejs-build' \
       'angular-on-nginx'
   fi
@@ -204,7 +204,7 @@ build-web-dev() {
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
     -t 'nodejs-build' \
-    -f '../../../docker/nodejs-build/Dockerfile' '../../../docker/nodejs-build/'
+    -f './nodejs-build/Dockerfile' './nodejs-build/'
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
@@ -221,7 +221,7 @@ build-web-dev() {
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../../../credential-registry/client/tob-web' \
+      '../client/tob-web' \
       'nodejs-build' \
       'angular-dev'
   else
@@ -238,7 +238,7 @@ build-web-dev() {
       -e "TOB_THEME_PATH=${TOB_THEME_PATH_DEV}" \
       -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../../../credential-registry/client/tob-web' \
+      '../client/tob-web' \
       'nodejs-build' \
       'angular-dev'
   fi
@@ -308,7 +308,7 @@ build-api() {
     docker build -q \
       --build-arg BASE_IMAGE='django:latest' \
       -t 'django' \
-      -f '../../../docker/utils/Dockerfile.fixpermissions' '../../../docker/utils/'
+      -f './utils/Dockerfile.fixpermissions' './utils/'
   fi
 }
 
@@ -318,7 +318,7 @@ build-agent() {
   #
   docker build -q \
     -t 'tob-agent' \
-    -f '../../../docker/tob-agent/Dockerfile' '../../../docker/tob-agent'
+    -f './tob-agent/Dockerfile' './tob-agent'
 
   # this is only required in Windows
   if [[ "$OSTYPE" == "msys" ]]; then
@@ -326,7 +326,7 @@ build-agent() {
     docker build -q \
       --build-arg BASE_IMAGE='tob-agent:latest' \
       -t 'tob-agent' \
-      -f '../../../docker/utils/Dockerfile.fixpermissions' '../../../docker/utils/'
+      -f './utils/Dockerfile.fixpermissions' './docker/utils/'
   fi
 }
 
