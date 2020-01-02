@@ -239,10 +239,9 @@ export namespace Model {
     get claims() {
       let ret = [];
       if (typeof this.result === "object" && this.result.presentation) {
-        let attrs = this.result.presentation.requested_proof.revealed_attrs;
-        for (let k in attrs) {
-          const attributeName = this.result.presentation_request.requested_attributes[k].name;
-          ret.push({ name: attributeName, value: attrs[k].raw });
+        let attrs_group = this.result.presentation.requested_proof.revealed_attr_groups['self-verify-proof'];
+        for (let k in attrs_group.values) {
+          ret.push({ name: k, value: attrs_group.values[k].raw });
         }
       }
       ret.sort((a, b) => a.name.localeCompare(b.name));
