@@ -93,7 +93,7 @@ export class AdvancedSearchComponent implements OnInit {
 
   ngOnInit() {
     const $categories = this.httpSvc
-      .httpGetRequest<ICredentialTypeResult>('v2/credentialtype')
+      .httpGetRequest<ICredentialTypeResult>('credentialtype')
       .pipe(
         map(results => results.results.map(credType => ({ value: credType.id, description: credType.description }))),
       );

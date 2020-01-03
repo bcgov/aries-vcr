@@ -21,7 +21,7 @@ export class HttpService {
   }
 
   httpGetRequest<T>(path: string, params: { [param: string]: string } = {}): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}${path}`, { params });
+    return this.http.get<T>(`${this.baseUrl}/${path}`, { params });
     // .pipe(catchError(err => of(err)));
   }
 }
