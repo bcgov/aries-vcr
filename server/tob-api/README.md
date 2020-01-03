@@ -2,7 +2,7 @@
 
 ## Overview
 
-The API provides an interface into the database for TheOrgBook.
+The API provides an interface into the database for The Credential Registry.
 
 ## Development
 
