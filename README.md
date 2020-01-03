@@ -164,13 +164,27 @@ Indy Catalyst components:
 
 ## Key Technical Elements
 
+For a quickstart guide on running the indy-catalyst project in development on your local machine follow the guide located [here](docs/README.md)
+
 ### Credential Registry
 
 TODO
 
 Credential Registry provides a set of RESTful web services you can use to query data from your third-party application, an introduction to use of these API's is available [here](docs/IndyCat-REST-Services.md).
 
+The credential registry is a controller for the holder-prover agent in context of Indy Catalyst.
+
 ### Agent
+
+For communication to the ledger and other entities who issue credentials & request verification the Indy Catalyst Project uses a Hyperledger Indy agent. The Hyperledger Indy agent included in Indy Catalyst is an Aca-Py agent.
+
+It's important to understand the relationship between an agent and a controller for this project.
+
+Specific technical details and documentation on HyperLedger Indy can be found [here](https:\\indy.readthedocs.io\en\latest\)
+
+For more technical details and documentation on the Aca-Py agent go [here](https:\\github.com\hyperledger\aries-cloudagent-python\)
+
+For a broader overview of Hyperledger an EdX course is available [here](https://www.edx.org/course/identity-in-hyperledger-aries-indy-and-ursa)
 
 ### Agent Driver
 
@@ -179,6 +193,7 @@ Credential Registry provides a set of RESTful web services you can use to query 
 #### Credential Registry Holder-Prover
 
 #### Agent Issuer-Verifier
+
 
 # Endnotes
 
