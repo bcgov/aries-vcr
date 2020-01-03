@@ -20,7 +20,7 @@ Once this is running, simply clone, build and run Indy Catalyst as follows:
 ```
 https://github.com/bcgov/indy-catalyst
 cd indy-catalyst/starter-kits/docker
-TOB_THEME_PATH=/path/to/indy-catalyst/starter-kits/credential-registry/client/tob-web/themes/ TOB_THEME=bcgov ./manage build
+TOB_THEME_PATH=/path/to/indy-catalyst/client/tob-web/themes/ TOB_THEME=bcgov ./manage build
 TOB_THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
 ```
 
@@ -90,7 +90,7 @@ Just name your file "tob-api/tob_api/custom_settings_<theme>.py"
 Build the Credential Registry as follows (use your theme name):
 
 ```
-TOB_THEME_PATH=/path/to/indy-catalyst/starter-kits/credential-registry/client/tob-web/themes/ TOB_THEME=bcgov ./manage build
+TOB_THEME_PATH=/path/to/indy-catalyst/client/tob-web/themes/ TOB_THEME=bcgov ./manage build
 TOB_THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
 ```
 
