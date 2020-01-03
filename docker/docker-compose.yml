@@ -45,7 +45,7 @@ services:
       - "${WEB_HTTP_PORT}:8080"
       - 5858:5858
     volumes:
-      - "../client/tob-web/src:/opt/app-root/src/src"
+      - "../../../credential-registry/client/tob-web/src:/opt/app-root/src/src"
       - "${TOB_THEME_PATH}:/tmp/tob-theme"
     depends_on:
       - tob-api

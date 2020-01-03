@@ -326,7 +326,7 @@ build-agent() {
     docker build -q \
       --build-arg BASE_IMAGE='tob-agent:latest' \
       -t 'tob-agent' \
-      -f './utils/Dockerfile.fixpermissions' './docker/utils/'
+      -f './utils/Dockerfile.fixpermissions' './utils/'
   fi
 }
 
