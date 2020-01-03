@@ -10,9 +10,9 @@ var fs = require('fs'),
 var THEME_NAME = process.env.TOB_THEME || 'default';
 if (THEME_NAME === '_active')
   throw 'Invalid theme name';
-var THEME_PATH = process.env.TOB_THEME_PATH;
 var TARGET_DIR = 'src/themes/_active';
 var THEMES_ROOT = 'src/themes';
+var THEME_PATH = process.env.TOB_THEME_PATH || THEMES_ROOT;
 var LANG_ROOT = 'assets/i18n';
 var CONFIG_NAME = 'assets/config.json';
 var RESOLVE_LINKS = ['favicon.ico', 'styles.scss', LANG_ROOT, CONFIG_NAME];
@@ -101,7 +101,7 @@ function populateDirSync(source_dir, target_dir) {
 function copyThemeDir(theme_name, target_dir) {
   var theme_dir = path.join(THEMES_ROOT, theme_name);
   if (theme_name !== 'default') {
-    if (THEME_PATH && fs.existsSync(path.join(THEME_PATH, theme_name))) {
+    if (fs.existsSync(path.join(THEME_PATH, theme_name))) {
       theme_dir = path.join(THEME_PATH, theme_name)
     }
   }
@@ -200,15 +200,13 @@ function findLanguages(target_dir) {
 
 function resolveLangPaths(theme_name, language) {
   var ret = [];
-  if (theme_name !== 'default') {
-    var lang_path = path.join(THEMES_ROOT, theme_name, LANG_ROOT, language + '.json');
-    if (THEME_PATH && fs.existsSync(path.join(THEME_PATH, theme_name, LANG_ROOT, language + '.json'))) {
-      lang_path = path.join(THEME_PATH, theme_name, LANG_ROOT, language + '.json');
-    }
-    if (fs.existsSync(lang_path)) {
-      ret.push(lang_path);
-    }
+  var lang_path = lang_path = path.join(THEME_PATH, theme_name, LANG_ROOT, language + '.json');
+  if (fs.existsSync(lang_path)) {
+    ret.push(lang_path);
+  }
 
+  if (theme_name !== 'default') {
+    // Always add default language file when using custom theme
     var def_path = path.join(THEMES_ROOT, 'default', LANG_ROOT, language + '.json');
     if (fs.existsSync(def_path)) {
       ret.push(def_path);
@@ -244,10 +242,8 @@ function mergeDeep(target, ...sources) {
 function combineLanguage(theme_name, target_dir) {
   var langs = new Array();
   if (theme_name !== 'default') {
-    if (THEME_PATH && fs.existsSync(path.join(THEME_PATH, theme_name))) {
+    if (fs.existsSync(path.join(THEME_PATH, theme_name))) {
       langs.concat(findLanguages(path.join(THEME_PATH, theme_name)));
-    } else if (path.join(THEMES_ROOT, theme_name)) {
-      langs.concat(findLanguages(path.join(THEMES_ROOT, theme_name)));
     }
     langs = langs.concat(findLanguages(path.join(THEMES_ROOT, 'default')));
   }
@@ -288,14 +284,14 @@ function updateConfig(theme_name) {
   if (fs.existsSync(default_path)) {
     config = require('./' + default_path);
   }
-  if (THEME_PATH) {
-    // localhost, where the custom themes are under THEME_PATH
+  if (THEME_PATH !== THEMES_ROOT) {
+    // custom themes are under THEME_PATH
     let source_path = path.join(THEME_PATH, theme_name, CONFIG_NAME);
     if (fs.existsSync(source_path)) {
       config = mergeDeep(config, require(source_path));
     }
   } else {
-    // special case for OpenShift, where the custom themes are under THEMES_ROOT
+    // custom themes are under THEMES_ROOT
     let source_path = path.join(THEMES_ROOT, theme_name, CONFIG_NAME);
     if (fs.existsSync(source_path)) {
       config = mergeDeep(config, require('./' + source_path));
