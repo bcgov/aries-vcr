@@ -66,7 +66,7 @@ export class AdvancedSearchComponent implements OnInit {
 
     this.yesNoOptions = [
       {
-        value: true,
+        value: '',
         description: 'Yes',
       },
     ];
@@ -84,7 +84,7 @@ export class AdvancedSearchComponent implements OnInit {
     const fg = new FormGroup({
       type: new FormControl(),
       text: new FormControl(),
-      archived: new FormControl(),
+      archived: new FormControl('false'),
     });
 
     this.fg = fg;
@@ -113,7 +113,7 @@ export class AdvancedSearchComponent implements OnInit {
       return text$.pipe(
         debounceTime(200),
         distinctUntilChanged(),
-        switchMap(term => this.dataSvc.autocomplete(term)),
+        switchMap(term => this.dataSvc.autocomplete(term, this.fg.value.archived)),
         map((result: any[]) => result.map(item => item['term'])),
       );
     };

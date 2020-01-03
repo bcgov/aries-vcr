@@ -20,7 +20,8 @@ export class HttpService {
     this.baseUrl = apiUrl;
   }
 
-  httpGetRequest<T>(path: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}${path}`).pipe(catchError(err => of(err)));
+  httpGetRequest<T>(path: string, params: { [param: string]: string } = {}): Observable<T> {
+    return this.http.get<T>(`${this.baseUrl}${path}`, { params });
+    // .pipe(catchError(err => of(err)));
   }
 }
