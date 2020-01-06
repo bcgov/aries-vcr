@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls import path
 
-from icat_cbs import views, views_debug
+from agent_webhooks import views, views_debug
 
 urlpatterns = [path("topic/<topic>/", views.agent_callback)]
 

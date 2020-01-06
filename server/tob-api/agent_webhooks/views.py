@@ -11,8 +11,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api_v2.models.Credential import Credential as CredentialModel
-from icat_cbs.utils.credential import Credential, CredentialManager
-from icat_cbs.utils.issuer import IssuerManager
+from agent_webhooks.utils.credential import Credential, CredentialManager
+from agent_webhooks.utils.issuer import IssuerManager
 
 from api_v2.utils import log_timing_method
 

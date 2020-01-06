@@ -3,7 +3,7 @@ from django.db import DEFAULT_DB_ALIAS
 from django.db.models import signals
 
 from api_v2.models.Credential import Credential
-from icat_cbs.utils.credential import CredentialManager
+from agent_webhooks.utils.credential import CredentialManager
 from tob_api.utils.solrqueue import SolrQueue
 
 

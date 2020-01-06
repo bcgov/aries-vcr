@@ -4,7 +4,7 @@ import json
 from django.test import TestCase
 from unittest.mock import patch
 
-from icat_cbs.utils import credential
+from agent_webhooks.utils import credential
 
 
 class Credential_TestCase(TestCase):

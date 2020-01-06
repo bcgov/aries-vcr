@@ -1,5 +1,4 @@
 import logging
-import os
 import uuid
 
 from drf_yasg import openapi
@@ -8,7 +7,7 @@ from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from icat_cbs.utils.credential import Credential, CredentialManager
+from agent_webhooks.utils.credential import Credential, CredentialManager
 
 LOGGER = logging.getLogger(__name__)
 

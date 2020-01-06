@@ -1,7 +1,7 @@
 from django.test import TestCase
 from unittest.mock import patch
 
-from icat_cbs.utils import issuer
+from agent_webhooks.utils import issuer
 
 
 class IssuerManager_TestCase(TestCase):

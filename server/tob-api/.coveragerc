@@ -6,7 +6,7 @@ omit =
 	*/settings.py
 source =
 	api_v2
-	icat_cbs
+	agent_webhooks
 	icat_hooks
 	tob_api
 
