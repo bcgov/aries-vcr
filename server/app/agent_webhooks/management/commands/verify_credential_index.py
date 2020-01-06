@@ -15,7 +15,7 @@ from api_v2.models.Attribute import Attribute
 from api_v2.models.Credential import Credential
 from api_v2.models.Name import Name
 
-from tob_api.rocketchat_hooks import log_error, log_warning, log_info
+from app.rocketchat_hooks import log_error, log_warning, log_info
 
 from asgiref.sync import async_to_sync
 

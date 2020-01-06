@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "tob-api", "tob-api.pyproj", "{C4C461D8-6940-49A9-97E7-44F5F727FEC9}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "app", "app.pyproj", "{C4C461D8-6940-49A9-97E7-44F5F727FEC9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jenkins", "jenkins", "{0C360F57-D16B-4BE4-AAA6-9CC9678CB663}"
 	ProjectSection(SolutionItems) = preProject

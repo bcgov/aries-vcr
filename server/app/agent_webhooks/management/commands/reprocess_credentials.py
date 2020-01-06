@@ -4,7 +4,7 @@ from django.db.models import signals
 
 from api_v2.models.Credential import Credential
 from agent_webhooks.utils.credential import CredentialManager
-from tob_api.utils.solrqueue import SolrQueue
+from app.utils.solrqueue import SolrQueue
 
 
 class Command(BaseCommand):

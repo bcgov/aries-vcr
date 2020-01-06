@@ -1,8 +1,8 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <Name>tob-api</Name>
-    <RootNamespace>tob-api</RootNamespace>
+    <Name>app</Name>
+    <RootNamespace>app</RootNamespace>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <WebBrowserPort>56325</WebBrowserPort>
     <Environment>
@@ -19,7 +19,7 @@
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <LaunchProvider>Django launcher</LaunchProvider>
-    <DjangoSettingsModule>tob_api.settings</DjangoSettingsModule>
+    <DjangoSettingsModule>app.settings</DjangoSettingsModule>
     <WebBrowserUrl>http://localhost</WebBrowserUrl>
     <OutputPath>.</OutputPath>
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
@@ -147,23 +147,23 @@
     <Compile Include="auditable\views.py" />
     <Compile Include="auditable\__init__.py" />
     <Compile Include="manage.py" />
-    <Compile Include="tob_api\custom_settings_bcgov.py" />
-    <Compile Include="tob_api\custom_settings_ongov.py" />
-    <Compile Include="tob_api\authentication.py" />
-    <Compile Include="tob_api\permissions.py" />
-    <Compile Include="tob_api\database.py" />
-    <Compile Include="tob_api\haystack.py">
+    <Compile Include="app\custom_settings_bcgov.py" />
+    <Compile Include="app\custom_settings_ongov.py" />
+    <Compile Include="app\authentication.py" />
+    <Compile Include="app\permissions.py" />
+    <Compile Include="app\database.py" />
+    <Compile Include="app\haystack.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tob_api\hyperledger_indy.py">
+    <Compile Include="app\hyperledger_indy.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tob_api\views.py">
+    <Compile Include="app\views.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tob_api\__init__.py" />
-    <Compile Include="tob_api\settings.py" />
-    <Compile Include="tob_api\urls.py" />
+    <Compile Include="app\__init__.py" />
+    <Compile Include="app\settings.py" />
+    <Compile Include="app\urls.py" />
     <Compile Include="wsgi.py" />
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +201,7 @@
     <Folder Include="api_v2\views\" />
     <Folder Include="auditable\" />
     <Folder Include="auditable\migrations\" />
-    <Folder Include="tob_api\" />
+    <Folder Include="app\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

@@ -9,7 +9,7 @@ from api_v2.models.Schema import Schema
 
 
 @modify_settings(
-    MIDDLEWARE={"remove": "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware"}
+    MIDDLEWARE={"remove": "app.middleware.routing.HTTPHeaderRoutingMiddleware"}
 )
 class IssuerViewSetTest(APITestCase):
     def setUp(self):
@@ -75,7 +75,7 @@ class IssuerViewSetTest(APITestCase):
 
 
 @modify_settings(
-    MIDDLEWARE={"remove": "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware"}
+    MIDDLEWARE={"remove": "app.middleware.routing.HTTPHeaderRoutingMiddleware"}
 )
 class SchemaViewSetTest(APITestCase):
     def setUp(self):
@@ -140,7 +140,7 @@ class SchemaViewSetTest(APITestCase):
 
 
 @modify_settings(
-    MIDDLEWARE={"remove": "tob_api.middleware.routing.HTTPHeaderRoutingMiddleware"}
+    MIDDLEWARE={"remove": "app.middleware.routing.HTTPHeaderRoutingMiddleware"}
 )
 class CredentialTypeViewSetTest(APITestCase):
     def setUp(self):

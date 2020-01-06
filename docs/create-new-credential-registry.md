@@ -82,10 +82,10 @@ It follows standard Angular practices ...
 
 There is a "custom theme" file for the back-end Python code, examples are:
 
-- tob-api/tob_api/custom_settings_bcgov.py
-- tob-api/tob_api/custom_settings_ongov.py
+- app/app/custom_settings_bcgov.py
+- app/app/custom_settings_ongov.py
 
-Just name your file "tob-api/tob_api/custom_settings_<theme>.py"
+Just name your file "app/app/custom_settings_<theme>.py"
 
 Build the Credential Registry as follows (use your theme name):
 
@@ -94,7 +94,7 @@ TOB_THEME_PATH=/path/to/indy-catalyst/client/themes/ TOB_THEME=bcgov ./manage bu
 TOB_THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
 ```
 
-Custom settings are loaded from "tob_api/settings.py" (search for "custom_settings_file").
+Custom settings are loaded from "app/settings.py" (search for "custom_settings_file").
 
 There is some code in "api_v2/utils.py" that you can use to get custom settings (from your own code).
 

@@ -8,7 +8,7 @@ source =
 	api_v2
 	agent_webhooks
 	subscriptions
-	tob_api
+	app
 
 [report]
 exclude_lines =

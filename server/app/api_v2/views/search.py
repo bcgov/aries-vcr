@@ -27,7 +27,7 @@ from api_v2.serializers.search import (
     CredentialSearchSerializer,
     CredentialTopicSearchSerializer,
 )
-from tob_api.pagination import ResultLimitPagination
+from app.pagination import ResultLimitPagination
 
 LOGGER = logging.getLogger(__name__)
 

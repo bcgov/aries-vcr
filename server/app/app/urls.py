@@ -1,5 +1,5 @@
 """
-Definition of urls for tob_api.
+Definition of urls for app.
 """
 
 from django.urls import include, path

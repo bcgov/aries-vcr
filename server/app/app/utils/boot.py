@@ -67,7 +67,7 @@ async def add_server_headers(request, response):
 async def init_app(on_startup=None, on_cleanup=None):
     from aiohttp.web import Application
     from aiohttp_wsgi import WSGIHandler
-    from tob_api.utils.solrqueue import SolrQueue
+    from app.utils.solrqueue import SolrQueue
 
     wsgi_handler = WSGIHandler(application)
     app = Application()
