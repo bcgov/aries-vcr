@@ -3,7 +3,6 @@ import logging
 import requests
 import json
 import time
-from datetime import datetime
 
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
@@ -35,29 +34,33 @@ TOPIC_ISSUER_REGISTRATION = "issuer_registration"
 def agent_callback(request, topic):
     message = request.data
 
+    if "state" not in message:
+        LOGGER.warn(f"Received aca-py webhook without state. message={message}")
+
+    state = message["state"]
+    LOGGER.debug(f"Received aca-py webhook. state={state} message={message}")
+
     start_time = time.perf_counter()
     method = "agent_callback." + topic
-    if "state" in message:
-        method = method + "." + message["state"]
 
     # dispatch based on the topic type
     if topic == TOPIC_CONNECTIONS:
-        response = handle_connections(message["state"], message)
+        response = Response("")
 
     elif topic == TOPIC_CONNECTIONS_ACTIVITY:
         response = Response("")
 
     elif topic == TOPIC_CREDENTIALS:
-        response = handle_credentials(message["state"], message)
+        response = handle_credentials(state, message)
 
     elif topic == TOPIC_PRESENTATIONS or topic == TOPIC_PRESENT_PROOF:
-        response = handle_presentations(message["state"], message)
+        response = handle_presentations(state, message)
 
     elif topic == TOPIC_GET_ACTIVE_MENU:
-        response = handle_get_active_menu(message)
+        response = Response("")
 
     elif topic == TOPIC_PERFORM_MENU_ACTION:
-        response = handle_perform_menu_action(message)
+        response = Response("")
 
     elif topic == TOPIC_ISSUER_REGISTRATION:
         response = handle_register_issuer(message)
@@ -72,12 +75,6 @@ def agent_callback(request, topic):
     log_timing_method(method, start_time, end_time, True)
 
     return response
-
-
-def handle_connections(state, message):
-    # TODO auto-accept?
-    print("handle_connections()", state)
-    return Response(state)
 
 
 def handle_credentials(state, message):
@@ -129,23 +126,12 @@ def handle_credentials(state, message):
         }
     """
 
-    # global admin_url
     credential_exchange_id = message["credential_exchange_id"]
-    print(
-        "Credential: state=", state, ", credential_exchange_id=", credential_exchange_id
-    )
-
     try:
-        if state == "offer_received":
-            print("After receiving credential offer, send credential request")
-            # resp = requests.post(admin_url + '/credential_exchange/' + credential_exchange_id + '/send-request')
-            # assert resp.status_code == 200
-            return Response("")
-
-        elif state == "credential_received":
+        if state == "credential_received":
             raw_credential = message["raw_credential"]
 
-            # TODO can include this exception to test error reporting
+            # You can include this exception to test error reporting
             # raise Exception("Depliberate error to test problem reporting")
 
             credential_data = {
@@ -159,24 +145,19 @@ def handle_credentials(state, message):
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
             credential = Credential(credential_data)
-
             credential_manager = CredentialManager()
             credential = credential_manager.process(credential)
 
             # Instruct the agent to store the credential in wallet
             resp = requests.post(
-                f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/store",
+                f"{settings.AGENT_ADMIN_URL}/credential_exchange"
+                + f"/{credential_exchange_id}/store",
                 json={"credential_id": credential.credential_id},
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             resp.raise_for_status()
 
             return Response({"success": True})
-
-        # TODO other scenarios
-        elif state == "stored":
-            print("credential stored")
-            # print(message)
 
     except Exception as e:
         LOGGER.error(str(e))
@@ -323,18 +304,6 @@ def handle_presentations(state, message):
         resp.raise_for_status()
 
     return Response()
-
-
-def handle_get_active_menu(message):
-    # TODO add/update issuer info?
-    print("handle_get_active_menu()", message)
-    return Response("")
-
-
-def handle_perform_menu_action(message):
-    # TODO add/update issuer info?
-    print("handle_perform_menu_action()", message)
-    return Response("")
 
 
 def handle_register_issuer(message):
