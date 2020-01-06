@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("icat_hooks", "0001_initial"),
+        ("subscriptions", "0001_initial"),
     ]
 
     operations = [

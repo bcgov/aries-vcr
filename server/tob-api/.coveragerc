@@ -7,7 +7,7 @@ omit =
 source =
 	api_v2
 	agent_webhooks
-	icat_hooks
+	subscriptions
 	tob_api
 
 [report]

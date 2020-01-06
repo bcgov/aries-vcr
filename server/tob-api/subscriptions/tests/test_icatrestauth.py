@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.test import TestCase
-from icat_hooks import icatrestauth
+from subscriptions import icatrestauth
 from rest_framework import exceptions
 
 
@@ -13,8 +13,8 @@ class IcatAuthBackend_TestCase(TestCase):
     mock_username = "mock_user"
     mock_password = "mock_password"
 
-    @patch("icat_hooks.icatrestauth.super.authenticate", autospec=True)
-    @patch("icat_hooks.icatrestauth.super")
+    @patch("subscriptions.icatrestauth.super.authenticate", autospec=True)
+    @patch("subscriptions.icatrestauth.super")
     def test_authenticate(self, mock_super, mock_authenticate):
 
         result = icatrestauth.IcatAuthBackend.authenticate(
@@ -50,7 +50,7 @@ class IcatRestAuthentication_TestCase(TestCase):
         with self.assertRaises(exceptions.AuthenticationFailed):
             icatrestauth.IcatRestAuthentication.authenticate(self, self.mock_request)
 
-    @patch("icat_hooks.icatrestauth.authenticate", autospec=True)
+    @patch("subscriptions.icatrestauth.authenticate", autospec=True)
     def test_authenticate_success(self, mock_authenticate):
         mock_authenticate.return_value = self.mock_auth_user
 

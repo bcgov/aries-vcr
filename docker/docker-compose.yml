@@ -120,7 +120,7 @@ services:
     volumes:
       - ../server/tob-api/tob_api:/home/indy/tob_api
       - ../server/tob-api/api_v2:/home/indy/api_v2
-      - ../server/tob-api/icat_hooks:/home/indy/icat_hooks
+      - ../server/tob-api/subscriptions:/home/indy/subscriptions
       - ../server/tob-api/agent_webhooks:/home/indy/agent_webhooks
       - tob-wallet:/home/indy/.indy_client/wallet
     networks:
@@ -246,7 +246,7 @@ services:
     volumes:
       - ../server/tob-api/tob_api:/home/indy/tob_api
       - ../server/tob-api/api_v2:/home/indy/api_v2
-      - ../server/tob-api/icat_hooks:/home/indy/icat_hooks
+      - ../server/tob-api/subscriptions:/home/indy/subscriptions
       - ../server/tob-api/agent_webhooks:/home/indy/agent_webhooks
       - tob-wallet:/home/indy/.indy_client/wallet
     networks:

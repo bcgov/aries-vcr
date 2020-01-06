@@ -14,7 +14,7 @@ from django.db import DEFAULT_DB_ALIAS, transaction
 from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime
-from icat_hooks.models.HookableCredential import HookableCredential
+from subscriptions.models.HookableCredential import HookableCredential
 
 from api_v2.models.Address import Address
 from api_v2.models.Attribute import Attribute

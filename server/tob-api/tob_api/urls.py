@@ -17,7 +17,7 @@ base_patterns = [
 ]
 
 hook_patterns = [
-    path("hooks/", include("icat_hooks.urls"), name="subscriptions"),
+    path("hooks/", include("subscriptions.urls"), name="subscriptions"),
     path("agentcb/", include("agent_webhooks.urls"), name="agent-callback"),
 ]
 

@@ -1,4 +1,4 @@
-from icat_hooks.views import (
+from subscriptions.views import (
     RegistrationCreateViewSet,
     RegistrationViewSet,
     SubscriptionViewSet,

@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core import exceptions
-from icat_hooks.models.HookUser import HookUser
+from subscriptions.models.HookUser import HookUser
 from rest_framework import serializers
 from rest_hooks.models import Hook
 
@@ -111,7 +111,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.groups.add(get_subscribers_group())
         user.save()
 
-        # create icat_hooks user
+        # create subscriptions user
         hookuser_data = validated_data
         hookuser_data["user"] = user
         hookuser_data["registration_expiry"] = get_password_expiry()

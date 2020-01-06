@@ -146,7 +146,7 @@ class Migration(migrations.Migration):
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="credential_subscription",
-                        to="icat_hooks.CredentialHook",
+                        to="subscriptions.CredentialHook",
                     ),
                 ),
                 (

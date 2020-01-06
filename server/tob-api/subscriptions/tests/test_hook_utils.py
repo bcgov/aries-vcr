@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from icat_hooks import hook_utils
-from icat_hooks.models import CredentialHook, HookableCredential, HookUser, Subscription
+from subscriptions import hook_utils
+from subscriptions.models import CredentialHook, HookableCredential, HookUser, Subscription
 
 from api_v2.models import CredentialType, Issuer, Schema
 
@@ -39,7 +39,7 @@ class HookUtils_ValidRegistration_TestCase(TestCase):
 
     def test_registration_expired(self):
 
-        with patch("icat_hooks.hook_utils.deactivate_hook") as deactivate_hook:
+        with patch("subscriptions.hook_utils.deactivate_hook") as deactivate_hook:
 
             credhook = CredentialHook.objects.get(id=1)
             isValid = hook_utils.is_registration_valid(credhook)
@@ -51,7 +51,7 @@ class HookUtils_ValidRegistration_TestCase(TestCase):
 
     def test_registration_valid(self):
 
-        with patch("icat_hooks.hook_utils.deactivate_hook") as deactivate_hook:
+        with patch("subscriptions.hook_utils.deactivate_hook") as deactivate_hook:
 
             credhook = CredentialHook.objects.get(id=2)
             isValid = hook_utils.is_registration_valid(credhook)
@@ -157,7 +157,7 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
             hook=self.invalidhook, subscription_type="Invalid", owner_id=hookUser.id
         )
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
     def test_invalid_subscription(self, mock_is_reg_valid):
 
         mock_is_reg_valid.return_value = True
@@ -167,8 +167,8 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
             hook_utils.find_and_fire_hook(self.event_name + "-invalid", instance)
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
-    @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.models.CredentialHook.deliver_hook", autospec=True)
     def test_new_subscription_success(self, mock_deliver_hook, mock_is_reg_valid):
         mock_is_reg_valid.return_value = True
 
@@ -180,8 +180,8 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         mock_deliver_hook.assert_called_once_with(self.newhook, instance)
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
-    @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.models.CredentialHook.deliver_hook", autospec=True)
     def test_stream_subscription_no_corp_num_no_cred_type(
         self, mock_deliver_hook, mock_is_reg_valid
     ):
@@ -193,8 +193,8 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         assert not mock_deliver_hook.called
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
-    @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.models.CredentialHook.deliver_hook", autospec=True)
     def test_stream_subscription_no_corp_num(
         self, mock_deliver_hook, mock_is_reg_valid
     ):
@@ -208,8 +208,8 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         assert not mock_deliver_hook.called
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
-    @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.models.CredentialHook.deliver_hook", autospec=True)
     def test_stream_subscription_no_cred_type(
         self, mock_deliver_hook, mock_is_reg_valid
     ):
@@ -221,8 +221,8 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         assert not mock_deliver_hook.called
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
-    @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.models.CredentialHook.deliver_hook", autospec=True)
     def test_stream_subscription_success(self, mock_deliver_hook, mock_is_reg_valid):
         mock_is_reg_valid.return_value = True
 
@@ -236,8 +236,8 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         mock_deliver_hook.assert_called_once_with(self.streamhook, instance)
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
-    @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.models.CredentialHook.deliver_hook", autospec=True)
     def test_topic_subscription_no_corp_num(self, mock_deliver_hook, mock_is_reg_valid):
         mock_is_reg_valid.return_value = True
 
@@ -247,8 +247,8 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
 
         assert not mock_deliver_hook.called
 
-    @patch("icat_hooks.hook_utils.is_registration_valid", autospec=True)
-    @patch("icat_hooks.models.CredentialHook.deliver_hook", autospec=True)
+    @patch("subscriptions.hook_utils.is_registration_valid", autospec=True)
+    @patch("subscriptions.models.CredentialHook.deliver_hook", autospec=True)
     def test_topic_subscription_success(self, mock_deliver_hook, mock_is_reg_valid):
         mock_is_reg_valid.return_value = True
 

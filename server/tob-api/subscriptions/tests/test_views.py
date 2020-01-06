@@ -2,7 +2,7 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
-from icat_hooks.models.Subscription import Subscription
+from subscriptions.models.Subscription import Subscription
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -11,7 +11,7 @@ from api_v2.models.Issuer import Issuer
 from api_v2.models.Schema import Schema
 
 
-class Icat_Hooks_Views_RegistrationCreateViewSet_TestCase(APITestCase):
+class Subscriptions_Hooks_Views_RegistrationCreateViewSet_TestCase(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username="testuser", password="password"
@@ -39,7 +39,7 @@ class Icat_Hooks_Views_RegistrationCreateViewSet_TestCase(APITestCase):
         client.logout()
 
 
-class Icat_Hooks_Views_RegistrationViewSet_TestCase(APITestCase):
+class Subscriptions_Hooks_Views_RegistrationViewSet_TestCase(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username="testuser", password="password"
@@ -171,7 +171,7 @@ class Icat_Hooks_Views_RegistrationViewSet_TestCase(APITestCase):
         client.logout()
 
 
-class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
+class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username="testuser", password="password"
@@ -235,7 +235,7 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         )
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create(self, mock_url_check):
@@ -265,7 +265,7 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_get_all(self, mock_url_check):
@@ -301,7 +301,7 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_get_by_id(self, mock_url_check):
@@ -331,7 +331,7 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_put(self, mock_url_check):
@@ -369,7 +369,7 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_patch(self, mock_url_check):
@@ -401,7 +401,7 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_delete(self, mock_url_check):

@@ -7,7 +7,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [("icat_hooks", "0002_auto_20190409_1050")]
+    dependencies = [("subscriptions", "0002_auto_20190409_1050")]
 
     operations = [
         migrations.AddField(

@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     "api_v2",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
-    "icat_hooks",  # only required when using webhook subscriptions
+    "subscriptions",  # only required when using webhook subscriptions
     "django_nose",
 ]
 
@@ -309,17 +309,17 @@ if custom_settings_file.exists():
 ################################################################################################
 
 # django-rest-hooks settings
-AUTHENTICATION_BACKENDS = ["icat_hooks.icatrestauth.IcatAuthBackend"]
+AUTHENTICATION_BACKENDS = ["subscriptions.icatrestauth.IcatAuthBackend"]
 
-HOOK_DELIVERER = "icat_hooks.tasks.deliver_hook_wrapper"
+HOOK_DELIVERER = "subscriptions.tasks.deliver_hook_wrapper"
 
-HOOK_CUSTOM_MODEL = "icat_hooks.models.CredentialHook"
+HOOK_CUSTOM_MODEL = "subscriptions.models.CredentialHook"
 
-HOOK_FINDER = "icat_hooks.hook_utils.find_and_fire_hook"
+HOOK_FINDER = "subscriptions.hook_utils.find_and_fire_hook"
 
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
-    "hookable_cred.added": "icat_hooks.HookableCredential.created+"
+    "hookable_cred.added": "subscriptions.HookableCredential.created+"
 }
 
 # celery settings
