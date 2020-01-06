@@ -16,7 +16,7 @@ export interface IAdvancedSearchOption {
 @Component({
   selector: 'app-advanced-search',
   templateUrl: '../../themes/_active/search/advanced-search.component.html',
-  styleUrls: ['./advanced-search.component.scss'],
+  styleUrls: ['../../themes/_active/search/advanced-search.component.scss'],
 })
 export class AdvancedSearchComponent implements OnInit {
   title: string;
