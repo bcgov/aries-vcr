@@ -18,7 +18,7 @@
     <span class="fa fa-search" *ngIf="!loading"></span>
   </button>
 </div>
-<a [routerLink]="['/en/advanced-search']" routerLinkActive="router-link-active">Advanced Search</a>
+<a (click)="advancedSearch()" routerLinkActive="router-link-active">Advanced Search</a>
 
 <!--
 <div [ngClass]="{ 'large-search': true, active: focused }">

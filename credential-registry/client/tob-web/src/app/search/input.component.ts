@@ -4,6 +4,7 @@ import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } f
 import { GeneralDataService } from 'app/general-data.service';
 import { HttpService } from 'app/core/services/http.service';
 import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
+import { Router } from '@angular/router';
 
 export interface ICredentialTypeOption {
   id?: number;
@@ -46,7 +47,6 @@ export class SearchInputComponent implements AfterViewInit {
   }
 
   setCredentialType(id: number) {
-    console.log('change', id);
     // credential_type_id=1
     this.credTypeChange.emit(id);
   }
@@ -78,13 +78,17 @@ export class SearchInputComponent implements AfterViewInit {
   @Input() set loading(val: boolean) {
     this._loading = val;
   }
-  constructor(private _renderer: Renderer2, private _dataService: GeneralDataService, private httpSvc: HttpService) {}
+  constructor(
+    private _renderer: Renderer2,
+    private _dataService: GeneralDataService,
+    private httpSvc: HttpService,
+    private router: Router,
+  ) {}
 
   async ngOnInit() {
     const $categories = this.httpSvc
       .httpGetRequest<ICredentialTypeResult>('v2/credentialtype')
       .pipe(map(results => results.results.map(credType => ({ id: credType.id, description: credType.description }))));
-    $categories.subscribe(obs => console.log(obs));
     this.$credentialTypeOptions = $categories;
   }
 
@@ -170,5 +174,11 @@ export class SearchInputComponent implements AfterViewInit {
     this.value = val;
     this.updateQuery(val);
     this.acceptInput();
+  }
+
+  advancedSearch() {
+    const query = this._input.nativeElement.value;
+    const nav = '/en/advanced-search';
+    query ? this.router.navigate([nav], { queryParams: { query } }) : this.router.navigate([nav]);
   }
 }

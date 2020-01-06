@@ -7,6 +7,7 @@ import { ICredentialTypeOption } from './input.component';
 import { ISelectOption } from 'app/shared/components/select/select.component';
 import { FormGroup, FormControl } from '@angular/forms';
 import { GeneralDataService } from 'app/general-data.service';
+import { ActivatedRoute } from '@angular/router';
 
 export interface IAdvancedSearchOption {
   label: string;
@@ -61,7 +62,7 @@ export class AdvancedSearchComponent implements OnInit {
   yesNoOptions: ISelectOption[];
   fg: FormGroup;
 
-  constructor(private httpSvc: HttpService, private dataSvc: GeneralDataService) {
+  constructor(private httpSvc: HttpService, private dataSvc: GeneralDataService, private route: ActivatedRoute) {
     this.title = 'Advanced Search';
 
     this.yesNoOptions = [
@@ -88,10 +89,12 @@ export class AdvancedSearchComponent implements OnInit {
     });
 
     this.fg = fg;
-    fg.valueChanges.subscribe(obs => console.log('fg change', obs));
   }
 
   ngOnInit() {
+    const query = this.route.snapshot.queryParamMap.get('query');
+    this.fg.controls.text.patchValue(query);
+    this.fg.updateValueAndValidity();
     const $categories = this.httpSvc
       .httpGetRequest<ICredentialTypeResult>('credentialtype')
       .pipe(
