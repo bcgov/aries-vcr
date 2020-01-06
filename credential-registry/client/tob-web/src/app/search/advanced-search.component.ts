@@ -7,7 +7,7 @@ import { ICredentialTypeOption } from './input.component';
 import { ISelectOption } from 'app/shared/components/select/select.component';
 import { FormGroup, FormControl } from '@angular/forms';
 import { GeneralDataService } from 'app/general-data.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export interface IAdvancedSearchOption {
   label: string;
@@ -25,7 +25,7 @@ export interface IAdvancedSearchOption {
         <span></span>
         <h3 class="header">What this search type does</h3>
       </div>
-      <form [formGroup]="fg">
+      <form [formGroup]="fg" *ngIf="$credentialTypeOptions | async as options">
         <app-advanced-search-row [label]="searchOptions[0].label" [helper]="searchOptions[0].helper">
           <input
             class="form-control"
@@ -34,18 +34,13 @@ export interface IAdvancedSearchOption {
             (selectItem)="typeaheadSelected($event)"
           />
         </app-advanced-search-row>
-        <app-advanced-search-row
-          formControlName="type"
-          [label]="searchOptions[1].label"
-          [helper]="searchOptions[1].helper"
-          *ngIf="$credentialTypeOptions | async as options"
-        >
-          <app-select [options]="options" [selected]="credTypeSelected"></app-select>
+        <app-advanced-search-row [label]="searchOptions[1].label" [helper]="searchOptions[1].helper">
+          <app-select formControlName="type" [options]="options" [selected]="credTypeSelected"></app-select>
         </app-advanced-search-row>
         <app-advanced-search-row [label]="searchOptions[2].label" [helper]="searchOptions[2].helper">
           <app-select formControlName="archived" [options]="yesNoOptions" [selected]="yesNoSelected"></app-select>
         </app-advanced-search-row>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" (click)="submit(fg.value)">
           Advanced Search
         </button>
       </form>
@@ -63,7 +58,12 @@ export class AdvancedSearchComponent implements OnInit {
   yesNoOptions: ISelectOption[];
   fg: FormGroup;
 
-  constructor(private httpSvc: HttpService, private dataSvc: GeneralDataService, private route: ActivatedRoute) {
+  constructor(
+    private httpSvc: HttpService,
+    private dataSvc: GeneralDataService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
     this.title = 'Advanced Search';
 
     this.yesNoOptions = [
@@ -128,5 +128,13 @@ export class AdvancedSearchComponent implements OnInit {
     const val = evt.item;
     this.fg.controls.text.patchValue(val);
     this.fg.updateValueAndValidity({ emitEvent: true });
+  }
+
+  submit(value: { text: string; type: string; archived: string }) {
+    const { text: query, archived: inactive, type: credential_type_id } = value;
+    this.router.navigate(['../search/name'], {
+      relativeTo: this.route,
+      queryParams: { query, inactive, credential_type_id },
+    });
   }
 }
