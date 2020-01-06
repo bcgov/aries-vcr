@@ -18,6 +18,7 @@ export interface IAdvancedSearchOption {
   selector: 'app-advanced-search',
   template: `
     <section class="container" id="home">
+      <app-breadcrumb></app-breadcrumb>
       <h2>{{ title }}</h2>
       <div class="header-row">
         <h3 class="header">Search by...</h3>
