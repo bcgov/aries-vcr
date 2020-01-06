@@ -31,6 +31,7 @@
     - [Starter Kits](#starter-kits)
       - [Credential Registry Holder-Prover](#credential-registry-holder-prover)
       - [Agent Issuer-Verifier](#agent-issuer-verifier)
+  - [OpenAPI](#openapi)
 - [Endnotes](#endnotes)
 
 # Introduction
@@ -194,6 +195,9 @@ For a broader overview of Hyperledger an EdX course is available [here](https://
 
 #### Agent Issuer-Verifier
 
+## OpenAPI
+
+drf-yasg is used to publish a OpenAPI 2.0 spec of the API. Until a 3.x spec generator is available, it is possible to download the up-to-date spec from [here](https://orgbook.gov.bc.ca/api/?format=openapi) and run it through a [2-to-3 converter](https://mermade.org.uk/openapi-converter).
 
 # Endnotes
 
@@ -201,3 +205,4 @@ For a broader overview of Hyperledger an EdX course is available [here](https://
 
 <b id="f2">2:</b> A verifiable credential is a tamper-evident credential that has authorship that can be cryptographically verified. Source: [W3C
 Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/#dfn-credential) [↩](#a2)
+
