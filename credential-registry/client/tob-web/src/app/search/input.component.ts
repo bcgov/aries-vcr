@@ -185,7 +185,9 @@ export class SearchInputComponent implements AfterViewInit {
 
   advancedSearch() {
     const query = this._input.nativeElement.value;
-    const nav = '/en/advanced-search';
+    const lang = this._dataService.language;
+
+    const nav = `/${lang}/advanced-search`;
     query ? this.router.navigate([nav], { queryParams: { query } }) : this.router.navigate([nav]);
   }
 }

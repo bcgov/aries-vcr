@@ -3,7 +3,6 @@ import { HttpService } from 'app/core/services/http.service';
 import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
 import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { ICredentialTypeOption } from './input.component';
 import { ISelectOption } from 'app/shared/components/select/select.component';
 import { FormGroup, FormControl } from '@angular/forms';
 import { GeneralDataService } from 'app/general-data.service';
@@ -16,36 +15,7 @@ export interface IAdvancedSearchOption {
 
 @Component({
   selector: 'app-advanced-search',
-  template: `
-    <section class="container" id="home">
-      <app-breadcrumb></app-breadcrumb>
-      <h2>{{ title }}</h2>
-      <div class="header-row">
-        <h3 class="header">Search by...</h3>
-        <span></span>
-        <h3 class="header">What this search type does</h3>
-      </div>
-      <form [formGroup]="fg" *ngIf="$credentialTypeOptions | async as options">
-        <app-advanced-search-row [label]="searchOptions[0].label" [helper]="searchOptions[0].helper">
-          <input
-            class="form-control"
-            formControlName="text"
-            [ngbTypeahead]="typeaheadSearch"
-            (selectItem)="typeaheadSelected($event)"
-          />
-        </app-advanced-search-row>
-        <app-advanced-search-row [label]="searchOptions[1].label" [helper]="searchOptions[1].helper">
-          <app-select formControlName="type" [options]="options" [selected]="credTypeSelected"></app-select>
-        </app-advanced-search-row>
-        <app-advanced-search-row [label]="searchOptions[2].label" [helper]="searchOptions[2].helper">
-          <app-select formControlName="archived" [options]="yesNoOptions" [selected]="yesNoSelected"></app-select>
-        </app-advanced-search-row>
-        <button type="submit" class="btn btn-primary" (click)="submit(fg.value)">
-          Advanced Search
-        </button>
-      </form>
-    </section>
-  `,
+  templateUrl: '../../themes/_active/search/advanced-search.component.html',
   styleUrls: ['./advanced-search.component.scss'],
 })
 export class AdvancedSearchComponent implements OnInit {
@@ -102,7 +72,6 @@ export class AdvancedSearchComponent implements OnInit {
         map(results => results.results.map(credType => ({ value: credType.id, description: credType.description }))),
       );
     this.$credentialTypeOptions = $categories;
-
     /* TODO: Parameterize these to include a method of defining the input option */
     const searchOptions = [
       { label: 'name', helper: 'Search by the name of the organization.' },
@@ -132,6 +101,7 @@ export class AdvancedSearchComponent implements OnInit {
 
   submit(value: { text: string; type: string; archived: string }) {
     const { text: query, archived: inactive, type: credential_type_id } = value;
+
     this.router.navigate(['../search/name'], {
       relativeTo: this.route,
       queryParams: { query, inactive, credential_type_id },
