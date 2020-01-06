@@ -5,13 +5,13 @@ import { Model } from '../data-types';
 import { GeneralDataService } from '../general-data.service';
 
 @Component({
-  selector: "attribute-list",
-  templateUrl: "../../themes/_active/util/attribute-list.component.html",
-  styleUrls: ["../../themes/_active/cred/cred.scss"]
+  selector: 'attribute-list',
+  templateUrl: '../../themes/_active/util/attribute-list.component.html',
+  styleUrls: ['../../themes/_active/cred/cred.scss'],
 })
 export class AttributeListComponent {
   @Input() byType: string[];
-  @Input() style: string = "table";
+  @Input() style: string = 'table';
 
   protected _rows: Model.Attribute[] = [];
 
@@ -35,7 +35,7 @@ export class AttributeListComponent {
         let typeLabels = {};
         for (let labelKey in trLabels) {
           let label = trLabels[labelKey];
-          if (label && label.substring(0, 2) != "??") typeLabels[attrLabels[labelKey]] = label;
+          if (label && label.substring(0, 2) != '??') typeLabels[attrLabels[labelKey]] = label;
         }
         if (this.byType) {
           for (let type of this.byType) {
@@ -57,6 +57,10 @@ export class AttributeListComponent {
   }
 
   getAttributeLabel(row: any) {
-    return this._dataService.translateClaimLabel(row.attr.credential_type_id, row.attr.type, row.label);
+    console.log('the row', row);
+    const label = this._dataService.translateClaimLabel(row.attr.credential_type_id, row.attr.type, row.label);
+    console.log('the label', label);
+
+    return label;
   }
 }

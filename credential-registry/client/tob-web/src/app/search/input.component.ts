@@ -5,6 +5,7 @@ import { GeneralDataService } from 'app/general-data.service';
 import { HttpService } from 'app/core/services/http.service';
 import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
 import { Router } from '@angular/router';
+import { AppConfigService } from 'app/app-config.service';
 
 export interface ICredentialTypeOption {
   id?: number;
@@ -32,6 +33,8 @@ export class SearchInputComponent implements AfterViewInit {
   protected _lastQuery: string;
   protected _loading: boolean = false;
   protected _query: string = '';
+
+  tobTheme: string;
 
   inactive = false;
   $credentialTypeOptions: Observable<ICredentialTypeOption[]>;
@@ -83,6 +86,7 @@ export class SearchInputComponent implements AfterViewInit {
     private _dataService: GeneralDataService,
     private httpSvc: HttpService,
     private router: Router,
+    private configSvc: AppConfigService,
   ) {}
 
   async ngOnInit() {
@@ -127,6 +131,9 @@ export class SearchInputComponent implements AfterViewInit {
     this._renderer.listen(this._button.nativeElement, 'click', event => {
       this.acceptInput();
     });
+
+    const theme = this.configSvc.getConfig().TOB_THEME;
+    this.tobTheme = theme;
   }
 
   protected acceptInput() {

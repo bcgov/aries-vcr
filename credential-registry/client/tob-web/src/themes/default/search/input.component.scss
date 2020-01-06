@@ -69,8 +69,13 @@ $input-background: theme-color(light);
     }
   }
 }
-a {
+tob {
   color: white !important;
+}
+
+a:hover {
+  cursor: pointer;
+  text-decoration: underline !important;
 }
 
 //place all overrides for a specific theme in this file inside your theme/search directory

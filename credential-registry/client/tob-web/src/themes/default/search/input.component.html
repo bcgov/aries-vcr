@@ -18,7 +18,9 @@
     <span class="fa fa-search" *ngIf="!loading"></span>
   </button>
 </div>
-<a (click)="advancedSearch()" routerLinkActive="router-link-active">Advanced Search</a>
+<a [ngClass]="{ 'text-white': tobTheme === 'bcgov' }" (click)="advancedSearch()" routerLinkActive="router-link-active"
+  >Advanced Search</a
+>
 
 <!--
 <div [ngClass]="{ 'large-search': true, active: focused }">
