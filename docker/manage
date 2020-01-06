@@ -172,7 +172,7 @@ build-web() {
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
-      '../client/tob-web' \
+      '../client' \
       'nodejs-build' \
       'angular-on-nginx'
   else
@@ -190,7 +190,7 @@ build-web() {
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
-      '../client/tob-web' \
+      '../client' \
       'nodejs-build' \
       'angular-on-nginx'
   fi
@@ -221,7 +221,7 @@ build-web-dev() {
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../client/tob-web' \
+      '../client' \
       'nodejs-build' \
       'angular-dev'
   else
@@ -238,7 +238,7 @@ build-web-dev() {
       -e "TOB_THEME_PATH=${TOB_THEME_PATH_DEV}" \
       -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
       -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
-      '../client/tob-web' \
+      '../client' \
       'nodejs-build' \
       'angular-dev'
   fi
@@ -525,7 +525,7 @@ deleteVolumes() {
   fi
 
   echo "Removing build cache ..."
-  rm -Rf ../client/tob-web/.cache
+  rm -Rf ../client/.cache
 }
 
 registerDids() {
