@@ -22,6 +22,12 @@ from rest_framework.decorators import (
 
 LOGGER = logging.getLogger(__name__)
 
+# need to specify an env variable RECORD_TIMINGS=True to get method timings
+RECORD_TIMINGS = os.getenv("RECORD_TIMINGS", "True").lower() == "true"
+
+timing_lock = threading.Lock()
+timings = {}
+
 
 def fetch_custom_settings(*args):
     _values = {}
@@ -102,14 +108,6 @@ def solr_counts():
     except SolrError:
         LOGGER.exception("Error when retrieving quickload counts from Solr")
         return False
-
-
-# need to specify an env variable RECORD_TIMINGS=True to get method timings
-RECORD_TIMINGS = os.getenv("RECORD_TIMINGS", "True").lower() == "true"
-
-timing_lock = threading.Lock()
-timings = {}
-
 
 @swagger_auto_schema(
     method="get", operation_id="api_v2_status_reset", operation_description="quick load"
