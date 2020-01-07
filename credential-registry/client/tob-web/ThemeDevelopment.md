@@ -1,12 +1,12 @@
 ## Theme Support 
 
-TheOrgBook's UI has been divided into four areas/components as shown below and each area can be customized separately. The *app.component* defines the overall page layout and margins.
+The Credential Registry's UI has been divided into four areas/components as shown below and each area can be customized separately. The *app.component* defines the overall page layout and margins.
 
-![TheOrgBook UI areas](screenshot_mainpage.png "TheOrgBook UI areas")
+![The Credential Registry UI areas](screenshot_mainpage.png "The Credential Registry UI areas")
 
-The theme design elements (i.e. css files, images, html templates) are stored at two places: under the **themes/default** directory that provides default styles and under the directory with the theme name (i.e. themes/ongov) that contains overrides for the default styles. The default styles are pulled from Government of BC design package *mygovbc-bootstrap-theme* that is included as a *node_module* in TheOrgBook app. 
+The theme design elements (i.e. css files, images, html templates) are stored at two places: under the **themes/default** directory that provides default styles and under the directory with the theme name (i.e. themes/ongov) that contains overrides for the default styles. The default styles are pulled from Government of BC design package *mygovbc-bootstrap-theme* that is included as a *node_module* in The Credential Registry app. 
 
-The choice of the active theme is driven by the value of the environmental variable **$TOB_THEME** that has a default value of *bcgov*. At the build time the files from the $TOB_THEME theme directory are copied into the *themes/_active* directory and together with the default styles are used to apply look-n-feel to the running instance of TheOrgBook.
+The choice of the active theme is driven by the value of the environmental variable **$TOB_THEME** that has a default value of *bcgov*. At the build time the files from the $TOB_THEME theme directory are copied into the *themes/_active* directory and together with the default styles are used to apply look-n-feel to the running instance of The Credential Registry.
 
 For example, to change the active theme from BC to Ontario, set the value of $TOB_THEME to **ongov** and rebuild the code:
 
@@ -33,7 +33,7 @@ To add a new theme with a custom look-n-feel, create a sub-directory with the na
 
 Under the new theme directory, create **assets** directory to hold all images and content overrides. It is recommended to copy **i18n** directory with the content file from the default theme and modify as needed.
 
-Create a sub-directory for each of the four areas of TheOrgBook UI that needs to be customized (i.e. app-header) and add component files with custom styles and template overrides as needed.
+Create a sub-directory for each of the four areas of The Credential Registry UI that needs to be customized (i.e. app-header) and add component files with custom styles and template overrides as needed.
 
 <i>
 ongov<br/>
@@ -55,6 +55,6 @@ h1, h2, h3 {
 
 Customized main page with Ontario look-n-feel:
 
-![Ontario's TheOrgBook UI](TOBOntario_MainPage.png "Ontario's TheOrgBook UI")
+![Ontario's The Credential Registry UI](TOBOntario_MainPage.png "Ontario's The Credential Registry UI")
 
 
