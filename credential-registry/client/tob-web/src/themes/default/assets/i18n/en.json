@@ -50,7 +50,7 @@
     "history-link": "See history",
     "inactive": "Archived",
     "inactive-message": "This credential has been issued for archival purposes only. It does not represent a currently active registration, permit, or licence.",
-    "issuer": "Issuer",
+    "issuer": "Issuer / Credential End Date",
     "last-issued": "Last Issued",
     "last-updated": "Last Updated",
     "latest-link": "Go to the latest credential",

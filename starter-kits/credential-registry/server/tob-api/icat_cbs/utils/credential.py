@@ -88,6 +88,7 @@ class Credential(object):
 
     def __init__(self, credential_data: dict, request_metadata: dict = None,) -> None:
         self._raw = credential_data
+        self._thread_id = credential_data["thread_id"]
         self._schema_id = credential_data["schema_id"]
         self._cred_def_id = credential_data["cred_def_id"]
         self._rev_reg_id = credential_data["rev_reg_id"]
@@ -137,6 +138,15 @@ class Credential(object):
             str -- JSON representation of raw credential data
         """
         return _json.dumps(self._raw)
+
+    @property
+    def thread_id(self) -> str:
+        """Accessor for thread_id of receiving message
+
+        Returns:
+            str -- thread_id
+        """
+        return self._thread_id
 
     @property
     def schema_origin_did(self) -> str:
@@ -777,7 +787,8 @@ class CredentialManager(object):
             # We always create a new credential model to represent the current credential
             # The issuer may specify an effective date from a claim. Otherwise, defaults to now.
 
-            credential_id = str(uuid.uuid4())
+            # use thread_id as credential_id (should be unique and will be known to the issuer)
+            credential_id = credential.thread_id
             credential_args = {
                 "cardinality_hash": cardinality["hash"] if cardinality else None,
                 "credential_def_id": credential.cred_def_id,
