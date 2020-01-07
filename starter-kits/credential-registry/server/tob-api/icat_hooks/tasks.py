@@ -1,12 +1,13 @@
 import json
 import logging
-import time
+import os
 from datetime import datetime
 
 import pytz
 import requests
 from celery.exceptions import Retry
-from celery.result import AsyncResult
+# from celery.result import AsyncResult
+from celery.signals import celeryd_after_setup
 from celery.task import Task
 from django.conf import settings
 
@@ -17,17 +18,17 @@ from .utils import HookStep, TooManyRetriesException, log_webhook_execution_resu
 LOGGER = logging.getLogger(__name__)
 
 
-class DeliverHookError(Task):
-    def run(self, uuid):
-        # uuid = self.request.id
-        print("Task", uuid)
-        result = AsyncResult(uuid)
-        exc = result.get(propagate=False)
-        LOGGER.error(
-            "Task {0} raised exception: {1!r}\n{2!r}".format(
-                uuid, exc, result.traceback
-            )
-        )
+# class DeliverHookError(Task):
+#     def run(self, uuid):
+#         # uuid = self.request.id
+#         print("Task", uuid)
+#         # result = AsyncResult(uuid)
+#         # exc = result.get(propagate=False)
+#         # LOGGER.error(
+#         #     "Task {0} raised exception: {1!r}\n{2!r}".format(
+#         #         uuid, exc, result.traceback
+#         #     )
+#         # )
 
 
 class DeliverHook(Task):
@@ -40,12 +41,13 @@ class DeliverHook(Task):
         instance_id:   a possibly None "trigger" instance ID
         hook_id:       the ID of defining Hook object
         """
-        method_name = "web_hook.deliver"
 
         try:
             try:
                 # raise this exception here to test error handling
                 # raise Exception("Fake Error!!!!!")
+
+                log_webhook_execution_result(False, HookStep.FIRST_ATTEMPT)
 
                 LOGGER.info("Delivering hook to: {}".format(target))
                 response = requests.post(
@@ -64,17 +66,17 @@ class DeliverHook(Task):
                 subscription.error_count = 0
                 subscription.save()
 
-                log_webhook_execution_result(method_name, True)
+                log_webhook_execution_result(True)
 
             except requests.exceptions.HTTPError as e:
                 if self.request.retries < settings.HOOK_RETRY_THRESHOLD:
                     delay_in_seconds = settings.HOOK_RETRY_DELAY ** self.request.retries
-                    log_webhook_execution_result(method_name, True, HookStep.RETRY)
+                    log_webhook_execution_result(False, HookStep.RETRY)
                     self.retry(countdown=delay_in_seconds)
                 else:
                     # let the error propagate
                     LOGGER.debug("Too many retries, propagate error")
-                    log_webhook_execution_result(method_name, True, HookStep.RETRY_FAIL)
+                    log_webhook_execution_result(False, HookStep.RETRY_FAIL)
                     raise TooManyRetriesException(e)
         except Retry as e:
             # ignore this one
@@ -115,7 +117,7 @@ class DeliverHook(Task):
                     subscription.subscription_expiry = datetime.now()
                 subscription.save()
 
-                log_webhook_execution_result(method_name, False)
+                log_webhook_execution_result(False)
 
             except Exception as e2:
                 LOGGER.error("Failed to update subscription error status", e2)
@@ -133,6 +135,18 @@ def deliver_hook_wrapper(target, payload, instance, hook):
     kwargs = dict(
         target=target, payload=payload, instance_id=instance_id, hook_id=hook.id
     )
-    deliver_hook_error = DeliverHookError()
-    result = DeliverHook.apply_async(kwargs=kwargs, link_error=deliver_hook_error.s())
+    # deliver_hook_error = DeliverHookError()
+    # result = DeliverHook.apply_async(kwargs=kwargs, link_error=deliver_hook_error.s())
+    result = DeliverHook.apply_async(kwargs=kwargs)
     result.forget()
+
+
+@celeryd_after_setup.connect
+def capture_worker_name(sender, instance, **kwargs):
+    """
+    Retrieves the current worker name (it can be set when starting the worker with the -n flag)
+    and stores it in the app configuration.
+    """
+    if "CELERY_WORKER_NAME" not in os.environ:
+        os.environ["CELERY_WORKER_NAME"] = "{0}".format(sender)
+        LOGGER.info(f'Setting worker name: {os.environ["CELERY_WORKER_NAME"]}')

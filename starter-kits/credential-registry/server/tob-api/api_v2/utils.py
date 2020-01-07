@@ -7,7 +7,10 @@ import os
 import threading
 from datetime import datetime, timedelta
 
+from icat_hooks.models import CredentialHookStats
+
 from django.conf import settings
+from django.forms.models import model_to_dict
 from django.db import connection
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
@@ -135,7 +138,19 @@ def get_stats(request, *args, **kwargs):
     global timings
     timing_lock.acquire()
     try:
-        return JsonResponse(timings)
+        hook_worker_stats = {}
+        if "icat_hooks" in settings.INSTALLED_APPS:
+            # Only add hook stats IF the module is enabled/in use
+            for item in CredentialHookStats.objects.all():
+                hook_worker_stats[f"web_hook.worker_stats.{item.worker_id}"] = {
+                    "total_count": item.total_count,
+                    "attempt_count": item.attempt_count,
+                    "success_count": item.success_count,
+                    "fail_count": item.fail_count,
+                    "retry_count": item.retry_count,
+                    "retry_fail_count": item.retry_fail_count
+                }
+        return JsonResponse({**timings, **hook_worker_stats})
     finally:
         timing_lock.release()
 
@@ -149,7 +164,7 @@ def log_timing_method(method, start_time, end_time, success, data=None):
     timing_lock.acquire()
     try:
         elapsed_time = end_time - start_time
-        if not method in timings:
+        if method not in timings:
             timings[method] = {
                 "total_count": 1,
                 "success_count": 1 if success else 0,

@@ -1,9 +1,11 @@
+import logging
+import os
 import threading
-
 from enum import Enum
 
-timing_lock = threading.Lock()
-timings = {}
+from .models.CredentialHookStats import CredentialHookStats
+
+LOGGER = logging.getLogger(__name__)
 
 
 class HookStep(Enum):
@@ -16,31 +18,34 @@ class TooManyRetriesException(Exception):
     pass
 
 
-def log_webhook_execution_result(method, success, hook_step=None, data=None):
-    global timings
+def log_webhook_execution_result(success, hook_step=None, json_data=None):
 
-    timing_lock.acquire()
-    try:
-        if method not in timings:
-            timings[method] = {
-                "total_count": 1,
-                "success_count": 1 if success else 0,
-                "fail_count": 0 if success else 1,
-                "retry_count": 1 if hook_step == HookStep.RETRY else 0,
-                "retry_fail_count": 1 if hook_step == HookStep.RETRY_FAIL else 0,
-                "data": {},
-            }
-        else:
-            timings[method]["total_count"] = timings[method]["total_count"] + 1
-            if success:
-                timings[method]["success_count"] = timings[method]["success_count"] + 1
-            else:
-                timings[method]["fail_count"] = timings[method]["fail_count"] + 1
-            if hook_step == HookStep.RETRY:
-                timings[method]["retry_count"] = timings[method]["fail_count"] + 1
-            if hook_step == HookStep.RETRY_FAIL:
-                timings[method]["retry_fail_count"] = timings[method]["fail_count"] + 1
-        if data:
-            timings[method]["data"][str(timings[method]["total_count"])] = data
-    finally:
-        timing_lock.release()
+    worker_name = os.environ["CELERY_WORKER_NAME"]
+    if worker_name is None:
+        LOGGER.Warning(
+            "No name set for current worker, falling back to using OS-assigned thread ID"
+        )
+        worker_name = threading.get_native_id()
+
+    # Store stats for current worker
+    current_stats = (
+        CredentialHookStats.objects.filter(worker_id=worker_name).first()
+        or CredentialHookStats(worker_id=worker_name)
+    )
+
+    if success is False or hook_step is HookStep.FIRST_ATTEMPT:
+        current_stats.attempt_count = current_stats.attempt_count + 1
+    elif success is False and hook_step is HookStep.RETRY:
+        current_stats.retry_count = current_stats.retry_count + 1
+    elif success is False and hook_step is HookStep.RETRY_FAIL:
+        current_stats.retry_fail_count = current_stats.retry_fail_count + 1
+    elif success is False and hook_step is None:
+        current_stats.fail_count = current_stats.fail_count + 1
+    elif success is True:
+        current_stats.success_count = current_stats.success_count + 1
+    else:
+        LOGGER.Warning(
+            f"Unexpected argument combination: success={success}, hook_step={hook_step}"
+        )
+
+    current_stats.save()
