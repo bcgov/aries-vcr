@@ -19,6 +19,7 @@ export interface ICredentialTypeOption {
 })
 export class SearchInputComponent implements AfterViewInit {
   @Input() showInactive = false;
+  @Input() textColour = 'text-black';
   @ViewChild('queryInput') private _input: ElementRef;
   @ViewChild('queryButton') private _button: ElementRef;
   @Output() accepted = new EventEmitter<any>();
