@@ -236,11 +236,11 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             claim_val = credential["attrs"][attr]
             restrictions[0][f"attr::{attr}::value"] = claim_val
 
-        for attr in credential["attrs"]:
-            requested_attribute = {"name": attr, "restrictions": restrictions}
-            proof_request["requested_attributes"][
-                str(uuid.uuid4())
-            ] = requested_attribute
+        requested_attribute = {
+            "names": [attr for attr in credential["attrs"]],
+            "restrictions": restrictions,
+        }
+        proof_request["requested_attributes"]['self-verify-proof'] = requested_attribute
 
         proof_request_response = requests.post(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
