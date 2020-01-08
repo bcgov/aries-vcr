@@ -35,8 +35,10 @@ def log_webhook_execution_result(success, hook_step=None, json_data=None):
 
     if success is False or hook_step is HookStep.FIRST_ATTEMPT:
         current_stats.attempt_count = current_stats.attempt_count + 1
+        current_stats.total_count = current_stats.total_count + 1
     elif success is False and hook_step is HookStep.RETRY:
         current_stats.retry_count = current_stats.retry_count + 1
+        current_stats.total_count = current_stats.total_count + 1
     elif success is False and hook_step is HookStep.RETRY_FAIL:
         current_stats.retry_fail_count = current_stats.retry_fail_count + 1
     elif success is False and hook_step is None:
