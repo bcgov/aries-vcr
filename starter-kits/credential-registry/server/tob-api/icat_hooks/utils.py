@@ -22,7 +22,7 @@ def log_webhook_execution_result(success, hook_step=None, json_data=None):
 
     worker_name = os.environ["CELERY_WORKER_NAME"]
     if worker_name is None:
-        LOGGER.Warning(
+        LOGGER.warning(
             "No name set for current worker, falling back to using OS-assigned thread ID"
         )
         worker_name = threading.get_native_id()
@@ -44,7 +44,7 @@ def log_webhook_execution_result(success, hook_step=None, json_data=None):
     elif success is True:
         current_stats.success_count = current_stats.success_count + 1
     else:
-        LOGGER.Warning(
+        LOGGER.warning(
             f"Unexpected argument combination: success={success}, hook_step={hook_step}"
         )
 

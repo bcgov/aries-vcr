@@ -149,6 +149,7 @@ def handle_credentials(state, message):
             # raise Exception("Depliberate error to test problem reporting")
 
             credential_data = {
+                "thread_id": message["thread_id"],
                 "schema_id": raw_credential["schema_id"],
                 "cred_def_id": raw_credential["cred_def_id"],
                 "rev_reg_id": raw_credential["rev_reg_id"],
