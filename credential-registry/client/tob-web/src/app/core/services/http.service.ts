@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 const apiUrl = environment.API_URL;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpService {
   private baseUrl: string;
@@ -20,9 +20,8 @@ export class HttpService {
     this.baseUrl = apiUrl;
   }
 
-  httpGetRequest<T>(path: string) {
-    return this.http
-      .get<T>(`${this.baseUrl}${path}`)
-      .pipe(catchError(err => of(err)));
+  httpGetRequest<T>(path: string, params: { [param: string]: string } = {}): Observable<T> {
+    return this.http.get<T>(`${this.baseUrl}/${path}`, { params });
+    // .pipe(catchError(err => of(err)));
   }
 }

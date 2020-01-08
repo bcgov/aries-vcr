@@ -1,4 +1,4 @@
-@import "../common";
+@import '../common';
 
 $input-border-color: lighten(rgba(theme-color(primary), 0.8), 10%);
 $input-border-active: #5c8de6;
@@ -20,7 +20,8 @@ $input-background: theme-color(light);
     //color: darken($input-border-color, 10%);
     color: #fff;
   }
-  .fa, .load {
+  .fa,
+  .load {
     flex: 0 0 46px;
     font-size: 26px;
     height: 28px;
@@ -57,17 +58,25 @@ $input-background: theme-color(light);
   }
   &.active {
     // border-color: $input-border-active;
-    box-shadow: 0 0 0 $btn-focus-width rgba(theme-color(primary), .3);
+    box-shadow: 0 0 0 $btn-focus-width rgba(theme-color(primary), 0.3);
     .fa {
       //color: #7290e9;
       color: theme-color(light);
     }
     :host.dark-bg & {
       border-color: $input-border-color;
-      box-shadow: 0 0 0 $btn-focus-width rgba(theme-color(light), .4);
+      box-shadow: 0 0 0 $btn-focus-width rgba(theme-color(light), 0.4);
     }
   }
 }
+tob {
+  color: white !important;
+}
+
+a:hover {
+  cursor: pointer;
+  text-decoration: underline !important;
+}
 
 //place all overrides for a specific theme in this file inside your theme/search directory
-@import "../../_active/search/input.component.custom";
+@import '../../_active/search/input.component.custom';

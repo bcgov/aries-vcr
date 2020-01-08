@@ -16,7 +16,7 @@ export class GeneralDataService {
   private _recordCounts: { [key: string]: number } = {};
   private _currentResultSubj = new BehaviorSubject<Fetch.BaseResult<any>>(null);
   private _loaderSub: Subscription = null;
-  private _defaultTopicType = "registration";
+  private _defaultTopicType = 'registration';
   private _showDebugMsg = false;
   private _credTypeLang = {};
 
@@ -31,14 +31,14 @@ export class GeneralDataService {
   }
 
   getRequestUrl(path: string): string {
-    if (typeof path === "string" && path.match(/^(\/\/|\w+:\/\/)\w/)) {
+    if (typeof path === 'string' && path.match(/^(\/\/|\w+:\/\/)\w/)) {
       // absolute URL
       return path;
     }
     let root = (<any>window).testApiUrl || this.apiUrl;
 
     if (root) {
-      if (!root.endsWith("/")) root += "/";
+      if (!root.endsWith('/')) root += '/';
       return root + path;
     }
   }
@@ -50,19 +50,19 @@ export class GeneralDataService {
   loadJson(url, params?: HttpParams): Observable<Object> {
     return this._http.get(url, { params }).pipe(
       catchError(error => {
-        console.error("JSON load error", error);
+        console.error('JSON load error', error);
         return _throw(error);
-      })
+      }),
     );
   }
 
   postJson(url, payload, params?: HttpParams): Observable<Object> {
-    let headers = { "Content-Type": "application/json" };
+    let headers = { 'Content-Type': 'application/json' };
     return this._http.post(url, JSON.stringify(payload), { headers, params }).pipe(
       catchError(error => {
-        console.error("JSON load error", error);
+        console.error('JSON load error', error);
         return _throw(error);
-      })
+      }),
     );
   }
 
@@ -70,9 +70,9 @@ export class GeneralDataService {
     let body = this.makeHttpParams(params);
     return this._http.post(url, body).pipe(
       catchError(error => {
-        console.error("JSON load error", error);
+        console.error('JSON load error', error);
         return _throw(error);
-      })
+      }),
     );
   }
 
@@ -89,17 +89,17 @@ export class GeneralDataService {
         resolve(1);
         return;
       }
-      let baseurl = this.getRequestUrl("");
+      let baseurl = this.getRequestUrl('');
       //console.log('base url: ' + baseurl);
       if (!baseurl) {
-        reject("Base URL not defined");
+        reject('Base URL not defined');
         return;
       }
-      let req = this._http.get(baseurl + "quickload").pipe(
+      let req = this._http.get(baseurl + 'quickload').pipe(
         catchError(error => {
           console.error(error);
           return _throw(error);
-        })
+        }),
       );
       req.subscribe(
         (data: any) => {
@@ -126,7 +126,7 @@ export class GeneralDataService {
         },
         err => {
           reject(err);
-        }
+        },
       );
     });
   }
@@ -135,15 +135,18 @@ export class GeneralDataService {
     return this._recordCounts[type] || 0;
   }
 
-  autocomplete(term): Observable<Object> {
-    if (term === "" || typeof term !== "string") {
+  autocomplete(term, inactive: '' | boolean = false): Observable<Object> {
+    console.log('inactive', inactive);
+    if (term === '' || typeof term !== 'string') {
       return from([]);
     }
-    let params = new HttpParams().set("q", term);
-    return this.loadFromApi("search/autocomplete", params).pipe(
+    let params = new HttpParams().set('q', term).append('inactive', inactive.toString());
+
+    console.log(params);
+    return this.loadFromApi('search/autocomplete', params).pipe(
       map(response => {
         let ret = [];
-        for (let row of response["results"]) {
+        for (let row of response['results']) {
           let found = null;
           for (let name of row.names) {
             if (~name.text.toLowerCase().indexOf(term.toLowerCase())) {
@@ -158,7 +161,7 @@ export class GeneralDataService {
           }
         }
         return ret;
-      })
+      }),
     );
   }
 
@@ -178,7 +181,7 @@ export class GeneralDataService {
   }
 
   fixRecordId(id: number | string) {
-    if (typeof id === "number") id = "" + id;
+    if (typeof id === 'number') id = '' + id;
     return id;
   }
 
@@ -214,12 +217,12 @@ export class GeneralDataService {
   loadData<T, R extends Fetch.BaseResult<T>>(
     fetch: Fetch.BaseLoader<T, R>,
     path: string,
-    params?: { [key: string]: any }
+    params?: { [key: string]: any },
   ) {
     if (!params) params = {};
     if (!path)
       // fetch.loadNotFound
-      fetch.loadError("Undefined resource path");
+      fetch.loadError('Undefined resource path');
     else {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
@@ -240,7 +243,7 @@ export class GeneralDataService {
     let options = {
       credential_type_id: [],
       issuer_id: [],
-      "category:entity_type": []
+      'category:entity_type': [],
     };
     //console.log(options);
     if (fields) {
@@ -251,17 +254,17 @@ export class GeneralDataService {
             continue;
           let optidx = optname;
           let optval: Filter.Option = { label: optitem.text, value: optitem.value, count: optitem.count };
-          if (optname == "category") {
-            let optparts = optitem.value.split("::", 2);
+          if (optname == 'category') {
+            let optparts = optitem.value.split('::', 2);
             if (optparts.length == 2) {
-              optidx = optname + ":" + optparts[0];
+              optidx = optname + ':' + optparts[0];
               let lblkey = `category.${optparts[0]}.${optparts[1]}`;
               let label = this._translate.instant(lblkey);
               if (label === lblkey || label === `??${lblkey}??`) label = optparts[1];
               optval = {
                 label,
                 value: optparts[1],
-                count: optitem.count
+                count: optitem.count,
               };
             }
           }
@@ -293,10 +296,10 @@ export class GeneralDataService {
           console.error(error);
           resolve(null);
           return _throw(error);
-        })
+        }),
       );
       req.subscribe(data => {
-        console.log("delete result", data);
+        console.log('delete result', data);
         resolve(data);
       });
     });
@@ -312,7 +315,7 @@ export class GeneralDataService {
         },
         err => {
           observer.error(err);
-        }
+        },
       );
     });
   }
@@ -322,8 +325,9 @@ export class GeneralDataService {
       return of(null);
     }
     if (!this._credTypeLang[id]) {
-      this._credTypeLang[id] = this.loadCredentialTypeLanguage(id).pipe( //concat(
-        shareReplay(1)
+      this._credTypeLang[id] = this.loadCredentialTypeLanguage(id).pipe(
+        //concat(
+        shareReplay(1),
       ); /*,
         this._translate.onLangChange.pipe(
           switchMap((event) => null, (outer, inner) => { console.log(outer, inner); return outer; })
@@ -350,7 +354,7 @@ export class GeneralDataService {
   }
 
   translateClaimDescription(credTypeId, claimName, defVal?) {
-    let credLang = this.getCredentialTypeLanguageKey(credTypeId, "claim_descriptions");
+    let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_descriptions');
     return credLang.pipe(
       map(values => {
         let lang = this.language;
@@ -360,12 +364,12 @@ export class GeneralDataService {
         }
         if (ret === undefined) ret = defVal;
         return ret;
-      })
+      }),
     );
   }
 
   translateClaimLabel(credTypeId, claimName, defVal?) {
-    let credLang = this.getCredentialTypeLanguageKey(credTypeId, "claim_labels");
+    let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_labels');
     return credLang.pipe(
       map(values => {
         let lang = this.language;
@@ -375,12 +379,12 @@ export class GeneralDataService {
         }
         if (ret === undefined) ret = defVal;
         return ret;
-      })
+      }),
     );
   }
 
   translateCategoryLabel(credTypeId, catType, catValue) {
-    let credLang = this.getCredentialTypeLanguageKey(credTypeId, "category_labels");
+    let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'category_labels');
     let lbl = `category.${catType}.${catValue}`;
     return credLang.pipe(
       map(values => {
@@ -393,9 +397,9 @@ export class GeneralDataService {
       }),
       mergeMap(val => {
         if (val === undefined)
-          return this._translate.stream(lbl).pipe(map(lbl => (!lbl || lbl.substring(0, 2) == "??" ? catValue : lbl)));
+          return this._translate.stream(lbl).pipe(map(lbl => (!lbl || lbl.substring(0, 2) == '??' ? catValue : lbl)));
         return of(val);
-      })
+      }),
     );
   }
 }

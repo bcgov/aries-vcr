@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 export class AppConfigService {
   private _config = {};
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
   getConfig(): any {
     return this._config;

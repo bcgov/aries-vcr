@@ -1,0 +1,6 @@
+<select class="inline-select form-control" id="inlineFormCustomSelect" (change)="changeEvent($event.target.value)">
+  <ng-container *ngIf="options">
+    <option selected [value]="selected.value">{{ selected.description }}</option>
+    <option *ngFor="let option of options" [value]="option.value">{{ option.description | translate }}</option>
+  </ng-container>
+</select>
