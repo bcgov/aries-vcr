@@ -38,6 +38,16 @@ class Subscription(Auditable):
         null=True,
     )
 
+    # some stats to track
+    # date last hook was sent
+    last_sent_date = models.DateTimeField(blank=True, null=True)
+    # date of last hook error
+    last_error_date = models.DateTimeField(blank=True, null=True)
+    # cumulative errors since last success
+    error_count = models.IntegerField(default=0, blank=True, null=True)
+    # expire the subscription if we get too many errors
+    subscription_expiry = models.DateField(blank=True, null=True)
+
     def __str__(self):
         return (
             str(id)

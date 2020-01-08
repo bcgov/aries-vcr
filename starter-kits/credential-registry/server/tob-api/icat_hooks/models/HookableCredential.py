@@ -60,3 +60,6 @@ class HookableCredential(Auditable):
         db_table = "hookable_cred"
         # unique_together = (("corp_num", "credential_type"),)
         ordering = ("corp_num", "credential_type")
+        indexes = [
+            models.Index(fields=['corp_num', 'topic_status'], name='new_hook_idx'),
+        ]
