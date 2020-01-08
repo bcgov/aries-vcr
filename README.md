@@ -26,6 +26,7 @@
   - [Who is Indy Catalyst For](#who-is-indy-catalyst-for)
   - [Key Technical Elements](#key-technical-elements)
     - [Credential Registry](#credential-registry)
+    - [Web Hooks](#web-hooks)
     - [Agent](#agent)
     - [Agent Driver](#agent-driver)
     - [Starter Kits](#starter-kits)
@@ -164,27 +165,31 @@ Indy Catalyst components:
 
 ## Key Technical Elements
 
-For a quickstart guide on running the indy-catalyst project in development on your local machine follow the guide located [here](docs/README.md)
-
 ### Credential Registry
 
 TODO
 
 Credential Registry provides a set of RESTful web services you can use to query data from your third-party application, an introduction to use of these API's is available [here](docs/IndyCat-REST-Services.md).
 
-The credential registry is a controller for the holder-prover agent in context of Indy Catalyst.
+### Web Hooks
+
+Indy Catalyst provides a web hook facility for interested parties to subscribe to notifications for credential updates.
+
+There are 3 subscription types supported:
+
+- New - notification for any new credential (i.e. newly registered organization) of a specific type
+- Stream - any updates for a specific stream - organization (by topic id) and type
+- Topic - any updates for a specific organization (Topic)
+
+Interested parties must first register, which creates an ID and password they use to manage their subscriptions.  They can then add and remove subscriptions.
+
+They must also provide a REST endpoint for the notifications - they can provide an endpoint with their scubscription and/or an endpoint with each separate subscription.
+
+A test "echo" endpoint using the code at [echo-service](echo-service) will be started on `localhost:8000` when executing `./manage start`. The service can also be run separately in Play With Docker or Play With VON, and used as the endpoint for the web hooks.
+
+More details are available [here](docs/IndyCat-REST-Hooks.md).
 
 ### Agent
-
-For communication to the ledger and other entities who issue credentials & request verification the Indy Catalyst Project uses a Hyperledger Indy agent. The Hyperledger Indy agent included in Indy Catalyst is an Aca-Py agent.
-
-It's important to understand the relationship between an agent and a controller for this project.
-
-Specific technical details and documentation on HyperLedger Indy can be found [here](https:\\indy.readthedocs.io\en\latest\)
-
-For more technical details and documentation on the Aca-Py agent go [here](https:\\github.com\hyperledger\aries-cloudagent-python\)
-
-For a broader overview of Hyperledger an EdX course is available [here](https://www.edx.org/course/identity-in-hyperledger-aries-indy-and-ursa)
 
 ### Agent Driver
 
@@ -193,7 +198,6 @@ For a broader overview of Hyperledger an EdX course is available [here](https://
 #### Credential Registry Holder-Prover
 
 #### Agent Issuer-Verifier
-
 
 # Endnotes
 

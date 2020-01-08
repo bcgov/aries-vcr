@@ -1,10 +1,8 @@
+import json
 import logging
+import time
 
 import requests
-import json
-import time
-from datetime import datetime
-
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -12,10 +10,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api_v2.models.Credential import Credential as CredentialModel
+from api_v2.utils import log_timing_method
 from icat_cbs.utils.credential import Credential, CredentialManager
 from icat_cbs.utils.issuer import IssuerManager
-
-from api_v2.utils import log_timing_method
 
 LOGGER = logging.getLogger(__name__)
 
@@ -131,16 +128,19 @@ def handle_credentials(state, message):
 
     # global admin_url
     credential_exchange_id = message["credential_exchange_id"]
-    print(
-        "Credential: state=", state, ", credential_exchange_id=", credential_exchange_id
+    LOGGER.debug(
+        f'Credential: state="{state}" credential_exchange_id="{credential_exchange_id}"'
     )
+    response_data = {}
 
     try:
         if state == "offer_received":
-            print("After receiving credential offer, send credential request")
-            # resp = requests.post(admin_url + '/credential_exchange/' + credential_exchange_id + '/send-request')
-            # assert resp.status_code == 200
-            return Response("")
+            LOGGER.debug("After receiving credential offer, send credential request")
+            # no need to perform a task, we run the agent with the --auto-respond-credential-offer flag set
+            response_data = {
+                "success": True,
+                "details": f"Received offer on credential exchange {credential_exchange_id}",
+            }
 
         elif state == "credential_received":
             raw_credential = message["raw_credential"]
@@ -149,6 +149,7 @@ def handle_credentials(state, message):
             # raise Exception("Depliberate error to test problem reporting")
 
             credential_data = {
+                "thread_id": message["thread_id"],
                 "schema_id": raw_credential["schema_id"],
                 "cred_def_id": raw_credential["cred_def_id"],
                 "rev_reg_id": raw_credential["rev_reg_id"],
@@ -171,12 +172,16 @@ def handle_credentials(state, message):
             )
             resp.raise_for_status()
 
-            return Response({"success": True})
+            response_data = {
+                "success": True,
+                "details": f"Received credential with id {credential.credential_id}",
+            }
 
         # TODO other scenarios
         elif state == "stored":
-            print("credential stored")
+            LOGGER.debug("Credential Stored")
             # print(message)
+            response_data = {"success": True, "details": "Credential Stored"}
 
     except Exception as e:
         LOGGER.error(str(e))
@@ -189,7 +194,7 @@ def handle_credentials(state, message):
         resp.raise_for_status()
         return Response({"success": False, "error": str(e)})
 
-    return Response("")
+    return Response(response_data)
 
 
 def handle_presentations(state, message):

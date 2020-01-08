@@ -149,6 +149,10 @@ class SubscriptionSerializer(serializers.Serializer):
     )
     target_url = serializers.CharField(required=False, max_length=240)
     hook_token = serializers.CharField(required=False, max_length=240)
+    last_sent_date = serializers.ReadOnlyField()
+    last_error_date = serializers.ReadOnlyField()
+    error_count = serializers.ReadOnlyField()
+    subscription_expiry = serializers.ReadOnlyField()
 
     def validate_subscription_type(self, value):
         if value in SUBSCRIPTION_TYPES:
@@ -168,15 +172,15 @@ class SubscriptionSerializer(serializers.Serializer):
         )
         topic_source_id = data["topic_source_id"] if "topic_source_id" in data else None
         credential_type = data["credential_type"] if "credential_type" in data else None
-        if subscription_type == "New" and topic_source_id is None:
+        if subscription_type == "Topic" and topic_source_id is None:
             raise serializers.ValidationError(
-                "A topic id is required for subscription of type 'New'"
+                "A topic id is required for subscription of type 'Topic'."
             )
         if subscription_type == "Stream" and (
             topic_source_id is None or credential_type is None
         ):
             raise serializers.ValidationError(
-                "A topic id and a credential type are required for subscription of type 'Topic'"
+                "A topic id and a credential type are required for subscription of type 'Stream'."
             )
 
         # get current user from url
@@ -213,7 +217,7 @@ class SubscriptionSerializer(serializers.Serializer):
     def check_live_url(self, target_url, hook_token):
         if target_url is not None and hook_token is not None:
             head = {"Authorization": "Bearer " + hook_token}
-            data = {"subscription": "test"}
+            data = {"subscription": {"test": "test"}}
             response = requests.post(target_url, json=data, headers=head)
 
             if response.status_code != requests.codes.ok:
@@ -263,6 +267,11 @@ class SubscriptionSerializer(serializers.Serializer):
             subscription.target_url = validated_data["target_url"]
         if "target_url" in validated_data:
             subscription.target_url = validated_data["target_url"]
+
+        # automatically reset expiry date on update
+        print("Reset subscription expiry date")
+        subscription.subscription_expiry = None
+        subscription.error_count = 0
 
         subscription.save()
 

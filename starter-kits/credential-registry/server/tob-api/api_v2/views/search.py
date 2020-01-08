@@ -9,7 +9,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from haystack.query import RelatedSearchQuerySet
 from rest_framework import permissions
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from api_v2.models.Credential import Credential
@@ -216,7 +216,7 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
     ordering = "-score"
 
     # FacetMixin provides /facets
-    @list_route(methods=["get"], url_path="facets")
+    @action(detail=False, methods=["get"], url_path="facets")
     def facets(self, request):
         """
         We want facet_counts from the less-restricted queryset

@@ -205,9 +205,19 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
             },
             format="json",
         )
+        response_3 = client.post(
+            "/hooks/register",
+            data={
+                "email": "anony@mo.use",
+                "org_name": "Anony Mouse",
+                "credentials": {"username": "anony", "password": "mouse"},
+            },
+            format="json",
+        )
 
         self.registered_user_1 = json.loads(response_1.content)
         self.registered_user_2 = json.loads(response_2.content)
+        self.registered_user_nodata = json.loads(response_3.content)
 
         client.logout()
 
@@ -238,7 +248,97 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
-    def test_create(self, mock_url_check):
+    def test_create_invalid_type(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_1["credentials"]["username"]
+            ),
+            data={"subscription_type": "UnsupportedType"},
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+            "The status code does not match.",
+        )
+        self.assertEqual(
+            response.data["subscription_type"][0],
+            "Error not a valid subscription type",
+            "The error message does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_new_nohookurl(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_nodata["credentials"]["username"]
+            ),
+            data={"subscription_type": "New", "hook_token": self.hook_token_1,},
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+            "The status code does not match.",
+        )
+        self.assertEqual(
+            response.data["non_field_errors"][0],
+            "A target_url must be specified, no default value set in registration.",
+            "The error message does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_new_nohooktoken(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_nodata["credentials"]["username"]
+            ),
+            data={
+                "subscription_type": "New",
+                "target_url": "https://anon-solutions.ca/api/hook",
+            },
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+            "The status code does not match.",
+        )
+        self.assertEqual(
+            response.data["non_field_errors"][0],
+            "A hook-token must be specified, no default value set in registration.",
+            "The error message does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_new_valid(self, mock_url_check):
         mock_url_check.return_value = "SUCCESS"
 
         client = APIClient()
@@ -249,6 +349,164 @@ class Icat_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
             ),
             data={
                 "subscription_type": "New",
+                "target_url": "https://anon-solutions.ca/api/hook",
+                "hook_token": self.hook_token_1,
+            },
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+            "The status code does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_topic_noparam(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_1["credentials"]["username"]
+            ),
+            data={
+                "subscription_type": "Topic",
+                "target_url": "https://anon-solutions.ca/api/hook",
+                "hook_token": self.hook_token_1,
+            },
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+            "The status code does not match.",
+        )
+        self.assertEqual(
+            response.data["non_field_errors"][0],
+            "A topic id is required for subscription of type 'Topic'.",
+            "The error message does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_topic_valid(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_1["credentials"]["username"]
+            ),
+            data={
+                "subscription_type": "Topic",
+                "topic_source_id": "BC0123456",
+                "target_url": "https://anon-solutions.ca/api/hook",
+                "hook_token": self.hook_token_1,
+            },
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+            "The status code does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_stream_notopic(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_1["credentials"]["username"]
+            ),
+            data={
+                "subscription_type": "Stream",
+                "credential_type": "Test Schema",
+                "target_url": "https://anon-solutions.ca/api/hook",
+                "hook_token": self.hook_token_1,
+            },
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+            "The status code does not match.",
+        )
+        self.assertEqual(
+            response.data["non_field_errors"][0],
+            "A topic id and a credential type are required for subscription of type 'Stream'.",
+            "The error message does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_stream_noschema(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_1["credentials"]["username"]
+            ),
+            data={
+                "subscription_type": "Stream",
+                "topic_source_id": "BC0123456",
+                "target_url": "https://anon-solutions.ca/api/hook",
+                "hook_token": self.hook_token_1,
+            },
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+            "The status code does not match.",
+        )
+        self.assertEqual(
+            response.data["non_field_errors"][0],
+            "A topic id and a credential type are required for subscription of type 'Stream'.",
+            "The error message does not match.",
+        )
+        client.logout()
+
+    @patch(
+        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        autospec=True,
+    )
+    def test_create_stream_valid(self, mock_url_check):
+        mock_url_check.return_value = "SUCCESS"
+
+        client = APIClient()
+        client.force_authenticate(self.user)
+        response = client.post(
+            "/hooks/registration/{}/subscriptions".format(
+                self.registered_user_1["credentials"]["username"]
+            ),
+            data={
+                "subscription_type": "Stream",
                 "topic_source_id": "BC0123456",
                 "credential_type": "Test Schema",
                 "target_url": "https://anon-solutions.ca/api/hook",

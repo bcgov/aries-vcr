@@ -9,8 +9,9 @@ from django.conf import settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tob_api.settings")
 
 celery_broker = getattr(settings, "CELERY_BROKER_URL")
-print("Starting celery with broker", celery_broker)
-app = Celery("api_v2", broker=celery_broker)
+celery_backend = getattr(settings, "CELERY_TASK_BACKEND")
+print("Starting celery with broker", celery_broker, "and backend", celery_backend)
+app = Celery("api_v2", broker=celery_broker, backend=celery_backend)
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
