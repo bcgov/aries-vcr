@@ -181,7 +181,7 @@ def handle_credentials(state, message):
         elif state == "stored":
             LOGGER.debug("Credential Stored")
             # print(message)
-            response_data = {"success": True, "detials": "Credential Stored"}
+            response_data = {"success": True, "details": "Credential Stored"}
 
     except Exception as e:
         LOGGER.error(str(e))
