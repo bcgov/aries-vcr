@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "subscriptions",  # only required when using webhook subscriptions
+    "agent_webhooks",
     "django_nose",
 ]
 
