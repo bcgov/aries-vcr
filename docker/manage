@@ -298,7 +298,7 @@ build-api() {
     -e "PIP_NO_CACHE_DIR=" \
     -e "UPGRADE_PIP_TO_LATEST=true" \
     -v "${COMPOSE_PROJECT_NAME}_tob-pip-cache:/home/indy/.cache/pip" \
-    '../server/tob-api' \
+    '../server/app' \
     "$BASE_IMAGE" \
     'django'
 

@@ -118,10 +118,10 @@ services:
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       #- RECORD_TIMINGS=true
     volumes:
-      - ../server/tob-api/tob_api:/home/indy/tob_api
-      - ../server/tob-api/api_v2:/home/indy/api_v2
-      - ../server/tob-api/icat_hooks:/home/indy/icat_hooks
-      - ../server/tob-api/icat_cbs:/home/indy/icat_cbs
+      - ../server/app/app:/home/indy/app
+      - ../server/app/api_v2:/home/indy/api_v2
+      - ../server/app/subscriptions:/home/indy/subscriptions
+      - ../server/app/agent_webhooks:/home/indy/agent_webhooks
       - tob-wallet:/home/indy/.indy_client/wallet
     networks:
       - tob
@@ -244,10 +244,10 @@ services:
       - TOB_THEME=${TOB_THEME}
       - APP_SCRIPT=${APP_SCRIPT:-start-celery-worker.sh}
     volumes:
-      - ../server/tob-api/tob_api:/home/indy/tob_api
-      - ../server/tob-api/api_v2:/home/indy/api_v2
-      - ../server/tob-api/icat_hooks:/home/indy/icat_hooks
-      - ../server/tob-api/icat_cbs:/home/indy/icat_cbs
+      - ../server/app/app:/home/indy/app
+      - ../server/app/api_v2:/home/indy/api_v2
+      - ../server/app/subscriptions:/home/indy/subscriptions
+      - ../server/app/agent_webhooks:/home/indy/agent_webhooks
       - tob-wallet:/home/indy/.indy_client/wallet
     networks:
       - tob
