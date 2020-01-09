@@ -23,6 +23,7 @@ class Topic(Auditable):
     )
 
     _active_cred_ids = None
+    _active_cred_type_ids = None
 
     class Meta:
         db_table = "topic"
@@ -45,6 +46,15 @@ class Topic(Auditable):
                 .values_list("id", flat=True)
             )
         return self._active_cred_ids
+
+    def get_active_credential_type_ids(self):
+        if self._active_cred_type_ids is None:
+            self._active_cred_type_ids = set(
+                self.credentials.filter(latest=True, revoked=False)
+                .only("id", "topic_id")
+                .values_list("credential_type__id", flat=True)
+            )
+        return self._active_cred_type_ids
 
     def get_active_addresses(self):
         creds = self.get_active_credential_ids()
