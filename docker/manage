@@ -257,7 +257,7 @@ build-solr() {
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-    '../server/tob-solr/cores' \
+    '../server/solr/cores' \
     'solr-base' \
     'solr'
 }
@@ -407,7 +407,7 @@ configureEnvironment() {
   export POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
 
   # tob-solr
-  export CORE_NAME="the_org_book"
+  export CORE_NAME="credential_registry"
 
   # tob-api
   export APP_FILE=app-vonx.py
