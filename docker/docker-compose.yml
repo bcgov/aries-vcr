@@ -20,7 +20,7 @@ services:
     ports:
       - "${WEB_HTTP_PORT}:8080"
     depends_on:
-      - tob-api
+      - vcr-api
 
   #
   # tob-web-dev
@@ -48,10 +48,10 @@ services:
       - "../../../credential-registry/client/src:/opt/app-root/src/src"
       - "${TOB_THEME_PATH}:/tmp/tob-theme"
     depends_on:
-      - tob-api
+      - vcr-api
 
   #
-  # tob-api
+  # vcr-api
   #-------------------------------------------------
   # The API performs the migrations on the database
   # and updates the indexes in Solr.  Therefore
@@ -65,7 +65,7 @@ services:
   # of the configuration for details.  It would be
   # nice to implement a more deterministic solution.
   #
-  tob-api:
+  vcr-api:
     image: django
     environment:
       - APP_FILE=${APP_FILE}
