@@ -12,8 +12,8 @@ LOGGER = logging.getLogger(__name__)
 #def list_related_to(self, request, pk=None):
 #    # We load most at runtime because ORM isn't loaded at setup time
 #    from django.shortcuts import get_object_or_404
-#    from api_v2.views.rest import CustomTopicSerializer
-#    from api_v2.models.Topic import Topic
+#    from api.v2.views.rest import CustomTopicSerializer
+#    from api.v2.models.Topic import Topic
 #    from rest_framework.response import Response
 
 #    parent_queryset = Topic.objects.all()
@@ -27,8 +27,8 @@ LOGGER = logging.getLogger(__name__)
 #def list_related_from(self, request, pk=None):
 #    # Secondary imports do not incur a cost
 #    from django.shortcuts import get_object_or_404
-#    from api_v2.views.rest import CustomTopicSerializer
-#    from api_v2.models.Topic import Topic
+#    from api.v2.views.rest import CustomTopicSerializer
+#    from api.v2.models.Topic import Topic
 #    from rest_framework.response import Response
 
 #    parent_queryset = Topic.objects.all()
@@ -41,8 +41,8 @@ LOGGER = logging.getLogger(__name__)
 @detail_route(url_path="related_to_relations")
 def list_related_to_relations(self, request, pk=None):
     # We load most at runtime because ORM isn't loaded at setup time
-    from api_v2.serializers.search import CustomTopicRelationshipSerializer
-    from api_v2.models.TopicRelationship import TopicRelationship
+    from api.v2.serializers.search import CustomTopicRelationshipSerializer
+    from api.v2.models.TopicRelationship import TopicRelationship
     from rest_framework.response import Response
 
     parent_queryset = TopicRelationship.objects.filter(topic=pk).all()
@@ -55,8 +55,8 @@ def list_related_to_relations(self, request, pk=None):
 @detail_route(url_path="related_from_relations")
 def list_related_from_relations(self, request, pk=None):
     # We load most at runtime because ORM isn't loaded at setup time
-    from api_v2.serializers.search import CustomTopicRelationshipSerializer
-    from api_v2.models.TopicRelationship import TopicRelationship
+    from api.v2.serializers.search import CustomTopicRelationshipSerializer
+    from api.v2.models.TopicRelationship import TopicRelationship
     from rest_framework.response import Response
 
     parent_queryset = TopicRelationship.objects.filter(related_topic=pk).all()

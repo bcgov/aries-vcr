@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "django_filters",
     "app",
-    "api_v2",
+    "api.v2",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "subscriptions",  # only required when using webhook subscriptions
@@ -83,7 +83,7 @@ HAYSTACK_CONNECTIONS = {"default": haystack.config()}
 
 if parse_bool(os.getenv("ENABLE_REALTIME_INDEXING")):
     print("Enabling realtime indexing ...")
-    HAYSTACK_SIGNAL_PROCESSOR = "api_v2.signals.RelatedRealtimeSignalProcessor"
+    HAYSTACK_SIGNAL_PROCESSOR = "api.v2.signals.RelatedRealtimeSignalProcessor"
 else:
     print("Realtime indexing has been disabled ...")
 

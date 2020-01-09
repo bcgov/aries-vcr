@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from api_v2.models import Credential
+from api.v2.models import Credential
 
 data = [
     {"name": "Test Corp"},

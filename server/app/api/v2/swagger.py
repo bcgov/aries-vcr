@@ -19,7 +19,7 @@ class SwaggerSchemaView(APIView):
     schema = None
 
     def get(self, request):
-        params = {"urlconf": "api_v2.urls"}
+        params = {"urlconf": "api.v2.urls"}
         if "HTTP_X_FORWARDED_HOST" in request.META:
             # forwarding via tob-web
             # params["url"] = "{}://{}/api".format(

@@ -2,7 +2,7 @@ import django.db.models.deletion
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from api_v2.models.Auditable import Auditable
+from api.v2.models.Auditable import Auditable
 
 
 class HookUser(Auditable):

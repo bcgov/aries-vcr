@@ -6,9 +6,9 @@ from subscriptions.models.Subscription import Subscription
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Issuer import Issuer
-from api_v2.models.Schema import Schema
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
+from api.v2.models.Schema import Schema
 
 
 class Subscriptions_Hooks_Views_RegistrationCreateViewSet_TestCase(APITestCase):

@@ -14,13 +14,13 @@ from rest_framework.decorators import (
 )
 from rest_framework.parsers import FormParser
 
-from api_v2.feedback import email_feedback
-from api_v2.models.Claim import Claim
-from api_v2.models.Credential import Credential as CredentialModel
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Issuer import Issuer
-from api_v2.models.Topic import Topic
-from api_v2.utils import model_counts, record_count, solr_counts
+from api.v2.feedback import email_feedback
+from api.v2.models.Claim import Claim
+from api.v2.models.Credential import Credential as CredentialModel
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
+from api.v2.models.Topic import Topic
+from api.v2.utils import model_counts, record_count, solr_counts
 
 LOGGER = logging.getLogger(__name__)
 

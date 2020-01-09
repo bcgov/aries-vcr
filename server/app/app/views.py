@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 
-from api_v2.models.Credential import Credential
+from api.v2.models.Credential import Credential
 
 
 def health(request):

@@ -1,7 +1,7 @@
 from django.contrib.postgres import fields as contrib
 from django.db import models
 
-from api_v2.models.Auditable import Auditable
+from api.v2.models.Auditable import Auditable
 
 from .Subscription import Subscription
 
@@ -12,7 +12,7 @@ class HookableCredential(Auditable):
 
     from django.contrib.auth import get_user_model
     from rest_hooks.models import Hook
-    from api_v2.models import HookableCredential, User
+    from api.v2.models import HookableCredential, User
     import datetime
 
     jrrtolkien = get_user_model().objects.create(username='jrrtolkien')

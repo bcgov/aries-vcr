@@ -16,21 +16,21 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime
 from subscriptions.models.HookableCredential import HookableCredential
 
-from api_v2.models.Address import Address
-from api_v2.models.Attribute import Attribute
-from api_v2.models.Claim import Claim
-from api_v2.models.Credential import Credential as CredentialModel
-from api_v2.models.CredentialSet import CredentialSet
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Issuer import Issuer
-from api_v2.models.Name import Name
-from api_v2.models.Schema import Schema
-from api_v2.models.Topic import Topic
-from api_v2.models.TopicRelationship import TopicRelationship
+from api.v2.models.Address import Address
+from api.v2.models.Attribute import Attribute
+from api.v2.models.Claim import Claim
+from api.v2.models.Credential import Credential as CredentialModel
+from api.v2.models.CredentialSet import CredentialSet
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
+from api.v2.models.Name import Name
+from api.v2.models.Schema import Schema
+from api.v2.models.Topic import Topic
+from api.v2.models.TopicRelationship import TopicRelationship
 
 LOGGER = logging.getLogger(__name__)
 
-PROCESSOR_FUNCTION_BASE_PATH = "api_v2.processor"
+PROCESSOR_FUNCTION_BASE_PATH = "api.v2.processor"
 
 SUPPORTED_MODELS_MAPPING = {
     "attribute": Attribute,

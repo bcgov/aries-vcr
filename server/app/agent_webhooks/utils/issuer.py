@@ -1,11 +1,11 @@
 import logging
 from typing import Sequence, Tuple
 
-from api_v2.auth import create_issuer_user
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Issuer import Issuer
-from api_v2.models.Schema import Schema
-from api_v2.serializers.rest import (
+from api.v2.auth import create_issuer_user
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
+from api.v2.models.Schema import Schema
+from api.v2.serializers.rest import (
     CredentialTypeExtSerializer,
     IssuerSerializer,
     SchemaSerializer,

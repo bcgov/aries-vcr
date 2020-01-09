@@ -16,17 +16,17 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from api_v2 import utils
-from api_v2.models.Address import Address
-from api_v2.models.Attribute import Attribute
-from api_v2.models.Credential import Credential
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Issuer import Issuer
-from api_v2.models.Name import Name
-from api_v2.models.Schema import Schema
-from api_v2.models.Topic import Topic
-from api_v2.models.TopicRelationship import TopicRelationship
-from api_v2.serializers.rest import (
+from api.v2 import utils
+from api.v2.models.Address import Address
+from api.v2.models.Attribute import Attribute
+from api.v2.models.Credential import Credential
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
+from api.v2.models.Name import Name
+from api.v2.models.Schema import Schema
+from api.v2.models.Topic import Topic
+from api.v2.models.TopicRelationship import TopicRelationship
+from api.v2.serializers.rest import (
     AddressSerializer,
     AttributeSerializer,
     CredentialSerializer,
@@ -39,7 +39,7 @@ from api_v2.serializers.rest import (
     TopicRelationshipSerializer,
     TopicSerializer,
 )
-from api_v2.serializers.search import CustomTopicSerializer
+from api.v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
 

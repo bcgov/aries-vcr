@@ -12,9 +12,9 @@ from subscriptions.models.HookUser import HookUser
 from rest_framework import serializers
 from rest_hooks.models import Hook
 
-from api_v2.auth import generate_random_username
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.User import User
+from api.v2.auth import generate_random_username
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.User import User
 
 from ..models.Subscription import Subscription
 

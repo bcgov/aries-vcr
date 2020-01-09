@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.http import HttpRequest, JsonResponse
 from django.test import TestCase
 
-from api_v2.views import misc
+from api.v2.views import misc
 
 # TODO: figure out why the request.POST dictionary gets reset, thus making the test fail
 # class Misc_Feedback_TestCase(TestCase):
@@ -16,7 +16,7 @@ from api_v2.views import misc
 #         self.request.POST.__setitem__("reason", "Letter of Resignation")
 #         self.request.POST.__setitem__("comments", "My time has finally come. Goodbye.")
 
-#     @patch("api_v2.views.misc.email_feedback", autospec=True)
+#     @patch("api.v2.views.misc.email_feedback", autospec=True)
 #     def test_send_feedback_forwarded(self, mock_email_feedback):
 #         self.request.META = {"HTTP_X_FORWARDED_FOR": "vonx.io,somethingelse"}
 
@@ -36,7 +36,7 @@ from api_v2.views import misc
 #             result, JsonResponse({"status": "ok"}), "The JsonResponse should match."
 #         )
 
-# @patch("api_v2.views.misc.email_feedback", autospec=True)
+# @patch("api.v2.views.misc.email_feedback", autospec=True)
 # def test_send_feedback_remoteaddr(self, mock_email_feedback):
 #     self.request.META["REMOTE_ADDR"] = "REMOTE_ADDR"
 
@@ -60,9 +60,9 @@ class Misc_Quickload_TestCase(TestCase):
         self.request = HttpRequest()
         self.request.method = "GET"
 
-    @patch("api_v2.views.misc.model_counts", autospec=True)
-    @patch("api_v2.views.misc.record_count", autospec=True)
-    @patch("api_v2.views.misc.solr_counts", autospec=True)
+    @patch("api.v2.views.misc.model_counts", autospec=True)
+    @patch("api.v2.views.misc.record_count", autospec=True)
+    @patch("api.v2.views.misc.solr_counts", autospec=True)
     def test_quickload(self, mock_solr_counts, mock_record_counts, mock_model_counts):
         mock_solr_counts.return_value = {
             "total": 5,

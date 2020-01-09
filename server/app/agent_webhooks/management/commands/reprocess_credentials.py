@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models import signals
 
-from api_v2.models.Credential import Credential
+from api.v2.models.Credential import Credential
 from agent_webhooks.utils.credential import CredentialManager
 from app.utils.solrqueue import SolrQueue
 

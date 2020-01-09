@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from api_v2.models.CredentialType import CredentialType
+from api.v2.models.CredentialType import CredentialType
 
 
 class CredentialType_TestCase(TestCase):

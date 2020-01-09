@@ -10,7 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
 
 celery_broker = getattr(settings, "CELERY_BROKER_URL")
 print("Starting celery with broker", celery_broker)
-app = Celery("api_v2", broker=celery_broker)
+app = Celery("api.v2", broker=celery_broker)
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

@@ -10,11 +10,11 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from api_v2.models.Credential import Credential as CredentialModel
+from api.v2.models.Credential import Credential as CredentialModel
 from agent_webhooks.utils.credential import Credential, CredentialManager
 from agent_webhooks.utils.issuer import IssuerManager
 
-from api_v2.utils import log_timing_method
+from api.v2.utils import log_timing_method
 
 LOGGER = logging.getLogger(__name__)
 

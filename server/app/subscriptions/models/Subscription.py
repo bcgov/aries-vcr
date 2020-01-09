@@ -1,7 +1,7 @@
 from django.db import models
 
-from api_v2.models.Auditable import Auditable
-from api_v2.models.User import User
+from api.v2.models.Auditable import Auditable
+from api.v2.models.User import User
 
 from .CredentialHook import CredentialHook
 

@@ -5,7 +5,7 @@ from string import ascii_lowercase, digits
 from django.contrib.auth.models import Group
 from rest_framework import permissions
 
-from api_v2.models.User import User
+from api.v2.models.User import User
 
 ISSUERS_GROUP_NAME = "issuers"
 

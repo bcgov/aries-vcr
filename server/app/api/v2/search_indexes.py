@@ -5,8 +5,8 @@ import logging
 
 from haystack import indexes
 
-from api_v2.models.Credential import Credential as CredentialModel
-from api_v2.search.index import TxnAwareSearchIndex
+from api.v2.models.Credential import Credential as CredentialModel
+from api.v2.search.index import TxnAwareSearchIndex
 
 LOGGER = logging.getLogger(__name__)
 

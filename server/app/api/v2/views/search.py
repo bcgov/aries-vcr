@@ -12,8 +12,8 @@ from rest_framework import permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
-from api_v2.models.Credential import Credential
-from api_v2.search.filters import (
+from api.v2.models.Credential import Credential
+from api.v2.search.filters import (
     AutocompleteFilter,
     CategoryFilter,
     CredNameFilter,
@@ -21,7 +21,7 @@ from api_v2.search.filters import (
     ExactFilter,
     StatusFilter,
 )
-from api_v2.serializers.search import (
+from api.v2.serializers.search import (
     CredentialAutocompleteSerializer,
     CredentialFacetSerializer,
     CredentialSearchSerializer,

@@ -1,7 +1,7 @@
 from django.utils import timezone
 from haystack import indexes
 
-from api_v2.models.Name import Name as NameModel
+from api.v2.models.Name import Name as NameModel
 
 
 class NameIndex(indexes.SearchIndex, indexes.Indexable):

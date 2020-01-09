@@ -8,7 +8,7 @@ class IssuerManager_TestCase(TestCase):
 
     # Note: saving to JSONField is not supported when we use
     # sqlite as the back-end (in testing)
-    @patch("api_v2.models.CredentialType.save", autospec=True)
+    @patch("api.v2.models.CredentialType.save", autospec=True)
     def test_issuer_registration(self, mock_cred_type_save):
         test_spec = {
             "issuer_registration": {

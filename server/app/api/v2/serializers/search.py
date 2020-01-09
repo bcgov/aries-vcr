@@ -9,13 +9,13 @@ from drf_haystack.serializers import (HaystackFacetSerializer,
 from rest_framework.serializers import ListSerializer, SerializerMethodField
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from api_v2.models.Address import Address
-from api_v2.models.Attribute import Attribute
-from api_v2.models.CredentialType import CredentialType
-from api_v2.models.Issuer import Issuer
-from api_v2.models.Name import Name
-from api_v2.search_indexes import CredentialIndex
-from api_v2.serializers.rest import (AddressSerializer, AttributeSerializer,
+from api.v2.models.Address import Address
+from api.v2.models.Attribute import Attribute
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
+from api.v2.models.Name import Name
+from api.v2.search_indexes import CredentialIndex
+from api.v2.serializers.rest import (AddressSerializer, AttributeSerializer,
                                      CredentialAddressSerializer,
                                      CredentialAttributeSerializer,
                                      CredentialNamedTopicSerializer,

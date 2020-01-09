@@ -4,7 +4,7 @@ from queue import Empty, Full, Queue
 
 from haystack.utils import get_identifier
 
-from api_v2.search.index import TxnAwareSearchIndex
+from api.v2.search.index import TxnAwareSearchIndex
 
 LOGGER = logging.getLogger(__name__)
 
