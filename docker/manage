@@ -112,7 +112,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db tob-db tob-solr tob-api tob-agent schema-spy tob-web rabbitmq tob-worker"
+DEFAULT_CONTAINERS="wallet-db tob-db tob-solr tob-api agent schema-spy tob-web rabbitmq tob-worker"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -314,18 +314,18 @@ build-api() {
 
 build-agent() {
   #
-  # tob-agent
+  # agent
   #
   docker build -q \
-    -t 'tob-agent' \
-    -f './tob-agent/Dockerfile' './tob-agent'
+    -t 'agent' \
+    -f './agent/Dockerfile' './agent'
 
   # this is only required in Windows
   if [[ "$OSTYPE" == "msys" ]]; then
-    echo -e "\nFixing file permissions in final tob-agent image"
+    echo -e "\nFixing file permissions in final agent image"
     docker build -q \
-      --build-arg BASE_IMAGE='tob-agent:latest' \
-      -t 'tob-agent' \
+      --build-arg BASE_IMAGE='agent:latest' \
+      -t 'agent' \
       -f './utils/Dockerfile.fixpermissions' './utils/'
   fi
 }
@@ -452,13 +452,13 @@ configureEnvironment() {
   export RABBITMQ_USER="RABBITMQ_USER"
   export RABBITMQ_PASSWORD="RABBITMQ_PASSWORD"
 
-  # tob-agent
+  # agent
   export AGENT_ADMIN_PORT=8024
   export AGENT_WEBHOOK_PORT=8020
   export WEBHOOK_URL=${WEBHOOK_URL:-http://$DOCKERHOST:$API_HTTP_PORT}
   export HTTP_INTERFACE_PORT=8021
   export WS_INTERFACE_PORT=8023
-  export AGENT_NAME="tob-agent"
+  export AGENT_NAME="agent"
   export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://$DOCKERHOST:$HTTP_INTERFACE_PORT}
   export AGENT_ADMIN_MODE="admin-insecure-mode"
   if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
