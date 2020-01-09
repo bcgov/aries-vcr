@@ -1,21 +1,22 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname $0)
-ENV_DIR=${SCRIPT_DIR}/env
+PYTHON_CMD=${SCRIPT_DIR}/runPythonCmd.sh
+MANAGE_PY=${SCRIPT_DIR}/../manage.py
 
 # ==============================================================================================================================
 usage () {
   echo "========================================================================================"
-  echo "Runs Python commands using the project's virtual python installation."
+  echo "Runs manage.py commands on the project."
   echo "----------------------------------------------------------------------------------------"
   echo "Usage:"
   echo
   echo "${0} <command>"
   echo
   echo "Where:"
-  echo " - <command> is the Python command you wish to run."
+  echo " - <command> is the manage.py command you wish to run."
   echo
   echo "Examples:"
-  echo "${0} --version"
+  echo "${0} makemigrations"
   echo "========================================================================================"
   exit 1
 }
@@ -23,14 +24,6 @@ usage () {
 if [ -z "${1}" ]; then
   usage
 fi
-
-if [[ -z "$PYTHON_EXE" ]]; then
-	if [[ ! -d ${ENV_DIR} ]]; then
-	  PYTHON_EXE=python
-	else
-	  PYTHON_EXE=${ENV_DIR}/Scripts/python
-	fi
-fi
 # ==============================================================================================================================
 
-${PYTHON_EXE} ${@}
+${PYTHON_CMD} ${MANAGE_PY} ${@}

@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname $0)
 MANAGE_CMD=${SCRIPT_DIR}/runManageCmd.sh
-OUTPUT_DIR=${SCRIPT_DIR}/../tob-solr/cores/the_org_book/conf
+OUTPUT_DIR=${SCRIPT_DIR}/../../tob-solr/cores/the_org_book/conf
 
 # ==============================================================================================================================
 usage() {
