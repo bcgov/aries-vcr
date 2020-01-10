@@ -169,7 +169,7 @@ build-web() {
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
-      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
       '../client' \
@@ -185,9 +185,9 @@ build-web() {
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
-      -e "TOB_THEME_PATH=/tmp/tob-theme" \
-      -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
-      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      -e "TOB_THEME_PATH=/tmp/vcr-theme" \
+      -v "${TOB_THEME_PATH}:/tmp/vcr-theme" \
+      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
       '../client' \
@@ -220,13 +220,13 @@ build-web-dev() {
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
-      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
       'angular-dev'
   else
     # Use the custom theme
-    export TOB_THEME_PATH_DEV="/tmp/tob-theme"
+    export TOB_THEME_PATH_DEV="/tmp/vcr-theme"
 
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
@@ -236,8 +236,8 @@ build-web-dev() {
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "TOB_THEME=${TOB_THEME}" \
       -e "TOB_THEME_PATH=${TOB_THEME_PATH_DEV}" \
-      -v "${TOB_THEME_PATH}:/tmp/tob-theme" \
-      -v "${COMPOSE_PROJECT_NAME}_tob-npm-cache:/opt/app-root/src/.npm" \
+      -v "${TOB_THEME_PATH}:/tmp/vcr-theme" \
+      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
       'angular-dev'
@@ -297,7 +297,7 @@ build-api() {
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     -e "PIP_NO_CACHE_DIR=" \
     -e "UPGRADE_PIP_TO_LATEST=true" \
-    -v "${COMPOSE_PROJECT_NAME}_tob-pip-cache:/home/indy/.cache/pip" \
+    -v "${COMPOSE_PROJECT_NAME}_vcr-pip-cache:/home/indy/.cache/pip" \
     '../server/app' \
     "$BASE_IMAGE" \
     'django'
@@ -378,7 +378,7 @@ configureEnvironment() {
     fi
   fi
 
-  export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-tob}"
+  export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-vcr}"
 
   export INDY_WALLET_SEED=${seed}
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
@@ -412,7 +412,7 @@ configureEnvironment() {
   # vcr-api
   export APP_FILE=app-vonx.py
   export APP_CONFIG=${APP_CONFIG:-}
-  export APP_MODULE=api_indy.tob_anchor.boot:init_app
+  # export APP_MODULE=api_indy.vcr_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8081}
   export DATABASE_SERVICE_NAME="vcr-db"
   export DATABASE_ENGINE=${DATABASE_ENGINE-postgresql}
@@ -654,7 +654,7 @@ case "${COMMAND}" in
 
     buildImage=$(toLower ${1})
     shift || buildImage=all
-    buildImage=$(echo ${buildImage} | sed s~^tob-~~)
+    buildImage=$(echo ${buildImage} | sed s~^vcr-~~)
     case "$buildImage" in
       *=*)
         buildImage=all
