@@ -95,10 +95,10 @@ services:
       - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
       - SOLR_CORE_NAME=${SOLR_CORE_NAME}
       - SKIP_INDEXING_ON_STARTUP=${SKIP_INDEXING_ON_STARTUP}
-      - TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
-      - TOB_DB_SERVICE_PORT=5432
-      - TOB_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
-      - TOB_SOLR_SERVICE_PORT=8983
+      - VCR_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
+      - VCR_DB_SERVICE_PORT=5432
+      - VCR_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
+      - VCR_SOLR_SERVICE_PORT=8983
       - INDY_DISABLED=${INDY_DISABLED}
       - LEDGER_URL=${LEDGER_URL}
       - GENESIS_URL=${GENESIS_URL}
@@ -130,9 +130,9 @@ services:
       - 3000:3000
       - "${AGENT_WEBHOOK_PORT}:${AGENT_WEBHOOK_PORT}"
     depends_on:
-      - tob-db
+      - vcr-db
       - wallet-db
-      - tob-solr
+      - vcr-solr
       - agent
     command: >
       /bin/bash -c "
@@ -229,10 +229,10 @@ services:
       - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL}
       - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
       - SOLR_CORE_NAME=${SOLR_CORE_NAME}
-      - TOB_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
-      - TOB_DB_SERVICE_PORT=5432
-      - TOB_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
-      - TOB_SOLR_SERVICE_PORT=8983
+      - VCR_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
+      - VCR_DB_SERVICE_PORT=5432
+      - VCR_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
+      - VCR_SOLR_SERVICE_PORT=8983
       - INDY_WALLET_SEED=${INDY_WALLET_SEED}
       - LEDGER_URL=${LEDGER_URL}
       - INDY_WALLET_TYPE=${INDY_WALLET_TYPE}
@@ -252,8 +252,8 @@ services:
     networks:
       - tob
     depends_on:
-      - tob-db
-      - tob-solr
+      - vcr-db
+      - vcr-solr
       - rabbitmq
     command: >
       /bin/bash -c "
@@ -285,7 +285,7 @@ services:
     ports:
       - 8082:8080
     depends_on:
-      - tob-db
+      - vcr-db
     command: >
       /bin/sh -c "
         echo sleeping ...;
@@ -293,9 +293,9 @@ services:
         ./start.sh;"
 
   #
-  # tob-solr
+  # vcr-solr
   #
-  tob-solr:
+  vcr-solr:
     image: solr
     environment:
       - CORE_NAME=${CORE_NAME}
@@ -305,9 +305,9 @@ services:
       - 8983:8983
 
   #
-  # tob-db
+  # vcr-db
   #
-  tob-db:
+  vcr-db:
     image: postgresql
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}

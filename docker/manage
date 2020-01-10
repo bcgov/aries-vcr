@@ -61,7 +61,7 @@ usage() {
 
             Examples:
             $0 start
-            $0 start tob-solr
+            $0 start vcr-solr
             $0 start tob-web
             $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
@@ -78,7 +78,7 @@ usage() {
 
             Examples:
             $0 start
-            $0 start tob-solr
+            $0 start vcr-solr
             $0 start tob-web
             $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
@@ -112,7 +112,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db tob-db tob-solr vcr-api agent schema-spy tob-web rabbitmq tob-worker"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api agent schema-spy tob-web rabbitmq tob-worker"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ build-web-dev() {
 
 build-solr() {
   #
-  # tob-solr
+  # vcr-solr
   #
   echo -e "\nBuilding solr-base image ..."
   docker build \
@@ -386,7 +386,7 @@ configureEnvironment() {
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
   export DEBUG=${DEBUG}
 
-  # tob-db
+  # vcr-db
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
   export POSTGRESQL_USER="DB_USER"
   export POSTGRESQL_PASSWORD="DB_PASSWORD"
@@ -401,12 +401,12 @@ configureEnvironment() {
   export POSTGRESQL_ADMIN_PASSWORD="mysecretpassword"
 
   # schema-spy
-  export DATABASE_SERVICE_NAME="tob-db"
+  export DATABASE_SERVICE_NAME="vcr-db"
   export POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
   export POSTGRESQL_USER=${POSTGRESQL_USER}
   export POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
 
-  # tob-solr
+  # vcr-solr
   export CORE_NAME="credential_registry"
 
   # vcr-api
@@ -414,7 +414,7 @@ configureEnvironment() {
   export APP_CONFIG=${APP_CONFIG:-}
   export APP_MODULE=api_indy.tob_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8081}
-  export DATABASE_SERVICE_NAME="tob-db"
+  export DATABASE_SERVICE_NAME="vcr-db"
   export DATABASE_ENGINE=${DATABASE_ENGINE-postgresql}
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
   export DATABASE_USER=${POSTGRESQL_USER}
@@ -425,7 +425,7 @@ configureEnvironment() {
   export DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL-INFO}
   export OPTIMIZE_TABLE_ROW_COUNTS=${OPTIMIZE_TABLE_ROW_COUNTS-}
   export INDY_DISABLED=${INDY_DISABLED-}
-  export SOLR_SERVICE_NAME="tob-solr"
+  export SOLR_SERVICE_NAME="vcr-solr"
   export SOLR_CORE_NAME=${CORE_NAME}
   export SKIP_INDEXING_ON_STARTUP=${SKIP_INDEXING_ON_STARTUP-}
   export GENESIS_URL=${GENESIS_URL-}
