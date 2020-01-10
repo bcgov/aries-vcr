@@ -1,7 +1,7 @@
 var childProcess = require('child_process');
 var chokidar = require('chokidar');
-var TOB_THEME = process.env.TOB_THEME || 'default';
-var THEME_PATH = process.env.TOB_THEME_PATH || 'src/themes';
+var VCR_THEME = process.env.VCR_THEME || 'default';
+var THEME_PATH = process.env.VCR_THEME_PATH || 'src/themes';
 
 
 function runScript(scriptPath, options, callback) {
@@ -37,7 +37,7 @@ watcher.on('all', function(evt, path) {
   console.log('%s changed.', path);
   if(! running) {
     running = true;
-    let updEnv = Object.assign({}, process.env, {TOB_THEME, UPDATE_ONLY: 'true'});
+    let updEnv = Object.assign({}, process.env, {VCR_THEME, UPDATE_ONLY: 'true'});
     runScript('build-theme.js', {env: updEnv}, function(err) {
       if (err) throw err;
       running = false;

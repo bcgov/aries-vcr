@@ -1,18 +1,18 @@
 /**
  * Before building, files must be copied or symlinked into src/themes/_active
  * The default theme (src/themes/default) is always copied first, and then another
- * theme named by the TOB_THEME environment variable can add to or replace these files.
+ * theme named by the VCR_THEME environment variable can add to or replace these files.
  **/
 
 var fs = require('fs'),
   path = require('path');
 
-var THEME_NAME = process.env.TOB_THEME || 'default';
+var THEME_NAME = process.env.VCR_THEME || 'default';
 if (THEME_NAME === '_active')
   throw 'Invalid theme name';
 var TARGET_DIR = 'src/themes/_active';
 var THEMES_ROOT = 'src/themes';
-var THEME_PATH = process.env.TOB_THEME_PATH || THEMES_ROOT;
+var THEME_PATH = process.env.VCR_THEME_PATH || THEMES_ROOT;
 var LANG_ROOT = 'assets/i18n';
 var CONFIG_NAME = 'assets/config.json';
 var RESOLVE_LINKS = ['favicon.ico', 'styles.scss', LANG_ROOT, CONFIG_NAME];
@@ -310,7 +310,7 @@ function updateConfig(theme_name) {
         foundval = found.substring(splitPos + 1);
         found = found.substring(0, splitPos);
       }
-      if (found == 'TOB_THEME')
+      if (found == 'VCR_THEME')
         foundval = THEME_NAME;
       else if (found in process.env && process.env[found] !== '')
         foundval = process.env[found];

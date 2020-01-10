@@ -292,11 +292,11 @@ SEARCH_TERMS_EXCLUSIVE = False
 #
 # Read settings from a custom settings file
 # based on the path provided as an input parameter
-# The choice of the custom settings file is driven by the value of the TOB_THEME env
+# The choice of the custom settings file is driven by the value of the VCR_THEME env
 # variable (i.e. ongov)
 #
 custom_settings_file = Path(
-    BASE_DIR, "custom_settings_" + str(os.getenv("TOB_THEME")).lower() + ".py"
+    BASE_DIR, "custom_settings_" + str(os.getenv("VCR_THEME")).lower() + ".py"
 )
 if custom_settings_file.exists():
     with open(custom_settings_file) as source_file:

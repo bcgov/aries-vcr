@@ -35,8 +35,8 @@ services:
       - NODE_ENV=development
       - NPM_CONFIG_LOGLEVEL=notice
       - NPM_RUN=dev
-      - TOB_THEME=${TOB_THEME}
-      - TOB_THEME_PATH_DEV=${TOB_THEME_PATH_DEV}
+      - VCR_THEME=${VCR_THEME}
+      - VCR_THEME_PATH_DEV=${VCR_THEME_PATH_DEV}
       - WEB_BASE_HREF=${WEB_BASE_HREF}
       - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
     networks:
@@ -46,7 +46,7 @@ services:
       - 5858:5858
     volumes:
       - "../../../credential-registry/client/src:/opt/app-root/src/src"
-      - "${TOB_THEME_PATH}:/tmp/tob-theme"
+      - "${VCR_THEME_PATH}:/tmp/tob-theme"
     depends_on:
       - vcr-api
 
@@ -108,7 +108,7 @@ services:
       - WEB_CONCURRENCY=${WEB_CONCURRENCY:-1}
       - RUST_LOG=${RUST_LOG}
       - RUST_BACKTRACE=${RUST_BACKTRACE}
-      - TOB_THEME=${TOB_THEME}
+      - VCR_THEME=${VCR_THEME}
       - ENABLE_REALTIME_INDEXING=${ENABLE_REALTIME_INDEXING}
       - APPLICATION_URL=${APPLICATION_URL}
       - RABBITMQ_USER=${RABBITMQ_USER}
@@ -241,7 +241,7 @@ services:
       - WEB_CONCURRENCY=${WEB_CONCURRENCY:-1}
       - RUST_LOG=${RUST_LOG}
       - RUST_BACKTRACE=${RUST_BACKTRACE}
-      - TOB_THEME=${TOB_THEME}
+      - VCR_THEME=${VCR_THEME}
       - APP_SCRIPT=${APP_SCRIPT:-scripts/start-celery-worker.sh}
     volumes:
       - ../server/app/app:/home/indy/app
