@@ -20,8 +20,8 @@ Once this is running, simply clone, build and run Indy Catalyst as follows:
 ```
 https://github.com/bcgov/indy-catalyst
 cd indy-catalyst/starter-kits/docker
-VCR_THEME_PATH=/path/to/indy-catalyst/client/themes/ VCR_THEME=bcgov ./manage build
-VCR_THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
+THEME_PATH=/path/to/indy-catalyst/client/themes/ THEME=bcgov ./manage build
+THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
 ```
 
 Note this runs with the bcgov theme.  TO run with the default theme replace the last two commands with:
@@ -90,8 +90,8 @@ Just name your file "app/app/custom_settings_<theme>.py"
 Build the Credential Registry as follows (use your theme name):
 
 ```
-VCR_THEME_PATH=/path/to/indy-catalyst/client/themes/ VCR_THEME=bcgov ./manage build
-VCR_THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
+THEME_PATH=/path/to/indy-catalyst/client/themes/ THEME=bcgov ./manage build
+THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
 ```
 
 Custom settings are loaded from "app/settings.py" (search for "custom_settings_file").

@@ -6,11 +6,11 @@ The Credential Registry's UI has been divided into four areas/components as show
 
 The theme design elements (i.e. css files, images, html templates) are stored at two places: under the **themes/default** directory that provides default styles and under the directory with the theme name (i.e. themes/ongov) that contains overrides for the default styles. The default styles are pulled from Government of BC design package *mygovbc-bootstrap-theme* that is included as a *node_module* in The Credential Registry app. 
 
-The choice of the active theme is driven by the value of the environmental variable **$VCR_THEME** that has a default value of *bcgov*. At the build time the files from the $VCR_THEME theme directory are copied into the *themes/_active* directory and together with the default styles are used to apply look-n-feel to the running instance of The Credential Registry.
+The choice of the active theme is driven by the value of the environmental variable **$THEME** that has a default value of *bcgov*. At the build time the files from the $THEME theme directory are copied into the *themes/_active* directory and together with the default styles are used to apply look-n-feel to the running instance of The Credential Registry.
 
-For example, to change the active theme from BC to Ontario, set the value of $VCR_THEME to **ongov** and rebuild the code:
+For example, to change the active theme from BC to Ontario, set the value of $THEME to **ongov** and rebuild the code:
 
-``` export VCR_THEME=ongov ```
+``` export THEME=ongov ```
 
 The component **html** templates in the *default* directory get overwritten with corresponding templates from the *_active* theme directory if present.
 

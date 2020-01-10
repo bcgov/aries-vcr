@@ -37,7 +37,7 @@ usage() {
 
                - Build the web UI using a custom theme.
     
-                $0 build web VCR_THEME=<theme-name> VCR_THEME_PATH=<absolute-path-to-themes-folder>
+                $0 build web THEME=<theme-name> THEME_PATH=<absolute-path-to-themes-folder>
          
               By default all containers that components comprise of, will be rebuilt.
     
@@ -88,7 +88,7 @@ usage() {
       web-dev - Builds and runs a live development version of vcr-web, along with
                 the required supporting components. Once started, the website is
                 automatically compiled and updated in response to file modifications.
-                To use a custom theme, use the VCR_THEME and VCR_THEME_PATH environment
+                To use a custom theme, use the THEME and THEME_PATH environment
                 variables described in the build step.
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
@@ -159,7 +159,7 @@ build-web() {
 
   
   echo -e "\nBuilding angular-on-nginx image ..."
-  if [ -z "$VCR_THEME_PATH" ]; then
+  if [ -z "$THEME_PATH" ]; then
     # No custom theme was specified
     ${S2I_EXE} build \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
@@ -168,7 +168,7 @@ build-web() {
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "VCR_THEME=${VCR_THEME}" \
+      -e "THEME=${THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
@@ -184,9 +184,9 @@ build-web() {
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "VCR_THEME=${VCR_THEME}" \
-      -e "VCR_THEME_PATH=/tmp/vcr-theme" \
-      -v "${VCR_THEME_PATH}:/tmp/vcr-theme" \
+      -e "THEME=${THEME}" \
+      -e "THEME_PATH=/tmp/vcr-theme" \
+      -v "${THEME_PATH}:/tmp/vcr-theme" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
@@ -208,9 +208,9 @@ build-web-dev() {
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
-  if [ -z "$VCR_THEME_PATH" ]; then
-    # set VCR_THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
-    VCR_THEME_PATH="vcr-web-empty"
+  if [ -z "$THEME_PATH" ]; then
+    # set THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
+    THEME_PATH="vcr-web-empty"
 
     # No custom theme was specified
     ${S2I_EXE} build \
@@ -219,14 +219,14 @@ build-web-dev() {
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "VCR_THEME=${VCR_THEME}" \
+      -e "THEME=${THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
       'angular-dev'
   else
     # Use the custom theme
-    export VCR_THEME_PATH_DEV="/tmp/vcr-theme"
+    export THEME_PATH_DEV="/tmp/vcr-theme"
 
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
@@ -234,9 +234,9 @@ build-web-dev() {
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "VCR_THEME=${VCR_THEME}" \
-      -e "VCR_THEME_PATH=${VCR_THEME_PATH_DEV}" \
-      -v "${VCR_THEME_PATH}:/tmp/vcr-theme" \
+      -e "THEME=${THEME}" \
+      -e "THEME_PATH=${THEME_PATH_DEV}" \
+      -v "${THEME_PATH}:/tmp/vcr-theme" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
@@ -437,8 +437,8 @@ configureEnvironment() {
   export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY:-R2D2HfPM5Zwd69IjclQiuFmcMV6}
 
   # vcr-web
-  export VCR_THEME=${VCR_THEME:-default}
-  export VCR_THEME_PATH=${VCR_THEME_PATH-}
+  export THEME=${THEME:-default}
+  export THEME_PATH=${THEME_PATH-}
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
