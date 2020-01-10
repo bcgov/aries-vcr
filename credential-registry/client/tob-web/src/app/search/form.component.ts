@@ -23,7 +23,7 @@ const FilterSpec = [
     label: "cred.issuer"
   },
   {
-    name: "credential_type_id",
+    name: "topic_credential_type_id",
     label: "cred.cred-type"
   },
   {

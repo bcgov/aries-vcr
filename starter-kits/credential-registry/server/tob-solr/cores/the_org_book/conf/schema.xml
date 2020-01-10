@@ -106,7 +106,9 @@
 
     <field name="credential_set_id" type="long" indexed="true" stored="true" multiValued="false" />
      
-    <field name="credential_type_id" type="long" indexed="true" stored="true" multiValued="true" />
+    <field name="credential_type_id" type="long" indexed="true" stored="true" multiValued="false" />
+
+    <field name="topic_credential_type_id" type="long" indexed="true" stored="true" multiValued="true" />
 
     <field name="topic_type" type="string" indexed="true" stored="true" multiValued="false" />
     

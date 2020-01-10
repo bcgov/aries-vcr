@@ -247,6 +247,7 @@ class CredentialSearchSerializer(HaystackSerializerMixin, CredentialSerializer):
         exact_fields = (
             "credential_set_id",
             "credential_type_id",
+            "topic_credential_type_id",
             "issuer_id",
             "schema_name",
             "schema_version",
