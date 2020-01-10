@@ -1,4 +1,4 @@
-<section id="search" class="container page-min-height" *ngIf="(result$ | async) as result">
+<section id="search" class="container page-min-height" *ngIf="result$ | async as result">
   <app-breadcrumb></app-breadcrumb>
 
   <h1 class="page-title mt-4" id="contentStart" tabindex="-1">{{ 'search.title' | translate }}</h1>
@@ -8,16 +8,9 @@
       <div class="search-head">
         <label class="control-label" for="queryInput">{{ 'search.input-label' | translate }}</label>
         <div class="search-wrap">
-          <search-input #searchInput (accepted)="updateQuery($event)" [loading]="result.loading"></search-input>
+          <search-input #searchInput (accepted)="updateQuery($event)" [loading]="result.loading"> </search-input>
         </div>
-        <!-- div class="search-types">
-          <a routerLink="../name" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='name'}">Names</a>
-          <a routerLink="../location" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='location'}">Locations</a>
-          <a routerLink="../issuer" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='issuer'}">Issuers</a>
-          <a routerLink="../map" queryParamsHandling="preserve" class="search-type" [ngClass]="{active: filterType==='map'}">Map</a>
-        </div -->
       </div>
-
     </div>
   </div>
   <div class="row results mt-4 mt-md-5" *ngIf="inited">
@@ -45,5 +38,4 @@
       <search-filters #searchFilters [filters]="filters"></search-filters>
     </div>
   </div>
-
 </section>

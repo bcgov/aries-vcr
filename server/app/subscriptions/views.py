@@ -55,7 +55,7 @@ class RegistrationCreateViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet
     {
       "email": "anon@anon-solutions.ca",
       "org_name": "Anon Solutions Inc",
-      "target_url": "https://anon-solutions.ca/api/hook",
+      "target_url": "http://echo-app:8000/api/echo",
       "hook_token": "ashdkjahsdkjhaasd88a7d9a8sd9asasda",
       "credentials": {
         "username": "anon",
@@ -126,7 +126,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
       "subscription_type": "New",
       "topic_source_id": "BC0123456",
       "credential_type": "registration.registries.ca",
-      "target_url": "https://anon-solutions.ca/api/hook",
+      "target_url": "http://echo-app:8000/api/echo",
       "hook_token": "ashdkjahsdkjhaasd88a7d9a8sd9asasda"
     }
     """
@@ -167,3 +167,4 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             hook.save()
             subscription.hook = hook
             subscription.save()
+

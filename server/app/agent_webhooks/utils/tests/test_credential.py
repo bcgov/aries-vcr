@@ -10,6 +10,7 @@ from agent_webhooks.utils import credential
 class Credential_TestCase(TestCase):
     def test_load(self):
         test_cred_data = {
+            "thread_id": "thread-12345-67890",
             "schema_id": "schema-origin-did:2:schema-name:schema-version",
             "cred_def_id": "origin-did:1:2:3",
             "rev_reg_id": "rev reg id",
@@ -31,6 +32,7 @@ class CredentialManager_TestCase(TestCase):
     def test_process_mapping(self):
         test_cred = credential.Credential(
             {
+                "thread_id": "thread-12345-67890",
                 "schema_id": "schema id",
                 "cred_def_id": "not:a:did:987654",
                 "rev_reg_id": "rev reg id",
@@ -54,6 +56,7 @@ class CredentialManager_TestCase(TestCase):
     def test_resolve_topic(self):
         test_cred = credential.Credential(
             {
+                "thread_id": "thread-12345-67890",
                 "schema_id": "schema id",
                 "cred_def_id": "not:a:did:987654",
                 "rev_reg_id": "rev reg id",
@@ -76,9 +79,12 @@ class CredentialManager_TestCase(TestCase):
         }
 
         mgr = credential.CredentialManager()
-        topic, related_topic, topic_created, related_topic_created = mgr.resolve_credential_topics(
-            test_cred, pconfig
-        )
+        (
+            topic,
+            related_topic,
+            topic_created,
+            related_topic_created,
+        ) = mgr.resolve_credential_topics(test_cred, pconfig)
         assert topic.source_id == "topic-source-id"
         assert topic.type == "topic-type"
         assert topic_created
@@ -89,6 +95,7 @@ class CredentialManager_TestCase(TestCase):
     def test_cardinality(self):
         test_cred = credential.Credential(
             {
+                "thread_id": "thread-12345-67890",
                 "schema_id": "schema id",
                 "cred_def_id": "not:a:did:987654",
                 "rev_reg_id": "rev reg id",
@@ -112,6 +119,7 @@ class CredentialManager_TestCase(TestCase):
     def test_config_date(self):
         test_cred = credential.Credential(
             {
+                "thread_id": "thread-12345-67890",
                 "schema_id": "schema id",
                 "cred_def_id": "not:a:did:987654",
                 "rev_reg_id": "rev reg id",
@@ -128,6 +136,7 @@ class CredentialManager_TestCase(TestCase):
     def test_credential_props(self):
         test_cred = credential.Credential(
             {
+                "thread_id": "thread-12345-67890",
                 "schema_id": "schema id",
                 "cred_def_id": "not:a:did:987654",
                 "rev_reg_id": "rev reg id",

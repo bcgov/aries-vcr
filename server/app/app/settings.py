@@ -310,14 +310,19 @@ if custom_settings_file.exists():
 ################################################################################################
 
 # django-rest-hooks settings
+# authenticate REST hook services so only the subscriber can view/update their subscriptions
 AUTHENTICATION_BACKENDS = ["subscriptions.icatrestauth.IcatAuthBackend"]
 
+# wrapper function that delivers the web hook (passes the task to a rabbitmq worker)
 HOOK_DELIVERER = "subscriptions.tasks.deliver_hook_wrapper"
 
+# data model that triggers hooks to be sent - when a new record is added it triggers the hook services to run
 HOOK_CUSTOM_MODEL = "subscriptions.models.CredentialHook"
 
+# for hook events, checks the credential against the subscriptions to see which hooks to fire
 HOOK_FINDER = "subscriptions.hook_utils.find_and_fire_hook"
 
+# how to monitor for events - look for "created" events
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
     "hookable_cred.added": "subscriptions.HookableCredential.created+"
@@ -326,14 +331,28 @@ HOOK_EVENTS = {
 # celery settings
 CELERY_BROKER_HEARTBEAT = 0  # see https://github.com/celery/celery/issues/4817
 
+# task broker = rabbitmq
 CELERY_BROKER_URL = "pyamqp://{}:{}@{}//".format(
     os.environ.get("RABBITMQ_USER"),
     os.environ.get("RABBITMQ_PASSWORD"),
     os.environ.get("RABBITMQ_SVC_NAME", "rabbitmq"),
 )
 
+# database backend for retrieving task results
+CELERY_TASK_BACKEND = "db+postgresql://{}:{}@{}/{}".format(
+    os.environ.get("DATABASE_USER"),
+    os.environ.get("DATABASE_PASSWORD"),
+    os.environ.get("DATABASE_SERVICE_NAME"),
+    os.environ.get("DATABASE_NAME"),
+)
+
 # custom hook settings
+# max retries for http errors
 HOOK_RETRY_THRESHOLD = os.environ.get("HOOK_RETRY_THRESHOLD", 3)
+# number of seconds to wait between retries
+HOOK_RETRY_DELAY = os.environ.get("HOOK_RETRY_DELAY", 5)
+# max errors on a subscription before "expiring" the subscription
+HOOK_MAX_SUBSCRIPTION_ERRORS = os.environ.get("HOOK_MAX_SUBSCRIPTION_ERRORS", 10)
 
 ###########################
 # Enf of webhook settings #

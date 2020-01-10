@@ -1,10 +1,8 @@
 import base64
-import os
 import uuid
 from logging import getLogger
 from time import sleep
 
-import django
 import requests
 from django.conf import settings
 from django.db.models import Q
@@ -12,29 +10,23 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.v2 import utils
-from api.v2.models.Address import Address
-from api.v2.models.Attribute import Attribute
 from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
-from api.v2.models.Name import Name
 from api.v2.models.Schema import Schema
 from api.v2.models.Topic import Topic
 from api.v2.models.TopicRelationship import TopicRelationship
 from api.v2.serializers.rest import (
-    AddressSerializer,
-    AttributeSerializer,
     CredentialSerializer,
     CredentialTypeSerializer,
     ExpandedCredentialSerializer,
     ExpandedCredentialSetSerializer,
     IssuerSerializer,
-    NameSerializer,
     SchemaSerializer,
     TopicRelationshipSerializer,
     TopicSerializer,
@@ -49,7 +41,7 @@ class IssuerViewSet(ReadOnlyModelViewSet):
     queryset = Issuer.objects.all()
 
     @swagger_auto_schema(responses={200: CredentialTypeSerializer(many=True)})
-    @detail_route(url_path="credentialtype", methods=["get"])
+    @action(detail=True, url_path="credentialtype", methods=["get"])
     def list_credential_types(self, request, pk=None):
         item = self.get_object()
         queryset = item.credential_types
@@ -57,7 +49,7 @@ class IssuerViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(method="get")
-    @detail_route(url_path="logo", methods=["get"])
+    @action(detail=True, url_path="logo", methods=["get"])
     def fetch_logo(self, request, pk=None):
         issuer = get_object_or_404(self.queryset, pk=pk)
         logo = None
@@ -80,7 +72,7 @@ class CredentialTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = CredentialTypeSerializer
     queryset = CredentialType.objects.all()
 
-    @detail_route(url_path="logo", methods=["get"])
+    @action(detail=True, url_path="logo", methods=["get"])
     def fetch_logo(self, request, pk=None):
         cred_type = get_object_or_404(self.queryset, pk=pk)
         logo = None
@@ -93,7 +85,7 @@ class CredentialTypeViewSet(ReadOnlyModelViewSet):
         # FIXME - need to store the logo mime type
         return HttpResponse(logo, content_type="image/jpg")
 
-    @detail_route(url_path="language", methods=["get"])
+    @action(detail=True, url_path="language", methods=["get"])
     def fetch_language(self, request, pk=None):
         cred_type = get_object_or_404(self.queryset, pk=pk)
         lang = {
@@ -108,14 +100,14 @@ class TopicViewSet(ReadOnlyModelViewSet):
     serializer_class = TopicSerializer
     queryset = Topic.objects.all()
 
-    @detail_route(url_path="formatted", methods=["get"])
+    @action(detail=True, url_path="formatted", methods=["get"])
     def retrieve_formatted(self, request, pk=None):
         item = self.get_object()
         serializer = CustomTopicSerializer(item)
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
-    @detail_route(url_path="credential", methods=["get"])
+    @action(detail=True, url_path="credential", methods=["get"])
     def list_credentials(self, request, pk=None):
         item = self.get_object()
         queryset = item.credentials
@@ -123,7 +115,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
-    @detail_route(url_path="credential/active", methods=["get"])
+    @action(detail=True, url_path="credential/active", methods=["get"])
     def list_active_credentials(self, request, pk=None):
         item = self.get_object()
         queryset = item.credentials.filter(revoked=False, inactive=False)
@@ -131,7 +123,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
-    @detail_route(url_path="credential/historical", methods=["get"])
+    @action(detail=True, url_path="credential/historical", methods=["get"])
     def list_historical_credentials(self, request, pk=None):
         item = self.get_object()
         queryset = item.credentials.filter(Q(revoked=True) | Q(inactive=True))
@@ -139,12 +131,17 @@ class TopicViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: TopicSerializer(many=False)})
-    @list_route(methods=["get"], url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)")
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)",
+    )
     def retrieve_by_type(self, request, type=None, source_id=None):
         return self.retrieve(request)
 
     @swagger_auto_schema(responses={200: CustomTopicSerializer(many=False)})
-    @list_route(
+    @action(
+        detail=False,
         methods=["get"],
         url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)/formatted",
     )
@@ -152,7 +149,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
         return self.retrieve_formatted(request)
 
     @swagger_auto_schema(responses={200: ExpandedCredentialSetSerializer(many=True)})
-    @detail_route(url_path="credentialset", methods=["get"])
+    @action(detail=True, url_path="credentialset", methods=["get"])
     def list_credential_sets(self, request, pk=None):
         item = self.get_object()
         queryset = item.credential_sets.order_by("first_effective_date").all()
@@ -197,13 +194,13 @@ class CredentialViewSet(ReadOnlyModelViewSet):
     serializer_class = CredentialSerializer
     queryset = Credential.objects.all()
 
-    @detail_route(url_path="formatted", methods=["get"])
+    @action(detail=True, url_path="formatted", methods=["get"])
     def retrieve_formatted(self, request, pk=None):
         item = self.get_object()
         serializer = ExpandedCredentialSerializer(item)
         return Response(serializer.data)
 
-    @detail_route(url_path="verify", methods=["get"])
+    @action(detail=True, url_path="verify", methods=["get"])
     def verify(self, request, pk=None):
         item: Credential = self.get_object()
         credential_type: CredentialType = item.credential_type
@@ -239,7 +236,6 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             claim_val = credential["attrs"][attr]
             restrictions[0][f"attr::{attr}::value"] = claim_val
 
-        # for attr in credential["attrs"]:
         requested_attribute = {
             "names": [attr for attr in credential["attrs"]],
             "restrictions": restrictions,
@@ -284,7 +280,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
         return JsonResponse(result)
 
-    @detail_route(url_path="latest", methods=["get"])
+    @action(detail=True, url_path="latest", methods=["get"])
     def get_latest(self, request, pk=None):
         item = self.get_object()
         latest = None
