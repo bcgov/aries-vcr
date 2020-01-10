@@ -17,7 +17,7 @@ class HookableCredential(Auditable):
 
     jrrtolkien = get_user_model().objects.create(username='jrrtolkien')
 
-    hook = Hook(user=jrrtolkien, event='hookable_cred.added', target='http://tob-api:8080/api/v2/feedback')
+    hook = Hook(user=jrrtolkien, event='hookable_cred.added', target='http://vcr-api:8080/api/v2/feedback')
     hook.save()
 
     cred = HookableCredential(corp_num='BC1234568', credential_type='122', credential_json='{}')
