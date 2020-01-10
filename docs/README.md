@@ -152,13 +152,13 @@ To remove the volumes and network elements run:
 
 ### Live Web Development
 
-The Indy Catalyst Org Book can also be brought up in a state where local modifications to the tob-web component are detected automatically, resulting in recompilation of the Javascript and CSS resources and a page reload when viewed in a web browser. To run Indy Catalyst Org Book using this method execute:
+The Indy Catalyst Org Book can also be brought up in a state where local modifications to the vcr-web component are detected automatically, resulting in recompilation of the Javascript and CSS resources and a page reload when viewed in a web browser. To run Indy Catalyst Org Book using this method execute:
 
 `./manage web-dev seed="my_seed_000000000000000000000000"`
 
 ### Theme Development
 
-Custom development of themes based on the Credential Registry starter kit is possible by following this [guide](../credential-registry\client\tob-web\ThemeDevelopment.md)
+Custom development of themes based on the Credential Registry starter kit is possible by following this [guide](../credential-registry\client\vcr-web\ThemeDevelopment.md)
 
 ### Start-up Orchestration
 

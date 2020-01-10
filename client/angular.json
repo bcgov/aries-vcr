@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "tob-web": {
+    "vcr-web": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -94,28 +94,28 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "tob-web:build",
+            "browserTarget": "vcr-web:build",
             "port": 4300
           },
           "configurations": {
             "production": {
-              "browserTarget": "tob-web:build:production"
+              "browserTarget": "vcr-web:build:production"
             },
             "dev": {
-              "browserTarget": "tob-web:build:dev"
+              "browserTarget": "vcr-web:build:dev"
             },
             "test": {
-              "browserTarget": "tob-web:build:test"
+              "browserTarget": "vcr-web:build:test"
             },
             "local": {
-              "browserTarget": "tob-web:build:local"
+              "browserTarget": "vcr-web:build:local"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "tob-web:build"
+            "browserTarget": "vcr-web:build"
           }
         },
         "test": {
@@ -155,7 +155,7 @@
         }
       }
     },
-    "tob-web-e2e": {
+    "vcr-web-e2e": {
       "root": "",
       "sourceRoot": "e2e",
       "projectType": "application",
@@ -164,7 +164,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "tob-web:serve"
+            "devServerTarget": "vcr-web:serve"
           }
         },
         "lint": {
@@ -179,7 +179,7 @@
       }
     }
   },
-  "defaultProject": "tob-web",
+  "defaultProject": "vcr-web",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

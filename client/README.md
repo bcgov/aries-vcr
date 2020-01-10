@@ -18,7 +18,7 @@ A docker instance that runs hot-reloading can be initialized by following the st
 
 ### Ng Serve
 
-It is possible (but not recommended) to run the Web UI only in the development mode. To do this run the following command in the *tob-web* directory.
+It is possible (but not recommended) to run the Web UI only in the development mode. To do this run the following command in the *vcr-web* directory.
 
 When running for the first time, install the required node.js packages:
 

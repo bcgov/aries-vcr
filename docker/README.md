@@ -76,7 +76,7 @@ A quick start guide for running a local Indy Network, an instance of TheOrgBook 
 
 ### Live Web Development
 
-The Credential Registry can also be brought up in a state where local modifications to the tob-web component are detected automatically, resulting in recompilation of the Javascript and CSS resources and a page reload when viewed in a web browser. To run TheOrgBook using this method execute:
+The Credential Registry can also be brought up in a state where local modifications to the vcr-web component are detected automatically, resulting in recompilation of the Javascript and CSS resources and a page reload when viewed in a web browser. To run TheOrgBook using this method execute:
 
 ```sh
 ./manage web-dev
