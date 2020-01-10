@@ -1,9 +1,9 @@
 version: "3"
 services:
   #
-  # tob-web
+  # vcr-web
   #
-  tob-web:
+  vcr-web:
     image: angular-on-nginx
     environment:
       - DEBUG=${DEBUG}
@@ -16,17 +16,17 @@ services:
       - WEB_BASE_HREF=${WEB_BASE_HREF}
       - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
     networks:
-      - tob
+      - vcr
     ports:
       - "${WEB_HTTP_PORT}:8080"
     depends_on:
       - vcr-api
 
   #
-  # tob-web-dev
-  # Run tob-web in development mode with auto-reload and inspector support
+  # vcr-web-dev
+  # Run vcr-web in development mode with auto-reload and inspector support
   #
-  tob-web-dev:
+  vcr-web-dev:
     image: angular-dev
     environment:
       - API_URL=${API_URL}
@@ -40,7 +40,7 @@ services:
       - WEB_BASE_HREF=${WEB_BASE_HREF}
       - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
     networks:
-      - tob
+      - vcr
     ports:
       - "${WEB_HTTP_PORT}:8080"
       - 5858:5858
@@ -122,9 +122,9 @@ services:
       - ../server/app/api/v2:/home/indy/api/v2
       - ../server/app/subscriptions:/home/indy/subscriptions
       - ../server/app/agent_webhooks:/home/indy/agent_webhooks
-      - tob-wallet:/home/indy/.indy_client/wallet
+      - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
-      - tob
+      - vcr
     ports:
       - "${API_HTTP_PORT}:8080"
       - 3000:3000
@@ -165,7 +165,7 @@ services:
       - AGENT_ADMIN_PORT=${AGENT_ADMIN_PORT}
       - AGENT_NAME=${AGENT_NAME}
     networks:
-      - tob
+      - vcr
     ports:
       - ${HTTP_INTERFACE_PORT}:${HTTP_INTERFACE_PORT}
       - ${WS_INTERFACE_PORT}:${WS_INTERFACE_PORT}
@@ -210,7 +210,7 @@ services:
 #        --log-config '/home/indy/debug-logger.cfg' \
 #        --log-level 'debug' \
 
-  tob-worker:
+  vcr-worker:
     image: django
     environment:
       - APP_CONFIG=${APP_CONFIG}
@@ -248,9 +248,9 @@ services:
       - ../server/app/api/v2:/home/indy/api/v2
       - ../server/app/subscriptions:/home/indy/subscriptions
       - ../server/app/agent_webhooks:/home/indy/agent_webhooks
-      - tob-wallet:/home/indy/.indy_client/wallet
+      - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
-      - tob
+      - vcr
     depends_on:
       - vcr-db
       - vcr-solr
@@ -281,7 +281,7 @@ services:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
     networks:
-      - tob
+      - vcr
     ports:
       - 8082:8080
     depends_on:
@@ -300,7 +300,7 @@ services:
     environment:
       - CORE_NAME=${CORE_NAME}
     networks:
-      - tob
+      - vcr
     ports:
       - 8983:8983
 
@@ -314,11 +314,11 @@ services:
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
     networks:
-      - tob
+      - vcr
     ports:
       - 5432:5432
     volumes:
-      - tob-data:/var/lib/pgsql/data
+      - vcr-data:/var/lib/pgsql/data
 
   #
   # wallet-db
@@ -331,11 +331,11 @@ services:
       - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
       - POSTGRESQL_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
     networks:
-      - tob
+      - vcr
     ports:
       - 5433:5432
     volumes:
-      - tob-wallet-db:/var/lib/pgsql/data
+      - vcr-wallet-db:/var/lib/pgsql/data
     #command:
     #  postgres -c 'log_statement=all' -c 'logging_collector=on' -c 'log_destination=stderr'
 
@@ -345,19 +345,19 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     networks:
-      - tob
+      - vcr
     ports:
       - "5672:5672"
       - "15672:15672"
     volumes:
-      - tob-rabbit:/var/lib/rabbitmq
+      - vcr-rabbit:/var/lib/rabbitmq
 
 networks:
-  tob:
+  vcr:
 
 volumes:
-  tob-data:
-  tob-wallet:
-  tob-wallet-db:
-  tob-web-empty:
-  tob-rabbit:
+  vcr-data:
+  vcr-wallet:
+  vcr-wallet-db:
+  vcr-web-empty:
+  vcr-rabbit:

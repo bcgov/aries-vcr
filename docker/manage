@@ -57,13 +57,13 @@ usage() {
             You can pass in a list of containers to start.  
             By default all containers will be started.
             
-            The API_URL used by tob-web can also be redirected.
+            The API_URL used by vcr-web can also be redirected.
 
             Examples:
             $0 start
             $0 start vcr-solr
-            $0 start tob-web
-            $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
+            $0 start vcr-web
+            $0 start vcr-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
 
       start - Same as up 
@@ -74,18 +74,18 @@ usage() {
             You can pass in a list of containers to be restarted.  
             By default all containers will be restarted.
             
-            The API_URL used by tob-web can also be redirected.
+            The API_URL used by vcr-web can also be redirected.
 
             Examples:
             $0 start
             $0 start vcr-solr
-            $0 start tob-web
-            $0 start tob-web API_URL=http://docker.for.win.localhost:56325/api/v1
+            $0 start vcr-web
+            $0 start vcr-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
 
       logs - Display the logs from the docker compose run (ctrl-c to exit).
 
-      web-dev - Builds and runs a live development version of tob-web, along with
+      web-dev - Builds and runs a live development version of vcr-web, along with
                 the required supporting components. Once started, the website is
                 automatically compiled and updated in response to file modifications.
                 To use a custom theme, use the TOB_THEME and TOB_THEME_PATH environment
@@ -112,7 +112,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api agent schema-spy tob-web rabbitmq tob-worker"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api agent schema-spy vcr-web rabbitmq vcr-worker"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ function echoYellow (){
 
 build-web() {
   #
-  # tob-web
+  # vcr-web
   #
   # The nginx-runtime image is used for the final runtime image.
   # The nodejs-build image is used to build the artifacts for the angular distribution.
@@ -198,8 +198,8 @@ build-web() {
 
 build-web-dev() {
   #
-  # tob-web-dev
-  # Alternative version of tob-web for live development
+  # vcr-web-dev
+  # Alternative version of vcr-web for live development
   #
   echo -e "\nBuilding nodejs-build image ..."
   docker build -q \
@@ -210,7 +210,7 @@ build-web-dev() {
   echo -e "\nBuilding angular-dev image ..."
   if [ -z "$TOB_THEME_PATH" ]; then
     # set TOB_THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
-    TOB_THEME_PATH="tob-web-empty"
+    TOB_THEME_PATH="vcr-web-empty"
 
     # No custom theme was specified
     ${S2I_EXE} build \
@@ -436,7 +436,7 @@ configureEnvironment() {
   export APPLICATION_URL=${APPLICATION_URL-http://localhost:8080}
   export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY:-R2D2HfPM5Zwd69IjclQiuFmcMV6}
 
-  # tob-web
+  # vcr-web
   export TOB_THEME=${TOB_THEME:-default}
   export TOB_THEME_PATH=${TOB_THEME_PATH-}
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
@@ -610,7 +610,7 @@ case "${COMMAND}" in
   start|up)
     _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
-    docker-compose up --scale tob-worker=2 -d ${_startupParams} 
+    docker-compose up --scale vcr-worker=2 -d ${_startupParams} 
     docker-compose logs -f
     ;;
   restart)
@@ -626,7 +626,7 @@ case "${COMMAND}" in
   web-dev)
     configureEnvironment "$@"
     [ -z "$SKIP_BUILD" ] && build-web-dev
-    docker-compose run --rm --service-ports tob-web-dev
+    docker-compose run --rm --service-ports vcr-web-dev
     ;;
   stop)
     configureEnvironment
