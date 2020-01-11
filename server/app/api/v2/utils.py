@@ -7,7 +7,7 @@ import os
 import threading
 from datetime import datetime, timedelta
 
-from icat_hooks.models import CredentialHookStats
+from subscriptions.models import CredentialHookStats
 
 from django.conf import settings
 from django.forms.models import model_to_dict
@@ -139,7 +139,7 @@ def get_stats(request, *args, **kwargs):
     timing_lock.acquire()
     try:
         hook_worker_stats = {}
-        if "icat_hooks" in settings.INSTALLED_APPS:
+        if "subscriptions" in settings.INSTALLED_APPS:
             # Only add hook stats IF the module is enabled/in use
             for item in CredentialHookStats.objects.all():
                 hook_worker_stats[f"web_hook.worker_stats.{item.worker_id}"] = {

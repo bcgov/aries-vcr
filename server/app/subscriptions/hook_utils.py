@@ -5,7 +5,7 @@ from .models.CredentialHook import CredentialHook
 from .models.HookUser import HookUser
 from .models.Subscription import Subscription
 
-from api_v2.utils import log_timing_method
+from api.v2.utils import log_timing_method
 
 
 def find_and_fire_hook(event_name, instance, **kwargs):

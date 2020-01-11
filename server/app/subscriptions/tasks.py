@@ -11,7 +11,7 @@ from celery.signals import celeryd_after_setup
 from celery.task import Task
 from django.conf import settings
 
-from icat_hooks.models.Subscription import Subscription
+from subscriptions.models.Subscription import Subscription
 
 from .utils import HookStep, TooManyRetriesException, log_webhook_execution_result
 

@@ -274,7 +274,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_new_nohookurl(self, mock_url_check):
@@ -303,7 +303,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_new_nohooktoken(self, mock_url_check):
@@ -335,7 +335,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_new_valid(self, mock_url_check):
@@ -363,7 +363,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_topic_noparam(self, mock_url_check):
@@ -396,7 +396,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_topic_valid(self, mock_url_check):
@@ -425,7 +425,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_stream_notopic(self, mock_url_check):
@@ -459,7 +459,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_stream_noschema(self, mock_url_check):
@@ -493,7 +493,7 @@ class Subscriptions_Hooks_Views_SubscriptionViewSet_TestCase(APITestCase):
         client.logout()
 
     @patch(
-        "icat_hooks.serializers.hooks.SubscriptionSerializer.check_live_url",
+        "subscriptions.serializers.hooks.SubscriptionSerializer.check_live_url",
         autospec=True,
     )
     def test_create_stream_valid(self, mock_url_check):

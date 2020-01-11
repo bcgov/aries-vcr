@@ -1,7 +1,7 @@
 from django.contrib.postgres import fields as contrib
 from django.db import models
 
-from api_v2.models.Auditable import Auditable
+from api.v2.models.Auditable import Auditable
 
 
 class CredentialHookStats(Auditable):

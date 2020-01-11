@@ -11,8 +11,8 @@ from rest_framework.response import Response
 
 from api.v2.models.Credential import Credential as CredentialModel
 from api.v2.utils import log_timing_method
-from icat_cbs.utils.credential import Credential, CredentialManager
-from icat_cbs.utils.issuer import IssuerManager
+from agent_webhooks.utils.credential import Credential, CredentialManager
+from agent_webhooks.utils.issuer import IssuerManager
 
 LOGGER = logging.getLogger(__name__)
 

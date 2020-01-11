@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('icat_hooks', '0003_auto_20190412_1916'),
+        ('subscriptions', '0003_auto_20190412_1916'),
     ]
 
     operations = [

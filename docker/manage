@@ -291,7 +291,7 @@ build-api() {
   #
   BASE_IMAGE="bcgovimages/von-image:py36-1.7-ew-0-s2i"
   
-  echo -e "\nBuilding tob-api image from ${BASE_IMAGE}..."
+  echo -e "\nBuilding vcr-api image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
@@ -300,7 +300,7 @@ build-api() {
     -v "${COMPOSE_PROJECT_NAME}_vcr-pip-cache:/home/indy/.cache/pip" \
     '../server/app' \
     "$BASE_IMAGE" \
-    'tob-api'
+    'vcr-api'
 
   # this is only required in Windows
   if [[ "$OSTYPE" == "msys" ]]; then
@@ -336,7 +336,7 @@ build-echo-app() {
   #
   docker build -q \
     -t 'echo-app' \
-    -f '../../../docker/echo-service/Dockerfile' '../../../echo-service'
+    -f './echo-service/Dockerfile' '../echo-service'
 }
 
 build-all() {
