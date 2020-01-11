@@ -27,7 +27,7 @@ from api.v2.serializers.search import (
     CredentialSearchSerializer,
     CredentialTopicSearchSerializer,
 )
-from app.pagination import ResultLimitPagination
+from vcr_server.pagination import ResultLimitPagination
 
 LOGGER = logging.getLogger(__name__)
 

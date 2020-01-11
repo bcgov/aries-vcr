@@ -8,7 +8,7 @@ source =
 	api/v2
 	agent_webhooks
 	subscriptions
-	app
+	vcr_server
 
 [report]
 exclude_lines =

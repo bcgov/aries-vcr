@@ -68,7 +68,7 @@ INSTALLED_APPS = [
     "drf_generators",
     "drf_yasg",
     "django_filters",
-    "app",
+    "vcr_server",
     "api.v2",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
@@ -100,10 +100,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "app.middleware.routing.HTTPHeaderRoutingMiddleware",
+    "vcr_server.middleware.routing.HTTPHeaderRoutingMiddleware",
 ]
 
-ROOT_URLCONF = "app.urls"
+ROOT_URLCONF = "vcr_server.urls"
 
 CORS_URLS_REGEX = r"^/api/.*$"
 CORS_ORIGIN_ALLOW_ALL = True
@@ -154,7 +154,7 @@ AUTH_USER_MODEL = "api_v2.User"
 
 REST_FRAMEWORK = {
     # "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
-    "DEFAULT_PAGINATION_CLASS": "app.pagination.EnhancedPageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "vcr_server.pagination.EnhancedPageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
     "DEFAULT_PERMISSION_CLASSES": [

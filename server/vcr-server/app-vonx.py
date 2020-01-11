@@ -9,7 +9,7 @@ from django.conf import settings
 import requests
 from aiohttp import web
 
-from app.utils.boot import init_app, run_django, run_migration, run_reindex
+from vcr_server.utils.boot import init_app, run_django, run_migration, run_reindex
 
 parser = argparse.ArgumentParser(description="aiohttp server example")
 parser.add_argument("--host", default=os.getenv("HTTP_HOST"))

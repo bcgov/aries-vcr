@@ -13,7 +13,7 @@ import sys
 #     ptvsd.enable_attach(address=("0.0.0.0", 3000))
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vcr_server.settings")
 
     from django.core.management import execute_from_command_line
 

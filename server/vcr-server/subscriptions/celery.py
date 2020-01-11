@@ -6,7 +6,7 @@ from celery import Celery
 from django.conf import settings
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vcr_server.settings")
 
 celery_broker = getattr(settings, "CELERY_BROKER_URL")
 celery_backend = getattr(settings, "CELERY_TASK_BACKEND")

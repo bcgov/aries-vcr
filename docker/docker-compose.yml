@@ -118,10 +118,10 @@ services:
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       #- RECORD_TIMINGS=true
     volumes:
-      - ../server/app/app:/home/indy/app
-      - ../server/app/api/v2:/home/indy/api/v2
-      - ../server/app/subscriptions:/home/indy/subscriptions
-      - ../server/app/agent_webhooks:/home/indy/agent_webhooks
+      - ../server/vcr-server/vcr-server:/home/indy/vcr-server
+      - ../server/vcr-server/api/v2:/home/indy/api/v2
+      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
+      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
@@ -244,10 +244,10 @@ services:
       - THEME=${THEME}
       - APP_SCRIPT=${APP_SCRIPT:-scripts/start-celery-worker.sh}
     volumes:
-      - ../server/app/app:/home/indy/app
-      - ../server/app/api/v2:/home/indy/api/v2
-      - ../server/app/subscriptions:/home/indy/subscriptions
-      - ../server/app/agent_webhooks:/home/indy/agent_webhooks
+      - ../server/vcr-server/vcr-server:/home/indy/vcr-server
+      - ../server/vcr-server/api/v2:/home/indy/api/v2
+      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
+      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
