@@ -112,7 +112,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api agent schema-spy vcr-web rabbitmq vcr-worker echo-app"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web rabbitmq vcr-worker echo-app"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -317,15 +317,15 @@ build-agent() {
   # agent
   #
   docker build -q \
-    -t 'agent' \
-    -f './agent/Dockerfile' './agent'
+    -t 'vcr-agent' \
+    -f './vcr-agent/Dockerfile' './vcr-agent'
 
   # this is only required in Windows
   if [[ "$OSTYPE" == "msys" ]]; then
     echo -e "\nFixing file permissions in final agent image"
     docker build -q \
-      --build-arg BASE_IMAGE='agent:latest' \
-      -t 'agent' \
+      --build-arg BASE_IMAGE='vcr-agent:latest' \
+      -t 'vcr-agent' \
       -f './utils/Dockerfile.fixpermissions' './utils/'
   fi
 }

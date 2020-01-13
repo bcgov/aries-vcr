@@ -113,7 +113,7 @@ services:
       - APPLICATION_URL=${APPLICATION_URL}
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - AGENT_ADMIN_URL=http://agent:${AGENT_ADMIN_PORT}
+      - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
       - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       #- RECORD_TIMINGS=true
@@ -133,7 +133,7 @@ services:
       - vcr-db
       - wallet-db
       - vcr-solr
-      - agent
+      - vcr-agent
     command: >
       /bin/bash -c "
       echo waiting for solr ...;
@@ -146,8 +146,8 @@ services:
         ${STI_SCRIPTS_PATH}/run;
       fi"
 
-  agent:
-    image: agent
+  vcr-agent:
+    image: vcr-agent
     environment:
       - LEDGER_URL=${LEDGER_URL}
       - WALLET_TYPE=${WALLET_TYPE}
