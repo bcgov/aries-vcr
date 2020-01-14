@@ -1,0 +1,1 @@
+default_app_config = "api.v2.apps.ApiV2Config"

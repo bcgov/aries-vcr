@@ -9,13 +9,13 @@ jobs:
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - restore_cache:
           keys:
-            - tob_api-pip-dependencies-{{ .Branch }}-{{ checksum "starter-kits/credential-registry/server/tob-api/requirements.txt" }}
-            - tob_api-pip-dependencies-{{ .Branch }}-
+            - app-pip-dependencies-{{ .Branch }}-{{ checksum "server/vcr-server/requirements.txt" }}
+            - app-pip-dependencies-{{ .Branch }}-
 
       - run:
           name: Install Python Dependencies
           command: |
-            cd ./starter-kits/credential-registry/server/tob-api
+            cd ./server/vcr-server
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt \
@@ -24,15 +24,15 @@ jobs:
 
       - save_cache:
           paths:
-            - starter-kits/credential-registry/server/tob-api/venv
-          key: tob_api-pip-dependencies-{{ .Branch }}-{{ checksum "starter-kits/credential-registry/server/tob-api/requirements.txt" }}
+            - server/vcr-server/venv
+          key: app-pip-dependencies-{{ .Branch }}-{{ checksum "server/vcr-server/requirements.txt" }}
 
       - run:
           name: Run Django Tests and submit results to Codecov.io
           command: |
             mkdir test-reports
             mkdir test-reports/unittest
-            cd ./starter-kits/credential-registry/server/tob-api
+            cd ./server/vcr-server
             . venv/bin/activate
             coverage run --source='.' manage.py test
             codecov
