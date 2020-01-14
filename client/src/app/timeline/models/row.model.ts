@@ -17,6 +17,7 @@ export class Row {
 
   constructor(spec?: RowSpec) {
     if (spec) {
+      console.log(`*******`, spec);
       this.classNames = spec.classNames;
       this.height = spec.height;
       this.setSlots(spec.slots);
