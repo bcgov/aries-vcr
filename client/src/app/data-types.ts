@@ -438,8 +438,8 @@ export namespace Model {
 
     get link(): string[] {
       // FIXME need to move link generation into general data service
-      if (this.type === "registration") return ["/topic/", this.source_id];
-      return ["/topic/", this.type, this.source_id];
+      if (this.type === "registration") return ["/topic", this.source_id];
+      return ["/topic", this.type, this.source_id];
     }
 
     extLink(...args): string[] {
