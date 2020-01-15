@@ -5,6 +5,8 @@ from .Auditable import Auditable
 
 
 class CredentialSet(Auditable):
+    reindex_related = ["topic"]
+
     credential_type = models.ForeignKey(
         "CredentialType", related_name="credential_sets", on_delete=models.CASCADE
     )

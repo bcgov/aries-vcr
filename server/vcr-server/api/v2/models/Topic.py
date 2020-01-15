@@ -9,6 +9,8 @@ from .Name import Name
 
 
 class Topic(Auditable):
+    reindex_related = ["foundational_credential"]
+
     source_id = models.TextField()
     type = models.TextField()
 
@@ -23,11 +25,20 @@ class Topic(Auditable):
     )
 
     _active_cred_ids = None
+    _active_cred_type_ids = None
 
     class Meta:
         db_table = "topic"
         unique_together = (("source_id", "type"),)
         ordering = ("id",)
+
+    @property
+    def foundational_credential(self):
+        if self.credential_sets:
+            foundational_set = self.credential_sets.filter(credential_type__description=self.type).all()
+            if foundational_set and 0 < len(foundational_set):
+                return foundational_set[0].latest_credential
+        return None
 
     def save(self, *args, **kwargs):
         """
@@ -45,6 +56,15 @@ class Topic(Auditable):
                 .values_list("id", flat=True)
             )
         return self._active_cred_ids
+
+    def get_active_credential_type_ids(self):
+        if self._active_cred_type_ids is None:
+            self._active_cred_type_ids = set(
+                self.credentials.filter(latest=True, revoked=False)
+                .only("id", "topic_id")
+                .values_list("credential_type__id", flat=True)
+            )
+        return self._active_cred_type_ids
 
     def get_active_addresses(self):
         creds = self.get_active_credential_ids()

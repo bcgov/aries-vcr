@@ -28,6 +28,7 @@ class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
     revoked_date = indexes.DateTimeField(model_attr="revoked_date", null=True)
     credential_set_id = indexes.IntegerField(model_attr="credential_set_id", null=True)
     credential_type_id = indexes.IntegerField(model_attr="credential_type_id")
+    topic_credential_type_id = indexes.MultiValueField()
     issuer_id = indexes.IntegerField(model_attr="credential_type__issuer_id")
     schema_name = indexes.CharField(model_attr="credential_type__schema__name")
     schema_version = indexes.CharField(model_attr="credential_type__schema__version")
@@ -40,6 +41,10 @@ class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
     @staticmethod
     def prepare_category(obj):
         return ["{}::{}".format(cat.type, cat.value) for cat in obj.all_categories]
+
+    @staticmethod
+    def prepare_topic_credential_type_id(obj):
+        return [ct_id for ct_id in obj.all_credential_type_ids]
 
     @staticmethod
     def prepare_location(obj):
