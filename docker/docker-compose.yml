@@ -1,0 +1,372 @@
+version: "3"
+services:
+  #
+  # vcr-web
+  #
+  vcr-web:
+    image: angular-on-nginx
+    environment:
+      - DEBUG=${DEBUG}
+      - API_URL=${API_URL}
+      - APPLICATION_URL=${APPLICATION_URL}
+      - IpFilterRules=${IpFilterRules}
+      - RealIpFrom=${RealIpFrom}
+      - HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME}
+      - HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD}
+      - WEB_BASE_HREF=${WEB_BASE_HREF}
+      - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
+    networks:
+      - vcr
+    ports:
+      - "${WEB_HTTP_PORT}:8080"
+    depends_on:
+      - vcr-api
+
+  #
+  # vcr-web-dev
+  # Run vcr-web in development mode with auto-reload and inspector support
+  #
+  vcr-web-dev:
+    image: angular-dev
+    environment:
+      - API_URL=${API_URL}
+      - APPLICATION_URL=${APPLICATION_URL}
+      - DEV_MODE=false
+      - NODE_ENV=development
+      - NPM_CONFIG_LOGLEVEL=notice
+      - NPM_RUN=dev
+      - THEME=${THEME}
+      - THEME_PATH_DEV=${THEME_PATH_DEV}
+      - WEB_BASE_HREF=${WEB_BASE_HREF}
+      - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
+    networks:
+      - vcr
+    ports:
+      - "${WEB_HTTP_PORT}:8080"
+      - 5858:5858
+    volumes:
+      - "../../../credential-registry/client/src:/opt/app-root/src/src"
+      - "${THEME_PATH}:/tmp/vcr-theme"
+    depends_on:
+      - vcr-api
+
+  #
+  # vcr-api
+  #-------------------------------------------------
+  # The API performs the migrations on the database
+  # and updates the indexes in Solr.  Therefore
+  # it needs to come up after the database and
+  # and Solr services have had time to fully
+  # initialize.
+  #
+  #
+  # We are using a simple sleep command to do this
+  # for the moment; refer to the `command` section
+  # of the configuration for details.  It would be
+  # nice to implement a more deterministic solution.
+  #
+  vcr-api:
+    image: vcr-api
+    environment:
+      - APP_FILE=${APP_FILE}
+      - APP_CONFIG=${APP_CONFIG}
+      # - APP_MODULE=${APP_MODULE}
+      - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
+      - DATABASE_ENGINE=${DATABASE_ENGINE}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      #- WALLET_TYPE=${WALLET_TYPE}
+      #- POSTGRESQL_WALLET_HOST=${POSTGRESQL_WALLET_HOST}
+      #- POSTGRESQL_WALLET_PORT=${POSTGRESQL_WALLET_PORT}
+      #- POSTGRESQL_WALLET_USER=${POSTGRESQL_USER}
+      #- POSTGRESQL_WALLET_PASSWORD=${POSTGRESQL_PASSWORD}
+      #- POSTGRESQL_WALLET_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
+      #- WALLET_ENCRYPTION_KEY=${WALLET_ENCRYPTION_KEY}
+      #- INDY_WALLET_SEED=${INDY_WALLET_SEED}
+      #- INDY_WALLET_DID=${INDY_WALLET_DID}
+      - DEBUG=${DEBUG}
+      - DEMO_SITE=${DEMO_SITE}
+      - SQL_DEBUG=${SQL_DEBUG}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL}
+      - OPTIMIZE_TABLE_ROW_COUNTS=${OPTIMIZE_TABLE_ROW_COUNTS}
+      - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
+      - SOLR_CORE_NAME=${SOLR_CORE_NAME}
+      - SKIP_INDEXING_ON_STARTUP=${SKIP_INDEXING_ON_STARTUP}
+      - VCR_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
+      - VCR_DB_SERVICE_PORT=5432
+      - VCR_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
+      - VCR_SOLR_SERVICE_PORT=8983
+      - INDY_DISABLED=${INDY_DISABLED}
+      - LEDGER_URL=${LEDGER_URL}
+      - GENESIS_URL=${GENESIS_URL}
+      - LEDGER_PROTOCOL_VERSION=${LEDGER_PROTOCOL_VERSION}
+      - AUTO_REGISTER_DID=${AUTO_REGISTER_DID:-1}
+      - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-1}
+      - RUST_LOG=${RUST_LOG}
+      - RUST_BACKTRACE=${RUST_BACKTRACE}
+      - THEME=${THEME}
+      - ENABLE_REALTIME_INDEXING=${ENABLE_REALTIME_INDEXING}
+      - APPLICATION_URL=${APPLICATION_URL}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
+      - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
+      - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
+      #- RECORD_TIMINGS=true
+    volumes:
+      - ../server/vcr-server/vcr-server:/home/indy/vcr-server
+      - ../server/vcr-server/api/v2:/home/indy/api/v2
+      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
+      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
+      - vcr-wallet:/home/indy/.indy_client/wallet
+    networks:
+      - vcr
+    ports:
+      - "${API_HTTP_PORT}:8080"
+      - 3000:3000
+      - "${AGENT_WEBHOOK_PORT}:${AGENT_WEBHOOK_PORT}"
+    depends_on:
+      - vcr-db
+      - wallet-db
+      - vcr-solr
+      - vcr-agent
+    command: >
+      /bin/bash -c "
+      echo waiting for solr ...;
+      sleep 10;
+      if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
+        python manage.py migrate && \
+        python manage.py update_index --max-retries=5 --batch-size=500;
+        python manage.py runserver --noreload --nothreading 0.0.0.0:8080;
+      else
+        ${STI_SCRIPTS_PATH}/run;
+      fi"
+
+  vcr-agent:
+    image: vcr-agent
+    environment:
+      - LEDGER_URL=${LEDGER_URL}
+      - WALLET_TYPE=${WALLET_TYPE}
+      - POSTGRESQL_WALLET_HOST=${POSTGRESQL_WALLET_HOST}
+      - POSTGRESQL_WALLET_PORT=${POSTGRESQL_WALLET_PORT}
+      - POSTGRESQL_WALLET_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_WALLET_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_WALLET_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
+      - WALLET_ENCRYPTION_KEY=${WALLET_ENCRYPTION_KEY}
+      - INDY_WALLET_SEED=${INDY_WALLET_SEED}
+      # - INDY_WALLET_DID=${INDY_WALLET_DID}
+      - WEBHOOK_URL=${WEBHOOK_URL}/agentcb
+      - HTTP_INTERFACE_PORT=${HTTP_INTERFACE_PORT}
+      - WS_INTERFACE_PORT=${WS_INTERFACE_PORT}
+      - AGENT_ADMIN_PORT=${AGENT_ADMIN_PORT}
+      - AGENT_NAME=${AGENT_NAME}
+    networks:
+      - vcr
+    ports:
+      - ${HTTP_INTERFACE_PORT}:${HTTP_INTERFACE_PORT}
+      - ${WS_INTERFACE_PORT}:${WS_INTERFACE_PORT}
+      - ${AGENT_ADMIN_PORT}:${AGENT_ADMIN_PORT}
+    depends_on:
+      - wallet-db
+    entrypoint: /bin/bash
+    command: [
+        "-c",
+        "curl -d '{\"seed\":\"${INDY_WALLET_SEED}\", \"role\":\"TRUST_ANCHOR\", \"alias\":\"${AGENT_NAME}\"}' -X POST ${LEDGER_URL}/register; \
+        sleep 5; \
+        aca-py start \
+        --inbound-transport http '0.0.0.0' ${HTTP_INTERFACE_PORT} \
+        --inbound-transport ws '0.0.0.0' ${WS_INTERFACE_PORT} \
+        --endpoint ${AGENT_ENDPOINT} \
+        --outbound-transport ws \
+        --outbound-transport http \
+        --genesis-url '${LEDGER_URL}/genesis' \
+        --auto-accept-invites \
+        --auto-accept-requests \
+        --auto-ping-connection \
+        --auto-respond-messages \
+        --auto-respond-credential-proposal \
+        --auto-respond-credential-offer \
+        --auto-respond-credential-request \
+        --auto-verify-presentation \
+        --wallet-type 'indy' \
+        --wallet-name 'icat_agent_wallet' \
+        --wallet-key '${WALLET_ENCRYPTION_KEY}' \
+        --wallet-storage-type '${WALLET_TYPE}' \
+        --wallet-storage-config '{\"url\":\"${POSTGRESQL_WALLET_HOST}:${POSTGRESQL_WALLET_PORT}\",\"max_connections\":5}' \
+        --wallet-storage-creds '{\"account\":\"${POSTGRESQL_USER}\",\"password\":\"${POSTGRESQL_PASSWORD}\",\"admin_account\":\"postgres\",\"admin_password\":\"${POSTGRESQL_ADMIN_PASSWORD}\"}' \
+        --seed '${INDY_WALLET_SEED}' \
+        --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
+        --${AGENT_ADMIN_MODE} \
+        --label ${AGENT_NAME} \
+        --log-level 'error' \
+        --plugin indy_catalyst_issuer_registration",
+      ]
+
+#        --timing \
+#        --log-config '/home/indy/debug-logger.cfg' \
+#        --log-level 'debug' \
+
+  vcr-worker:
+    image: vcr-api
+    environment:
+      - APP_CONFIG=${APP_CONFIG}
+      # - APP_MODULE=${APP_MODULE}
+      - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
+      - DATABASE_ENGINE=${DATABASE_ENGINE}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DEBUG=${DEBUG}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SQL_DEBUG=${SQL_DEBUG}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL}
+      - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
+      - SOLR_CORE_NAME=${SOLR_CORE_NAME}
+      - VCR_DB_SERVICE_HOST=${DATABASE_SERVICE_NAME}
+      - VCR_DB_SERVICE_PORT=5432
+      - VCR_SOLR_SERVICE_HOST=${SOLR_SERVICE_NAME}
+      - VCR_SOLR_SERVICE_PORT=8983
+      - INDY_WALLET_SEED=${INDY_WALLET_SEED}
+      - LEDGER_URL=${LEDGER_URL}
+      - INDY_WALLET_TYPE=${INDY_WALLET_TYPE}
+      - INDY_WALLET_URL=${INDY_WALLET_URL}
+      - STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-1}
+      - RUST_LOG=${RUST_LOG}
+      - RUST_BACKTRACE=${RUST_BACKTRACE}
+      - THEME=${THEME}
+      - APP_SCRIPT=${APP_SCRIPT:-scripts/start-celery-worker.sh}
+    volumes:
+      - ../server/vcr-server/vcr-server:/home/indy/vcr-server
+      - ../server/vcr-server/api/v2:/home/indy/api/v2
+      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
+      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
+      - vcr-wallet:/home/indy/.indy_client/wallet
+    networks:
+      - vcr
+    depends_on:
+      - vcr-db
+      - vcr-solr
+      - rabbitmq
+    command: >
+      /bin/bash -c "
+      echo waiting for solr ...;
+      sleep 10;
+      ${STI_SCRIPTS_PATH}/run;"
+
+  #
+  # schema-spy
+  #-------------------------------------------------
+  # Needs to wait for the schema to be created/migrated
+  # by the API server; it's not enough to wait for the
+  # database to be available.
+  #
+  # We are using a simple sleep command to do this
+  # for the moment; refer to the `command` section
+  # of the configuration for details.  It would be
+  # nice to implement a more deterministic solution.
+  #
+  schema-spy:
+    image: schema-spy
+    environment:
+      - DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+    networks:
+      - vcr
+    ports:
+      - 8082:8080
+    depends_on:
+      - vcr-db
+    command: >
+      /bin/sh -c "
+        echo sleeping ...;
+        sleep 20;
+        ./start.sh;"
+
+  #
+  # vcr-solr
+  #
+  vcr-solr:
+    image: solr
+    environment:
+      - CORE_NAME=${CORE_NAME}
+    networks:
+      - vcr
+    ports:
+      - 8983:8983
+
+  #
+  # vcr-db
+  #
+  vcr-db:
+    image: postgresql
+    environment:
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+    networks:
+      - vcr
+    ports:
+      - 5432:5432
+    volumes:
+      - vcr-data:/var/lib/pgsql/data
+
+  #
+  # wallet-db
+  #
+  wallet-db:
+    image: postgresql
+    environment:
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
+    networks:
+      - vcr
+    ports:
+      - 5433:5432
+    volumes:
+      - vcr-wallet-db:/var/lib/pgsql/data
+    #command:
+    #  postgres -c 'log_statement=all' -c 'logging_collector=on' -c 'log_destination=stderr'
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    networks:
+      - vcr
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - vcr-rabbit:/var/lib/rabbitmq
+
+  echo-app:
+    image: echo-app
+    networks:
+      - vcr
+    ports:
+      - 8000:8000
+    command:
+      bash ./start.sh
+
+networks:
+  vcr:
+
+volumes:
+  vcr-data:
+  vcr-wallet:
+  vcr-wallet-db:
+  vcr-web-empty:
+  vcr-rabbit:

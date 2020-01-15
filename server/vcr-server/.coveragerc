@@ -1,0 +1,16 @@
+[run]
+omit =
+	*/tests/*
+	*/tests.py
+	*/custom_settings_*.py
+	*/settings.py
+source =
+	api/v2
+	agent_webhooks
+	subscriptions
+	vcr_server
+
+[report]
+exclude_lines =
+    pragma: no cover
+    @abstract

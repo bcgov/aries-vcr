@@ -206,21 +206,21 @@ There are a few settings that configure how the web hooks work:
 
 ```
 # authenticate REST hook services so only the subscriber can view/update their subscriptions
-AUTHENTICATION_BACKENDS = ["icat_hooks.icatrestauth.IcatAuthBackend"]
+AUTHENTICATION_BACKENDS = ["subscriptions.icatrestauth.IcatAuthBackend"]
 
 # wrapper function that delivers the web hook (passes the task to a rabbitmq worker)
-HOOK_DELIVERER = "icat_hooks.tasks.deliver_hook_wrapper"
+HOOK_DELIVERER = "subscriptions.tasks.deliver_hook_wrapper"
 
 # data model that triggers hooks to be sent - when a new record is added it triggers the hook services to run
-HOOK_CUSTOM_MODEL = "icat_hooks.models.CredentialHook"
+HOOK_CUSTOM_MODEL = "subscriptions.models.CredentialHook"
 
 # for hook events, checks the credential against the subscriptions to see which hooks to fire
-HOOK_FINDER = "icat_hooks.hook_utils.find_and_fire_hook"
+HOOK_FINDER = "subscriptions.hook_utils.find_and_fire_hook"
 
 # how to monitor for events - look for "created" events
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
-    "hookable_cred.added": "icat_hooks.HookableCredential.created+"
+    "hookable_cred.added": "subscriptions.HookableCredential.created+"
 }
 ```
 
