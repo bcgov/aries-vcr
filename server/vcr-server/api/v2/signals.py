@@ -1,5 +1,5 @@
 from haystack.signals import RealtimeSignalProcessor
-from api_v2.models.CredentialSet import CredentialSet
+from api.v2.models.CredentialSet import CredentialSet
 
 class RelatedRealtimeSignalProcessor(RealtimeSignalProcessor):
     reindex_related = True
