@@ -57,10 +57,7 @@ export class AttributeListComponent {
   }
 
   getAttributeLabel(row: any) {
-    console.log('the row', row);
     const label = this._dataService.translateClaimLabel(row.attr.credential_type_id, row.attr.type, row.label);
-    console.log('the label', label);
-
     return label;
   }
 }

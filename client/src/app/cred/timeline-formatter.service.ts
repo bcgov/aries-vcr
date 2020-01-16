@@ -14,9 +14,9 @@ export class TimelineFormatterService {
   }
 
   getCredentialUrl(cred: Model.Credential) {
-    let parts = [...cred.topic.link, '/cred/', cred.id];
-    let url = <string[]>this._localize.translateRoute(parts);
-    return url.join('');
+    const parts = [...cred.topic.link, 'cred', cred.id];
+    const url = <string[]>this._localize.translateRoute(parts);
+    return url.join('/');
   }
 
   renderCredential(cred: Model.Credential) {
@@ -24,7 +24,7 @@ export class TimelineFormatterService {
     const component = factory.create(this._injector);
     component.instance.credential = cred;
     component.changeDetectorRef.detectChanges();
-    let htmlContent = component.location.nativeElement.outerHTML;
+    const htmlContent = component.location.nativeElement.outerHTML;
     component.destroy();
     return htmlContent;
   }
