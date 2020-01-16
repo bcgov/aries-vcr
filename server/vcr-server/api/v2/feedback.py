@@ -46,7 +46,7 @@ def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
             body = "{}Contact reason: {}\n".format(body, reason_text)
         if comments:
             body = "{}Comments:\n{}\n".format(body, comments)
-        msg = MIMEText(body, "text")
+        msg = MIMEText(body, "plain")
         recipients = ",".join(recip_email)
         from_line = formataddr((str(Header(from_name, "utf-8")), from_email))
         reply_line = formataddr((str(Header(reply_name, "utf-8")), reply_email))
