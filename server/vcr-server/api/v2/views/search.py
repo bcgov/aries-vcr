@@ -153,6 +153,12 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
             type=openapi.TYPE_STRING,
         ),
         openapi.Parameter(
+            "topic_credential_type_id",
+            openapi.IN_QUERY,
+            description="Filter by any Credential Type ID owned by the Topic",
+            type=openapi.TYPE_STRING,
+        ),
+        openapi.Parameter(
             "issuer_id",
             openapi.IN_QUERY,
             description="Filter by Issuer ID",
@@ -231,7 +237,7 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
         # field, value = facet.split(":", 1)
         # if value:
         #    queryset = queryset.narrow('%s:"%s"' % (field, queryset.query.clean(value)))
-        for key in ("category", "credential_type_id", "issuer_id"):
+        for key in ("category", "credential_type_id", "topic_credential_type_id", "issuer_id"):
             for value in request.query_params.getlist(key):
                 if value:
                     facet_queryset = facet_queryset.narrow(
