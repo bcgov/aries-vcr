@@ -45,7 +45,7 @@ services:
       - "${WEB_HTTP_PORT}:8080"
       - 5858:5858
     volumes:
-      - "../../../credential-registry/client/src:/opt/app-root/src/src"
+      - "../client/src:/opt/app-root/src/src"
       - "${THEME_PATH}:/tmp/vcr-theme"
     depends_on:
       - vcr-api
