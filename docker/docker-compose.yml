@@ -118,10 +118,10 @@ services:
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       #- RECORD_TIMINGS=true
     volumes:
-      - ../server/vcr-server/vcr-server:/home/indy/vcr-server
-      - ../server/vcr-server/api/v2:/home/indy/api/v2
+      - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
       - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
+      - ../server/vcr-server/api:/home/indy/api
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
@@ -141,7 +141,7 @@ services:
       if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
         python manage.py migrate && \
         python manage.py update_index --max-retries=5 --batch-size=500;
-        python manage.py runserver --noreload --nothreading 0.0.0.0:8080;
+        python manage.py runserver --nothreading 0.0.0.0:8080;
       else
         ${STI_SCRIPTS_PATH}/run;
       fi"
