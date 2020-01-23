@@ -99,15 +99,10 @@ function populateDirSync(source_dir, target_dir) {
 }
 
 function copyThemeDir(theme_name, target_dir) {
-  console.log("THEMES_ROOT: ", THEMES_ROOT)
-  console.log("theme_name: ", theme_name)
   var theme_dir = path.join(THEMES_ROOT, theme_name);
-  console.log("theme_dir: ", theme_dir)
   if (theme_name !== 'default') {
-    console.log("path.join(THEME_PATH, theme_name): ", path.join(THEME_PATH, theme_name))
     if (fs.existsSync(path.join(THEME_PATH, theme_name))) {
       theme_dir = path.join(THEME_PATH, theme_name)
-      console.log("theme_dir: ", theme_dir)
     }
   }
 
