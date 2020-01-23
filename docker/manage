@@ -394,7 +394,7 @@ configureEnvironment() {
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   export RUST_LOG=${RUST_LOG:-warn}
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
-  export DEBUG="true"
+  export DEBUG=${DEBUG:-true}
 
   # vcr-db
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
