@@ -100,11 +100,11 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   submit(value: { text: string; type: string; archived: string }) {
-    const { text: query, archived: inactive, type: credential_type_id } = value;
+    const { text: query, archived: inactive, type: topic_credential_type_id } = value;
 
     this.router.navigate(['../search/name'], {
       relativeTo: this.route,
-      queryParams: { query, inactive, credential_type_id },
+      queryParams: { query, inactive, topic_credential_type_id },
     });
   }
 }

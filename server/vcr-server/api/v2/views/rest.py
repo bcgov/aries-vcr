@@ -252,11 +252,13 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         presentation_exchange_id = proof_request_response["presentation_exchange_id"]
 
         # TODO: if the agent was not started with the --auto-verify-presentation flag, verification will need to be initiated
-        retries = 5
+        retries = 7
         result = None
+        delay = 0.5
         while retries > 0:
-            sleep(5)
+            sleep(delay)
             retries -= 1
+            delay = delay * 2
             presentation_state_response = requests.get(
                 f"{settings.AGENT_ADMIN_URL}/present-proof/records/{presentation_exchange_id}",
                 headers=settings.ADMIN_REQUEST_HEADERS,

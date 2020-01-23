@@ -83,5 +83,9 @@ class Credential(Auditable):
         return self._cached("categories", self.attributes.filter(format="category"))
 
     @property
+    def all_credential_type_ids(self):
+        return self._cached("cred_type_ids", self.topic.get_active_credential_type_ids())
+
+    @property
     def all_attributes(self):
         return self._cached("attributes", self.attributes.all())
