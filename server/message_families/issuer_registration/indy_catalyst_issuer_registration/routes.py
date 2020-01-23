@@ -16,6 +16,7 @@ class CredentialMapping(Schema):
 
     _from = fields.String(data_key="from", required=True)
     _input = fields.String(data_key="input", required=True)
+    processor = fields.List(fields.String(), required=False)
 
 
 # TODO: Create method in AgentSchema to extract this raw schema instead of duplicating
@@ -43,6 +44,8 @@ class IssuerRegistrationRequestSchema(Schema):
                 """Nested credential schema."""
 
                 effective_date = fields.Nested(CredentialMapping(), required=True)
+                inactive = fields.Nested(CredentialMapping(), required=False)
+                revoked_date = fields.Nested(CredentialMapping(), required=False)
 
             class MappingEntry(Schema):
                 """Nested mapping entry schema."""
