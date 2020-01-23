@@ -99,6 +99,45 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                         attribute="type",
                         required=False,
                     )
+
+                    # fields specific to an address attribute
+                    _addressee = fields.Nested(
+                        CredentialMapping(),
+                        data_key="addressee",
+                        attribute="addressee",
+                        required=False,
+                    )
+                    _city = fields.Nested(
+                        CredentialMapping(),
+                        data_key="city",
+                        attribute="city",
+                        required=False,
+                    )
+                    _civic_address = fields.Nested(
+                        CredentialMapping(),
+                        data_key="civic_address",
+                        attribute="civic_address",
+                        required=False,
+                    )
+                    _country = fields.Nested(
+                        CredentialMapping(),
+                        data_key="country",
+                        attribute="country",
+                        required=False,
+                    )
+                    _postal_code = fields.Nested(
+                        CredentialMapping(),
+                        data_key="postal_code",
+                        attribute="postal_code",
+                        required=False,
+                    )
+                    _province = fields.Nested(
+                        CredentialMapping(),
+                        data_key="province",
+                        attribute="province",
+                        required=False,
+                    )
+
                     value = fields.Nested(CredentialMapping(), required=False)
 
                 _fields = fields.Nested(
