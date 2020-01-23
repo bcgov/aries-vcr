@@ -46,7 +46,7 @@ services:
       - 5858:5858
     volumes:
       - "../client/src:/opt/app-root/src/src"
-      - "${THEME_PATH}:/tmp/vcr-theme"
+      - "${THEME_PATH:-../client/themes}:/tmp/vcr-theme"
     depends_on:
       - vcr-api
 
