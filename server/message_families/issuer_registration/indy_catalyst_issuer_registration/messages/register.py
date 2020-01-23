@@ -40,6 +40,7 @@ class CredentialMapping(Schema):
 
     _from = fields.String(data_key="from", attribute="from", required=True)
     _input = fields.String(data_key="input", attribute="input", required=True)
+    processor = fields.List(fields.String(), required=False)
 
 
 class IssuerRegistrationSchema(AgentMessageSchema):
@@ -71,6 +72,8 @@ class IssuerRegistrationSchema(AgentMessageSchema):
                 """Nested credential schema."""
 
                 effective_date = fields.Nested(CredentialMapping(), required=True)
+                inactive = fields.Nested(CredentialMapping(), required=False)
+                revoked_date = fields.Nested(CredentialMapping(), required=False)
 
             class MappingEntry(Schema):
                 """Nested mapping entry schema."""
