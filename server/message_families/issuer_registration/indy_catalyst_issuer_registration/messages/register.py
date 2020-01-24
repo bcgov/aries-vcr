@@ -64,7 +64,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             url = fields.Str(required=False)
             endpoint = fields.Str(required=False)
             logo_path = fields.Str(required=False, allow_none=True)
-            logo_b64 = fields.str(required=False, allow_none=True)
+            logo_b64 = fields.Str(required=False, allow_none=True)
 
         class CredentialType(Schema):
             """Issuer credential type schema."""
