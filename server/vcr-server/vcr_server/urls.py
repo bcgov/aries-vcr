@@ -17,22 +17,6 @@ from . import views
 # from django.contrib import admin
 # admin.autodiscover()
 
-API_METADATA = settings.API_METADATA
-schema_view = get_schema_view(
-    openapi.Info(
-        title=API_METADATA["title"],
-        description=API_METADATA["description"],
-        default_version="v3",
-        terms_of_service=API_METADATA["terms"]["url"],
-        contact=openapi.Contact(**API_METADATA["contact"]),
-        license=openapi.License(**API_METADATA["license"]),
-    ),
-    # url="{}/api".format(settings.APPLICATION_URL),
-    validators=["flex", "ssv"],
-    public=True,
-    permission_classes=(AllowAny,),
-)
-
 
 base_patterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
@@ -40,16 +24,19 @@ base_patterns = [
 ]
 
 hook_patterns = [
-    path("hooks/", include("subscriptions.urls"), name="subscriptions"),
+    path(
+        "hooks/",
+        include("subscriptions.urls", namespace="subscriptions"),
+        name="subscriptions",
+    ),
     path("agentcb/", include("agent_webhooks.urls"), name="agent-callback"),
 ]
 
 api_patterns = [
     path("", RedirectView.as_view(url="api/"), name="api-root"),
     path("api", RedirectView.as_view(url="api/"), name="api"),
-    path("docs/", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs"),
-    path("api/v2/", include("api.v2.urls"), name="api-v2"),
-    path("api/v3/", include("api.v3.urls"), name="api-v3"),
+    path("api/v2/", include("api.v2.urls", namespace="v2"), name="api-v2"),
+    path("api/v3/", include("api.v3.urls", namespace="v3"), name="api-v3"),
 ]
 
 urlpatterns = base_patterns + hook_patterns + api_patterns

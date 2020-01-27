@@ -6,31 +6,33 @@ from rest_framework.permissions import AllowAny
 from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from api.v2.views import rest
+from api.v3.views import rest
 
-# API_METADATA = settings.API_METADATA
-# schema_view = get_schema_view(
-#     openapi.Info(
-#         title=API_METADATA["title"],
-#         default_version="v3",
-#         description=API_METADATA["description"],
-#         terms_of_service=API_METADATA["terms"]["url"],
-#         contact=openapi.Contact(**API_METADATA["contact"]),
-#         license=openapi.License(**API_METADATA["license"]),
-#     ),
-#     # url="{}/api".format(settings.APPLICATION_URL),
-#     validators=["flex", "ssv"],
-#     public=True,
-#     permission_classes=(AllowAny,),
-# )
+app_name = 'api_v3'
+
+API_METADATA = settings.API_METADATA
+schema_view = get_schema_view(
+    openapi.Info(
+        title=API_METADATA["title"],
+        default_version="v3",
+        description=API_METADATA["description"],
+        terms_of_service=API_METADATA["terms"]["url"],
+        contact=openapi.Contact(**API_METADATA["contact"]),
+        license=openapi.License(**API_METADATA["license"]),
+    ),
+    # url="{}/api".format(settings.APPLICATION_URL),
+    validators=["flex", "ssv"],
+    public=True,
+    permission_classes=(AllowAny,),
+)
 
 router = SimpleRouter(trailing_slash=False)
 
-# router.register(r"issuer", rest.IssuerViewSet)
-# router.register(r"schema", rest.SchemaViewSet)
-# router.register(r"credentialtype", rest.CredentialTypeViewSet)
-# router.register(r"credential", rest.CredentialViewSet)
-# router.register(r"topic", rest.TopicViewSet)
+router.register(r"issuer", rest.IssuerViewSet)
+router.register(r"schema", rest.SchemaViewSet)
+router.register(r"credentialtype", rest.CredentialTypeViewSet)
+router.register(r"credential", rest.CredentialViewSet)
+router.register(r"topic", rest.TopicViewSet)
 # router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
 
 # Search endpoints
@@ -52,8 +54,8 @@ router = SimpleRouter(trailing_slash=False)
 #     path("status", get_stats),
 # ]
 
-# swaggerPatterns = [
-#     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
-# ]
+swaggerPatterns = [
+    path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
+]
 
-urlpatterns = format_suffix_patterns(router.urls)
+urlpatterns = format_suffix_patterns(router.urls) + swaggerPatterns
