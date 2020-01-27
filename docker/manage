@@ -112,7 +112,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web rabbitmq vcr-worker echo-app"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web-dev rabbitmq vcr-worker echo-app"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -340,7 +340,7 @@ build-echo-app() {
 }
 
 build-all() {
-  build-web
+  build-web-dev
   build-solr
   build-db
   build-schema-spy
@@ -379,7 +379,7 @@ configureEnvironment() {
     esac
   done
 
-  seed=${INDY_WALLET_SEED:-$seed}
+  seed=${INDY_WALLET_SEED:-00000000000000000000000000000000}
 
   if [ "$COMMAND" == "up" ] || [ "$COMMAND" == "start" ] || [ "$COMMAND" == "restart" ] || [ "$COMMAND" == "registerdids" ]; then
     if [ -z "$seed" ]; then
@@ -394,7 +394,7 @@ configureEnvironment() {
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   export RUST_LOG=${RUST_LOG:-warn}
   export RUST_BACKTRACE=${RUST_BACKTRACE:-full}
-  export DEBUG=${DEBUG}
+  export DEBUG=${DEBUG:-true}
 
   # vcr-db
   export POSTGRESQL_DATABASE="THE_ORG_BOOK"
@@ -444,7 +444,7 @@ configureEnvironment() {
   export SQL_DEBUG=${SQL_DEBUG:-}
   export WEB_CONCURRENCY=${WEB_CONCURRENCY:-5}
   export APPLICATION_URL=${APPLICATION_URL-http://localhost:8080}
-  export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY:-R2D2HfPM5Zwd69IjclQiuFmcMV6}
+  export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
 
   # vcr-web
   export THEME=${THEME:-default}
