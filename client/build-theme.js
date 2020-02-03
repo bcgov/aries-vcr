@@ -105,6 +105,7 @@ function copyThemeDir(theme_name, target_dir) {
       theme_dir = path.join(THEME_PATH, theme_name)
     }
   }
+
   try {
     fs.accessSync(theme_dir, fs.constants.F_OK);
   } catch (err) {
