@@ -12,7 +12,9 @@ from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.views import APIView
+
 
 from api.v2 import utils
 from api.v2.models.Credential import Credential
@@ -31,6 +33,10 @@ from api.v2.serializers.rest import (
     TopicRelationshipSerializer,
     TopicSerializer,
 )
+
+from .viewsets import RetriveOnlyModelViewSet
+from ..mixins import MultipleFieldLookupMixin
+
 from api.v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
@@ -96,26 +102,20 @@ class CredentialTypeViewSet(ReadOnlyModelViewSet):
         return Response(lang)
 
 
-class TopicViewSet(ReadOnlyModelViewSet):
-    serializer_class = TopicSerializer
+class TopicView(APIView):
     queryset = Topic.objects.all()
 
-    @action(detail=True, url_path="formatted", methods=["get"])
-    def retrieve_formatted(self, request, pk=None):
-        item = self.get_object()
-        serializer = CustomTopicSerializer(item)
+    def get(self, request, type, source_id):
+        topic = get_object_or_404(self.queryset, type=type, source_id=source_id)
+        serializer = TopicSerializer(topic, many=False)
+        logger.info(serializer)
         return Response(serializer.data)
 
 
-class CredentialViewSet(ReadOnlyModelViewSet):
+class CredentialViewSet(RetriveOnlyModelViewSet):
     serializer_class = CredentialSerializer
     queryset = Credential.objects.all()
-
-    @action(detail=True, url_path="formatted", methods=["get"])
-    def retrieve_formatted(self, request, pk=None):
-        item = self.get_object()
-        serializer = ExpandedCredentialSerializer(item)
-        return Response(serializer.data)
+    lookup_field = "credential_id"
 
     @action(detail=True, url_path="verify", methods=["get"])
     def verify(self, request, pk=None):
