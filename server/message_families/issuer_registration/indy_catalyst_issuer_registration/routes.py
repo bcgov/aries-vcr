@@ -16,6 +16,7 @@ class CredentialMapping(Schema):
 
     _from = fields.String(data_key="from", required=True)
     _input = fields.String(data_key="input", required=True)
+    processor = fields.List(fields.String(), required=False)
 
 
 # TODO: Create method in AgentSchema to extract this raw schema instead of duplicating
@@ -35,6 +36,7 @@ class IssuerRegistrationRequestSchema(Schema):
             url = fields.Str(required=False)
             endpoint = fields.Str(required=False)
             logo_path = fields.Str(required=False, allow_none=True)
+            logo_b64 = fields.Str(required=False, allow_none=True)
 
         class CredentialType(Schema):
             """Isuer credential type schema."""
@@ -43,6 +45,8 @@ class IssuerRegistrationRequestSchema(Schema):
                 """Nested credential schema."""
 
                 effective_date = fields.Nested(CredentialMapping(), required=True)
+                inactive = fields.Nested(CredentialMapping(), required=False)
+                revoked_date = fields.Nested(CredentialMapping(), required=False)
 
             class MappingEntry(Schema):
                 """Nested mapping entry schema."""
@@ -59,6 +63,27 @@ class IssuerRegistrationRequestSchema(Schema):
                     _type = fields.Nested(
                         CredentialMapping, data_key="type", required=False
                     )
+
+                    # fields specific to an address attribute
+                    _addressee = fields.Nested(
+                        CredentialMapping, data_key="addressee", required=False
+                    )
+                    _city = fields.Nested(
+                        CredentialMapping, data_key="city", required=False
+                    )
+                    _civic_address = fields.Nested(
+                        CredentialMapping, data_key="civic_address", required=False
+                    )
+                    _country = fields.Nested(
+                        CredentialMapping, data_key="country", required=False
+                    )
+                    _postal_code = fields.Nested(
+                        CredentialMapping, data_key="postal_code", required=False
+                    )
+                    _province = fields.Nested(
+                        CredentialMapping, data_key="province", required=False
+                    )
+
                     value = fields.Nested(CredentialMapping(), required=False)
 
                 _fields = fields.Nested(Fields(), data_key="fields", required=True)

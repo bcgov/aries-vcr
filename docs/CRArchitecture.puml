@@ -1,0 +1,34 @@
+@startuml CRArchitecture
+
+' Credential Registry Architecture drawing with BC Registries design
+
+package "Issuer" {
+    node "Source\nSystem" as src
+    node "Event\nMonitor" as evmon
+    package "Issuer Agent" as issag {
+        node "Issuer\nController" as icon
+        node "Issuer" as iss
+        database "KMS\nCreds" as isskms
+    }
+}
+
+package "Credential Registry" as cr {
+    package "Credential\nRegistry\nAgent" as crag {
+        node "Holder\nProver" as hold
+        node "Credential\nRegistry\nController" as crcon
+        database "KMS\nCreds" as holdkms
+    }
+    database "Search\nData" as crdb
+}
+
+evmon -left-> src
+evmon <--> icon
+icon --> iss
+iss -left-> isskms
+iss --> hold
+hold --> holdkms
+hold -down-> crcon
+crcon -left-> crdb
+
+
+@enduml
