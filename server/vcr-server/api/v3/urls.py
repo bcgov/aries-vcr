@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from api.v3.views import rest
+from api.v3.views import rest, search
 
 app_name = "api_v3"
 
@@ -39,11 +39,11 @@ api_views = [path("topic/<type>/<source_id>", rest.TopicView.as_view())]
 # router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
 
 # Search endpoints
-# router.register(
-#     r"search/credential/topic",
-#     search.CredentialTopicSearchView,
-#     "Credential Topic Search",
-# )
+router.register(
+    r"search/credential/topic",
+    search.CredentialTopicSearchView,
+    "Credential Topic Search",
+)
 # router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
 # router.register(
 #     r"search/autocomplete", search.NameAutocompleteView, "Name Autocomplete"
