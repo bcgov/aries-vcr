@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import os
 
 import requests
 from django.conf import settings
@@ -24,6 +25,15 @@ TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
 TOPIC_PERFORM_MENU_ACTION = "perform-menu-action"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
+
+
+PROCESS_INBOUND_CREDENTIALS = os.environ.get('PROCESS_INBOUND_CREDENTIALS', 'true')
+if PROCESS_INBOUND_CREDENTIALS.upper() == "TRUE":
+    print(">>> YES processing inbound credentials")
+    PROCESS_INBOUND_CREDENTIALS = True
+else:
+    print(">>> NO not processing inbound credentials")
+    PROCESS_INBOUND_CREDENTIALS = False
 
 
 @swagger_auto_schema(method="post", auto_schema=None)
@@ -74,6 +84,8 @@ def agent_callback(request, topic):
 
     return response
 
+# create one global manager instance
+credential_manager = CredentialManager()
 
 def handle_credentials(state, message):
     """
@@ -156,22 +168,27 @@ def handle_credentials(state, message):
             for attr in raw_credential["values"]:
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-            credential = Credential(credential_data)
-            credential_manager = CredentialManager()
-            credential = credential_manager.process(credential)
+            if PROCESS_INBOUND_CREDENTIALS:
+                credential = Credential(credential_data)
+                # create one global manager instance
+                #credential_manager = CredentialManager()
+                credential = credential_manager.process(credential)
+                ret_credential_id = credential.credential_id
+            else:
+                ret_credential_id = credential_data["thread_id"]
 
             # Instruct the agent to store the credential in wallet
             resp = requests.post(
                 f"{settings.AGENT_ADMIN_URL}/credential_exchange"
                 + f"/{credential_exchange_id}/store",
-                json={"credential_id": credential.credential_id},
+                json={"credential_id": ret_credential_id},
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             resp.raise_for_status()
 
             response_data = {
                 "success": True,
-                "details": f"Received credential with id {credential.credential_id}",
+                "details": f"Received credential with id {ret_credential_id}",
             }
 
         # TODO other scenarios
