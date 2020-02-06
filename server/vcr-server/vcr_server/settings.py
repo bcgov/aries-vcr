@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django_filters",
     "vcr_server",
     "api.v2",
+    "api.v3",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "subscriptions",  # only required when using webhook subscriptions

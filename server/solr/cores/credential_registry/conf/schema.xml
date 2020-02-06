@@ -98,6 +98,8 @@
         </analyzer>
     </fieldType>
 
+    <!-- Unorganized fields -->
+
     <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
     <field name="django_ct" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="django_id" type="string" indexed="true" stored="true" multiValued="false"/>
@@ -141,6 +143,25 @@
     <field name="schema_version" type="string" indexed="true" stored="true" multiValued="false" />
 
     <field name="credential_id" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <!-- Begin organized schemas -->
+    <!-- field name should being with index name follow by an underscore -->
+
+    <!-- NameIndex -->
+    
+    <field name="name_text" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="name_type" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <!-- AddressIndex -->
+
+    <field name="address_addressee" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="address_civic_address" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="address_city" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="address_province" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="address_postal_code" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="address_country" type="string" indexed="true" stored="true" multiValued="false" />
+    
+
 
     <uniqueKey>id</uniqueKey>
 
