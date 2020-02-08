@@ -208,11 +208,8 @@ build-web-dev() {
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
-  if [ -z "$THEME_PATH" ]; then
-    # set THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
-    THEME_PATH="vcr-web-empty"
-
-    # No custom theme was specified
+  if [ -z "$THEME_PATH" ] && [ "$THEME" == "default" ]; then
+    # No custom theme path was specified
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -226,6 +223,7 @@ build-web-dev() {
       'angular-dev'
   else
     # Use the custom theme
+    THEME_PATH=${THEME_PATH:-$(pwd)/../client/themes}
     export THEME_PATH_DEV="/tmp/vcr-theme"
 
     ${S2I_EXE} build \
