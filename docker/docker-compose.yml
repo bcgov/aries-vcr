@@ -140,7 +140,7 @@ services:
     command: >
       /bin/bash -c "
       echo waiting for solr ...;
-      sleep 10;
+      sleep 15;
       if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
         python manage.py migrate && \
         python manage.py update_index --max-retries=5 --batch-size=500;
@@ -179,6 +179,18 @@ services:
     command: [
         "-c",
         "curl -d '{\"seed\":\"${INDY_WALLET_SEED}\", \"role\":\"TRUST_ANCHOR\", \"alias\":\"${AGENT_NAME}\"}' -X POST ${LEDGER_URL}/register; \
+        sleep 5; \
+        aca-py provision \
+        --endpoint ${AGENT_ENDPOINT} \
+        --genesis-url '${LEDGER_URL}/genesis' \
+        --wallet-type 'indy' \
+        --wallet-name 'icat_agent_wallet' \
+        --wallet-key '${WALLET_ENCRYPTION_KEY}' \
+        --wallet-storage-type '${WALLET_TYPE}' \
+        --wallet-storage-config '{\"url\":\"${POSTGRESQL_WALLET_HOST}:${POSTGRESQL_WALLET_PORT}\",\"max_connections\":5}' \
+        --wallet-storage-creds '{\"account\":\"${POSTGRESQL_USER}\",\"password\":\"${POSTGRESQL_PASSWORD}\",\"admin_account\":\"postgres\",\"admin_password\":\"${POSTGRESQL_ADMIN_PASSWORD}\"}' \
+        --seed '${INDY_WALLET_SEED}' \
+        --log-level 'error'; \
         sleep 5; \
         aca-py start \
         --inbound-transport http '0.0.0.0' ${HTTP_INTERFACE_PORT} \
@@ -261,7 +273,7 @@ services:
     command: >
       /bin/bash -c "
       echo waiting for solr ...;
-      sleep 10;
+      sleep 15;
       ${STI_SCRIPTS_PATH}/run;"
 
   #
