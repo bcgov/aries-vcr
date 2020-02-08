@@ -10,11 +10,11 @@
     border-radius: 2px;
     cursor: default;
     display: inline-block;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1;
-    margin-left: 0.5em;
-    padding: 0.25em 0.5em 0;
-    vertical-align: 3px;
+    margin-left: 1em;
+    padding: 0.15em 0.5em;
+    vertical-align: 0.3em;
   }
 
   @include media-breakpoint-down(sm) {
@@ -26,7 +26,7 @@
     }
     .tag {
       display: block;
-      margin: 0;
+      margin: 0.15em 0 0;
       vertical-align: middle;
     }
   }
@@ -41,7 +41,8 @@
     padding: 10px 10px 8px;
     @include hover-focus {
       background: initial;
-      border-color: $navbar-dark-hover-color;
+      border-color: rgba($navbar-dark-hover-color, 0.6);
+      color: white;
     }
   }
 }
