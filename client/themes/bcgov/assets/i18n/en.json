@@ -13,7 +13,13 @@
   },
   "name": {
     "registration.registries.ca": "Registration",
-    "relationship.registries.ca": "Relationship"
+    "relationship.registries.ca": "Relationship",
+    "address.registries.ca": "Address",
+    "demo.business_number.registries.ca": "Business Number",
+    "demo.verified_person.registries.ca": "Verified Person",
+    "demo.verified-person.registries.ca": "Verified Person",
+    "demo.person_relationship.registries.ca": "Relationship",
+    "demo.org_relationship.registries.ca": "Relationship"
   },
   "attribute": {
     "effective_dates": "Effective Dates",
@@ -36,7 +42,12 @@
     "relationship_description": "Description",
     "relationship_status": "Status",
     "relationship_status_effective": "Status Effective",
-    "associated_registration_name": "Associated Registration Name"
+    "associated_registration_name": "Associated Registration Name",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email_address": "Email Address",
+    "phone_number": "Phone Number",
+    "business_number": "Business Number"
   },
   "category": {
     "address_type": {
@@ -101,7 +112,8 @@
       "LL": "Limited Liability Partnership",
       "XL": "Extrapro Limited Liability Partnership",
       "MF": "Miscellaneous Firm",
-      "CS": "Continued In Society"
+      "CS": "Continued In Society",
+      "VP": "Verified Person"
     },
     "reason_description": {
       "Event:DISLC": "Dissolution Court Ordered Liquidation",
@@ -593,7 +605,10 @@
     },
     "relationship": {
       "Owns": "Owns",
-      "IsOwned": "Is Owned By"
+      "IsOwned": "Is Owned By",
+      "DIR": "Director",
+      "OFF": "Officer",
+      "FIO": "Firm Individual Owner"
     },
     "relationship_status": {
       "ACT": "Active",
