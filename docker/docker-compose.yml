@@ -193,6 +193,7 @@ services:
         --log-level 'error'; \
         sleep 5; \
         aca-py start \
+        --read-only-ledger \
         --inbound-transport http '0.0.0.0' ${HTTP_INTERFACE_PORT} \
         --inbound-transport ws '0.0.0.0' ${WS_INTERFACE_PORT} \
         --endpoint ${AGENT_ENDPOINT} \
