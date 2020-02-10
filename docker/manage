@@ -223,8 +223,7 @@ build-web-dev() {
       'angular-dev'
   else
     # Use the custom theme
-    THEME_PATH=${THEME_PATH:-$(pwd)/../client/themes}
-    export THEME_PATH_DEV="/tmp/vcr-theme"
+    THEME_PATH=${THEME_PATH:-/$(pwd)/../client/themes}
 
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
@@ -234,7 +233,7 @@ build-web-dev() {
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "THEME=${THEME}" \
       -e "THEME_PATH=${THEME_PATH_DEV}" \
-      -v "${THEME_PATH}:/tmp/vcr-theme" \
+      -v "${THEME_PATH}:${THEME_PATH_DEV}" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
@@ -450,6 +449,7 @@ configureEnvironment() {
   # vcr-web
   export THEME=${THEME:-default}
   export THEME_PATH=${THEME_PATH-}
+  export THEME_PATH_DEV="/tmp/vcr-theme"
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
