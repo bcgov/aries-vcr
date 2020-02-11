@@ -112,7 +112,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web-dev rabbitmq vcr-worker echo-app"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web rabbitmq vcr-worker echo-app"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -337,7 +337,7 @@ build-echo-app() {
 }
 
 build-all() {
-  build-web-dev
+  build-web
   build-solr
   build-db
   build-schema-spy
