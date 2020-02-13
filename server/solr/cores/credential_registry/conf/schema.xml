@@ -56,6 +56,9 @@
     <field name="name_text_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="name_text" dest="name_text_suggest"/>
 
+    <field name="address_civic_address_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="address_civic_address" dest="address_civic_address_suggest"/>
+
     <!--
     ### More exact matching on name, used to score results
     -->
@@ -64,6 +67,9 @@
 
     <copyField source="name_text" dest="name_text_precise"/>
     <field name="name_text_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <copyField source="address_civic_address" dest="address_civic_address_precise"/>
+    <field name="address_civic_address_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
 	<fieldType name="text_tokens" class="solr.TextField" positionIncrementGap="100">
 		<analyzer>

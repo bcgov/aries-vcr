@@ -19,44 +19,25 @@ from api.v2.serializers.rest import NameSerializer, AddressSerializer
 logger = logging.getLogger(__name__)
 
 
-# class AutocompleteSerializer(HaystackSerializer):
-#     _AddressIndex__type = CharField()
-#     _NameIndex__type = CharField()
-
-#     def get__AddressIndex__type(self):
-#         return "address"
-
-#     def get__NameIndex__type(self):
-#         return "name"
-
-#     class Meta:
-#         index_classes = [AddressIndex, NameIndex]
-#         fields = ["firstname", "lastname", "address", "name"]
-
-
 class NameAutocompleteSerializer(HaystackSerializer):
 
-    # type = SerializerMethodField()
-    # value = SerializerMethodField()
+    type = SerializerMethodField()
+    value = SerializerMethodField()
 
-    # @staticmethod
-    # def get_type(obj):
-    #     return "name"
+    @staticmethod
+    def get_type(obj):
+        return "name"
 
-    # @staticmethod
-    # def get_value(obj):
-    #     return obj.text
-
-    # def to_representation(self, instance):
-    #     logger.info(instance.id)
-    #     raise Exception("what")
+    @staticmethod
+    def get_value(obj):
+        return obj.name_text
 
     class Meta(NameSerializer.Meta):
         index_classes = [NameIndex]
-        fields = ("name_text", "name_type")
+        fields = ("type", "value")
 
 
-class AddressAutocompleteSerializer(HaystackSerializerMixin, AddressSerializer):
+class AddressAutocompleteSerializer(HaystackSerializer):
 
     type = SerializerMethodField()
     value = SerializerMethodField()
@@ -67,8 +48,16 @@ class AddressAutocompleteSerializer(HaystackSerializerMixin, AddressSerializer):
 
     @staticmethod
     def get_value(obj):
-        return obj.civic_address
+        return obj.address_civic_address
 
     class Meta(AddressSerializer.Meta):
         index_classes = [AddressIndex]
-        fields = ("value", "type")
+        fields = ("type", "value")
+
+
+class AggregateAutocompleteSerializer(HaystackSerializer):
+    class Meta:
+        serializers = {
+            AddressIndex: AddressAutocompleteSerializer,
+            NameIndex: NameAutocompleteSerializer,
+        }

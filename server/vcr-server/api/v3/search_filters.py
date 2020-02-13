@@ -54,25 +54,41 @@ class Proximate(Clean):
         return output
 
 
-class AutocompleteFilterBuilder(BaseQueryBuilder):
-    query_param = "q"
+def get_autocomplete_builder(attr_names):
+    class AutocompleteFilterBuilder(BaseQueryBuilder):
+        query_param = "q"
 
-    def build_name_query(self, term):
-        SQ = self.view.query_object
-        match_any = not settings.SEARCH_TERMS_EXCLUSIVE
-        return SQ(name_text_suggest=Proximate(term)) | SQ(
-            name_text_precise=Proximate(term, boost=10, any=match_any)
-        )
+        def build_name_query(self, term):
+            SQ = self.view.query_object
+            match_any = not settings.SEARCH_TERMS_EXCLUSIVE
 
-    def build_query(self, **filters):
-        inclusions = []
-        exclusions = None
-        if self.query_param in filters:
-            for qval in filters[self.query_param]:
-                if len(qval):
-                    inclusions.append(self.build_name_query(qval))
-        inclusions = functools.reduce(operator.and_, inclusions) if inclusions else None
-        return inclusions, exclusions
+            query = None
+            assert len(attr_names) > 0
+            for attr_name in attr_names:
+                sq_precise_args = {
+                    f"{attr_name}_precise": Proximate(term, boost=10, any=match_any)
+                }
+                sq_suggest_args = {f"{attr_name}_suggest": Proximate(term)}
+                if not query:
+                    query = SQ(**sq_suggest_args) | SQ(**sq_precise_args)
+                else:
+                    query |= SQ(**sq_suggest_args) | SQ(**sq_precise_args)
+
+            return query
+
+        def build_query(self, **filters):
+            inclusions = []
+            exclusions = None
+            if self.query_param in filters:
+                for qval in filters[self.query_param]:
+                    if len(qval):
+                        inclusions.append(self.build_name_query(qval))
+            inclusions = (
+                functools.reduce(operator.and_, inclusions) if inclusions else None
+            )
+            return inclusions, exclusions
+
+    return AutocompleteFilterBuilder
 
 
 class AutocompleteFilter(CustomFilter):
@@ -80,4 +96,7 @@ class AutocompleteFilter(CustomFilter):
     Apply name autocomplete filter to credential search
     """
 
-    query_builder_class = AutocompleteFilterBuilder
+    query_builder_class = get_autocomplete_builder(
+        ("name_text", "address_civic_address")
+    )
+

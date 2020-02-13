@@ -16,12 +16,11 @@ from api.v2.models.Credential import Credential
 from api.v2.models.Name import Name
 from api.v2.models.Address import Address
 
-from api.v3.search_filters import (
-    AutocompleteFilter,
-)
+from api.v3.search_filters import AutocompleteFilter
 from api.v3.serializers.search import (
     NameAutocompleteSerializer,
     AddressAutocompleteSerializer,
+    AggregateAutocompleteSerializer,
 )
 from vcr_server.pagination import ResultLimitPagination
 
@@ -84,9 +83,11 @@ class NameAutocompleteView(HaystackViewSet):
 
     retrieve = None
 
-    index_models = [Name]
+    # index_models = [Name]
+    index_models = [Address, Name]
     load_all = True
-    serializer_class = NameAutocompleteSerializer
+    # serializer_class = NameAutocompleteSerializer
+    serializer_class = AggregateAutocompleteSerializer
     # enable normal filtering
     filter_backends = [
         AutocompleteFilter,
@@ -94,5 +95,5 @@ class NameAutocompleteView(HaystackViewSet):
         # StatusFilter,
         # HaystackOrderingFilter,
     ]
-    ordering_fields = ("name_text", "score")
+    # ordering_fields = ("name_text", "score")
     ordering = "-score"
