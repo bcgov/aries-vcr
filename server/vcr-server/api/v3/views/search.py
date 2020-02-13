@@ -14,15 +14,15 @@ from rest_framework.response import Response
 
 from api.v2.models.Credential import Credential
 from api.v2.models.Name import Name
-from api.v2.search.filters import (
+from api.v2.models.Address import Address
+
+from api.v3.search_filters import (
     AutocompleteFilter,
-    CategoryFilter,
-    CredNameFilter,
-    CustomFacetFilter,
-    ExactFilter,
-    StatusFilter,
 )
-from api.v3.serializers.search import NameAutocompleteSerializer
+from api.v3.serializers.search import (
+    NameAutocompleteSerializer,
+    AddressAutocompleteSerializer,
+)
 from vcr_server.pagination import ResultLimitPagination
 
 LOGGER = logging.getLogger(__name__)
@@ -89,10 +89,10 @@ class NameAutocompleteView(HaystackViewSet):
     serializer_class = NameAutocompleteSerializer
     # enable normal filtering
     filter_backends = [
-        # AutocompleteFilter,
+        AutocompleteFilter,
         # CategoryFilter,
         # StatusFilter,
         # HaystackOrderingFilter,
     ]
-    ordering_fields = ("text", "score")
+    ordering_fields = ("name_text", "score")
     ordering = "-score"

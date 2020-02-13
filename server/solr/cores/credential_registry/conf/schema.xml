@@ -51,15 +51,19 @@
     ### Autocomplete support - added manually, not using the generator
     -->
     <field name="name_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
-
     <copyField source="name" dest="name_suggest"/>
+
+    <field name="name_text_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="name_text" dest="name_text_suggest"/>
 
     <!--
     ### More exact matching on name, used to score results
     -->
     <copyField source="name" dest="name_precise"/>
-
     <field name="name_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <copyField source="name_text" dest="name_text_precise"/>
+    <field name="name_text_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
 	<fieldType name="text_tokens" class="solr.TextField" positionIncrementGap="100">
 		<analyzer>
@@ -67,6 +71,14 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 		</analyzer>
 	</fieldType>
+
+	<!-- <fieldType name="name_text_precise_tokens" class="solr.TextField" positionIncrementGap="100">
+		<analyzer>
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType> -->
+
 
     <!--
     ######################## django-haystack specifics begin ########################
