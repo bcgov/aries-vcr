@@ -82,18 +82,8 @@ class NameAutocompleteView(HaystackViewSet):
         return ret
 
     retrieve = None
-
-    # index_models = [Name]
     index_models = [Address, Name]
     load_all = True
-    # serializer_class = NameAutocompleteSerializer
     serializer_class = AggregateAutocompleteSerializer
-    # enable normal filtering
-    filter_backends = [
-        AutocompleteFilter,
-        # CategoryFilter,
-        # StatusFilter,
-        # HaystackOrderingFilter,
-    ]
-    # ordering_fields = ("name_text", "score")
+    filter_backends = (AutocompleteFilter,)
     ordering = "-score"
