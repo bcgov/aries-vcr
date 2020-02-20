@@ -17,6 +17,11 @@ class AddressIndex(TxnAwareSearchIndex, indexes.Indexable):
     address_province = indexes.CharField(model_attr="province", null=True)
     address_postal_code = indexes.CharField(model_attr="postal_code", null=True)
     address_country = indexes.CharField(model_attr="country", null=True)
+    address_credential_inactive = indexes.BooleanField()
 
     def get_model(self):
         return AddressModel
+
+    @staticmethod
+    def prepare_address_credential_inactive(obj):
+        return obj.credential.inactive

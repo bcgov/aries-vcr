@@ -100,3 +100,46 @@ class AutocompleteFilter(CustomFilter):
         ("name_text", "address_civic_address")
     )
 
+
+class StatusFilterBuilder(BaseQueryBuilder):
+    def build_query(self, **filters):
+        inclusions = {}
+        exclusions = None
+        SQ = self.view.query_object
+        filter_fields_map = getattr(
+            self.view.serializer_class.Meta, "filter_fields_map", ()
+        )
+
+        # For every parameter passed in the request
+        for qname, qvals in filters.items():
+            for qval in qvals:
+                # Check if we track this filter type in the serializer
+                # in `filter_fields_map` tuple
+                if qname in filter_fields_map:
+                    mapped_index_attributes = filter_fields_map[qname]
+                    attr_inclusions = {}
+                    # Construct an OR clause for this filter across all of the
+                    # mapped index attributes
+                    for mapped_attr in mapped_index_attributes:
+                        attr_inclusions[mapped_attr] = SQ(**{mapped_attr: Exact(qval)})
+                    attr_inclusions = (
+                        functools.reduce(operator.or_, attr_inclusions.values())
+                        if attr_inclusions
+                        else None
+                    )
+                    # Add this sub OR clause to the top-level set of AND clauses
+                    inclusions[mapped_attr] = attr_inclusions
+
+        inclusions = (
+            functools.reduce(operator.and_, inclusions.values()) if inclusions else None
+        )
+
+        return inclusions, exclusions
+
+
+class StatusFilter(CustomFilter):
+    """
+    Apply boolean filter flags
+    """
+
+    query_builder_class = StatusFilterBuilder

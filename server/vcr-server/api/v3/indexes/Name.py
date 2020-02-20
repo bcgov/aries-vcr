@@ -13,6 +13,11 @@ class NameIndex(TxnAwareSearchIndex, indexes.Indexable):
 
     name_text = indexes.CharField(model_attr="text")
     name_type = indexes.CharField(model_attr="type")
+    name_credential_inactive = indexes.BooleanField()
 
     def get_model(self):
         return NameModel
+
+    @staticmethod
+    def prepare_name_credential_inactive(obj):
+        return obj.credential.inactive

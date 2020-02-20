@@ -16,7 +16,7 @@ from api.v2.models.Credential import Credential
 from api.v2.models.Name import Name
 from api.v2.models.Address import Address
 
-from api.v3.search_filters import AutocompleteFilter
+from api.v3.search_filters import AutocompleteFilter, StatusFilter
 from api.v3.serializers.search import (
     NameAutocompleteSerializer,
     AddressAutocompleteSerializer,
@@ -85,5 +85,5 @@ class NameAutocompleteView(HaystackViewSet):
     index_models = [Address, Name]
     load_all = True
     serializer_class = AggregateAutocompleteSerializer
-    filter_backends = (AutocompleteFilter,)
+    filter_backends = (AutocompleteFilter, StatusFilter)
     ordering = "-score"

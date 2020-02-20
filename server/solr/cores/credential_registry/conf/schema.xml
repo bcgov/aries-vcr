@@ -169,6 +169,7 @@
     
     <field name="name_text" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="name_type" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="name_credential_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
 
     <!-- AddressIndex -->
 
@@ -178,6 +179,7 @@
     <field name="address_province" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="address_postal_code" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="address_country" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="address_credential_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
     
 
 
