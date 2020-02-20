@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 TOPIC_CONNECTIONS = "connections"
 TOPIC_CONNECTIONS_ACTIVITY = "connections_activity"
-TOPIC_CREDENTIALS = "credentials"
+TOPIC_CREDENTIALS = "issue_credential"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
@@ -153,6 +153,7 @@ def handle_credentials(state, message):
 
         elif state == "credential_received":
             raw_credential = message["raw_credential"]
+            print(">>>> credential message =", message)
 
             # You can include this exception to test error reporting
             # raise Exception("Depliberate error to test problem reporting")
@@ -178,13 +179,15 @@ def handle_credentials(state, message):
                 ret_credential_id = credential_data["thread_id"]
 
             # Instruct the agent to store the credential in wallet
+            print(">>>> posting with credential_id =", ret_credential_id)
             resp = requests.post(
-                f"{settings.AGENT_ADMIN_URL}/credential_exchange"
+                f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
                 + f"/{credential_exchange_id}/store",
                 json={"credential_id": ret_credential_id},
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             resp.raise_for_status()
+            print(resp.json())
 
             response_data = {
                 "success": True,
@@ -201,7 +204,7 @@ def handle_credentials(state, message):
         LOGGER.error(str(e))
         # Send a problem report for the error
         resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+            f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
