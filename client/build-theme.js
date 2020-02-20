@@ -5,6 +5,7 @@
  **/
 
 var fs = require('fs'),
+  jsonpatch = require('fast-json-patch'),
   path = require('path');
 
 var THEME_NAME = process.env.THEME || 'default';
@@ -239,6 +240,69 @@ function mergeDeep(target, ...sources) {
   return mergeDeep(target, ...sources);
 }
 
+/**
+ * allows for patching of core files in the themes folder
+ * @scope client/themes folder
+ * @param  {theme} theme directory name of the theme you are loading
+ */
+function patches( theme )
+{
+  var patchdir = path.join( __dirname, 'themes' , theme , '.patches' );
+
+  if ( exists( patchdir ) )
+  {
+      var files = fs.readdirSync( patchdir );
+      
+      for (var idx in files)
+      {
+        var patch = path.join( patchdir, files[idx]  ),
+            target = origin( files[idx] );
+
+         if ( target )
+         {
+            var patched = jsonpatch.applyPatch( require( target ) , require( patch ) ).newDocument;
+            fs.writeFileSync( target , JSON.stringify( patched, null, ' ') );
+         }
+      }
+    }
+  }
+
+  /**
+  * parses a patch filename for its targetted origin and creates a backup if one does not exist
+  * @param  {String} filename 
+  * @return {Object}           object with a path and source property
+  */
+  function origin( filename )
+  {
+    var info = filename.split('.'),
+        time = info.shift(),
+        name = info.join('.'),
+        original = path.join( __dirname, name );
+
+    if ( ! exists( original ) )
+    {
+      return false;
+    }
+
+    return original;
+
+  }
+
+  /**
+  * check if a directory/file exists in a silent/non-blocking way
+  * @param  {String} path to resource (full)
+  * @return {Boolean}     True if resource exists / False if not
+  */
+  function exists( path )
+  {
+    try {
+        fs.statSync( path );
+        return true;
+    } catch( error ) {
+        return false;
+    }
+  }
+
 // merge theme and default language files
 function combineLanguage(theme_name, target_dir) {
   var langs = new Array();
@@ -351,6 +415,9 @@ if (UPDATE_ONLY) {
 copyThemeDir('default', TARGET_DIR)
 if (THEME_NAME !== 'default') {
   copyThemeDir(THEME_NAME, TARGET_DIR)
+  
+  // Lets check for a patch directory in the custom theme
+  patches( THEME_NAME );
 }
 
 if (USE_LINKS)
@@ -360,6 +427,9 @@ combineLanguage(THEME_NAME, TARGET_DIR);
 
 let CONFIG = updateConfig(THEME_NAME);
 replaceVars(REPLACE_VAR_PATHS, CONFIG);
+
+
+
 
 if (!UPDATE_ONLY)
   console.log('Done.\n');

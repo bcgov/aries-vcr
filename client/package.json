@@ -36,6 +36,7 @@
     "compare-versions": "~3.1.0",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "~2.5.4",
+    "fast-json-patch": "^3.0.0-1",
     "font-awesome": "^4.7.0",
     "localize-router": "https://github.com/andrewwhitehead/localize-router/releases/download/v2.0.0-RC.2/localize-router-2.0.0-RC.2.tgz",
     "localize-router-http-loader": "~1.0.2",
