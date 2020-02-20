@@ -249,7 +249,7 @@ function patches( theme )
 {
   var patchdir = path.join( __dirname, 'themes' , theme , '.patches' );
 
-  if ( fs.statSync( patchdir ) )
+  if ( exists( fs.statSync( patchdir ) ) )
   {
       var files = fs.readdirSync( patchdir );
       
