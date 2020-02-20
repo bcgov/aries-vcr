@@ -23,7 +23,6 @@ class NameAutocompleteSerializer(HaystackSerializer):
 
     type = SerializerMethodField()
     value = SerializerMethodField()
-    inactive = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
@@ -32,10 +31,6 @@ class NameAutocompleteSerializer(HaystackSerializer):
     @staticmethod
     def get_value(obj):
         return obj.name_text
-
-    @staticmethod
-    def get_inactive(obj):
-        return obj.name_credential_inactive
 
     class Meta(NameSerializer.Meta):
         index_classes = [NameIndex]
@@ -46,7 +41,6 @@ class AddressAutocompleteSerializer(HaystackSerializer):
 
     type = SerializerMethodField()
     value = SerializerMethodField()
-    inactive = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
@@ -55,10 +49,6 @@ class AddressAutocompleteSerializer(HaystackSerializer):
     @staticmethod
     def get_value(obj):
         return obj.address_civic_address
-
-    @staticmethod
-    def get_inactive(obj):
-        return obj.address_credential_inactive
 
     class Meta(AddressSerializer.Meta):
         index_classes = [AddressIndex]
@@ -73,5 +63,6 @@ class AggregateAutocompleteSerializer(HaystackSerializer):
         }
 
         filter_fields_map = {
-            "inactive": ("address_credential_inactive", "name_credential_inactive")
+            "inactive": ("address_credential_inactive", "name_credential_inactive"),
+            "revoked": ("address_credential_revoked", "name_credential_revoked"),
         }

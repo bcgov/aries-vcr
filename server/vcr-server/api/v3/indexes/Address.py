@@ -18,6 +18,7 @@ class AddressIndex(TxnAwareSearchIndex, indexes.Indexable):
     address_postal_code = indexes.CharField(model_attr="postal_code", null=True)
     address_country = indexes.CharField(model_attr="country", null=True)
     address_credential_inactive = indexes.BooleanField()
+    address_credential_revoked = indexes.BooleanField()
 
     def get_model(self):
         return AddressModel
@@ -25,3 +26,7 @@ class AddressIndex(TxnAwareSearchIndex, indexes.Indexable):
     @staticmethod
     def prepare_address_credential_inactive(obj):
         return obj.credential.inactive
+
+    @staticmethod
+    def prepare_address_credential_revoked(obj):
+        return obj.credential.revoked

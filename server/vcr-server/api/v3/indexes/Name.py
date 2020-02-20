@@ -14,6 +14,7 @@ class NameIndex(TxnAwareSearchIndex, indexes.Indexable):
     name_text = indexes.CharField(model_attr="text")
     name_type = indexes.CharField(model_attr="type")
     name_credential_inactive = indexes.BooleanField()
+    name_credential_revoked = indexes.BooleanField()
 
     def get_model(self):
         return NameModel
@@ -21,3 +22,7 @@ class NameIndex(TxnAwareSearchIndex, indexes.Indexable):
     @staticmethod
     def prepare_name_credential_inactive(obj):
         return obj.credential.inactive
+
+    @staticmethod
+    def prepare_name_credential_revoked(obj):
+        return obj.credential.revoked

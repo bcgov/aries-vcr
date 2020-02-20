@@ -71,14 +71,14 @@
     <copyField source="address_civic_address" dest="address_civic_address_precise"/>
     <field name="address_civic_address_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
-	<fieldType name="text_tokens" class="solr.TextField" positionIncrementGap="100">
-		<analyzer>
-			<tokenizer class="solr.StandardTokenizerFactory"/>
-			<filter class="solr.LowerCaseFilterFactory"/>
-		</analyzer>
-	</fieldType>
+    <fieldType name="text_tokens" class="solr.TextField" positionIncrementGap="100">
+        <analyzer>
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+    </fieldType>
 
-	<!-- <fieldType name="name_text_precise_tokens" class="solr.TextField" positionIncrementGap="100">
+    <!-- <fieldType name="name_text_precise_tokens" class="solr.TextField" positionIncrementGap="100">
 		<analyzer>
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
@@ -125,35 +125,35 @@
     <field name="document" type="text_en" indexed="true" stored="true" multiValued="false" />
 
     <field name="credential_set_id" type="long" indexed="true" stored="true" multiValued="false" />
-     
+
     <field name="credential_type_id" type="long" indexed="true" stored="true" multiValued="false" />
 
     <field name="topic_credential_type_id" type="long" indexed="true" stored="true" multiValued="true" />
 
     <field name="topic_type" type="string" indexed="true" stored="true" multiValued="false" />
-    
+
     <field name="topic_id" type="long" indexed="true" stored="true" multiValued="false" />
 
     <field name="category" type="string" indexed="true" stored="true" multiValued="true" />
 
     <field name="location" type="text_en" indexed="true" stored="true" multiValued="true" />
-     
+
     <field name="name" type="text_en" indexed="true" stored="true" multiValued="true" />
 
     <field name="create_timestamp" type="date" indexed="true" stored="true" multiValued="false" />
 
     <field name="effective_date" type="date" indexed="true" stored="true" multiValued="false" />
-    
+
     <field name="inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
-    
+
     <field name="revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
 
     <field name="revoked_date" type="date" indexed="true" stored="true" multiValued="false" />
-    
+
     <field name="latest" type="boolean" indexed="true" stored="true" multiValued="false" />
-    
+
     <field name="issuer_id" type="long" indexed="true" stored="true" multiValued="false" />
-    
+
     <field name="source_id" type="string" indexed="true" stored="true" multiValued="false" />
 
     <field name="schema_name" type="string" indexed="true" stored="true" multiValued="false" />
@@ -166,10 +166,11 @@
     <!-- field name should being with index name follow by an underscore -->
 
     <!-- NameIndex -->
-    
+
     <field name="name_text" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="name_type" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="name_credential_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="name_credential_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
 
     <!-- AddressIndex -->
 
@@ -180,7 +181,8 @@
     <field name="address_postal_code" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="address_country" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="address_credential_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
-    
+    <field name="address_credential_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
+
 
 
     <uniqueKey>id</uniqueKey>

@@ -44,34 +44,17 @@ class NameAutocompleteView(HaystackViewSet):
             openapi.IN_QUERY,
             description="Show inactive credentials",
             type=openapi.TYPE_STRING,
-            enum=["any", "false", "true"],
-            default="any",
-        ),
-        openapi.Parameter(
-            "latest",
-            openapi.IN_QUERY,
-            description="Show only latest credentials",
-            type=openapi.TYPE_STRING,
-            enum=["any", "false", "true"],
-            default="true",
+            enum=["false", "true"],
+            default=None,
         ),
         openapi.Parameter(
             "revoked",
             openapi.IN_QUERY,
             description="Show revoked credentials",
             type=openapi.TYPE_STRING,
-            enum=["any", "false", "true"],
+            enum=["false", "true"],
             default="false",
         ),
-        openapi.Parameter(
-            "category",
-            openapi.IN_QUERY,
-            description="Filter by credential category. The category name and value should be joined by '::'",
-            type=openapi.TYPE_STRING,
-        ),
-        # openapi.Parameter(
-        #    "hl", openapi.IN_QUERY, description="Highlight search term", type=openapi.TYPE_BOOLEAN
-        # ),
     ]
 
     @swagger_auto_schema(manual_parameters=_swagger_params)
