@@ -120,14 +120,38 @@ function echoRed (){
   _msg=${1}
   _red='\e[31m'
   _nc='\e[0m' # No Color
-  echo -e "${_red}${_msg}${_nc}"
+  echo -e "${_red}${_msg}${_nc}" >&2
 }
 
 function echoYellow (){
   _msg=${1}
   _yellow='\e[33m'
   _nc='\e[0m' # No Color
-  echo -e "${_yellow}${_msg}${_nc}"
+  echo -e "${_yellow}${_msg}${_nc}" >&2
+}
+
+function copyCustomTheme(){
+  # Look for the theme within the context of the build ...
+  themeFolder=$(find '../client/themes' -type d -name ${THEME})    
+  if [ ! -z "${themeFolder}" ]; then
+    echoYellow "Found the '${THEME}' theme within the build context; '${themeFolder}'"
+  else
+    echoYellow "The '${THEME}' theme was not found within the required build context."
+    echoYellow "Copying the theme into the build context."
+    sourceTheme="${THEME_PATH%/}/${THEME}"
+    destinationTheme="../client/themes/${THEME}"
+    cp -r "${sourceTheme}" "${destinationTheme}"
+  fi
+
+  echo "${destinationTheme}"
+}
+
+function cleanupCustomTheme(){
+  customTheme=${1}
+  if [ ! -z "${customTheme}" ] && [ -d "${customTheme}" ]; then
+    echoYellow "Removing '${THEME}' from the build context."
+    rm -rf "${customTheme}"
+  fi  
 }
 
 build-web() {
@@ -156,7 +180,6 @@ build-web() {
   else
     NPM_COLOR="true"
   fi
-
   
   echo -e "\nBuilding angular-on-nginx image ..."
   if [ -z "$THEME_PATH" ]; then
@@ -177,6 +200,8 @@ build-web() {
       'angular-on-nginx'
   else
     # Use the custom theme
+    customTheme=$(copyCustomTheme)
+    THEME_PATH=${THEME_PATH:-/$(pwd)/../client/themes}
     ${S2I_EXE} build \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
       -e "NPM_CONFIG_LOGLEVEL=timing" \
@@ -193,6 +218,8 @@ build-web() {
       '../client' \
       'nodejs-build' \
       'angular-on-nginx'
+
+    cleanupCustomTheme "${customTheme}"
   fi
 }
 
@@ -223,8 +250,8 @@ build-web-dev() {
       'angular-dev'
   else
     # Use the custom theme
+    customTheme=$(copyCustomTheme)
     THEME_PATH=${THEME_PATH:-/$(pwd)/../client/themes}
-
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -238,6 +265,8 @@ build-web-dev() {
       '../client' \
       'nodejs-build' \
       'angular-dev'
+
+    cleanupCustomTheme "${customTheme}"
   fi
 }
 
