@@ -59,6 +59,9 @@
     <field name="address_civic_address_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="address_civic_address" dest="address_civic_address_suggest"/>
 
+    <field name="topic_source_id_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="topic_source_id" dest="topic_source_id_suggest"/>
+
     <!--
     ### More exact matching on name, used to score results
     -->
@@ -70,6 +73,9 @@
 
     <copyField source="address_civic_address" dest="address_civic_address_precise"/>
     <field name="address_civic_address_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <copyField source="topic_source_id" dest="topic_source_id_precise"/>
+    <field name="topic_source_id_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
     <fieldType name="text_tokens" class="solr.TextField" positionIncrementGap="100">
         <analyzer>
@@ -166,14 +172,12 @@
     <!-- field name should being with index name follow by an underscore -->
 
     <!-- NameIndex -->
-
     <field name="name_text" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="name_type" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="name_credential_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
     <field name="name_credential_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
 
     <!-- AddressIndex -->
-
     <field name="address_addressee" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="address_civic_address" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="address_city" type="string" indexed="true" stored="true" multiValued="false" />
@@ -183,6 +187,10 @@
     <field name="address_credential_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
     <field name="address_credential_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
 
+    <!-- TopicIndex -->
+    <field name="topic_source_id" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_all_credentials_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_all_credentials_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
 
 
     <uniqueKey>id</uniqueKey>

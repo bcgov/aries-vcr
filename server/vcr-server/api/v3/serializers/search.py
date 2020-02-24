@@ -9,6 +9,7 @@ from drf_haystack.serializers import (
 
 from ..indexes.Address import AddressIndex
 from ..indexes.Name import NameIndex
+from ..indexes.Topic import TopicIndex
 
 from api.v2.models.Address import Address
 from api.v2.models.Name import Name
@@ -55,14 +56,41 @@ class AddressAutocompleteSerializer(HaystackSerializer):
         fields = ("type", "value")
 
 
+class TopicAutocompleteSerializer(HaystackSerializer):
+
+    type = SerializerMethodField()
+    value = SerializerMethodField()
+
+    @staticmethod
+    def get_type(obj):
+        return "topic"
+
+    @staticmethod
+    def get_value(obj):
+        return obj.topic_source_id
+
+    class Meta(AddressSerializer.Meta):
+        index_classes = [TopicIndex]
+        fields = ("type", "value")
+
+
 class AggregateAutocompleteSerializer(HaystackSerializer):
     class Meta:
         serializers = {
             AddressIndex: AddressAutocompleteSerializer,
             NameIndex: NameAutocompleteSerializer,
+            TopicIndex: TopicAutocompleteSerializer,
         }
 
         filter_fields_map = {
-            "inactive": ("address_credential_inactive", "name_credential_inactive"),
-            "revoked": ("address_credential_revoked", "name_credential_revoked"),
+            "inactive": (
+                "address_credential_inactive",
+                "name_credential_inactive",
+                "topic_all_credentials_inactive",
+            ),
+            "revoked": (
+                "address_credential_revoked",
+                "name_credential_revoked",
+                "topic_all_credentials_revoked",
+            ),
         }

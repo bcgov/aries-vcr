@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from api.v2.models.Credential import Credential
 from api.v2.models.Name import Name
 from api.v2.models.Address import Address
+from api.v2.models.Topic import Topic
 
 from api.v3.search_filters import AutocompleteFilter, StatusFilter
 from api.v3.serializers.search import (
@@ -68,7 +69,7 @@ class NameAutocompleteView(HaystackViewSet):
         return ret
 
     retrieve = None
-    index_models = [Address, Name]
+    index_models = [Address, Name, Topic]
     load_all = True
     serializer_class = AggregateAutocompleteSerializer
     filter_backends = (AutocompleteFilter, StatusFilter)
