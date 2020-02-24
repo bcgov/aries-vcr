@@ -112,7 +112,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web-dev rabbitmq vcr-worker echo-app"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web rabbitmq vcr-worker echo-app"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -120,14 +120,38 @@ function echoRed (){
   _msg=${1}
   _red='\e[31m'
   _nc='\e[0m' # No Color
-  echo -e "${_red}${_msg}${_nc}"
+  echo -e "${_red}${_msg}${_nc}" >&2
 }
 
 function echoYellow (){
   _msg=${1}
   _yellow='\e[33m'
   _nc='\e[0m' # No Color
-  echo -e "${_yellow}${_msg}${_nc}"
+  echo -e "${_yellow}${_msg}${_nc}" >&2
+}
+
+function copyCustomTheme(){
+  # Look for the theme within the context of the build ...
+  themeFolder=$(find '../client/themes' -type d -name ${THEME})    
+  if [ ! -z "${themeFolder}" ]; then
+    echoYellow "Found the '${THEME}' theme within the build context; '${themeFolder}'"
+  else
+    echoYellow "The '${THEME}' theme was not found within the required build context."
+    echoYellow "Copying the theme into the build context."
+    sourceTheme="${THEME_PATH%/}/${THEME}"
+    destinationTheme="../client/themes/${THEME}"
+    cp -r "${sourceTheme}" "${destinationTheme}"
+  fi
+
+  echo "${destinationTheme}"
+}
+
+function cleanupCustomTheme(){
+  customTheme=${1}
+  if [ ! -z "${customTheme}" ] && [ -d "${customTheme}" ]; then
+    echoYellow "Removing '${THEME}' from the build context."
+    rm -rf "${customTheme}"
+  fi  
 }
 
 build-web() {
@@ -156,7 +180,6 @@ build-web() {
   else
     NPM_COLOR="true"
   fi
-
   
   echo -e "\nBuilding angular-on-nginx image ..."
   if [ -z "$THEME_PATH" ]; then
@@ -177,6 +200,8 @@ build-web() {
       'angular-on-nginx'
   else
     # Use the custom theme
+    customTheme=$(copyCustomTheme)
+    THEME_PATH=${THEME_PATH:-/$(pwd)/../client/themes}
     ${S2I_EXE} build \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
       -e "NPM_CONFIG_LOGLEVEL=timing" \
@@ -193,6 +218,8 @@ build-web() {
       '../client' \
       'nodejs-build' \
       'angular-on-nginx'
+
+    cleanupCustomTheme "${customTheme}"
   fi
 }
 
@@ -208,11 +235,8 @@ build-web-dev() {
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding angular-dev image ..."
-  if [ -z "$THEME_PATH" ]; then
-    # set THEME_PATH so that an empty dummy volume will be mounted - see docker-compose.yml
-    THEME_PATH="vcr-web-empty"
-
-    # No custom theme was specified
+  if [ -z "$THEME_PATH" ] && [ "$THEME" == "default" ]; then
+    # No custom theme path was specified
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -226,8 +250,8 @@ build-web-dev() {
       'angular-dev'
   else
     # Use the custom theme
-    export THEME_PATH_DEV="/tmp/vcr-theme"
-
+    customTheme=$(copyCustomTheme)
+    THEME_PATH=${THEME_PATH:-/$(pwd)/../client/themes}
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -236,11 +260,13 @@ build-web-dev() {
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "THEME=${THEME}" \
       -e "THEME_PATH=${THEME_PATH_DEV}" \
-      -v "${THEME_PATH}:/tmp/vcr-theme" \
+      -v "${THEME_PATH}:${THEME_PATH_DEV}" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
       'angular-dev'
+
+    cleanupCustomTheme "${customTheme}"
   fi
 }
 
@@ -340,7 +366,7 @@ build-echo-app() {
 }
 
 build-all() {
-  build-web-dev
+  build-web
   build-solr
   build-db
   build-schema-spy
@@ -452,6 +478,7 @@ configureEnvironment() {
   # vcr-web
   export THEME=${THEME:-default}
   export THEME_PATH=${THEME_PATH-}
+  export THEME_PATH_DEV="/tmp/vcr-theme"
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
