@@ -153,7 +153,6 @@ def handle_credentials(state, message):
 
         elif state == "credential_received":
             raw_credential = message["raw_credential"]
-            print(">>>> credential message =", message)
 
             # You can include this exception to test error reporting
             # raise Exception("Depliberate error to test problem reporting")
@@ -179,7 +178,6 @@ def handle_credentials(state, message):
                 ret_credential_id = credential_data["thread_id"]
 
             # Instruct the agent to store the credential in wallet
-            print(">>>> posting with credential_id =", ret_credential_id)
             resp = requests.post(
                 f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
                 + f"/{credential_exchange_id}/store",
@@ -187,7 +185,6 @@ def handle_credentials(state, message):
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             resp.raise_for_status()
-            print(resp.json())
 
             response_data = {
                 "success": True,
@@ -197,7 +194,6 @@ def handle_credentials(state, message):
         # TODO other scenarios
         elif state == "stored":
             LOGGER.debug("Credential Stored")
-            # print(message)
             response_data = {"success": True, "details": "Credential Stored"}
 
     except Exception as e:
