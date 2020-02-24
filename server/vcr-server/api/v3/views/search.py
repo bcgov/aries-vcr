@@ -57,7 +57,10 @@ class NameAutocompleteView(HaystackViewSet):
         ),
     ]
 
-    @swagger_auto_schema(manual_parameters=_swagger_params)
+    @swagger_auto_schema(
+        manual_parameters=_swagger_params,
+        responses={200: AggregateAutocompleteSerializer(many=True)},
+    )
     def list(self, *args, **kwargs):
         print(" >>> calling autocomplete")
         ret = super(NameAutocompleteView, self).list(*args, **kwargs)
