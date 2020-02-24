@@ -27,7 +27,7 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
         return all_creds_inactive
 
     @staticmethod
-    def prepare_name_credential_revoked(obj):
+    def prepare_topic_all_credentials_revoked(obj):
         all_creds_revoked = True
         for credential in obj.credentials.all():
             if not credential.revoked:
