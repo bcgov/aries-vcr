@@ -257,7 +257,7 @@ def handle_presentations(state, message):
             # This query plus limiting by claim values below
             # *should* return exactly one result
             credential_query = CredentialModel.objects.filter(
-                revoked=False, inactive=False, latest=True
+                revoked=False, latest=True
             )
             for attr in credential["cred_info"]["attrs"]:
                 credential_query = credential_query.filter(
