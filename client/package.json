@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bcgov/TheOrgBook.git"
+    "url": "https://github.com/bcgov/indy-catalyst.git"
   },
   "description": "TheOrgBook web interface component",
   "license": "Apache-2.0",
@@ -28,7 +28,7 @@
     "@angular/platform-browser": "~6.1.0",
     "@angular/platform-browser-dynamic": "~6.1.0",
     "@angular/router": "~6.1.0",
-    "@bcgov/bootstrap-theme": "https://github.com/bcgov/bootstrap-theme/releases/download/v1.0.0/bcgov-bootstrap-theme-1.0.0.tgz",
+    "@bcgov/bootstrap-theme": "https://github.com/bcgov/bootstrap-theme/releases/download/v1.1.3/bcgov-bootstrap-theme-1.1.3.tgz",
     "@ng-bootstrap/ng-bootstrap": "^3.0.0",
     "@ngx-translate/core": "^10.0.0",
     "@ngx-translate/http-loader": "^3.0.0",

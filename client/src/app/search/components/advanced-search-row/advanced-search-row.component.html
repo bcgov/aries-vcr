@@ -1,6 +1,9 @@
-<label>{{ label | titlecase }}</label>
-<div class="form-group">
-  <ng-content class="align-self-center"></ng-content>
-</div>
+<div class="row">
+  <label class="advsearch-label col-md-3">{{ label | titlecase }}</label>
 
-<label>{{ helper }}</label>
+  <div class="advsearch-input form-group col-md-4">
+    <ng-content class="align-self-center"></ng-content>
+  </div>
+
+  <label class="advsearch-help col-md-5 d-none d-md-block">{{ helper }}</label>
+</div>

@@ -8,6 +8,7 @@ import uuid
 from collections import namedtuple
 from datetime import datetime
 from importlib import import_module
+import os
 
 from django.core.exceptions import ValidationError
 from django.db import DEFAULT_DB_ALIAS, transaction
@@ -41,6 +42,21 @@ SUPPORTED_MODELS_MAPPING = {
 
 SchemaKey = namedtuple("SchemaKey", "origin_did name version")
 
+UPDATE_CRED_TYPE_TIMESTAMP = os.environ.get('UPDATE_CRED_TYPE_TIMESTAMP', 'true')
+if UPDATE_CRED_TYPE_TIMESTAMP.upper() == "TRUE":
+    print(">>> YES updating cred type timestamp")
+    UPDATE_CRED_TYPE_TIMESTAMP = True
+else:
+    print(">>> NO not updating cred type timestamp")
+    UPDATE_CRED_TYPE_TIMESTAMP = False
+
+CREATE_CREDENTIAL_CLAIMS = os.environ.get('CREATE_CREDENTIAL_CLAIMS', 'true')
+if CREATE_CREDENTIAL_CLAIMS.upper() == "TRUE":
+    print(">>> YES create detail claims for credentials")
+    CREATE_CREDENTIAL_CLAIMS = True
+else:
+    print(">>> NO not creating detail claims for credentials")
+    CREATE_CREDENTIAL_CLAIMS = False
 
 def schema_key(s_id: str) -> SchemaKey:
     """
@@ -348,7 +364,7 @@ class CredentialManager(object):
                 result = CredentialType.objects.get(pk=type_id)
                 self._cred_type_cache[type_id] = result
         elif isinstance(credential, Credential):
-            cache_key = (credential.cred_def_id,)
+            cache_key = credential.cred_def_id
             result = self._cred_type_cache.get(cache_key)
             if not result:
                 try:
@@ -774,13 +790,16 @@ class CredentialManager(object):
         with transaction.atomic():
             # Acquire a lock on the topic to block competing credentials
             # This lock is released when the transaction ends
-            topic_ids = []
-            topic_ids.append(topic.id)
-            if related_topic is not None:
-                topic_ids.append(related_topic.id)
-            topic_ids.sort()
-            for topic_id in topic_ids:
-                Topic.objects.select_for_update().get(pk=topic_id)
+            Topic.objects.select_for_update().get(pk=topic.id)
+            # Acquire a lock on the topic to block competing credentials
+            # This lock is released when the transaction ends
+            #topic_ids = []
+            #topic_ids.append(topic.id)
+            #if related_topic is not None:
+            #    topic_ids.append(related_topic.id)
+            #topic_ids.sort()
+            #for topic_id in topic_ids:
+            #    Topic.objects.select_for_update().get(pk=topic_id)
 
             cardinality = cls.credential_cardinality(credential, processor_config)
 
@@ -803,37 +822,40 @@ class CredentialManager(object):
 
             # Create and associate claims for this credential
             cred_claims = {}
-            for claim_attribute in credential.claim_attributes:
-                claim_value = getattr(credential, claim_attribute)
-                cred_claims[claim_attribute] = claim_value
-                Claim.objects.create(
-                    credential=db_credential, name=claim_attribute, value=claim_value
-                )
+            if CREATE_CREDENTIAL_CLAIMS:
+                for claim_attribute in credential.claim_attributes:
+                    claim_value = getattr(credential, claim_attribute)
+                    cred_claims[claim_attribute] = claim_value
+                    Claim.objects.create(
+                        credential=db_credential, name=claim_attribute, value=claim_value
+                    )
 
             # Create topic relationship if needed
-            if related_topic is not None:
-                try:
-                    TopicRelationship.objects.create(
-                        credential=db_credential,
-                        topic=topic,
-                        related_topic=related_topic,
-                    )
-                except IntegrityError:
-                    raise CredentialException(
-                        "Relationship between topics '{}' and '{}' already exist.".format(
-                            topic.id, related_topic.id
-                        )
-                    )
+            #if related_topic is not None:
+            #    try:
+            #        TopicRelationship.objects.create(
+            #            credential=db_credential,
+            #            topic=topic,
+            #            related_topic=related_topic,
+            #        )
+            #    except IntegrityError:
+            #        raise CredentialException(
+            #            "Relationship between topics '{}' and '{}' already exist.".format(
+            #                topic.id, related_topic.id
+            #            )
+            #        )
 
             # Assign to credential set
             cls.update_credential_set(credential_type, db_credential, cardinality)
 
             # Save search models
-            cls.create_search_models(db_credential, processor_config)
+            if CREATE_CREDENTIAL_CLAIMS:
+                cls.create_search_models(db_credential, processor_config)
 
             # Update last issue date for credential type
-            credential_type.last_issue_date = datetime.now(timezone.utc)
-            credential_type.save()
+            if UPDATE_CRED_TYPE_TIMESTAMP:
+                credential_type.last_issue_date = datetime.now(timezone.utc)
+                credential_type.save()
 
             # add to the set of "hookable credentials"
             # TODO make this a configurable step of the process
@@ -858,6 +880,33 @@ class CredentialManager(object):
                 credential_json=hookable_cred_data,
             )
             hookable_cred.save()
+
+        # create any relationships in a separate transaction
+        with transaction.atomic():
+            # Acquire a lock on the topic to block competing credentials
+            # This lock is released when the transaction ends
+            #topic_ids = []
+            #topic_ids.append(topic.id)
+            #if related_topic is not None:
+            #    topic_ids.append(related_topic.id)
+            #topic_ids.sort()
+            #for topic_id in topic_ids:
+            #    Topic.objects.select_for_update().get(pk=topic_id)
+
+            # Create topic relationship if needed
+            if related_topic is not None:
+                try:
+                    TopicRelationship.objects.create(
+                        credential=db_credential,
+                        topic=topic,
+                        related_topic=related_topic,
+                    )
+                except IntegrityError:
+                    raise CredentialException(
+                        "Relationship between topics '{}' and '{}' already exist.".format(
+                            topic.id, related_topic.id
+                        )
+                    )
 
         LOGGER.warn(
             "<<< store cred in local database: " + str(time.perf_counter() - start_time)
