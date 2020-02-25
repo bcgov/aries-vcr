@@ -39,23 +39,13 @@ api_views = [path("topic/<type>/<source_id>", rest.TopicView.as_view())]
 # router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
 
 # Search endpoints
-# router.register(
-#     r"search/credential/topic",
-#     search.CredentialTopicSearchView,
-#     "Credential Topic Search",
-# )
-# router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
 router.register(
     r"search/autocomplete", search.NameAutocompleteView, "Name Autocomplete"
 )
-
-# # Misc endpoints
-# miscPatterns = [
-#     path("feedback", misc.send_feedback),
-#     path("quickload", misc.quickload),
-#     path("status/reset", clear_stats),
-#     path("status", get_stats),
-# ]
+router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
+router.register(
+    r"search/topic", search.CredentialTopicSearchView, "Credential Topic Search"
+)
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
