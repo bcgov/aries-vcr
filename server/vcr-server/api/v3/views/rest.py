@@ -23,6 +23,7 @@ from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
 from api.v2.models.Topic import Topic
 from api.v2.models.TopicRelationship import TopicRelationship
+
 from api.v2.serializers.rest import (
     CredentialSerializer,
     CredentialTypeSerializer,
@@ -108,7 +109,6 @@ class TopicView(APIView):
     def get(self, request, type, source_id):
         topic = get_object_or_404(self.queryset, type=type, source_id=source_id)
         serializer = TopicSerializer(topic, many=False)
-        logger.info(serializer)
         return Response(serializer.data)
 
 
@@ -118,7 +118,7 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
     lookup_field = "credential_id"
 
     @action(detail=True, url_path="verify", methods=["get"])
-    def verify(self, request, pk=None):
+    def verify(self, request, credential_id=None):
         item: Credential = self.get_object()
         credential_type: CredentialType = item.credential_type
 
@@ -200,7 +200,7 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
         return JsonResponse(result)
 
     @action(detail=True, url_path="latest", methods=["get"])
-    def get_latest(self, request, pk=None):
+    def get_latest(self, request, credential_id=None):
         item = self.get_object()
         latest = None
         if item.credential_set:
@@ -211,14 +211,10 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
         return Response(serializer.data)
 
     def get_object(self):
-        pk = self.kwargs.get("pk")
-        if not pk:
+        credential_id = self.kwargs.get("credential_id")
+        if not credential_id:
             raise Http404()
-        filter = {"credential_id": pk}
-        try:
-            filter = {"pk": int(pk)}
-        except (ValueError, TypeError):
-            pass
+        filter = {"credential_id": credential_id}
 
         queryset = self.filter_queryset(self.get_queryset())
         obj = get_object_or_404(queryset, **filter)
@@ -229,10 +225,10 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
 
 
 # Add environment specific endpoints
-try:
-    # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
-    utils.apply_custom_methods(
-        TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
-    )
-except:
-    pass
+# try:
+#     # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
+#     # utils.apply_custom_methods(
+#     #     TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
+#     # )
+# except:
+#     pass
