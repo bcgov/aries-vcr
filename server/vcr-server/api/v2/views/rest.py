@@ -218,6 +218,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             f"{settings.AGENT_ADMIN_URL}/credential/{item.credential_id}",
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
+        response.raise_for_status()
         credential = response.json()
 
         proof_request = {
