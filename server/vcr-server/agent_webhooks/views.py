@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 TOPIC_CONNECTIONS = "connections"
 TOPIC_CONNECTIONS_ACTIVITY = "connections_activity"
-TOPIC_CREDENTIALS = "credentials"
+TOPIC_CREDENTIALS = "issue_credential"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
@@ -179,7 +179,7 @@ def handle_credentials(state, message):
 
             # Instruct the agent to store the credential in wallet
             resp = requests.post(
-                f"{settings.AGENT_ADMIN_URL}/credential_exchange"
+                f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
                 + f"/{credential_exchange_id}/store",
                 json={"credential_id": ret_credential_id},
                 headers=settings.ADMIN_REQUEST_HEADERS,
@@ -194,14 +194,13 @@ def handle_credentials(state, message):
         # TODO other scenarios
         elif state == "stored":
             LOGGER.debug("Credential Stored")
-            # print(message)
             response_data = {"success": True, "details": "Credential Stored"}
 
     except Exception as e:
         LOGGER.error(str(e))
         # Send a problem report for the error
         resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+            f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
@@ -258,7 +257,7 @@ def handle_presentations(state, message):
             # This query plus limiting by claim values below
             # *should* return exactly one result
             credential_query = CredentialModel.objects.filter(
-                revoked=False, inactive=False, latest=True
+                revoked=False, latest=True
             )
             for attr in credential["cred_info"]["attrs"]:
                 credential_query = credential_query.filter(
