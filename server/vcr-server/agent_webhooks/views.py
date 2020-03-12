@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 TOPIC_CONNECTIONS = "connections"
 TOPIC_CONNECTIONS_ACTIVITY = "connections_activity"
-TOPIC_CREDENTIALS = "credentials"
+TOPIC_CREDENTIALS = "issue_credential"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
@@ -179,7 +179,7 @@ def handle_credentials(state, message):
 
             # Instruct the agent to store the credential in wallet
             resp = requests.post(
-                f"{settings.AGENT_ADMIN_URL}/credential_exchange"
+                f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
                 + f"/{credential_exchange_id}/store",
                 json={"credential_id": ret_credential_id},
                 headers=settings.ADMIN_REQUEST_HEADERS,
@@ -194,14 +194,13 @@ def handle_credentials(state, message):
         # TODO other scenarios
         elif state == "stored":
             LOGGER.debug("Credential Stored")
-            # print(message)
             response_data = {"success": True, "details": "Credential Stored"}
 
     except Exception as e:
         LOGGER.error(str(e))
         # Send a problem report for the error
         resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/credential_exchange/{credential_exchange_id}/problem_report",
+            f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem_report",
             json={"explain_ltxt": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
@@ -212,7 +211,7 @@ def handle_credentials(state, message):
 
 
 def handle_presentations(state, message):
-    print("handle_presentations()", state)
+    print(" >>>> handle_presentations()", state)
 
     if state == "request_received":
         presentation_request = message["presentation_request"]
@@ -230,16 +229,32 @@ def handle_presentations(state, message):
         referents = ",".join(
             requested_attribute_referents + requested_predicates_referents
         )
+        credentials = []
 
-        resp = requests.get(
-            f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
-            + f"{message['presentation_exchange_id']}/credentials/"
-            + f"{referents}",
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
+        if presentation_request["name"].startswith("cred_id::"):
+            cred_id = presentation_request["name"][9:]
+            resp = requests.get(
+                f"{settings.AGENT_ADMIN_URL}/credential/"
+                + f"{cred_id}",
+                headers=settings.ADMIN_REQUEST_HEADERS,
+            )
+            wallet_credential = resp.json()
+            wallet_credentials = {
+                "cred_info": wallet_credential,
+                "interval": None,
+                "presentation_referents": requested_attribute_referents + requested_predicates_referents
+            }
+            credentials = [wallet_credentials,]
 
-        # All credentials from wallet that satisfy presentation request
-        credentials = resp.json()
+        if 0 == len(credentials):
+            resp = requests.get(
+                f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
+                + f"{message['presentation_exchange_id']}/credentials/"
+                + f"{referents}",
+                headers=settings.ADMIN_REQUEST_HEADERS,
+            )
+            # All credentials from wallet that satisfy presentation request
+            credentials = resp.json()
 
         # Prep the payload we need to send to the agent API
         credentials_for_presentation = {
@@ -258,7 +273,7 @@ def handle_presentations(state, message):
             # This query plus limiting by claim values below
             # *should* return exactly one result
             credential_query = CredentialModel.objects.filter(
-                revoked=False, inactive=False, latest=True
+                revoked=False, latest=True
             )
             for attr in credential["cred_info"]["attrs"]:
                 credential_query = credential_query.filter(
