@@ -22,23 +22,23 @@ class SolrQueue:
         ids = [instance.id for instance in instances]
         # Log the wallet_id to make it easy to search for the credentials when troubleshooting
         # The record ids are not indexed so they are not searchable.
-        wallet_ids = [instance.credential_id for instance in instances]
-        LOGGER.debug("Adding items to Solr queue for indexing; Class: %s, Using: %s, Instances: %s", index_cls, using, wallet_ids)
+        # wallet_ids = [instance.credential_id for instance in instances]
+        LOGGER.debug("Adding items to Solr queue for indexing; Class: %s, Using: %s", index_cls, using)
         try:
             self._queue.put((index_cls, using, ids, 0))
         except Full:
-            LOGGER.warning("Can't add items to the Solr queue because it is full; %s", wallet_ids)
+            LOGGER.warning("Can't add items to the Solr queue because it is full")
 
     def delete(self, index_cls, using, instances):
         ids = [get_identifier(instance) for instance in instances]
         # Log the wallet_id to make it easy to search for the credentials when troubleshooting
         # The record ids are not indexed so they are not searchable.
-        wallet_ids = [instance.credential_id for instance in instances]
-        LOGGER.debug("Deleteing items from Solr queue/index; Class: %s, Using: %s, Instances: %s", index_cls, using, wallet_ids)
+        # wallet_ids = [instance.credential_id for instance in instances]
+        LOGGER.debug("Deleteing items from Solr queue/index; Class: %s, Using: %s", index_cls, using)
         try:
             self._queue.put((index_cls, using, ids, 1))
         except Full:
-            LOGGER.warning("Can't delete items from the Solr queue because it is full; %s", wallet_ids)
+            LOGGER.warning("Can't delete items from the Solr queue because it is full")
 
     def setup(self, app=None):
         LOGGER.info("Setting up Solr queue ...")

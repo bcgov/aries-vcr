@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django_filters",
     "vcr_server",
     "api.v2",
+    "api.v3",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "subscriptions",  # only required when using webhook subscriptions
@@ -160,6 +161,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
+    # Used for drf-yasg to split api specs into multiple versions
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning'
 }
 
 SWAGGER_SETTINGS = {

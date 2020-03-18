@@ -15,7 +15,7 @@ whitenoise>=4.1.0,<4.2
 
 # Documentation
 # django_rest_swagger>=2.1.2,<3
-drf-yasg>=1.10.2,<2
+drf-yasg>=1.17.0,<2
 packaging>=19.0,<20
 flex>=6.13.2,<7
 swagger-spec-validator>=2.4.0,<3
