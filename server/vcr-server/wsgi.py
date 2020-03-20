@@ -22,6 +22,13 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vcr_server.settings")
 
+# Visual Studio Code debugging. Only works if django is run with --noreload
+# if os.environ.get("DJANGO_DEBUG", False):  # You can use django.conf settings.DEBUG
+#     import ptvsd
+
+#     ptvsd.enable_attach(address=("0.0.0.0", 5678))
+#     # ptvsd.wait_for_attach()
+
 application = get_wsgi_application()
 
 # Apply WSGI middleware here.

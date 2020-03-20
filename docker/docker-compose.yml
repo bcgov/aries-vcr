@@ -144,7 +144,7 @@ services:
       if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
         python manage.py migrate && \
         python manage.py update_index --max-retries=5 --batch-size=500;
-        python manage.py runserver --nothreading 0.0.0.0:8080;
+        python manage.py runserver 0.0.0.0:8080;
       else
         ${STI_SCRIPTS_PATH}/run;
       fi"
@@ -319,8 +319,8 @@ services:
       - POSTGRESQL_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
     networks:
       - vcr
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
     volumes:
       - vcr-data:/var/lib/pgsql/data
 
