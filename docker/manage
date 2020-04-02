@@ -160,7 +160,7 @@ build-web() {
   #
   # The nginx-runtime image is used for the final runtime image.
   # The nodejs-build image is used to build the artifacts for the angular distribution.
-  # The angular-on-nginx image is copy of the nginx-runtime image complete with a copy of the build artifacts.
+  # The vcr-web image is copy of the nginx-runtime image complete with a copy of the build artifacts.
   #
   echo -e "\nBuilding nginx-runtime image ..."
   docker build -q \
@@ -181,7 +181,7 @@ build-web() {
     NPM_COLOR="true"
   fi
   
-  echo -e "\nBuilding angular-on-nginx image ..."
+  echo -e "\nBuilding vcr-web image ..."
   if [ -z "$THEME_PATH" ]; then
     # No custom theme was specified
     ${S2I_EXE} build \
@@ -197,7 +197,7 @@ build-web() {
       -a /opt/app-root/src/dist:app \
       '../client' \
       'nodejs-build' \
-      'angular-on-nginx'
+      'vcr-web'
   else
     # Use the custom theme
     customTheme=$(copyCustomTheme)
@@ -217,7 +217,7 @@ build-web() {
       -a /opt/app-root/src/dist:app \
       '../client' \
       'nodejs-build' \
-      'angular-on-nginx'
+      'vcr-web'
 
     cleanupCustomTheme "${customTheme}"
   fi
@@ -234,7 +234,7 @@ build-web-dev() {
     -f './nodejs-build/Dockerfile' './nodejs-build/'
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
-  echo -e "\nBuilding angular-dev image ..."
+  echo -e "\nBuilding vcr-web-dev image ..."
   if [ -z "$THEME_PATH" ] && [ "$THEME" == "default" ]; then
     # No custom theme path was specified
     ${S2I_EXE} build \
@@ -247,7 +247,7 @@ build-web-dev() {
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
-      'angular-dev'
+      'vcr-web-dev'
   else
     # Use the custom theme
     customTheme=$(copyCustomTheme)
@@ -264,7 +264,7 @@ build-web-dev() {
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
-      'angular-dev'
+      'vcr-web-dev'
 
     cleanupCustomTheme "${customTheme}"
   fi
