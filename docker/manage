@@ -208,7 +208,6 @@ build-web() {
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "THEME=${THEME}" \
-      -e "THEME_PATH=themes" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
@@ -253,8 +252,6 @@ build-web-dev() {
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "THEME=${THEME}" \
-      -e "THEME_PATH=themes" \
-      -v "${THEME_PATH}:/tmp/vcr-theme" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \

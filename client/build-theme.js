@@ -1,6 +1,6 @@
 /**
  * Before building, files must be copied or symlinked into src/themes/_active
- * The default theme (src/themes/default) is always copied first, and then another
+ * The default theme (themes/default) is always copied first, and then another
  * theme named by the THEME environment variable can add to or replace these files.
  **/
 
@@ -10,7 +10,7 @@ var fs = require('fs'),
 var THEME_NAME = process.env.THEME || 'default';
 if (THEME_NAME === '_active') throw 'Invalid theme name';
 var TARGET_DIR = 'src/themes/_active';
-var THEMES_ROOT = 'src/themes';
+var THEMES_ROOT = 'themes';
 var THEME_PATH = process.env.THEME_PATH || THEMES_ROOT;
 var LANG_ROOT = 'assets/i18n';
 var CONFIG_NAME = 'assets/config.json';
