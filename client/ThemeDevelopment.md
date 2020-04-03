@@ -4,7 +4,7 @@ The Credential Registry's UI has been divided into four areas/components as show
 
 ![The Credential Registry UI areas](screenshot_mainpage.png "The Credential Registry UI areas")
 
-The theme design elements (i.e. css files, images, html templates) are stored at two places: under the **themes/default** directory that provides default styles and under the directory with the theme name (i.e. themes/ongov) that contains overrides for the default styles. The default styles are pulled from Government of BC design package *mygovbc-bootstrap-theme* that is included as a *node_module* in The Credential Registry app. 
+The theme design elements (i.e. css files, images, html templates) are stored at two places: under the **themes/base** directory that provides default styles and under the directory with the theme name (i.e. themes/ongov) that contains overrides for the default styles. The default styles are pulled from Government of BC design package *mygovbc-bootstrap-theme* that is included as a *node_module* in The Credential Registry app. 
 
 The choice of the active theme is driven by the value of the environmental variable **$THEME** that has a default value of *bcgov*. At the build time the files from the $THEME theme directory are copied into the *themes/_active* directory and together with the default styles are used to apply look-n-feel to the running instance of The Credential Registry.
 
@@ -12,7 +12,7 @@ For example, to change the active theme from BC to Ontario, set the value of $TH
 
 ``` export THEME=ongov ```
 
-The component **html** templates in the *default* directory get overwritten with corresponding templates from the *_active* theme directory if present.
+The component **html** templates in the *base* directory get overwritten with corresponding templates from the *_active* theme directory if present.
 
 The default *scss* files contain an import of a custom scss file at the bottom of each file. 
 
@@ -31,7 +31,7 @@ The text content values in English and French as well as all graphics are stored
 
 To add a new theme with a custom look-n-feel, create a sub-directory with the name of the new theme under *themes* (i.e. ongov).  
 
-Under the new theme directory, create **assets** directory to hold all images and content overrides. It is recommended to copy **i18n** directory with the content file from the default theme and modify as needed.
+Under the new theme directory, create **assets** directory to hold all images and content overrides. It is recommended to copy **i18n** directory with the content file from the base theme and modify as needed.
 
 Create a sub-directory for each of the four areas of The Credential Registry UI that needs to be customized (i.e. app-header) and add component files with custom styles and template overrides as needed.
 

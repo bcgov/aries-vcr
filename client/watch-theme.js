@@ -1,6 +1,6 @@
 var childProcess = require('child_process');
 var chokidar = require('chokidar');
-var THEME = process.env.THEME || 'default';
+var THEME = process.env.THEME || 'base';
 var THEME_PATH = process.env.THEME_PATH || 'src/themes';
 
 

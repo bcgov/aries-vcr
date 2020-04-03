@@ -182,7 +182,7 @@ build-web() {
   fi
   
   echo -e "\nBuilding vcr-web image ..."
-  if [ -z "$THEME_PATH" ] && [ "$THEME" == "default" ]; then
+  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
     # No custom theme was specified
     ${S2I_EXE} build \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
@@ -230,7 +230,7 @@ build-web-dev() {
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding vcr-web-dev image ..."
-  if [ -z "$THEME_PATH" ] && [ "$THEME" == "default" ]; then
+  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
     # No custom theme path was specified
     ${S2I_EXE} build \
       -e "DEV_MODE=true" \
@@ -466,7 +466,7 @@ configureEnvironment() {
   export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
 
   # vcr-web
-  export THEME=${THEME:-default}
+  export THEME=${THEME:-base}
   export THEME_PATH=${THEME_PATH-}
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
