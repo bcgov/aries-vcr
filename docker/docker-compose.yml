@@ -4,7 +4,7 @@ services:
   # vcr-web
   #
   vcr-web:
-    image: angular-on-nginx
+    image: vcr-web
     environment:
       - DEBUG=${DEBUG}
       - API_URL=${API_URL}
@@ -27,7 +27,7 @@ services:
   # Run vcr-web in development mode with auto-reload and inspector support
   #
   vcr-web-dev:
-    image: angular-dev
+    image: vcr-web-dev
     environment:
       - API_URL=${API_URL}
       - APPLICATION_URL=${APPLICATION_URL}
