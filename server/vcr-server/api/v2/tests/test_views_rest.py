@@ -41,7 +41,7 @@ class IssuerViewSetTest(APITestCase):
         )
 
     def test_get_issuer_list(self):
-        url = reverse("issuer-list")
+        url = reverse("v2:issuer-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["total"], 2)
@@ -50,14 +50,14 @@ class IssuerViewSetTest(APITestCase):
         self.assertEqual(response.data["results"][1]["name"], "Test Issuer 2")
 
     def test_get_issuer_by_id(self):
-        url = reverse("issuer-list")
+        url = reverse("v2:issuer-list")
         response = self.client.get(url + "/1")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], 1)
         self.assertEqual(response.data["did"], "not:a:did:456")
 
     def test_get_issuer_credentialtype(self):
-        url = reverse("issuer-list")
+        url = reverse("v2:issuer-list")
         response = self.client.get(url + "/1/credentialtype")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
@@ -66,7 +66,7 @@ class IssuerViewSetTest(APITestCase):
         self.assertEqual(response.data[0]["schema"]["name"], "test-schema")
 
     def test_get_issuer_logo(self):
-        url = reverse("issuer-list")
+        url = reverse("v2:issuer-list")
         response1 = self.client.get(url + "/1/logo")
         self.assertEqual(response1.status_code, status.HTTP_200_OK)
 
@@ -97,42 +97,42 @@ class SchemaViewSetTest(APITestCase):
         )
 
     def test_get_schema_list_no_filters(self):
-        url = reverse("schema-list")
+        url = reverse("v2:schema-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["total"], 5)
         self.assertEqual(len(response.data["results"]), 5)
 
     def test_get_schema_filter_by_id(self):
-        url = reverse("schema-list")
+        url = reverse("v2:schema-list")
         response = self.client.get(url + "?id=1")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["total"], 1)
         self.assertEqual(len(response.data["results"]), 1)
 
     def test_get_schema_filter_by_name(self):
-        url = reverse("schema-list")
+        url = reverse("v2:schema-list")
         response = self.client.get(url + "?name=test-schema-2")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["total"], 1)
         self.assertEqual(len(response.data["results"]), 1)
 
     def test_get_schema_filter_by_version(self):
-        url = reverse("schema-list")
+        url = reverse("v2:schema-list")
         response = self.client.get(url + "?version=0.5.0")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["total"], 2)
         self.assertEqual(len(response.data["results"]), 2)
 
     def test_get_schema_filter_by_origin_did(self):
-        url = reverse("schema-list")
+        url = reverse("v2:schema-list")
         response = self.client.get(url + "?origin_did=not:a:did:123")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["total"], 3)
         self.assertEqual(len(response.data["results"]), 3)
 
     def test_get_schema_by_id(self):
-        url = reverse("schema-list")
+        url = reverse("v2:schema-list")
         response = self.client.get(url + "/3")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], 3)
@@ -181,7 +181,7 @@ class CredentialTypeViewSetTest(APITestCase):
         )
 
     def test_get_credentialtype_list(self):
-        url = reverse("credentialtype-list")
+        url = reverse("v2:credentialtype-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["total"], 2)
@@ -196,7 +196,7 @@ class CredentialTypeViewSetTest(APITestCase):
         self.assertEqual(credType2["schema"]["name"], self.credType2.schema.name)
 
     def test_get_credentialtype_by_id(self):
-        url = reverse("credentialtype-list")
+        url = reverse("v2:credentialtype-list")
         response = self.client.get(url + "/2")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], 2)
@@ -204,7 +204,7 @@ class CredentialTypeViewSetTest(APITestCase):
         self.assertEqual(response.data["schema"]["name"], self.credType2.schema.name)
 
     def test_get_credentialtype_language(self):
-        url = reverse("credentialtype-list")
+        url = reverse("v2:credentialtype-list")
         response = self.client.get(url + "/2/language")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # we are only checking the fields exists, not its content
@@ -213,7 +213,7 @@ class CredentialTypeViewSetTest(APITestCase):
         self.assertIsNone(response.data["claim_labels"])
 
     def test_get_credentialtype_logo(self):
-        url = reverse("credentialtype-list")
+        url = reverse("v2:credentialtype-list")
         response1 = self.client.get(url + "/1/logo")
         self.assertEqual(response1.status_code, status.HTTP_200_OK)
 

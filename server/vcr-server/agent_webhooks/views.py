@@ -29,10 +29,10 @@ TOPIC_ISSUER_REGISTRATION = "issuer_registration"
 
 PROCESS_INBOUND_CREDENTIALS = os.environ.get('PROCESS_INBOUND_CREDENTIALS', 'true')
 if PROCESS_INBOUND_CREDENTIALS.upper() == "TRUE":
-    print(">>> YES processing inbound credentials")
+    LOGGER.debug(">>> YES processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = True
 else:
-    print(">>> NO not processing inbound credentials")
+    LOGGER.debug(">>> NO not processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = False
 
 
@@ -49,7 +49,7 @@ def agent_callback(request, topic):
     LOGGER.debug(f"Received aca-py webhook. state={state} message={message}")
 
     start_time = time.perf_counter()
-    method = "agent_callback." + topic
+    method = "agent_callback." + topic + "." + state
 
     # dispatch based on the topic type
     if topic == TOPIC_CONNECTIONS:
@@ -211,7 +211,7 @@ def handle_credentials(state, message):
 
 
 def handle_presentations(state, message):
-    print("handle_presentations()", state)
+    LOGGER.debug(f" >>>> handle_presentations({state})")
 
     if state == "request_received":
         presentation_request = message["presentation_request"]
@@ -229,16 +229,34 @@ def handle_presentations(state, message):
         referents = ",".join(
             requested_attribute_referents + requested_predicates_referents
         )
+        credentials = []
 
-        resp = requests.get(
-            f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
-            + f"{message['presentation_exchange_id']}/credentials/"
-            + f"{referents}",
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
+        if presentation_request["name"].startswith("cred_id::"):
+            cred_id = presentation_request["name"][9:]
+            resp = requests.get(
+                f"{settings.AGENT_ADMIN_URL}/credential/"
+                + f"{cred_id}",
+                headers=settings.ADMIN_REQUEST_HEADERS,
+            )
+            wallet_credential = resp.json()
+            wallet_credentials = {
+                "cred_info": wallet_credential,
+                "interval": None,
+                "presentation_referents": requested_attribute_referents + requested_predicates_referents
+            }
+            credentials = [wallet_credentials,]
+            credential_query = presentation_request["name"]
 
-        # All credentials from wallet that satisfy presentation request
-        credentials = resp.json()
+        if 0 == len(credentials):
+            resp = requests.get(
+                f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
+                + f"{message['presentation_exchange_id']}/credentials/"
+                + f"{referents}",
+                headers=settings.ADMIN_REQUEST_HEADERS,
+            )
+            # All credentials from wallet that satisfy presentation request
+            credentials = resp.json()
+            credential_query = f"/present-proof/records/{message['presentation_exchange_id']}/credentials/{referents}"
 
         # Prep the payload we need to send to the agent API
         credentials_for_presentation = {
@@ -252,67 +270,47 @@ def handle_presentations(state, message):
         for referent in requested_predicates_referents:
             credentials_for_presentation["requested_predicates"][referent] = {}
 
-        # Now we need to provide a credential id for each requested_*
-        for credential in credentials:
-            # This query plus limiting by claim values below
-            # *should* return exactly one result
-            credential_query = CredentialModel.objects.filter(
-                revoked=False, latest=True
+        # we should have a single credential at this point
+        results_length = len(credentials)
+        if results_length != 1:
+            raise Exception(
+                "Number of credentials returned by query "
+                + f"{credential_query} was not 1, it was {results_length}"
             )
-            for attr in credential["cred_info"]["attrs"]:
-                credential_query = credential_query.filter(
-                    claims__name=attr,
-                    claims__value=credential["cred_info"]["attrs"][attr],
-                )
 
-            # If we don't have exactly 1 result, we can't construct a presentation
-            # deterministically
-            results_length = len(credential_query)
-            if results_length != 1:
+        credential = credentials[0]
+
+        credential_id = credential["cred_info"]["referent"]
+
+        # For all "presentation_referents" on this `credential` returned
+        # from the wallet, we can apply this credential_id as the selected
+        # credential for the presentation
+        for related_referent in credential["presentation_referents"]:
+            if (
+                related_referent
+                in credentials_for_presentation["requested_attributes"]
+            ):
+                credentials_for_presentation["requested_attributes"][
+                    related_referent
+                ]["cred_id"] = credential_id
+                credentials_for_presentation["requested_attributes"][
+                    related_referent
+                ]["revealed"] = True
+            elif (
+                related_referent
+                in credentials_for_presentation["requested_predicates"]
+            ):
+                credentials_for_presentation["requested_predicates"][
+                    related_referent
+                ]["cred_id"] = credential_id
+                credentials_for_presentation["requested_predicates"][
+                    related_referent
+                ]["revealed"] = True
+            else:
                 raise Exception(
-                    "Number of credentials returned by query "
-                    + f"{credential_query.query} was not 1, it was {results_length}"
+                    f"Referent {related_referent} returned from wallet "
+                    + "was not expected in proof request."
                 )
-
-            credential_result = credential_query.first()
-            credential_id = credential_result.credential_id
-
-            # Ensure that the credential_id we retrieved from the agent is in fact
-            # in the set of credentials returned from the wallet in the first place.
-            # This should be true.
-            assert credential_id in [
-                credential["cred_info"]["referent"] for credential in credentials
-            ]
-
-            # For all "presentation_referents" on this `credential` returned
-            # from the wallet, we can apply this credential_id as the selected
-            # credential for the presentation
-            for related_referent in credential["presentation_referents"]:
-                if (
-                    related_referent
-                    in credentials_for_presentation["requested_attributes"]
-                ):
-                    credentials_for_presentation["requested_attributes"][
-                        related_referent
-                    ]["cred_id"] = credential_id
-                    credentials_for_presentation["requested_attributes"][
-                        related_referent
-                    ]["revealed"] = True
-                elif (
-                    related_referent
-                    in credentials_for_presentation["requested_predicates"]
-                ):
-                    credentials_for_presentation["requested_predicates"][
-                        related_referent
-                    ]["cred_id"] = credential_id
-                    credentials_for_presentation["requested_predicates"][
-                        related_referent
-                    ]["revealed"] = True
-                else:
-                    raise Exception(
-                        f"Referent {related_referent} returned from wallet "
-                        + "was not expected in proof request."
-                    )
 
         # We should have a fully constructed presentation now.
         # Let's check to make sure:

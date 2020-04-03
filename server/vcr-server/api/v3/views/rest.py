@@ -12,7 +12,9 @@ from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.views import APIView
+
 
 from api.v2 import utils
 from api.v2.models.Credential import Credential
@@ -21,6 +23,7 @@ from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
 from api.v2.models.Topic import Topic
 from api.v2.models.TopicRelationship import TopicRelationship
+
 from api.v2.serializers.rest import (
     CredentialSerializer,
     CredentialTypeSerializer,
@@ -31,6 +34,10 @@ from api.v2.serializers.rest import (
     TopicRelationshipSerializer,
     TopicSerializer,
 )
+
+from .viewsets import RetriveOnlyModelViewSet
+from ..mixins import MultipleFieldLookupMixin
+
 from api.v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
@@ -96,112 +103,22 @@ class CredentialTypeViewSet(ReadOnlyModelViewSet):
         return Response(lang)
 
 
-class TopicViewSet(ReadOnlyModelViewSet):
-    serializer_class = TopicSerializer
+class TopicView(APIView):
     queryset = Topic.objects.all()
 
-    @action(detail=True, url_path="formatted", methods=["get"])
-    def retrieve_formatted(self, request, pk=None):
-        item = self.get_object()
-        serializer = CustomTopicSerializer(item)
+    def get(self, request, type, source_id):
+        topic = get_object_or_404(self.queryset, type=type, source_id=source_id)
+        serializer = TopicSerializer(topic, many=False)
         return Response(serializer.data)
 
-    @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
-    @action(detail=True, url_path="credential", methods=["get"])
-    def list_credentials(self, request, pk=None):
-        item = self.get_object()
-        queryset = item.credentials
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
 
-    @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
-    @action(detail=True, url_path="credential/active", methods=["get"])
-    def list_active_credentials(self, request, pk=None):
-        item = self.get_object()
-        queryset = item.credentials.filter(revoked=False, inactive=False)
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
-    @action(detail=True, url_path="credential/historical", methods=["get"])
-    def list_historical_credentials(self, request, pk=None):
-        item = self.get_object()
-        queryset = item.credentials.filter(Q(revoked=True) | Q(inactive=True))
-        serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @swagger_auto_schema(responses={200: TopicSerializer(many=False)})
-    @action(
-        detail=False,
-        methods=["get"],
-        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)",
-    )
-    def retrieve_by_type(self, request, type=None, source_id=None):
-        return self.retrieve(request)
-
-    @swagger_auto_schema(responses={200: CustomTopicSerializer(many=False)})
-    @action(
-        detail=False,
-        methods=["get"],
-        url_path="ident/(?P<type>[^/]+)/(?P<source_id>[^/.]+)/formatted",
-    )
-    def retrieve_by_type_formatted(self, request, type=None, source_id=None):
-        return self.retrieve_formatted(request)
-
-    @swagger_auto_schema(responses={200: ExpandedCredentialSetSerializer(many=True)})
-    @action(detail=True, url_path="credentialset", methods=["get"])
-    def list_credential_sets(self, request, pk=None):
-        item = self.get_object()
-        queryset = item.credential_sets.order_by("first_effective_date").all()
-        serializer = ExpandedCredentialSetSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def get_object(self):
-        if self.kwargs.get("pk"):
-            return super(TopicViewSet, self).get_object()
-
-        type = self.kwargs.get("type")
-        source_id = self.kwargs.get("source_id")
-        if not type or not source_id:
-            raise Http404()
-
-        queryset = self.filter_queryset(self.get_queryset())
-        obj = get_object_or_404(queryset, type=type, source_id=source_id)
-
-        # May raise a permission denied
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-
-class TopicRelationshipViewSet(ReadOnlyModelViewSet):
-    serializer_class = TopicRelationshipSerializer
-    queryset = TopicRelationship.objects.all()
-
-    def get_object(self):
-        if self.kwargs.get("pk"):
-            return super(TopicRelationshipViewSet, self).get_object()
-
-        # I don't think the following code is used ...
-        # queryset = self.filter_queryset(self.get_queryset())
-        # obj = get_object_or_404(queryset, type=type, source_id=source_id)
-
-        ## May raise a permission denied
-        # self.check_object_permissions(self.request, obj)
-        # return obj
-
-
-class CredentialViewSet(ReadOnlyModelViewSet):
+class CredentialViewSet(RetriveOnlyModelViewSet):
     serializer_class = CredentialSerializer
     queryset = Credential.objects.all()
-
-    @action(detail=True, url_path="formatted", methods=["get"])
-    def retrieve_formatted(self, request, pk=None):
-        item = self.get_object()
-        serializer = ExpandedCredentialSerializer(item)
-        return Response(serializer.data)
+    lookup_field = "credential_id"
 
     @action(detail=True, url_path="verify", methods=["get"])
-    def verify(self, request, pk=None):
+    def verify(self, request, credential_id=None):
         item: Credential = self.get_object()
         credential_type: CredentialType = item.credential_type
 
@@ -218,14 +135,11 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             f"{settings.AGENT_ADMIN_URL}/credential/{item.credential_id}",
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
-        response.raise_for_status()
         credential = response.json()
 
-        # use the credential_id in the name of the proof request - this allows the
-        # prover to short-circuit the anoncreds function to fetch the credential directly
         proof_request = {
             "version": "1.0",
-            "name": "cred_id::" + item.credential_id,
+            "name": "self-verify",
             "requested_predicates": {},
             "requested_attributes": {},
         }
@@ -234,7 +148,6 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "proof_request": proof_request,
         }
         restrictions = [{}]
-        restrictions[0]["cred_def_id"] = credential_type.credential_def_id
 
         for attr in credential_type.get_tagged_attributes():
             claim_val = credential["attrs"][attr]
@@ -244,7 +157,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "names": [attr for attr in credential["attrs"]],
             "restrictions": restrictions,
         }
-        proof_request["requested_attributes"]['self-verify-proof'] = requested_attribute
+        proof_request["requested_attributes"]["self-verify-proof"] = requested_attribute
 
         proof_request_response = requests.post(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
@@ -287,7 +200,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         return JsonResponse(result)
 
     @action(detail=True, url_path="latest", methods=["get"])
-    def get_latest(self, request, pk=None):
+    def get_latest(self, request, credential_id=None):
         item = self.get_object()
         latest = None
         if item.credential_set:
@@ -298,14 +211,10 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     def get_object(self):
-        pk = self.kwargs.get("pk")
-        if not pk:
+        credential_id = self.kwargs.get("credential_id")
+        if not credential_id:
             raise Http404()
-        filter = {"credential_id": pk}
-        try:
-            filter = {"pk": int(pk)}
-        except (ValueError, TypeError):
-            pass
+        filter = {"credential_id": credential_id}
 
         queryset = self.filter_queryset(self.get_queryset())
         obj = get_object_or_404(queryset, **filter)
@@ -316,10 +225,10 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
 
 # Add environment specific endpoints
-try:
-    # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
-    utils.apply_custom_methods(
-        TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
-    )
-except:
-    pass
+# try:
+#     # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
+#     # utils.apply_custom_methods(
+#     #     TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
+#     # )
+# except:
+#     pass
