@@ -1,16 +1,16 @@
 /**
  * Before building, files must be copied or symlinked into src/themes/_active
- * The default theme (src/themes/default) is always copied first, and then another
+ * The base theme (themes/base) is always copied first, and then another
  * theme named by the THEME environment variable can add to or replace these files.
  **/
 
 var fs = require('fs'),
   path = require('path');
 
-var THEME_NAME = process.env.THEME || 'default';
+var THEME_NAME = process.env.THEME || 'base';
 if (THEME_NAME === '_active') throw 'Invalid theme name';
 var TARGET_DIR = 'src/themes/_active';
-var THEMES_ROOT = 'src/themes';
+var THEMES_ROOT = 'themes';
 var THEME_PATH = process.env.THEME_PATH || THEMES_ROOT;
 var LANG_ROOT = 'assets/i18n';
 var CONFIG_NAME = 'assets/config.json';
@@ -98,7 +98,7 @@ function populateDirSync(source_dir, target_dir) {
 
 function copyThemeDir(theme_name, target_dir) {
   var theme_dir = path.join(THEMES_ROOT, theme_name);
-  if (theme_name !== 'default') {
+  if (theme_name !== 'base') {
     if (fs.existsSync(path.join(THEME_PATH, theme_name))) {
       theme_dir = path.join(THEME_PATH, theme_name);
     }
@@ -203,9 +203,9 @@ function resolveLangPaths(theme_name, language) {
     ret.push(lang_path);
   }
 
-  if (theme_name !== 'default') {
-    // Always add default language file when using custom theme
-    var def_path = path.join(THEMES_ROOT, 'default', LANG_ROOT, language + '.json');
+  if (theme_name !== 'base') {
+    // Always add base language file when using custom theme
+    var def_path = path.join(THEMES_ROOT, 'base', LANG_ROOT, language + '.json');
     if (fs.existsSync(def_path)) {
       ret.push(def_path);
     }
@@ -237,14 +237,14 @@ function mergeDeep(target, ...sources) {
   return mergeDeep(target, ...sources);
 }
 
-// merge theme and default language files
+// merge theme and base language files
 function combineLanguage(theme_name, target_dir) {
   var langs = new Array();
-  if (theme_name !== 'default') {
+  if (theme_name !== 'base') {
     if (fs.existsSync(path.join(THEME_PATH, theme_name))) {
       langs.concat(findLanguages(path.join(THEME_PATH, theme_name)));
     }
-    langs = langs.concat(findLanguages(path.join(THEMES_ROOT, 'default')));
+    langs = langs.concat(findLanguages(path.join(THEMES_ROOT, 'base')));
   }
   var lang_dir = path.join(target_dir, LANG_ROOT);
   for (var lang of new Set(langs)) {
@@ -277,13 +277,13 @@ function combineLanguage(theme_name, target_dir) {
   }
 }
 
-// combine theme config with default config
+// combine theme config with base config
 // and replace references to environment variables
 function updateConfig(theme_name) {
-  let default_path = path.join(THEMES_ROOT, 'default', CONFIG_NAME);
+  let base_path = path.join(THEMES_ROOT, 'base', CONFIG_NAME);
   let config = {};
-  if (fs.existsSync(default_path)) {
-    config = require('./' + default_path);
+  if (fs.existsSync(base_path)) {
+    config = require('./' + base_path);
   }
   if (THEME_PATH !== THEMES_ROOT) {
     // custom themes are under THEME_PATH
@@ -352,8 +352,8 @@ if (UPDATE_ONLY) {
   cleanTargetDir(TARGET_DIR);
 }
 
-copyThemeDir('default', TARGET_DIR);
-if (THEME_NAME !== 'default') {
+copyThemeDir('base', TARGET_DIR);
+if (THEME_NAME !== 'base') {
   copyThemeDir(THEME_NAME, TARGET_DIR);
 }
 
