@@ -135,7 +135,7 @@ DATABASES = {"default": database.config()}
 
 OPTIMIZE_TABLE_ROW_COUNTS = parse_bool(os.getenv("OPTIMIZE_TABLE_ROW_COUNTS", "True"))
 
-CONN_MAX_AGE = CREDS_BATCH_SIZE = int(os.getenv('CONN_MAX_AGE', '0'))
+CONN_MAX_AGE = CREDS_BATCH_SIZE = int(os.getenv("CONN_MAX_AGE", "0"))
 if CONN_MAX_AGE < 0:
     CONN_MAX_AGE = None
 
@@ -162,7 +162,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
     # Used for drf-yasg to split api specs into multiple versions
-    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning'
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
 }
 
 SWAGGER_SETTINGS = {
@@ -229,12 +229,13 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
+        # "django.db.backends": {"level": "DEBUG", "handlers": ["console_handler"]},
     },
     "root": {
         "handlers": ["console_handler"],
         "level": str(os.getenv("DJANGO_LOG_LEVEL", "INFO")).upper(),
         "propagate": False,
-    },
+    }
 }
 
 
