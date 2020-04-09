@@ -39,14 +39,14 @@
     "font-awesome": "^4.7.0",
     "localize-router": "https://github.com/andrewwhitehead/localize-router/releases/download/v2.0.0-RC.2/localize-router-2.0.0-RC.2.tgz",
     "localize-router-http-loader": "~1.0.2",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "rxjs": "~6.3.0",
     "rxjs-compat": "~6.3.0",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.6.8",
-    "@angular-devkit/build-optimizer": "~0.6.8",
+    "@angular-devkit/build-optimizer": "^0.6.8",
     "@angular/cli": "^6.2.9",
     "@angular/compiler-cli": "~7.2.6",
     "@types/jasmine": "~2.8.16",
@@ -65,7 +65,7 @@
     "ts-node": "~5.0.1",
     "tslint": "~5.11.0",
     "typescript": "~3.1.1",
-    "webpack": "~4.6.0"
+    "webpack": "^4.42.1"
   },
   "prettier": {
     "trailingComma": "all",
