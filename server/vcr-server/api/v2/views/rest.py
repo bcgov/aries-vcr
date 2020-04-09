@@ -157,7 +157,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
             item.credential_sets
             # .select_related("credential_type", "topic")
             .prefetch_related(
-                "credentials__addresses",
+                # "credentials__addresses",
                 "credentials__related_topics",
                 "credentials__credential_type",
                 "credentials__topic",
@@ -199,25 +199,25 @@ class TopicViewSet(ReadOnlyModelViewSet):
                         if credential.revoked_date
                         else None,
                         "credential_id": credential.credential_id,
-                        "addresses": [
-                            {
-                                "country": address.country or None,
-                                "addressee": address.addressee or None,
-                                "province": address.province or None,
-                                "create_timestamp": address.create_timestamp.isoformat()
-                                if address.create_timestamp is not None
-                                else None,
-                                "credential_id": address.credential_id or None,
-                                "civic_address": address.civic_address or None,
-                                "update_timestamp": address.update_timestamp.isoformat()
-                                if address.update_timestamp is not None
-                                else None,
-                                "id": address.id,
-                                "postal_code": address.postal_code or None,
-                                "city": address.city or None,
-                            }
-                            for address in credential.addresses.all()
-                        ],
+                        # "addresses": [
+                        #     {
+                        #         "country": address.country or None,
+                        #         "addressee": address.addressee or None,
+                        #         "province": address.province or None,
+                        #         "create_timestamp": address.create_timestamp.isoformat()
+                        #         if address.create_timestamp is not None
+                        #         else None,
+                        #         "credential_id": address.credential_id or None,
+                        #         "civic_address": address.civic_address or None,
+                        #         "update_timestamp": address.update_timestamp.isoformat()
+                        #         if address.update_timestamp is not None
+                        #         else None,
+                        #         "id": address.id,
+                        #         "postal_code": address.postal_code or None,
+                        #         "city": address.city or None,
+                        #     }
+                        #     for address in credential.addresses.all()
+                        # ],
                         "topic": {
                             "id": credential.topic.id,
                             "source_id": credential.topic.source_id,
@@ -226,12 +226,12 @@ class TopicViewSet(ReadOnlyModelViewSet):
                         "related_topics": [
                             {
                                 "id": related_topic.id,
-                                "create_timestamp": related_topic.create_timestamp
-                                if related_topic.create_timestamp is not None
-                                else None,
-                                "update_timestamp": related_topic.update_timestamp
-                                if related_topic.update_timestamp is not None
-                                else None,
+                                # "create_timestamp": related_topic.create_timestamp
+                                # if related_topic.create_timestamp is not None
+                                # else None,
+                                # "update_timestamp": related_topic.update_timestamp
+                                # if related_topic.update_timestamp is not None
+                                # else None,
                                 "source_id": related_topic.source_id,
                                 "type": related_topic.type,
                                 "names": [
