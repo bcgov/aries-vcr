@@ -155,15 +155,17 @@ class TopicViewSet(ReadOnlyModelViewSet):
 
         credential_sets = (
             item.credential_sets
-            .select_related("credential_type", "topic")
+            # .select_related("credential_type", "topic")
+            .prefetch_related(
+                "credentials__addresses",
+                "credentials__related_topics",
+                "credentials__credential_type",
+                "credentials__topic",
+            )
             .order_by("first_effective_date")
             .all()
         )
 
-        logger.info(credential_sets)
-
-        for credential_set in credential_sets:
-            logger.info(credential_set)
         data = [
             {
                 "id": credential_set.id,
@@ -266,25 +268,6 @@ class TopicViewSet(ReadOnlyModelViewSet):
             for credential_set in credential_sets
         ]
 
-        # queryset = item.credential_sets.order_by("first_effective_date").all()
-        # serializer = ExpandedCredentialSetSerializer(queryset, many=True)
-        # end = time.time()
-        # logger.info("-/-/-/-/-/abc1")
-        # logger.info(end - start)
-        # data = serializer.data
-        # data = []
-        # end = time.time()
-        # logger.info("-/-/-/-/-/abc2")
-        # logger.info(end - start)
-        # data = [{
-        #     "id": 82
-        #     "create_timestamp": "2020-04-08T12:02:25.067172-07:00"
-        #     "update_timestamp": "2020-04-08T12:02:25.067198-07:00"
-        #     "latest_credential_id": 82
-        #     "topic_id": 1
-        #     "first_effective_date": "2019-01-01T00:00:00-08:00"
-        #     "last_effective_date": nuNonell
-        # } for ]
         return Response(data)
 
     def get_object(self):
