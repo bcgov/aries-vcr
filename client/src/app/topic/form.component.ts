@@ -172,7 +172,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
       topic_id: '' + this.topic.id,
       revoked: this._filterActive ? 'false' : '',
     };
-    this._dataService.loadList(this._creds, { query: credsFilter });
+    // this._dataService.loadList(this._creds, { query: credsFilter });
   }
 
   protected onLoadSection(name, state?) {

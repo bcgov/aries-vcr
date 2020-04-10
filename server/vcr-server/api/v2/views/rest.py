@@ -152,9 +152,123 @@ class TopicViewSet(ReadOnlyModelViewSet):
     @action(detail=True, url_path="credentialset", methods=["get"])
     def list_credential_sets(self, request, pk=None):
         item = self.get_object()
-        queryset = item.credential_sets.order_by("first_effective_date").all()
-        serializer = ExpandedCredentialSetSerializer(queryset, many=True)
-        return Response(serializer.data)
+
+        credential_sets = (
+            item.credential_sets
+            # .select_related("credential_type", "topic")
+            .prefetch_related(
+                # "credentials__addresses",
+                "credentials__related_topics",
+                "credentials__credential_type",
+                "credentials__topic",
+            )
+            .order_by("first_effective_date")
+            .all()
+        )
+
+        data = [
+            {
+                "id": credential_set.id,
+                "create_timestamp": credential_set.create_timestamp.isoformat()
+                if credential_set.create_timestamp is not None
+                else None,
+                "update_timestamp": credential_set.update_timestamp.isoformat()
+                if credential_set.update_timestamp is not None
+                else None,
+                "latest_credential_id": credential_set.latest_credential_id,
+                "topic_id": credential_set.topic_id,
+                "first_effective_date": credential_set.first_effective_date.isoformat()
+                if credential_set.first_effective_date is not None
+                else None,
+                "last_effective_date": credential_set.last_effective_date.isoformat()
+                if credential_set.last_effective_date is not None
+                else None,
+                "credentials": [
+                    {
+                        "id": credential.id,
+                        "create_timestamp": credential.create_timestamp.isoformat()
+                        if credential.create_timestamp
+                        else None,
+                        "effective_date": credential.effective_date.isoformat()
+                        if credential.effective_date
+                        else None,
+                        "inactive": credential.inactive,
+                        "latest": credential.latest,
+                        "revoked": credential.revoked,
+                        "revoked_date": credential.revoked_date.isoformat()
+                        if credential.revoked_date
+                        else None,
+                        "credential_id": credential.credential_id,
+                        # "addresses": [
+                        #     {
+                        #         "country": address.country or None,
+                        #         "addressee": address.addressee or None,
+                        #         "province": address.province or None,
+                        #         "create_timestamp": address.create_timestamp.isoformat()
+                        #         if address.create_timestamp is not None
+                        #         else None,
+                        #         "credential_id": address.credential_id or None,
+                        #         "civic_address": address.civic_address or None,
+                        #         "update_timestamp": address.update_timestamp.isoformat()
+                        #         if address.update_timestamp is not None
+                        #         else None,
+                        #         "id": address.id,
+                        #         "postal_code": address.postal_code or None,
+                        #         "city": address.city or None,
+                        #     }
+                        #     for address in credential.addresses.all()
+                        # ],
+                        "topic": {
+                            "id": credential.topic.id,
+                            "source_id": credential.topic.source_id,
+                            "type": credential.topic.type,
+                        },
+                        "related_topics": [
+                            {
+                                "id": related_topic.id,
+                                # "create_timestamp": related_topic.create_timestamp
+                                # if related_topic.create_timestamp is not None
+                                # else None,
+                                # "update_timestamp": related_topic.update_timestamp
+                                # if related_topic.update_timestamp is not None
+                                # else None,
+                                "source_id": related_topic.source_id,
+                                "type": related_topic.type,
+                                "names": [
+                                    {
+                                        "id": name.id,
+                                        "text": name.text or None,
+                                        "language": name.language or None,
+                                        "credential_id": name.credential_id,
+                                        "type": name.type,
+                                    }
+                                    for name in related_topic.get_active_names()
+                                ],
+                                "local_name": {
+                                    "id": related_topic.get_local_name().id,
+                                    "text": related_topic.get_local_name().text or None,
+                                    "language": related_topic.get_local_name().language
+                                    or None,
+                                    "credential_id": related_topic.get_local_name().credential_id
+                                    or None,
+                                    "type": related_topic.get_local_name().type or None,
+                                },
+                                "remote_name": related_topic.get_remote_name() or None,
+                            }
+                            for related_topic in credential.related_topics.all()
+                        ],
+                        "credential_type": {
+                            "id": credential.credential_type.id,
+                            "description": credential.credential_type.description,
+                        },
+                    }
+                    for credential in credential_set.credentials.all()
+                ],
+            }
+            for credential_set in credential_sets
+        ]
+
+        return Response(data)
 
     def get_object(self):
         if self.kwargs.get("pk"):
@@ -244,7 +358,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "names": [attr for attr in credential["attrs"]],
             "restrictions": restrictions,
         }
-        proof_request["requested_attributes"]['self-verify-proof'] = requested_attribute
+        proof_request["requested_attributes"]["self-verify-proof"] = requested_attribute
 
         proof_request_response = requests.post(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
