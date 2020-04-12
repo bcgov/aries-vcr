@@ -120,6 +120,8 @@ services:
       - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       #- RECORD_TIMINGS=true
+      - TRACE_events=true
+      - TRACE_TARGET=http://fluentd:8088/
     volumes:
       - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
