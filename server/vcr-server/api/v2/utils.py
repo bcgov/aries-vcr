@@ -32,7 +32,7 @@ DT_FMT = '%Y-%m-%d %H:%M:%S.%f%z'
 # need to specify an env variable RECORD_TIMINGS=True to get method timings
 RECORD_TIMINGS = os.getenv("RECORD_TIMINGS", "True").lower() == "true"
 TRACE_EVENTS = os.getenv("TRACE_EVENTS", "True").lower() == "true"
-TRACE_LABEL = os.getenv("TRACE_LABEL", "aries.vcr")
+TRACE_LABEL = os.getenv("TRACE_LABEL", "avcr.controller")
 TRACE_TAG = os.getenv("TRACE_TAG", "acapy.events")
 TRACE_LOG_TARGET = "log"
 TRACE_TARGET = os.getenv("TRACE_TARGET", TRACE_LOG_TARGET)
