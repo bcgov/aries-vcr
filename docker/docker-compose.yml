@@ -119,9 +119,10 @@ services:
       - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
       - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
-      #- RECORD_TIMINGS=true
-      - TRACE_events=true
-      - TRACE_TARGET=http://fluentd:8088/
+      - RECORD_TIMINGS=${RECORD_TIMINGS}
+      - TRACE_EVENTS=${TRACE_EVENTS}
+      - TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS}
+      - TRACE_TARGET=${TRACE_TARGET}
     volumes:
       - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
@@ -130,7 +131,7 @@ services:
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
-      - efk_net
+      #- efk_net
     ports:
       - "${API_HTTP_PORT}:8080"
       - 3000:3000
@@ -170,9 +171,12 @@ services:
       - WS_INTERFACE_PORT=${WS_INTERFACE_PORT}
       - AGENT_ADMIN_PORT=${AGENT_ADMIN_PORT}
       - AGENT_NAME=${AGENT_NAME}
+      - TRACE_TARGET=${TRACE_TARGET}
+      - AGENT_TIMING_MODE=${AGENT_TIMING_MODE}
+      - AGENT_TRACE_MODE=${AGENT_TRACE_MODE}
     networks:
       - vcr
-      - efk_net
+      #- efk_net
     ports:
       - ${HTTP_INTERFACE_PORT}:${HTTP_INTERFACE_PORT}
       - ${WS_INTERFACE_PORT}:${WS_INTERFACE_PORT}
@@ -222,16 +226,13 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
-        --log-level 'error' \
-        --timing \
-        --trace \
-        --trace-target 'http://fluentd:8088/' \
+        --log-level 'error' ${AGENT_TIMING_MODE} ${AGENT_TRACE_MODE} \
+        --trace-target '${TRACE_TARGET}' \
         --trace-tag 'acapy.events' \
         --trace-label ${AGENT_NAME} \
         --plugin indy_catalyst_issuer_registration",
       ]
 
-#        --timing \
 #        --log-config '/home/indy/debug-logger.cfg' \
 #        --log-level 'debug' \
 
@@ -389,9 +390,9 @@ services:
 
 networks:
   vcr:
-  efk_net:
-    external:
-      name: efk-stack_efk_net
+  #efk_net:
+  #  external:
+  #    name: efk-stack_efk_net
 
 volumes:
   vcr-data:

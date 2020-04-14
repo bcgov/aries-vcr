@@ -26,7 +26,6 @@ TOPIC_GET_ACTIVE_MENU = "get-active-menu"
 TOPIC_PERFORM_MENU_ACTION = "perform-menu-action"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
 
-
 PROCESS_INBOUND_CREDENTIALS = os.environ.get('PROCESS_INBOUND_CREDENTIALS', 'true')
 if PROCESS_INBOUND_CREDENTIALS.upper() == "TRUE":
     LOGGER.debug(">>> YES processing inbound credentials")

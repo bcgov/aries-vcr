@@ -1,5 +1,6 @@
 import base64
 import uuid
+import os
 from logging import getLogger
 from time import sleep
 
@@ -34,6 +35,8 @@ from api.v2.serializers.rest import (
 from api.v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
+
+TRACE_PROOF_EVENTS = os.getenv("TRACE_PROOF_EVENTS", "false").lower() == "true"
 
 
 class IssuerViewSet(ReadOnlyModelViewSet):
@@ -347,6 +350,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "connection_id": self_connection["connection_id"],
             "proof_request": proof_request,
         }
+        if TRACE_PROOF_EVENTS:
+            request_body["trace"] = TRACE_PROOF_EVENTS
         restrictions = [{}]
         restrictions[0]["cred_def_id"] = credential_type.credential_def_id
 

@@ -465,6 +465,11 @@ configureEnvironment() {
   export APPLICATION_URL=${APPLICATION_URL-http://localhost:8080}
   export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
 
+  export RECORD_TIMINGS=${RECORD_TIMINGS:-false}
+  export TRACE_EVENTS=${TRACE_EVENTS:-false}
+  export TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS:-false}
+  export TRACE_TARGET=${TRACE_TARGET-http://$DOCKERHOST:8088/}
+
   # vcr-web
   export THEME=${THEME:-base}
   export THEME_PATH=${THEME_PATH-}
@@ -492,6 +497,14 @@ configureEnvironment() {
   export AGENT_ADMIN_MODE="admin-insecure-mode"
   if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
     AGENT_ADMIN_MODE="admin-api-key ${AGENT_ADMIN_API_KEY}"
+  fi
+  export AGENT_TIMING_MODE=""
+  if [ "${RECORD_TIMINGS}" = "true" ]; then
+    AGENT_TIMING_MODE="--timing"
+  fi
+  export AGENT_TRACE_MODE=""
+  if [ "${TRACE_EVENTS}" = "true" ]; then
+    AGENT_TRACE_MODE="--trace"
   fi
 }
 
