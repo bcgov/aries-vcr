@@ -131,7 +131,6 @@ services:
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
-      #- efk_net
     ports:
       - "${API_HTTP_PORT}:8080"
       - 3000:3000
@@ -176,7 +175,6 @@ services:
       - AGENT_TRACE_MODE=${AGENT_TRACE_MODE}
     networks:
       - vcr
-      #- efk_net
     ports:
       - ${HTTP_INTERFACE_PORT}:${HTTP_INTERFACE_PORT}
       - ${WS_INTERFACE_PORT}:${WS_INTERFACE_PORT}
@@ -390,9 +388,6 @@ services:
 
 networks:
   vcr:
-  #efk_net:
-  #  external:
-  #    name: efk-stack_efk_net
 
 volumes:
   vcr-data:
