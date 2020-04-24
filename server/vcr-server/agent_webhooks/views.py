@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.v2.models.Credential import Credential as CredentialModel
-from api.v2.utils import log_timing_method
+from api.v2.utils import log_timing_method, log_timing_event
 from agent_webhooks.utils.credential import Credential, CredentialManager
 from agent_webhooks.utils.issuer import IssuerManager
 
@@ -25,7 +25,6 @@ TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
 TOPIC_PERFORM_MENU_ACTION = "perform-menu-action"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
-
 
 PROCESS_INBOUND_CREDENTIALS = os.environ.get('PROCESS_INBOUND_CREDENTIALS', 'true')
 if PROCESS_INBOUND_CREDENTIALS.upper() == "TRUE":
@@ -50,6 +49,7 @@ def agent_callback(request, topic):
 
     start_time = time.perf_counter()
     method = "agent_callback." + topic + "." + state
+    log_timing_event(method, message, start_time, None, False)
 
     # dispatch based on the topic type
     if topic == TOPIC_CONNECTIONS:
@@ -77,10 +77,12 @@ def agent_callback(request, topic):
         LOGGER.info("Callback: topic=" + topic + ", message=" + json.dumps(message))
         end_time = time.perf_counter()
         log_timing_method(method, start_time, end_time, False)
+        log_timing_event(method, message, start_time, end_time, False)
         return Response("Invalid topic: " + topic, status=status.HTTP_400_BAD_REQUEST)
 
     end_time = time.perf_counter()
     log_timing_method(method, start_time, end_time, True)
+    log_timing_event(method, message, start_time, end_time, True)
 
     return response
 
