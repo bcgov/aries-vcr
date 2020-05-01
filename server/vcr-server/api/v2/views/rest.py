@@ -244,7 +244,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
                                         "language": name.language or None,
                                         "credential_id": name.credential_id,
                                         "type": name.type,
-                                    }
+                                    } if name else {}
                                     for name in related_topic.get_active_names()
                                 ],
                                 "local_name": {
@@ -255,9 +255,9 @@ class TopicViewSet(ReadOnlyModelViewSet):
                                     "credential_id": related_topic.get_local_name().credential_id
                                     or None,
                                     "type": related_topic.get_local_name().type or None,
-                                },
+                                } if related_topic.get_local_name() else {},
                                 "remote_name": related_topic.get_remote_name() or None,
-                            }
+                            } if related_topic else {}
                             for related_topic in credential.related_topics.all()
                         ],
                         "credential_type": {
