@@ -202,6 +202,26 @@ class TopicViewSet(ReadOnlyModelViewSet):
                         if credential.revoked_date
                         else None,
                         "credential_id": credential.credential_id,
+                        "names": [
+                            {
+                                "id": name.id,
+                                "text": name.text or None,
+                                "language": name.language or None,
+                                "credential_id": name.credential_id,
+                                "type": name.type,
+                            } if name else {}
+                            for name in credential.topic.get_active_names()
+                        ],
+                        "local_name": {
+                            "id": credential.topic.get_local_name().id,
+                            "text": credential.topic.get_local_name().text or None,
+                            "language": credential.topic.get_local_name().language
+                            or None,
+                            "credential_id": credential.topic.get_local_name().credential_id
+                            or None,
+                            "type": credential.topic.get_local_name().type or None,
+                        } if credential.topic.get_local_name() else {},
+                        "remote_name": credential.topic.get_remote_name() or None,
                         # "addresses": [
                         #     {
                         #         "country": address.country or None,
