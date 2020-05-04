@@ -184,8 +184,10 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   public handleNav(nav: string) {
     if (nav === 'previous') {
       this._filters.setFieldValue('page', Math.max(this.pageNum - 1, 1));
+      this._loader.reset();
     } else if (nav == 'next') {
       this._filters.setFieldValue('page', this.pageNum + 1);
+      this._loader.reset();
     } else {
       console.warn(`Invalid nav '${nav}' received`);
     }
@@ -193,6 +195,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public updateQuery() {
     if(this._searchInput) {
+      this._loader.reset();
       this._refresh = true;
       this._filters.update({
         name: this._searchInput.value,
