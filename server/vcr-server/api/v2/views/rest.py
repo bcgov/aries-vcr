@@ -221,7 +221,15 @@ class TopicViewSet(ReadOnlyModelViewSet):
                             or None,
                             "type": credential.topic.get_local_name().type or None,
                         } if credential.topic.get_local_name() else {},
-                        "remote_name": credential.topic.get_remote_name() or None,
+                        "remote_name": {
+                            "id": credential.topic.get_remote_name().id,
+                            "text": credential.topic.get_remote_name().text or None,
+                            "language": credential.topic.get_remote_name().language
+                            or None,
+                            "credential_id": credential.topic.get_remote_name().credential_id
+                            or None,
+                            "type": credential.topic.get_remote_name().type or None,
+                        } if credential.topic.get_remote_name() else {},
                         # "addresses": [
                         #     {
                         #         "country": address.country or None,
