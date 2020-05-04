@@ -183,7 +183,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public handleNav(nav: string) {
     if (nav === 'previous') {
-      this._filters.setFieldValue('page', Math.min(this.pageNum - 1, 1));
+      this._filters.setFieldValue('page', Math.max(this.pageNum - 1, 1));
     } else if (nav == 'next') {
       this._filters.setFieldValue('page', this.pageNum + 1);
     } else {
