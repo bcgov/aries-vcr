@@ -36,9 +36,11 @@
                 BC Registries issues credentials for companies incorporated in British Columbia.
                 </p>
 
-                <p class="mb-0">
-                <a [routerLink]="['./verify'] | localize" class="body-link switch-verify">{{ 'cred.verify-link' | translate }}</a>
-                </p>
+                <div class="row form-group" *ngIf="! record.revoked">
+                  <p class="mb-0">
+                  <a [routerLink]="['./verify'] | localize" class="body-link switch-verify">{{ 'cred.verify-link' | translate }}</a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
