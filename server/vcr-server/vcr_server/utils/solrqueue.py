@@ -27,7 +27,8 @@ class SolrQueue:
         try:
             self._queue.put((index_cls, using, ids, 0))
         except Full:
-            LOGGER.warning("Can't add items to the Solr queue because it is full")
+            LOGGER.error("Can't add items to the Solr queue because it is full")
+            raise
 
     def delete(self, index_cls, using, instances):
         ids = [get_identifier(instance) for instance in instances]
@@ -38,7 +39,8 @@ class SolrQueue:
         try:
             self._queue.put((index_cls, using, ids, 1))
         except Full:
-            LOGGER.warning("Can't delete items from the Solr queue because it is full")
+            LOGGER.error("Can't delete items from the Solr queue because it is full")
+            raise
 
     def setup(self, app=None):
         LOGGER.info("Setting up Solr queue ...")
@@ -77,7 +79,7 @@ class SolrQueue:
     def stop(self, join=True):
         LOGGER.info("Stoping Solr queue ...")
         if not self._queue.empty():
-            LOGGER.warning("The Solr queue is not empty, there are about %s items that will not be indexed", self._queue.qsize())
+            LOGGER.error("The Solr queue is not empty, there are about %s items that will not be indexed", self._queue.qsize())
         self._stop.set()
         self._trigger.set()
         if join:
@@ -102,39 +104,44 @@ class SolrQueue:
         last_using = None
         last_del = 0
         last_ids = set()
-        while True:
-            try:
-                index_cls, using, ids, delete = self._queue.get_nowait()
-                LOGGER.debug("Pop items off the Solr queue for indexing; Class: %s, Using: %s, Delete: %s, Instances: %s", index_cls, using, delete, ids)
-            except Empty:
-                # LOGGER.debug("Solr queue is empty ...")
-                index_cls = None
-            if last_index and last_index == index_cls and last_using == using and last_del == delete:
-                LOGGER.debug("Updating list of ids ...")
-                last_ids.update(ids)
-            else:
-                if last_index:
-                    try:
-                        if last_del:
-                            self.remove(last_index, last_using, last_ids)
-                        else:
-                            self.update(last_index, last_using, last_ids)
-                    except:
-                        LOGGER.exception("An unexpected exception was encountered while processing items from the Solr queue.", exc_info=True)
-                        LOGGER.info("Requeueing items for later processing ...")
+        try:
+            while True:
+                try:
+                    index_cls, using, ids, delete = self._queue.get_nowait()
+                    LOGGER.debug("Pop items off the Solr queue for indexing; Class: %s, Using: %s, Delete: %s, Instances: %s", index_cls, using, delete, ids)
+                except Empty:
+                    # LOGGER.debug("Solr queue is empty ...")
+                    index_cls = None
+                if last_index and last_index == index_cls and last_using == using and last_del == delete:
+                    LOGGER.debug("Updating list of ids ...")
+                    last_ids.update(ids)
+                else:
+                    if last_index:
                         try:
-                            self._queue.put( (last_index, last_using, last_ids, last_del) )
-                        except Full:
-                            LOGGER.warning("Can't requeue items to the Solr queue because it is full; %s", last_ids)
+                            if last_del:
+                                self.remove(last_index, last_using, last_ids)
+                            else:
+                                self.update(last_index, last_using, last_ids)
+                        except:
+                            LOGGER.exception("An unexpected exception was encountered while processing items from the Solr queue.", exc_info=True)
+                            LOGGER.info("Requeueing items for later processing ...")
+                            try:
+                                self._queue.put( (last_index, last_using, last_ids, last_del) )
+                            except Full:
+                                LOGGER.error("Can't requeue items to the Solr queue because it is full; %s", last_ids)
+                                raise
 
-                if not index_cls:
-                    # LOGGER.debug("Done indexing items from Solr queue ...")
-                    break
+                    if not index_cls:
+                        # LOGGER.debug("Done indexing items from Solr queue ...")
+                        break
 
-                last_index = index_cls
-                last_using = using
-                last_del = delete
-                last_ids = set(ids)
+                    last_index = index_cls
+                    last_using = using
+                    last_del = delete
+                    last_ids = set(ids)
+        except Exception as e:
+            LOGGER.error("Error processing real-time index queue: %s", str(e))
+            raise
 
     def update(self, index_cls, using, ids):
         LOGGER.debug("Updating the indexes for Solr queue items ...")
@@ -149,6 +156,7 @@ class SolrQueue:
             # LOGGER.debug("Index update complete.")
         else:
             LOGGER.error("Failed to get backend.  Unable to update the index for %d row(s) from the Solr queue: %s", len(ids), ids)
+            raise Exception("Failed to get backend.  Unable to update the index for Solr queue")
 
     def remove(self, index_cls, using, ids):
         LOGGER.debug("Removing the indexes for Solr queue items ...")
@@ -162,3 +170,4 @@ class SolrQueue:
             backend.conn.delete(id=ids)
         else:
             LOGGER.error("Failed to get backend.  Unable to remove the indexes for %d row(s) from the solr queue: %s", len(ids), ids)
+            raise Exception("Failed to get backend.  Unable to remove the index for Solr queue")

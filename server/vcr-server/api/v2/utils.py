@@ -110,7 +110,7 @@ def solr_counts():
     last_month_q = total_q.filter(create_timestamp__gte=last_month)
     try:
         return {
-            "total": total_q.count(),
+            "total_indexed_items": total_q.count(),
             "active": latest_q.count(),
             "registrations": registrations_q.count(),
             "last_month": last_month_q.count(),
