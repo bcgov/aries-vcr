@@ -1,5 +1,6 @@
 import logging
 import threading
+import os
 from queue import Empty, Full, Queue
 
 from haystack.utils import get_identifier
@@ -8,6 +9,12 @@ from api.v2.search.index import TxnAwareSearchIndex
 
 LOGGER = logging.getLogger(__name__)
 
+
+# this will kill the vcr-api process
+ABORT_ON_ERRORS = True
+# this will re-raise errors, which will kill the indexing thread
+RAISE_ERRORS = False
+# if both of the above are false, indexing errors will be ignored
 
 class SolrQueue:
     def __init__(self):
@@ -100,6 +107,8 @@ class SolrQueue:
 
     def _drain(self):
         # LOGGER.debug("Indexing Solr queue items ...")
+        global RAISE_ERRORS
+        global ABORT_ON_ERRORS
         last_index = None
         last_using = None
         last_del = 0
@@ -141,7 +150,13 @@ class SolrQueue:
                     last_ids = set(ids)
         except Exception as e:
             LOGGER.error("Error processing real-time index queue: %s", str(e))
-            raise
+            if ABORT_ON_ERRORS:
+                # this will kill the vcr-api process
+                os.abort()
+            elif RAISE_ERRORS:
+                # this will re-raise errors, which will kill the indexing thread
+                raise
+            # if both of the above are false, indexing errors will be ignored
 
     def update(self, index_cls, using, ids):
         LOGGER.debug("Updating the indexes for Solr queue items ...")
