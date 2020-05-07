@@ -11,9 +11,11 @@ LOGGER = logging.getLogger(__name__)
 
 
 # this will kill the vcr-api process
-ABORT_ON_ERRORS = True
+ABORT_ON_ERRORS = os.getenv("RTI_ABORT_ON_ERRORS", "TRUE").upper()
+ABORT_ON_ERRORS = ABORT_ON_ERRORS == "TRUE"
 # this will re-raise errors, which will kill the indexing thread
-RAISE_ERRORS = False
+RAISE_ERRORS = os.getenv("RTI_RAISE_ERRORS", "FALSE").upper()
+RAISE_ERRORS = RAISE_ERRORS == "TRUE"
 # if both of the above are false, indexing errors will be ignored
 
 class SolrQueue:
