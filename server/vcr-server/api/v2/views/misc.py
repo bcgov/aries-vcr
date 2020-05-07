@@ -69,6 +69,36 @@ def quickload(request, *args, **kwargs):
 
 
 @swagger_auto_schema(
+    method="get", operation_id="api_v2_quickload_details", operation_description="quick load details"
+)
+@api_view(["GET"])
+@authentication_classes(())
+@permission_classes((permissions.AllowAny,))
+def quickload_details(request, *args, **kwargs):
+    # get list of connections from the database
+    with connection.cursor() as cursor:
+        model_cls = CredentialModel
+        query = "SELECT id, topic_id, credential_set_id, credential_id FROM %s " % model_cls._meta.db_table
+        #query = query + "WHERE ... "
+        query = query + "ORDER BY update_timestamp "
+        cursor.execute(query)
+        rows = []
+        row = cursor.fetchone()
+        while row is not None:
+            cred_row = {
+                "id": row[0],
+                "topic_id": row[1],
+                "credential_set_id": row[2],
+                "credential_id": row[3],
+            }
+            rows.append(cred_row)
+            row = cur.fetchone()
+    # TBD match with what is in the search index
+    pass
+    return JsonResponse({})
+
+
+@swagger_auto_schema(
     method="post",
     manual_parameters=[
         openapi.Parameter(

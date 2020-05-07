@@ -53,6 +53,7 @@ router.register(
 miscPatterns = [
     path("feedback", misc.send_feedback),
     path("quickload", misc.quickload),
+    path("quickload_details", misc.quickload_details),
     path("status/reset", clear_stats),
     path("status", get_stats),
 ]
