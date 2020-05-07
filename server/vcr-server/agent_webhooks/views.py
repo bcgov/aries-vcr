@@ -199,10 +199,11 @@ def handle_credentials(state, message):
             response_data = {"success": True, "details": "Credential Stored"}
 
     except Exception as e:
-        LOGGER.error(str(e))
+        LOGGER.error(e)
+        LOGGER.error(f"Send problem report for {credential_exchange_id}")
         # Send a problem report for the error
         resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem_report",
+            f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem-report",
             json={"explain_ltxt": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
