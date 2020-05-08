@@ -284,7 +284,15 @@ class TopicViewSet(ReadOnlyModelViewSet):
                                     or None,
                                     "type": related_topic.get_local_name().type or None,
                                 } if related_topic.get_local_name() else {},
-                                "remote_name": related_topic.get_remote_name() or None,
+                                "remote_name": {
+                                    "id": related_topic.get_remote_name().id,
+                                    "text": related_topic.get_remote_name().text or None,
+                                    "language": related_topic.get_remote_name().language
+                                    or None,
+                                    "credential_id": related_topic.get_remote_name().credential_id
+                                    or None,
+                                    "type": related_topic.get_remote_name().type or None,
+                                } if related_topic.get_remote_name() else {},
                             } if related_topic else {}
                             for related_topic in credential.related_topics.all()
                         ],
