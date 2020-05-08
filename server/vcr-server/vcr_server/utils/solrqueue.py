@@ -15,8 +15,6 @@ ABORT_ON_ERRORS = os.getenv("RTI_ABORT_ON_ERRORS", "TRUE").upper() == "TRUE"
 # this will re-raise errors, which will kill the indexing thread
 RAISE_ERRORS = os.getenv("RTI_RAISE_ERRORS", "FALSE").upper() == "TRUE"
 # if both of the above are false, indexing errors will be ignored
-loop_count = 0
-max_loop_count = 60
 
 class SolrQueue:
     def __init__(self):
@@ -111,8 +109,6 @@ class SolrQueue:
         # LOGGER.debug("Indexing Solr queue items ...")
         global RAISE_ERRORS
         global ABORT_ON_ERRORS
-        global loop_count
-        global max_loop_count
         last_index = None
         last_using = None
         last_del = 0
@@ -152,27 +148,15 @@ class SolrQueue:
                     last_using = using
                     last_del = delete
                     last_ids = set(ids)
-            loop_count = loop_count + 1
-            print(">>>>> loop count:", loop_count)
-            if loop_count >= max_loop_count:
-                raise Exception("Fake error to kill indexing thread")
         except Exception as e:
             LOGGER.error("Error processing real-time index queue: %s", str(e))
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             if ABORT_ON_ERRORS:
                 # this will kill the vcr-api process
-                print(">>>>> aborting ...")
                 os.abort()
             elif RAISE_ERRORS:
                 # this will re-raise errors, which will kill the indexing thread
-                print(">>>>> raising error ...")
                 raise
             # if both of the above are false, indexing errors will be ignored
-            print(">>>>> ignore error and continue indexing ...")
             loop_count = 0
 
     def update(self, index_cls, using, ids):

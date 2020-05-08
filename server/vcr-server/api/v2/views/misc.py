@@ -21,7 +21,7 @@ from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 from api.v2.models.Topic import Topic
 from api.v2.models.Name import Name
-from api.v2.utils import model_counts, record_count, solr_counts, unmatched_solr_creds
+from api.v2.utils import model_counts, record_count, solr_counts, matched_solr_cred
 
 LOGGER = logging.getLogger(__name__)
 
@@ -77,25 +77,29 @@ def quickload(request, *args, **kwargs):
 def quickload_details(request, *args, **kwargs):
     # get list of credentials from the database
     cred_rows = []
+    max_rows = 1000
     with connection.cursor() as cursor:
         model_cls = CredentialModel
-        query = "SELECT id, topic_id, credential_set_id, credential_id FROM %s " % model_cls._meta.db_table
+        query = "SELECT id, topic_id, credential_set_id, credential_id, update_timestamp FROM %s " % model_cls._meta.db_table
         #query = query + "WHERE ... "
         query = query + "ORDER BY update_timestamp "
         cursor.execute(query)
         row = cursor.fetchone()
-        while row is not None:
+        i = 0
+        while row is not None and i < max_rows:
             cred_row = {
                 "id": row[0],
                 "topic_id": row[1],
                 "credential_set_id": row[2],
                 "credential_id": row[3],
+                "update_timestamp": row[4],
             }
-            cred_rows.append(cred_row)
-            row = cur.fetchone()
-    # compare with what is missing in the search index
-    missing_creds = unmatched_solr_creds(cred_rows)
-    return JsonResponse(missing_creds)
+            # compare with what is missing in the search index
+            if not matched_solr_cred(cred_row):
+                cred_rows.append(cred_row)
+                i = i + 1
+            row = cursor.fetchone()
+    return JsonResponse(cred_rows, safe=False)
 
 
 @swagger_auto_schema(

@@ -121,11 +121,10 @@ def solr_counts():
         LOGGER.exception("Error when retrieving quickload counts from Solr")
         return False
 
-def unmatched_solr_creds(cred_list):
-    missing_creds = []
-    for cred in cred_list:
-        missing_creds.append(cred)
-    return missing_creds
+def matched_solr_cred(cred):
+    total_q = SearchQuerySet()
+    indexed_cred = total_q.filter(credential_id=cred["credential_id"])
+    return (0 < indexed_cred.count())
 
 @swagger_auto_schema(
     method="get", operation_id="api_v2_status_reset", operation_description="quick load"
