@@ -157,7 +157,7 @@ class SolrQueue:
                 # this will re-raise errors, which will kill the indexing thread
                 raise
             # if both of the above are false, indexing errors will be ignored
-            loop_count = 0
+            pass
 
     def update(self, index_cls, using, ids):
         LOGGER.debug("Updating the indexes for Solr queue items ...")
