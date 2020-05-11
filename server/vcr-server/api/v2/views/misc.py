@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.db import connection
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions
@@ -13,6 +13,7 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework.parsers import FormParser
+from rest_framework_api_key.permissions import HasAPIKey
 
 from api.v2.feedback import email_feedback
 from api.v2.models.Claim import Claim
@@ -73,7 +74,8 @@ def quickload(request, *args, **kwargs):
 )
 @api_view(["GET"])
 @authentication_classes(())
-@permission_classes((permissions.AllowAny,))
+#@permission_classes((permissions.AllowAny,))
+@permission_classes((HasAPIKey,))
 def quickload_details(request, *args, **kwargs):
     # get list of credentials from the database
     cred_rows = []

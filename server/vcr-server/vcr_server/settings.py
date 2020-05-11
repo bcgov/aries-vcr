@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "haystack",
     "rest_framework",
+    "rest_framework_api_key",
     "drf_generators",
     "drf_yasg",
     "django_filters",
@@ -77,6 +78,8 @@ INSTALLED_APPS = [
     "agent_webhooks",
     "django_nose",
 ]
+
+API_KEY_CUSTOM_HEADER = "HTTP_ADMIN_API_KEY"
 
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
