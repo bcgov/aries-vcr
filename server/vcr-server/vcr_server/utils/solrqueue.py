@@ -17,6 +17,8 @@ RAISE_ERRORS = os.getenv("RTI_RAISE_ERRORS", "FALSE").upper() == "TRUE"
 # if both of the above are false, indexing errors will be ignored
 
 class SolrQueue:
+    is_active = False
+
     def __init__(self):
         LOGGER.info("Initializing Solr queue ...")
         self._queue = Queue()
@@ -24,6 +26,12 @@ class SolrQueue:
         self._stop = threading.Event()
         self._thread = None
         self._trigger = threading.Event()
+
+    def isactive(self):
+        return (self.is_active or not self._queue.empty())
+
+    def qsize(self):
+        return self._queue.qsize()
 
     def add(self, index_cls, using, instances):
         ids = [instance.id for instance in instances]
@@ -114,6 +122,7 @@ class SolrQueue:
         last_del = 0
         last_ids = set()
         try:
+            self.is_active = True
             while True:
                 try:
                     index_cls, using, ids, delete = self._queue.get_nowait()
@@ -157,7 +166,8 @@ class SolrQueue:
                 # this will re-raise errors, which will kill the indexing thread
                 raise
             # if both of the above are false, indexing errors will be ignored
-            pass
+        finally:
+            self.is_active = False
 
     def update(self, index_cls, using, ids):
         LOGGER.debug("Updating the indexes for Solr queue items ...")
