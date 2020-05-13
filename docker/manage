@@ -185,6 +185,7 @@ build-web() {
   if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
     # No custom theme was specified
     ${S2I_EXE} build \
+      --copy \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
       -e "NPM_CONFIG_LOGLEVEL=timing" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -201,6 +202,7 @@ build-web() {
     # Use the custom theme
     customTheme=$(copyCustomTheme)
     ${S2I_EXE} build \
+      --copy \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
       -e "NPM_CONFIG_LOGLEVEL=timing" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -233,6 +235,7 @@ build-web-dev() {
   if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
     # No custom theme path was specified
     ${S2I_EXE} build \
+      --copy \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
@@ -246,6 +249,7 @@ build-web-dev() {
     # Use the custom theme
     customTheme=$(copyCustomTheme)
     ${S2I_EXE} build \
+      --copy \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
@@ -271,6 +275,7 @@ build-solr() {
 
   echo -e "\nBuilding solr image ..."
   ${S2I_EXE} build \
+    --copy \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../server/solr/cores' \
@@ -284,6 +289,7 @@ build-db() {
   #
   echo -e "\nBuilding postgresql image ..."
   ${S2I_EXE} build \
+    --copy \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../server/db/config' \
@@ -309,6 +315,7 @@ build-api() {
   
   echo -e "\nBuilding vcr-api image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
+    --copy \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     -e "PIP_NO_CACHE_DIR=" \
