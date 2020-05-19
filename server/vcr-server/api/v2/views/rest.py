@@ -1,5 +1,6 @@
 import base64
 import uuid
+import os
 from logging import getLogger
 from time import sleep
 
@@ -34,6 +35,8 @@ from api.v2.serializers.rest import (
 from api.v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
+
+TRACE_PROOF_EVENTS = os.getenv("TRACE_PROOF_EVENTS", "false").lower() == "true"
 
 
 class IssuerViewSet(ReadOnlyModelViewSet):
@@ -199,6 +202,34 @@ class TopicViewSet(ReadOnlyModelViewSet):
                         if credential.revoked_date
                         else None,
                         "credential_id": credential.credential_id,
+                        "names": [
+                            {
+                                "id": name.id,
+                                "text": name.text or None,
+                                "language": name.language or None,
+                                "credential_id": name.credential_id,
+                                "type": name.type,
+                            } if name else {}
+                            for name in credential.topic.get_active_names()
+                        ],
+                        "local_name": {
+                            "id": credential.topic.get_local_name().id,
+                            "text": credential.topic.get_local_name().text or None,
+                            "language": credential.topic.get_local_name().language
+                            or None,
+                            "credential_id": credential.topic.get_local_name().credential_id
+                            or None,
+                            "type": credential.topic.get_local_name().type or None,
+                        } if credential.topic.get_local_name() else {},
+                        "remote_name": {
+                            "id": credential.topic.get_remote_name().id,
+                            "text": credential.topic.get_remote_name().text or None,
+                            "language": credential.topic.get_remote_name().language
+                            or None,
+                            "credential_id": credential.topic.get_remote_name().credential_id
+                            or None,
+                            "type": credential.topic.get_remote_name().type or None,
+                        } if credential.topic.get_remote_name() else {},
                         # "addresses": [
                         #     {
                         #         "country": address.country or None,
@@ -241,7 +272,7 @@ class TopicViewSet(ReadOnlyModelViewSet):
                                         "language": name.language or None,
                                         "credential_id": name.credential_id,
                                         "type": name.type,
-                                    }
+                                    } if name else {}
                                     for name in related_topic.get_active_names()
                                 ],
                                 "local_name": {
@@ -252,9 +283,17 @@ class TopicViewSet(ReadOnlyModelViewSet):
                                     "credential_id": related_topic.get_local_name().credential_id
                                     or None,
                                     "type": related_topic.get_local_name().type or None,
-                                },
-                                "remote_name": related_topic.get_remote_name() or None,
-                            }
+                                } if related_topic.get_local_name() else {},
+                                "remote_name": {
+                                    "id": related_topic.get_remote_name().id,
+                                    "text": related_topic.get_remote_name().text or None,
+                                    "language": related_topic.get_remote_name().language
+                                    or None,
+                                    "credential_id": related_topic.get_remote_name().credential_id
+                                    or None,
+                                    "type": related_topic.get_remote_name().type or None,
+                                } if related_topic.get_remote_name() else {},
+                            } if related_topic else {}
                             for related_topic in credential.related_topics.all()
                         ],
                         "credential_type": {
@@ -347,6 +386,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "connection_id": self_connection["connection_id"],
             "proof_request": proof_request,
         }
+        if TRACE_PROOF_EVENTS:
+            request_body["trace"] = TRACE_PROOF_EVENTS
         restrictions = [{}]
         restrictions[0]["cred_def_id"] = credential_type.credential_def_id
 
