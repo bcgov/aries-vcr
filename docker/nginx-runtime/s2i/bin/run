@@ -30,13 +30,16 @@ EOF
 read -r -d '' _CONFIG_SECTION << EOF
         # proxy requests to the API
         location /api/indy/ {
+            ${API_RATE_LIMIT}
             proxy_pass ${apiUrl}/indy/;
         }
         location /api/static/ {
+            ${API_RATE_LIMIT}
             ${_FORWARDED_HEADERS}
             proxy_pass ${apiUrl}/static/;
         }
         location /api {
+            ${API_RATE_LIMIT}
             limit_except OPTIONS {
                 ${HTTP_BASIC}
             }
@@ -45,6 +48,7 @@ read -r -d '' _CONFIG_SECTION << EOF
             proxy_pass ${apiUrl};
         }
         location /hooks/ {
+            ${API_RATE_LIMIT}
             limit_except OPTIONS {
                 ${HTTP_BASIC}
             }
@@ -53,6 +57,7 @@ read -r -d '' _CONFIG_SECTION << EOF
             proxy_pass ${proxyUrl}/hooks/;
         }
         location = /hooks/ {
+            ${API_RATE_LIMIT}
             # allow access to swagger
             #proxy_set_header Authorization "";
             ${_FORWARDED_HEADERS}
@@ -168,6 +173,7 @@ export RealIpFrom="${RealIpFrom:-172.51.0.0/16}"
 export WEB_BASE_HREF="${WEB_BASE_HREF:-/}"
 export REMOVE_BASE_HREF=$(getRemoveBaseHref ${WEB_BASE_HREF})
 export API_URL=$(getApiUrl)
+export API_RATE_LIMIT=${API_RATE_LIMIT}
 if [ ! -z "${API_URL}" ]; then
 	# ================================================================================
 	# If an API_URL is defined, generate an /api proxy configuration section and
