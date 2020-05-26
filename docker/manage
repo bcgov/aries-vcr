@@ -674,6 +674,10 @@ case "${COMMAND}" in
   scale|upscale)
     _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
+    echo "NOTE make sure you have previously run $@ start to initialize the agent and wallet!!!"
+    echo "NOTE make sure you have removed the port mapping in docker-compose.yml for vcr-api and vcr-agent!!!"
+    echo "Press any key to continue or <CRTL-C> to abort"
+    read anykey
     docker-compose up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams} 
     docker-compose logs -f
     ;;
