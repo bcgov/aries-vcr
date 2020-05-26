@@ -160,7 +160,7 @@ build-web() {
   #
   # The nginx-runtime image is used for the final runtime image.
   # The nodejs-build image is used to build the artifacts for the angular distribution.
-  # The angular-on-nginx image is copy of the nginx-runtime image complete with a copy of the build artifacts.
+  # The vcr-web image is copy of the nginx-runtime image complete with a copy of the build artifacts.
   #
   echo -e "\nBuilding nginx-runtime image ..."
   docker build -q \
@@ -181,28 +181,28 @@ build-web() {
     NPM_COLOR="true"
   fi
   
-  echo -e "\nBuilding angular-on-nginx image ..."
-  if [ -z "$THEME_PATH" ]; then
+  echo -e "\nBuilding vcr-web image ..."
+  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
     # No custom theme was specified
     ${S2I_EXE} build \
+      --copy \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
       -e "NPM_CONFIG_LOGLEVEL=timing" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "THEME=${THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
       '../client' \
       'nodejs-build' \
-      'angular-on-nginx'
+      'vcr-web'
   else
     # Use the custom theme
     customTheme=$(copyCustomTheme)
-    THEME_PATH=${THEME_PATH:-/$(pwd)/../client/themes}
     ${S2I_EXE} build \
+      --copy \
       -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
       -e "NPM_CONFIG_LOGLEVEL=timing" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
@@ -210,15 +210,12 @@ build-web() {
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "THEME=${THEME}" \
-      -e "THEME_PATH=/tmp/vcr-theme" \
-      -v "${THEME_PATH}:/tmp/vcr-theme" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       --runtime-image nginx-runtime \
       -a /opt/app-root/src/dist:app \
       '../client' \
       'nodejs-build' \
-      'angular-on-nginx'
-
+      'vcr-web'
     cleanupCustomTheme "${customTheme}"
   fi
 }
@@ -234,38 +231,35 @@ build-web-dev() {
     -f './nodejs-build/Dockerfile' './nodejs-build/'
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
-  echo -e "\nBuilding angular-dev image ..."
-  if [ -z "$THEME_PATH" ] && [ "$THEME" == "default" ]; then
+  echo -e "\nBuilding vcr-web-dev image ..."
+  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
     # No custom theme path was specified
     ${S2I_EXE} build \
+      --copy \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "THEME=${THEME}" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
-      'angular-dev'
+      'vcr-web-dev'
   else
     # Use the custom theme
     customTheme=$(copyCustomTheme)
-    THEME_PATH=${THEME_PATH:-/$(pwd)/../client/themes}
     ${S2I_EXE} build \
+      --copy \
       -e "DEV_MODE=true" \
       -e "HTTP_PROXY=${HTTP_PROXY}" \
       -e "HTTPS_PROXY=${HTTPS_PROXY}" \
       -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
       -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
       -e "THEME=${THEME}" \
-      -e "THEME_PATH=${THEME_PATH_DEV}" \
-      -v "${THEME_PATH}:${THEME_PATH_DEV}" \
       -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
       '../client' \
       'nodejs-build' \
-      'angular-dev'
-
+      'vcr-web-dev'
     cleanupCustomTheme "${customTheme}"
   fi
 }
@@ -281,6 +275,7 @@ build-solr() {
 
   echo -e "\nBuilding solr image ..."
   ${S2I_EXE} build \
+    --copy \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../server/solr/cores' \
@@ -294,6 +289,7 @@ build-db() {
   #
   echo -e "\nBuilding postgresql image ..."
   ${S2I_EXE} build \
+    --copy \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../server/db/config' \
@@ -319,6 +315,7 @@ build-api() {
   
   echo -e "\nBuilding vcr-api image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
+    --copy \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     -e "PIP_NO_CACHE_DIR=" \
@@ -475,10 +472,14 @@ configureEnvironment() {
   export APPLICATION_URL=${APPLICATION_URL-http://localhost:8080}
   export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
 
+  export RECORD_TIMINGS=${RECORD_TIMINGS:-false}
+  export TRACE_EVENTS=${TRACE_EVENTS:-false}
+  export TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS:-false}
+  export TRACE_TARGET=${TRACE_TARGET:-log}
+
   # vcr-web
-  export THEME=${THEME:-default}
+  export THEME=${THEME:-base}
   export THEME_PATH=${THEME_PATH-}
-  export THEME_PATH_DEV="/tmp/vcr-theme"
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
@@ -498,11 +499,19 @@ configureEnvironment() {
   export WEBHOOK_URL=${WEBHOOK_URL:-http://$DOCKERHOST:$API_HTTP_PORT}
   export HTTP_INTERFACE_PORT=8021
   export WS_INTERFACE_PORT=8023
-  export AGENT_NAME="agent"
+  export AGENT_NAME="avcr.agent"
   export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://$DOCKERHOST:$HTTP_INTERFACE_PORT}
   export AGENT_ADMIN_MODE="admin-insecure-mode"
   if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
     AGENT_ADMIN_MODE="admin-api-key ${AGENT_ADMIN_API_KEY}"
+  fi
+  export AGENT_TIMING_MODE=""
+  if [ "${RECORD_TIMINGS}" = "true" ]; then
+    AGENT_TIMING_MODE="--timing"
+  fi
+  export AGENT_TRACE_MODE=""
+  if [ "${TRACE_EVENTS}" = "true" ]; then
+    AGENT_TRACE_MODE="--trace"
   fi
 }
 

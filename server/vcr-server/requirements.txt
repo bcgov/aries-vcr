@@ -1,8 +1,8 @@
 # Main
-django>=2.1.6,<3
+django>=2.2,<3
 djangorestframework>=3.9.1,<4
 djangorestframework-bulk>=0.2.1,<1
-django-cors-headers>=2.4.0,<3
+django-cors-headers>=3
 django-filter>=1.1.0
 
 # Database managment
@@ -15,7 +15,7 @@ whitenoise>=4.1.0,<4.2
 
 # Documentation
 # django_rest_swagger>=2.1.2,<3
-drf-yasg>=1.10.2,<2
+drf-yasg>=1.17.0,<2
 packaging>=19.0,<20
 flex>=6.13.2,<7
 swagger-spec-validator>=2.4.0,<3

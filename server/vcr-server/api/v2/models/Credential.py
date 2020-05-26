@@ -40,6 +40,7 @@ class Credential(Auditable):
     class Meta:
         db_table = "credential"
         ordering = ("id",)
+        index_together = ["topic", "latest", "revoked"]
 
     _cache = None
 

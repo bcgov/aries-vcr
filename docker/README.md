@@ -82,6 +82,9 @@ The Credential Registry can also be brought up in a state where local modificati
 ./manage web-dev
 ```
 
+*Please note:* when using a custom theme and running in web development mode the `THEME_PATH` environment variable must be a valid UNIX path (e.g.: ./themes) otherwise the volume mount used in docker-compose will fail.
+
+
 # Start-up Orchestration
 
 The API server manages the database schema and indexes, therefore it must wait until the database and search engine (Solr) services are up and running AND fully initialized.  Likewise, the Schema-Spy service must wait until the API service has created/migrated the database schema to the most recent version before it starts.

@@ -4,7 +4,7 @@ services:
   # vcr-web
   #
   vcr-web:
-    image: angular-on-nginx
+    image: vcr-web
     environment:
       - DEBUG=${DEBUG}
       - API_URL=${API_URL}
@@ -27,7 +27,7 @@ services:
   # Run vcr-web in development mode with auto-reload and inspector support
   #
   vcr-web-dev:
-    image: angular-dev
+    image: vcr-web-dev
     environment:
       - API_URL=${API_URL}
       - APPLICATION_URL=${APPLICATION_URL}
@@ -119,7 +119,12 @@ services:
       - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
       - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
-      #- RECORD_TIMINGS=true
+      - RECORD_TIMINGS=${RECORD_TIMINGS}
+      - TRACE_EVENTS=${TRACE_EVENTS}
+      - TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS}
+      - TRACE_TARGET=${TRACE_TARGET}
+      - RTI_ABORT_ON_ERRORS=${RTI_ABORT_ON_ERRORS}
+      - RTI_RAISE_ERRORS=${RTI_RAISE_ERRORS}
     volumes:
       - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
@@ -140,11 +145,11 @@ services:
     command: >
       /bin/bash -c "
       echo waiting for solr ...;
-      sleep 10;
+      sleep 15;
       if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
         python manage.py migrate && \
         python manage.py update_index --max-retries=5 --batch-size=500;
-        python manage.py runserver --nothreading 0.0.0.0:8080;
+        python manage.py runserver 0.0.0.0:8080;
       else
         ${STI_SCRIPTS_PATH}/run;
       fi"
@@ -167,6 +172,9 @@ services:
       - WS_INTERFACE_PORT=${WS_INTERFACE_PORT}
       - AGENT_ADMIN_PORT=${AGENT_ADMIN_PORT}
       - AGENT_NAME=${AGENT_NAME}
+      - TRACE_TARGET=${TRACE_TARGET}
+      - AGENT_TIMING_MODE=${AGENT_TIMING_MODE}
+      - AGENT_TRACE_MODE=${AGENT_TRACE_MODE}
     networks:
       - vcr
     ports:
@@ -180,7 +188,20 @@ services:
         "-c",
         "curl -d '{\"seed\":\"${INDY_WALLET_SEED}\", \"role\":\"TRUST_ANCHOR\", \"alias\":\"${AGENT_NAME}\"}' -X POST ${LEDGER_URL}/register; \
         sleep 5; \
+        aca-py provision \
+        --endpoint ${AGENT_ENDPOINT} \
+        --genesis-url '${LEDGER_URL}/genesis' \
+        --wallet-type 'indy' \
+        --wallet-name 'icat_agent_wallet' \
+        --wallet-key '${WALLET_ENCRYPTION_KEY}' \
+        --wallet-storage-type '${WALLET_TYPE}' \
+        --wallet-storage-config '{\"url\":\"${POSTGRESQL_WALLET_HOST}:${POSTGRESQL_WALLET_PORT}\",\"max_connections\":5}' \
+        --wallet-storage-creds '{\"account\":\"${POSTGRESQL_USER}\",\"password\":\"${POSTGRESQL_PASSWORD}\",\"admin_account\":\"postgres\",\"admin_password\":\"${POSTGRESQL_ADMIN_PASSWORD}\"}' \
+        --seed '${INDY_WALLET_SEED}' \
+        --log-level 'error'; \
+        sleep 5; \
         aca-py start \
+        --read-only-ledger \
         --inbound-transport http '0.0.0.0' ${HTTP_INTERFACE_PORT} \
         --inbound-transport ws '0.0.0.0' ${WS_INTERFACE_PORT} \
         --endpoint ${AGENT_ENDPOINT} \
@@ -205,11 +226,13 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
-        --log-level 'error' \
+        --log-level 'error' ${AGENT_TIMING_MODE} ${AGENT_TRACE_MODE} \
+        --trace-target '${TRACE_TARGET}' \
+        --trace-tag 'acapy.events' \
+        --trace-label ${AGENT_NAME} \
         --plugin indy_catalyst_issuer_registration",
       ]
 
-#        --timing \
 #        --log-config '/home/indy/debug-logger.cfg' \
 #        --log-level 'debug' \
 
@@ -261,7 +284,7 @@ services:
     command: >
       /bin/bash -c "
       echo waiting for solr ...;
-      sleep 10;
+      sleep 15;
       ${STI_SCRIPTS_PATH}/run;"
 
   #

@@ -1,5 +1,6 @@
 import logging
 import threading
+import os
 from queue import Empty, Full, Queue
 
 from haystack.utils import get_identifier
@@ -9,7 +10,26 @@ from api.v2.search.index import TxnAwareSearchIndex
 LOGGER = logging.getLogger(__name__)
 
 
+# this will kill the vcr-api process
+RTI_ABORT_ON_ERRORS = os.getenv("RTI_ABORT_ON_ERRORS", "TRUE").upper()
+ABORT_ON_ERRORS = RTI_ABORT_ON_ERRORS == "TRUE"
+# this will re-raise errors, which will kill the indexing thread
+RTI_RAISE_ERRORS = os.getenv("RTI_RAISE_ERRORS", "FALSE").upper()
+RAISE_ERRORS = RTI_RAISE_ERRORS == "TRUE"
+# if both of the above are false, indexing errors will be ignored
+
+# number of seconds to wait when solr queue is empty before retry
+RTI_WAIT_TIME = os.getenv("RTI_WAIT_TIME", "5")
+WAIT_TIME = int(RTI_WAIT_TIME)
+
+# max number of items to trigger an update to the solr index
+RTI_MAX_SOLR_BATCH = os.getenv("RTI_MAX_SOLR_BATCH", "25")
+MAX_SOLR_BATCH = int(RTI_MAX_SOLR_BATCH)
+
+
 class SolrQueue:
+    is_active = False
+
     def __init__(self):
         LOGGER.info("Initializing Solr queue ...")
         self._queue = Queue()
@@ -18,27 +38,35 @@ class SolrQueue:
         self._thread = None
         self._trigger = threading.Event()
 
+    def isactive(self):
+        return (self.is_active or not self._queue.empty())
+
+    def qsize(self):
+        return self._queue.qsize()
+
     def add(self, index_cls, using, instances):
         ids = [instance.id for instance in instances]
         # Log the wallet_id to make it easy to search for the credentials when troubleshooting
         # The record ids are not indexed so they are not searchable.
-        wallet_ids = [instance.credential_id for instance in instances]
-        LOGGER.debug("Adding items to Solr queue for indexing; Class: %s, Using: %s, Instances: %s", index_cls, using, wallet_ids)
+        # wallet_ids = [instance.credential_id for instance in instances]
+        LOGGER.debug("Adding items to Solr queue for indexing; Class: %s, Using: %s", index_cls, using)
         try:
             self._queue.put((index_cls, using, ids, 0))
         except Full:
-            LOGGER.warning("Can't add items to the Solr queue because it is full; %s", wallet_ids)
+            LOGGER.error("Can't add items to the Solr queue because it is full")
+            raise
 
     def delete(self, index_cls, using, instances):
         ids = [get_identifier(instance) for instance in instances]
         # Log the wallet_id to make it easy to search for the credentials when troubleshooting
         # The record ids are not indexed so they are not searchable.
-        wallet_ids = [instance.credential_id for instance in instances]
-        LOGGER.debug("Deleteing items from Solr queue/index; Class: %s, Using: %s, Instances: %s", index_cls, using, wallet_ids)
+        # wallet_ids = [instance.credential_id for instance in instances]
+        LOGGER.debug("Deleteing items from Solr queue/index; Class: %s, Using: %s", index_cls, using)
         try:
             self._queue.put((index_cls, using, ids, 1))
         except Full:
-            LOGGER.warning("Can't delete items from the Solr queue because it is full; %s", wallet_ids)
+            LOGGER.error("Can't delete items from the Solr queue because it is full")
+            raise
 
     def setup(self, app=None):
         LOGGER.info("Setting up Solr queue ...")
@@ -77,7 +105,7 @@ class SolrQueue:
     def stop(self, join=True):
         LOGGER.info("Stoping Solr queue ...")
         if not self._queue.empty():
-            LOGGER.warning("The Solr queue is not empty, there are about %s items that will not be indexed", self._queue.qsize())
+            LOGGER.error("The Solr queue is not empty, there are about %s items that will not be indexed", self._queue.qsize())
         self._stop.set()
         self._trigger.set()
         if join:
@@ -90,51 +118,82 @@ class SolrQueue:
     def _run(self):
         LOGGER.info("Running Solr queue ...")
         while True:
-            self._trigger.wait(5)
+            LOGGER.debug("Waiting [%d] ...", WAIT_TIME)
+            self._trigger.wait(WAIT_TIME)
             self._drain()
             if self._stop.is_set():
                 LOGGER.info("Finished running Solr queue ...")
                 return
 
+
+    def index_type(self, index_cls, delete, using):
+        """String representing the index class type."""
+        if not index_cls:
+            return None
+        return ("delete" if delete == 1 else "update") + "::" + str(index_cls) + "::" + str(using)
+
+
     def _drain(self):
-        # LOGGER.debug("Indexing Solr queue items ...")
-        last_index = None
-        last_using = None
-        last_del = 0
-        last_ids = set()
-        while True:
-            try:
-                index_cls, using, ids, delete = self._queue.get_nowait()
-                LOGGER.debug("Pop items off the Solr queue for indexing; Class: %s, Using: %s, Delete: %s, Instances: %s", index_cls, using, delete, ids)
-            except Empty:
-                # LOGGER.debug("Solr queue is empty ...")
-                index_cls = None
-            if last_index and last_index == index_cls and last_using == using and last_del == delete:
-                LOGGER.debug("Updating list of ids ...")
-                last_ids.update(ids)
-            else:
-                if last_index:
-                    try:
-                        if last_del:
-                            self.remove(last_index, last_using, last_ids)
-                        else:
-                            self.update(last_index, last_using, last_ids)
-                    except:
-                        LOGGER.exception("An unexpected exception was encountered while processing items from the Solr queue.", exc_info=True)
-                        LOGGER.info("Requeueing items for later processing ...")
+        LOGGER.debug("Indexing Solr queue items ...")
+        global RAISE_ERRORS
+        global ABORT_ON_ERRORS
+        last_ids = {}
+        try:
+            self.is_active = True
+            while True:
+                try:
+                    index_cls, using, ids, delete = self._queue.get_nowait()
+                    LOGGER.debug("Pop items off the Solr queue for indexing; Class: %s, Using: %s, Delete: %s, Instances: %s", index_cls, using, delete, ids)
+                except Empty:
+                    LOGGER.debug("Solr queue is empty ...")
+                    index_cls = None
+                    delete = 0
+                    using = None
+                index_cls_type = self.index_type(index_cls, delete, using)
+                if index_cls:
+                    LOGGER.debug("Updating list of ids for [%s]..." % index_cls_type)
+                    if not index_cls_type in last_ids:
+                        last_ids[index_cls_type] = {
+                            "index_cls": index_cls,
+                            "delete": delete,
+                            "using": using,
+                            "ids": set(),
+                        }
+                    last_ids[index_cls_type]["ids"].update(ids)
+                for attr, val in last_ids.items():
+                    if (not index_cls) or MAX_SOLR_BATCH <= len(val["ids"]):
+                        LOGGER.debug("Processing %s items for [%s]", len(val["ids"]), attr)
                         try:
-                            self._queue.put( (last_index, last_using, last_ids, last_del) )
-                        except Full:
-                            LOGGER.warning("Can't requeue items to the Solr queue because it is full; %s", last_ids)
+                            if val["delete"] == 1:
+                                self.remove(val["index_cls"], val["using"], val["ids"])
+                            else:
+                                self.update(val["index_cls"], val["using"], val["ids"])
+                            last_ids[attr]["ids"] = set()
+                        except:
+                            LOGGER.exception("An unexpected exception was encountered while processing items from the Solr queue.", exc_info=True)
+                            LOGGER.info("Requeueing items for later processing ...")
+                            try:
+                                self._queue.put( (val["index_cls"], val["using"], val["ids"], val["delete"]) )
+                            except Full:
+                                LOGGER.error("Can't requeue items to the Solr queue because it is full; %s", val["ids"])
+                                raise
+                            raise
 
                 if not index_cls:
-                    # LOGGER.debug("Done indexing items from Solr queue ...")
+                    LOGGER.debug("Done indexing items from Solr queue ...")
                     break
 
-                last_index = index_cls
-                last_using = using
-                last_del = delete
-                last_ids = set(ids)
+        except Exception as e:
+            LOGGER.error("Error processing real-time index queue: %s", str(e))
+            if ABORT_ON_ERRORS:
+                # this will kill the vcr-api process
+                os.abort()
+            elif RAISE_ERRORS:
+                # this will re-raise errors, which will kill the indexing thread
+                raise
+            # if both of the above are false, indexing errors will be ignored
+        finally:
+            self.is_active = False
 
     def update(self, index_cls, using, ids):
         LOGGER.debug("Updating the indexes for Solr queue items ...")
@@ -149,6 +208,7 @@ class SolrQueue:
             # LOGGER.debug("Index update complete.")
         else:
             LOGGER.error("Failed to get backend.  Unable to update the index for %d row(s) from the Solr queue: %s", len(ids), ids)
+            raise Exception("Failed to get backend.  Unable to update the index for Solr queue")
 
     def remove(self, index_cls, using, ids):
         LOGGER.debug("Removing the indexes for Solr queue items ...")
@@ -162,3 +222,4 @@ class SolrQueue:
             backend.conn.delete(id=ids)
         else:
             LOGGER.error("Failed to get backend.  Unable to remove the indexes for %d row(s) from the solr queue: %s", len(ids), ids)
+            raise Exception("Failed to get backend.  Unable to remove the index for Solr queue")

@@ -6,6 +6,9 @@ import logging
 import os
 import threading
 from datetime import datetime, timedelta
+import requests
+import time
+import json
 
 from subscriptions.models import CredentialHookStats
 
@@ -24,9 +27,15 @@ from rest_framework.decorators import (
 )
 
 LOGGER = logging.getLogger(__name__)
+DT_FMT = '%Y-%m-%d %H:%M:%S.%f%z'
 
 # need to specify an env variable RECORD_TIMINGS=True to get method timings
 RECORD_TIMINGS = os.getenv("RECORD_TIMINGS", "True").lower() == "true"
+TRACE_EVENTS = os.getenv("TRACE_EVENTS", "True").lower() == "true"
+TRACE_LABEL = os.getenv("TRACE_LABEL", "avcr.controller")
+TRACE_TAG = os.getenv("TRACE_TAG", "acapy.events")
+TRACE_LOG_TARGET = "log"
+TRACE_TARGET = os.getenv("TRACE_TARGET", TRACE_LOG_TARGET)
 
 timing_lock = threading.Lock()
 timings = {}
@@ -101,7 +110,7 @@ def solr_counts():
     last_month_q = total_q.filter(create_timestamp__gte=last_month)
     try:
         return {
-            "total": total_q.count(),
+            "total_indexed_items": total_q.count(),
             "active": latest_q.count(),
             "registrations": registrations_q.count(),
             "last_month": last_month_q.count(),
@@ -193,3 +202,53 @@ def log_timing_method(method, start_time, end_time, success, data=None):
             timings[method]["data"][str(timings[method]["total_count"])] = data
     finally:
         timing_lock.release()
+
+def log_timing_event(method, message, start_time, end_time, success):
+    """Record a timing event in the system log or http endpoint."""
+
+    if (not TRACE_EVENTS) and (not message.get("trace")):
+        return
+    if not TRACE_TARGET:
+        return
+
+    msg_id = "N/A"
+    thread_id = message["thread_id"] if message.get("thread_id") else "N/A"
+    handler = TRACE_LABEL
+    ep_time = time.time()
+    str_time = datetime.utcfromtimestamp(ep_time).strftime(DT_FMT)
+    if end_time:
+        outcome = method + ".SUCCESS" if success else ".FAIL"
+    else:
+        outcome = method + ".START"
+    event = {
+        "msg_id": msg_id,
+        "thread_id": thread_id if thread_id else msg_id,
+        "traced_type": method,
+        "timestamp": ep_time,
+        "str_time": str_time,
+        "handler": str(handler),
+        "ellapsed_milli": int(1000 * (end_time - start_time)) if end_time else 0,
+        "outcome": outcome,
+    }
+    event_str = json.dumps(event)
+
+    try:
+        if TRACE_TARGET == TRACE_LOG_TARGET:
+            # write to standard log file
+            LOGGER.setLevel(logging.INFO)
+            LOGGER.info(" %s %s", TRACE_TAG, event_str)
+        else:
+            # should be an http endpoint
+            _ = requests.post(
+                TRACE_TARGET + TRACE_TAG,
+                data=event_str,
+                headers={"Content-Type": "application/json"}
+            )
+    except Exception as e:
+        LOGGER.error(
+            "Error logging trace target: %s tag: %s event: %s",
+            TRACE_TARGET,
+            TRACE_TAG,
+            event_str
+        )
+        LOGGER.exception(e)
