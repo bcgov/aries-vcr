@@ -68,6 +68,14 @@ usage() {
 
       start - Same as up 
     
+      scale/upscale - Same as start/up however starts multiple instances of the aca-py and api containers.
+
+            Note that to run "scale" you need to update the docker-compose.yml file to REMOVE exposed ports
+            from the vcr-api and vcr-agent containers.
+
+            You also need to FIRST run `./manage start` to initialize the agent and wallet, then run
+            `./manage stop` and then `./manage scale`.
+
       restart - Re-starts the application containers, 
                 useful when updating one of the container images during development.
 
@@ -449,7 +457,8 @@ configureEnvironment() {
   export APP_FILE=app-vonx.py
   export APP_CONFIG=${APP_CONFIG:-}
   # export APP_MODULE=api_indy.vcr_anchor.boot:init_app
-  export API_HTTP_PORT=${API_HTTP_PORT:-8081}
+  export API_HTTP_PORT=${API_HTTP_PORT:-8080}
+  export EXPOSED_API_HTTP_PORT=${EXPOSED_API_HTTP_PORT:-8081}
   export DATABASE_SERVICE_NAME="vcr-db"
   export DATABASE_ENGINE=${DATABASE_ENGINE-postgresql}
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
@@ -496,11 +505,11 @@ configureEnvironment() {
   # agent
   export AGENT_ADMIN_PORT=8024
   export AGENT_WEBHOOK_PORT=8020
-  export WEBHOOK_URL=${WEBHOOK_URL:-http://$DOCKERHOST:$API_HTTP_PORT}
+  export WEBHOOK_URL=${WEBHOOK_URL:-http://vcr-api:$API_HTTP_PORT}
   export HTTP_INTERFACE_PORT=8021
   export WS_INTERFACE_PORT=8023
   export AGENT_NAME="avcr.agent"
-  export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://$DOCKERHOST:$HTTP_INTERFACE_PORT}
+  export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://vcr-agent:$HTTP_INTERFACE_PORT}
   export AGENT_ADMIN_MODE="admin-insecure-mode"
   if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
     AGENT_ADMIN_MODE="admin-api-key ${AGENT_ADMIN_API_KEY}"
@@ -660,6 +669,12 @@ case "${COMMAND}" in
     _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
     docker-compose up --scale vcr-worker=2 -d ${_startupParams} 
+    docker-compose logs -f
+    ;;
+  scale|upscale)
+    _startupParams=$(getStartupParams --force-recreate $@)
+    configureEnvironment "$@"
+    docker-compose up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams} 
     docker-compose logs -f
     ;;
   restart)

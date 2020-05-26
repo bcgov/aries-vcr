@@ -133,8 +133,9 @@ services:
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
+    # when running "./manage scale" comment out or remove these port mappings:
     ports:
-      - "${API_HTTP_PORT}:8080"
+      - "${EXPOSED_API_HTTP_PORT}:8080"
       - 3000:3000
       - "${AGENT_WEBHOOK_PORT}:${AGENT_WEBHOOK_PORT}"
     depends_on:
@@ -177,6 +178,7 @@ services:
       - AGENT_TRACE_MODE=${AGENT_TRACE_MODE}
     networks:
       - vcr
+    # when running "./manage scale" comment out or remove these port mappings:
     ports:
       - ${HTTP_INTERFACE_PORT}:${HTTP_INTERFACE_PORT}
       - ${WS_INTERFACE_PORT}:${WS_INTERFACE_PORT}
@@ -315,7 +317,7 @@ services:
     command: >
       /bin/sh -c "
         echo sleeping ...;
-        sleep 20;
+        sleep 45;
         ./start.sh;"
 
   #
