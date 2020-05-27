@@ -65,19 +65,20 @@ class Misc_Quickload_TestCase(TestCase):
     @patch("api.v2.views.misc.solr_counts", autospec=True)
     def test_quickload(self, mock_solr_counts, mock_record_counts, mock_model_counts):
         mock_solr_counts.return_value = {
-            "total": 5,
+            "total_indexed_items": 18,
             "active": 3,
             "registrations": 4,
             "last_month": 1,
             "last_week": 1,
             "last_24h": 1,
         }
-        mock_record_counts.return_value = 5
+        mock_record_counts.return_value = 6
         mock_model_counts.return_value = 6
         result = misc.quickload(self.request)
+        json_result = result.content
 
         self.assertEqual(
-            result.content,
+            json_result,
             JsonResponse(
                 {
                     "counts": {
@@ -86,10 +87,14 @@ class Misc_Quickload_TestCase(TestCase):
                         "credentialtype": 6,
                         "issuer": 6,
                         "topic": 6,
-                        "actual_credential_count": 5,
+                        "name": 6,
+                        "actual_credential_count": 6,
+                        "actual_name_count": 6,
+                        "actual_topic_count": 6,
+                        "actual_item_count": 18,
                     },
                     "credential_counts": {
-                        "total": 5,
+                        "total_indexed_items": 18,
                         "active": 3,
                         "registrations": 4,
                         "last_month": 1,
