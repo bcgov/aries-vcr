@@ -117,7 +117,6 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
-      - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       - RECORD_TIMINGS=${RECORD_TIMINGS}
       - TRACE_EVENTS=${TRACE_EVENTS}
@@ -137,7 +136,6 @@ services:
     ports:
       - "${EXPOSED_API_HTTP_PORT}:8080"
       - 3000:3000
-      - "${AGENT_WEBHOOK_PORT}:${AGENT_WEBHOOK_PORT}"
     depends_on:
       - vcr-db
       - wallet-db
