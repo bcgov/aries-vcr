@@ -504,7 +504,6 @@ configureEnvironment() {
 
   # agent
   export AGENT_ADMIN_PORT=8024
-  export AGENT_WEBHOOK_PORT=8020
   export WEBHOOK_URL=${WEBHOOK_URL:-http://vcr-api:$API_HTTP_PORT}
   export HTTP_INTERFACE_PORT=8021
   export WS_INTERFACE_PORT=8023
