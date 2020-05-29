@@ -4,6 +4,9 @@ from django.conf import settings
 from django.http import Http404
 from drf_haystack.filters import HaystackOrderingFilter
 from drf_haystack.mixins import FacetMixin
+from rest_framework.mixins import ListModelMixin
+from rest_framework.viewsets import ViewSetMixin
+from drf_haystack.generics import HaystackGenericAPIView
 from drf_haystack.viewsets import HaystackViewSet
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -27,18 +30,18 @@ from api.v2.serializers.search import (
     CredentialSearchSerializer,
     CredentialTopicSearchSerializer,
 )
-from vcr_server.pagination import ResultLimitPagination
+from vcr_server.pagination import EnhancedPageNumberPagination
 
 LOGGER = logging.getLogger(__name__)
 
 
-class NameAutocompleteView(HaystackViewSet):
+class NameAutocompleteView(ListModelMixin, ViewSetMixin, HaystackGenericAPIView):
     """
     Return autocomplete results for a query string
     """
 
     permission_classes = (permissions.AllowAny,)
-    pagination_class = ResultLimitPagination
+    pagination_class = EnhancedPageNumberPagination
 
     _swagger_params = [
         openapi.Parameter(
