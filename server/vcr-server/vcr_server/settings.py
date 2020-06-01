@@ -221,22 +221,26 @@ LOGGING = {
         }
     },
     "loggers": {
-        "api": {"handlers": ["console_handler"], "level": "DEBUG", "propagate": False},
+        "api": {
+            "handlers": ["console_handler"],
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
+            "propagate": False
+        },
         "django": {
             "handlers": ["console_handler"],
-            "level": "INFO",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "propagate": False,
         },
         "django.request": {
             "handlers": ["console_handler"],
-            "level": "INFO",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "propagate": False,
         },
         # "django.db.backends": {"level": "DEBUG", "handlers": ["console_handler"]},
     },
     "root": {
         "handlers": ["console_handler"],
-        "level": str(os.getenv("DJANGO_LOG_LEVEL", "INFO")).upper(),
+        "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
         "propagate": False,
     }
 }
