@@ -325,6 +325,7 @@ services:
     image: solr
     environment:
       - CORE_NAME=${CORE_NAME}
+      - SOLR_LOG_LEVEL=WARN
     networks:
       - vcr
     ports:
