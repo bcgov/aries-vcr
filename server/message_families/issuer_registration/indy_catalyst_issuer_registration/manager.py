@@ -1,6 +1,7 @@
 """Classes to manage issuer registrations."""
 
 import logging
+import json
 
 from aries_cloudagent.config.injection_context import InjectionContext
 from aries_cloudagent.core.error import BaseError
@@ -53,6 +54,8 @@ class IssuerRegistrationManager:
 
         """
 
+        print("prepare_send():", json.dumps(issuer_registration))
+
         issuer_registration_message = IssuerRegistration(
             issuer_registration=issuer_registration
         )
@@ -64,6 +67,8 @@ class IssuerRegistrationManager:
             issuer_registration=issuer_registration,
         )
         await issuer_registration_state.save(self.context)
+
+        print("prepare_send() returns:", issuer_registration_state, issuer_registration_message)
 
         return issuer_registration_state, issuer_registration_message
 
@@ -83,6 +88,8 @@ class IssuerRegistrationManager:
 
         """
 
+        print("receive_registration():", json.dumps(issuer_registration_message))
+
         issuer_registration_state = IssuerRegistrationState(
             connection_id=connection_id,
             thread_id=issuer_registration_message._thread_id,
@@ -91,5 +98,7 @@ class IssuerRegistrationManager:
             issuer_registration=issuer_registration_message.issuer_registration,
         )
         await issuer_registration_state.save(self.context)
+
+        print("receive_registration() returns:", issuer_registration_state)
 
         return issuer_registration_state

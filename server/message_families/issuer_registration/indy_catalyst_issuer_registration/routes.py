@@ -38,6 +38,10 @@ class IssuerRegistrationRequestSchema(Schema):
             logo_path = fields.Str(required=False, allow_none=True)
             logo_b64 = fields.Str(required=False, allow_none=True)
 
+            labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+            abbreviations = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+            urls = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+
         class CredentialType(Schema):
             """Isuer credential type schema."""
 
@@ -125,6 +129,9 @@ class IssuerRegistrationRequestSchema(Schema):
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
             visible_fields = fields.List(fields.Str(), required=False)
+
+            labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+            endpoints = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
 
         issuer = fields.Nested(IssuerSchema(), required=True)
         credential_types = fields.List(fields.Nested(CredentialType()), required=False)
