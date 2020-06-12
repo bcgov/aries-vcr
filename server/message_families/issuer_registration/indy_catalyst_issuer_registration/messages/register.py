@@ -153,6 +153,8 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             class Topic(Schema):
                 """Nested topic schema."""
 
+                labels = fields.Dict(required=False)
+
                 source_id = fields.Nested(CredentialMapping(), required=False)
                 _type = fields.Nested(
                     CredentialMapping(),
