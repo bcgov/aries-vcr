@@ -389,7 +389,6 @@ def handle_register_issuer(message):
         }
     """
     issuer_manager = IssuerManager()
-    print("Received issuer registration:", json.dumps(message))
     updated = issuer_manager.register_issuer(message)
 
     # update tagging policy
