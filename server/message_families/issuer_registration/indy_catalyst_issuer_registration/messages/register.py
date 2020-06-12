@@ -66,9 +66,9 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             logo_path = fields.Str(required=False, allow_none=True)
             logo_b64 = fields.Str(required=False, allow_none=True)
 
-            labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
-            abbreviations = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
-            urls = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+            labels = fields.Dict(keys=fields.Str(), values=fields.Str(), required=False)
+            abbreviations = fields.Dict(keys=fields.Str(), values=fields.Str(), required=False)
+            urls = fields.Dict(keys=fields.Str(), values=fields.Str(), required=False)
 
         class CredentialType(Schema):
             """Issuer credential type schema."""
@@ -185,8 +185,8 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             endpoint = fields.Str(required=False)
             visible_fields = fields.List(fields.Str(), required=False)
 
-            labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
-            endpoints = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
+            labels = fields.Dict(keys=fields.Str(), values=fields.Str(), required=False)
+            endpoints = fields.Dict(keys=fields.Str(), values=fields.Str(), required=False)
 
         issuer = fields.Nested(IssuerSchema(), required=True)
         credential_types = fields.List(fields.Nested(CredentialType()), required=False)
