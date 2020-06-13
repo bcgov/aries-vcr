@@ -216,7 +216,7 @@ LOGGING = {
     "handlers": {
         "console_handler": {
             "class": "logging.StreamHandler",
-            "level": "DEBUG",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "formatter": "verbose",
         }
     },
