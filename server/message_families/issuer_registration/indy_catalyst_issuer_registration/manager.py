@@ -1,7 +1,6 @@
 """Classes to manage issuer registrations."""
 
 import logging
-import json
 
 from aries_cloudagent.config.injection_context import InjectionContext
 from aries_cloudagent.core.error import BaseError
