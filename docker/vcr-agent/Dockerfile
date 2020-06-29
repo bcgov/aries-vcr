@@ -1,4 +1,4 @@
-FROM bcgovimages/aries-cloudagent:py36-1.14-1_0.5.1
+FROM bcgovimages/aries-cloudagent:py36-1.15-0_0.5.2
 
 # RUN pip3 install aries-cloudagent
 
