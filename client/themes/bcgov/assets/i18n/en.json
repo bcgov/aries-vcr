@@ -73,6 +73,7 @@
       "C": "Continuation In",
       "CEM": "Cemetary",
       "CP": "Cooperative",
+      "BEN": "Benefit Company",
       "EPR": "Extraprovincial Registration",
       "FOR": "Foreign Registration",
       "LIC": "Licensed (Extra-Pro)",
@@ -602,7 +603,9 @@
       "Filing:OTSPE": "Notice of Special Resolution",
       "Filing:OTVDS": "Application for Dissolution (Voluntary Dissolution of a Cobrs Entity)",
       "Filing:OTVLQ": "Application for Dissolution (Voluntary Liquidation of a Cobrs Entity)",
-      "Filing:OTXCH": "Extraprovincial Non-Share Corporation - Notice of Change of Jurisdiction and Head Office Address"
+      "Filing:OTXCH": "Extraprovincial Non-Share Corporation - Notice of Change of Jurisdiction and Head Office Address",
+      "Filing:BEINC": "Incorporate a BC Benefit Company",
+      "Filing:BEREG": "Register an XPRO Benefit Company"
     },
     "relationship": {
       "Owns": "Owns",
