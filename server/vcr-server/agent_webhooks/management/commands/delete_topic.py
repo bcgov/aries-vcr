@@ -4,7 +4,7 @@ import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from api_v2.models.Topic import Topic
+from api.v2.models.Topic import Topic
 
 from asgiref.sync import async_to_sync
 
@@ -31,17 +31,16 @@ class Command(BaseCommand):
                 if 0 < len(topic.credentials.all()):
                     self.stdout.write("Deleting wallet credentials ...")
                     for credential in topic.credentials.all():
-                        self.stdout.write(" ... " + credential.wallet_id + " ...")
-                        self.stdout.write(" ... TODO in aries-vcr ...")
-                        # try:
-                        #     response = requests.get(
-                        #         f"{settings.AGENT_ADMIN_URL}/credential/{credential.wallet_id}",
-                        #         headers=settings.ADMIN_REQUEST_HEADERS,
-                        #     )
-                        #     response.raise_for_status()
-                        #     credential = response.json()
-                        # except Exception as e:
-                        #     pass
+                        self.stdout.write(" ... " + credential.credential_id + " ...")
+                        try:
+                            response = requests.post(
+                                f"{settings.AGENT_ADMIN_URL}/credential/{credential.credential_id}/remove",
+                                headers=settings.ADMIN_REQUEST_HEADERS,
+                            )
+                            response.raise_for_status()
+                        except Exception as e:
+                            self.stdout.write("Error removing wallet credential " + credential.credential_id)
+                            pass
 
         # delete Topic from OrgBook database (also clears out Solr indexes)
         self.stdout.write("Deleting topic from OrgBook search database ...")
