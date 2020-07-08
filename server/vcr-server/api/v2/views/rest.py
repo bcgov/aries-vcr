@@ -401,6 +401,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         }
         proof_request["requested_attributes"]["self-verify-proof"] = requested_attribute
 
+        print("Proof headers:", settings.ADMIN_REQUEST_HEADERS)
+        print("Proof request:", request_body)
         proof_request_response = requests.post(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
             json=request_body,

@@ -376,9 +376,9 @@ AGENT_SELF_CONNECTION_ALIAS = "credential-registry-self"
 AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
 AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
 
-ADMIN_REQUEST_HEADERS = {}
-if AGENT_ADMIN_API_KEY is not None:
-    ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
+ADMIN_REQUEST_HEADERS = {"Content-Type": "application/json"}
+if AGENT_ADMIN_API_KEY is not None and 0 < len(AGENT_ADMIN_API_KEY):
+    ADMIN_REQUEST_HEADERS["x-api-key"] = AGENT_ADMIN_API_KEY
 
 
 # API routing middleware settings
