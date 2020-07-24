@@ -83,9 +83,15 @@ class NameAutocompleteView(HaystackViewSet):
         responses={200: AggregateAutocompleteSerializer(many=True)},
     )
     def list(self, *args, **kwargs):
-        print(" >>> calling autocomplete")
+        print(" >>> calling autocomplete list")
         ret = super(NameAutocompleteView, self).list(*args, **kwargs)
-        print(" >>> autocomplete returns", ret)
+        print(" >>> autocomplete list returns", ret)
+        return ret
+
+    def retrieve(self, *args, **kwargs):
+        print(" >>> calling autocomplete retrieve", *args, **kwargs)
+        ret = super(NameAutocompleteView, self).retrieve(*args, **kwargs)
+        print(" >>> autocomplete retrieve returns", ret)
         return ret
 
     retrieve = None

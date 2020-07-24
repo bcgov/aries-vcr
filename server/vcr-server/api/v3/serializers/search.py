@@ -25,9 +25,11 @@ class NameAutocompleteSerializer(HaystackSerializer):
     type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
+    id = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
+        print("name", str(obj))
         return "name"
 
     @staticmethod
@@ -38,9 +40,13 @@ class NameAutocompleteSerializer(HaystackSerializer):
     def get_score(obj):
         return obj.score
 
+    @staticmethod
+    def get_id(obj):
+        return obj.id
+
     class Meta(NameSerializer.Meta):
         index_classes = [NameIndex]
-        fields = ("type", "value", "score")
+        fields = ("type", "value", "score", "id")
 
 
 class AddressAutocompleteSerializer(HaystackSerializer):
@@ -48,9 +54,11 @@ class AddressAutocompleteSerializer(HaystackSerializer):
     type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
+    id = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
+        print("address", str(obj))
         return "address"
 
     @staticmethod
@@ -61,9 +69,13 @@ class AddressAutocompleteSerializer(HaystackSerializer):
     def get_score(obj):
         return obj.score
 
+    @staticmethod
+    def get_id(obj):
+        return obj.id
+
     class Meta(AddressSerializer.Meta):
         index_classes = [AddressIndex]
-        fields = ("type", "value", "score")
+        fields = ("type", "value", "score", "id")
 
 
 class TopicAutocompleteSerializer(HaystackSerializer):
@@ -71,9 +83,11 @@ class TopicAutocompleteSerializer(HaystackSerializer):
     type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
+    id = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
+        print("topic", str(obj))
         return "topic"
 
     @staticmethod
@@ -84,9 +98,13 @@ class TopicAutocompleteSerializer(HaystackSerializer):
     def get_score(obj):
         return obj.score
 
+    @staticmethod
+    def get_id(obj):
+        return obj.id
+
     class Meta(AddressSerializer.Meta):
         index_classes = [TopicIndex]
-        fields = ("type", "value", "score")
+        fields = ("type", "value", "score", "id")
 
 
 class AggregateAutocompleteSerializer(HaystackSerializer):
