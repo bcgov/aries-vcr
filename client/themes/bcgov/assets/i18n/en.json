@@ -20,7 +20,8 @@
     "demo.verified-person.registries.ca": "Verified Person",
     "demo.person_relationship.registries.ca": "Relationship",
     "demo.org_relationship.registries.ca": "Relationship",
-    "Cannabis Retail Store Licence": "Cannabis Retail Store Licence"
+    "Cannabis Retail Store Licence": "Cannabis Retail Store Licence",
+    "Cannabis Marketing Licence": "Cannabis Marketing Licence"
   },
   "attribute": {
     "effective_dates": "Effective Dates",
