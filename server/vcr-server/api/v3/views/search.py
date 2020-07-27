@@ -69,7 +69,7 @@ class NameAutocompleteView(AriesHaystackViewSet):
 
     permission_classes = (permissions.AllowAny,)
     pagination_class = ResultLimitPagination
-    serializer_class = NameAutocompleteSerializer
+
     _swagger_params = [
         openapi.Parameter(
             "q", openapi.IN_QUERY, description="Query string", type=openapi.TYPE_STRING
@@ -101,6 +101,13 @@ class NameAutocompleteView(AriesHaystackViewSet):
         ret = super(NameAutocompleteView, self).list(*args, **kwargs)
         print(" >>> autocomplete list returns", ret)
         return ret
+
+    retrieve = None
+    index_models = [Address, Name, Topic]
+    load_all = True
+    serializer_class = AggregateAutocompleteSerializer
+    filter_backends = (AutocompleteFilter, AutocompleteStatusFilter)
+    ordering = "-score"
 
 
 class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
