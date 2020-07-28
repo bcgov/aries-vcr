@@ -6,7 +6,7 @@ from drf_haystack.filters import HaystackOrderingFilter
 from drf_haystack.mixins import FacetMixin
 #from drf_haystack.viewsets import HaystackViewSet
 
-from rest_framework.mixins import ListModelMixin # , RetrieveModelMixin
+from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import ViewSetMixin
 from drf_haystack.generics import HaystackGenericAPIView
 
@@ -102,7 +102,6 @@ class NameAutocompleteView(AriesHaystackViewSet):
         print(" >>> autocomplete list returns", ret)
         return ret
 
-    retrieve = None
     index_models = [Address, Name, Topic]
     load_all = True
     serializer_class = AggregateAutocompleteSerializer
