@@ -4,7 +4,12 @@ from django.conf import settings
 from django.http import Http404
 from drf_haystack.filters import HaystackOrderingFilter
 from drf_haystack.mixins import FacetMixin
-from drf_haystack.viewsets import HaystackViewSet
+#from drf_haystack.viewsets import HaystackViewSet
+
+from rest_framework.mixins import ListModelMixin
+from rest_framework.viewsets import ViewSetMixin
+from drf_haystack.generics import HaystackGenericAPIView
+
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from haystack.query import RelatedSearchQuerySet
@@ -48,7 +53,16 @@ from vcr_server.pagination import ResultLimitPagination
 LOGGER = logging.getLogger(__name__)
 
 
-class NameAutocompleteView(HaystackViewSet):
+class AriesHaystackViewSet(ListModelMixin, ViewSetMixin, HaystackGenericAPIView):
+    """
+    AriesHaystackViewSet overrides HaystackViewSet to remove the "RetrieveModeMixin".
+    The HaystackViewSet class provides the default ``list()`` and
+    ``retrieve()`` actions with a haystack index as it's data source.
+    """
+    pass
+
+
+class NameAutocompleteView(AriesHaystackViewSet):
     """
     Return autocomplete results for a query string
     """
@@ -83,12 +97,11 @@ class NameAutocompleteView(HaystackViewSet):
         responses={200: AggregateAutocompleteSerializer(many=True)},
     )
     def list(self, *args, **kwargs):
-        print(" >>> calling autocomplete")
+        print(" >>> calling autocomplete list")
         ret = super(NameAutocompleteView, self).list(*args, **kwargs)
-        print(" >>> autocomplete returns", ret)
+        print(" >>> autocomplete list returns", ret)
         return ret
 
-    retrieve = None
     index_models = [Address, Name, Topic]
     load_all = True
     serializer_class = AggregateAutocompleteSerializer
@@ -96,7 +109,7 @@ class NameAutocompleteView(HaystackViewSet):
     ordering = "-score"
 
 
-class CredentialSearchView(HaystackViewSet, FacetMixin):
+class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
     """
     Provide credential search via Solr with both faceted (/facets) and unfaceted results
     """
@@ -176,13 +189,6 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
                 raise Http404()
         ret = super(CredentialSearchView, self).list(*args, **kwargs)
         print(" >>> credentialsearch returns", ret)
-        return ret
-
-    @swagger_auto_schema(manual_parameters=_swagger_params)
-    def retrieve(self, *args, **kwargs):
-        print(" >>> calling credentialsearch retrieve")
-        ret = super(CredentialSearchView, self).retrieve(*args, **kwargs)
-        print(" >>> credentialsearch retrieve returns", ret)
         return ret
 
     def valid_search_query(self, query, topic_id):
