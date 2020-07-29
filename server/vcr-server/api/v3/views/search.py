@@ -4,7 +4,6 @@ from django.conf import settings
 from django.http import Http404
 from drf_haystack.filters import HaystackOrderingFilter
 from drf_haystack.mixins import FacetMixin
-#from drf_haystack.viewsets import HaystackViewSet
 
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import ViewSetMixin
