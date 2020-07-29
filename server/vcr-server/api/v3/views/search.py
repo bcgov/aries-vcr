@@ -15,6 +15,7 @@ from haystack.query import RelatedSearchQuerySet
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import APIException
 
 from api.v2.models.Credential import Credential
 from api.v2.models.Name import Name
@@ -96,9 +97,7 @@ class NameAutocompleteView(AriesHaystackViewSet):
         responses={200: AggregateAutocompleteSerializer(many=True)},
     )
     def list(self, *args, **kwargs):
-        print(" >>> calling autocomplete list")
         ret = super(NameAutocompleteView, self).list(*args, **kwargs)
-        print(" >>> autocomplete list returns", ret)
         return ret
 
     index_models = [Address, Name, Topic]
@@ -106,6 +105,12 @@ class NameAutocompleteView(AriesHaystackViewSet):
     serializer_class = AggregateAutocompleteSerializer
     filter_backends = (AutocompleteFilter, AutocompleteStatusFilter)
     ordering = "-score"
+
+
+class MissingTopicParametersException(APIException):
+    status_code = 400
+    default_detail = "Please provide at least a 'name' (2 characters or more) or 'topic_id'."
+    default_code = "bad_request"
 
 
 class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
@@ -180,14 +185,16 @@ class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
 
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
-        print(" >>> calling credentialsearch")
+        """
+        Topic search.
+        Requires at minumum 'name' (2 characters or more) or 'topic_id' parameters to be supplied.
+        """
         if self.object_class is TopicSearchQuerySet:
             query = self.request.GET.get("name")
             topic_id = self.request.GET.get("topic_id")
             if not self.valid_search_query(query, topic_id):
-                raise Http404()
+                raise MissingTopicParametersException()
         ret = super(CredentialSearchView, self).list(*args, **kwargs)
-        print(" >>> credentialsearch returns", ret)
         return ret
 
     def valid_search_query(self, query, topic_id):
@@ -269,7 +276,6 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
     def __len__(self):
         ret = super(TopicSearchQuerySet, self).__len__()
         if ret > LIMIT:
-            print(" >>> Limiting the query LEN", ret, LIMIT)
             ret = LIMIT
         return ret
 
@@ -282,7 +288,6 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
         ).all()
 
     def _fill_cache(self, start, end, **kwargs):
-        print(" >>> Limiting the cache results", start, end, LIMIT)
         if start is not None:
             if start > LIMIT:
                 start = LIMIT
@@ -294,7 +299,6 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
     def count(self):
         ret = super(TopicSearchQuerySet, self).count()
         if ret > LIMIT:
-            print(" >>> Limiting the query count", ret, LIMIT)
             ret = LIMIT
         return ret
 
@@ -304,3 +308,4 @@ class CredentialTopicSearchView(CredentialSearchView):
     object_class = TopicSearchQuerySet
     serializer_class = CredentialTopicSearchSerializer
     facet_objects_serializer_class = CredentialTopicSearchSerializer
+
