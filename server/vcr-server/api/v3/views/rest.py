@@ -139,7 +139,7 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
 
         proof_request = {
             "version": "1.0",
-            "name": "self-verify",
+            "name": "cred_id::" + item.credential_id,
             "requested_predicates": {},
             "requested_attributes": {},
         }
@@ -148,6 +148,7 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
             "proof_request": proof_request,
         }
         restrictions = [{}]
+        restrictions[0]["cred_def_id"] = credential_type.credential_def_id
 
         for attr in credential_type.get_tagged_attributes():
             claim_val = credential["attrs"][attr]
