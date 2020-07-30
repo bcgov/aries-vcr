@@ -441,6 +441,10 @@ def handle_register_issuer(message):
     issuer_manager = IssuerManager()
     updated = issuer_manager.register_issuer(message)
 
+    # reset the global CredentialManager instance (to clear the CredentialType cache)
+    global credential_manager
+    credential_manager = CredentialManager()
+
     # update tagging policy
     tag_policy_updates = {}
     cred_types = updated.credential_types
