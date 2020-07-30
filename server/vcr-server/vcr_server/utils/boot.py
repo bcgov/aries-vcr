@@ -24,8 +24,11 @@ to be properly initialized before the webserver process has forked.
 import asyncio
 import logging
 import os
+import requests
+import threading
 
 import django.db
+from django.conf import settings
 
 from wsgi import application
 
@@ -67,9 +70,38 @@ async def add_server_headers(request, response):
 app_solrqueue = None
 
 
+async def connect_agent():
+    # placeholder
+    LOGGER.info(">>>>> connect_agent() <<<<<")
+
+    # do the self-connection here
+    # Make agent connection to self to send self presentation requests later
+    response = requests.get(
+        f"{settings.AGENT_ADMIN_URL}/connections"
+        + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+        headers=settings.ADMIN_REQUEST_HEADERS,
+    )
+    connections = response.json()
+
+    # We only need to form a self connection once
+    if not connections["results"]:
+        response = requests.post(
+            f"{settings.AGENT_ADMIN_URL}/connections/create-invitation"
+            + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        response_body = response.json()
+        requests.post(
+            f"{settings.AGENT_ADMIN_URL}/connections/receive-invitation",
+            json=response_body["invitation"],
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+
+
 async def on_app_startup(app):
     # placeholder
     LOGGER.info(">>>>> on_startup() <<<<<")
+    asyncio.ensure_future(connect_agent())
 
 
 async def on_app_cleanup(app):
