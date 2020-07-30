@@ -49,11 +49,11 @@ def agent_callback(request, topic):
     if "state" not in message:
         LOGGER.warn(f"Received aca-py webhook without state. message={message}")
 
-    state = message["state"]
+    state = message["state"] if "state" in message else None
     LOGGER.debug(f"Received aca-py webhook. state={state} message={message}")
 
     start_time = time.perf_counter()
-    method = "agent_callback." + topic + "." + state
+    method = "agent_callback." + topic + ("." + state if state else "")
     log_timing_event(method, message, start_time, None, False)
 
     # dispatch based on the topic type
