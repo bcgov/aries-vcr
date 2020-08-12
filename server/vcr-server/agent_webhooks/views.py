@@ -5,6 +5,8 @@ import os
 import random
 
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -93,6 +95,40 @@ def agent_callback(request, topic):
 
 # create one global manager instance
 credential_manager = CredentialManager()
+
+def call_agent_with_retry(agent_url, post_method=True, payload=None, headers=None, retry_count=5, retry_wait=1):
+    """
+    Post with retry - if returned status is 503 unavailable retry a few times.
+    """
+    try:
+        session = requests.Session()
+        retry = Retry(
+            total=retry_count,
+            connect=retry_count,
+            status=retry_count,
+            status_forcelist=[502,503,504],
+            read=0,
+            redirect=0,
+            backoff_factor=retry_wait
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        if post_method:
+            resp = session.post(
+                agent_url,
+                json=payload,
+                headers=headers,
+            )
+        else:
+            resp = session.get(
+                agent_url,
+                headers=headers,
+            )
+        return resp
+    except Exception as e:
+        LOGGER.error("Agent connection raised exception, raise: " + str(e))
+        raise
 
 def handle_credentials(state, message):
     """
@@ -202,9 +238,10 @@ def handle_credentials(state, message):
 
             # check if the credential is in the wallet already
             if existing:
-                resp = requests.get(
+                resp = call_agent_with_retry(
                     f"{settings.AGENT_ADMIN_URL}/credential"
                     + f"/{ret_credential_id}",
+                    post_method=False,
                     headers=settings.ADMIN_REQUEST_HEADERS,
                 )
                 if resp.status_code == 404:
@@ -212,17 +249,20 @@ def handle_credentials(state, message):
 
             # Instruct the agent to store the credential in wallet
             if not existing:
-                resp = requests.post(
+                # post with retry - if returned status is 503 unavailable retry a few times
+                resp = call_agent_with_retry(
                     f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
                     + f"/{credential_exchange_id}/store",
-                    json={"credential_id": ret_credential_id},
+                    post_method=True,
+                    payload={"credential_id": ret_credential_id},
                     headers=settings.ADMIN_REQUEST_HEADERS,
                 )
                 if resp.status_code == 404:
                     # TODO assume the credential exchange has completed?
-                    resp = requests.get(
+                    resp = call_agent_with_retry(
                         f"{settings.AGENT_ADMIN_URL}/credential"
                         + f"/{ret_credential_id}",
+                        post_method=False,
                         headers=settings.ADMIN_REQUEST_HEADERS,
                     )
                     if resp.status_code == 404:
@@ -252,9 +292,10 @@ def handle_credentials(state, message):
         LOGGER.error(e)
         LOGGER.error(f"Send problem report for {credential_exchange_id}")
         # Send a problem report for the error
-        resp = requests.post(
+        resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem-report",
-            json={"explain_ltxt": str(e)},
+            post_method=True,
+            payload={"explain_ltxt": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
@@ -286,11 +327,13 @@ def handle_presentations(state, message):
 
         if presentation_request["name"].startswith("cred_id::"):
             cred_id = presentation_request["name"][9:]
-            resp = requests.get(
+            resp = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/credential/"
                 + f"{cred_id}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
+            resp.raise_for_status()
             wallet_credential = resp.json()
             wallet_credentials = {
                 "cred_info": wallet_credential,
@@ -301,12 +344,14 @@ def handle_presentations(state, message):
             credential_query = presentation_request["name"]
 
         if 0 == len(credentials):
-            resp = requests.get(
+            resp = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
                 + f"{message['presentation_exchange_id']}/credentials/"
                 + f"{referents}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
+            resp.raise_for_status()
             # All credentials from wallet that satisfy presentation request
             credentials = resp.json()
             credential_query = f"/present-proof/records/{message['presentation_exchange_id']}/credentials/{referents}"
@@ -382,13 +427,13 @@ def handle_presentations(state, message):
         # Finally, we should be able to send this payload to the agent for it
         # to finish the process and send the presentation back to the verifier
         # (to be verified)
-        resp = requests.post(
+        resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
             + f"{presentation_exchange_id}/send-presentation",
-            json=credentials_for_presentation,
+            post_method=True,
+            payload=credentials_for_presentation,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
-
         resp.raise_for_status()
 
     return Response()
