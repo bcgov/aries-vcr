@@ -107,6 +107,7 @@ def call_agent_with_retry(agent_url, post_method=True, payload=None, headers=Non
             connect=retry_count,
             status=retry_count,
             status_forcelist=[502,503,504],
+            method_whitelist=['HEAD', 'TRACE', 'GET', 'POST', 'PUT', 'OPTIONS', 'DELETE'],
             read=0,
             redirect=0,
             backoff_factor=retry_wait

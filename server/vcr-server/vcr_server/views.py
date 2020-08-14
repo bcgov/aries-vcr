@@ -1,10 +1,10 @@
 from django.http import HttpResponse
 
-from api.v2.models.Credential import Credential
+from api.v2.models.Issuer import Issuer
 
 
 def health(request):
     """
     Health check for OpenShift
     """
-    return HttpResponse(Credential.objects.count())
+    return HttpResponse(Issuer.objects.count())
