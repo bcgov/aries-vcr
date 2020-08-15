@@ -11,6 +11,9 @@
 """
 import os
 
+
+SOLR_TIMEOUT_SECONDS = os.getenv("SOLR_TIMEOUT_SECONDS", "30")
+
 engines = {
     "direct": "haystack.backends.simple_backend.SimpleEngine",
     "solr": "haystack.backends.solr_backend.SolrEngine",
@@ -39,7 +42,11 @@ def getConfig():
     solrUrl = getSolrUrl()
     if solrUrl:
         engine = engines.get(os.getenv("SOLR_ENGINE"), engines["solr"])
-        config = {"ENGINE": engine, "URL": solrUrl}
+        config = {
+            "ENGINE": engine,
+            "URL": solrUrl,
+            "TIMEOUT": int(SOLR_TIMEOUT_SECONDS),
+        }
 
     return config
 
