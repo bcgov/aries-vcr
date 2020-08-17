@@ -13,6 +13,7 @@ import os
 
 
 SOLR_TIMEOUT_SECONDS = os.getenv("SOLR_TIMEOUT_SECONDS", "30")
+SOLR_BATCH_SIZE = os.getenv("SOLR_BATCH_SIZE", "100")
 
 engines = {
     "direct": "haystack.backends.simple_backend.SimpleEngine",
@@ -46,6 +47,7 @@ def getConfig():
             "ENGINE": engine,
             "URL": solrUrl,
             "TIMEOUT": int(SOLR_TIMEOUT_SECONDS),
+            "BATCH_SIZE": int(SOLR_BATCH_SIZE),
         }
 
     return config
