@@ -239,13 +239,11 @@ export class GeneralDataService {
 
   public loadFacetOptions(data) {
     let fields = (data.info && data.info.facets && data.info.facets.fields) || {};
-    //console.log(fields);
     let options = {
       credential_type_id: [],
       issuer_id: [],
       'category:entity_type': [],
     };
-    //console.log(options);
     if (fields) {
       for (let optname in fields) {
         for (let optitem of fields[optname]) {
@@ -396,8 +394,9 @@ export class GeneralDataService {
         return ret;
       }),
       mergeMap(val => {
-        if (val === undefined)
-          return this._translate.stream(lbl).pipe(map(lbl => (!lbl || lbl.substring(0, 2) == '??' ? catValue : lbl)));
+        if (val === undefined) {
+          return this._translate.stream(lbl).pipe(map(lbl => (!lbl || lbl.substring(0, 2) == '??' || lbl.startsWith('category.') ? catValue : lbl)));
+        }
         return of(val);
       }),
     );
