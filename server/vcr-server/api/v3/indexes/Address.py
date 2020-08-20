@@ -30,3 +30,6 @@ class AddressIndex(TxnAwareSearchIndex, indexes.Indexable):
     @staticmethod
     def prepare_address_credential_revoked(obj):
         return obj.credential.revoked
+
+    def get_updated_field(self):
+        return "update_timestamp"
