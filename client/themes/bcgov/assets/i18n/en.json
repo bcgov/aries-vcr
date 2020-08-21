@@ -15,7 +15,7 @@
     "registration.registries.ca": "Registration",
     "relationship.registries.ca": "Relationship",
     "address.registries.ca": "Address",
-    "demo.business_number.registries.ca": "Business Number",
+    "business_number.registries.ca": "Business Number",
     "demo.verified_person.registries.ca": "Verified Person",
     "demo.verified-person.registries.ca": "Verified Person",
     "demo.person_relationship.registries.ca": "Relationship",
