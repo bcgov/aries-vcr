@@ -7,8 +7,11 @@ import os
 import threading
 from datetime import datetime, timedelta
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import time
 import json
+
 
 from subscriptions.models import CredentialHookStats
 
@@ -252,3 +255,44 @@ def log_timing_event(method, message, start_time, end_time, success):
             event_str
         )
         LOGGER.exception(e)
+
+def call_agent_with_retry(agent_url, post_method=True, payload=None, headers=None, retry_count=5, retry_wait=1):
+    """
+    Post with retry - if returned status is 503 (or other select errors) unavailable retry a few times.
+    """
+    try:
+        session = requests.Session()
+        retry = Retry(
+            total=retry_count,
+            connect=retry_count,
+            status=retry_count,
+            status_forcelist=[
+                429,  # too many requests
+                500,  # Internal server error
+                502,  # Bad gateway
+                503,  # Service unavailable
+                504   # Gateway timeout
+            ],
+            method_whitelist=['HEAD', 'TRACE', 'GET', 'POST', 'PUT', 'OPTIONS', 'DELETE'],
+            read=0,
+            redirect=0,
+            backoff_factor=retry_wait
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        if post_method:
+            resp = session.post(
+                agent_url,
+                json=payload,
+                headers=headers,
+            )
+        else:
+            resp = session.get(
+                agent_url,
+                headers=headers,
+            )
+        return resp
+    except Exception as e:
+        LOGGER.error("Agent connection raised exception, raise: " + str(e))
+        raise
