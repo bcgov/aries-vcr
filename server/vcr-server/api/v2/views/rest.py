@@ -4,7 +4,6 @@ import os
 from logging import getLogger
 from time import sleep
 
-import requests
 from django.conf import settings
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -15,7 +14,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from api.v2 import utils
+from api.v2.utils import apply_custom_methods, call_agent_with_retry
 from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
@@ -358,8 +357,9 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         item: Credential = self.get_object()
         credential_type: CredentialType = item.credential_type
 
-        connection_response = requests.get(
+        connection_response = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/connections?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+            post_method=False,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         connection_response_dict = connection_response.json()
@@ -367,8 +367,9 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
         self_connection = connection_response_dict["results"][0]
 
-        response = requests.get(
+        response = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/credential/{item.credential_id}",
+            post_method=False,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         response.raise_for_status()
@@ -401,11 +402,10 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         }
         proof_request["requested_attributes"]["self-verify-proof"] = requested_attribute
 
-        print("Proof headers:", settings.ADMIN_REQUEST_HEADERS)
-        print("Proof request:", request_body)
-        proof_request_response = requests.post(
+        proof_request_response = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
-            json=request_body,
+            post_method=True,
+            payload=request_body,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         proof_request_response.raise_for_status()
@@ -413,15 +413,16 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         presentation_exchange_id = proof_request_response["presentation_exchange_id"]
 
         # TODO: if the agent was not started with the --auto-verify-presentation flag, verification will need to be initiated
-        retries = 7
+        retries = 5
         result = None
         delay = 0.5
         while retries > 0:
             sleep(delay)
             retries -= 1
             delay = delay * 2
-            presentation_state_response = requests.get(
+            presentation_state_response = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/present-proof/records/{presentation_exchange_id}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             presentation_state = presentation_state_response.json()
@@ -474,8 +475,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
 # Add environment specific endpoints
 try:
-    # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
-    utils.apply_custom_methods(
+    apply_custom_methods(
         TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
     )
 except:
