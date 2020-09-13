@@ -173,6 +173,10 @@ SWAGGER_SETTINGS = {
     ],
 }
 
+CRED_TYPE_SYNONYMS = {
+    "registration": "registration.registries.ca"
+}
+
 LOGIN_URL = "rest_framework:login"
 LOGOUT_URL = "rest_framework:logout"
 

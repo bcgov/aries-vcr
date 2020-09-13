@@ -317,6 +317,10 @@ class TopicViewSet(ReadOnlyModelViewSet):
         if not type or not source_id:
             raise Http404()
 
+        # map type to a schema name, if an "old style" type is used
+        if settings.CRED_TYPE_SYNONYMS and type.lower() in settings.CRED_TYPE_SYNONYMS:
+            type = settings.CRED_TYPE_SYNONYMS[type.lower()]
+
         queryset = self.filter_queryset(self.get_queryset())
         obj = get_object_or_404(queryset, type=type, source_id=source_id)
 
