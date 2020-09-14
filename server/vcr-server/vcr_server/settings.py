@@ -174,7 +174,9 @@ SWAGGER_SETTINGS = {
 }
 
 CRED_TYPE_SYNONYMS = {
-    "registration": "registration.registries.ca"
+    "registration": "registration.registries.ca",
+    "relationship": "relationship.registries.ca",
+    "business_number": "relationship.registries.ca",
 }
 
 LOGIN_URL = "rest_framework:login"
