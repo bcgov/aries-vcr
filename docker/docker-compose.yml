@@ -125,6 +125,7 @@ services:
       - RTI_ABORT_ON_ERRORS=${RTI_ABORT_ON_ERRORS}
       - RTI_RAISE_ERRORS=${RTI_RAISE_ERRORS}
       - RANDOM_ERRORS=${RANDOM_ERRORS}
+      - STARTUP_DELAY=${STARTUP_DELAY}
     volumes:
       - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
