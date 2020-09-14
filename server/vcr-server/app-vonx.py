@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser(description="aiohttp server example")
 parser.add_argument("--host", default=os.getenv("HTTP_HOST"))
 parser.add_argument("-p", "--port", default=os.getenv("HTTP_PORT"))
 parser.add_argument("-s", "--socket", default=os.getenv("SOCKET_PATH"))
-parser.add_argument("-d", "--delay", default=15)
+parser.add_argument("-d", "--delay", default=os.getenv("STARTUP_DELAY"))
 
 
 if __name__ == "__main__":
@@ -29,6 +29,8 @@ if __name__ == "__main__":
     if args.delay:
         print(">>> Short pause", args.delay)
         time.sleep(int(args.delay))
+    else:
+        print(">>> Start-up delay disabled ...")
 
     django.setup()
 

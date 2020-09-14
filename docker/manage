@@ -454,6 +454,7 @@ configureEnvironment() {
   export CORE_NAME="credential_registry"
 
   # vcr-api
+  export STARTUP_DELAY=${STARTUP_DELAY:-15}
   export APP_FILE=app-vonx.py
   export APP_CONFIG=${APP_CONFIG:-}
   # export APP_MODULE=api_indy.vcr_anchor.boot:init_app
