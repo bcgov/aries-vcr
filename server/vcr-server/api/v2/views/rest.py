@@ -37,6 +37,13 @@ logger = getLogger(__name__)
 
 TRACE_PROOF_EVENTS = os.getenv("TRACE_PROOF_EVENTS", "false").lower() == "true"
 
+# max attempts to wait for a proof response
+PROOF_RETRY_MAX_ATTEMPTS  = int(os.getenv("PROOF_RETRY_MAX_ATTEMPTS", "7"))
+# initial delay in msec between checks for a proof response
+PROOF_RETRY_INITIAL_DELAY = float(os.getenv("PROOF_RETRY_INITIAL_DELAY", "500"))
+# backoff factor (2 = double the delay with each proof response check)
+PROOF_RETRY_DELAY_BACKOFF = float(os.getenv("PROOF_RETRY_DELAY_BACKOFF", "2"))
+
 
 class IssuerViewSet(ReadOnlyModelViewSet):
     serializer_class = IssuerSerializer
@@ -417,13 +424,13 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         presentation_exchange_id = proof_request_response["presentation_exchange_id"]
 
         # TODO: if the agent was not started with the --auto-verify-presentation flag, verification will need to be initiated
-        retries = 5
+        retries = PROOF_RETRY_MAX_ATTEMPTS
         result = None
-        delay = 0.5
+        delay = float(PROOF_RETRY_INITIAL_DELAY/1000)
         while retries > 0:
             sleep(delay)
             retries -= 1
-            delay = delay * 2
+            delay = delay * PROOF_RETRY_DELAY_BACKOFF
             presentation_state_response = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/present-proof/records/{presentation_exchange_id}",
                 post_method=False,
