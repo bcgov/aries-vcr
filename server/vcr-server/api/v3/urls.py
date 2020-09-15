@@ -34,7 +34,10 @@ router.register(r"credentialtype", rest.CredentialTypeViewSet)
 router.register(r"credential", rest.CredentialViewSet)
 # router.register(r"topic", rest.TopicViewSet)
 
-api_views = [path("topic/<type>/<source_id>", rest.TopicView.as_view())]
+api_views = [
+    path("search/topic/attribute/<attribute_query>", rest.TopicAttributeView.as_view()),
+    path("topic/<type>/<source_id>", rest.TopicView.as_view()),
+]
 
 # router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
 

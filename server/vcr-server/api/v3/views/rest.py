@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.views import APIView
@@ -109,6 +110,28 @@ class TopicView(APIView):
     def get(self, request, type, source_id):
         topic = get_object_or_404(self.queryset, type=type, source_id=source_id)
         serializer = TopicSerializer(topic, many=False)
+        return Response(serializer.data)
+
+
+class InvalidTopicAttributeQuery(APIException):
+    status_code = 400
+    default_detail = 'Attribute query must be in the format "attribute_name::value".'
+    default_code = 'topic_attribute_query_error'
+
+
+class TopicAttributeView(APIView):
+    queryset = Topic.objects.all()
+
+    def get(self, request, attribute_query):
+        attributes_query = attribute_query.split('::')
+        if len(attributes_query) != 2:
+            raise InvalidTopicAttributeQuery()
+
+        topics = self.queryset.filter(
+            credentials__attributes__type=attributes_query[0],
+            credentials__attributes__value=attributes_query[1],
+        )[:200]
+        serializer = TopicSerializer(topics, many=True)
         return Response(serializer.data)
 
 
