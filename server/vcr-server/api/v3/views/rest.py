@@ -265,7 +265,14 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
         credential_id = self.kwargs.get("credential_id")
         if not credential_id:
             raise Http404()
+
         filter = {"credential_id": credential_id}
+        # if the input parameter is a pure int, treat as an internal database pk
+        # (for reverse compatibility with the old "v2" api)
+        try:
+            filter = {"pk": int(credential_id)}
+        except (ValueError, TypeError):
+            pass
 
         queryset = self.filter_queryset(self.get_queryset())
         obj = get_object_or_404(queryset, **filter)

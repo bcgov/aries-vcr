@@ -80,10 +80,13 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   verifyCred(evt?) {
-    if(this.result.data.revoked)
+    if(this.result.data.revoked) {
       this._verify.reset();
-    else
+    } else {
+      // TODO this is now 2 steps (in v3 api) - first to initiate the proof request
       this._dataService.loadRecord(this._verify, this.id);
+      // ... and then in a loop, check for proof request result
+    }
   }
 
   updateRows() {
