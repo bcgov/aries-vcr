@@ -22,6 +22,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   mode: string = 'view';
   _timelineRange: any;
   _timelineRows: any;
+  _verifyLoading = true;
 
   private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
   private _verify = new Fetch.ModelLoader(Model.CredentialVerifyResult);
@@ -69,6 +70,10 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get verify$() {
     return this._verify.stream;
+  }
+
+  get verifyLoading() {
+    return this._verifyLoading;
   }
 
   toggleShowClaims(evt?) {
@@ -125,6 +130,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // finally call our data load service on the verification result
       this._dataService.loadRecord(this._verify, this.id, {"extPath": "verify/" + proof_exch_id});
+      this._verifyLoading = false;
     }
   }
 

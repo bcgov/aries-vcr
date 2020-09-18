@@ -164,7 +164,7 @@
       <div class="row form-group" *ngIf="mode == 'verify' || verify.error">
         <div class="col-sm-12">
           <label class="control-label" translate>cred.proof-of-claims</label>
-          <loading-indicator [inline]="true" [loading]="verify.loading"></loading-indicator>
+          <loading-indicator [inline]="true" [loading]="verifyLoading || verify.loading"></loading-indicator>
           <error-message [error]="verify.error"></error-message>
           <div class="form-field" *ngIf="verify.data as verifyResult">
             <span [class]="'proof-icon fa ' + (verifyResult.success ? 'fa-check-circle text-success' : 'fa-times-circle text-danger')"></span>
