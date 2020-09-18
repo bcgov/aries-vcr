@@ -203,8 +203,8 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
 
         result = {
             "success": True,
-            "presentation_exhcange_id": presentation_exchange_id,
-            "presentation_exhcange": proof_request_response,
+            "presentation_exchange_id": presentation_exchange_id,
+            "presentation_exchange": proof_request_response,
         }
 
         # TODO: if the agent was not started with the --auto-verify-presentation flag, verification will need to be initiated

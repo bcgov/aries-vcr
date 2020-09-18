@@ -229,35 +229,6 @@ export namespace Model {
     static resourceName = "search/credential/topic/facets";
   }
 
-  export class CredentialVerifyInitiate extends BaseModel {
-    success: boolean;
-    result: any;
-
-    static resourceName = "v3/credential";
-    static extPath = "verify";
-
-    get claims() {
-      let ret = [];
-      if (typeof this.result === "object" && this.result.presentation) {
-        let attrs_group = this.result.presentation.requested_proof.revealed_attr_groups['self-verify-proof'];
-        for (let k in attrs_group.values) {
-          ret.push({ name: k, value: attrs_group.values[k].raw });
-        }
-      }
-      ret.sort((a, b) => a.name.localeCompare(b.name));
-      return ret;
-    }
-
-    get status(): string {
-      return this.success ? "cred.verified" : "cred.not-verified";
-    }
-
-    get text(): string {
-      if (typeof this.result === "string") return this.result;
-      return JSON.stringify(this.result, null, 2);
-    }
-  }
-
   export class CredentialVerifyResult extends BaseModel {
     success: boolean;
     result: any;
