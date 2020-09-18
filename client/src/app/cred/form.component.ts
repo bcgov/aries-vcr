@@ -23,6 +23,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   _timelineRows: any;
 
   private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
+  private _verify_initiate = new Fetch.ModelLoader(Model.CredentialVerifyInitiate);
   private _verify = new Fetch.ModelLoader(Model.CredentialVerifyResult);
   private _idSub: Subscription;
 
@@ -84,8 +85,14 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this._verify.reset();
     } else {
       // TODO this is now 2 steps (in v3 api) - first to initiate the proof request
-      this._dataService.loadRecord(this._verify, this.id);
+      let proof_exch_result = this._dataService.loadRecord(this._verify_initiate, this.id);
+      console.log("proof_exch_result:", proof_exch_result);
       // ... and then in a loop, check for proof request result
+      sleep(2);
+      console.log("extPath:", "verify/" + proof_exch_result.presentation_exchange_id);
+      let proof_result = this._dataService.loadRecord(this._verify, this.id, {"extPath": "verify/" + proof_exch_result.presentation_exchange_id});
+      console.log("proof_exch_result:", proof_result);
+      return proof_result;
     }
   }
 
