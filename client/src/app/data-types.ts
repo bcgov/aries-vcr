@@ -233,8 +233,8 @@ export namespace Model {
     success: boolean;
     result: any;
 
-    static resourceName = "credential";
-    static extPath = "verify";
+    static resourceName = "v3/credential";
+    static extPath = "verify/";
 
     get claims() {
       let ret = [];

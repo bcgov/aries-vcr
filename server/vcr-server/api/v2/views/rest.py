@@ -21,6 +21,7 @@ from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
 from api.v2.models.Topic import Topic
 from api.v2.models.TopicRelationship import TopicRelationship
+
 from api.v2.serializers.rest import (
     CredentialSerializer,
     CredentialTypeSerializer,
