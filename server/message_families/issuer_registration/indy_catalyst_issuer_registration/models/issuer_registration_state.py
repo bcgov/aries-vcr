@@ -15,7 +15,7 @@ class IssuerRegistrationState(BaseRecord):
         schema_class = "IssuerRegistrationStateSchema"
 
     RECORD_TYPE = "issuer_registration"
-    TAG_NAMES = {"connection_id", "thread_id", "initiator", "state"}
+    TAG_NAMES = {"connection_id", "~thread_id", "initiator", "state"}
     WEBHOOK_TOPIC = "issuer_registration"
 
     INITIATOR_SELF = "self"

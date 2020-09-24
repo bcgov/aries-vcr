@@ -1,6 +1,7 @@
 """Message type identifiers for Issuer Registrations."""
 
-MESSAGE_FAMILY = "did:sov:NewAUq29E4jLJ5jMSxns3s;spec/issuer-registration/1.0"
+DID_PREFIX = "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec";
+MESSAGE_FAMILY = f"{DID_PREFIX}/issuer-registration/1.0"
 
 REGISTER = f"{MESSAGE_FAMILY}/register"
 
