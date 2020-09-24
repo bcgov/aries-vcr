@@ -5,7 +5,7 @@ MESSAGE_FAMILY = "issuer-registration/1.0"
 
 MESSAGE_TYPE = f"{MESSAGE_FAMILY}/register"
 
-REGISTER = f"{DID_PREFIX}/{MESSAGE_FAMILY}{MESSAGE_TYPE}"
+REGISTER = f"{DID_PREFIX}/{MESSAGE_TYPE}"
 
 MESSAGE_TYPES = {
     REGISTER: "indy_catalyst_issuer_registration."
