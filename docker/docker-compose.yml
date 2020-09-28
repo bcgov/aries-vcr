@@ -218,6 +218,7 @@ services:
         --auto-respond-credential-offer \
         --auto-respond-credential-request \
         --auto-verify-presentation \
+        --exch-use-unencrypted-tags \
         --wallet-type 'indy' \
         --wallet-name 'icat_agent_wallet' \
         --wallet-key '${WALLET_ENCRYPTION_KEY}' \
