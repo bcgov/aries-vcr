@@ -30,6 +30,10 @@ export class GeneralDataService {
     return this._showDebugMsg;
   }
 
+  get defaultTopicType(): string {
+    return this._defaultTopicType;
+  }
+
   getRequestUrl(path: string): string {
     if (typeof path === 'string' && path.match(/^(\/\/|\w+:\/\/)\w/)) {
       // absolute URL
@@ -41,10 +45,6 @@ export class GeneralDataService {
       if (!root.endsWith('/')) root += '/';
       return root + path;
     }
-  }
-
-  get defaultTopicType(): string {
-    return this._defaultTopicType;
   }
 
   loadJson(url, params?: HttpParams): Observable<Object> {
@@ -83,6 +83,9 @@ export class GeneralDataService {
     }
   }
 
+  /**
+   * DEPRECATED in v3
+   */
   quickLoad(force?) {
     return new Promise((resolve, reject) => {
       if (this._quickLoaded && !force) {
@@ -142,7 +145,6 @@ export class GeneralDataService {
     }
     let params = new HttpParams().set('q', term).append('inactive', inactive.toString());
 
-    console.log(params);
     return this.loadFromApi('search/autocomplete', params).pipe(
       map(response => {
         let ret = [];
@@ -226,7 +228,6 @@ export class GeneralDataService {
     else {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
-      //console.log("loadData(url)", url);
       if (params.primary) {
         if (this._loaderSub) this._loaderSub.unsubscribe();
         this._loaderSub = fetch.stream.subscribe(result => {
@@ -286,6 +287,9 @@ export class GeneralDataService {
     this._currentResultSubj.next(result);
   }
 
+  /**
+   * DEPRECATED in v3
+   */
   deleteRecord(mod: string, id: string) {
     return new Promise(resolve => {
       let baseurl = this.getRequestUrl(`${mod}/${id}/delete`);

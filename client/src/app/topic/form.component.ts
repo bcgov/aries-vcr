@@ -23,7 +23,7 @@ export class TopicFormComponent implements OnInit, OnDestroy {
 
   private _loader = new Fetch.ModelLoader(Model.TopicFormatted);
 
-  private _creds = new Fetch.ModelListLoader(Model.CredentialSearchResult);
+  private _creds = new Fetch.ModelListLoader(Model.TopicCredentialSearchResult);
 
   private _idSub: Subscription;
 

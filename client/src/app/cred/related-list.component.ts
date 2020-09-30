@@ -25,7 +25,7 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   _optionsLoaded: boolean = false;
   _showFilters: boolean = false;
 
-  private _loader: Fetch.ModelListLoader<Model.CredentialFacetSearchResult>;
+  private _loader: Fetch.ModelListLoader<Model.TopicCredentialFacetSearchResult>;
 
   constructor(
     private _dataService: GeneralDataService,
@@ -34,7 +34,7 @@ export class RelatedCredsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this._loader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult);
+    this._loader = new Fetch.ModelListLoader(Model.TopicCredentialFacetSearchResult);
     this._loader.ready.subscribe(this.loadOptions.bind(this));
     this.load();
   }

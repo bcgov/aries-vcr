@@ -6,14 +6,10 @@
     <span class="col-md-4 d-none d-md-block"></span>
     <h4 class="col-md-5 d-none d-md-block">What this search type does</h4>
   </div>
-  <form [formGroup]="fg" *ngIf="$credentialTypeOptions | async as options">
+
+  <form [formGroup]="fg" *ngIf="credentialTypeOptions$ | async as options">
     <app-advanced-search-row [label]="searchOptions[0].label" [helper]="searchOptions[0].helper">
-      <input
-        class="form-control"
-        formControlName="text"
-        [ngbTypeahead]="typeaheadSearch"
-        (selectItem)="typeaheadSelected($event)"
-      />
+      <input class="form-control" formControlName="text">
     </app-advanced-search-row>
     <app-advanced-search-row [label]="searchOptions[1].label" [helper]="searchOptions[1].helper">
       <app-select formControlName="type" [options]="options" [selected]="credTypeSelected"></app-select>
@@ -25,4 +21,8 @@
       Advanced Search
     </button>
   </form>
+</section>
+
+<section>
+  <p>TODO: Search results here</p>
 </section>

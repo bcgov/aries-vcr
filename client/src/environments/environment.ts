@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  API_URL: "http://localhost:8081/api/v2"
+  // API_URL: "http://localhost:8081/api"
+  API_URL: 'http://orgbook.gov.bc.ca/api'
 };
 
 /*
