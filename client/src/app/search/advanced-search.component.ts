@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
-import { HttpService } from 'app/core/services/http.service';
-import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
 import { Fetch, Model } from 'app/data-types';
 import { ISelectOption } from 'app/shared/components/select/select.component';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { ICredential } from 'app/core/interfaces/i-credential.interface';
 
 export interface IAdvancedSearchOption {
   label: string;
@@ -20,12 +19,13 @@ export interface IAdvancedSearchOption {
   styleUrls: ['../../themes/_active/search/advanced-search.component.scss'],
 })
 export class AdvancedSearchComponent implements OnInit, OnDestroy {
-  private _loader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, {persist: true});
+  private _cLoader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, { persist: true });
+  private _ctLoader = new Fetch.ModelListLoader(Model.CredentialType, { persist: true });
 
   title: string = 'Advanced Search';
+  credentials$: Observable<ICredential>
   credentialTypeOptions$: Observable<ISelectOption[]>;
-  credentials$ = this._loader.stream;
-  credTypeSelected: ISelectOption;
+  credentialTypeSelected: ISelectOption;
   searchOptions: IAdvancedSearchOption[];
   yesNoSelected: ISelectOption;
   yesNoOptions: ISelectOption[];
@@ -33,12 +33,9 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
 
   constructor(
     private dataSvc: GeneralDataService,
-    private httpSvc: HttpService,
-    private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder
   ) {
-
     this.yesNoOptions = [
       { value: 'true', description: 'Yes' }
     ];
@@ -51,14 +48,24 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     ];
 
     this.yesNoSelected = { value: 'false', description: 'No' }
-    this.credTypeSelected = { value: null, description: 'Any credential type' };
+    this.credentialTypeSelected = { value: null, description: 'Any credential type' };
+
+    this.credentialTypeOptions$ = this._ctLoader.ready
+      .pipe(
+        map(res => res.data.map(credType => ({ value: credType.id, description: credType.description }))),
+      );
+
+    this.credentials$ = this._cLoader.ready
+      .pipe(
+        tap(console.log)
+      );
 
     // TODO: Add a validator for at least one required
     this.fg = this.fb.group({
       type: null,
       text: null,
       archived: 'false'
-    });
+    }, []);
   }
 
   ngOnInit() {
@@ -68,32 +75,17 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
       text: query
     });
 
-    this.credentialTypeOptions$ = this.httpSvc
-      .httpGetRequest<ICredentialTypeResult>('credentialtype')
-      .pipe(
-        map(res => res.results.map(credType => ({ value: credType.id, description: credType.description }))),
-      );
-
-    this.performSearch();
+    this.dataSvc.loadList(this._ctLoader);
   }
 
   ngOnDestroy() {
-    this._loader.complete();
+    this._cLoader.complete();
+    this._ctLoader.complete();
   }
 
-  // TODO: This should populate the list of results
   submit(value: { text: string; type: string; archived: string }) {
     const { text: query, archived: inactive, type: topic_credential_type_id } = value;
 
-    // TODO: This should not redirect
-    this.router.navigate(['../search/name'], {
-      relativeTo: this.route,
-      queryParams: { query, inactive, topic_credential_type_id },
-    });
-  }
-
-  private performSearch() {
-    // let query = this._filters.values;
-    this.dataSvc.loadList(this._loader);
+    this.dataSvc.loadList(this._cLoader);
   }
 }

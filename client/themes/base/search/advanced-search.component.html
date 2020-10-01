@@ -12,7 +12,7 @@
       <input class="form-control" formControlName="text">
     </app-advanced-search-row>
     <app-advanced-search-row [label]="searchOptions[1].label" [helper]="searchOptions[1].helper">
-      <app-select formControlName="type" [options]="options" [selected]="credTypeSelected"></app-select>
+      <app-select formControlName="type" [options]="options" [selected]="credentialTypeSelected"></app-select>
     </app-advanced-search-row>
     <app-advanced-search-row [label]="searchOptions[2].label" [helper]="searchOptions[2].helper">
       <app-select formControlName="archived" [options]="yesNoOptions" [selected]="yesNoSelected"></app-select>
@@ -25,4 +25,6 @@
 
 <section>
   <p>TODO: Search results here</p>
+  {{ credentials$ | async | json }}
+  <app-search-result-list></app-search-result-list>
 </section>

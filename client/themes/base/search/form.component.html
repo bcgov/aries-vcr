@@ -13,7 +13,11 @@
       </div>
     </div>
   </div>
-  <div class="row results mt-4 mt-md-5" *ngIf="inited">
+
+  <app-search-result-list *ngIf="inited" [result]="result" [filters]="filters" [blankQuery]="blankQuery"
+    (nav)="handleNav($event)">
+  </app-search-result-list>
+  <!-- <div class="row results mt-4 mt-md-5" *ngIf="inited">
     <div class="col-md-8 col-lg-9 rows">
       <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
       <div class="alert alert-info" *ngIf="blankQuery && !result.loading && !result.data">
@@ -37,5 +41,5 @@
     <div class="col-md-4 col-lg-3 facets">
       <search-filters #searchFilters [filters]="filters"></search-filters>
     </div>
-  </div>
+  </div> -->
 </section>
