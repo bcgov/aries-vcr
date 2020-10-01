@@ -2,16 +2,34 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
-import { Fetch, Model } from 'app/data-types';
+import { Fetch, Filter, Model } from 'app/data-types';
 import { ISelectOption } from 'app/shared/components/select/select.component';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { ICredential } from 'app/core/interfaces/i-credential.interface';
 
 export interface IAdvancedSearchOption {
   label: string;
   helper: string;
 }
+
+const FilterSpec = [
+  {
+    name: "name",
+    hidden: true
+  },
+  {
+    name: "issuer_id",
+    label: "cred.issuer"
+  },
+  {
+    name: "topic_credential_type_id",
+    label: "cred.cred-type"
+  },
+  {
+    name: "category:entity_type",
+    label: "attribute.entity_type"
+  }
+];
 
 @Component({
   selector: 'app-advanced-search',
@@ -19,11 +37,12 @@ export interface IAdvancedSearchOption {
   styleUrls: ['../../themes/_active/search/advanced-search.component.scss'],
 })
 export class AdvancedSearchComponent implements OnInit, OnDestroy {
+  private _filters = new Filter.FieldSet(FilterSpec);
   private _cLoader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, { persist: true });
   private _ctLoader = new Fetch.ModelListLoader(Model.CredentialType, { persist: true });
 
   title: string = 'Advanced Search';
-  credentials$: Observable<ICredential>
+  credentials$: Observable<Fetch.ListResult<Model.CredentialFacetSearchResult>>;
   credentialTypeOptions$: Observable<ISelectOption[]>;
   credentialTypeSelected: ISelectOption;
   searchOptions: IAdvancedSearchOption[];
@@ -57,7 +76,7 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
 
     this.credentials$ = this._cLoader.ready
       .pipe(
-        tap(console.log)
+        tap(data => this.loadFacets(data))
       );
 
     // TODO: Add a validator for at least one required
@@ -79,13 +98,27 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this._filters.complete();
     this._cLoader.complete();
     this._ctLoader.complete();
   }
 
-  submit(value: { text: string; type: string; archived: string }) {
-    const { text: query, archived: inactive, type: topic_credential_type_id } = value;
+  get filters() {
+    return this._filters;
+  }
 
-    this.dataSvc.loadList(this._cLoader);
+  submit(value: { text: string; type: string; archived: string }) {
+    const { text: name, archived: inactive, type: topic_credential_type_id } = value;
+    this._filters.update({ name, inactive, topic_credential_type_id });
+    this.dataSvc.loadList(this._cLoader, { query: this._filters.values });
+  }
+
+  private loadFacets(data: Fetch.ListResult<Model.CredentialFacetSearchResult>): void {
+    let facets = this.dataSvc.loadFacetOptions(data);
+    for (const field in facets) {
+      if (Object.prototype.hasOwnProperty.call(facets, field)) {
+        this._filters.setOptions(field, facets[field]);
+      }
+    }
   }
 }

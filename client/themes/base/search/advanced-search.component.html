@@ -23,8 +23,6 @@
   </form>
 </section>
 
-<section>
-  <p>TODO: Search results here</p>
-  {{ credentials$ | async | json }}
-  <app-search-result-list></app-search-result-list>
+<section class="container" *ngIf="credentials$ | async as result">
+  <app-search-result-list [result]="result" [filters]="filters" (nav)="onNav($event)"></app-search-result-list>
 </section>
