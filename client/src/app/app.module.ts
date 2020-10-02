@@ -37,7 +37,7 @@ const ROUTE_PREFIX: string = 'ROUTES.';
 
 export const appInitializerFn = (appConfig: AppConfigService) => {
   return () => {
-    return appConfig.loadFromPromise(import(/* webpackMode: "eager" */ `../themes/_active/assets/config.json`));
+     return appConfig.loadFromPromise(import(/* webpackMode: "eager" */ `../themes/_active/assets/config.json`));
   };
 };
 

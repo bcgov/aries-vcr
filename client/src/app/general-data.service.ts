@@ -1,16 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, from, Observable, Observer, of, Subscription } from 'rxjs';
-import { _throw } from 'rxjs/observable/throw';
-import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
 
-import { environment } from '../environments/environment';
+import { BehaviorSubject, from, Observable, Observer, of, Subscription } from 'rxjs';
+import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
+import { _throw } from 'rxjs/observable/throw';
+
 import { Fetch, Filter, Model } from './data-types';
+
+import { API_URL } from './core/services/api.service';
 
 @Injectable()
 export class GeneralDataService {
-  public apiUrl = environment.API_URL;
   private _quickLoaded = false;
   private _orgData: { [key: string]: any } = {};
   private _recordCounts: { [key: string]: number } = {};
@@ -20,7 +21,11 @@ export class GeneralDataService {
   private _showDebugMsg = false;
   private _credTypeLang = {};
 
-  constructor(private _http: HttpClient, private _translate: TranslateService) {}
+  constructor(
+    @Inject(API_URL) private apiUrl: string,
+    private _http: HttpClient,
+    private _translate: TranslateService
+  ) { }
 
   get language() {
     return this._translate.currentLang;

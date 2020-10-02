@@ -13,7 +13,6 @@ export class AppConfigService {
 
   loadConfig(data) {
     this._config = data;
-    console.log(data);
   }
 
   loadFromPromise(input: Promise<any>): Promise<any> {
