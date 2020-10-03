@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
 import { Fetch, Filter, Model } from 'app/data-types';
 import { ISelectOption } from 'app/shared/components/select/select.component';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 export interface IAdvancedSearchOption {
   label: string;
@@ -15,6 +15,10 @@ export interface IAdvancedSearchOption {
 const FilterSpec = [
   {
     name: "name",
+    hidden: true
+  },
+  {
+    name: "page",
     hidden: true
   },
   {
@@ -37,41 +41,85 @@ const FilterSpec = [
   styleUrls: ['../../themes/_active/search/advanced-search.component.scss'],
 })
 export class AdvancedSearchComponent implements OnInit, OnDestroy {
+  title: string = 'Advanced Search';
+
+  private _refreshSubject = new BehaviorSubject<boolean>(false);
   private _filters = new Filter.FieldSet(FilterSpec);
   private _cLoader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, { persist: true });
   private _ctLoader = new Fetch.ModelListLoader(Model.CredentialType, { persist: true });
+  private _queryParams$: Observable<any> = this.route.queryParams;
+  private _refresh$: Observable<boolean> = this._refreshSubject.asObservable();
+  private _searchTriggered: boolean = false;
 
-  title: string = 'Advanced Search';
   credentials$: Observable<Fetch.ListResult<Model.CredentialFacetSearchResult>>;
   credentialTypeOptions$: Observable<ISelectOption[]>;
-  credentialTypeSelected: ISelectOption;
-  searchOptions: IAdvancedSearchOption[];
-  yesNoSelected: ISelectOption;
-  yesNoOptions: ISelectOption[];
-  fg: FormGroup;
+
+  yesNoOptions: ISelectOption[] = [
+    { value: 'true', description: 'Yes' }
+  ];
+
+  /* TODO: Parameterize these to include a method of defining the input option */
+  searchOptions: IAdvancedSearchOption[] = [
+    { label: 'name', helper: 'Search by the name of the organization.' },
+    { label: 'credential type', helper: 'Search by a specific type of credential.' },
+    { label: 'historical credentials', helper: 'Include results that have expired or are no longer active.' },
+  ];
+
+  yesNoSelected: ISelectOption = { value: 'false', description: 'No' }
+  credentialTypeSelected: ISelectOption = { value: null, description: 'Any credential type' };
+
+  // TODO: Add a validator for at least one required
+  fg: FormGroup = this.fb.group({
+    type: null,
+    text: null,
+    archived: 'false'
+  });
 
   constructor(
-    private dataSvc: GeneralDataService,
+    private dataService: GeneralDataService,
     private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder
-  ) {
-    this.yesNoOptions = [
-      { value: 'true', description: 'Yes' }
-    ];
+  ) { }
 
-    /* TODO: Parameterize these to include a method of defining the input option */
-    this.searchOptions = [
-      { label: 'name', helper: 'Search by the name of the organization.' },
-      { label: 'credential type', helper: 'Search by a specific type of credential.' },
-      { label: 'historical credentials', helper: 'Include results that have expired or are no longer active.' },
-    ];
+  ngOnInit(): void {
+    this.setupSubscriptions();
+    this.loadCategories();
+    this.patchForm();
+    this.updateFilters();
+  }
 
-    this.yesNoSelected = { value: 'false', description: 'No' }
-    this.credentialTypeSelected = { value: null, description: 'Any credential type' };
+  ngOnDestroy(): void {
+    this.teardownSubscriptions();
+  }
 
+  private get _paramMap(): any {
+    return this.route.snapshot.queryParamMap;
+  }
+
+  private get _currentPage(): string {
+    return this._filters.getFieldValue('page') || '1';
+  }
+
+  private get _currentPageNum(): number {
+    return parseInt(this._currentPage, 10);
+  }
+
+  get filters(): Filter.FieldSet {
+    return this._filters;
+  }
+
+  private loadCategories(): void {
+    this.dataService.loadList(this._ctLoader);
+  }
+
+  private setupSubscriptions(): void {
     this.credentialTypeOptions$ = this._ctLoader.ready
       .pipe(
-        map(res => res.data.map(credType => ({ value: credType.id, description: credType.description }))),
+        map(res => res.data.map(credType => ({
+          value: credType.id,
+          description: credType.description
+        })))
       );
 
     this.credentials$ = this._cLoader.ready
@@ -79,46 +127,80 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
         tap(data => this.loadFacets(data))
       );
 
-    // TODO: Add a validator for at least one required
-    this.fg = this.fb.group({
-      type: null,
-      text: null,
-      archived: 'false'
-    }, []);
+    this._filters.stream
+      .pipe(distinctUntilChanged())
+      .subscribe(_ => {
+        this.updateUrl();
+      });
+
+    combineLatest([
+      this._refresh$,
+      this._queryParams$,
+    ])
+      .subscribe(refresh => {
+        if (!refresh) {
+          return;
+        }
+        this.dataService.loadList(this._cLoader, { query: this._filters.values });
+      });
   }
 
-  ngOnInit() {
-    const query = this.route.snapshot.queryParamMap.get('query');
-
-    this.fg.patchValue({
-      text: query
-    });
-
-    this.dataSvc.loadList(this._ctLoader);
-  }
-
-  ngOnDestroy() {
+  private teardownSubscriptions(): void {
+    this._refreshSubject.complete();
     this._filters.complete();
     this._cLoader.complete();
     this._ctLoader.complete();
   }
 
-  get filters() {
-    return this._filters;
+  private patchForm(): void {
+    this.fg.patchValue({
+      text: this._paramMap.get('name'),
+      type: this._paramMap.get('topic_credential_type_id')
+    });
   }
 
-  submit(value: { text: string; type: string; archived: string }) {
-    const { text: name, archived: inactive, type: topic_credential_type_id } = value;
-    this._filters.update({ name, inactive, topic_credential_type_id });
-    this.dataSvc.loadList(this._cLoader, { query: this._filters.values });
+  private updateFilters(): void {
+    const { text: name, archived: inactive, type: topic_credential_type_id } = this.fg.value;
+    this._filters.update({ name, inactive, topic_credential_type_id, page: this._currentPage });
+  }
+
+  private updateUrl() {
+    const queryParams = this._filters.queryParams;
+    this.router.navigate([], { replaceUrl: true, relativeTo: this.route, queryParams, queryParamsHandling: 'merge' });
+  }
+
+  private previousPage(pageNum: number): void {
+    this._filters.setFieldValue('page', Math.max(pageNum - 1, 1));
+  }
+
+  private nextPage(pageNum: number): void {
+    this._filters.setFieldValue('page', pageNum + 1);
   }
 
   private loadFacets(data: Fetch.ListResult<Model.CredentialFacetSearchResult>): void {
-    let facets = this.dataSvc.loadFacetOptions(data);
+    let facets = this.dataService.loadFacetOptions(data);
     for (const field in facets) {
       if (Object.prototype.hasOwnProperty.call(facets, field)) {
         this._filters.setOptions(field, facets[field]);
       }
     }
+  }
+
+  onNav(nav: string): void {
+    if (nav === 'previous') {
+      this.previousPage(this._currentPageNum);
+    } else if (nav == 'next') {
+      this.nextPage(this._currentPageNum);
+    } else {
+      console.warn(`Invalid nav '${nav}' received`);
+    }
+  }
+
+  submit(): void {
+    if (!this._searchTriggered) {
+      this._searchTriggered = true;
+      this._refreshSubject.next(this._searchTriggered);
+    }
+    this.updateFilters();
   }
 }

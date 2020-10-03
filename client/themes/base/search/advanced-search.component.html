@@ -17,7 +17,7 @@
     <app-advanced-search-row [label]="searchOptions[2].label" [helper]="searchOptions[2].helper">
       <app-select formControlName="archived" [options]="yesNoOptions" [selected]="yesNoSelected"></app-select>
     </app-advanced-search-row>
-    <button type="submit" class="btn btn-primary mt-2" (click)="submit(fg.value)">
+    <button type="submit" class="btn btn-primary mt-2" (click)="submit()">
       Advanced Search
     </button>
   </form>

@@ -17,29 +17,4 @@
   <app-search-result-list *ngIf="inited" [result]="result" [filters]="filters" [blankQuery]="blankQuery"
     (nav)="handleNav($event)">
   </app-search-result-list>
-  <!-- <div class="row results mt-4 mt-md-5" *ngIf="inited">
-    <div class="col-md-8 col-lg-9 rows">
-      <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
-      <div class="alert alert-info" *ngIf="blankQuery && !result.loading && !result.data">
-        {{ 'search.prompt' | translate }}
-      </div>
-      <div class="alert alert-info" *ngIf="result.loading && !result.data">
-        {{ 'search.running' | translate }}
-      </div>
-      <ng-container *ngIf="result.data as creds">
-        <h3 class="control-label mb-1">{{ 'search.results-title' | translate }}</h3>
-        <ng-container *ngIf="creds.length">
-          <cred-list [records]="creds" format="search"></cred-list>
-          <search-nav (nav)="handleNav($event)" [info]="result.info" [loading]="result.loading"></search-nav>
-        </ng-container>
-        <div class="alert alert-info" *ngIf="!creds.length">
-          {{ 'search.no-results' | translate }}
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="col-md-4 col-lg-3 facets">
-      <search-filters #searchFilters [filters]="filters"></search-filters>
-    </div>
-  </div> -->
 </section>
