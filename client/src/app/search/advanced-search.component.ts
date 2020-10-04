@@ -32,6 +32,10 @@ const FilterSpec = [
   {
     name: "category:entity_type",
     label: "attribute.entity_type"
+  },
+  {
+    name: "inactive",
+    label: "general.period-historical"
   }
 ];
 
@@ -47,6 +51,7 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   private _filters = new Filter.FieldSet(FilterSpec);
   private _cLoader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, { persist: true });
   private _ctLoader = new Fetch.ModelListLoader(Model.CredentialType, { persist: true });
+  private _queryParamMap: any = this.route.snapshot.queryParamMap;
   private _queryParams$: Observable<any> = this.route.queryParams;
   private _refresh$: Observable<boolean> = this._refreshSubject.asObservable();
   private _searchTriggered: boolean = false;
@@ -66,12 +71,12 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   ];
 
   yesNoSelected: ISelectOption = { value: 'false', description: 'No' }
-  credentialTypeSelected: ISelectOption = { value: null, description: 'Any credential type' };
+  credentialTypeSelected: ISelectOption = { value: '', description: 'Any credential type' };
 
   // TODO: Add a validator for at least one required
   fg: FormGroup = this.fb.group({
-    type: null,
-    text: null,
+    text: '',
+    type: '',
     archived: 'false'
   });
 
@@ -93,10 +98,6 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     this.teardownSubscriptions();
   }
 
-  private get _paramMap(): any {
-    return this.route.snapshot.queryParamMap;
-  }
-
   private get _currentPage(): string {
     return this._filters.getFieldValue('page') || '1';
   }
@@ -116,9 +117,9 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   private setupSubscriptions(): void {
     this.credentialTypeOptions$ = this._ctLoader.ready
       .pipe(
-        map(res => res.data.map(credType => ({
-          value: credType.id,
-          description: credType.description
+        map(res => res.data.map(type => ({
+          value: type.id,
+          description: type.description
         })))
       );
 
@@ -137,7 +138,7 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
       this._refresh$,
       this._queryParams$,
     ])
-      .subscribe(refresh => {
+      .subscribe(([refresh]) => {
         if (!refresh) {
           return;
         }
@@ -154,8 +155,9 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
 
   private patchForm(): void {
     this.fg.patchValue({
-      text: this._paramMap.get('name'),
-      type: this._paramMap.get('topic_credential_type_id')
+      text: this._queryParamMap.get('name') || '',
+      type: this._queryParamMap.get('topic_credential_type_id') || '',
+      archived: this._queryParamMap.get('inactive') || 'false'
     });
   }
 
