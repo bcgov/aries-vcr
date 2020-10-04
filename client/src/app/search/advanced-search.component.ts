@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralDataService } from 'app/general-data.service';
 import { Fetch, Filter, Model } from 'app/data-types';
@@ -39,6 +39,12 @@ const FilterSpec = [
   }
 ];
 
+export const blankQueryValidator: ValidatorFn = (fg: FormGroup): ValidationErrors | null => {
+  const text = fg.get('text');
+  const type = fg.get('type');
+  return !(text.value || type.value) ? { 'blankQuery': true } : null;
+};
+
 @Component({
   selector: 'app-advanced-search',
   templateUrl: '../../themes/_active/search/advanced-search.component.html',
@@ -73,18 +79,16 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   yesNoSelected: ISelectOption = { value: 'false', description: 'No' }
   credentialTypeSelected: ISelectOption = { value: '', description: 'Any credential type' };
 
-  // TODO: Add a validator for at least one required
-  fg: FormGroup = this.fb.group({
-    text: '',
-    type: '',
-    archived: 'false'
-  });
+  fg: FormGroup = new FormGroup({
+    text: new FormControl(''),
+    type: new FormControl(''),
+    archived: new FormControl('false')
+  }, { validators: blankQueryValidator });
 
   constructor(
     private dataService: GeneralDataService,
     private route: ActivatedRoute,
-    private router: Router,
-    private fb: FormBuilder
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -108,6 +112,10 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
 
   get filters(): Filter.FieldSet {
     return this._filters;
+  }
+
+  get blankQuery(): boolean {
+    return this.fg.hasError('blankQuery');
   }
 
   private loadCategories(): void {
@@ -199,6 +207,10 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   }
 
   submit(): void {
+    if (this.blankQuery) {
+      this.fg.markAsTouched();
+      return;
+    }
     if (!this._searchTriggered) {
       this._searchTriggered = true;
       this._refreshSubject.next(this._searchTriggered);
