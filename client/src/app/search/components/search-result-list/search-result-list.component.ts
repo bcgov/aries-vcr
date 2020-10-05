@@ -8,7 +8,7 @@ import { Filter, Model } from 'app/data-types';
 })
 export class SearchResultListComponent {
   @Input() blankQuery: boolean;
-  @Input() result: Model.TopicCredentialFacetSearchResult | Model.CredentialFacetSearchResult;
+  @Input() result: any;
   @Input() filters: Filter.FieldSet;
 
   @Output() nav: EventEmitter<string> = new EventEmitter<string>();
