@@ -71,7 +71,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _filterType: string;
   protected _firstFilter = true;
   protected _lastQueryParams = null;
-  protected _loader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, {persist: true});
+  protected _loader = new Fetch.ModelListLoader(Model.TopicCredentialFacetSearchResult, {persist: true});
   protected _querySub: Subscription;
   protected _typeSub: Subscription;
   protected _inited = false;

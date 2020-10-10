@@ -1,16 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, from, Observable, Observer, of, Subscription } from 'rxjs';
-import { _throw } from 'rxjs/observable/throw';
-import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
 
-import { environment } from '../environments/environment';
+import { BehaviorSubject, from, Observable, Observer, of, Subscription } from 'rxjs';
+import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
+import { _throw } from 'rxjs/observable/throw';
+
 import { Fetch, Filter, Model } from './data-types';
+
+import { API_URL } from './core/services/api.service';
 
 @Injectable()
 export class GeneralDataService {
-  public apiUrl = environment.API_URL;
   private _quickLoaded = false;
   private _orgData: { [key: string]: any } = {};
   private _recordCounts: { [key: string]: number } = {};
@@ -20,7 +21,11 @@ export class GeneralDataService {
   private _showDebugMsg = false;
   private _credTypeLang = {};
 
-  constructor(private _http: HttpClient, private _translate: TranslateService) {}
+  constructor(
+    @Inject(API_URL) private apiUrl: string,
+    private _http: HttpClient,
+    private _translate: TranslateService
+  ) { }
 
   get language() {
     return this._translate.currentLang;
@@ -28,6 +33,10 @@ export class GeneralDataService {
 
   get showDebugMsg() {
     return this._showDebugMsg;
+  }
+
+  get defaultTopicType(): string {
+    return this._defaultTopicType;
   }
 
   getRequestUrl(path: string): string {
@@ -41,10 +50,6 @@ export class GeneralDataService {
       if (!root.endsWith('/')) root += '/';
       return root + path;
     }
-  }
-
-  get defaultTopicType(): string {
-    return this._defaultTopicType;
   }
 
   loadJson(url, params?: HttpParams): Observable<Object> {
@@ -83,6 +88,9 @@ export class GeneralDataService {
     }
   }
 
+  /**
+   * DEPRECATED in v3
+   */
   quickLoad(force?) {
     return new Promise((resolve, reject) => {
       if (this._quickLoaded && !force) {
@@ -142,7 +150,6 @@ export class GeneralDataService {
     }
     let params = new HttpParams().set('q', term).append('inactive', inactive.toString());
 
-    console.log(params);
     return this.loadFromApi('search/autocomplete', params).pipe(
       map(response => {
         let ret = [];
@@ -226,7 +233,6 @@ export class GeneralDataService {
     else {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
-      //console.log("loadData(url)", url);
       if (params.primary) {
         if (this._loaderSub) this._loaderSub.unsubscribe();
         this._loaderSub = fetch.stream.subscribe(result => {
@@ -286,6 +292,9 @@ export class GeneralDataService {
     this._currentResultSubj.next(result);
   }
 
+  /**
+   * DEPRECATED in v3
+   */
   deleteRecord(mod: string, id: string) {
     return new Promise(resolve => {
       let baseurl = this.getRequestUrl(`${mod}/${id}/delete`);

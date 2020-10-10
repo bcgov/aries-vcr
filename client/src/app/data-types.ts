@@ -222,10 +222,18 @@ export namespace Model {
   }
 
   export class CredentialSearchResult extends Credential {
-    static resourceName = "search/credential/topic";
+    static resourceName = "v3/search/credential";
   }
 
   export class CredentialFacetSearchResult extends Credential {
+    static resourceName = "v3/search/credential/facets";
+  }
+
+  export class TopicCredentialSearchResult extends Credential {
+    static resourceName = "search/credential/topic";
+  }
+
+  export class TopicCredentialFacetSearchResult extends Credential {
     static resourceName = "search/credential/topic/facets";
   }
 
