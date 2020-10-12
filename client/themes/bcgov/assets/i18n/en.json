@@ -11,6 +11,10 @@
       "logo-alt-text": "BC Government Logo"
     }
   },
+  "develop": {
+    "breadcrumb": "Develop with OrgBook BC",
+    "title": "Develop with OrgBook BC"
+  },
   "name": {
     "registration.registries.ca": "Registration",
     "relationship.registries.ca": "Relationship",
