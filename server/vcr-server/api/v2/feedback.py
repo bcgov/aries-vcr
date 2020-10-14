@@ -53,7 +53,7 @@ def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
         msg["Subject"] = subject
         msg["From"] = from_line
         msg["Reply-To"] = reply_line
-        msg["To"] = recip_email
+        msg["To"] = recipients
         # LOGGER.info("encoded:\n%s", msg.as_string())
 
         with SMTP(server_addr) as smtp:
