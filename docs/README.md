@@ -23,6 +23,7 @@
   - [Register the DID](###register-the-did)
   - [Build and Start the Project](###build-and-start-the-project)
   - [Issuing Credentials](###issuing-credentials)
+- [Troubleshooting Guides](##troubleshooting-guides)
 
 ## Introduction
 
@@ -243,3 +244,6 @@ To submit credentials, use Postman (or similar, based on your local configuratio
     }
 ]
 ```
+
+## Troubleshooting Guides:
+- [Fixing a Corrupt Wallet Index](./fix-corrupt-wallet-index.md)
