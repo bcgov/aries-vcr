@@ -25,6 +25,7 @@ import { AppFooterComponent } from './app-footer/app-footer.component';
 import { ContactComponent } from './info/contact.component';
 import { GeneralDataService } from './general-data.service';
 import { HomeComponent } from './home/home.component';
+import { DevelopComponent } from './develop/develop.component';
 
 import { CredModule } from './cred/cred.module';
 import { SearchModule } from './search/search.module';
@@ -74,7 +75,7 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
 }
 
 @NgModule({
-  declarations: [AppComponent, AppHeaderComponent, AppFooterComponent, ContactComponent, HomeComponent],
+  declarations: [AppComponent, AppHeaderComponent, AppFooterComponent, ContactComponent, HomeComponent, DevelopComponent],
   imports: [
     BrowserModule,
     FormsModule,

@@ -9,6 +9,7 @@ import { NotFoundComponent } from './util/not-found.component';
 import { SearchComponent } from './search/form.component';
 import { TopicFormComponent } from './topic/form.component';
 import { AdvancedSearchComponent } from './search/advanced-search.component';
+import { DevelopComponent } from './develop/develop.component';
 
 export const ROUTES: Routes = [
   {
@@ -106,6 +107,13 @@ export const ROUTES: Routes = [
     data: {
       breadcrumb: 'issuer.breadcrumb',
     },
+  },
+  {
+    path: 'develop',
+    component: DevelopComponent,
+    data: {
+      breadcrumb: 'develop.breadcrumb'
+    }
   },
   {
     path: 'contact',
