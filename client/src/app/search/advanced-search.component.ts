@@ -36,6 +36,18 @@ const FilterSpec = [
   {
     name: "inactive",
     label: "general.period-historical"
+  },
+  {
+    name: "inactive",
+    label: "attribute.entity_status",
+    options: [
+      {
+        tlabel: "general.show-inactive",
+        value: "true"
+      }
+    ],
+    defval: "false",
+    blank: true
   }
 ];
 
@@ -55,9 +67,8 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
 
   private _refreshSubject = new BehaviorSubject<boolean>(false);
   private _filters = new Filter.FieldSet(FilterSpec);
-  private _cLoader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, { persist: true });
-  private _ctLoader = new Fetch.ModelListLoader(Model.CredentialType, { persist: true });
-  private _queryParamMap: any = this.route.snapshot.queryParamMap;
+  private _cLoader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, { persist: false });
+  private _ctLoader = new Fetch.ModelListLoader(Model.CredentialType, { persist: false });
   private _queryParams$: Observable<any> = this.route.queryParams;
   private _refresh$: Observable<boolean> = this._refreshSubject.asObservable();
   private _searchTriggered: boolean = false;
@@ -131,9 +142,9 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
         })))
       );
 
-    this.credentials$ = this._cLoader.ready
+    this.credentials$ = this._cLoader.stream
       .pipe(
-        tap(data => this.loadFacets(data))
+        tap(stream => stream.data && this.loadFacets(stream))
       );
 
     this._filters.stream
@@ -144,7 +155,10 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
 
     combineLatest([
       this._refresh$,
-      this._queryParams$,
+      this._queryParams$
+        .pipe(
+          tap(() => this.patchForm())
+        )
     ])
       .subscribe(([refresh]) => {
         if (!refresh) {
@@ -162,10 +176,11 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   }
 
   private patchForm(): void {
+    const queryParamMap: any = this.route.snapshot.queryParamMap;
     this.fg.patchValue({
-      text: this._queryParamMap.get('name') || '',
-      type: this._queryParamMap.get('topic_credential_type_id') || '',
-      archived: this._queryParamMap.get('inactive') || 'false'
+      text: queryParamMap.get('name') || '',
+      type: queryParamMap.get('topic_credential_type_id') || '',
+      archived: queryParamMap.get('inactive') || 'false'
     });
   }
 

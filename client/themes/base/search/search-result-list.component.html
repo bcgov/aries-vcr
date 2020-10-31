@@ -1,25 +1,28 @@
 <div class="row results mt-4 mt-md-5">
-  <div class="col-md-8 col-lg-9 rows">
-    <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
-    <div class="alert alert-info" *ngIf="blankQuery && !result.loading && !result.data">
-      {{ 'search.prompt' | translate }}
-    </div>
-    <div class="alert alert-info" *ngIf="result.loading && !result.data">
-      {{ 'search.running' | translate }}
-    </div>  
-    <ng-container *ngIf="result.data as creds">
+  <ng-container *ngIf="result?.data as creds else nodata">
+    <div class="col-md-8 col-lg-9 rows">
       <h3 class="control-label mb-1">{{ 'search.results-title' | translate }}</h3>
-      <ng-container *ngIf="creds.length">
+      <ng-container *ngIf="creds?.length else nocreds">
         <cred-list [records]="creds" format="search"></cred-list>
         <search-nav (nav)="onNav($event)" [info]="result.info" [loading]="result.loading"></search-nav>
       </ng-container>
-      <div class="alert alert-info" *ngIf="!creds.length">
-        {{ 'search.no-results' | translate }}
+      <ng-template #nocreds>
+        <div class="alert alert-info">{{ 'search.no-results' | translate }}</div>
+      </ng-template>
+    </div>
+    <div class="col-md-4 col-lg-3 facets">
+      <search-filters #searchFilters [filters]="filters"></search-filters>
+    </div>
+  </ng-container>
+  <ng-template #nodata>
+    <div class="col-12">
+      <error-message [error]="result.error" [title]="'search.results-error' | translate"></error-message>
+      <div class="alert alert-info" *ngIf="!result?.loading && blankQuery">
+        {{ 'search.prompt' | translate }}
       </div>
-    </ng-container>
-  </div>
-
-  <div class="col-md-4 col-lg-3 facets">
-    <search-filters #searchFilters [filters]="filters"></search-filters>
-  </div>
+      <div class="alert alert-info" *ngIf="result?.loading">
+        {{ 'search.running' | translate }}
+      </div>
+    </div>
+  </ng-template>
 </div>
