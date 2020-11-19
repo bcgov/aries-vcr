@@ -24,7 +24,7 @@ To add a new debugger session, create a `launch.json` file and add the following
     "request": "attach",
     "pathMappings": [
         {
-            "localRoot": "${workspaceFolder}/server",
+            "localRoot": "${workspaceFolder}/server/vcr-server",
             "remoteRoot": "/home/indy"
         }
     ],
