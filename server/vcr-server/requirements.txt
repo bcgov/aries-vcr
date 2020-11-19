@@ -33,7 +33,7 @@ pysolr>=3.6.0,<4
 drf-generators>=0.3.0
 
 # Debugging
-ptvsd==4.1.1a1
+debugpy
 
 # aiohttp
 aiohttp~=3.4.0
