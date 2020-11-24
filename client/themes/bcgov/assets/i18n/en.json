@@ -25,7 +25,12 @@
     "demo.person_relationship.registries.ca": "Relationship",
     "demo.org_relationship.registries.ca": "Relationship",
     "Cannabis Retail Store Licence": "Cannabis Retail Store Licence",
-    "Cannabis Marketing Licence": "Cannabis Marketing Licence"
+    "Cannabis Marketing Licence": "Cannabis Marketing Licence",
+    "business_number": "Business Number",
+    "source_id": "BC Registries ID",
+    "display_name": "Name",
+    "entity_name": "Name",
+    "entity_name_assumed": "Name"
   },
   "attribute": {
     "effective_dates": "Effective Dates",
@@ -39,7 +44,6 @@
     "entity_type": "Registration Type",
     "home_jurisdiction": "Home Jurisdiction",
     "name_short": "Name",
-    "reason_description": "Credential Reason",
     "registered_jurisdiction": "Registered Jurisdiction",
     "registration_date": "Registration Date",
     "reason_description": "Credential Issue Reason",
@@ -52,8 +56,7 @@
     "first_name": "First Name",
     "last_name": "Last Name",
     "email_address": "Email Address",
-    "phone_number": "Phone Number",
-    "business_number": "Business Number"
+    "phone_number": "Phone Number"
   },
   "category": {
     "address_type": {

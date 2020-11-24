@@ -67,13 +67,13 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
 
   private _refreshSubject = new BehaviorSubject<boolean>(false);
   private _filters = new Filter.FieldSet(FilterSpec);
-  private _cLoader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, { persist: false });
+  private _cLoader = new Fetch.ModelListLoader(Model.TopicFacetSearchResult, { persist: false });
   private _ctLoader = new Fetch.ModelListLoader(Model.CredentialType, { persist: false });
   private _queryParams$: Observable<any> = this.route.queryParams;
   private _refresh$: Observable<boolean> = this._refreshSubject.asObservable();
   private _searchTriggered: boolean = false;
 
-  credentials$: Observable<Fetch.ListResult<Model.CredentialFacetSearchResult>>;
+  credentials$: Observable<Fetch.ListResult<Model.TopicFacetSearchResult>>;
   credentialTypeOptions$: Observable<ISelectOption[]>;
 
   yesNoOptions: ISelectOption[] = [
@@ -202,7 +202,7 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     this._filters.setFieldValue('page', pageNum + 1);
   }
 
-  private loadFacets(data: Fetch.ListResult<Model.CredentialFacetSearchResult>): void {
+  private loadFacets(data: Fetch.ListResult<Model.TopicFacetSearchResult>): void {
     let facets = this.dataService.loadFacetOptions(data);
     for (const field in facets) {
       if (Object.prototype.hasOwnProperty.call(facets, field)) {

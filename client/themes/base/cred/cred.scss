@@ -129,5 +129,25 @@ div.claim-info {
   white-space: nowrap;
 }
 
+.names-title {
+  &::after {
+    @extend %fa-base;
+    content: "\f0d7";
+    padding-left: 0.3em;
+  }
+}
+
+.names-info {
+  .card {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+
+     .list-unstyled {
+      margin: 0;
+    }
+  }
+}
+
 //place all overrides for a specific theme in this file inside your theme/cred directory
 @import "../../_active/cred/cred.custom";
