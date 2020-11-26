@@ -32,15 +32,15 @@
     "@ngx-translate/http-loader": "^3.0.0",
     "bootstrap": "~4.3.1",
     "compare-versions": "~3.1.0",
-    "copy-webpack-plugin": "^5.1.1",
+    "copy-webpack-plugin": "^5.1.2",
     "core-js": "~2.5.4",
     "font-awesome": "^4.7.0",
     "localize-router": "https://github.com/andrewwhitehead/localize-router/releases/download/v2.0.0-RC.2/localize-router-2.0.0-RC.2.tgz",
     "localize-router-http-loader": "~1.0.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "rxjs": "~6.6.3",
     "rxjs-compat": "~6.3.0",
-    "tslib": "^1.10.0",
+    "tslib": "^1.14.1",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "@angular-devkit/build-optimizer": "^0.6.8",
     "@angular/cli": "^9.1.12",
     "@angular/compiler-cli": "~9.1.12",
-    "@types/jasmine": "~2.8.16",
+    "@types/jasmine": "^2.8.17",
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
     "jasmine-core": "~2.99.1",
@@ -60,11 +60,11 @@
     "karma-jasmine": "^1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
     "npm-run-all": "^4.1.5",
-    "protractor": "^5.4.2",
+    "protractor": "^5.4.4",
     "ts-node": "~5.0.1",
     "tslint": "~5.11.0",
     "typescript": "~3.8.3",
-    "webpack": "^4.42.1"
+    "webpack": "^4.44.2"
   },
   "prettier": {
     "trailingComma": "all",
