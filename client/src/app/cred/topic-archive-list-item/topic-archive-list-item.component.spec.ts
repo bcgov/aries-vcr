@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TopicArchiveListItemComponent } from './topic-archive-list-item.component';
 
@@ -6,7 +6,7 @@ describe('TopicArchiveListItemComponent', () => {
   let component: TopicArchiveListItemComponent;
   let fixture: ComponentFixture<TopicArchiveListItemComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TopicArchiveListItemComponent ]
     })
