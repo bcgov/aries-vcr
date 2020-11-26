@@ -35,9 +35,6 @@ const ROUTES = [];
     TopicArchiveListHeaderComponent,
     TopicArchiveListItemComponent
   ],
-  entryComponents: [
-    TimelineCredComponent,
-  ],
   providers: [
     TimelineFormatterService,
   ],
