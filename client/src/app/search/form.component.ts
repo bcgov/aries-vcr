@@ -4,7 +4,7 @@ import { GeneralDataService } from '../general-data.service';
 import { Fetch, Filter, Model } from '../data-types';
 import { CredListComponent } from '../cred/list.component';
 import { SearchInputComponent } from './input.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 
 const FilterSpec = [

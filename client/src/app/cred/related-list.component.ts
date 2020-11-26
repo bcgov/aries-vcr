@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, OnInit, OnDestroy, Input } from '@angular/core';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { TopicStateService } from 'app/topic/services/topic-state.service';
 import { HttpService } from 'app/core/services/http.service';
 import { ICredentialSet } from 'app/core/interfaces/i-credential-set.interface';

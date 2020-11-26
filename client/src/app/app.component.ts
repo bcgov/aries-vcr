@@ -5,8 +5,8 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LocalizeRouterService } from 'localize-router';
 import { GeneralDataService } from './general-data.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/Subscription';
-import { mergeMap, map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { filter, mergeMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -83,14 +83,14 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     };
 
-    this._router.events
-      .filter((event) => event instanceof NavigationEnd)
+    this._router.events.pipe(
+      filter((event) => event instanceof NavigationEnd))
       .pipe(map(() => this._route))
       .pipe(map((route) => {
         while (route.firstChild) route = route.firstChild;
         return route;
-      }))
-      .filter((route) => route.outlet === 'primary')
+      })).pipe(
+      filter((route) => route.outlet === 'primary'))
       .subscribe((route) => {
         let data = route.snapshot.data;
         let fragment = route.snapshot.fragment;

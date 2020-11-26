@@ -2,9 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BehaviorSubject, from, Observable, Observer, of, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Observable, Observer, of, Subscription , throwError as _throw } from 'rxjs';
 import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
 
 import { Fetch, Filter, Model } from './data-types';
 
