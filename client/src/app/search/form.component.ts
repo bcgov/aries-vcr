@@ -65,8 +65,8 @@ const FilterSpec = [
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('searchInput') _searchInput: SearchInputComponent;
-  @ViewChild('credList') _nameList: CredListComponent;
+  @ViewChild('searchInput', { static: false }) _searchInput: SearchInputComponent;
+  @ViewChild('credList', { static: false }) _nameList: CredListComponent;
   protected _filters = new Filter.FieldSet(FilterSpec);
   protected _filterType: string;
   protected _firstFilter = true;

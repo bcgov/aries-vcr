@@ -20,8 +20,8 @@ export interface ICredentialTypeOption {
 export class SearchInputComponent implements AfterViewInit {
   @Input() showInactive = false;
   @Input() textColour = 'text-black';
-  @ViewChild('queryInput') private _input: ElementRef;
-  @ViewChild('queryButton') private _button: ElementRef;
+  @ViewChild('queryInput', { static: true }) private _input: ElementRef;
+  @ViewChild('queryButton', { static: true }) private _button: ElementRef;
   @Output() accepted = new EventEmitter<any>();
   @Output() queryChange = new EventEmitter<string>();
   @Output() focusChange = new EventEmitter<boolean>();
