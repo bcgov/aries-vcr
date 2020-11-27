@@ -101,8 +101,8 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
         deps: [TranslateService, Location, LocalizeRouterSettings],
       },
     }),
-    NgbModule.forRoot(),
     UtilModule,
+    NgbModule,
   ],
   exports: [ReactiveFormsModule, CredModule, SearchModule, TopicModule, TranslateModule, UtilModule],
   providers: [

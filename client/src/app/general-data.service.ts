@@ -362,7 +362,7 @@ export class GeneralDataService {
   translateClaimDescription(credTypeId, claimName, defVal?) {
     let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_descriptions');
     return credLang.pipe(
-      map(values => {
+      map((values: any) => {
         let lang = this.language;
         let ret = undefined;
         if (values && claimName in values) {
@@ -377,7 +377,7 @@ export class GeneralDataService {
   translateClaimLabel(credTypeId, claimName, defVal?) {
     let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_labels');
     return credLang.pipe(
-      map(values => {
+      map((values: any) => {
         let lang = this.language;
         let ret = undefined;
         if (values && claimName in values) {
@@ -393,7 +393,7 @@ export class GeneralDataService {
     let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'category_labels');
     let lbl = `category.${catType}.${catValue}`;
     return credLang.pipe(
-      map(values => {
+      map((values: any) => {
         let lang = this.language;
         let ret = undefined;
         if (values && catType in values) {
