@@ -1,6 +1,6 @@
 import { ComponentFactoryResolver, Injectable, Injector } from '@angular/core';
 import { Model } from '../data-types';
-import { LocalizeRouterService } from 'localize-router';
+import { LocalizeRouterService } from '@gilsdav/ngx-translate-router';
 import { TimelineCredComponent } from './timeline-cred.component';
 
 @Injectable()

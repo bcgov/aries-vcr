@@ -13,8 +13,8 @@ import {
   MissingTranslationHandler,
   MissingTranslationHandlerParams,
 } from '@ngx-translate/core';
-import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX } from 'localize-router';
-import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
+import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX } from '@gilsdav/ngx-translate-router';
+import { ILocalizeRouterParserConfig } from '@gilsdav/ngx-translate-router-http-loader';
 import { Observable, from } from 'rxjs';
 
 import { AppRoutingModule, ROUTES } from './app-routing.module';

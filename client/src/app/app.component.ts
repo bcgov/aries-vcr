@@ -2,7 +2,7 @@ import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { LocationStrategy } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { LocalizeRouterService } from 'localize-router';
+import { LocalizeRouterService } from '@gilsdav/ngx-translate-router';
 import { GeneralDataService } from './general-data.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { filter, mergeMap, map } from 'rxjs/operators';
 export class AppComponent implements OnInit, OnDestroy {
   currentLang: string;
   inited = false;
-  // to be moved into external JSON loaded by localize-router
+  // to be moved into external JSON loaded by @gilsdav/ngx-translate-router
   supportedLanguages = [
     {
       name: 'en',
@@ -124,7 +124,7 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
     // Initialize fallback and initial language
-    // NOTE - currently superceded by localize-router
+    // NOTE - currently superceded by @gilsdav/ngx-translate-router
     // this.translate.setDefaultLang(this.supportedLanguages[0]);
     // this.translate.use(this.guessLanguage());
 
@@ -132,7 +132,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.onUpdateLanguage(event.lang);
     });
     if(this.translate.currentLang) {
-      // may already be initialized by localize-router
+      // may already be initialized by @gilsdav/ngx-translate-router
       this.onUpdateLanguage(this.translate.currentLang);
     }
   }
@@ -150,7 +150,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if(lang && lang !== this.currentLang) {
       console.log('Language:', lang);
       this.currentLang = lang;
-      // need to add some functionality to localize-router to handle this properly
+      // need to add some functionality to @gilsdav/ngx-translate-router to handle this properly
       let alt = this.altLanguageInfo();
       this.altLang = alt ? alt.name : 'en';
       this.altLangLabel = alt ? alt.label : '';
