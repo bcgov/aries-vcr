@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AppConfigService } from 'app/app-config.service';
 import { GeneralDataService } from 'app/general-data.service';
 import { Fetch, Model } from '../data-types';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { TimelineFormatterService } from './timeline-formatter.service';
 import { HttpClient } from '@angular/common/http';
 

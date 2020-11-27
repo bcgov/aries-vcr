@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { LocalizeRouterModule } from 'localize-router';
+import { LocalizeRouterModule } from '@gilsdav/ngx-translate-router';
 import { CredFormComponent } from './form.component';
 import { CredListComponent } from './list.component';
 import { CredTypeListComponent } from './type-list.component';
@@ -34,9 +34,6 @@ const ROUTES = [];
     TimelineViewComponent,
     TopicArchiveListHeaderComponent,
     TopicArchiveListItemComponent
-  ],
-  entryComponents: [
-    TimelineCredComponent,
   ],
   providers: [
     TimelineFormatterService,

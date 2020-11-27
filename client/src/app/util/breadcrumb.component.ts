@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import 'rxjs/add/operator/filter';
+import { filter } from 'rxjs/operators';
 
 const ROUTE_DATA_BREADCRUMB: string = 'breadcrumb';
 const PRIMARY_OUTLET: string = 'primary';
@@ -23,8 +23,8 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.update();
 
-    this._sub = this._router.events
-      .filter(event => event instanceof NavigationEnd)
+    this._sub = this._router.events.pipe(
+      filter(event => event instanceof NavigationEnd))
       .subscribe(this.update.bind(this));
   }
 

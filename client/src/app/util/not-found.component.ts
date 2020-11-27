@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LocalizeRouterService } from 'localize-router';
+import { LocalizeRouterService } from '@gilsdav/ngx-translate-router';
 
 function joinPath(path) {
   if(typeof path === 'string')

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angu
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'related-relationships',

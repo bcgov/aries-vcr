@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppConfigService } from '../app-config.service';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { HttpService } from 'app/core/services/http.service';
 import { ICredentialSet } from 'app/core/interfaces/i-credential-set.interface';
 import { TopicStateService } from './services/topic-state.service';

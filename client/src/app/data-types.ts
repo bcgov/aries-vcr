@@ -1,7 +1,5 @@
-import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { map } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
+import { filter, map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 
 function load_data<T>(obj: T, result: any, attr_map?: { [key: string]: any }, list_map?: { [key: string]: any }): T {
   if (obj && result) {
@@ -786,7 +784,7 @@ export namespace Fetch {
     }
 
     get ready(): Observable<R> {
-      return this.stream.filter(result => result.loaded);
+      return this.stream.pipe(filter(result => result.loaded));
     }
 
     get result(): R {
