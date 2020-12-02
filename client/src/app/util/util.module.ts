@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { LocalizeRouterModule } from 'localize-router';
+import { LocalizeRouterModule } from '@gilsdav/ngx-translate-router';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { AddressComponent } from './address.component';

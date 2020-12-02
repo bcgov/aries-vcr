@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { GeneralDataService } from '../general-data.service';
 import { Fetch, Model } from '../data-types';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { TimelineFormatterService } from './timeline-formatter.service';
 import { TopicStateService } from 'app/topic/services/topic-state.service';
 

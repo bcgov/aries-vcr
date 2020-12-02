@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { GeneralDataService } from '../general-data.service';
 import { catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError as _throw } from 'rxjs';
 
 
 @Component({

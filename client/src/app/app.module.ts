@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, Injectable } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes } from '@angular/router';
 
@@ -13,8 +13,8 @@ import {
   MissingTranslationHandler,
   MissingTranslationHandlerParams,
 } from '@ngx-translate/core';
-import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX } from 'localize-router';
-import { ILocalizeRouterParserConfig } from 'localize-router-http-loader';
+import { LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ALWAYS_SET_PREFIX } from '@gilsdav/ngx-translate-router';
+import { ILocalizeRouterParserConfig } from '@gilsdav/ngx-translate-router-http-loader';
 import { Observable, from } from 'rxjs';
 
 import { AppRoutingModule, ROUTES } from './app-routing.module';
@@ -47,6 +47,7 @@ export class WebpackTranslateLoader implements TranslateLoader {
     return from(import(/* webpackMode: "eager" */ `../themes/_active/assets/i18n/${lang}.json`));
   }
 }
+
 export class WebpackLocalizeRouterLoader extends LocalizeParser {
   load(routes: Routes): Promise<any> {
     return new Promise(resolve => {
@@ -59,6 +60,8 @@ export class WebpackLocalizeRouterLoader extends LocalizeParser {
     });
   }
 }
+
+@Injectable()
 export class MyMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
     // params: {key, translateService}
@@ -98,8 +101,8 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
         deps: [TranslateService, Location, LocalizeRouterSettings],
       },
     }),
-    NgbModule.forRoot(),
     UtilModule,
+    NgbModule,
   ],
   exports: [ReactiveFormsModule, CredModule, SearchModule, TopicModule, TranslateModule, UtilModule],
   providers: [

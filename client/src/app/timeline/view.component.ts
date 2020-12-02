@@ -17,7 +17,7 @@ import { TimelineService } from './services/timeline.service';
   },*/
 })
 export class TimelineViewComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('outer') private _outer: ElementRef;
+  @ViewChild('outer', { static: true }) private _outer: ElementRef;
 
   @Input() set range(rng: { start: string | Date; end: string | Date }) {
     if (rng.start && rng.end) {

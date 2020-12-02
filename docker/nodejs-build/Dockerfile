@@ -1,4 +1,4 @@
-FROM centos/nodejs-8-centos7
+FROM centos/nodejs-10-centos7
 
 USER root
 

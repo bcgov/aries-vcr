@@ -1,4 +1,4 @@
-import { Directive, Input, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef, Renderer2 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 interface LangContext {
@@ -11,7 +11,7 @@ interface LangContext {
 })
 export class WithLangDirective {
   constructor(
-    private _renderer: Renderer,
+    private _renderer: Renderer2,
     private _templateRef: TemplateRef<LangContext>,
     private _translate: TranslateService,
     private _viewRef: ViewContainerRef,
