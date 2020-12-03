@@ -1,4 +1,6 @@
 {
+  "Yes": "Yes",
+  "No": "No",
   "ROUTES": {
     "home": "home"
   },
