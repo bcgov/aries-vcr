@@ -105,6 +105,9 @@ export namespace Model {
   }
 
   export class Credential extends BaseModel {
+    _attributes: Attribute[];
+    _attribute_map: { [key: string]: Attribute };
+
     id: number;
     credential_type: CredentialType;
     credential_set: CredentialSet;
@@ -116,17 +119,11 @@ export namespace Model {
     last_issue_date: string;
 
     addresses: Address[];
-    _attributes: Attribute[];
-    _attribute_map: { [key: string]: Attribute };
     names: Name[];
     local_name: Name;
     remote_name: Name;
     topic: Topic;
     related_topics: Topic[];
-
-    get pageTitle(): string {
-      return this.credential_type && this.credential_type.description;
-    }
 
     static resourceName = "credential";
 
@@ -135,12 +132,17 @@ export namespace Model {
       credential_set: "CredentialSet",
       topic: "Topic"
     };
+
     static listPropertyMap = {
       addresses: "Address",
       attributes: "Attribute",
       names: "Name",
       related_topics: "Topic"
     };
+
+    get pageTitle(): string {
+      return this.credential_type && this.credential_type.description;
+    }
 
     get attributes(): Attribute[] {
       return this._attributes;
@@ -177,12 +179,15 @@ export namespace Model {
       return this.credential_type && this.credential_type.issuer;
     }
     set issuer(val: Issuer) {}
+
     get haveAddresses() {
       return this.topic.addresses && this.topic.addresses.length;
     }
+
     get haveAttributes() {
       return this.attributes && this.attributes.length;
     }
+
     get haveNames() {
       return this.names && this.names.length;
     }
@@ -353,14 +358,15 @@ export namespace Model {
   }
 
   export class Topic extends BaseModel {
+    _attributes: Attribute[];
+    _attribute_map: { [key: string]: Attribute };
+    _names: Name[];
+    _name_map: { [key: string]: Name };
+
     id: number;
     source_id: string;
     type: string;
-
     addresses: Address[];
-    _attributes: Attribute[];
-    _attribute_map: { [key: string]: Attribute };
-    names: Name[];
     local_name: Name;
     remote_name: Name;
 
@@ -378,6 +384,19 @@ export namespace Model {
     set attributes(attrs: Attribute[]) {
       this._attributes = attrs;
       this._attribute_map = mapByType(this._attributes);
+    }
+
+    get names(): Name[] {
+      return this._names;
+    }
+    set names(ns: Name[]) {
+      this._names = ns;
+      this._name_map = mapByType(this._names);
+      this._name_map['source_id'] = new Name({ id: this.id, type: 'source_id', text: this.source_id });
+    }
+
+    get name_map(): { [key: string]: Name } {
+      return this._name_map || {};
     }
 
     get attributes_ext(): Attribute[] {
@@ -406,6 +425,14 @@ export namespace Model {
       if (this.names && this.names.length) {
         return this.names[0].text;
       }
+    }
+
+    get hasNames(): boolean {
+      return !!(this.names && this.names.length);
+    }
+
+    get hasAlternateNames(): boolean {
+      return !!(this.alternateNames && this.alternateNames.length);
     }
 
     get preferredName(): Name {
@@ -437,6 +464,29 @@ export namespace Model {
       return null;
     }
 
+    get displayName(): Name {
+      if (!this.hasNames) {
+        return this.name_map['source_id'];
+      } else if (this.name_map['display_name']) {
+        return this.name_map['display_name'];
+      } else if (this.name_map['entity_name_assumed']) {
+        return this.name_map['entity_name_assumed'];
+      } else if (this.name_map['entity_name']) {
+        return this.name_map['entity_name'];
+      } else {
+        throw new Error('Topic display name could not be generated');
+      }
+    }
+
+    get alternateNames(): Name[] {
+      if (!this.hasNames) {
+        return [];
+      }
+      const nameMapCopy = { ...this.name_map };
+      delete nameMapCopy[this.displayName.type];
+      return Object.keys(nameMapCopy).map(key => nameMapCopy[key])
+    }
+
     get typeLabel(): string {
       if (this.type) return ("name." + this.type).replace(/_/g, "-");
       return "";
@@ -463,6 +513,14 @@ export namespace Model {
 
   export class TopicRelatedTo extends Topic {
     static childResource = "related_to";
+  }
+
+  export class TopicSearchResult extends Credential {
+    static resourceName = "v3/search/topic";
+  }
+
+  export class TopicFacetSearchResult extends Credential {
+    static resourceName = "v3/search/topic/facets";
   }
 
   export class TopicRelationship extends BaseModel {

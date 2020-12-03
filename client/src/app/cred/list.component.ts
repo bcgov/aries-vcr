@@ -7,7 +7,8 @@ import { TopicStateService } from 'app/topic/services/topic-state.service';
   templateUrl: '../../themes/_active/cred/list.component.html',
   styleUrls: [
     '../../themes/_active/cred/cred.scss',
-    '../../themes/_active/cred/list.component.scss']
+    '../../themes/_active/cred/list.component.scss'
+  ]
 })
 export class CredListComponent {
 
