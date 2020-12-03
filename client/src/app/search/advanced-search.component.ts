@@ -88,7 +88,7 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   ];
 
   yesNoSelected: ISelectOption = { value: 'false', description: 'No' }
-  credentialTypeSelected: ISelectOption = { value: '', description: 'Any credential type' };
+  credentialTypeSelected: ISelectOption = { value: '', description: 'any' };
 
   fg: FormGroup = new FormGroup({
     text: new FormControl(''),

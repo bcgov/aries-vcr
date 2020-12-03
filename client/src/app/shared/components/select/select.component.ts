@@ -22,6 +22,7 @@ export interface ISelectOption {
 export class SelectComponent implements OnInit, ControlValueAccessor {
   @Input() options: ISelectOption[];
   @Input() selected: ISelectOption;
+  @Input() translateSelector: string;
 
   value: any;
   disabled: boolean;

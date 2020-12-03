@@ -16,6 +16,7 @@
     "title": "Developer resources"
   },
   "name": {
+    "any": "Any credential type",
     "registration.registries.ca": "Registration",
     "relationship.registries.ca": "Relationship",
     "address.registries.ca": "Address",
