@@ -4,6 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizeRouterModule } from '@gilsdav/ngx-translate-router';
+import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { UtilModule } from '../util/util.module';
+
 import { CredFormComponent } from './form.component';
 import { CredListComponent } from './list.component';
 import { CredTypeListComponent } from './type-list.component';
@@ -14,9 +18,9 @@ import { TimelineCredComponent } from './timeline-cred.component';
 import { TimelineFormatterService } from './timeline-formatter.service';
 import { TimelineViewComponent } from '../timeline/view.component';
 import { CredSetTimelineComponent } from './timeline.component';
-import { UtilModule } from '../util/util.module';
 import { TopicArchiveListHeaderComponent } from './topic-archive-list-header/topic-archive-list-header.component';
 import { TopicArchiveListItemComponent } from './topic-archive-list-item/topic-archive-list-item.component';
+import { AlternateNamesComponent } from './alternate-names/alternate-names.component';
 
 
 const ROUTES = [];
@@ -33,7 +37,8 @@ const ROUTES = [];
     TimelineCredComponent,
     TimelineViewComponent,
     TopicArchiveListHeaderComponent,
-    TopicArchiveListItemComponent
+    TopicArchiveListItemComponent,
+    AlternateNamesComponent
   ],
   providers: [
     TimelineFormatterService,
@@ -45,6 +50,7 @@ const ROUTES = [];
     RouterModule.forChild(ROUTES),
     LocalizeRouterModule.forChild(ROUTES),
     UtilModule,
+    NgbCollapseModule
   ],
   exports: [
     CredFormComponent,

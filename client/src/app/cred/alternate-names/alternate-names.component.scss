@@ -1,0 +1,35 @@
+%fa-base {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.names-toggle {
+    padding: 0;
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+.names-title {
+    &::after {
+        @extend %fa-base;
+        content: "\f0d7";
+        padding-left: 0.3em;
+    }
+}
+  
+.names-info {
+    .card {
+        padding: 0.5rem;
+        border: none;
+        background: none;
+  
+       .list-unstyled {
+            margin: 0;
+        }
+    }
+}

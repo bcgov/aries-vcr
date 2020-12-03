@@ -93,7 +93,7 @@
   </ng-template>
 </div>
 <div class="creds-list creds-search" *ngIf="format === 'search'">
-  <div class="row cred-row" *ngFor="let cred of records">
+  <div class="row cred-row" *ngFor="let cred of records; index as idx">
     <div class="col-lg-8">
       <div class="cred-title">
         <a [routerLink]="cred.topic.link | localize" class="body-link cred-link name">
@@ -107,27 +107,7 @@
           <span class="cred-entity-type" *ngIf="topic.attribute_map.entity_type as type">
             &mdash; <attribute-view [record]="type"></attribute-view>
           </span>
-
-          <div *ngIf="topic.hasAlternateNames">
-            <a data-toggle="collapse" [href]="'#multiCollapse-' + topic.id" role="button" aria-expanded="false"
-              aria-controls="multiCollapse">
-              <span class="names-title">Other names/Identifiers</span>
-            </a>
-            <div class="row">
-              <div class="col">
-                <div class="collapse multi-collapse names-info show" [id]="'multiCollapse-' + topic.id">
-                  <div class="card card-body">
-                    <ul class="list-unstyled">
-                      <li *ngFor="let name of topic.alternateNames">
-                        {{ 'name.' + name.type | translate }}: {{ name.text }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          <alternate-names *ngIf="topic.hasAlternateNames" [topic]="topic" [isCollapsed]="idx"></alternate-names>
         </div>
       </div>
     </div>
