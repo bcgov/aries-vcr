@@ -39,15 +39,12 @@ router.register(r"topic", rest.TopicViewSet)
 router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
 
 # Search endpoints
-router.register(
-    r"search/credential/topic",
-    search.CredentialTopicSearchView,
-    "Credential Topic Search",
-)
-router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
-router.register(
-    r"search/autocomplete", search.NameAutocompleteView, "Name Autocomplete"
-)
+router.register(r"search/credential/topic",
+                search.CredentialTopicSearchView, "Credential Topic Search")
+router.register(r"search/credential",
+                search.CredentialSearchView, "Credential Search")
+router.register(r"search/autocomplete",
+                search.NameAutocompleteView, "Name Autocomplete")
 
 # Misc endpoints
 miscPatterns = [

@@ -1,10 +1,10 @@
-# from rest_framework.serializers import (
-#     BooleanField,
-#     ModelSerializer,
-#     SerializerMethodField,
-# )
+from rest_framework.serializers import (
+    # BooleanField,
+    ModelSerializer,
+    # SerializerMethodField,
+)
 
-# from api.v2 import utils
+from api.v2 import utils
 # from api.v2.models.Address import Address
 # from api.v2.models.Attribute import Attribute
 # from api.v2.models.Claim import Claim
@@ -14,7 +14,7 @@
 # from api.v2.models.Issuer import Issuer
 # from api.v2.models.Name import Name
 # from api.v2.models.Schema import Schema
-# from api.v2.models.Topic import Topic
+from api.v2.models.Topic import Topic
 # from api.v2.models.TopicRelationship import TopicRelationship
 
 
@@ -70,12 +70,12 @@
 #         exclude = ("logo_b64",)
 
 
-# class TopicSerializer(ModelSerializer):
-#     class Meta:
-#         model = Topic
-#         fields = list(
-#             utils.fetch_custom_settings("serializers", "Topic", "includeFields")
-#         )
+class TopicSerializer(ModelSerializer):
+    class Meta:
+        model = Topic
+        fields = list(
+            utils.fetch_custom_settings("serializers", "Topic", "includeFields")
+        )
 
 
 # class TopicRelationshipSerializer(ModelSerializer):

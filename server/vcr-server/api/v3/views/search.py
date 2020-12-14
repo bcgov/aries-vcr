@@ -2,20 +2,23 @@ import logging
 
 from django.conf import settings
 from django.http import Http404
-from drf_haystack.filters import HaystackOrderingFilter
-from drf_haystack.mixins import FacetMixin
 
-from rest_framework.mixins import ListModelMixin
-from rest_framework.viewsets import ViewSetMixin
-from drf_haystack.generics import HaystackGenericAPIView
-
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-from haystack.query import RelatedSearchQuerySet
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
+from rest_framework.mixins import ListModelMixin
+from rest_framework.viewsets import ViewSetMixin
+
+from haystack.query import RelatedSearchQuerySet
+
+from drf_haystack.generics import HaystackGenericAPIView
+from drf_haystack.filters import HaystackOrderingFilter
+from drf_haystack.mixins import FacetMixin
+from drf_haystack.viewsets import HaystackViewSet
+
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 from api.v2.models.Credential import Credential
 from api.v2.models.Name import Name
@@ -29,6 +32,7 @@ from api.v3.search_filters import (
 from api.v3.serializers.search import (
     NameAutocompleteSerializer,
     AddressAutocompleteSerializer,
+    TopicAutocompleteSerializer,
     AggregateAutocompleteSerializer,
 )
 
@@ -47,7 +51,6 @@ from api.v2.serializers.search import (
     CredentialTopicSearchSerializer,
 )
 
-
 from vcr_server.pagination import ResultLimitPagination
 
 LOGGER = logging.getLogger(__name__)
@@ -55,7 +58,7 @@ LOGGER = logging.getLogger(__name__)
 
 class AriesHaystackViewSet(ListModelMixin, ViewSetMixin, HaystackGenericAPIView):
     """
-    AriesHaystackViewSet overrides HaystackViewSet to remove the "RetrieveModeMixin".
+    AriesHaystackViewSet overrides HaystackViewSet to remove the "RetrieveModelMixin".
     The HaystackViewSet class provides the default ``list()`` and
     ``retrieve()`` actions with a haystack index as it's data source.
     """
@@ -303,9 +306,8 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
         return ret
 
 
+# DEPRECATED:
 class CredentialTopicSearchView(CredentialSearchView):
-
     object_class = TopicSearchQuerySet
     serializer_class = CredentialTopicSearchSerializer
     facet_objects_serializer_class = CredentialTopicSearchSerializer
-
