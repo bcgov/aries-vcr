@@ -13,7 +13,7 @@ from rest_framework.viewsets import ViewSetMixin
 from haystack.query import RelatedSearchQuerySet
 
 from drf_haystack.generics import HaystackGenericAPIView
-from drf_haystack.filters import HaystackOrderingFilter
+from drf_haystack.filters import HaystackOrderingFilter, HaystackAutocompleteFilter
 from drf_haystack.mixins import FacetMixin
 from drf_haystack.viewsets import HaystackViewSet
 
@@ -30,10 +30,7 @@ from api.v3.search_filters import (
     StatusFilter as AutocompleteStatusFilter,
 )
 from api.v3.serializers.search import (
-    NameAutocompleteSerializer,
-    AddressAutocompleteSerializer,
-    TopicAutocompleteSerializer,
-    AggregateAutocompleteSerializer,
+    AggregateAutocompleteSerializer
 )
 
 
@@ -65,7 +62,7 @@ class AriesHaystackViewSet(ListModelMixin, ViewSetMixin, HaystackGenericAPIView)
     pass
 
 
-class NameAutocompleteView(AriesHaystackViewSet):
+class AggregateAutocompleteView(AriesHaystackViewSet):
     """
     Return autocomplete results for a query string
     """
@@ -100,7 +97,7 @@ class NameAutocompleteView(AriesHaystackViewSet):
         responses={200: AggregateAutocompleteSerializer(many=True)},
     )
     def list(self, *args, **kwargs):
-        ret = super(NameAutocompleteView, self).list(*args, **kwargs)
+        ret = super(AggregateAutocompleteView, self).list(*args, **kwargs)
         return ret
 
     index_models = [Address, Name, Topic]

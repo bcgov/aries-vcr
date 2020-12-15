@@ -53,6 +53,8 @@
     <field name="name_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="name" dest="name_suggest"/>
 
+    <!-- The following fields are introduced in v3 -->
+
     <field name="name_text_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="name_text" dest="name_text_suggest"/>
 
@@ -62,11 +64,19 @@
     <field name="topic_source_id_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="topic_source_id" dest="topic_source_id_suggest"/>
 
+    <field name="topic_name_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="topic_name" dest="topic_name_suggest"/>
+
+    <field name="topic_address_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="topic_address" dest="topic_address_suggest"/>
+
     <!--
     ### More exact matching on name, used to score results
     -->
     <copyField source="name" dest="name_precise"/>
     <field name="name_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <!-- The following fields are introduced in v3 -->
 
     <copyField source="name_text" dest="name_text_precise"/>
     <field name="name_text_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
@@ -76,6 +86,12 @@
 
     <copyField source="topic_source_id" dest="topic_source_id_precise"/>
     <field name="topic_source_id_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <copyField source="topic_name" dest="topic_name_precise"/>
+    <field name="topic_name_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <copyField source="topic_address" dest="topic_address_precise"/>
+    <field name="topic_address_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
     <fieldType name="text_tokens" class="solr.TextField" positionIncrementGap="100">
         <analyzer>
