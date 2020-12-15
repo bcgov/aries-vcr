@@ -49,6 +49,7 @@ class AutocompleteSerializerBase():
 class NameAutocompleteSerializer(AutocompleteSerializerBase, HaystackSerializer):
 
     type = SerializerMethodField()
+    sub_type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
     topic_source_id = SerializerMethodField()
@@ -62,18 +63,23 @@ class NameAutocompleteSerializer(AutocompleteSerializerBase, HaystackSerializer)
         return "name"
 
     @staticmethod
+    def get_sub_type(obj):
+        return obj.name_type
+
+    @staticmethod
     def get_value(obj):
         return obj.name_text
 
     class Meta(NameSerializer.Meta):
         index_classes = [NameIndex]
-        fields = ("type", "value", "score", "topic_source_id",
+        fields = ("type", "sub_type", "value", "score", "topic_source_id",
                   "topic_type", "credential_id", "credential_type")
 
 
 class AddressAutocompleteSerializer(AutocompleteSerializerBase, HaystackSerializer):
 
     type = SerializerMethodField()
+    sub_type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
     topic_source_id = SerializerMethodField()
@@ -87,18 +93,23 @@ class AddressAutocompleteSerializer(AutocompleteSerializerBase, HaystackSerializ
         return "address"
 
     @staticmethod
+    def get_sub_type(obj):
+        return "civic_address"
+
+    @staticmethod
     def get_value(obj):
         return obj.address_civic_address
 
     class Meta(AddressSerializer.Meta):
         index_classes = [AddressIndex]
-        fields = ("type", "value", "score", "topic_source_id",
+        fields = ("type", "sub_type", "value", "score", "topic_source_id",
                   "topic_type" "credential_id", "credential_type")
 
 
 class TopicAutocompleteSerializer(AutocompleteSerializerBase, HaystackSerializer):
 
     type = SerializerMethodField()
+    sub_type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
     topic_source_id = SerializerMethodField()
@@ -110,6 +121,10 @@ class TopicAutocompleteSerializer(AutocompleteSerializerBase, HaystackSerializer
     @staticmethod
     def get_type(obj):
         return "topic"
+
+    @staticmethod
+    def get_sub_type(obj):
+        return "source_id"
 
     @staticmethod
     def get_value(obj):
@@ -134,7 +149,7 @@ class TopicAutocompleteSerializer(AutocompleteSerializerBase, HaystackSerializer
 
     class Meta(TopicSerializer.Meta):
         index_classes = [TopicIndex]
-        fields = ("type", "value", "score", "topic_source_id",
+        fields = ("type", "sub_type", "value", "score", "topic_source_id",
                   "topic_type", "credential_id", "credential_type")
 
 
