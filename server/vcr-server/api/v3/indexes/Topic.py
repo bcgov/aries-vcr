@@ -33,3 +33,6 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
             if not credential.revoked:
                 all_creds_revoked = False
         return all_creds_revoked
+
+    def get_updated_field(self):
+        return "update_timestamp"

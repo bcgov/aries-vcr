@@ -14,7 +14,7 @@ from ..indexes.Topic import TopicIndex
 from api.v2.models.Address import Address
 from api.v2.models.Name import Name
 
-from api.v2.serializers.rest import NameSerializer, AddressSerializer
+from api.v2.serializers.rest import NameSerializer, AddressSerializer, TopicSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -25,6 +25,9 @@ class NameAutocompleteSerializer(HaystackSerializer):
     type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
+    topic_source_id = SerializerMethodField()
+    topic_type = SerializerMethodField()
+    credential_id = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
@@ -38,9 +41,21 @@ class NameAutocompleteSerializer(HaystackSerializer):
     def get_score(obj):
         return obj.score
 
+    @staticmethod
+    def get_topic_source_id(obj):
+        return obj._object.credential.topic.source_id
+
+    @staticmethod
+    def get_topic_type(obj):
+        return obj._object.credential.topic.type
+
+    @staticmethod
+    def get_credential_id(obj):
+        return obj._object.credential.credential_id
+
     class Meta(NameSerializer.Meta):
         index_classes = [NameIndex]
-        fields = ("type", "value", "score")
+        fields = ("type", "value", "score", "topic_source_id", "topic_type", "credential_id")
 
 
 class AddressAutocompleteSerializer(HaystackSerializer):
@@ -48,6 +63,9 @@ class AddressAutocompleteSerializer(HaystackSerializer):
     type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
+    topic_source_id = SerializerMethodField()
+    topic_type = SerializerMethodField()
+    credential_id = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
@@ -61,9 +79,21 @@ class AddressAutocompleteSerializer(HaystackSerializer):
     def get_score(obj):
         return obj.score
 
+    @staticmethod
+    def get_topic_source_id(obj):
+        return obj._object.credential.topic.source_id
+
+    @staticmethod
+    def get_topic_type(obj):
+        return obj._object.credential.topic.type
+
+    @staticmethod
+    def get_credential_id(obj):
+        return obj._object.credential.credential_id
+
     class Meta(AddressSerializer.Meta):
         index_classes = [AddressIndex]
-        fields = ("type", "value", "score")
+        fields = ("type", "value", "score", "topic_source_id", "topic_type", "credential_id")
 
 
 class TopicAutocompleteSerializer(HaystackSerializer):
@@ -71,6 +101,8 @@ class TopicAutocompleteSerializer(HaystackSerializer):
     type = SerializerMethodField()
     value = SerializerMethodField()
     score = SerializerMethodField()
+    topic_source_id = SerializerMethodField()
+    topic_type = SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
@@ -84,9 +116,17 @@ class TopicAutocompleteSerializer(HaystackSerializer):
     def get_score(obj):
         return obj.score
 
-    class Meta(AddressSerializer.Meta):
+    @staticmethod
+    def get_topic_source_id(obj):
+        return obj._object.source_id
+
+    @staticmethod
+    def get_topic_type(obj):
+        return obj._object.type
+
+    class Meta(TopicSerializer.Meta):
         index_classes = [TopicIndex]
-        fields = ("type", "value", "score")
+        fields = ("type", "value", "score", "topic_source_id", "topic_type")
 
 
 class AggregateAutocompleteSerializer(HaystackSerializer):

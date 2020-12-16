@@ -7,8 +7,11 @@ import os
 import threading
 from datetime import datetime, timedelta
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import time
 import json
+
 
 from subscriptions.models import CredentialHookStats
 
@@ -121,6 +124,7 @@ def solr_counts():
         LOGGER.exception("Error when retrieving quickload counts from Solr")
         return False
 
+
 @swagger_auto_schema(
     method="get", operation_id="api_v2_status_reset", operation_description="quick load"
 )
@@ -203,6 +207,7 @@ def log_timing_method(method, start_time, end_time, success, data=None):
     finally:
         timing_lock.release()
 
+
 def log_timing_event(method, message, start_time, end_time, success):
     """Record a timing event in the system log or http endpoint."""
 
@@ -252,3 +257,79 @@ def log_timing_event(method, message, start_time, end_time, success):
             event_str
         )
         LOGGER.exception(e)
+
+
+def call_agent_with_retry(agent_url, post_method=True, payload=None, headers=None, retry_count=5, retry_wait=1):
+    """
+    Post with retry - if returned status is 503 (or other select errors) unavailable retry a few times.
+    """
+    try:
+        session = requests.Session()
+        retry = Retry(
+            total=retry_count,
+            connect=retry_count,
+            status=retry_count,
+            status_forcelist=[
+                429,  # too many requests
+                500,  # Internal server error
+                502,  # Bad gateway
+                503,  # Service unavailable
+                504   # Gateway timeout
+            ],
+            method_whitelist=['HEAD', 'TRACE', 'GET',
+                              'POST', 'PUT', 'OPTIONS', 'DELETE'],
+            read=0,
+            redirect=0,
+            backoff_factor=retry_wait
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        if post_method:
+            resp = session.post(
+                agent_url,
+                json=payload,
+                headers=headers,
+            )
+        else:
+            resp = session.get(
+                agent_url,
+                headers=headers,
+            )
+        return resp
+    except Exception as e:
+        LOGGER.error("Agent connection raised exception, raise: " + str(e))
+        raise
+
+
+def local_name(names=[]):
+    if len(names) == 0:
+        return None
+    try:
+        types = [name.type for name in names]
+        local_name = None
+        # Order matters here
+        for type in ['display_name', 'entity_name_assumed', 'entity_name']:
+            if type in types:
+                local_name = names[types.index(type)]
+                break
+        return local_name
+    except Exception as e:
+        LOGGER.error("Exception was raised: " + str(e))
+        return None
+
+
+
+def remote_name(names=[]):
+    if len(names) == 0:
+        return None
+    try:
+        types = [name.type for name in names]
+        remote_name = None
+        if 'entity_name_assumed' in types and 'entity_name' in types:
+            remote_name = names[types.index('entity_name')]
+        return remote_name
+    except Exception as e:
+        LOGGER.error("Exception was raised: " + str(e))
+        return None
+

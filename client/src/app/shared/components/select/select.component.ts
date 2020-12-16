@@ -22,17 +22,18 @@ export interface ISelectOption {
 export class SelectComponent implements OnInit, ControlValueAccessor {
   @Input() options: ISelectOption[];
   @Input() selected: ISelectOption;
+  @Input() translateSelector: string;
 
   value: any;
-  onModelChange: (any) => void;
-  onTouch: any;
   disabled: boolean;
+  onChange: (any) => void;
+  onTouch: (any) => void;
 
   writeValue(obj: any): void {
     this.value = obj;
   }
   registerOnChange(fn: any): void {
-    this.onModelChange = fn;
+    this.onChange = fn;
   }
   registerOnTouched(fn: any): void {
     this.onTouch = fn;
@@ -41,13 +42,13 @@ export class SelectComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  constructor(public translate: TranslateService) {}
+  constructor(public translate: TranslateService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   changeEvent(value: string) {
     this.value = value;
-    this.onModelChange(value);
-    this.onTouch();
+    this.onChange(value);
+    this.onTouch(value);
   }
 }

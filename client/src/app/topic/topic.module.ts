@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { LocalizeRouterModule } from 'localize-router';
+import { LocalizeRouterModule } from '@gilsdav/ngx-translate-router';
 import { CredModule } from '../cred/cred.module';
 import { UtilModule } from '../util/util.module';
 import { TopicFormComponent } from '../topic/form.component';

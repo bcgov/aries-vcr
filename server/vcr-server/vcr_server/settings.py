@@ -47,7 +47,7 @@ SECRET_KEY = os.getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "True"))
+DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "False"))
 
 DEMO_SITE = parse_bool(os.getenv("DEMO_SITE", "False"))
 
@@ -168,6 +168,15 @@ REST_FRAMEWORK = {
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {"basic": {"type": "basic"}},
     "USE_SESSION_AUTH": True,
+    "DEFAULT_PAGINATOR_INSPECTORS": [
+        'vcr_server.inspector.PageNumberPaginatorInspectorClass',
+    ],
+}
+
+CRED_TYPE_SYNONYMS = {
+    "registration": "registration.registries.ca",
+    "relationship": "relationship.registries.ca",
+    "business_number": "relationship.registries.ca",
 }
 
 LOGIN_URL = "rest_framework:login"
@@ -213,27 +222,31 @@ LOGGING = {
     "handlers": {
         "console_handler": {
             "class": "logging.StreamHandler",
-            "level": "DEBUG",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "formatter": "verbose",
         }
     },
     "loggers": {
-        "api": {"handlers": ["console_handler"], "level": "DEBUG", "propagate": False},
+        "api": {
+            "handlers": ["console_handler"],
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
+            "propagate": False
+        },
         "django": {
             "handlers": ["console_handler"],
-            "level": "INFO",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "propagate": False,
         },
         "django.request": {
             "handlers": ["console_handler"],
-            "level": "INFO",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "propagate": False,
         },
         # "django.db.backends": {"level": "DEBUG", "handlers": ["console_handler"]},
     },
     "root": {
         "handlers": ["console_handler"],
-        "level": str(os.getenv("DJANGO_LOG_LEVEL", "INFO")).upper(),
+        "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
         "propagate": False,
     }
 }
@@ -369,9 +382,9 @@ AGENT_SELF_CONNECTION_ALIAS = "credential-registry-self"
 AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
 AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
 
-ADMIN_REQUEST_HEADERS = {}
-if AGENT_ADMIN_API_KEY is not None:
-    ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
+ADMIN_REQUEST_HEADERS = {"Content-Type": "application/json"}
+if AGENT_ADMIN_API_KEY is not None and 0 < len(AGENT_ADMIN_API_KEY):
+    ADMIN_REQUEST_HEADERS["x-api-key"] = AGENT_ADMIN_API_KEY
 
 
 # API routing middleware settings

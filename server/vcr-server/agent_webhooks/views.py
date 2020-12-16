@@ -2,8 +2,8 @@ import json
 import logging
 import time
 import os
+import random
 
-import requests
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.v2.models.Credential import Credential as CredentialModel
-from api.v2.utils import log_timing_method, log_timing_event
+from api.v2.utils import log_timing_method, log_timing_event, call_agent_with_retry
 from agent_webhooks.utils.credential import Credential, CredentialManager
 from agent_webhooks.utils.issuer import IssuerManager
 
@@ -31,8 +31,12 @@ if PROCESS_INBOUND_CREDENTIALS.upper() == "TRUE":
     LOGGER.debug(">>> YES processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = True
 else:
-    LOGGER.debug(">>> NO not processing inbound credentials")
+    LOGGER.error(">>> NO not processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = False
+
+RANDOM_ERRORS = os.environ.get('RANDOM_ERRORS', 'false').upper() == "TRUE"
+if RANDOM_ERRORS:
+    LOGGER.error(">>> YES generating random credential processing errors")
 
 
 @swagger_auto_schema(method="post", auto_schema=None)
@@ -44,11 +48,11 @@ def agent_callback(request, topic):
     if "state" not in message:
         LOGGER.warn(f"Received aca-py webhook without state. message={message}")
 
-    state = message["state"]
+    state = message["state"] if "state" in message else None
     LOGGER.debug(f"Received aca-py webhook. state={state} message={message}")
 
     start_time = time.perf_counter()
-    method = "agent_callback." + topic + "." + state
+    method = "agent_callback." + topic + ("." + state if state else "")
     log_timing_event(method, message, start_time, None, False)
 
     # dispatch based on the topic type
@@ -157,7 +161,13 @@ def handle_credentials(state, message):
             raw_credential = message["raw_credential"]
 
             # You can include this exception to test error reporting
-            # raise Exception("Depliberate error to test problem reporting")
+            if RANDOM_ERRORS:
+                if 1 == random.randint(1,50):
+                    print("Raise exception 1 for " + credential_exchange_id)
+                    raise Exception("Depliberate error to test problem reporting 1")
+                if 1 == random.randint(1,50):
+                    print("Return processing error 1 for " + credential_exchange_id)
+                    return Response("Deliberate error to test bad request 1", status=status.HTTP_400_BAD_REQUEST)
 
             credential_data = {
                 "thread_id": message["thread_id"],
@@ -170,24 +180,67 @@ def handle_credentials(state, message):
             for attr in raw_credential["values"]:
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
+            existing = False
             if PROCESS_INBOUND_CREDENTIALS:
                 credential = Credential(credential_data)
-                # create one global manager instance
-                #credential_manager = CredentialManager()
-                credential = credential_manager.process(credential)
-                ret_credential_id = credential.credential_id
+
+                # sanity check that we haven't received this credential yet
+                credential_id = credential.thread_id
+                existing_credential = CredentialModel.objects.filter(credential_id=credential_id)
+                if 0 < len(existing_credential):
+                    # TODO - credential already exists in the database, what to do?
+                    LOGGER.error(" >>> Received duplicate for credential_id: " + credential_id + ", exch id: " + credential_exchange_id)
+                    existing = True
+                    ret_credential_id = credential_id
+                else:
+                    # new credential, populate database
+                    credential = credential_manager.process(credential)
+                    ret_credential_id = credential.credential_id
             else:
                 ret_credential_id = credential_data["thread_id"]
 
-            # Instruct the agent to store the credential in wallet
-            resp = requests.post(
-                f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
-                + f"/{credential_exchange_id}/store",
-                json={"credential_id": ret_credential_id},
-                headers=settings.ADMIN_REQUEST_HEADERS,
-            )
-            resp.raise_for_status()
+            # check if the credential is in the wallet already
+            if existing:
+                resp = call_agent_with_retry(
+                    f"{settings.AGENT_ADMIN_URL}/credential"
+                    + f"/{ret_credential_id}",
+                    post_method=False,
+                    headers=settings.ADMIN_REQUEST_HEADERS,
+                )
+                if resp.status_code == 404:
+                    existing = False
 
+            # Instruct the agent to store the credential in wallet
+            if not existing:
+                # post with retry - if returned status is 503 unavailable retry a few times
+                resp = call_agent_with_retry(
+                    f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
+                    + f"/{credential_exchange_id}/store",
+                    post_method=True,
+                    payload={"credential_id": ret_credential_id},
+                    headers=settings.ADMIN_REQUEST_HEADERS,
+                )
+                if resp.status_code == 404:
+                    # TODO assume the credential exchange has completed?
+                    resp = call_agent_with_retry(
+                        f"{settings.AGENT_ADMIN_URL}/credential"
+                        + f"/{ret_credential_id}",
+                        post_method=False,
+                        headers=settings.ADMIN_REQUEST_HEADERS,
+                    )
+                    if resp.status_code == 404:
+                        LOGGER.error(" >>> Error cred exchange id is missing but credential is not available for " + credential_exchange_id + ", " + ret_credential_id)
+                        return Response("Error cred exchange id is missing but credential is not available", status=status.HTTP_400_BAD_REQUEST)
+                    pass
+                else:
+                    resp.raise_for_status()
+
+            # You can include this exception to test error reporting
+            if RANDOM_ERRORS:
+                if 1 == random.randint(1,50):
+                    print("Return error 2 for " + credential_exchange_id)
+                    return Response("Deliberate error to test bad request 2", status=status.HTTP_400_BAD_REQUEST)
+            
             response_data = {
                 "success": True,
                 "details": f"Received credential with id {ret_credential_id}",
@@ -202,9 +255,10 @@ def handle_credentials(state, message):
         LOGGER.error(e)
         LOGGER.error(f"Send problem report for {credential_exchange_id}")
         # Send a problem report for the error
-        resp = requests.post(
+        resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem-report",
-            json={"explain_ltxt": str(e)},
+            post_method=True,
+            payload={"explain_ltxt": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
@@ -236,11 +290,13 @@ def handle_presentations(state, message):
 
         if presentation_request["name"].startswith("cred_id::"):
             cred_id = presentation_request["name"][9:]
-            resp = requests.get(
+            resp = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/credential/"
                 + f"{cred_id}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
+            resp.raise_for_status()
             wallet_credential = resp.json()
             wallet_credentials = {
                 "cred_info": wallet_credential,
@@ -251,12 +307,14 @@ def handle_presentations(state, message):
             credential_query = presentation_request["name"]
 
         if 0 == len(credentials):
-            resp = requests.get(
+            resp = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
                 + f"{message['presentation_exchange_id']}/credentials/"
                 + f"{referents}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
+            resp.raise_for_status()
             # All credentials from wallet that satisfy presentation request
             credentials = resp.json()
             credential_query = f"/present-proof/records/{message['presentation_exchange_id']}/credentials/{referents}"
@@ -332,13 +390,13 @@ def handle_presentations(state, message):
         # Finally, we should be able to send this payload to the agent for it
         # to finish the process and send the presentation back to the verifier
         # (to be verified)
-        resp = requests.post(
+        resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
             + f"{presentation_exchange_id}/send-presentation",
-            json=credentials_for_presentation,
+            post_method=True,
+            payload=credentials_for_presentation,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
-
         resp.raise_for_status()
 
     return Response()
@@ -390,6 +448,10 @@ def handle_register_issuer(message):
     """
     issuer_manager = IssuerManager()
     updated = issuer_manager.register_issuer(message)
+
+    # reset the global CredentialManager instance (to clear the CredentialType cache)
+    global credential_manager
+    credential_manager = CredentialManager()
 
     # update tagging policy
     tag_policy_updates = {}

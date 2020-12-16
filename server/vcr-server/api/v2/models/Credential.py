@@ -3,6 +3,8 @@ from django.utils import timezone
 
 from .Auditable import Auditable
 
+from api.v2.utils import local_name, remote_name
+
 
 class Credential(Auditable):
     topic = models.ForeignKey(
@@ -53,26 +55,10 @@ class Credential(Auditable):
         return cache[key]
 
     def get_local_name(self):
-        names = self.all_names
-        remote_name = None
-        for name in names:
-            if name.type == "entity_name_assumed":
-                return name
-            else:
-                remote_name = name
-        return remote_name
+        return local_name(self.all_names)
 
     def get_remote_name(self):
-        names = self.all_names
-        has_assumed_name = False
-        remote_name = None
-        for name in names:
-            if name.type == "entity_name_assumed":
-                has_assumed_name = True
-            else:
-                remote_name = name
-        if has_assumed_name:
-            return remote_name
+        return remote_name(self.all_names)
 
     # used by solr document index
     @property

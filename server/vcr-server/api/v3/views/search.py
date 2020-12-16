@@ -4,13 +4,18 @@ from django.conf import settings
 from django.http import Http404
 from drf_haystack.filters import HaystackOrderingFilter
 from drf_haystack.mixins import FacetMixin
-from drf_haystack.viewsets import HaystackViewSet
+
+from rest_framework.mixins import ListModelMixin
+from rest_framework.viewsets import ViewSetMixin
+from drf_haystack.generics import HaystackGenericAPIView
+
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from haystack.query import RelatedSearchQuerySet
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import APIException
 
 from api.v2.models.Credential import Credential
 from api.v2.models.Name import Name
@@ -48,7 +53,16 @@ from vcr_server.pagination import ResultLimitPagination
 LOGGER = logging.getLogger(__name__)
 
 
-class NameAutocompleteView(HaystackViewSet):
+class AriesHaystackViewSet(ListModelMixin, ViewSetMixin, HaystackGenericAPIView):
+    """
+    AriesHaystackViewSet overrides HaystackViewSet to remove the "RetrieveModeMixin".
+    The HaystackViewSet class provides the default ``list()`` and
+    ``retrieve()`` actions with a haystack index as it's data source.
+    """
+    pass
+
+
+class NameAutocompleteView(AriesHaystackViewSet):
     """
     Return autocomplete results for a query string
     """
@@ -83,12 +97,9 @@ class NameAutocompleteView(HaystackViewSet):
         responses={200: AggregateAutocompleteSerializer(many=True)},
     )
     def list(self, *args, **kwargs):
-        print(" >>> calling autocomplete")
         ret = super(NameAutocompleteView, self).list(*args, **kwargs)
-        print(" >>> autocomplete returns", ret)
         return ret
 
-    retrieve = None
     index_models = [Address, Name, Topic]
     load_all = True
     serializer_class = AggregateAutocompleteSerializer
@@ -96,7 +107,13 @@ class NameAutocompleteView(HaystackViewSet):
     ordering = "-score"
 
 
-class CredentialSearchView(HaystackViewSet, FacetMixin):
+class MissingTopicParametersException(APIException):
+    status_code = 400
+    default_detail = "Please provide at least a 'name' (2 characters or more) or 'topic_id'."
+    default_code = "bad_request"
+
+
+class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
     """
     Provide credential search via Solr with both faceted (/facets) and unfaceted results
     """
@@ -168,21 +185,16 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
 
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
-        print(" >>> calling credentialsearch")
+        """
+        Topic search.
+        Requires at minumum 'name' (2 characters or more) or 'topic_id' parameters to be supplied.
+        """
         if self.object_class is TopicSearchQuerySet:
             query = self.request.GET.get("name")
             topic_id = self.request.GET.get("topic_id")
             if not self.valid_search_query(query, topic_id):
-                raise Http404()
+                raise MissingTopicParametersException()
         ret = super(CredentialSearchView, self).list(*args, **kwargs)
-        print(" >>> credentialsearch returns", ret)
-        return ret
-
-    @swagger_auto_schema(manual_parameters=_swagger_params)
-    def retrieve(self, *args, **kwargs):
-        print(" >>> calling credentialsearch retrieve")
-        ret = super(CredentialSearchView, self).retrieve(*args, **kwargs)
-        print(" >>> credentialsearch retrieve returns", ret)
         return ret
 
     def valid_search_query(self, query, topic_id):
@@ -264,7 +276,6 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
     def __len__(self):
         ret = super(TopicSearchQuerySet, self).__len__()
         if ret > LIMIT:
-            print(" >>> Limiting the query LEN", ret, LIMIT)
             ret = LIMIT
         return ret
 
@@ -277,7 +288,6 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
         ).all()
 
     def _fill_cache(self, start, end, **kwargs):
-        print(" >>> Limiting the cache results", start, end, LIMIT)
         if start is not None:
             if start > LIMIT:
                 start = LIMIT
@@ -289,7 +299,6 @@ class TopicSearchQuerySet(RelatedSearchQuerySet):
     def count(self):
         ret = super(TopicSearchQuerySet, self).count()
         if ret > LIMIT:
-            print(" >>> Limiting the query count", ret, LIMIT)
             ret = LIMIT
         return ret
 
@@ -299,3 +308,4 @@ class CredentialTopicSearchView(CredentialSearchView):
     object_class = TopicSearchQuerySet
     serializer_class = CredentialTopicSearchSerializer
     facet_objects_serializer_class = CredentialTopicSearchSerializer
+

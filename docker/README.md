@@ -12,6 +12,8 @@ All application services are exposed to the host so they may be easily accessed 
   * Download and install the S2I CLI tool; [source-to-image](https://github.com/openshift/source-to-image/releases)
   * Make sure you extract the binary and make it available on your `PATH`.  The `manage` will look for the `s2i` executable on your `PATH`.  If it is not found you will get a message asking you to download and set it on your `PATH`.
 
+Additionally, a running instance of [von-network](https://github.com/bcgov/von-network) is necessary in order to provide a ledger for aries-vcr to connect to.
+
 ## Management Script
 
 The `manage` script wraps the Docker and S2I process in easy to use commands.
@@ -72,7 +74,7 @@ and
 
 # Running a Complete VON Network
 
-A quick start guide for running a local Indy Network, an instance of TheOrgBook and the dFlow issuer verifiers can be found in this [VON Network Quick Start Guide](https://github.com/bcgov/dFlow/blob/master/docker/VONNetworkQuickStartGuide.md).
+A quick start guide for running a local Indy Network, an instance of TheOrgBook and the dFlow issuer verifiers can be found in this [Using VON Network](https://github.com/bcgov/von-network/blob/master/docs/UsingVONNetwork.md) guide.
 
 ### Live Web Development
 

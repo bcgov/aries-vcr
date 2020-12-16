@@ -8,7 +8,6 @@ import time
 
 import django
 from django.conf import settings
-import requests
 from aiohttp import web
 
 from vcr_server.utils.boot import (
@@ -20,7 +19,7 @@ parser = argparse.ArgumentParser(description="aiohttp server example")
 parser.add_argument("--host", default=os.getenv("HTTP_HOST"))
 parser.add_argument("-p", "--port", default=os.getenv("HTTP_PORT"))
 parser.add_argument("-s", "--socket", default=os.getenv("SOCKET_PATH"))
-parser.add_argument("-d", "--delay", default=15)
+parser.add_argument("-d", "--delay", default=os.getenv("STARTUP_DELAY"))
 
 
 if __name__ == "__main__":
@@ -30,6 +29,8 @@ if __name__ == "__main__":
     if args.delay:
         print(">>> Short pause", args.delay)
         time.sleep(int(args.delay))
+    else:
+        print(">>> Start-up delay disabled ...")
 
     django.setup()
 
@@ -46,28 +47,6 @@ if __name__ == "__main__":
         if do_reindex:
             # queue in current asyncio loop
             run_django(run_reindex)
-
-    # Make agent connection to self to send self presentation requests later
-    response = requests.get(
-        f"{settings.AGENT_ADMIN_URL}/connections"
-        + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
-        headers=settings.ADMIN_REQUEST_HEADERS,
-    )
-    connections = response.json()
-
-    # We only need to form a self connection once
-    if not connections["results"]:
-        response = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/connections/create-invitation"
-            + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
-        response_body = response.json()
-        requests.post(
-            f"{settings.AGENT_ADMIN_URL}/connections/receive-invitation",
-            json=response_body["invitation"],
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
 
     app = init_app(on_startup=on_app_startup, on_cleanup=on_app_cleanup, on_shutdown=on_app_shutdown)
     web.run_app(

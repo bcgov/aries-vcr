@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AdvancedSearchRowComponent } from './advanced-search-row.component';
 
@@ -6,7 +6,7 @@ describe('AdvancedSearchRowComponent', () => {
   let component: AdvancedSearchRowComponent;
   let fixture: ComponentFixture<AdvancedSearchRowComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AdvancedSearchRowComponent ]
     })

@@ -4,7 +4,7 @@ import { GeneralDataService } from '../general-data.service';
 import { Fetch, Filter, Model } from '../data-types';
 import { CredListComponent } from '../cred/list.component';
 import { SearchInputComponent } from './input.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 
 const FilterSpec = [
@@ -71,7 +71,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   protected _filterType: string;
   protected _firstFilter = true;
   protected _lastQueryParams = null;
-  protected _loader = new Fetch.ModelListLoader(Model.CredentialFacetSearchResult, {persist: true});
+  protected _loader = new Fetch.ModelListLoader(Model.TopicFacetSearchResult, {persist: true});
   protected _querySub: Subscription;
   protected _typeSub: Subscription;
   protected _inited = false;

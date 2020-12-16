@@ -1,16 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, from, Observable, Observer, of, Subscription } from 'rxjs';
-import { _throw } from 'rxjs/observable/throw';
+
+import { BehaviorSubject, from, Observable, Observer, of, Subscription , throwError as _throw } from 'rxjs';
 import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
 
-import { environment } from '../environments/environment';
 import { Fetch, Filter, Model } from './data-types';
+
+import { API_URL } from './core/services/api.service';
 
 @Injectable()
 export class GeneralDataService {
-  public apiUrl = environment.API_URL;
   private _quickLoaded = false;
   private _orgData: { [key: string]: any } = {};
   private _recordCounts: { [key: string]: number } = {};
@@ -20,7 +20,11 @@ export class GeneralDataService {
   private _showDebugMsg = false;
   private _credTypeLang = {};
 
-  constructor(private _http: HttpClient, private _translate: TranslateService) {}
+  constructor(
+    @Inject(API_URL) private apiUrl: string,
+    private _http: HttpClient,
+    private _translate: TranslateService
+  ) { }
 
   get language() {
     return this._translate.currentLang;
@@ -28,6 +32,10 @@ export class GeneralDataService {
 
   get showDebugMsg() {
     return this._showDebugMsg;
+  }
+
+  get defaultTopicType(): string {
+    return this._defaultTopicType;
   }
 
   getRequestUrl(path: string): string {
@@ -41,10 +49,6 @@ export class GeneralDataService {
       if (!root.endsWith('/')) root += '/';
       return root + path;
     }
-  }
-
-  get defaultTopicType(): string {
-    return this._defaultTopicType;
   }
 
   loadJson(url, params?: HttpParams): Observable<Object> {
@@ -83,6 +87,9 @@ export class GeneralDataService {
     }
   }
 
+  /**
+   * DEPRECATED in v3
+   */
   quickLoad(force?) {
     return new Promise((resolve, reject) => {
       if (this._quickLoaded && !force) {
@@ -142,7 +149,6 @@ export class GeneralDataService {
     }
     let params = new HttpParams().set('q', term).append('inactive', inactive.toString());
 
-    console.log(params);
     return this.loadFromApi('search/autocomplete', params).pipe(
       map(response => {
         let ret = [];
@@ -226,7 +232,6 @@ export class GeneralDataService {
     else {
       let httpParams = this.makeHttpParams(params.query);
       let url = this.getRequestUrl(path);
-      //console.log("loadData(url)", url);
       if (params.primary) {
         if (this._loaderSub) this._loaderSub.unsubscribe();
         this._loaderSub = fetch.stream.subscribe(result => {
@@ -239,13 +244,11 @@ export class GeneralDataService {
 
   public loadFacetOptions(data) {
     let fields = (data.info && data.info.facets && data.info.facets.fields) || {};
-    //console.log(fields);
     let options = {
       credential_type_id: [],
       issuer_id: [],
       'category:entity_type': [],
     };
-    //console.log(options);
     if (fields) {
       for (let optname in fields) {
         for (let optitem of fields[optname]) {
@@ -288,6 +291,9 @@ export class GeneralDataService {
     this._currentResultSubj.next(result);
   }
 
+  /**
+   * DEPRECATED in v3
+   */
   deleteRecord(mod: string, id: string) {
     return new Promise(resolve => {
       let baseurl = this.getRequestUrl(`${mod}/${id}/delete`);
@@ -356,7 +362,7 @@ export class GeneralDataService {
   translateClaimDescription(credTypeId, claimName, defVal?) {
     let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_descriptions');
     return credLang.pipe(
-      map(values => {
+      map((values: any) => {
         let lang = this.language;
         let ret = undefined;
         if (values && claimName in values) {
@@ -371,7 +377,7 @@ export class GeneralDataService {
   translateClaimLabel(credTypeId, claimName, defVal?) {
     let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'claim_labels');
     return credLang.pipe(
-      map(values => {
+      map((values: any) => {
         let lang = this.language;
         let ret = undefined;
         if (values && claimName in values) {
@@ -387,7 +393,7 @@ export class GeneralDataService {
     let credLang = this.getCredentialTypeLanguageKey(credTypeId, 'category_labels');
     let lbl = `category.${catType}.${catValue}`;
     return credLang.pipe(
-      map(values => {
+      map((values: any) => {
         let lang = this.language;
         let ret = undefined;
         if (values && catType in values) {
@@ -396,8 +402,9 @@ export class GeneralDataService {
         return ret;
       }),
       mergeMap(val => {
-        if (val === undefined)
-          return this._translate.stream(lbl).pipe(map(lbl => (!lbl || lbl.substring(0, 2) == '??' ? catValue : lbl)));
+        if (val === undefined) {
+          return this._translate.stream(lbl).pipe(map(lbl => (!lbl || lbl.substring(0, 2) == '??' || lbl.startsWith('category.') ? catValue : lbl)));
+        }
         return of(val);
       }),
     );

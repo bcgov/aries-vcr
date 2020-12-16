@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { AppConfigService } from 'app/app-config.service';
 import { GeneralDataService } from 'app/general-data.service';
 import { Fetch, Model } from '../data-types';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { TimelineFormatterService } from './timeline-formatter.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'cred-form',
@@ -21,6 +22,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
   mode: string = 'view';
   _timelineRange: any;
   _timelineRows: any;
+  _verifyLoading = true;
 
   private _loader = new Fetch.ModelLoader(Model.CredentialFormatted);
   private _verify = new Fetch.ModelLoader(Model.CredentialVerifyResult);
@@ -31,6 +33,7 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private _dataService: GeneralDataService,
     private _route: ActivatedRoute,
     private _formatter: TimelineFormatterService,
+    private _httpClient: HttpClient,
   ) { }
 
   ngOnInit() {
@@ -69,6 +72,10 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
     return this._verify.stream;
   }
 
+  get verifyLoading() {
+    return this._verifyLoading;
+  }
+
   toggleShowClaims(evt?) {
     this.claimsVisible = !this.claimsVisible;
     if(evt) evt.preventDefault();
@@ -79,11 +86,52 @@ export class CredFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if(evt) evt.preventDefault();
   }
 
-  verifyCred(evt?) {
-    if(this.result.data.revoked)
+  delay(ms: number) {
+      return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
+  async verifyCred(evt?) {
+    if(this.result.data.revoked) {
       this._verify.reset();
-    else
-      this._dataService.loadRecord(this._verify, this.id);
+    } else {
+      // this is now 2 steps (in v3 api) - first to initiate the proof request
+      let verify_req_url = "/api/v3/credential/" + this.id + "/verify";
+      let verify_proof_req = await this._httpClient.get(verify_req_url).toPromise();
+
+      let proof_exch_id;
+      if ("presentation_exchange" in verify_proof_req) {
+        let proof_exch = verify_proof_req["presentation_exchange" as keyof typeof verify_proof_req];
+        if ("presentation_exchange_id" in proof_exch) {
+          proof_exch_id = proof_exch["presentation_exchange_id" as keyof typeof proof_exch];
+        }
+      }
+
+      // ... and then in a loop, check for proof request result
+      let initial_delay = 1000;
+      let delay_factor = 2;
+      let max_delay = 8000;
+      let delay = initial_delay;
+      let waiting_for_proof = true;
+      while (waiting_for_proof) {
+        await this.delay(delay);
+        let verify_url = verify_req_url + "/" + proof_exch_id;
+        let verify_proof = await this._httpClient.get(verify_url).toPromise();
+
+        if ("state" in verify_proof) {
+          let verify_proof_state = verify_proof["state" as keyof typeof verify_proof];
+          if (verify_proof_state === "verified") {
+            waiting_for_proof = false;
+          }
+        }
+
+        // backoff on the delay interval each loop
+        delay = Math.min(max_delay, delay * delay_factor);
+      }
+
+      // finally call our data load service on the verification result
+      this._dataService.loadRecord(this._verify, this.id, {"extPath": "verify/" + proof_exch_id});
+      this._verifyLoading = false;
+    }
   }
 
   updateRows() {

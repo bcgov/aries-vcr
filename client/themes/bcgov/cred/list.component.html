@@ -93,23 +93,21 @@
   </ng-template>
 </div>
 <div class="creds-list creds-search" *ngIf="format === 'search'">
-  <div class="row cred-row" *ngFor="let cred of records">
+  <div class="row cred-row" *ngFor="let cred of records; index as idx">
     <div class="col-lg-8">
       <div class="cred-title">
         <a [routerLink]="cred.topic.link | localize" class="body-link cred-link name">
-          {{ cred.topic.local_name.text }}
+          {{ cred.topic.displayName.text }}
         </a>
-      </div>
-      <div class="cred-topic small" *ngIf="cred.topic as topic">
-        {{ topic.typeLabel | translate }}
-        <span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
-          <attribute-view [record]="status"></attribute-view>
-        </span>
-        <span class="cred-entity-type" *ngIf="topic.attribute_map.entity_type as type">
-          &mdash; <attribute-view [record]="type"></attribute-view>
-        </span>
-        <div *ngIf="cred.topic.remote_name">
-          ( {{ cred.topic.remote_name?.text }} )
+        <div class="cred-topic small" *ngIf="cred.topic as topic">
+          {{ topic.typeLabel | translate }}
+          <span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
+            <attribute-view [record]="status"></attribute-view>
+          </span>
+          <span class="cred-entity-type" *ngIf="topic.attribute_map.entity_type as type">
+            &mdash; <attribute-view [record]="type"></attribute-view>
+          </span>
+          <alternate-names *ngIf="topic.hasAlternateNames" [topic]="topic" [isCollapsed]="idx"></alternate-names>
         </div>
       </div>
     </div>
@@ -139,4 +137,3 @@
       </div>
     </div>
   </div>
-</div>

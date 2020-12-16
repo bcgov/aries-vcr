@@ -46,7 +46,7 @@ services:
       - 5858:5858
     volumes:
       - "../client/src:/opt/app-root/src/src"
-      - "${THEME_PATH:-../client/themes}:/tmp/vcr-theme"
+      - "${THEME_PATH:-../client/themes}:/opt/app-root/src/themes"
     depends_on:
       - vcr-api
 
@@ -117,7 +117,6 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
-      - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
       - RECORD_TIMINGS=${RECORD_TIMINGS}
       - TRACE_EVENTS=${TRACE_EVENTS}
@@ -125,6 +124,8 @@ services:
       - TRACE_TARGET=${TRACE_TARGET}
       - RTI_ABORT_ON_ERRORS=${RTI_ABORT_ON_ERRORS}
       - RTI_RAISE_ERRORS=${RTI_RAISE_ERRORS}
+      - RANDOM_ERRORS=${RANDOM_ERRORS}
+      - STARTUP_DELAY=${STARTUP_DELAY}
     volumes:
       - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
@@ -133,10 +134,10 @@ services:
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
+    # when running "./manage scale" comment out or remove these port mappings:
     ports:
-      - "${API_HTTP_PORT}:8080"
+      - "${EXPOSED_API_HTTP_PORT}:8080"
       - 3000:3000
-      - "${AGENT_WEBHOOK_PORT}:${AGENT_WEBHOOK_PORT}"
     depends_on:
       - vcr-db
       - wallet-db
@@ -177,6 +178,7 @@ services:
       - AGENT_TRACE_MODE=${AGENT_TRACE_MODE}
     networks:
       - vcr
+    # when running "./manage scale" comment out or remove these port mappings:
     ports:
       - ${HTTP_INTERFACE_PORT}:${HTTP_INTERFACE_PORT}
       - ${WS_INTERFACE_PORT}:${WS_INTERFACE_PORT}
@@ -216,6 +218,7 @@ services:
         --auto-respond-credential-offer \
         --auto-respond-credential-request \
         --auto-verify-presentation \
+        --exch-use-unencrypted-tags \
         --wallet-type 'indy' \
         --wallet-name 'icat_agent_wallet' \
         --wallet-key '${WALLET_ENCRYPTION_KEY}' \
@@ -315,7 +318,7 @@ services:
     command: >
       /bin/sh -c "
         echo sleeping ...;
-        sleep 20;
+        sleep 45;
         ./start.sh;"
 
   #
@@ -325,6 +328,7 @@ services:
     image: solr
     environment:
       - CORE_NAME=${CORE_NAME}
+      - SOLR_LOG_LEVEL=WARN
     networks:
       - vcr
     ports:
@@ -334,7 +338,7 @@ services:
   # vcr-db
   #
   vcr-db:
-    image: postgresql
+    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -351,7 +355,7 @@ services:
   # wallet-db
   #
   wallet-db:
-    image: postgresql
+    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}

@@ -1,4 +1,6 @@
 {
+  "Yes": "Yes",
+  "No": "No",
   "ROUTES": {
     "home": "home"
   },
@@ -154,6 +156,7 @@
     "input-label": "Organization Name or Registration ID",
     "no-results": "No results",
     "placeholder": "search",
+    "advanced-prompt": "Please enter a search name or credential type above in order to proceed.",
     "prompt": "Please enter your search query above in order to proceed.",
     "records-prefix": "Records ",
     "results-error": "Your query could not be completed at this time.",
