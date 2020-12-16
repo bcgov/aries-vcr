@@ -5,14 +5,14 @@ from rest_framework.serializers import (
 )
 
 from api.v2 import utils
-# from api.v2.models.Address import Address
+from api.v2.models.Address import Address
 # from api.v2.models.Attribute import Attribute
 # from api.v2.models.Claim import Claim
 # from api.v2.models.Credential import Credential
 # from api.v2.models.CredentialSet import CredentialSet
 # from api.v2.models.CredentialType import CredentialType
 # from api.v2.models.Issuer import Issuer
-# from api.v2.models.Name import Name
+from api.v2.models.Name import Name
 # from api.v2.models.Schema import Schema
 from api.v2.models.Topic import Topic
 # from api.v2.models.TopicRelationship import TopicRelationship
@@ -70,6 +70,7 @@ from api.v2.models.Topic import Topic
 #         exclude = ("logo_b64",)
 
 
+# TODO: Move commonly used serializers to a version agnostic folder
 class TopicSerializer(ModelSerializer):
     class Meta:
         model = Topic
@@ -88,12 +89,13 @@ class TopicSerializer(ModelSerializer):
 #         )
 
 
-# class AddressSerializer(ModelSerializer):
-#     class Meta:
-#         model = Address
-#         fields = list(
-#             utils.fetch_custom_settings("serializers", "Address", "includeFields")
-#         )
+# TODO: Move commonly used serializers to a version agnostic folder
+class AddressSerializer(ModelSerializer):
+    class Meta:
+        model = Address
+        fields = list(
+            utils.fetch_custom_settings("serializers", "Address", "includeFields")
+        )
 
 
 # class ClaimSerializer(ModelSerializer):
@@ -102,10 +104,11 @@ class TopicSerializer(ModelSerializer):
 #         fields = "__all__"
 
 
-# class NameSerializer(ModelSerializer):
-#     class Meta:
-#         model = Name
-#         fields = "__all__"
+# TODO: Move commonly used serializers to a version agnostic folder
+class NameSerializer(ModelSerializer):
+    class Meta:
+        model = Name
+        fields = "__all__"
 
 
 # class AttributeSerializer(ModelSerializer):

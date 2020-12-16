@@ -30,7 +30,8 @@ from api.v3.search_filters import (
     StatusFilter as AutocompleteStatusFilter,
 )
 from api.v3.serializers.search import (
-    AggregateAutocompleteSerializer
+    AggregateAutocompleteSerializer,
+    TopicSearchSerializer
 )
 
 
@@ -113,6 +114,46 @@ class MissingTopicParametersException(APIException):
     default_code = "bad_request"
 
 
+class TopicSearchQuerySet(RelatedSearchQuerySet):
+    """
+    Optimize queries when fetching topic-oriented credential search results
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(TopicSearchQuerySet, self).__init__(*args, **kwargs)
+        self._load_all_querysets[Credential] = self.topic_queryset()
+
+    def __len__(self):
+        ret = super(TopicSearchQuerySet, self).__len__()
+        if ret > LIMIT:
+            ret = LIMIT
+        return ret
+
+    def topic_queryset(self):
+        return Credential.objects.select_related(
+            "credential_type",
+            "credential_type__issuer",
+            "credential_type__schema",
+            "topic",
+        ).all()
+
+    def _fill_cache(self, start, end, **kwargs):
+        if start is not None:
+            if start > LIMIT:
+                start = LIMIT
+        if end is not None:
+            if end > LIMIT:
+                end = LIMIT
+        super(TopicSearchQuerySet, self)._fill_cache(start, end, **kwargs)
+
+    def count(self):
+        ret = super(TopicSearchQuerySet, self).count()
+        if ret > LIMIT:
+            ret = LIMIT
+        return ret
+
+
+# DEPRECATED
 class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
     """
     Provide credential search via Solr with both faceted (/facets) and unfaceted results
@@ -264,47 +305,21 @@ class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
 LIMIT = getattr(settings, "HAYSTACK_MAX_RESULTS", 200)
 
 
-class TopicSearchQuerySet(RelatedSearchQuerySet):
-    """
-    Optimize queries when fetching topic-oriented credential search results
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(TopicSearchQuerySet, self).__init__(*args, **kwargs)
-        self._load_all_querysets[Credential] = self.topic_queryset()
-
-    def __len__(self):
-        ret = super(TopicSearchQuerySet, self).__len__()
-        if ret > LIMIT:
-            ret = LIMIT
-        return ret
-
-    def topic_queryset(self):
-        return Credential.objects.select_related(
-            "credential_type",
-            "credential_type__issuer",
-            "credential_type__schema",
-            "topic",
-        ).all()
-
-    def _fill_cache(self, start, end, **kwargs):
-        if start is not None:
-            if start > LIMIT:
-                start = LIMIT
-        if end is not None:
-            if end > LIMIT:
-                end = LIMIT
-        super(TopicSearchQuerySet, self)._fill_cache(start, end, **kwargs)
-
-    def count(self):
-        ret = super(TopicSearchQuerySet, self).count()
-        if ret > LIMIT:
-            ret = LIMIT
-        return ret
-
-
 # DEPRECATED:
 class CredentialTopicSearchView(CredentialSearchView):
     object_class = TopicSearchQuerySet
     serializer_class = CredentialTopicSearchSerializer
     facet_objects_serializer_class = CredentialTopicSearchSerializer
+
+
+class TopicSearchView(HaystackViewSet):
+    """
+    Provide Topic search via Solr with both faceted (/facets) and unfaceted results
+    """
+
+    permission_classes = (permissions.AllowAny,)
+    
+    index_models = [Topic]
+
+    serializer_class = TopicSearchSerializer
+

@@ -43,11 +43,15 @@ api_views = [
 # Search endpoints
 router.register(r"search/autocomplete",
                 search.AggregateAutocompleteView, "Aggregate Autocomplete")
+# DEPRECATED:
 router.register(r"search/credential",
                 search.CredentialSearchView, "Credential Search")
 # DEPRECATED:
 router.register(r"search/topic",
                 search.CredentialTopicSearchView, "Credential Topic Search")
+# TODO: Move to v4?
+router.register(r"new/search/topic",
+                search.TopicSearchView, "Topic Search")
 
 
 swaggerPatterns = [
