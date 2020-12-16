@@ -7,10 +7,7 @@ from ..indexes.Address import AddressIndex
 from ..indexes.Name import NameIndex
 from ..indexes.Topic import TopicIndex
 
-from api.v2.models.Address import Address
-from api.v2.models.Name import Name
-
-from api.v3.serializers.rest import (
+from api.v2.serializers.rest import (
     AddressSerializer,
     NameSerializer,
     TopicSerializer
@@ -37,6 +34,10 @@ class AriesSearchSerializer(HaystackSerializer):
 
     @staticmethod
     def get_sub_type(obj):
+        return None
+
+    @staticmethod
+    def get_value(obj):
         return None
 
     @staticmethod

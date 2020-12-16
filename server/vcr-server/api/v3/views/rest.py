@@ -246,7 +246,8 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
                 result["result"]["presentaiton"] = presentation_state["presentation"]
 
         if result is None:
-            result = {"success": False, "results": "Presentation request response not available."}
+            result = {"success": False,
+                      "results": "Presentation request response not available."}
 
         return JsonResponse(result)
 

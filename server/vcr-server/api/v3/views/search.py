@@ -34,7 +34,6 @@ from api.v3.serializers.search import (
     TopicSearchSerializer
 )
 
-
 from api.v2.search.filters import (
     CategoryFilter,
     CredNameFilter,
@@ -50,6 +49,7 @@ from api.v2.serializers.search import (
 )
 
 from vcr_server.pagination import ResultLimitPagination
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -318,8 +318,7 @@ class TopicSearchView(HaystackViewSet):
     """
 
     permission_classes = (permissions.AllowAny,)
-    
+
     index_models = [Topic]
 
     serializer_class = TopicSearchSerializer
-

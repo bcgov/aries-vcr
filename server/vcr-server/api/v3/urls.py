@@ -53,7 +53,6 @@ router.register(r"search/topic",
 router.register(r"new/search/topic",
                 search.TopicSearchView, "Topic Search")
 
-
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
 ]
