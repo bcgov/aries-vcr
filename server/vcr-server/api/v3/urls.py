@@ -32,8 +32,6 @@ router.register(r"issuer", rest.IssuerViewSet, "Credential Issuer")
 router.register(r"schema", rest.SchemaViewSet, "Credential Schema")
 router.register(r"credentialtype", rest.CredentialTypeViewSet, "Credential Type")
 router.register(r"credential", rest.CredentialViewSet, "Credential")
-# router.register(r"topic", rest.TopicViewSet)
-# router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
 
 api_views = [
     path("search/topic/attribute/<attribute_query>", rest.TopicAttributeView.as_view()),
@@ -49,9 +47,6 @@ router.register(r"search/credential",
 # DEPRECATED:
 router.register(r"search/topic",
                 search.CredentialTopicSearchView, "Credential Topic Search")
-# TODO: Move to v4?
-router.register(r"new/search/topic",
-                search.TopicSearchView, "Topic Search")
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")

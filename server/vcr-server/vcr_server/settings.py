@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "vcr_server",
     "api.v2",
     "api.v3",
+    "api.v4",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "subscriptions",  # only required when using webhook subscriptions
@@ -397,6 +398,7 @@ HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP = {
 HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
     u"v2": u"v2",
     u"v3": u"v3",
+    u"v4": u"v4",
     u"latest": u"v3",
     u"default": u"v2",
 }

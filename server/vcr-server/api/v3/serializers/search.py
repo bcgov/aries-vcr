@@ -176,11 +176,3 @@ class AggregateAutocompleteSerializer(HaystackSerializer):
                 "topic_all_credentials_revoked",
             ),
         }
-
-
-class TopicSearchSerializer(TopicSearchSerializerBase):
-
-    class Meta(TopicSerializer.Meta):
-        index_classes = [TopicIndex]
-        fields = ("type", "sub_type", "value", "score", "topic_source_id", "topic_type",
-                  "topic_name", "topic_address", "credential_id", "credential_type")

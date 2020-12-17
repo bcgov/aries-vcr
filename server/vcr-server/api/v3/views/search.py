@@ -31,7 +31,6 @@ from api.v3.search_filters import (
 )
 from api.v3.serializers.search import (
     AggregateAutocompleteSerializer,
-    TopicSearchSerializer
 )
 
 from api.v2.search.filters import (
@@ -310,15 +309,3 @@ class CredentialTopicSearchView(CredentialSearchView):
     object_class = TopicSearchQuerySet
     serializer_class = CredentialTopicSearchSerializer
     facet_objects_serializer_class = CredentialTopicSearchSerializer
-
-
-class TopicSearchView(HaystackViewSet):
-    """
-    Provide Topic search via Solr with both faceted (/facets) and unfaceted results
-    """
-
-    permission_classes = (permissions.AllowAny,)
-
-    index_models = [Topic]
-
-    serializer_class = TopicSearchSerializer
