@@ -41,7 +41,6 @@ api_views = [
 # Search endpoints
 router.register(r"search/autocomplete",
                 search.AggregateAutocompleteView, "Aggregate Autocomplete")
-# DEPRECATED:
 router.register(r"search/credential",
                 search.CredentialSearchView, "Credential Search")
 # DEPRECATED:

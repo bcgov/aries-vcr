@@ -399,6 +399,7 @@ HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
     u"v2": u"v2",
     u"v3": u"v3",
     u"v4": u"v4",
+    u"alpha": u"v4",
     u"latest": u"v3",
     u"default": u"v2",
 }
