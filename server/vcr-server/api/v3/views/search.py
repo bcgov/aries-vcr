@@ -226,25 +226,7 @@ class CredentialSearchView(AriesHaystackViewSet, FacetMixin):
 
     @swagger_auto_schema(manual_parameters=credential_search_swagger_params)
     def list(self, *args, **kwargs):
-        """
-        Topic search.
-        Requires at minumum 'name' (2 characters or more) or 'topic_id' parameters to be supplied.
-        """
-        if self.object_class is TopicSearchQuerySet:
-            query = self.request.GET.get("name")
-            topic_id = self.request.GET.get("topic_id")
-            if not self.valid_search_query(query, topic_id):
-                raise MissingTopicParametersException()
-        ret = super(CredentialSearchView, self).list(*args, **kwargs)
-        return ret
-
-    def valid_search_query(self, query, topic_id):
-        is_valid = False
-        if isinstance(query, str) and len(query.strip()) >= 2:
-            is_valid = True
-        if isinstance(topic_id, str) and len(topic_id.strip()) > 0:
-            is_valid = True
-        return is_valid
+        return super(CredentialSearchView, self).list(*args, **kwargs)
 
     index_models = [Credential]
     load_all = True
@@ -301,6 +283,29 @@ LIMIT = getattr(settings, "HAYSTACK_MAX_RESULTS", 200)
 
 # DEPRECATED:
 class CredentialTopicSearchView(CredentialSearchView):
+
+    @swagger_auto_schema(manual_parameters=credential_search_swagger_params)
+    def list(self, *args, **kwargs):
+        """
+        Topic search.
+        Requires at minumum 'name' (2 characters or more) or 'topic_id' parameters to be supplied.
+        """
+        if self.object_class is TopicSearchQuerySet:
+            query = self.request.GET.get("name")
+            topic_id = self.request.GET.get("topic_id")
+            if not self.valid_search_query(query, topic_id):
+                raise MissingTopicParametersException()
+        ret = super(CredentialSearchView, self).list(*args, **kwargs)
+        return ret
+
+    def valid_search_query(self, query, topic_id):
+        is_valid = False
+        if isinstance(query, str) and len(query.strip()) >= 2:
+            is_valid = True
+        if isinstance(topic_id, str) and len(topic_id.strip()) > 0:
+            is_valid = True
+        return is_valid
+
     object_class = TopicSearchQuerySet
     serializer_class = CredentialTopicSearchSerializer
     facet_objects_serializer_class = CredentialTopicSearchSerializer
