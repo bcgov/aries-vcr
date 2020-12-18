@@ -55,6 +55,30 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
 
     permission_classes = (permissions.AllowAny,)
 
+    index_models = [Topic]
+    serializer_class = SearchSerializer
+    facet_serializer_class = FacetSerializer
+    facet_objects_serializer_class = SearchSerializer
+    ordering_fields = ("effective_date", "revoked_date", "score")
+    ordering = "-score"
+
+    # Backends need to be added in the order of filter operations to be applied
+    filter_backends = [
+        TopicQueryFilter,
+        TopicCategoryFilter,
+        ExactFilter,
+        StatusFilter,
+        HaystackOrderingFilter,
+    ]
+
+    # Backends need to be added in the order of filter operations to be applied
+    facet_filter_backends = [
+        TopicQueryFilter,
+        ExactFilter,
+        StatusFilter,
+        CustomFacetFilter,
+    ]
+
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
         return super(SearchView, self).list(*args, **kwargs)
@@ -82,28 +106,4 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
             facet_queryset.facet_counts(), objects=result_queryset, many=False
         )
         return Response(serializer.data)
-
-    index_models = [Topic]
-    serializer_class = SearchSerializer
-    facet_serializer_class = FacetSerializer
-    facet_objects_serializer_class = SearchSerializer
-    ordering_fields = ("effective_date", "revoked_date", "score")
-    ordering = "-score"
-
-    # Backends need to be added in the order of filter operations to be applied
-    filter_backends = [
-        TopicQueryFilter,
-        TopicCategoryFilter,
-        ExactFilter,
-        StatusFilter,
-        HaystackOrderingFilter,
-    ]
-
-    # Backends need to be added in the order of filter operations to be applied
-    facet_filter_backends = [
-        TopicQueryFilter,
-        ExactFilter,
-        StatusFilter,
-        CustomFacetFilter,
-    ]
 

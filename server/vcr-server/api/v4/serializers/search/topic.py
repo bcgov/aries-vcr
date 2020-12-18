@@ -1,8 +1,14 @@
 import logging
 
+from rest_framework.serializers import SerializerMethodField
 from drf_haystack.serializers import HaystackFacetSerializer
 
-from api.v2.serializers.rest import TopicSerializer
+from api.v2.models import Credential
+
+from api.v2.serializers.rest import (
+    ExpandedCredentialSerializer,
+    TopicSerializer
+)
 
 from api.v3.indexes.Topic import TopicIndex
 
@@ -13,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class SearchSerializer(TopicSearchSerializerBase):
     # TODO: Format response outputs porperly
+
     class Meta(TopicSerializer.Meta):
         index_classes = [TopicIndex]
         fields = ("type", "sub_type", "value", "score", "topic_source_id", "topic_type",

@@ -42,10 +42,7 @@ class SearchView(CredentialSearchView):
     Provide Credential search via Solr with both faceted (/facets) and unfaceted results
     """
 
-    @swagger_auto_schema(manual_parameters=_swagger_params)
-    def list(self, *args, **kwargs):
-        return super(SearchView, self).list(*args, **kwargs)
-
+    # Backends need to be added in the order of filter operations to be applied
     filter_backends = [
         CredQueryFilter,
         CategoryFilter,
@@ -54,9 +51,14 @@ class SearchView(CredentialSearchView):
         HaystackOrderingFilter,
     ]
 
+    # Backends need to be added in the order of filter operations to be applied
     facet_filter_backends = [
         CredQueryFilter,
         ExactFilter,
         StatusFilter,
         CustomFacetFilter,
     ]
+
+    @swagger_auto_schema(manual_parameters=_swagger_params)
+    def list(self, *args, **kwargs):
+        return super(SearchView, self).list(*args, **kwargs)
