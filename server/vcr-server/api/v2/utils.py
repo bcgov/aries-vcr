@@ -328,6 +328,7 @@ def remote_name(names=[]):
         remote_name = None
         if 'entity_name_assumed' in types and 'entity_name' in types:
             remote_name = names[types.index('entity_name')]
+        return remote_name
     except Exception as e:
         LOGGER.error("Exception was raised: " + str(e))
         return None
