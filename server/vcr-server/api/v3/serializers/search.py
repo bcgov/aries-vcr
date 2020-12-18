@@ -112,7 +112,7 @@ class AddressAutocompleteSerializer(AriesAutocompleteSerializer):
                   "topic_type" "credential_id", "credential_type")
 
 
-class TopicSearchSerializerBase(AriesSearchSerializer):
+class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
 
     @staticmethod
     def get_type(obj):
@@ -142,12 +142,6 @@ class TopicSearchSerializerBase(AriesSearchSerializer):
     @staticmethod
     def get_credential_type(obj):
         return obj.object.foundational_credential.credential_type.description
-
-    class Meta:
-        pass
-
-
-class TopicAutocompleteSerializer(TopicSearchSerializerBase, AriesAutocompleteSerializer):
 
     class Meta(TopicSerializer.Meta):
         index_classes = [TopicIndex]

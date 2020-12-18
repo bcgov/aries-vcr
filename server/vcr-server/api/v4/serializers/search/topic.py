@@ -1,29 +1,67 @@
 import logging
 
 from rest_framework.serializers import SerializerMethodField
-from drf_haystack.serializers import HaystackFacetSerializer
+from drf_haystack.serializers import HaystackSerializer, HaystackFacetSerializer
 
-from api.v2.models import Credential
+from api.v2.models import Address, Credential, Name, Topic
 
 from api.v2.serializers.rest import (
-    ExpandedCredentialSerializer,
-    TopicSerializer
+    AddressSerializer,
+    CredentialSerializer,
+    CredentialSetSerializer,
+    CredentialTypeSerializer,
+    NameSerializer,
+    TopicSerializer,
+    TopicAttributeSerializer,
 )
 
 from api.v3.indexes.Topic import TopicIndex
 
-from api.v3.serializers.search import TopicSearchSerializerBase
 
-logger = logging.getLogger(__name__)
+class TopicNameSerializer(NameSerializer):
+
+    credential_id = SerializerMethodField()
+
+    @staticmethod
+    def get_credential_id(obj):
+        return obj.credential.id
+
+    class Meta(NameSerializer.Meta):
+        fields = ("id", "text", "language", "type", "credential_id")
 
 
-class SearchSerializer(TopicSearchSerializerBase):
-    # TODO: Format response outputs porperly
+class TopicAddressSerializer(AddressSerializer):
 
-    class Meta(TopicSerializer.Meta):
+    credential_id = SerializerMethodField()
+
+    @staticmethod
+    def get_credential_id(obj):
+        return obj.credential.id
+
+    class Meta(AddressSerializer.Meta):
+        fields = ("id", "addressee", "civic_address", "city",
+                  "province", "postal_code", "country", "credential_id")
+
+
+class SearchSerializer(HaystackSerializer):
+    source_id = SerializerMethodField()
+    names = TopicNameSerializer(source="object.get_active_names", many=True)
+    addresses = TopicAddressSerializer(source="object.get_active_addresses", many=True)
+    attributes = TopicAttributeSerializer(
+        source="object.get_active_attributes", many=True)
+    credential_set = CredentialSetSerializer(
+        source="object.foundational_credential.credential_set")
+    credential_type = CredentialTypeSerializer(
+        source="object.foundational_credential.credential_type")
+
+    @staticmethod
+    def get_source_id(obj):
+        return obj.topic_source_id
+
+    class Meta:
         index_classes = [TopicIndex]
-        fields = ("type", "sub_type", "value", "score", "topic_source_id", "topic_type",
-                  "topic_name", "topic_address", "credential_id", "credential_type")
+        fields = ("source_id", "names", "addresses", "attributes",
+                  "credential_set", "credential_type")
 
 
 class FacetSerializer(HaystackFacetSerializer):
