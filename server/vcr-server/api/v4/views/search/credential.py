@@ -47,16 +47,16 @@ class SearchView(CredentialSearchView):
         return super(SearchView, self).list(*args, **kwargs)
 
     filter_backends = [
-        CategoryFilter,
         CredQueryFilter,
+        CategoryFilter,
         ExactFilter,
         StatusFilter,
         HaystackOrderingFilter,
     ]
 
     facet_filter_backends = [
-        ExactFilter,
         CredQueryFilter,
+        ExactFilter,
         StatusFilter,
         CustomFacetFilter,
     ]
