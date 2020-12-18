@@ -10,13 +10,13 @@ from api.v2.search.filters import (
     StatusFilter,
 )
 
-from api.v4.search.filters.credential import CredQueryFilter
-
 from api.v2.views.search import CredentialSearchView
 
 from api.v3.views.search import (
     credential_search_swagger_params as swagger_params,
 )
+
+from api.v4.search.filters.credential import CredQueryFilter
 
 _deprecated_params = ('name',)
 _swagger_params = [

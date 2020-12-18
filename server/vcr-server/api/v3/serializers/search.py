@@ -1,7 +1,7 @@
 import logging
 
 from rest_framework.serializers import SerializerMethodField
-from drf_haystack.serializers import HaystackFacetSerializer, HaystackSerializerMixin, HaystackSerializer
+from drf_haystack.serializers import HaystackSerializer
 
 from ..indexes.Address import AddressIndex
 from ..indexes.Name import NameIndex
