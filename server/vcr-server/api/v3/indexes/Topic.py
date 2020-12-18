@@ -34,7 +34,7 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
         return obj.foundational_credential.credential_type_id
 
     @staticmethod
-    def prepare_topic_invactive(obj):
+    def prepare_topic_inactive(obj):
         return obj.foundational_credential.inactive
 
     @staticmethod

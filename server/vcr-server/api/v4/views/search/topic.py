@@ -24,12 +24,15 @@ from api.v3.views.search import (
 
 from api.v4.search.filters.topic import (
     TopicCategoryFilter,
-    TopicQueryFilter
+    TopicExactFilter,
+    TopicQueryFilter,
+    TopicStatusFilter,
+    filter_display_names
 )
 
 from api.v4.serializers.search.topic import SearchSerializer, FacetSerializer
 
-_deprecated_params = ('name', 'topic_id', 'topic_credential_type_id')
+_deprecated_params = ('name', 'topic_id', 'credential_type_id', 'topic_credential_type_id')
 _swagger_params = [
     # Put additional parameters here
     openapi.Parameter(
@@ -45,7 +48,14 @@ _swagger_params = [
         type=openapi.TYPE_STRING,
         default="-score",
     ),
-] + list(filter(lambda param: param.name not in _deprecated_params, swagger_params))
+] + list(filter(lambda param: param.name not in _deprecated_params, swagger_params)) + [
+    openapi.Parameter(
+        "type_id",
+        openapi.IN_QUERY,
+        description="Filter by Credential Type ID",
+        type=openapi.TYPE_STRING,
+    ),
+]
 
 
 class SearchView(AriesHaystackViewSet, FacetMixin):
@@ -66,16 +76,16 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
     filter_backends = [
         TopicQueryFilter,
         TopicCategoryFilter,
-        ExactFilter,
-        StatusFilter,
+        TopicExactFilter,
+        TopicStatusFilter,
         HaystackOrderingFilter,
     ]
 
     # Backends need to be added in the order of filter operations to be applied
     facet_filter_backends = [
         TopicQueryFilter,
-        ExactFilter,
-        StatusFilter,
+        TopicExactFilter,
+        TopicStatusFilter,
         CustomFacetFilter,
     ]
 
@@ -90,16 +100,11 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
         facet_queryset = self.filter_facet_queryset(queryset)
         result_queryset = self.filter_queryset(queryset)
 
-        # TODO: Map these to index keys so the entire interface doesnt have to change
-        for key in (
-            "topic_category",
-            "credential_type_id",
-            "issuer_id",
-        ):
+        for key in filter_display_names:
             for value in request.query_params.getlist(key):
                 if value:
                     facet_queryset = facet_queryset.narrow(
-                        '{}:"{}"'.format(key, queryset.query.clean(value))
+                        '{}:"{}"'.format(('topic_' + key), queryset.query.clean(value))
                     )
 
         serializer = self.get_facet_serializer(

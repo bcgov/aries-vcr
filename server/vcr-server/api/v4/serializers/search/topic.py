@@ -14,6 +14,9 @@ from api.v2.serializers.rest import (
     TopicSerializer,
     TopicAttributeSerializer,
 )
+from api.v2.serializers.search import (
+    CredentialFacetSerializer,
+)
 
 from api.v3.indexes.Topic import TopicIndex
 
@@ -62,11 +65,15 @@ class SearchSerializer(HaystackSerializer):
         index_classes = [TopicIndex]
         fields = ("source_id", "names", "addresses", "attributes",
                   "credential_set", "credential_type")
+        # ExactFilter fields
+        exact_fields = ("topic_issuer_id", "topic_type_id")
+        # StatusFilter fields
+        status_fields = {"topic_inactive": "false", "topic_revoked": "false"}
+        # HaystackFilter fields
+        search_fields = ("score")
 
 
-class FacetSerializer(HaystackFacetSerializer):
-    # TODO: Format facet outputs porperly
-    serialize_objects = True
+class FacetSerializer(CredentialFacetSerializer):
 
     class Meta:
         index_classes = [TopicIndex]
