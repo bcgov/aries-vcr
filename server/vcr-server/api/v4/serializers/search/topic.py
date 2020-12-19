@@ -1,4 +1,5 @@
 import logging
+from collections import OrderedDict
 
 from rest_framework.serializers import SerializerMethodField
 from drf_haystack.serializers import HaystackSerializer, HaystackFacetSerializer
@@ -19,6 +20,13 @@ from api.v2.serializers.search import (
 )
 
 from api.v3.indexes.Topic import TopicIndex
+
+
+facet_filter_display_map = {
+    'topic_category': 'category',
+    'topic_type_id': 'type_id',
+    'topic_issuer_id': 'issuer_id'
+}
 
 
 class TopicNameSerializer(NameSerializer):
@@ -74,6 +82,20 @@ class SearchSerializer(HaystackSerializer):
 
 
 class FacetSerializer(CredentialFacetSerializer):
+
+    def get_facets(self, instance):
+        result = OrderedDict()
+        for facet_type, facet_data in instance.items():
+            serial_data = {}
+            for field, facets in facet_data.items():
+                if field in facet_filter_display_map:
+                    field = facet_filter_display_map[field]
+                serial_data[field] = self.format_facets(field, facets)
+            result[facet_type] = serial_data
+        return result
+
+    def format_facets(self, field_name, facets):
+        return [{"value": facet[0], "count": facet[1]} for facet in facets]
 
     class Meta:
         index_classes = [TopicIndex]
