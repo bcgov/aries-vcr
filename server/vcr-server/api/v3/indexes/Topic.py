@@ -27,25 +27,35 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
 
     @staticmethod
     def prepare_topic_issuer_id(obj):
-        return obj.foundational_credential.credential_type.issuer_id
+        if obj.foundational_credential:
+            return obj.foundational_credential.credential_type.issuer_id
+        return None
 
     @staticmethod
     def prepare_topic_type_id(obj):
-        return obj.foundational_credential.credential_type_id
+        if obj.foundational_credential:
+            return obj.foundational_credential.credential_type_id
+        return None
 
     @staticmethod
     def prepare_topic_inactive(obj):
-        return obj.foundational_credential.inactive
+        if obj.foundational_credential:
+            return obj.foundational_credential.inactive
+        return None
 
     @staticmethod
     def prepare_topic_revoked(obj):
-        return obj.foundational_credential.revoked
+        if obj.foundational_credential:
+            return obj.foundational_credential.revoked
+        return None
 
     @staticmethod
     def prepare_topic_category(obj):
-        return [
-            f"{cat.type}::{cat.value}" for cat in obj.foundational_credential.all_categories
-        ]
+        if obj.foundational_credential:
+            return [
+                f"{cat.type}::{cat.value}" for cat in obj.foundational_credential.all_categories
+            ]
+        return []
 
     @staticmethod
     def prepare_topic_name(obj):
