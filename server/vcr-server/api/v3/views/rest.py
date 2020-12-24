@@ -243,7 +243,7 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
                 },
             }
             if "presentation" in presentation_state:
-                result["result"]["presentaiton"] = presentation_state["presentation"]
+                result["result"]["presentation"] = presentation_state["presentation"]
 
         if result is None:
             result = {"success": False, "results": "Presentation request response not available."}
