@@ -4,7 +4,12 @@ from collections import OrderedDict
 from rest_framework.serializers import SerializerMethodField
 from drf_haystack.serializers import HaystackSerializer, HaystackFacetSerializer
 
-from api.v2.models import Address, Credential, Name, Topic
+from api.v2.models.Address import Address
+from api.v2.models.Credential import Credential
+from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
+from api.v2.models.Name import Name
+from api.v2.models.Topic import Topic
 
 from api.v2.serializers.rest import (
     AddressSerializer,
@@ -56,8 +61,10 @@ class TopicAddressSerializer(AddressSerializer):
 
 class SearchSerializer(HaystackSerializer):
     source_id = SerializerMethodField()
-    names = TopicNameSerializer(source="object.get_active_names", many=True)
-    addresses = TopicAddressSerializer(source="object.get_active_addresses", many=True)
+    names = TopicNameSerializer(
+        source="object.get_active_names", many=True)
+    addresses = TopicAddressSerializer(
+        source="object.get_active_addresses", many=True)
     attributes = TopicAttributeSerializer(
         source="object.get_active_attributes", many=True)
     credential_set = CredentialSetSerializer(
@@ -95,7 +102,33 @@ class FacetSerializer(CredentialFacetSerializer):
         return result
 
     def format_facets(self, field_name, facets):
-        return [{"value": facet[0], "count": facet[1]} for facet in facets]
+        field_memo = self.format_facet_text(field_name, facets)
+        return [self.format_facet_field(field_name, facet, field_memo) for facet in facets]
+
+    def format_facet_text(self, field_name, facets):
+        values = [facet[0] for facet in facets]
+        Model, field_selector, text = None, "", {}
+        if field_name == "issuer_id":
+            Model, field_selector = Issuer, "name"
+        elif field_name == "type_id":
+            Model, field_selector = CredentialType, "description"
+
+        if Model and field_selector:
+            rows = Model.objects.filter(pk__in=values)
+            if len(rows):
+                text = {
+                    field_name: {
+                        str(row['id']): row[field_selector] for row in rows.values()
+                    }
+                }
+
+        return text
+
+    def format_facet_field(self, field_name, facet, field_memo):
+        text, value, count = None, facet[0], facet[1]
+        if field_name in field_memo and value in field_memo[field_name]:
+            text = field_memo[field_name][value]
+        return {"value": value, "count": count, "text": text}
 
     class Meta:
         index_classes = [TopicIndex]
