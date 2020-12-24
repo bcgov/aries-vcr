@@ -1,7 +1,7 @@
 import logging
 from collections import OrderedDict
 
-from rest_framework.serializers import SerializerMethodField
+from rest_framework.serializers import CharField, IntegerField, SerializerMethodField
 from drf_haystack.serializers import HaystackSerializer, HaystackFacetSerializer
 
 from api.v2.models.Address import Address
@@ -60,7 +60,9 @@ class TopicAddressSerializer(AddressSerializer):
 
 
 class SearchSerializer(HaystackSerializer):
-    source_id = SerializerMethodField()
+    id = IntegerField(source="object.id")
+    source_id = CharField(source="object.source_id")
+    type = CharField(source="object.type")
     names = TopicNameSerializer(
         source="object.get_active_names", many=True)
     addresses = TopicAddressSerializer(
@@ -72,14 +74,10 @@ class SearchSerializer(HaystackSerializer):
     credential_type = CredentialTypeSerializer(
         source="object.foundational_credential.credential_type")
 
-    @staticmethod
-    def get_source_id(obj):
-        return obj.topic_source_id
-
     class Meta:
         index_classes = [TopicIndex]
-        fields = ("source_id", "names", "addresses", "attributes",
-                  "credential_set", "credential_type")
+        fields = ("id", "source_id", "type", "names", "addresses",
+                  "attributes", "credential_set", "credential_type")
         # ExactFilter fields
         exact_fields = ("topic_issuer_id", "topic_type_id")
         # StatusFilter fields
