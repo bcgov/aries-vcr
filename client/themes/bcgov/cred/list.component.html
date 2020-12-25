@@ -5,7 +5,7 @@
     </div>
     <div class="cred-detail">
       <p class="cred-title">
-        <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">
+        <a class="body-link cred-link" [routerLink]="cred.extLink('cred', cred.id) | localize">
           {{ 'name.' + cred.credential_type.description | translate }}
         </a>
       </p>
@@ -42,7 +42,7 @@
     <div class="row cred-row" *ngFor="let cred of records">
       <div class="col-sm-4">
         <div class="cred-title">
-          <a class="body-link cred-link" [routerLink]="cred.topic.extLink('cred', cred.id) | localize">
+          <a class="body-link cred-link" [routerLink]="cred.extLink('cred', cred.id) | localize">
             {{ 'name.' + cred.credential_type.description | translate }}
           </a>
         </div>
@@ -71,8 +71,8 @@
           </a>
         </ng-template>
         <ng-template #topicName>
-          <a [routerLink]="cred.topic.link | localize" class="body-link cred-link name">
-            {{ cred.topic.local_name.text }}
+          <a [routerLink]="cred.link | localize" class="body-link cred-link name">
+            {{ cred.local_name.text }}
           </a>
         </ng-template>
         <div class="badge badge-warning" *ngIf="cred.inactive" translate>
@@ -96,10 +96,10 @@
   <div class="row cred-row" *ngFor="let cred of records; index as idx">
     <div class="col-lg-8">
       <div class="cred-title">
-        <a [routerLink]="cred.topic.link | localize" class="body-link cred-link name">
-          {{ cred.topic.displayName.text }}
+        <a [routerLink]="cred.link | localize" class="body-link cred-link name">
+          {{ cred.displayName.text }}
         </a>
-        <div class="cred-topic small" *ngIf="cred.topic as topic">
+        <div class="cred-topic small" *ngIf="cred as topic">
           {{ topic.typeLabel | translate }}
           <span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
             <attribute-view [record]="status"></attribute-view>
