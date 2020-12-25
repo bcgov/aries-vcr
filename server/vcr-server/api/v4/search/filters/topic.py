@@ -19,12 +19,13 @@ filter_display_names = ['category', 'type_id', 'issuer_id', 'inactive', 'revoked
 
 
 class FilterBuilderBase(BaseQueryBuilder):
-    pass
 
     def format_filters(self, **filters):
         for fname, fval in filters.copy().items():
-            if fname in filter_display_names:
-                filters['topic_' + fname] = fval
+            partition = ':'
+            parts = fname.split(partition)
+            if parts[0] in filter_display_names:
+                filters['topic_' + partition.join(parts)] = fval
                 del filters[fname]
         return filters
 
