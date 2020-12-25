@@ -44,7 +44,7 @@ const FilterSpec = [
     options: [
       {
         tlabel: "general.show-inactive",
-        value: "true"
+        value: "any"
       }
     ],
     defval: "false",
@@ -78,7 +78,7 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   credentialTypeOptions$: Observable<ISelectOption[]>;
 
   yesNoOptions: ISelectOption[] = [
-    { value: 'true', description: 'Yes' }
+    { value: 'any', description: 'Yes' }
   ];
 
   /* TODO: Parameterize these to include a method of defining the input option */

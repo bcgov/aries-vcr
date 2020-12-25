@@ -32,7 +32,8 @@ from api.v4.search.filters.topic import (
 
 from api.v4.serializers.search.topic import SearchSerializer, FacetSerializer
 
-_deprecated_params = ('name', 'topic_id', 'credential_type_id', 'topic_credential_type_id')
+_deprecated_params = ('name', 'topic_id', 'credential_type_id',
+                      'topic_credential_type_id')
 _swagger_params = [
     # Put additional parameters here
     openapi.Parameter(
@@ -101,6 +102,9 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
         result_queryset = self.filter_queryset(queryset)
 
         for key in filter_display_names:
+            # We dont want to restrict the facets by status
+            if key in ('inactive', 'revoked'):
+                continue
             for value in request.query_params.getlist(key):
                 if value:
                     facet_queryset = facet_queryset.narrow(
@@ -111,4 +115,3 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
             facet_queryset.facet_counts(), objects=result_queryset, many=False
         )
         return Response(serializer.data)
-
