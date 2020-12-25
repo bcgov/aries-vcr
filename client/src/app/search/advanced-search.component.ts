@@ -14,7 +14,8 @@ export interface IAdvancedSearchOption {
 
 const FilterSpec = [
   {
-    name: "name",
+    name: "q",
+    alias: "query",
     hidden: true
   },
   {
@@ -178,15 +179,15 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   private patchForm(): void {
     const queryParamMap: any = this.route.snapshot.queryParamMap;
     this.fg.patchValue({
-      text: queryParamMap.get('name') || '',
+      text: queryParamMap.get('q') || queryParamMap.get('query') || '',
       type: queryParamMap.get('topic_credential_type_id') || '',
       archived: queryParamMap.get('inactive') || 'false'
     });
   }
 
   private updateFilters(): void {
-    const { text: name, archived: inactive, type: topic_credential_type_id } = this.fg.value;
-    this._filters.update({ name, inactive, topic_credential_type_id, page: this._currentPage });
+    const { text: q, archived: inactive, type: topic_credential_type_id } = this.fg.value;
+    this._filters.update({ q, inactive, topic_credential_type_id, page: this._currentPage });
   }
 
   private updateUrl() {
