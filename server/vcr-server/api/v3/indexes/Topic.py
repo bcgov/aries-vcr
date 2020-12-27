@@ -19,6 +19,7 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
     topic_name = indexes.MultiValueField()
     topic_address = indexes.MultiValueField()
     topic_category = indexes.MultiValueField()
+    topic_credential_type_id = indexes.MultiValueField()
     topic_all_credentials_inactive = indexes.BooleanField()
     topic_all_credentials_revoked = indexes.BooleanField()
 
@@ -70,6 +71,14 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
         return [
             address.civic_address for address in obj.get_active_addresses()
         ]
+
+    @staticmethod
+    def prepare_topic_credential_type_id(obj):
+        # May need to expand this to inactive credentials
+        credential_type_ids = obj.get_active_credential_type_ids()
+        if credential_type_ids:
+            return list(credential_type_ids)
+        return []
 
     @staticmethod
     def prepare_topic_all_credentials_inactive(obj):
