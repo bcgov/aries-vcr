@@ -12,10 +12,10 @@
       <input class="form-control" formControlName="text">
     </app-advanced-search-row>
     <app-advanced-search-row [label]="searchOptions[1].label" [helper]="searchOptions[1].helper">
-      <app-select formControlName="type" [options]="options" [translateSelector]="'name'" [selected]="credentialTypeSelected"></app-select>
+      <app-select formControlName="type" [options]="options" [translateSelector]="'name'"></app-select>
     </app-advanced-search-row>
     <app-advanced-search-row [label]="searchOptions[2].label" [helper]="searchOptions[2].helper">
-      <app-select formControlName="archived" [options]="yesNoOptions" [selected]="yesNoSelected"></app-select>
+      <app-select formControlName="archived" [options]="yesNoOptions"></app-select>
     </app-advanced-search-row>
     <button type="submit" class="btn btn-primary mt-2" (click)="submit()">
       Advanced Search

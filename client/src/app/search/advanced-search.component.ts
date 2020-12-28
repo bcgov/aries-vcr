@@ -89,9 +89,6 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     { label: 'historical credentials', helper: 'Include results that have expired or are no longer active.' },
   ];
 
-  yesNoSelected: ISelectOption;
-  credentialTypeSelected: ISelectOption;
-
   fg: FormGroup = new FormGroup({
     text: new FormControl(''),
     type: new FormControl(''),
