@@ -23,10 +23,6 @@ const FilterSpec = [
     label: "cred.issuer"
   },
   {
-    name: "topic_credential_type_id",
-    label: "cred.cred-type"
-  },
-  {
     name: "category:entity_type",
     label: "attribute.entity_type"
   },
@@ -42,20 +38,6 @@ const FilterSpec = [
     defval: "false",
     blank: true
   }
-  /*
-  {
-    name: "revoked",
-    label: "cred.status",
-    options: [
-      {
-        tlabel: "general.show-revoked",
-        value: ""
-      }
-    ],
-    defval: "false",
-    blank: true
-  }
-  */
 ];
 
 @Component({

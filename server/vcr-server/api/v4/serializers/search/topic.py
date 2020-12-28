@@ -29,8 +29,9 @@ from api.v3.indexes.Topic import TopicIndex
 
 facet_filter_display_map = {
     'topic_category': 'category',
+    'topic_issuer_id': 'issuer_id',
     'topic_type_id': 'type_id',
-    'topic_issuer_id': 'issuer_id'
+    'topic_credential_type_id': 'credential_type_id',
 }
 
 
@@ -83,7 +84,7 @@ class SearchSerializer(HaystackSerializer):
         fields = ("id", "source_id", "type", "names", "addresses", "attributes",
                   "credential_set", "credential_type", "effective_date", "revoked_date")
         # ExactFilter fields
-        exact_fields = ("topic_issuer_id", "topic_type_id")
+        exact_fields = ("topic_issuer_id", "topic_type_id", "topic_credential_type_id")
         # StatusFilter fields
         status_fields = {"topic_inactive": "false", "topic_revoked": "false"}
         # HaystackFilter fields
@@ -112,7 +113,7 @@ class FacetSerializer(CredentialFacetSerializer):
         Model, field_selector, text = None, "", {}
         if field_name == "issuer_id":
             Model, field_selector = Issuer, "name"
-        elif field_name == "type_id":
+        elif field_name == "type_id" or field_name == "credential_type_id":
             Model, field_selector = CredentialType, "description"
 
         if Model and field_selector:
@@ -134,9 +135,11 @@ class FacetSerializer(CredentialFacetSerializer):
 
     class Meta:
         index_classes = [TopicIndex]
-        fields = ("topic_category", "topic_type_id", "topic_issuer_id")
+        fields = ("topic_category", "topic_issuer_id",
+                  "topic_type_id", "topic_credential_type_id")
         field_options = {
             "topic_category": {},
-            "topic_type_id": {},
             "topic_issuer_id": {},
+            "topic_type_id": {},
+            "topic_credential_type_id": {}
         }

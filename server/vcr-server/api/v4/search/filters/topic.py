@@ -15,7 +15,8 @@ from api.v3.search_filters import (
     get_autocomplete_builder
 )
 
-filter_display_names = ['category', 'type_id', 'issuer_id', 'inactive', 'revoked']
+filter_display_names = ['category', 'issuer_id',
+                        'type_id', 'credential_type_id', 'inactive', 'revoked']
 
 
 class FilterBuilderBase(BaseQueryBuilder):

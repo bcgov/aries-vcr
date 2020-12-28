@@ -27,7 +27,7 @@ const FilterSpec = [
     label: "cred.issuer"
   },
   {
-    name: "topic_credential_type_id",
+    name: "credential_type_id",
     label: "cred.cred-type"
   },
   {
@@ -180,14 +180,14 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     const queryParamMap: any = this.route.snapshot.queryParamMap;
     this.fg.patchValue({
       text: queryParamMap.get('q') || queryParamMap.get('query') || '',
-      type: queryParamMap.get('topic_credential_type_id') || '',
+      type: queryParamMap.get('credential_type_id') || '',
       archived: queryParamMap.get('inactive') || 'false'
     });
   }
 
   private updateFilters(): void {
-    const { text: q, archived: inactive, type: topic_credential_type_id } = this.fg.value;
-    this._filters.update({ q, inactive, topic_credential_type_id, page: this._currentPage });
+    const { text: q, archived: inactive, type: credential_type_id } = this.fg.value;
+    this._filters.update({ q, inactive, credential_type_id, page: this._currentPage });
   }
 
   private updateUrl() {

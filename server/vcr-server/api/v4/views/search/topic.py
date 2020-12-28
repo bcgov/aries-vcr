@@ -53,7 +53,13 @@ _swagger_params = [
     openapi.Parameter(
         "type_id",
         openapi.IN_QUERY,
-        description="Filter by Credential Type ID",
+        description="Filter by Credential Type ID of the Topic",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        "credential_type_id",
+        openapi.IN_QUERY,
+        description="Filter by Credential Type ID of any credentials owned by the Topic",
         type=openapi.TYPE_STRING,
     ),
 ]

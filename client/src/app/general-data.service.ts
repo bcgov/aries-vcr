@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BehaviorSubject, from, Observable, Observer, of, Subscription , throwError as _throw } from 'rxjs';
+import { BehaviorSubject, from, Observable, Observer, of, Subscription, throwError as _throw } from 'rxjs';
 import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
 
 import { Fetch, Filter, Model } from './data-types';
@@ -270,6 +270,8 @@ export class GeneralDataService {
                 count: optitem.count,
               };
             }
+          } else if (optname === 'credential_type_id') {
+            optval.label = this._translate.instant(`name.${optval.label}`)
           }
           if (optidx in options) {
             options[optidx].push(optval);
