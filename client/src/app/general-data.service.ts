@@ -148,27 +148,14 @@ export class GeneralDataService {
       return from([]);
     }
     let params = new HttpParams().set('q', term).append('inactive', inactive.toString());
-
-    return this.loadFromApi('search/autocomplete', params).pipe(
-      map(response => {
-        let ret = [];
-        for (let row of response['results']) {
-          let found = null;
-          for (let name of row.names) {
-            if (~name.text.toLowerCase().indexOf(term.toLowerCase())) {
-              found = name.text;
-              break;
-            } else if (found === null) {
-              found = name.text;
-            }
-          }
-          if (found !== null) {
-            ret.push({ id: row.id, term: found });
-          }
-        }
-        return ret;
-      }),
-    );
+    return this.loadFromApi('v3/search/autocomplete', params)
+      .pipe(
+        map(({ results }: { results? }) => results || []),
+        map(results => results.map(row => ({
+          id: row.id,
+          term: row.value
+        })))
+      );
   }
 
   makeHttpParams(query?: { [key: string]: string } | HttpParams) {
