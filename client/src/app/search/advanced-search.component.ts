@@ -78,6 +78,7 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   credentialTypeOptions$: Observable<ISelectOption[]>;
 
   yesNoOptions: ISelectOption[] = [
+    { value: 'false', description: 'No' },
     { value: 'any', description: 'Yes' }
   ];
 
@@ -88,8 +89,8 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     { label: 'historical credentials', helper: 'Include results that have expired or are no longer active.' },
   ];
 
-  yesNoSelected: ISelectOption = { value: 'false', description: 'No' }
-  credentialTypeSelected: ISelectOption = { value: '', description: 'any' };
+  yesNoSelected: ISelectOption;
+  credentialTypeSelected: ISelectOption;
 
   fg: FormGroup = new FormGroup({
     text: new FormControl(''),
@@ -122,6 +123,15 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     return parseInt(this._currentPage, 10);
   }
 
+  private get _queryParams(): { text: string, type: string, archived: string } {
+    const queryParamMap: any = this.route.snapshot.queryParamMap;
+    const queryParams: any = this.route.snapshot.queryParams;
+    const q = queryParamMap.get('q') || queryParamMap.get('query') || '';
+    const credential_type_id = queryParamMap.get('credential_type_id') || '';
+    const inactive = queryParamMap.get('inactive') || 'false';
+    return { ...queryParams, q, credential_type_id, inactive };
+  }
+
   get filters(): Filter.FieldSet {
     return this._filters;
   }
@@ -140,7 +150,11 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
         map(res => res.data.map(type => ({
           value: type.id,
           description: type.description
-        })))
+        }))),
+        map(credentialTypeOptions => [
+          { value: '', description: 'any' },
+          ...credentialTypeOptions
+        ])
       );
 
     this.credentials$ = this._cLoader.stream
@@ -177,17 +191,13 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   }
 
   private patchForm(): void {
-    const queryParamMap: any = this.route.snapshot.queryParamMap;
-    this.fg.patchValue({
-      text: queryParamMap.get('q') || queryParamMap.get('query') || '',
-      type: queryParamMap.get('credential_type_id') || '',
-      archived: queryParamMap.get('inactive') || 'false'
-    });
+    const { q: text, credential_type_id: type, inactive: archived }: any = this._queryParams;
+    this.fg.patchValue({ text, type, archived });
   }
 
   private updateFilters(): void {
     const { text: q, archived: inactive, type: credential_type_id } = this.fg.value;
-    this._filters.update({ q, inactive, credential_type_id, page: this._currentPage });
+    this._filters.update({ ...this._queryParams, q, inactive, credential_type_id, page: this._currentPage });
   }
 
   private updateUrl() {

@@ -32,7 +32,7 @@ const FilterSpec = [
     options: [
       {
         tlabel: "general.show-inactive",
-        value: ""
+        value: "any"
       }
     ],
     defval: "false",
