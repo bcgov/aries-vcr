@@ -107,17 +107,33 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
         facet_queryset = self.filter_facet_queryset(queryset)
         result_queryset = self.filter_queryset(queryset)
 
+        narrow_dict = {}
         for key in filter_display_names:
             # We dont want to restrict the facets by status
             if key in ('inactive', 'revoked'):
                 continue
             for value in request.query_params.getlist(key):
                 if value:
-                    facet_queryset = facet_queryset.narrow(
-                        '{}:"{}"'.format(('topic_' + key), queryset.query.clean(value))
-                    )
+                    narrow_dict['topic_'
+                                + key] = queryset.query.clean(value)
+
+        for query_param in request.query_params:
+            # For category query parameters of the form category:<category_name>=<category_value>
+            if ':' not in query_param:
+                continue
+            key, category = query_param.split(":", 1)
+            if not key or not category or (key not in filter_display_names):
+                continue
+            for value in request.query_params.getlist(query_param):
+                if value:
+                    narrow_dict['topic_'
+                                + key] = queryset.query.clean('{}::{}'.format(category, value))
+
+        for key, value in narrow_dict.items():
+            facet_queryset = facet_queryset.narrow('{}:{}'.format(key, value))
 
         serializer = self.get_facet_serializer(
             facet_queryset.facet_counts(), objects=result_queryset, many=False
         )
+
         return Response(serializer.data)

@@ -24,7 +24,7 @@ class FilterBuilderBase(BaseQueryBuilder):
     def format_filters(self, **filters):
         for fname, fval in filters.copy().items():
             partition = ':'
-            parts = fname.split(partition)
+            parts = fname.split(partition, 1)
             if parts[0] in filter_display_names:
                 filters['topic_' + partition.join(parts)] = fval
                 del filters[fname]
