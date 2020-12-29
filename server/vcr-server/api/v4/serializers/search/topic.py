@@ -1,7 +1,7 @@
 import logging
 from collections import OrderedDict
 
-from rest_framework.serializers import CharField, DateTimeField, IntegerField, SerializerMethodField
+from rest_framework.serializers import BooleanField, CharField, DateTimeField, IntegerField, SerializerMethodField
 from drf_haystack.serializers import HaystackSerializer, HaystackFacetSerializer
 
 from api.v2.models.Address import Address
@@ -74,6 +74,10 @@ class SearchSerializer(HaystackSerializer):
         source="object.foundational_credential.credential_set")
     credential_type = CredentialTypeSerializer(
         source="object.foundational_credential.credential_type")
+    inactive = BooleanField(
+        source="object.foundational_credential.inactive")
+    revoked = BooleanField(
+        source="object.foundational_credential.revoked")
     effective_date = DateTimeField(
         source="object.foundational_credential.effective_date")
     revoked_date = DateTimeField(
@@ -81,8 +85,8 @@ class SearchSerializer(HaystackSerializer):
 
     class Meta:
         index_classes = [TopicIndex]
-        fields = ("id", "source_id", "type", "names", "addresses", "attributes",
-                  "credential_set", "credential_type", "effective_date", "revoked_date")
+        fields = ("id", "source_id", "type", "names", "addresses", "attributes", "credential_set",
+                  "credential_type", "inactive", "revoked", "effective_date", "revoked_date")
         # ExactFilter fields
         exact_fields = ("topic_issuer_id", "topic_type_id", "topic_credential_type_id")
         # StatusFilter fields

@@ -372,6 +372,8 @@ export namespace Model {
     credential_type: CredentialType;
     credential_set: CredentialSet;
     effective_date: string;
+    inactive: boolean;
+    revoked: boolean;
 
     static resourceName = "topic";
 
