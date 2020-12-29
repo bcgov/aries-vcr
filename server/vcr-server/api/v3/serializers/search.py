@@ -1,5 +1,7 @@
 import logging
 
+from abc import abstractmethod
+
 from rest_framework.serializers import SerializerMethodField
 from drf_haystack.serializers import HaystackSerializer
 
@@ -29,16 +31,19 @@ class AriesSearchSerializer(HaystackSerializer):
     credential_id = SerializerMethodField()
 
     @staticmethod
+    @abstractmethod
     def get_type(obj):
-        return None
+        pass
 
     @staticmethod
+    @abstractmethod
     def get_sub_type(obj):
-        return None
+        pass
 
     @staticmethod
+    @abstractmethod
     def get_value(obj):
-        return None
+        pass
 
     @staticmethod
     def get_topic_source_id(obj):
@@ -67,9 +72,6 @@ class AriesAutocompleteSerializer(AriesSearchSerializer):
     @staticmethod
     def get_score(obj):
         return obj.score
-
-    class Meta:
-        pass
 
 
 class NameAutocompleteSerializer(AriesAutocompleteSerializer):
