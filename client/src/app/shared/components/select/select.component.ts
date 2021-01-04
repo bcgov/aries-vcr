@@ -20,7 +20,7 @@ export interface ISelectOption {
   ],
 })
 export class SelectComponent implements ControlValueAccessor {
-  private select = new FormControl('');
+  select = new FormControl('');
 
   @Input() options: ISelectOption[];
   @Input() translateSelector: string;
