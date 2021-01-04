@@ -6,5 +6,4 @@ class RetriveOnlyModelViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     """
     A viewset that provides default `retrieve()` action.
     """
-
     pass

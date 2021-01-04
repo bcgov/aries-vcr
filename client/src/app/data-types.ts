@@ -369,6 +369,11 @@ export namespace Model {
     addresses: Address[];
     local_name: Name;
     remote_name: Name;
+    credential_type: CredentialType;
+    credential_set: CredentialSet;
+    effective_date: string;
+    inactive: boolean;
+    revoked: boolean;
 
     static resourceName = "topic";
 
@@ -498,6 +503,11 @@ export namespace Model {
       return ["/topic", this.type, this.source_id];
     }
 
+    get issuer(): Issuer {
+      return this.credential_type && this.credential_type.issuer;
+    }
+    set issuer(val: Issuer) {}
+
     extLink(...args): string[] {
       return this.link.concat(args);
     }
@@ -515,12 +525,12 @@ export namespace Model {
     static childResource = "related_to";
   }
 
-  export class TopicSearchResult extends Credential {
-    static resourceName = "v3/search/topic";
+  export class TopicSearchResult extends Topic {
+    static resourceName = "v4/search/topic";
   }
 
-  export class TopicFacetSearchResult extends Credential {
-    static resourceName = "v3/search/topic/facets";
+  export class TopicFacetSearchResult extends Topic {
+    static resourceName = "v4/search/topic/facets";
   }
 
   export class TopicRelationship extends BaseModel {

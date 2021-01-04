@@ -28,27 +28,24 @@ schema_view = get_schema_view(
 
 router = SimpleRouter(trailing_slash=False)
 
-router.register(r"issuer", rest.IssuerViewSet)
-router.register(r"schema", rest.SchemaViewSet)
-router.register(r"credentialtype", rest.CredentialTypeViewSet)
-router.register(r"credential", rest.CredentialViewSet)
-# router.register(r"topic", rest.TopicViewSet)
+router.register(r"issuer", rest.IssuerViewSet, "Credential Issuer")
+router.register(r"schema", rest.SchemaViewSet, "Credential Schema")
+router.register(r"credentialtype", rest.CredentialTypeViewSet, "Credential Type")
+router.register(r"credential", rest.CredentialViewSet, "Credential")
 
 api_views = [
     path("search/topic/attribute/<attribute_query>", rest.TopicAttributeView.as_view()),
     path("topic/<type>/<source_id>", rest.TopicView.as_view()),
 ]
 
-# router.register(r"topic_relationship", rest.TopicRelationshipViewSet)
-
 # Search endpoints
-router.register(
-    r"search/autocomplete", search.NameAutocompleteView, "Name Autocomplete"
-)
-router.register(r"search/credential", search.CredentialSearchView, "Credential Search")
-router.register(
-    r"search/topic", search.CredentialTopicSearchView, "Credential Topic Search"
-)
+router.register(r"search/autocomplete",
+                search.AggregateAutocompleteView, "Aggregate Autocomplete")
+router.register(r"search/credential",
+                search.CredentialSearchView, "Credential Search")
+# DEPRECATED:
+router.register(r"search/topic",
+                search.CredentialTopicSearchView, "Credential Topic Search")
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")

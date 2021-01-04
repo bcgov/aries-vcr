@@ -1,3 +1,4 @@
+<!-- Credential cards -->
 <div class="creds-grid" *ngIf="format === 'cards' && records?.length">
   <div class="cred-card" *ngFor="let cred of records">
     <div class="cred-icon" *ngIf="cred.issuer.has_logo">
@@ -20,11 +21,11 @@
         ">
         <span class="claim-info date">{{
           cred.effective_date | dateFormat: 'effectiveDate'
-        }}</span>
+          }}</span>
       </p>
       <p class="cred-issuer" *ngIf="cred.issuer">
-        <a class="body-link issuer-link"
-          [routerLink]="['/issuer', cred.issuer.id] | localize">{{ cred.issuer.name }}</a>
+        <a class="body-link issuer-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{ cred.issuer.name
+          }}</a>
       </p>
       <div class="cred-status">
         <div class="badge badge-warning" *ngIf="cred.inactive" translate>
@@ -37,6 +38,7 @@
     </div>
   </div>
 </div>
+<!-- Credential list -->
 <div class="creds-list" *ngIf="format === 'rows'">
   <ng-container *ngIf="stateSvc.filterActive === 'true'; else archiveTemplate">
     <div class="row cred-row" *ngFor="let cred of records">
@@ -52,13 +54,13 @@
           ">
           <span class="claim-info date">{{
             cred.effective_date | dateFormat: 'effectiveDate'
-          }}</span>
+            }}</span>
         </div>
       </div>
       <div class="col-sm-4">
         <div class="cred-issuer" *ngIf="cred.issuer">
-          <a class="body-link issuer-link"
-            [routerLink]="['/issuer', cred.issuer.id] | localize">{{ cred.issuer.name }}</a>
+          <a class="body-link issuer-link" [routerLink]="['/issuer', cred.issuer.id] | localize">{{ cred.issuer.name
+            }}</a>
         </div>
       </div>
       <div class="col-sm-4">
@@ -92,14 +94,15 @@
     </ng-container>
   </ng-template>
 </div>
+<!-- Topic search. TODO: Move into it's own component -->
 <div class="creds-list creds-search" *ngIf="format === 'search'">
   <div class="row cred-row" *ngFor="let cred of records; index as idx">
     <div class="col-lg-8">
       <div class="cred-title">
-        <a [routerLink]="cred.topic.link | localize" class="body-link cred-link name">
-          {{ cred.topic.displayName.text }}
+        <a [routerLink]="cred.link | localize" class="body-link cred-link name">
+          {{ cred.displayName.text }}
         </a>
-        <div class="cred-topic small" *ngIf="cred.topic as topic">
+        <div class="cred-topic small" *ngIf="cred as topic">
           {{ topic.typeLabel | translate }}
           <span class="cred-entity-status" *ngIf="topic.attribute_map.entity_status as status">:
             <attribute-view [record]="status"></attribute-view>
@@ -114,8 +117,8 @@
     <div class="col-lg-4">
       <small *ngIf="cred.issuer">
         <label> <span translate>cred.issuer</span>: </label>
-        <a [routerLink]="['/issuer', cred.issuer.id] | localize"
-          class="body-link issuer-link">{{ cred.issuer.name }}</a>
+        <a [routerLink]="['/issuer', cred.issuer.id] | localize" class="body-link issuer-link">{{ cred.issuer.name
+          }}</a>
       </small>
       <br />
       <small>
@@ -123,7 +126,7 @@
         <div *ngIf="cred.effective_date > '0100-01-01'; else ifBlank">
           <span class="claim-info date">{{
             cred.effective_date | dateFormat: 'effectiveDate'
-          }}</span>
+            }}</span>
         </div>
         <ng-template #ifBlank>
           <div class="col-sm-8">{{ 'cred.empty-attribute' | translate }}</div>

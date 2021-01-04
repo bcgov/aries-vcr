@@ -305,24 +305,20 @@ class CredentialFacetSerializer(HaystackFacetSerializer):
         fields = [
             "category",
             "credential_type_id",
-            "issuer_id",
-            # "inactive",
-            # "topic_type",
+            "issuer_id"
         ]
         field_options = {
             "category": {},
             "credential_type_id": {},
             "issuer_id": {},
-            # "inactive": {},
-            # "topic_type": {},
-            # date faceting isn't working, needs to use Solr range faceting
-            # https://github.com/django-haystack/django-haystack/issues/1572
-            #             "effective_date": {
-            #                 "start_date": datetime.now() - timedelta(days=50000),
-            #                 "end_date": datetime.now(),
-            #                 "gap_by": "month",
-            #                 "gap_amount": 3
-            #             },
+            # Date faceting isn't working, needs to use Solr range faceting
+            # See: https://github.com/django-haystack/django-haystack/issues/1572
+            # "effective_date": {
+            #     "start_date": datetime.now() - timedelta(days=50000),
+            #     "end_date": datetime.now(),
+            #     "gap_by": "month",
+            #     "gap_amount": 3
+            # },
         }
 
     def get_fields(self):

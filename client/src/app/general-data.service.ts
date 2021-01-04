@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BehaviorSubject, from, Observable, Observer, of, Subscription , throwError as _throw } from 'rxjs';
+import { BehaviorSubject, from, Observable, Observer, of, Subscription, throwError as _throw } from 'rxjs';
 import { catchError, map, mergeMap, shareReplay } from 'rxjs/operators';
 
 import { Fetch, Filter, Model } from './data-types';
@@ -148,27 +148,14 @@ export class GeneralDataService {
       return from([]);
     }
     let params = new HttpParams().set('q', term).append('inactive', inactive.toString());
-
-    return this.loadFromApi('search/autocomplete', params).pipe(
-      map(response => {
-        let ret = [];
-        for (let row of response['results']) {
-          let found = null;
-          for (let name of row.names) {
-            if (~name.text.toLowerCase().indexOf(term.toLowerCase())) {
-              found = name.text;
-              break;
-            } else if (found === null) {
-              found = name.text;
-            }
-          }
-          if (found !== null) {
-            ret.push({ id: row.id, term: found });
-          }
-        }
-        return ret;
-      }),
-    );
+    return this.loadFromApi('v3/search/autocomplete', params)
+      .pipe(
+        map(({ results }: { results? }) => results || []),
+        map(results => results.map(row => ({
+          id: row.id,
+          term: row.value
+        })))
+      );
   }
 
   makeHttpParams(query?: { [key: string]: string } | HttpParams) {
@@ -270,6 +257,8 @@ export class GeneralDataService {
                 count: optitem.count,
               };
             }
+          } else if (optname === 'credential_type_id') {
+            optval.label = this._translate.instant(`name.${optval.label}`)
           }
           if (optidx in options) {
             options[optidx].push(optval);

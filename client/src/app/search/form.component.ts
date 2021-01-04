@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 
 const FilterSpec = [
   {
-    name: "name",
+    name: "q",
     alias: "query",
     hidden: true
   },
@@ -23,10 +23,6 @@ const FilterSpec = [
     label: "cred.issuer"
   },
   {
-    name: "topic_credential_type_id",
-    label: "cred.cred-type"
-  },
-  {
     name: "category:entity_type",
     label: "attribute.entity_type"
   },
@@ -36,26 +32,12 @@ const FilterSpec = [
     options: [
       {
         tlabel: "general.show-inactive",
-        value: ""
+        value: "any"
       }
     ],
     defval: "false",
     blank: true
   }
-  /*
-  {
-    name: "revoked",
-    label: "cred.status",
-    options: [
-      {
-        tlabel: "general.show-revoked",
-        value: ""
-      }
-    ],
-    defval: "false",
-    blank: true
-  }
-  */
 ];
 
 @Component({
@@ -131,7 +113,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     if(this._searchInput) {
-      this._searchInput.value = this._filters.getFieldValue('name');
+      this._searchInput.value = this._filters.getFieldValue('q');
     }
   }
 
@@ -198,7 +180,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this._loader.reset();
       this._refresh = true;
       this._filters.update({
-        name: this._searchInput.value,
+        q: this._searchInput.value,
         page: '1'
       });
     }
@@ -206,18 +188,18 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public initSearch() {
     if(this._searchInput)
-      this._searchInput.value = this._filters.getFieldValue('name');
+      this._searchInput.value = this._filters.getFieldValue('q');
     this._inited = true;
     this._performSearch();
   }
 
   get blankQuery() {
-    return this._filters.getFieldValue('name') === '';
+    return this._filters.getFieldValue('q') === '';
   }
 
   _performSearch() {
     let query = this._filters.values;
-    if('name' in query && query['name'] !== '') {
+    if('q' in query && query['q'] !== '') {
       this._dataService.loadList(this._loader, {query});
     } else {
       this._loader.reset();

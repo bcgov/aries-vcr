@@ -14,7 +14,8 @@ export interface IAdvancedSearchOption {
 
 const FilterSpec = [
   {
-    name: "name",
+    name: "q",
+    alias: "query",
     hidden: true
   },
   {
@@ -26,7 +27,7 @@ const FilterSpec = [
     label: "cred.issuer"
   },
   {
-    name: "topic_credential_type_id",
+    name: "credential_type_id",
     label: "cred.cred-type"
   },
   {
@@ -43,7 +44,7 @@ const FilterSpec = [
     options: [
       {
         tlabel: "general.show-inactive",
-        value: "true"
+        value: "any"
       }
     ],
     defval: "false",
@@ -77,7 +78,8 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   credentialTypeOptions$: Observable<ISelectOption[]>;
 
   yesNoOptions: ISelectOption[] = [
-    { value: 'true', description: 'Yes' }
+    { value: 'false', description: 'No' },
+    { value: 'any', description: 'Yes' }
   ];
 
   /* TODO: Parameterize these to include a method of defining the input option */
@@ -86,9 +88,6 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     { label: 'credential type', helper: 'Search by a specific type of credential.' },
     { label: 'historical credentials', helper: 'Include results that have expired or are no longer active.' },
   ];
-
-  yesNoSelected: ISelectOption = { value: 'false', description: 'No' }
-  credentialTypeSelected: ISelectOption = { value: '', description: 'any' };
 
   fg: FormGroup = new FormGroup({
     text: new FormControl(''),
@@ -121,6 +120,15 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
     return parseInt(this._currentPage, 10);
   }
 
+  private get _queryParams(): { text: string, type: string, archived: string } {
+    const queryParamMap: any = this.route.snapshot.queryParamMap;
+    const queryParams: any = this.route.snapshot.queryParams;
+    const q = queryParamMap.get('q') || queryParamMap.get('query') || '';
+    const credential_type_id = queryParamMap.get('credential_type_id') || '';
+    const inactive = queryParamMap.get('inactive') || 'false';
+    return { ...queryParams, q, credential_type_id, inactive };
+  }
+
   get filters(): Filter.FieldSet {
     return this._filters;
   }
@@ -139,7 +147,11 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
         map(res => res.data.map(type => ({
           value: type.id,
           description: type.description
-        })))
+        }))),
+        map(credentialTypeOptions => [
+          { value: '', description: 'any' },
+          ...credentialTypeOptions
+        ])
       );
 
     this.credentials$ = this._cLoader.stream
@@ -176,17 +188,13 @@ export class AdvancedSearchComponent implements OnInit, OnDestroy {
   }
 
   private patchForm(): void {
-    const queryParamMap: any = this.route.snapshot.queryParamMap;
-    this.fg.patchValue({
-      text: queryParamMap.get('name') || '',
-      type: queryParamMap.get('topic_credential_type_id') || '',
-      archived: queryParamMap.get('inactive') || 'false'
-    });
+    const { q: text, credential_type_id: type, inactive: archived }: any = this._queryParams;
+    this.fg.patchValue({ text, type, archived });
   }
 
   private updateFilters(): void {
-    const { text: name, archived: inactive, type: topic_credential_type_id } = this.fg.value;
-    this._filters.update({ name, inactive, topic_credential_type_id, page: this._currentPage });
+    const { text: q, archived: inactive, type: credential_type_id } = this.fg.value;
+    this._filters.update({ ...this._queryParams, q, inactive, credential_type_id, page: this._currentPage });
   }
 
   private updateUrl() {

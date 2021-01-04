@@ -53,6 +53,8 @@
     <field name="name_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="name" dest="name_suggest"/>
 
+    <!-- The following fields are introduced in v3 -->
+
     <field name="name_text_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="name_text" dest="name_text_suggest"/>
 
@@ -62,11 +64,19 @@
     <field name="topic_source_id_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <copyField source="topic_source_id" dest="topic_source_id_suggest"/>
 
+    <field name="topic_name_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="topic_name" dest="topic_name_suggest"/>
+
+    <field name="topic_address_suggest" type="edge_ngram" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="topic_address" dest="topic_address_suggest"/>
+
     <!--
     ### More exact matching on name, used to score results
     -->
     <copyField source="name" dest="name_precise"/>
     <field name="name_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <!-- The following fields are introduced in v3 -->
 
     <copyField source="name_text" dest="name_text_precise"/>
     <field name="name_text_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
@@ -76,6 +86,12 @@
 
     <copyField source="topic_source_id" dest="topic_source_id_precise"/>
     <field name="topic_source_id_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <copyField source="topic_name" dest="topic_name_precise"/>
+    <field name="topic_name_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+    <copyField source="topic_address" dest="topic_address_precise"/>
+    <field name="topic_address_precise" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
     <fieldType name="text_tokens" class="solr.TextField" positionIncrementGap="100">
         <analyzer>
@@ -123,53 +139,31 @@
     </fieldType>
 
     <!-- Unorganized fields -->
-
     <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
     <field name="django_ct" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="django_id" type="string" indexed="true" stored="true" multiValued="false"/>
-
     <field name="document" type="text_en" indexed="true" stored="true" multiValued="false" />
-
-    <field name="credential_set_id" type="long" indexed="true" stored="true" multiValued="false" />
-
-    <field name="credential_type_id" type="long" indexed="true" stored="true" multiValued="false" />
-
-    <field name="topic_credential_type_id" type="long" indexed="true" stored="true" multiValued="true" />
-
-    <field name="topic_type" type="string" indexed="true" stored="true" multiValued="false" />
-
-    <field name="topic_id" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="category" type="string" indexed="true" stored="true" multiValued="true" />
-
     <field name="location" type="text_en" indexed="true" stored="true" multiValued="true" />
-
     <field name="name" type="text_en" indexed="true" stored="true" multiValued="true" />
-
     <field name="create_timestamp" type="date" indexed="true" stored="true" multiValued="false" />
-
     <field name="effective_date" type="date" indexed="true" stored="true" multiValued="false" />
-
     <field name="inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
-
     <field name="revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
-
     <field name="revoked_date" type="date" indexed="true" stored="true" multiValued="false" />
-
     <field name="latest" type="boolean" indexed="true" stored="true" multiValued="false" />
-
     <field name="issuer_id" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="source_id" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="schema_name" type="string" indexed="true" stored="true" multiValued="false" />
-
     <field name="schema_version" type="string" indexed="true" stored="true" multiValued="false" />
-
-    <field name="credential_id" type="string" indexed="true" stored="true" multiValued="false" />
 
     <!-- Begin organized schemas -->
     <!-- field name should being with index name follow by an underscore -->
+
+    <!-- CredentialIndex -->
+    <field name="credential_id" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="credential_set_id" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="credential_type_id" type="long" indexed="true" stored="true" multiValued="false" />
 
     <!-- NameIndex -->
     <field name="name_text" type="string" indexed="true" stored="true" multiValued="false" />
@@ -188,10 +182,19 @@
     <field name="address_credential_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
 
     <!-- TopicIndex -->
+    <field name="topic_id" type="long" indexed="true" stored="true" multiValued="false" />
     <field name="topic_source_id" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_issuer_id" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_type_id" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_type" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="topic_name" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="topic_address" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="topic_category" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="topic_credential_type_id" type="long" indexed="true" stored="true" multiValued="true" />
     <field name="topic_all_credentials_inactive" type="boolean" indexed="true" stored="true" multiValued="false" />
     <field name="topic_all_credentials_revoked" type="boolean" indexed="true" stored="true" multiValued="false" />
-
 
     <uniqueKey>id</uniqueKey>
 

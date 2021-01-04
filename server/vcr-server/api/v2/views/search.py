@@ -234,12 +234,6 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
         facet_queryset = self.filter_facet_queryset(queryset)
         result_queryset = self.filter_queryset(queryset)
 
-        # for facet in request.query_params.getlist(self.facet_query_params_text):
-        # if ":" not in facet:
-        #    continue
-        # field, value = facet.split(":", 1)
-        # if value:
-        #    queryset = queryset.narrow('%s:"%s"' % (field, queryset.query.clean(value)))
         for key in ("category", "credential_type_id", "topic_credential_type_id", "issuer_id"):
             for value in request.query_params.getlist(key):
                 if value:

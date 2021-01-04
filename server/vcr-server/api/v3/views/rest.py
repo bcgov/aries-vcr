@@ -246,7 +246,8 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
                 result["result"]["presentation"] = presentation_state["presentation"]
 
         if result is None:
-            result = {"success": False, "results": "Presentation request response not available."}
+            result = {"success": False,
+                      "results": "Presentation request response not available."}
 
         return JsonResponse(result)
 
@@ -280,13 +281,3 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
         # May raise a permission denied
         self.check_object_permissions(self.request, obj)
         return obj
-
-
-# Add environment specific endpoints
-# try:
-#     # apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
-#     # apply_custom_methods(
-#     #     TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
-#     # )
-# except:
-#     pass

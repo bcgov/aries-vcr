@@ -1,10 +1,10 @@
 import { Component, AfterViewInit, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { GeneralDataService } from 'app/general-data.service';
 import { HttpService } from 'app/core/services/http.service';
 import { ICredentialTypeResult } from 'app/core/interfaces/icredential-type-results.interface';
-import { Router } from '@angular/router';
 import { AppConfigService } from 'app/app-config.service';
 
 export interface ICredentialTypeOption {
@@ -86,9 +86,10 @@ export class SearchInputComponent implements AfterViewInit {
     private _renderer: Renderer2,
     private _dataService: GeneralDataService,
     private httpSvc: HttpService,
+    private route: ActivatedRoute,
     private router: Router,
     private configSvc: AppConfigService,
-  ) {}
+  ) { }
 
   async ngOnInit() {
     const $categories = this.httpSvc
@@ -185,10 +186,11 @@ export class SearchInputComponent implements AfterViewInit {
   }
 
   advancedSearch() {
+    const queryParams = this.route.snapshot.queryParams;
     const query = this._input.nativeElement.value;
     const lang = this._dataService.language;
 
     const nav = `/${lang}/advanced-search`;
-    query ? this.router.navigate([nav], { queryParams: { name: query } }) : this.router.navigate([nav]);
+    this.router.navigate([nav], { queryParams: { ...queryParams, query: query } });
   }
 }
