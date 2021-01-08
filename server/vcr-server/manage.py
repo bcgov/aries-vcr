@@ -12,7 +12,7 @@ def main():
 
     from django.conf import settings
 
-    if settings.DEBUG:
+    if settings.DJANGO_DEBUG:
         if os.environ.get("RUN_MAIN") or os.environ.get("WERKZEUG_RUN_MAIN"):
             import debugpy
 
