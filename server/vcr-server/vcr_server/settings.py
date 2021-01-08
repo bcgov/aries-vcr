@@ -47,7 +47,8 @@ SECRET_KEY = os.getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "False"))
+DEBUG = parse_bool(os.getenv("DEBUG", "True"))
+DJANGO_DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "False"))
 
 DEMO_SITE = parse_bool(os.getenv("DEMO_SITE", "False"))
 
