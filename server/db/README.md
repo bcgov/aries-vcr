@@ -11,3 +11,14 @@ The DB component is an instance of Postgres. The schema and data loading is all 
 # Database Schema Documentation
 
 Databases are documented using [SchemaSpy](https://github.com/bcgov/SchemaSpy).
+
+# Adding Business Numbers in the Name table
+
+The following SQL command will copy Business Nunbers from the `Attribute` table and insert them into the `Name` table if they don't exist already:
+
+```SQL
+INSERT INTO public.name(create_timestamp, update_timestamp, text, credential_id, type)
+SELECT  att.create_timestamp, att.update_timestamp, att.value, att.credential_id, att.type
+FROM public.attribute att
+WHERE type = 'business_number' AND NOT EXISTS (SELECT 1 FROM name n WHERE n.type = 'business_number' AND n.credential_id = att.credential_id);
+```
