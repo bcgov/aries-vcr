@@ -1,7 +1,0 @@
-# Themes
-
-Prior to building, theme files must be copied or symlinked into `src/themes/_active`, this is all handled by the [build-theme.js](../../build-theme.js) script called by the build.  The base theme, [`themes/base`](../../themes/base), is always copied first, and then another theme identified by the **THEME** environment variable, `THEME=bcgov` for example, can add to or replace these the default files as needed.  Again, the [build-theme.js](../../build-theme.js) script called by the build handles all of this for you.
-
-When creating your own theme create it in a separate folder, [`themes/bcgov`](../../themes/bcgov) for example.  Never mess with the base theme directly.
-
-It is highly recommended you develop your theme in a separate repository and have your automated build process copy the contents of that repository into a named folder in the [`themes`](../../themes) directory of the build's working copy of this repository, and then specify the name of that directory in the **THEME** environment variable during the build.  Refer to the `copyCustomTheme` function and it's use in the [manage](../../../docker/manage) script for examples of how this can be accomplished.  For an example of how this can be accomplished in OpenShift with a Jenkins pipeline refer to the [frontend/Jenkinsfile](https://github.com/bcgov/orgbook-configurations/blob/master/jenkins/frontend/Jenkinsfile) in the [bcgov/orgbook-configurations](https://github.com/bcgov/orgbook-configurations) repository.
