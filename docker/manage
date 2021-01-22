@@ -26,25 +26,34 @@ usage() {
       build - Build the docker images for the project.
               You need to do this first, since the builds require
               a combination of Docker and S2I builds.
+
+              By default, `build` contains only the necessary components for running
+              an Aries-VCR server. You can optionally specify the build to include a
+              client-facing user interface by setting the `CLIENT=true` when running the
+              build command. This will import a basic Angular application complete with
+              functionality for searching and exploring credentials in your Aries-VCR
+              application.
+
+              Example: `$ CLIENT=true ./manage build`
+
+              Note: The client applicaiton is copied into a folder called `/client`.
+              If you already have a client application specified here and you dont
+              want it to be overwritten, do not set the CLIENT variable when running
+              build.
     
-              You can build individual components as shown below, components that have dependencies
-              will have these dependencies built too.
+              You can build individual components as shown below, components that have
+              dependencies will have these dependencies built too.
     
               Examples:
                - Build the web UI only.
     
                 $0 build web
-
-               - Build the web UI using a custom theme.
-    
-                # $0 build web THEME=<theme-name> THEME_PATH=<absolute-path-to-themes-folder>
          
               By default all containers that components comprise of, will be rebuilt.
     
                 $0 build
 
               Containers:
-                - web
                 - solr
                 - db
                 - schema-spy
@@ -56,7 +65,12 @@ usage() {
 
             You can pass in a list of containers to start.  
             By default all containers will be started.
-            
+
+            If you want to also run the client application set `CLIENT=true`
+            when running the command or optionally pass `vcr-web` to the command.
+
+            Example: `$ CLIENT=true ./manage up`
+
             The API_URL used by vcr-web can also be redirected.
 
             Examples:
@@ -81,6 +95,9 @@ usage() {
 
             You can pass in a list of containers to be restarted.  
             By default all containers will be restarted.
+
+            If you want to also run the client application set `CLIENT=true`
+            when running the command or optionally pass `vcr-web` to the command.
             
             The API_URL used by vcr-web can also be redirected.
 
@@ -96,8 +113,6 @@ usage() {
       web-dev - Builds and runs a live development version of vcr-web, along with
                 the required supporting components. Once started, the website is
                 automatically compiled and updated in response to file modifications.
-                # To use a custom theme, use the THEME and THEME_PATH environment
-                variables described in the build step.
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
              are not deleted so they will be reused the next time you run start.
