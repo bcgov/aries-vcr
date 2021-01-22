@@ -20,13 +20,6 @@ Once this is running, simply clone, build and run Indy Catalyst as follows:
 ```
 https://github.com/bcgov/indy-catalyst
 cd indy-catalyst/starter-kits/docker
-<!-- THEME_PATH=/path/to/indy-catalyst/client/themes/ THEME=bcgov ./manage build -->
-<!-- THEME=bcgov ./manage start seed=my_seed_000000000000000000000123 -->
-```
-
-Note this runs with the bcgov theme.  TO run with the default theme replace the last two commands with:
-
-```
 ./manage build
 ./manage start seed=my_seed_000000000000000000000123
 ```
@@ -71,12 +64,9 @@ If you made any changes to core code, you may have to manually resolve conflicts
 
 ### Customizing the User Interface
 
-The default theme and code is under the "default" theme.
-
-If you add a custom theme it will look there first.
-
-It follows standard Angular practices ...
-
+The client application is  a basic Angular application
+that follows standard Angular practices. You can make
+changes as you see fit.
 
 ### Customizing the Back-end Python Code
 
@@ -90,8 +80,8 @@ Just name your file "app/app/custom_settings_<theme>.py"
 Build the Credential Registry as follows (use your theme name):
 
 ```
-<!-- THEME_PATH=/path/to/indy-catalyst/client/themes/ THEME=bcgov ./manage build -->
-<!-- THEME=bcgov ./manage start seed=my_seed_000000000000000000000123 -->
+THEME=bcgov ./manage build
+THEME=bcgov ./manage start seed=my_seed_000000000000000000000123
 ```
 
 Custom settings are loaded from "app/settings.py" (search for "custom_settings_file").
