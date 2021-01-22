@@ -37,7 +37,7 @@ usage() {
 
                - Build the web UI using a custom theme.
     
-                $0 build web THEME=<theme-name> THEME_PATH=<absolute-path-to-themes-folder>
+                # $0 build web THEME=<theme-name> THEME_PATH=<absolute-path-to-themes-folder>
          
               By default all containers that components comprise of, will be rebuilt.
     
@@ -96,7 +96,7 @@ usage() {
       web-dev - Builds and runs a live development version of vcr-web, along with
                 the required supporting components. Once started, the website is
                 automatically compiled and updated in response to file modifications.
-                To use a custom theme, use the THEME and THEME_PATH environment
+                # To use a custom theme, use the THEME and THEME_PATH environment
                 variables described in the build step.
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
@@ -138,29 +138,12 @@ function echoYellow (){
   echo -e "${_yellow}${_msg}${_nc}" >&2
 }
 
-function copyCustomTheme(){
-  # Look for the theme within the context of the build ...
-  themeFolder=$(find '../client/themes' -type d -name ${THEME})    
-  if [ ! -z "${themeFolder}" ]; then
-    echoYellow "Found the '${THEME}' theme within the build context; '${themeFolder}'"
-  else
-    echoYellow "The '${THEME}' theme was not found within the required build context."
-    echoYellow "Copying the theme into the build context."
-    sourceTheme="${THEME_PATH%/}/${THEME}"
-    destinationTheme="../client/themes/${THEME}"
-    cp -r "${sourceTheme}" "${destinationTheme}"
-  fi
-
-  echo "${destinationTheme}"
+function copyClientRepo(){
+  _dirname = '../client'
+  echo "Creating client directory"
+  mkdir -p -- _dirname && cd _dirname
 }
 
-function cleanupCustomTheme(){
-  customTheme=${1}
-  if [ ! -z "${customTheme}" ] && [ -d "${customTheme}" ]; then
-    echoYellow "Removing '${THEME}' from the build context."
-    rm -rf "${customTheme}"
-  fi  
-}
 
 build-web() {
   #
@@ -190,42 +173,23 @@ build-web() {
   fi
   
   echo -e "\nBuilding vcr-web image ..."
-  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
-    # No custom theme was specified
-    ${S2I_EXE} build \
-      --copy \
-      -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
-      -e "NPM_CONFIG_LOGLEVEL=timing" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      --runtime-image nginx-runtime \
-      -a /opt/app-root/src/dist:app \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web'
-  else
-    # Use the custom theme
-    customTheme=$(copyCustomTheme)
-    ${S2I_EXE} build \
-      --copy \
-      -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
-      -e "NPM_CONFIG_LOGLEVEL=timing" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "THEME=${THEME}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      --runtime-image nginx-runtime \
-      -a /opt/app-root/src/dist:app \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web'
-    cleanupCustomTheme "${customTheme}"
-  fi
+  # Use the custom theme
+  copyClientRepo
+  ${S2I_EXE} build \
+    --copy \
+    -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
+    -e "NPM_CONFIG_LOGLEVEL=timing" \
+    -e "HTTP_PROXY=${HTTP_PROXY}" \
+    -e "HTTPS_PROXY=${HTTPS_PROXY}" \
+    -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
+    -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
+    -e "THEME=${THEME}" \
+    -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
+    --runtime-image nginx-runtime \
+    -a /opt/app-root/src/dist:app \
+    '../client' \
+    'nodejs-build' \
+    'vcr-web'
 }
 
 build-web-dev() {
@@ -240,36 +204,20 @@ build-web-dev() {
 
   # NB: We build with DEV_MODE=true but run with DEV_MODE=false
   echo -e "\nBuilding vcr-web-dev image ..."
-  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
-    # No custom theme path was specified
-    ${S2I_EXE} build \
-      --copy \
-      -e "DEV_MODE=true" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web-dev'
-  else
-    # Use the custom theme
-    customTheme=$(copyCustomTheme)
-    ${S2I_EXE} build \
-      --copy \
-      -e "DEV_MODE=true" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "THEME=${THEME}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web-dev'
-    cleanupCustomTheme "${customTheme}"
-  fi
+  # Use the custom theme
+  copyClientRepo
+  ${S2I_EXE} build \
+    --copy \
+    -e "DEV_MODE=true" \
+    -e "HTTP_PROXY=${HTTP_PROXY}" \
+    -e "HTTPS_PROXY=${HTTPS_PROXY}" \
+    -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
+    -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
+    -e "THEME=${THEME}" \
+    -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
+    '../client' \
+    'nodejs-build' \
+    'vcr-web-dev'
 }
 
 build-solr() {
@@ -371,7 +319,7 @@ build-echo-app() {
 }
 
 build-all() {
-  build-web
+  # build-web
   build-solr
   build-db
   build-schema-spy
@@ -490,6 +438,7 @@ configureEnvironment() {
   # vcr-web
   export THEME=${THEME:-base}
   export THEME_PATH=${THEME_PATH-}
+  export WEB_REPO_URL=${WEB_REPO_URL-https://github.com/petridishdev/aries-vcr-client/archive/1.0.0-alpha.tar.gz}
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
   export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
@@ -691,11 +640,11 @@ case "${COMMAND}" in
     configureEnvironment "$@"
     docker-compose logs -f
     ;;
-  web-dev)
-    configureEnvironment "$@"
-    [ -z "$SKIP_BUILD" ] && build-web-dev
-    docker-compose run --rm --service-ports vcr-web-dev
-    ;;
+  # web-dev)
+  #   configureEnvironment "$@"
+  #   [ -z "$SKIP_BUILD" ] && build-web-dev
+  #   docker-compose run --rm --service-ports vcr-web-dev
+  #   ;;
   stop)
     configureEnvironment
     docker-compose stop 
