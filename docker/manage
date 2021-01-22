@@ -128,7 +128,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web rabbitmq vcr-worker echo-app"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy rabbitmq vcr-worker echo-app"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -331,7 +331,9 @@ build-echo-app() {
 }
 
 build-all() {
-  build-web
+  if [ "${CLIENT}" = "true" ]; then
+    build-web
+  fi
   build-solr
   build-db
   build-schema-spy
@@ -455,7 +457,7 @@ configureEnvironment() {
 
   # vcr-web
   export THEME=${THEME:-base}
-  export THEME_PATH=${THEME_PATH-}
+  export CLIENT=${CLIENT:-false}
   export WEB_REPO_URL=${WEB_REPO_URL-https://github.com/petridishdev/aries-vcr-client/archive/1.0.0-alpha.tar.gz}
   export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
   export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
@@ -609,6 +611,10 @@ getStartupParams() {
   done
 
   if [ -z "$CONTAINERS" ]; then
+    if [ "${CLIENT}" = "true" ]; then
+      DEFAULT_CONTAINERS="$DEFAULT_CONTAINERS vcr-web"
+    fi
+
     CONTAINERS="$DEFAULT_CONTAINERS"
   fi
 
