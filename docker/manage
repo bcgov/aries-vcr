@@ -147,9 +147,13 @@ function echoYellow (){
 }
 
 function copyClientRepo(){
-  _dirname = '../client'
+  _client_dirname="../client"
+  _gitignore="../.gitignore"
   echo "Creating client directory"
-  mkdir -p -- _dirname && cd _dirname
+  mkdir -p -- $_client_dirname
+  echo "Pulling client repository from $WEB_REPO_URL"
+  wget -qO- $WEB_REPO_URL | tar -xz - -C $_client_dirname --strip 1
+  sed -I '' -e "s/client\///gi;" $_gitignore
 }
 
 
@@ -327,7 +331,7 @@ build-echo-app() {
 }
 
 build-all() {
-  # build-web
+  build-web
   build-solr
   build-db
   build-schema-spy
@@ -739,11 +743,11 @@ case "${COMMAND}" in
     configureEnvironment "$@"
     logs -f "$@"
     ;;
-  # web-dev)
-  #   configureEnvironment "$@"
-  #   [ -z "$SKIP_BUILD" ] && build-web-dev
-  #   docker-compose run --rm --service-ports vcr-web-dev
-  #   ;;
+  web-dev)
+    configureEnvironment "$@"
+    [ -z "$SKIP_BUILD" ] && build-web-dev
+    docker-compose run --rm --service-ports vcr-web-dev
+    ;;
   stop)
     configureEnvironment
     docker-compose stop 
