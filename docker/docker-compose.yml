@@ -35,8 +35,7 @@ services:
       - NODE_ENV=development
       - NPM_CONFIG_LOGLEVEL=notice
       - NPM_RUN=dev
-      - THEME=${THEME}
-      - THEME_PATH=${THEME_PATH_DEV}
+      - WEB_REPO_URL=${WEB_REPO_URL}
       - WEB_BASE_HREF=${WEB_BASE_HREF}
       - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
     networks:
@@ -46,7 +45,6 @@ services:
       - 5858:5858
     volumes:
       - "../client/src:/opt/app-root/src/src"
-      - "${THEME_PATH:-../client/themes}:/opt/app-root/src/themes"
     depends_on:
       - vcr-api
 
