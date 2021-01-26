@@ -35,6 +35,7 @@ import { UtilModule } from './util/util.module';
 import { environment } from '../environments/environment';
 
 const ROUTE_PREFIX: string = 'ROUTES.';
+const NAME_PREFIX: string = 'name.';
 
 export const appInitializerFn = (appConfig: AppConfigService) => {
   return () => {
@@ -68,6 +69,11 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
     // handle missing route translations
     if (params.key.substring(0, ROUTE_PREFIX.length) === ROUTE_PREFIX) {
       return params.key.substring(ROUTE_PREFIX.length);
+    }
+    // when credential type name is not in resources,
+    // remove the resource prefix 'name.' and render incoming value
+    if (params.key.substring(0, NAME_PREFIX.length) === NAME_PREFIX) {
+      return params.key.substring(NAME_PREFIX.length);
     }
     // highlight missing translation strings in development mode
     if (!environment.production && !~params.key.indexOf('??')) {
