@@ -159,7 +159,11 @@ class CustomTopicSerializer(TopicSerializer):
     def get_names(self, obj):
         names = Name.objects.filter(
             credential__topic=obj, credential__latest=True, credential__revoked=False
-        ).order_by("credential__inactive")
+        ).filter(
+            type__in=("entity_name_assumed", "entity_name")
+        ).order_by(
+            "credential__inactive"
+        )
         serializer = CustomNameSerializer(instance=names, many=True)
         return serializer.data
 
