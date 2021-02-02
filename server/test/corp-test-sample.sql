@@ -1,66 +1,18 @@
-
 # different company types (BC, A, C, etc) "entity_type"
-
-select distinct on (credential_json->'attributes'->>'entity_type') 
-  corp_num, create_timestamp, credential_json->'attributes'->>'entity_type', credential_json->'attributes'->>'entity_name'
-from hookable_cred
-where credential_type = 'registration.registries.ca'
-order by credential_json->'attributes'->>'entity_type', id desc;
-
+# BC Registries registeres different types of organizations - corporations, sole-props, societies, co-ops, etc
+select topic.source_id, topic.type, cred.entity_type from (select distinct on (credential_json->'attributes'->>'entity_type') corp_num, create_timestamp, credential_json->'attributes'->>'entity_type' entity_type, credential_json->'attributes'->>'entity_name' entity_name from hookable_cred where credential_type = 'registration.registries.ca' order by credential_json->'attributes'->>'entity_type', id desc) as cred, topic where topic.source_id = cred.corp_num;
 # ACTive and HIStorical companies "entity_status"
-
-select distinct on (credential_json->'attributes'->>'entity_status') 
-  corp_num, create_timestamp, credential_json->'attributes'->>'entity_status', credential_json->'attributes'->>'entity_name'
-from hookable_cred
-where credential_type = 'registration.registries.ca'
-order by credential_json->'attributes'->>'entity_status', id desc;
-
+# BC Registries tracks a more detailed company status, but we just publish the summary active or historical status
+select topic.source_id, topic.type, cred.entity_status from (select distinct on (credential_json->'attributes'->>'entity_status') corp_num, create_timestamp, credential_json->'attributes'->>'entity_status' entity_status, credential_json->'attributes'->>'entity_name' entity_name from hookable_cred where credential_type = 'registration.registries.ca' order by credential_json->'attributes'->>'entity_status', id desc) as cred, topic where topic.source_id = cred.corp_num;
 # BC and ex-pro companies (assumed name, home and remote jurisdiction) "entity_name", "assumed_name", "home_jurisdiction", "registered_jurisdiction"
-
-select distinct on (credential_json->'attributes'->>'home_jurisdiction', credential_json->'attributes'->>'registered_jurisdiction') 
-  corp_num, create_timestamp, credential_json->'attributes'->>'home_jurisdiction', credential_json->'attributes'->>'registered_jurisdiction', credential_json->'attributes'->>'entity_name'
-from hookable_cred
-where credential_type = 'registration.registries.ca'
-order by credential_json->'attributes'->>'home_jurisdiction', credential_json->'attributes'->>'registered_jurisdiction', id desc;
-
+# ex-pro companies (registered outside of BC) may use an "assumed name" in BC if their registered name is not available
+select topic.source_id, topic.type, cred.home_jurisdiction, cred.registered_jurisdiction from (select distinct on (credential_json->'attributes'->>'home_jurisdiction', credential_json->'attributes'->>'registered_jurisdiction') corp_num, create_timestamp, credential_json->'attributes'->>'home_jurisdiction' home_jurisdiction, credential_json->'attributes'->>'registered_jurisdiction' registered_jurisdiction, credential_json->'attributes'->>'entity_name' entity_name from hookable_cred where credential_type = 'registration.registries.ca' order by credential_json->'attributes'->>'home_jurisdiction', credential_json->'attributes'->>'registered_jurisdiction', id desc) as cred, topic where topic.source_id = cred.corp_num;
 # sole props (FM), DBA and owned-by companies "topic_relationship"
-
-select distinct on (credential_json->'attributes'->>'relationship') 
-  corp_num, create_timestamp, credential_json->'attributes'->>'relationship', credential_json->'attributes'->>'associated_registration_id'
-from hookable_cred
-where credential_type = 'relationship.registries.ca'
-order by credential_json->'attributes'->>'relationship', id desc;
-
-# large number of credentials "select count(*) from credential_set group by topic_id"
-
-select id, source_id from topic where id in (
-select topic_id from (
-select topic_id, count(*) count from credential_set group by topic_id
-order by count desc limit 2
-) as foo);
-
-# large number of relationships (Telus, Pattison) "select count(*) from credential_set group by topic_id"
-
-select id, source_id from topic where id in (
-select topic_id from (
-select topic_id, count(*) count from topic_relationship group by topic_id
-order by count desc limit 2
-) as foo);
-
-# name change, status change, short duration credentials
-
-select id, source_id from topic where id in (
-select topic_id from (
-select topic_id, count(*) count from credential
-where credential_type_id = 1
-group by topic_id
-order by count desc limit 5
-) as foo);
-
+# we publish relationship credentials for sole props that are wholly owned by corporations
+select topic.source_id, topic.type, cred.relationship, cred.associated_registration_id from (select distinct on (credential_json->'attributes'->>'relationship') corp_num, create_timestamp, credential_json->'attributes'->>'relationship' relationship, credential_json->'attributes'->>'associated_registration_id' associated_registration_id from hookable_cred where credential_type = 'relationship.registries.ca' order by credential_json->'attributes'->>'relationship', id desc) as cred, topic where topic.source_id = cred.corp_num;
+# sample with a large number of relationships (e.g. Telus, Pattison)
+select source_id, type, id from topic where id in (select topic_id from (select topic_id, count(*) count from topic_relationship group by topic_id order by count desc limit 5) as foo);
+# we re-publish the company's credential whenever a company name or status (or any other attribute) changes, this can lead to a large number of credentials 
+select source_id, type, id from topic where id in (select topic_id from (select topic_id, count(*) count from credential where credential_type_id = 1 group by topic_id order by count desc limit 5) as foo);
 # other credentials - BN, Cannabis license
-
-select id, source_id from topic where id in (
-select topic_id from (
-select distinct on (credential_type_id) topic_id from credential
-order by credential_type_id
-) as foo);
+select source_id, type, id from topic where id in (select topic_id from (select distinct on (credential_type_id) topic_id from credential order by credential_type_id) as foo);
