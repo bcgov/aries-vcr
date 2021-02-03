@@ -8,36 +8,6 @@ from rest_framework.decorators import action
 LOGGER = logging.getLogger(__name__)
 
 
-# @action(detail=True, url_path="related_to")
-# def list_related_to(self, request, pk=None):
-#    # We load most at runtime because ORM isn't loaded at setup time
-#    from django.shortcuts import get_object_or_404
-#    from api.v2.views.rest import CustomTopicSerializer
-#    from api.v2.models.Topic import Topic
-#    from rest_framework.response import Response
-
-#    parent_queryset = Topic.objects.all()
-#    item = get_object_or_404(parent_queryset, pk=pk)
-#    queryset = item.get_active_related_to()
-#    serializer = CustomTopicSerializer(queryset, many=True)
-#    return Response(serializer.data)
-
-
-# @action(detail=True, url_path="related_from")
-# def list_related_from(self, request, pk=None):
-#    # Secondary imports do not incur a cost
-#    from django.shortcuts import get_object_or_404
-#    from api.v2.views.rest import CustomTopicSerializer
-#    from api.v2.models.Topic import Topic
-#    from rest_framework.response import Response
-
-#    parent_queryset = Topic.objects.all()
-#    item = get_object_or_404(parent_queryset, pk=pk)
-#    queryset = item.get_active_related_from()
-#    serializer = CustomTopicSerializer(queryset, many=True)
-#    return Response(serializer.data)
-
-
 @action(detail=True, url_path="related_to_relations")
 def list_related_to_relations(self, request, pk=None):
     # We load most at runtime because ORM isn't loaded at setup time
@@ -116,10 +86,6 @@ def list_related_to_relations(self, request, pk=None):
         for topic_relationship in topic_relationships
     ]
 
-    # serializer = CustomTopicRelationshipSerializer(
-    #     parent_queryset, many=True, relationship_type="to"
-    # )
-
     return Response(data)
 
 
@@ -171,7 +137,6 @@ CUSTOMIZATIONS = {
         },
     },
     "views": {
-        # "TopicViewSet": {"includeMethods": [list_related_to, list_related_from]},
         "TopicRelationshipViewSet": {
             "includeMethods": [list_related_to_relations, list_related_from_relations]
         },
