@@ -27,7 +27,6 @@ from api.v2.models.TopicRelationship import TopicRelationship
 from api.v2.serializers.rest import (
     CredentialSerializer,
     CredentialTypeSerializer,
-    ExpandedCredentialSerializer,
     ExpandedCredentialSetSerializer,
     IssuerSerializer,
     SchemaSerializer,
@@ -37,8 +36,6 @@ from api.v2.serializers.rest import (
 
 from .viewsets import RetriveOnlyModelViewSet
 from ..mixins import MultipleFieldLookupMixin
-
-from api.v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
 
