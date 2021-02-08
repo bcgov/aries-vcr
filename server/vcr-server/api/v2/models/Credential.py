@@ -55,10 +55,10 @@ class Credential(Auditable):
         return cache[key]
 
     def get_local_name(self):
-        return local_name(self.all_names)
+        return local_name(self.all_names) or self.topic.get_local_name()
 
     def get_remote_name(self):
-        return remote_name(self.all_names)
+        return remote_name(self.all_names) or self.topic.get_remote_name()
 
     # used by solr document index
     @property
