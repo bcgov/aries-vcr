@@ -355,7 +355,7 @@ services:
   # wallet-db
   #
   wallet-db:
-    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
+    image: vcr-postgresql
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -390,7 +390,7 @@ services:
     ports:
       - 8000:8000
     command:
-      bash ./start.sh
+      sh ./start.sh
 
 networks:
   vcr:
