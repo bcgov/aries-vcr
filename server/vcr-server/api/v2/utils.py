@@ -313,6 +313,9 @@ def local_name(names=[]):
             if type in types:
                 local_name = names[types.index(type)]
                 break
+        if not local_name:
+            # Take the first one
+            local_name = names[0]
         return local_name
     except Exception as e:
         LOGGER.error("Exception was raised: " + str(e))
