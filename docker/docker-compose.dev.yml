@@ -1,5 +1,5 @@
 # This configuration file overrides the settings in 
-# `./docker-compose.dev.yml` when `DEBUG` is set
+# `./docker-compose.yml` when `DEBUG` is set
 # to `true`.
 #
 # For example: The settings here allow for hot module
