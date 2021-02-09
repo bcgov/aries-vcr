@@ -1,0 +1,21 @@
+# This configuration file overrides the settings in 
+# `./docker-compose.yml` when `DEBUG` is set
+# to `true`.
+#
+# For example: The settings here allow for hot module
+# reloading of the API server when code is changed.
+#
+# These settings are not applied when `DEBUG` mode is 
+# set to `false`. Settings that are not listed here but
+# are in the  main `./docker-compose.yml` will remain
+# even if the ovveride is applied.
+#
+version: "3"
+services:
+  vcr-api:
+    volumes:
+      - ../server/vcr-server/vcr_server:/home/indy/vcr_server
+      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
+      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
+      - ../server/vcr-server/api:/home/indy/api
+      - vcr-wallet:/home/indy/.indy_client/wallet

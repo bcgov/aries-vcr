@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny
 from django.conf import settings
 from django.urls import include, path
 from django.views.generic import RedirectView
+from django.conf.urls.static import static
 
 from . import views
 
@@ -40,4 +41,5 @@ api_patterns = [
     path("api/v4/", include("api.v4.urls", namespace="v4"), name="api-v4"),
 ]
 
-urlpatterns = base_patterns + hook_patterns + api_patterns
+urlpatterns = base_patterns + hook_patterns + api_patterns + \
+    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
