@@ -127,7 +127,6 @@ services:
       - RANDOM_ERRORS=${RANDOM_ERRORS}
       - STARTUP_DELAY=${STARTUP_DELAY}
     volumes:
-      - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
       - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
       - ../server/vcr-server/api:/home/indy/api

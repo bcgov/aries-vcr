@@ -1,0 +1,9 @@
+version: "3"
+services:
+  vcr-api:
+    volumes:
+      - ../server/vcr-server/vcr_server:/home/indy/vcr_server
+      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
+      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
+      - ../server/vcr-server/api:/home/indy/api
+      - vcr-wallet:/home/indy/.indy_client/wallet
