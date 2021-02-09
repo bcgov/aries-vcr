@@ -522,6 +522,12 @@ configureEnvironment() {
   if [ "${TRACE_EVENTS}" = "true" ]; then
     AGENT_TRACE_MODE="--trace"
   fi
+
+  unset composeOptions
+  if [ $DEBUG = true  ]; then
+    # Override the vcr-api volume settings; add volume mount to enable hot reloading.
+    export composeOptions="-f docker-compose.yml -f docker-compose.dev.yml"
+  fi
 }
 
 getInputParams() {
@@ -668,12 +674,7 @@ case "${COMMAND}" in
   start|up)
     _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
-    if [ $DEBUG = true  ];
-    then
-      docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --scale vcr-worker=2 -d ${_startupParams} 
-    else
-      docker-compose up --scale vcr-worker=2 -d ${_startupParams} 
-    fi
+    docker-compose ${composeOptions} up --scale vcr-worker=2 -d ${_startupParams}
     docker-compose logs -f
     ;;
   scale|upscale)
@@ -683,24 +684,14 @@ case "${COMMAND}" in
     echo "NOTE make sure you have removed the port mapping in docker-compose.yml for vcr-api and vcr-agent!!!"
     echo "Press any key to continue or <CRTL-C> to abort"
     read anykey
-    if [ $DEBUG = true ];
-    then
-      docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams}
-    else
-      docker-compose up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams}
-    fi
+    docker-compose ${composeOptions} up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams}
     docker-compose logs -f
     ;;
   restart)
     _startupParams=$(getStartupParams $@)
     configureEnvironment "$@"
     docker-compose stop ${_startupParams}
-    if [ $DEBUG = true ];
-    then
-      docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d ${_startupParams}
-    else 
-      docker-compose up -d ${_startupParams}
-    fi
+    docker-compose ${composeOptions} up -d ${_startupParams}
     ;;
   logs)
     configureEnvironment "$@"

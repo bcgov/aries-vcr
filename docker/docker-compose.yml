@@ -54,16 +54,24 @@ services:
   # vcr-api
   #-------------------------------------------------
   # The API performs the migrations on the database
-  # and updates the indexes in Solr.  Therefore
+  # and updates the indexes in Solr. Therefore
   # it needs to come up after the database and
   # and Solr services have had time to fully
   # initialize.
-  #
   #
   # We are using a simple sleep command to do this
   # for the moment; refer to the `command` section
   # of the configuration for details.  It would be
   # nice to implement a more deterministic solution.
+  #
+  # When `DEBUG` is set to `true` the override
+  # configurations defined in `./docker-compose.dev.yml`
+  # are applied and will take effect. See the override
+  # config file for more details.
+  # 
+  # Due to the way configurations are applied, it is
+  # recommended to rebuild containers to disable `DEBUG`
+  # mode if it was previously enabled.
   #
   vcr-api:
     image: vcr-api

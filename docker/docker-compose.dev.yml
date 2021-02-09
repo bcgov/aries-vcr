@@ -1,3 +1,15 @@
+# This configuration file overrides the settings in 
+# `./docker-compose.dev.yml` when `DEBUG` is set
+# to `true`.
+#
+# For example: The settings here allow for hot module
+# reloading of the API server when code is changed.
+#
+# These settings are not applied when `DEBUG` mode is 
+# set to `false`. Settings that are not listed here but
+# are in the  main `./docker-compose.yml` will remain
+# even if the ovveride is applied.
+#
 version: "3"
 services:
   vcr-api:
