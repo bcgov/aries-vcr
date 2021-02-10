@@ -161,7 +161,7 @@ async def issuer_registration_send(request: web.BaseRequest):
     connection_id = body.get("connection_id")
     issuer_registration = body.get("issuer_registration")
 
-    issuer_registration_manager = IssuerRegistrationManager(context)
+    issuer_registration_manager = IssuerRegistrationManager(session)
 
     try:
         connection = await ConnRecord.retrieve_by_id(session, connection_id)
