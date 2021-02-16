@@ -9,33 +9,34 @@
 - [Prerequisites](##prerequisites)
 - [Running a VON - Verified Organizations Network](##running-a-von---verified-organizations-network)
   - [Running on Docker Locally](###running-the-network-on-docker-locally)
+  - [Stopping the Network](###stopping-the-network)
 - [Aries VCR](##aries-vcr)
   - [Building the Images](###building-the-images)
   - [Starting the Project](###starting-the-project)
   - [Stopping the Project](###stopping-the-project)
   - [Using the Application](###using-the-application)
-  - [Live Web Development(Credential Registry)](###live-web-development)
   - [Start-up Orchestration](###start--up-orchestration)
 - [Aries VCR Issuer Controller](##aries-vcr-issuer-controller)
   - [Initialize the Project](###initialize-the-project)
   - [Register the DID](###register-the-did)
   - [Build and Start the Project](###build-and-start-the-project)
   - [Issuing Credentials](###issuing-credentials)
+- [Aries VCR Client](###aries-vcr-client)
 - [Troubleshooting Guides](##troubleshooting-guides)
 
 ## Introduction
 
-This guide is intended for use by teams and entities who are planning to or currently working with the Aries VCR software components.
+This guide is intended for use by teams and entities who are planning to or are currently working with the Aries VCR software components.
 
-If you are unfamiliar with the underpinning technologies and concepts that are utilized in this project please review the getting started documentation in the vonx.io homepage: [Get Started with VON - Verifiable Organizations Network](https:\\vonx.io\getting_started\get-started\#technical-components-of-a-von-ecosystem)
+If you are unfamiliar with the underpinning technologies and concepts that are utilized in this project, please review the getting started documentation in the vonx.io homepage: [Get Started with VON - Verifiable Organizations Network](https:\\vonx.io\getting_started\get-started\#technical-components-of-a-von-ecosystem)
 
 ## Before you Start
 
 Running this project in development requires a running VON - Verified Organizations Network, the Aries VCR project and an Aries VCR Issuer Controller.
 
-Aries VCR is a cloud based project that is developed as a cloud-native application. All components are developed in Docker first. <em> As such we <b>strongly recommend</b> that using Docker for all development local or otherwise</em>.
+Aries VCR is a cloud-based project that is developed as a cloud-native application. All components are developed in Docker first. _As such we __strongly recommend__ that using Docker for all development local or otherwise_.
 
-<span style="color:red;">The Aries VCR contributors do not test or develop any of the technical components on bare metal.</span>
+_Note: The Aries VCR contributors do not test or develop any of the technical components on bare metal._
 
 ## Repositories
 
@@ -44,10 +45,13 @@ Running all components of an Aries VCR network in development requires the follo
 - [VON - Verified Organizations Network](https://github.com/bcgov/von-network)
 - [Aries VCR](https://github.com/bcgov/aries-vcr)
 - [Aries VCR Issuer Controller](https://github.com/bcgov/aries-vcr-issuer-controller)
+- [Aries VCR Client](https://github.com/bcgov/aries-vcr-client)
 
-The Issuer Controller may not be necessary for your project implementation if there is no need for issuing credentials. It will still be required for development (to issue credentials) if you do not have a separate agent that you are using for issuing.
+It is recommended to fork all the listed repositories, **with the exception of the Issuer Controller**. If your use case requires an Issuer Controller follow the outlined procedure in the issuer-controller guide.
 
-It is recommended to fork all the listed repositories, with the exception of the Issuer Control. If your use case requires an issuer controller follow the outlined procedure in the issuer-controller guide.
+_Note: The Issuer Controller may not be necessary for your project implementation if there is no need for issuing credentials. It will still be required for development (to issue credentials) if you do not have a separate agent that you are using for issuing._
+
+ _Note: The Client is also optional, but recommended if you are just starting out and/or want a ready-made user-interface for your credential registry._
 
 ## Prerequisites
 
@@ -62,7 +66,7 @@ It is recommended to fork all the listed repositories, with the exception of the
 
 ## Running a VON - Verified Organizations Network
 
-The following instructions provide details on how to deploy the project using Docker Compose. This method of deployment is intended for local development and demonstration purposes. It is NOT intended to be support production level deployments where security, availability, resilience, and data integrity are important.
+The following instructions provide details on how to deploy the project using Docker Compose. This method of deployment is intended for local development and demonstration purposes. It is NOT intended to support production-level deployments where security, availability, resilience, and data integrity are important.
 
 ### Running the Network On Docker Locally
 
@@ -78,32 +82,44 @@ cd von-network
 The `./manage` script has a number of commands. Run it without arguments to see the set of options.
 
 Once the build process completes, you can test the build to make sure everything works properly:
-`./manage start`
+```bash
+./manage start
+```
 Monitor the logs for error messages as the nodes start up.
 
 Verify the network is running
 In a browser, go to http://localhost:9000. You should see the VON Indy Ledger Browser and the status of the four nodes of the Indy Network. All should show a lovely, complete blue circle. If not - check the logs in the terminal.
 
-Stopping the Network
-To stop the scrolling logs and get to a command prompt, hit Ctrl-C. To stop and remove the network persistence (the Ledger), run: `./manage down`
+### Stopping the Network
+
+To stop the scrolling logs and get to a command prompt, hit `Ctrl-C`. To stop and remove the network persistence (the Ledger), run: 
+```bash
+./manage down
+```
 If necessary, you can use `./manage stop` instead of down to stop the containers but retain the persistence.
 
 ## Aries VCR
 
-Fork and clone the Aries VCR project as per the initial instructions at the outset.
+Fork the Aries VCR project as per the initial instructions at the outset.
 
-Fork the project, navigate to the folder where you keep your projects and repositories and run `git clone https://github.com/<username>/aries-vcr`
-
-There are a few different technical components to the project which are described in more detail here [link]
+Fork the project, navigate to the folder where you keep your projects and repositories and run:
+```bash
+git clone https://github.com/<username>/aries-vcr
+```
 
 Finally, change directory to the new created starter-kit located in the aries-vcr project folder:
-`cd aries-vcr/starter-kits/credential-registry/docker`
+```bash
+cd aries-vcr/starter-kits/credential-registry/docker
+```
 
 ### Building the Images
 
-Building the images requires a combination of Docker and S2I builds the process has been scripted inside manage. 
+Building the images requires a combination of Docker and S2I builds. The process has been scripted inside manage. 
 
-To build the images run `./manage build`
+To build the images run: 
+```bash
+./manage build
+```
 
 ### Starting the Project
 
@@ -112,58 +128,51 @@ The Aries VCR starter kit requires a unique seed for development. This is a 32 c
 You will need to choose a unique seed value for development. Use a value that is not used by another agent within the environment. It must be 32 characters long exactly. If you're using an externally hosted VON ledger you will need to be careful to select a unique seed in this step.
 
 Register the unique seed by running the following script command: 
-
-`./manage registerDids seed=my_unique_seed_00000000000000000`
+```bash
+./manage registerDids seed=my_unique_seed_00000000000000000
+```
 
 Finally run the manage script to start the project: 
-
-`./manage start seed=my_unique_seed_00000000000000000`
+```bash
+./manage start seed=my_unique_seed_00000000000000000
+```
 
 This will start the project interactively; with all of the logs being written to the command line.
 
 ### Stopping the Project
 
-There are two commands to stop the project. Down and Stop.
+There are two commands to stop the project. `Down` and `Stop`.
 
 #### Stop
 
-Stop stops the containers, but leaves the rest of the docker-compose structure in place - volumes (and the Indy wallets they store) and networking.
+`Stop` stops the containers, but leaves the rest of the docker-compose structure in place - volumes (and the Indy wallets they store) and networking.
 
 To stop the containers without destroying them run:
-
-`./manage stop`
+```bash
+./manage stop
+```
 
 #### Down
 
-Down is destructive, removing the volumes and network elements. Often in a debugging session, stop is sufficient. If you use down, you likely will have to restart the prerequisite Indy network.
+`Down` is destructive, removing the volumes and network elements. Often in a debugging session, stop is sufficient. If you use down, you likely will have to restart the prerequisite Indy network.
 
 To remove the volumes and network elements run: 
-
-`./manage down`
+```bash
+./manage down
+```
 
 ### Using the Application
 
-- The main UI is exposed at: http://localhost:8080/
 - The API is exposed at: http://localhost:8081/
 - Schema-Spy is exposed at: http://localhost:8082/
 - Solr is exposed at: http://localhost:8983/
 - The database is exposed at: http://localhost:5432/
 
-### Live Web Development
-
-The Aries VCR Org Book can also be brought up in a state where local modifications to the vcr-web component are detected automatically, resulting in recompilation of the Javascript and CSS resources and a page reload when viewed in a web browser. To run Aries VCR Org Book using this method execute:
-
-`./manage web-dev seed="my_seed_000000000000000000000000"`
-
-### Theme Development
-
-Custom development of themes based on the Credential Registry starter kit is possible by following this [guide](../credential-registry\client\vcr-web\ThemeDevelopment.md)
-
 ### Start-up Orchestration
 
-The API server manages the database schema and indexes, therefore it must wait until the database and search engine (Solr) services are up and running AND fully initialized. Likewise, the Schema-Spy service must wait until the API service has created\migrated the database schema to the most recent version before it starts.
+The API server manages the database schema and indexes, therefore it must wait until the database and search engine (Solr) services are up and running AND fully initialized. Likewise, the Schema-Spy service must wait until the API service has created/migrated the database schema to the most recent version before it starts.
 
-To accomplish this the docker compose file defines simple sleep commands to pause the startup for these services. It would be nice to develop a more deterministic solution for the start-up orchestration. In the case of the API server it would sufficient to detect that Solr and PostgreSQL are responding, however, in the case of the Schema-Spy service this would be insufficient as the API server needs time to create or migrate the schema to the latest version before Schema-Spy starts.
+To accomplish this, the docker compose file defines simple sleep commands to pause the startup for these services. It would be nice to develop a more deterministic solution for the start-up orchestration. In the case of the API server it would sufficient to detect that Solr and PostgreSQL are responding, however, in the case of the Schema-Spy service this would be insufficient as the API server needs time to create or migrate the schema to the latest version before Schema-Spy starts.
 
 ## Aries VCR Issuer Controller
 
@@ -195,8 +204,7 @@ The DID is located in the `aries-vcr-issuer-controller/docker/manage` file on li
 
 ### Build and Start the Project
 
-Navigate to the docker folder in the project. Run: `./manage build` to build all the necessary containers.
-Finally run `./manage start` to initialize the project.
+Navigate to the docker folder in the project. Run: `./manage build` to build all the necessary containers. Finally run `./manage start` to initialize the project.
 
 ### Issuing Credentials
 
@@ -242,6 +250,21 @@ To submit credentials, use Postman (or similar, based on your local configuratio
     }
 ]
 ```
+
+## Aries VCR Client
+
+The Client is an optional web application that provides a UI to the API for searching and viewing credential details. If you are a first-time user of Aries VCR, it is recommended to run the Client to see how the API can be consumed in a client-facing application. You may additionally choose to base your own registry client off of the Client (by extending the Client) or build your own from scratch.
+
+See details in [this](https://github.com/bcgov/aries-vcr-client) repo for more details on how to run and extend the Client where necessary. If you have the Angular CLI installed, the Client can be simply run with the following command:
+
+```bash
+npm install && ng serve
+```
+
+Here are some examples of applications that have extended the base Client for their own purposes:
+
+* [Orgbook BC](https://github.com/bcgov/orgbook-bc-client)
+* [Orgbook ON](https://github.com/bcgov/orgbook-on-client)
 
 ## Troubleshooting Guides:
 - [Fixing a Corrupt Wallet Index](./fix-corrupt-wallet-index.md)
