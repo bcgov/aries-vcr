@@ -55,16 +55,24 @@ services:
   # vcr-api
   #-------------------------------------------------
   # The API performs the migrations on the database
-  # and updates the indexes in Solr.  Therefore
+  # and updates the indexes in Solr. Therefore
   # it needs to come up after the database and
   # and Solr services have had time to fully
   # initialize.
-  #
   #
   # We are using a simple sleep command to do this
   # for the moment; refer to the `command` section
   # of the configuration for details.  It would be
   # nice to implement a more deterministic solution.
+  #
+  # When `DEBUG` is set to `true` the override
+  # configurations defined in `./docker-compose.dev.yml`
+  # are applied and will take effect. See the override
+  # config file for more details.
+  # 
+  # Due to the way configurations are applied, it is
+  # recommended to rebuild containers to disable `DEBUG`
+  # mode if it was previously enabled.
   #
   vcr-api:
     image: vcr-api
@@ -128,7 +136,6 @@ services:
       - RANDOM_ERRORS=${RANDOM_ERRORS}
       - STARTUP_DELAY=${STARTUP_DELAY}
     volumes:
-      - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
       - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
       - ../server/vcr-server/api:/home/indy/api
@@ -356,7 +363,7 @@ services:
   # wallet-db
   #
   wallet-db:
-    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
+    image: vcr-postgresql
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -391,7 +398,7 @@ services:
     ports:
       - 8000:8000
     command:
-      bash ./start.sh
+      sh ./start.sh
 
 networks:
   vcr:

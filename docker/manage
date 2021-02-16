@@ -262,14 +262,14 @@ build-db() {
   #
   # db
   #
-  echo -e "\nBuilding postgresql image ..."
+  echo -e "\nBuilding vcr-postgresql image ..."
   ${S2I_EXE} build \
     --copy \
     -e "HTTP_PROXY=${HTTP_PROXY}" \
     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
     '../server/db/config' \
     'registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest' \
-    'postgresql'
+    'vcr-postgresql'
 }
 
 build-schema-spy() {
@@ -492,6 +492,12 @@ configureEnvironment() {
   if [ "${TRACE_EVENTS}" = "true" ]; then
     AGENT_TRACE_MODE="--trace"
   fi
+
+  unset composeOptions
+  if [ $DEBUG = true  ]; then
+    # Override the vcr-api volume settings; add volume mount to enable hot reloading.
+    export composeOptions="-f docker-compose.yml -f docker-compose.dev.yml"
+  fi
 }
 
 getInputParams() {
@@ -642,7 +648,7 @@ case "${COMMAND}" in
   start|up)
     _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
-    docker-compose up --scale vcr-worker=2 -d ${_startupParams} 
+    docker-compose ${composeOptions} up --scale vcr-worker=2 -d ${_startupParams}
     docker-compose logs -f
     ;;
   scale|upscale)
@@ -652,14 +658,14 @@ case "${COMMAND}" in
     echo "NOTE make sure you have removed the port mapping in docker-compose.yml for vcr-api and vcr-agent!!!"
     echo "Press any key to continue or <CRTL-C> to abort"
     read anykey
-    docker-compose up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams} 
+    docker-compose ${composeOptions} up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams}
     docker-compose logs -f
     ;;
   restart)
     _startupParams=$(getStartupParams $@)
     configureEnvironment "$@"
     docker-compose stop ${_startupParams}
-    docker-compose up -d ${_startupParams}
+    docker-compose ${composeOptions} up -d ${_startupParams}
     ;;
   logs)
     configureEnvironment "$@"
