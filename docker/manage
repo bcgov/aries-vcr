@@ -333,6 +333,8 @@ configureEnvironment() {
   export TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS:-false}
   export TRACE_TARGET=${TRACE_TARGET:-log}
 
+  export THEME=${THEME:-base}
+
   # rabbitmq
   export RABBITMQ_USER="RABBITMQ_USER"
   export RABBITMQ_PASSWORD="RABBITMQ_PASSWORD"
