@@ -22,10 +22,11 @@ class IssuerRegistrationHandler(BaseHandler):
         """
         self._logger.debug(f"IssuerRegistrationHandler called with context {context}")
         assert isinstance(context.message, IssuerRegistration)
+        session = await context.session()
 
         self._logger.info("Received issuer registration: %s", context.message)
 
-        issuer_registration_manager = IssuerRegistrationManager(context)
+        issuer_registration_manager = IssuerRegistrationManager(session)
 
         await issuer_registration_manager.receive_registration(
             context.connection_record.connection_id, context.message
