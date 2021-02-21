@@ -26,28 +26,14 @@ usage() {
       build - Build the docker images for the project.
               You need to do this first, since the builds require
               a combination of Docker and S2I builds.
-
-              By default, `build` contains only the necessary components for running
-              an Aries-VCR server. You can optionally specify the build to include a
-              client-facing user interface by setting the `CLIENT=true` when running the
-              build command. This will import a basic Angular application complete with
-              functionality for searching and exploring credentials in your Aries-VCR
-              application.
-
-              Example: `$ CLIENT=true ./manage build`
-
-              Note: The client applicaiton is copied into a folder called `/client`.
-              If you already have a client application specified here and you dont
-              want it to be overwritten, do not set the CLIENT variable when running
-              build.
     
               You can build individual components as shown below, components that have
               dependencies will have these dependencies built too.
     
               Examples:
-               - Build the web UI only.
+               - Build the API only.
     
-                $0 build web
+                $0 build api
          
               By default all containers that components comprise of, will be rebuilt.
     
@@ -66,18 +52,9 @@ usage() {
             You can pass in a list of containers to start.  
             By default all containers will be started.
 
-            If you want to also run the client application set `CLIENT=true`
-            when running the command or optionally pass `vcr-web` to the command.
-
-            Example: `$ CLIENT=true ./manage up`
-
-            The API_URL used by vcr-web can also be redirected.
-
             Examples:
             $0 start
             $0 start vcr-solr
-            $0 start vcr-web
-            $0 start vcr-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
 
       start - Same as up 
@@ -96,23 +73,12 @@ usage() {
             You can pass in a list of containers to be restarted.  
             By default all containers will be restarted.
 
-            If you want to also run the client application set `CLIENT=true`
-            when running the command or optionally pass `vcr-web` to the command.
-            
-            The API_URL used by vcr-web can also be redirected.
-
             Examples:
             $0 start
             $0 start vcr-solr
-            $0 start vcr-web
-            $0 start vcr-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
 
       logs - Display the logs from the docker compose run (ctrl-c to exit).
-
-      web-dev - Builds and runs a live development version of vcr-web, along with
-                the required supporting components. Once started, the website is
-                automatically compiled and updated in response to file modifications.
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
              are not deleted so they will be reused the next time you run start.
@@ -151,92 +117,6 @@ function echoYellow (){
   _yellow='\e[33m'
   _nc='\e[0m' # No Color
   echo -e "${_yellow}${_msg}${_nc}" >&2
-}
-
-function copyClientRepo(){
-  _client_dirname="../client"
-  _gitignore="../.gitignore"
-  echo "Creating client directory"
-  mkdir -p -- $_client_dirname
-  echo "Pulling client repository from $WEB_REPO_URL"
-  wget -qO- $WEB_REPO_URL | tar -xz - -C $_client_dirname --strip 1
-  sed -I '' -e "s/client\///gi;" $_gitignore
-}
-
-
-build-web() {
-  #
-  # vcr-web
-  #
-  # The nginx-runtime image is used for the final runtime image.
-  # The nodejs-build image is used to build the artifacts for the angular distribution.
-  # The vcr-web image is copy of the nginx-runtime image complete with a copy of the build artifacts.
-  #
-  echo -e "\nBuilding nginx-runtime image ..."
-  docker build -q \
-    -t 'nginx-runtime' \
-    -f './nginx-runtime/Dockerfile' './nginx-runtime/'
-
-  # This image only exists to pre-create the npm cache directory
-  # so it can be properly used as a volume, it doesn't apply to openshift
-  echo -e "\nBuilding nodejs-build image ..."
-  docker build -q \
-    -t 'nodejs-build' \
-    -f './nodejs-build/Dockerfile' './nodejs-build/'
-
-  if [ -t 0 ]; then
-    # color npm output in interactive terminal
-	  NPM_COLOR="always"
-  else
-    NPM_COLOR="true"
-  fi
-  
-  echo -e "\nBuilding vcr-web image ..."
-  # Use the custom theme
-  copyClientRepo
-  ${S2I_EXE} build \
-    --copy \
-    -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
-    -e "NPM_CONFIG_LOGLEVEL=timing" \
-    -e "HTTP_PROXY=${HTTP_PROXY}" \
-    -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-    -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-    -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-    -e "THEME=${THEME}" \
-    -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-    --runtime-image nginx-runtime \
-    -a /opt/app-root/src/dist:app \
-    '../client' \
-    'nodejs-build' \
-    'vcr-web'
-}
-
-build-web-dev() {
-  #
-  # vcr-web-dev
-  # Alternative version of vcr-web for live development
-  #
-  echo -e "\nBuilding nodejs-build image ..."
-  docker build -q \
-    -t 'nodejs-build' \
-    -f './nodejs-build/Dockerfile' './nodejs-build/'
-
-  # NB: We build with DEV_MODE=true but run with DEV_MODE=false
-  echo -e "\nBuilding vcr-web-dev image ..."
-  # Use the custom theme
-  copyClientRepo
-  ${S2I_EXE} build \
-    --copy \
-    -e "DEV_MODE=true" \
-    -e "HTTP_PROXY=${HTTP_PROXY}" \
-    -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-    -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-    -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-    -e "THEME=${THEME}" \
-    -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-    '../client' \
-    'nodejs-build' \
-    'vcr-web-dev'
 }
 
 build-solr() {
@@ -338,9 +218,6 @@ build-echo-app() {
 }
 
 build-all() {
-  if [ "${CLIENT}" = "true" ]; then
-    build-web
-  fi
   build-solr
   build-db
   build-schema-spy
@@ -456,19 +333,6 @@ configureEnvironment() {
   export TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS:-false}
   export TRACE_TARGET=${TRACE_TARGET:-log}
 
-  # vcr-web
-  export THEME=${THEME:-base}
-  export CLIENT=${CLIENT:-false}
-  export WEB_REPO_URL=${WEB_REPO_URL-https://github.com/petridishdev/aries-vcr-client/archive/1.0.0-alpha.tar.gz}
-  export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
-  export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
-  export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
-  export API_URL=${API_URL-http://vcr-api:8080/api/}
-  export IpFilterRules='#allow all; deny all;'
-  export RealIpFrom='127.0.0.0/16'
-  export HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME:-}
-  export HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD:-}
-
   # rabbitmq
   export RABBITMQ_USER="RABBITMQ_USER"
   export RABBITMQ_PASSWORD="RABBITMQ_PASSWORD"
@@ -536,10 +400,6 @@ getStartupParams() {
   done
 
   if [ -z "$CONTAINERS" ]; then
-    if [ "${CLIENT}" = "true" ]; then
-      DEFAULT_CONTAINERS="$DEFAULT_CONTAINERS vcr-web"
-    fi
-
     CONTAINERS="$DEFAULT_CONTAINERS"
   fi
 
@@ -670,11 +530,6 @@ case "${COMMAND}" in
   logs)
     configureEnvironment "$@"
     docker-compose logs -f
-    ;;
-  web-dev)
-    configureEnvironment "$@"
-    [ -z "$SKIP_BUILD" ] && build-web-dev
-    docker-compose run --rm --service-ports vcr-web-dev
     ;;
   stop)
     configureEnvironment
