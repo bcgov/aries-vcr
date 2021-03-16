@@ -11,7 +11,6 @@ from api.v2.utils import local_name, remote_name
 
 
 class Topic(Auditable):
-    reindex_related = ["foundational_credential"]
 
     source_id = models.TextField()
     type = models.TextField()

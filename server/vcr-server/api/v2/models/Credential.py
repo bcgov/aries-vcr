@@ -7,6 +7,8 @@ from api.v2.utils import local_name, remote_name
 
 
 class Credential(Auditable):
+    reindex_related = ["topic"]
+
     topic = models.ForeignKey(
         "Topic", related_name="credentials", on_delete=models.CASCADE
     )
