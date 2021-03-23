@@ -142,15 +142,19 @@ export class GeneralDataService {
     return this._recordCounts[type] || 0;
   }
 
-  autocomplete(term, inactive: '' | boolean = false): Observable<Object> {
+  autocomplete(term, inactive: '' | boolean = false, revoked: '' | boolean = false): Observable<Object> {
     console.log('inactive', inactive);
     if (term === '' || typeof term !== 'string') {
       return from([]);
     }
-    let params = new HttpParams().set('q', term).append('inactive', inactive.toString());
+
+    let params = new HttpParams().set('q', term)
+      .append('inactive', inactive.toString())
+      .append('revoked', revoked.toString());
+
     return this.loadFromApi('v3/search/autocomplete', params)
       .pipe(
-        map(({ results }: { results? }) => results || []),
+        map(({ results }: { results?}) => results || []),
         map(results => results.map(row => ({
           id: row.id,
           term: row.value
