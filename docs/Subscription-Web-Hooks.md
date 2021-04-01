@@ -1,6 +1,6 @@
 # Subscription Web Hook Notifications
 
-Interested parties can subscribe to web hook notifications about updates to Topics and Credentials within an Acries VCR deployment.
+Interested parties can subscribe to web hook notifications about updates to Topics and Credentials within an Aries VCR deployment.
 
 There are 3 subscription types supported:
 
