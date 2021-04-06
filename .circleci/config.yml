@@ -18,6 +18,7 @@ jobs:
             cd ./server/vcr-server
             python3 -m venv venv
             . venv/bin/activate
+            pip install setuptools_scm
             pip install -r requirements.txt \
               codecov \
               coverage
