@@ -3,6 +3,7 @@ import logging
 import time
 import os
 import random
+import base64
 
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
@@ -20,6 +21,8 @@ LOGGER = logging.getLogger(__name__)
 TOPIC_CONNECTIONS = "connections"
 TOPIC_CONNECTIONS_ACTIVITY = "connections_activity"
 TOPIC_CREDENTIALS = "issue_credential"
+TOPIC_CREDENTIALS_2_0 = "issue_credential_v2_0"
+TOPIC_CREDENTIALS_2_0_INDY = "issue_credential_v2_0_indy"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
@@ -65,6 +68,12 @@ def agent_callback(request, topic):
     elif topic == TOPIC_CREDENTIALS:
         response = handle_credentials(state, message)
 
+    elif topic == TOPIC_CREDENTIALS_2_0:
+        response = handle_credentials_2_0(state, message)
+
+    elif topic == TOPIC_CREDENTIALS_2_0_INDY:
+        response = handle_credentials_2_0(state, message)
+
     elif topic == TOPIC_PRESENTATIONS or topic == TOPIC_PRESENT_PROOF:
         response = handle_presentations(state, message)
 
@@ -90,8 +99,10 @@ def agent_callback(request, topic):
 
     return response
 
+
 # create one global manager instance
 credential_manager = CredentialManager()
+
 
 def handle_credentials(state, message):
     """
@@ -162,10 +173,10 @@ def handle_credentials(state, message):
 
             # You can include this exception to test error reporting
             if RANDOM_ERRORS:
-                if 1 == random.randint(1,50):
+                if 1 == random.randint(1, 50):
                     print("Raise exception 1 for " + credential_exchange_id)
                     raise Exception("Depliberate error to test problem reporting 1")
-                if 1 == random.randint(1,50):
+                if 1 == random.randint(1, 50):
                     print("Return processing error 1 for " + credential_exchange_id)
                     return Response("Deliberate error to test bad request 1", status=status.HTTP_400_BAD_REQUEST)
 
@@ -189,7 +200,8 @@ def handle_credentials(state, message):
                 existing_credential = CredentialModel.objects.filter(credential_id=credential_id)
                 if 0 < len(existing_credential):
                     # TODO - credential already exists in the database, what to do?
-                    LOGGER.error(" >>> Received duplicate for credential_id: " + credential_id + ", exch id: " + credential_exchange_id)
+                    LOGGER.error(" >>> Received duplicate for credential_id: "
+                                 + credential_id + ", exch id: " + credential_exchange_id)
                     existing = True
                     ret_credential_id = credential_id
                 else:
@@ -229,7 +241,8 @@ def handle_credentials(state, message):
                         headers=settings.ADMIN_REQUEST_HEADERS,
                     )
                     if resp.status_code == 404:
-                        LOGGER.error(" >>> Error cred exchange id is missing but credential is not available for " + credential_exchange_id + ", " + ret_credential_id)
+                        LOGGER.error(" >>> Error cred exchange id is missing but credential is not available for "
+                                     + credential_exchange_id + ", " + ret_credential_id)
                         return Response("Error cred exchange id is missing but credential is not available", status=status.HTTP_400_BAD_REQUEST)
                     pass
                 else:
@@ -237,10 +250,10 @@ def handle_credentials(state, message):
 
             # You can include this exception to test error reporting
             if RANDOM_ERRORS:
-                if 1 == random.randint(1,50):
+                if 1 == random.randint(1, 50):
                     print("Return error 2 for " + credential_exchange_id)
                     return Response("Deliberate error to test bad request 2", status=status.HTTP_400_BAD_REQUEST)
-            
+
             response_data = {
                 "success": True,
                 "details": f"Received credential with id {ret_credential_id}",
@@ -303,7 +316,7 @@ def handle_presentations(state, message):
                 "interval": None,
                 "presentation_referents": requested_attribute_referents + requested_predicates_referents
             }
-            credentials = [wallet_credentials,]
+            credentials = [wallet_credentials, ]
             credential_query = presentation_request["name"]
 
         if 0 == len(credentials):
@@ -464,3 +477,328 @@ def handle_register_issuer(message):
     return Response(
         content_type="application/json", data={"result": updated.serialize()}
     )
+
+
+def handle_credentials_2_0(state, message):
+    """
+    Receives notification of a credential 2.0 processing event.
+
+    For example, for a registration credential:
+
+    message = {
+        "cred_proposal": {
+            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/propose-credential",
+            "@id": "9b20b5ae-12a4-4e4c-82d9-251049e9262c",
+            "comment": "create automated v2.0 credential exchange record",
+            "filters~attach": [
+                {
+                    "@id": "0",
+                    "mime-type": "application/json",
+                    "data": {
+                        "base64": "..."
+                    }
+                }
+            ],
+            "formats": [
+                {
+                    "attach_id": "0",
+                    "format": "hlindy-zkp-v1.0"
+                }
+            ],
+            "credential_preview": {
+                "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/credential-preview",
+                "attributes": [
+                    {
+                        "name": "reservation_number",
+                        "mime-type": "text/plain",
+                        "value": "000003"
+                    },
+                    {
+                        "name": "guest_name",
+                        "mime-type": "text/plain",
+                        "value": "Giuseppe Verde"
+                    },
+                    {
+                        "name": "reservation_date",
+                        "mime-type": "text/plain",
+                        "value": "2021-04-01"
+                    },
+                    {
+                        "name": "reservation_date_cancelled",
+                        "mime-type": "text/plain",
+                        "value": "2021-04-02"
+                    },
+                    {
+                        "name": "another_date",
+                        "mime-type": "text/plain",
+                        "value": "2021-04-05"
+                    },
+                    {
+                        "name": "num_guests",
+                        "mime-type": "text/plain",
+                        "value": "4"
+                    }
+                ]
+            }
+        },
+        "thread_id": "0b7fdae8-732e-41d8-916d-2aeae1def11c",
+        "cred_preview": {
+            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/credential-preview",
+            "attributes": [
+                {
+                    "name": "reservation_number",
+                    "mime-type": "text/plain",
+                    "value": "000003"
+                },
+                {
+                    "name": "guest_name",
+                    "mime-type": "text/plain",
+                    "value": "Giuseppe Verde"
+                },
+                {
+                    "name": "reservation_date",
+                    "mime-type": "text/plain",
+                    "value": "2021-04-01"
+                },
+                {
+                    "name": "reservation_date_cancelled",
+                    "mime-type": "text/plain",
+                    "value": "2021-04-02"
+                },
+                {
+                    "name": "another_date",
+                    "mime-type": "text/plain",
+                    "value": "2021-04-05"
+                },
+                {
+                    "name": "num_guests",
+                    "mime-type": "text/plain",
+                    "value": "4"
+                }
+            ]
+        },
+        "trace": False,
+        "cred_ex_id": "bd46ed98-ec3f-4385-beb9-0bb276091828",
+        "conn_id": "1690c356-3438-43aa-ab24-1548d7b8ecde",
+        "auto_offer": False,
+        "auto_remove": True,
+        "initiator": "external",
+        "role": "holder",
+        "created_at": "2021-04-09 01: 28: 46.399650Z",
+        "state": "credential-received",
+        "cred_issue": {
+            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/issue-credential",
+            "@id": "c45f0240-458e-4dbe-b275-b638d69fb75d",
+            "~thread": {
+                "thid": "0b7fdae8-732e-41d8-916d-2aeae1def11c"
+            },
+            "credentials~attach": [
+                {
+                    "@id": "0",
+                    "mime-type": "application/json",
+                    "data": {
+                        "base64": "..."
+                    }
+                }
+            ],
+            "formats": [
+                {
+                    "attach_id": "0",
+                    "format": "hlindy-zkp-v1.0"
+                }
+            ]
+        },
+        "updated_at": "2021-04-09 01: 28: 46.811172Z",
+        "cred_offer": {
+            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/offer-credential",
+            "@id": "0b7fdae8-732e-41d8-916d-2aeae1def11c",
+            "~thread": {},
+            "comment": "create automated v2.0 credential exchange record",
+            "offers~attach": [
+                {
+                    "@id": "0",
+                    "mime-type": "application/json",
+                    "data": {
+                        "base64": "..."
+                    }
+                }
+            ],
+            "formats": [
+                {
+                    "attach_id": "0",
+                    "format": "hlindy-zkp-v1.0"
+                }
+            ],
+            "credential_preview": {
+                "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/credential-preview",
+                "attributes": [
+                    {
+                        "name": "reservation_number",
+                        "mime-type": "text/plain",
+                        "value": "000003"
+                    },
+                    {
+                        "name": "guest_name",
+                        "mime-type": "text/plain",
+                        "value": "Giuseppe Verde"
+                    },
+                    {
+                        "name": "reservation_date",
+                        "mime-type": "text/plain",
+                        "value": "2021-04-01"
+                    },
+                    {
+                        "name": "reservation_date_cancelled",
+                        "mime-type": "text/plain",
+                        "value": "2021-04-02"
+                    },
+                    {
+                        "name": "another_date",
+                        "mime-type": "text/plain",
+                        "value": "2021-04-05"
+                    },
+                    {
+                        "name": "num_guests",
+                        "mime-type": "text/plain",
+                        "value": "4"
+                    }
+                ]
+            }
+        },
+        "auto_issue": False
+    }
+    """
+
+    cred_ex_id = message["cred_ex_id"]
+    LOGGER.debug(f'Credential: state="{state}" cred_ex_id="{cred_ex_id}"')
+    response_data = {}
+
+    try:
+        if state == "offer-received":
+            LOGGER.debug("After receiving credential offer, send credential request")
+            # no need to perform a task, we run the agent with the --auto-respond-credential-offer flag set
+            response_data = {
+                "success": True,
+                "details": f"Received offer on credential exchange {cred_ex_id}",
+            }
+
+        elif state == "credential-received":
+            cred_issue = message["cred_issue"]
+            if cred_issue is None:
+                LOGGER.error(" >>> Error cred_issue missing for " + cred_ex_id)
+                return Response("Error cred_issue missing for credential", status=status.HTTP_400_BAD_REQUEST)
+
+            # You can include this exception to test error reporting
+            if RANDOM_ERRORS:
+                if 1 == random.randint(1, 50):
+                    print("Raise exception 1 for " + cred_ex_id)
+                    raise Exception("Depliberate error to test problem reporting 1")
+                if 1 == random.randint(1, 50):
+                    print("Return processing error 1 for " + cred_ex_id)
+                    return Response("Deliberate error to test bad request 1", status=status.HTTP_400_BAD_REQUEST)
+
+            cred_data = {}
+            for cred_fmt in cred_issue["formats"]:
+                attachment_id = int(cred_fmt["attach_id"])
+                fmt_type = cred_fmt["format"]
+                if fmt_type == 'hlindy-zkp-v1.0':
+                    cred_raw_base64 = cred_issue["credentials~attach"][attachment_id]["data"]["base64"]
+                    cred_raw = json.loads(base64.b64decode(cred_raw_base64))
+
+                    if cred_raw is None:
+                        LOGGER.error(
+                            " >>> Error data cred_issue could not be parsed for " + cred_ex_id)
+                        return Response("Error credential data could not be parsed from cred_issue", status=status.HTTP_400_BAD_REQUEST)
+
+                    cred_data = {
+                        "thread_id": cred_issue["~thread"]["thid"],
+                        "schema_id": cred_raw["schema_id"],
+                        "cred_def_id": cred_raw["cred_def_id"],
+                        "rev_reg_id": cred_raw["rev_reg_id"],
+                        "attrs": {k: v["raw"] for k, v in cred_raw["values"].items()},
+                    }
+
+            # TODO: This part is exactly the same is 1.0. Refactor
+            existing = False
+            if PROCESS_INBOUND_CREDENTIALS:
+                credential = Credential(cred_data)
+
+                # sanity check that we haven't received this credential yet
+                cred_id = credential.thread_id
+                existing_credential = CredentialModel.objects.filter(credential_id=cred_id)
+                if 0 < len(existing_credential):
+                    # TODO - credential already exists in the database, what to do?
+                    LOGGER.error(" >>> Received duplicate for credential_id: "
+                                 + cred_id + ", exch id: " + cred_ex_id)
+                    existing = True
+                    ret_cred_id = cred_id
+                else:
+                    # new credential, populate database
+                    credential = credential_manager.process(credential)
+                    ret_cred_id = credential.credential_id
+            else:
+                ret_cred_id = cred_data["thread_id"]
+
+            # check if the credential is in the wallet already
+            if existing:
+                resp = call_agent_with_retry(
+                    f"{settings.AGENT_ADMIN_URL}/credential/{ret_cred_id}",
+                    post_method=False,
+                    headers=settings.ADMIN_REQUEST_HEADERS,
+                )
+                if resp.status_code == 404:
+                    existing = False
+
+            # Instruct the agent to store the credential in wallet
+            if not existing:
+                # post with retry - if returned status is 503 unavailable retry a few times
+                resp = call_agent_with_retry(
+                    f"{settings.AGENT_ADMIN_URL}/issue-credential-2.0/records/{cred_ex_id}/store",
+                    post_method=True,
+                    payload={"credential_id": ret_cred_id},
+                    headers=settings.ADMIN_REQUEST_HEADERS,
+                )
+                if resp.status_code == 404:
+                    # TODO assume the credential exchange has completed?
+                    resp = call_agent_with_retry(
+                        f"{settings.AGENT_ADMIN_URL}/credential/{ret_cred_id}",
+                        post_method=False,
+                        headers=settings.ADMIN_REQUEST_HEADERS,
+                    )
+                    if resp.status_code == 404:
+                        LOGGER.error(
+                            " >>> Error cred exchange id is missing but credential is not available for " + cred_ex_id + ", " + ret_cred_id)
+                        return Response("Error cred exchange id is missing but credential is not available", status=status.HTTP_400_BAD_REQUEST)
+                    pass
+                else:
+                    resp.raise_for_status()
+
+            # You can include this exception to test error reporting
+            if RANDOM_ERRORS:
+                if 1 == random.randint(1, 50):
+                    print("Return error 2 for " + cred_ex_id)
+                    return Response("Deliberate error to test bad request 2", status=status.HTTP_400_BAD_REQUEST)
+
+            response_data = {
+                "success": True,
+                "details": f"Received credential with id {ret_cred_id}",
+            }
+
+        else:
+            LOGGER.warn(f"Handler for state: {state} not implemented")
+            response_data = {"success": True, "details": f"State received {state}"}
+
+    except Exception as e:
+        LOGGER.error(e)
+        LOGGER.error(f"Send problem report for {cred_ex_id}")
+        # Send a problem report for the error
+        resp = call_agent_with_retry(
+            f"{settings.AGENT_ADMIN_URL}/issue-credential-2.0/records/{cred_ex_id}/problem-report",
+            post_method=True,
+            payload={"explain_ltxt": str(e)},
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        resp.raise_for_status()
+        return Response({"success": False, "error": str(e)})
+
+    return Response(response_data)
