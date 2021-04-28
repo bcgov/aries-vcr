@@ -278,7 +278,7 @@ build-solr() {
   #
   echo -e "\nBuilding solr-base image ..."
   docker build \
-    https://github.com/bcgov/openshift-solr.git \
+    'https://github.com/bcgov/openshift-solr.git#solr-8.8.1' \
     -t 'solr-base'
 
   echo -e "\nBuilding solr image ..."

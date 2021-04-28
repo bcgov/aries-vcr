@@ -8,7 +8,7 @@ from smtplib import SMTP, SMTPException
 LOGGER = logging.getLogger(__name__)
 
 
-def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
+def email_feedback(reply_name, reply_email, reason, comments):
     server_addr = os.getenv("SMTP_SERVER_ADDRESS")
     recip_email = os.getenv("FEEDBACK_TARGET_EMAIL").split(",")
     app_url = os.getenv("APPLICATION_URL")
@@ -36,8 +36,6 @@ def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
         body = ""
         if app_url:
             body = "{}Application URL: {}\n".format(body, app_url)
-        if ip_addr:
-            body = "{}IP address: {}\n".format(body, ip_addr)
         if reply_name:
             body = "{}Name: {}\n".format(body, reply_name)
         if reply_email:
