@@ -172,13 +172,11 @@ def handle_credentials(state, message):
             raw_credential = message["raw_credential"]
 
             # You can include this exception to test error reporting
-            if RANDOM_ERRORS:
-                if 1 == random.randint(1, 50):
-                    print("Raise exception 1 for " + credential_exchange_id)
-                    raise Exception("Depliberate error to test problem reporting 1")
-                if 1 == random.randint(1, 50):
-                    print("Return processing error 1 for " + credential_exchange_id)
-                    return Response("Deliberate error to test bad request 1", status=status.HTTP_400_BAD_REQUEST)
+            if RANDOM_ERRORS and 1 == random.randint(1, 50):
+                raise_random_exception(credential_exchange_id, 'credential_recieved')
+
+            if RANDOM_ERRORS and 1 == random.randint(1, 50):
+                return random_exception(credential_exchange_id, 'credential_recieved')
 
             credential_data = {
                 "thread_id": message["thread_id"],
@@ -419,112 +417,27 @@ def handle_credentials_2_0(state, message):
     For example, for a registration credential:
 
     message = {
-        "cred_proposal": {
-            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/propose-credential",
-            "@id": "9b20b5ae-12a4-4e4c-82d9-251049e9262c",
-            "comment": "create automated v2.0 credential exchange record",
-            "filters~attach": [
-                {
-                    "@id": "0",
-                    "mime-type": "application/json",
-                    "data": {
-                        "base64": "..."
-                    }
-                }
-            ],
+        "cred_proposal": { ... },
+        "role": "issuer",
+        "initiator": "self",
+        "created_at": "2021-04-30 02:54:32.925351Z",
+        "conn_id": "ae5f0b97-746e-4062-bdf2-27b9d6809cc9",
+        "auto_issue": true,
+        "cred_preview": { ... },
+        "cred_ex_id": "e2f41814-d625-4218-9f53-879111398372",
+        "cred_request": { ... },
+        "auto_offer": false,
+        "state": "credential-issued",
+        "updated_at": "2021-04-30 02:54:33.138119Z",
+        "cred_issue": {
+            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/issue-credential",
+            "@id": "0f0104e6-43ca-47e1-85e0-4fd41b10688f",
             "formats": [
                 {
                     "attach_id": "0",
                     "format": "hlindy-zkp-v1.0"
                 }
             ],
-            "credential_preview": {
-                "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/credential-preview",
-                "attributes": [
-                    {
-                        "name": "reservation_number",
-                        "mime-type": "text/plain",
-                        "value": "000003"
-                    },
-                    {
-                        "name": "guest_name",
-                        "mime-type": "text/plain",
-                        "value": "Giuseppe Verde"
-                    },
-                    {
-                        "name": "reservation_date",
-                        "mime-type": "text/plain",
-                        "value": "2021-04-01"
-                    },
-                    {
-                        "name": "reservation_date_cancelled",
-                        "mime-type": "text/plain",
-                        "value": "2021-04-02"
-                    },
-                    {
-                        "name": "another_date",
-                        "mime-type": "text/plain",
-                        "value": "2021-04-05"
-                    },
-                    {
-                        "name": "num_guests",
-                        "mime-type": "text/plain",
-                        "value": "4"
-                    }
-                ]
-            }
-        },
-        "thread_id": "0b7fdae8-732e-41d8-916d-2aeae1def11c",
-        "cred_preview": {
-            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/credential-preview",
-            "attributes": [
-                {
-                    "name": "reservation_number",
-                    "mime-type": "text/plain",
-                    "value": "000003"
-                },
-                {
-                    "name": "guest_name",
-                    "mime-type": "text/plain",
-                    "value": "Giuseppe Verde"
-                },
-                {
-                    "name": "reservation_date",
-                    "mime-type": "text/plain",
-                    "value": "2021-04-01"
-                },
-                {
-                    "name": "reservation_date_cancelled",
-                    "mime-type": "text/plain",
-                    "value": "2021-04-02"
-                },
-                {
-                    "name": "another_date",
-                    "mime-type": "text/plain",
-                    "value": "2021-04-05"
-                },
-                {
-                    "name": "num_guests",
-                    "mime-type": "text/plain",
-                    "value": "4"
-                }
-            ]
-        },
-        "trace": False,
-        "cred_ex_id": "bd46ed98-ec3f-4385-beb9-0bb276091828",
-        "conn_id": "1690c356-3438-43aa-ab24-1548d7b8ecde",
-        "auto_offer": False,
-        "auto_remove": True,
-        "initiator": "external",
-        "role": "holder",
-        "created_at": "2021-04-09 01: 28: 46.399650Z",
-        "state": "credential-received",
-        "cred_issue": {
-            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/issue-credential",
-            "@id": "c45f0240-458e-4dbe-b275-b638d69fb75d",
-            "~thread": {
-                "thid": "0b7fdae8-732e-41d8-916d-2aeae1def11c"
-            },
             "credentials~attach": [
                 {
                     "@id": "0",
@@ -533,72 +446,10 @@ def handle_credentials_2_0(state, message):
                         "base64": "..."
                     }
                 }
-            ],
-            "formats": [
-                {
-                    "attach_id": "0",
-                    "format": "hlindy-zkp-v1.0"
-                }
             ]
         },
-        "updated_at": "2021-04-09 01: 28: 46.811172Z",
-        "cred_offer": {
-            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/offer-credential",
-            "@id": "0b7fdae8-732e-41d8-916d-2aeae1def11c",
-            "~thread": {},
-            "comment": "create automated v2.0 credential exchange record",
-            "offers~attach": [
-                {
-                    "@id": "0",
-                    "mime-type": "application/json",
-                    "data": {
-                        "base64": "..."
-                    }
-                }
-            ],
-            "formats": [
-                {
-                    "attach_id": "0",
-                    "format": "hlindy-zkp-v1.0"
-                }
-            ],
-            "credential_preview": {
-                "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/credential-preview",
-                "attributes": [
-                    {
-                        "name": "reservation_number",
-                        "mime-type": "text/plain",
-                        "value": "000003"
-                    },
-                    {
-                        "name": "guest_name",
-                        "mime-type": "text/plain",
-                        "value": "Giuseppe Verde"
-                    },
-                    {
-                        "name": "reservation_date",
-                        "mime-type": "text/plain",
-                        "value": "2021-04-01"
-                    },
-                    {
-                        "name": "reservation_date_cancelled",
-                        "mime-type": "text/plain",
-                        "value": "2021-04-02"
-                    },
-                    {
-                        "name": "another_date",
-                        "mime-type": "text/plain",
-                        "value": "2021-04-05"
-                    },
-                    {
-                        "name": "num_guests",
-                        "mime-type": "text/plain",
-                        "value": "4"
-                    }
-                ]
-            }
-        },
-        "auto_issue": False
+        "cred_offer": { ... },
+        "thread_id": "dd56313f-1787-47f7-8838-d6931284ae30"
     }
     """
 
@@ -622,13 +473,11 @@ def handle_credentials_2_0(state, message):
                 return Response("Error cred_issue missing for credential", status=status.HTTP_400_BAD_REQUEST)
 
             # You can include this exception to test error reporting
-            if RANDOM_ERRORS:
-                if 1 == random.randint(1, 50):
-                    print("Raise exception 1 for " + cred_ex_id)
-                    raise Exception("Depliberate error to test problem reporting 1")
-                if 1 == random.randint(1, 50):
-                    print("Return processing error 1 for " + cred_ex_id)
-                    return Response("Deliberate error to test bad request 1", status=status.HTTP_400_BAD_REQUEST)
+            if RANDOM_ERRORS and 1 == random.randint(1, 50):
+                raise_random_exception(cred_ex_id, 'credential-recieved')
+
+            if RANDOM_ERRORS and 1 == random.randint(1, 50):
+                return random_exception(cred_ex_id, 'credential-recieved')
 
             cred_data = {}
             for cred_fmt in cred_issue["formats"]:
@@ -729,10 +578,8 @@ def receive_credential(cred_ex_id, cred_data, v=None):
             resp.raise_for_status()
 
     # You can include this exception to test error reporting
-    if RANDOM_ERRORS:
-        if 1 == random.randint(1, 50):
-            print("Return error 2 for " + cred_ex_id)
-            return Response("Deliberate error to test bad request 2", status=status.HTTP_400_BAD_REQUEST)
+    if RANDOM_ERRORS and 1 == random.randint(1, 50):
+        return random_exception(cred_ex_id, 'recieve_credential')
 
     response_data = {
         "success": True,
@@ -740,3 +587,14 @@ def receive_credential(cred_ex_id, cred_data, v=None):
     }
 
     return Response(response_data)
+
+
+def raise_random_exception(cred_ex_id, method=""):
+    print(f"Raise exception for {cred_ex_id} from method: {method}")
+    raise Exception("Deliberate error to test problem reporting")
+    return
+
+
+def random_exception(cred_ex_id, method=""):
+    print(f"Return processing error for {cred_ex_id} from method: {method}")
+    return Response("Deliberate error to test bad request", status=status.HTTP_400_BAD_REQUEST)
