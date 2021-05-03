@@ -174,9 +174,6 @@ def handle_credentials(state, message):
             # You can include this exception to test error reporting
             if RANDOM_ERRORS:
                 raise_random_exception(credential_exchange_id, 'credential_recieved')
-                ex = random_exception(credential_exchange_id, 'credential_recieved')
-                if ex:
-                    return ex
 
             credential_data = {
                 "thread_id": message["thread_id"],
@@ -475,9 +472,6 @@ def handle_credentials_2_0(state, message):
             # You can include this exception to test error reporting
             if RANDOM_ERRORS:
                 raise_random_exception(cred_ex_id, 'credential-recieved')
-                ex = random_exception(cred_ex_id, 'credential_recieved')
-                if ex:
-                    return ex
 
             cred_data = {}
             for cred_fmt in cred_issue["formats"]:
@@ -577,12 +571,6 @@ def receive_credential(cred_ex_id, cred_data, v=None):
         else:
             resp.raise_for_status()
 
-    # You can include this exception to test error reporting
-    if RANDOM_ERRORS:
-        ex = random_exception(cred_ex_id, 'credential_recieved')
-        if ex:
-            return ex
-
     response_data = {
         "success": True,
         "details": f"Received credential with id {ret_cred_id}",
@@ -595,9 +583,3 @@ def raise_random_exception(cred_ex_id, method=""):
     if 1 == random.randint(1, 50):
         print(f"Raise exception for {cred_ex_id} from method: {method}")
         raise Exception("Deliberate error to test problem reporting")
-
-
-def random_exception(cred_ex_id, method=""):
-    if 1 == random.randint(1, 50):
-        print(f"Return processing error for {cred_ex_id} from method: {method}")
-        return Response("Deliberate error to test bad request", status=status.HTTP_400_BAD_REQUEST)
