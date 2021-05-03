@@ -172,11 +172,11 @@ def handle_credentials(state, message):
             raw_credential = message["raw_credential"]
 
             # You can include this exception to test error reporting
-            if RANDOM_ERRORS and 1 == random.randint(1, 50):
+            if RANDOM_ERRORS:
                 raise_random_exception(credential_exchange_id, 'credential_recieved')
-
-            if RANDOM_ERRORS and 1 == random.randint(1, 50):
-                return random_exception(credential_exchange_id, 'credential_recieved')
+                ex = random_exception(credential_exchange_id, 'credential_recieved')
+                if ex:
+                    return ex
 
             credential_data = {
                 "thread_id": message["thread_id"],
@@ -473,11 +473,11 @@ def handle_credentials_2_0(state, message):
                 return Response("Error cred_issue missing for credential", status=status.HTTP_400_BAD_REQUEST)
 
             # You can include this exception to test error reporting
-            if RANDOM_ERRORS and 1 == random.randint(1, 50):
+            if RANDOM_ERRORS:
                 raise_random_exception(cred_ex_id, 'credential-recieved')
-
-            if RANDOM_ERRORS and 1 == random.randint(1, 50):
-                return random_exception(cred_ex_id, 'credential-recieved')
+                ex = random_exception(cred_ex_id, 'credential_recieved')
+                if ex:
+                    return ex
 
             cred_data = {}
             for cred_fmt in cred_issue["formats"]:
@@ -578,8 +578,10 @@ def receive_credential(cred_ex_id, cred_data, v=None):
             resp.raise_for_status()
 
     # You can include this exception to test error reporting
-    if RANDOM_ERRORS and 1 == random.randint(1, 50):
-        return random_exception(cred_ex_id, 'recieve_credential')
+    if RANDOM_ERRORS:
+        ex = random_exception(cred_ex_id, 'credential_recieved')
+        if ex:
+            return ex
 
     response_data = {
         "success": True,
@@ -590,11 +592,12 @@ def receive_credential(cred_ex_id, cred_data, v=None):
 
 
 def raise_random_exception(cred_ex_id, method=""):
-    print(f"Raise exception for {cred_ex_id} from method: {method}")
-    raise Exception("Deliberate error to test problem reporting")
-    return
+    if 1 == random.randint(1, 50):
+        print(f"Raise exception for {cred_ex_id} from method: {method}")
+        raise Exception("Deliberate error to test problem reporting")
 
 
 def random_exception(cred_ex_id, method=""):
-    print(f"Return processing error for {cred_ex_id} from method: {method}")
-    return Response("Deliberate error to test bad request", status=status.HTTP_400_BAD_REQUEST)
+    if 1 == random.randint(1, 50):
+        print(f"Return processing error for {cred_ex_id} from method: {method}")
+        return Response("Deliberate error to test bad request", status=status.HTTP_400_BAD_REQUEST)
