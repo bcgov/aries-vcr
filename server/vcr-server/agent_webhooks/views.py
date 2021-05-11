@@ -475,24 +475,28 @@ def handle_credentials_2_0(state, message):
 
             cred_data = {}
             for cred_fmt in cred_issue["formats"]:
-                attachment_id = int(cred_fmt["attach_id"])
-                fmt_type = cred_fmt["format"]
-                if fmt_type == 'hlindy-zkp-v1.0':
-                    cred_raw_base64 = cred_issue["credentials~attach"][attachment_id]["data"]["base64"]
-                    cred_raw = json.loads(base64.b64decode(cred_raw_base64))
+                att_id = cred_fmt["attach_id"]
+                cred_att = [att for att in cred_issue["credentials~attach"] if att["@id"] == att_id][0]
+                if cred_att is None:
+                    LOGGER.error(
+                        " >>> Error data cred_att could not be parsed for " + cred_ex_id)
+                    return Response("Error credential attachment could not be parsed from cred_issue", status=status.HTTP_400_BAD_REQUEST)
 
-                    if cred_raw is None:
-                        LOGGER.error(
-                            " >>> Error data cred_issue could not be parsed for " + cred_ex_id)
-                        return Response("Error credential data could not be parsed from cred_issue", status=status.HTTP_400_BAD_REQUEST)
+                cred_raw_base64 = cred_att["data"]["base64"]
+                cred_raw = json.loads(base64.b64decode(cred_raw_base64))
 
-                    cred_data = {
-                        "thread_id": cred_issue["~thread"]["thid"],
-                        "schema_id": cred_raw["schema_id"],
-                        "cred_def_id": cred_raw["cred_def_id"],
-                        "rev_reg_id": cred_raw["rev_reg_id"],
-                        "attrs": {k: v["raw"] for k, v in cred_raw["values"].items()},
-                    }
+                if cred_raw is None:
+                    LOGGER.error(
+                        " >>> Error data cred_issue could not be parsed for " + cred_ex_id)
+                    return Response("Error credential data could not be parsed from cred_issue", status=status.HTTP_400_BAD_REQUEST)
+
+                cred_data = {
+                    "thread_id": cred_issue["~thread"]["thid"],
+                    "schema_id": cred_raw["schema_id"],
+                    "cred_def_id": cred_raw["cred_def_id"],
+                    "rev_reg_id": cred_raw["rev_reg_id"],
+                    "attrs": {k: v["raw"] for k, v in cred_raw["values"].items()},
+                }
 
             return receive_credential(cred_ex_id, cred_data, "2.0")
 
@@ -581,5 +585,5 @@ def receive_credential(cred_ex_id, cred_data, v=None):
 
 def raise_random_exception(cred_ex_id, method=""):
     if 1 == random.randint(1, 50):
-        print(f"Raise exception for {cred_ex_id} from method: {method}")
+        print(f"Raise random exception for {cred_ex_id} from method: {method}")
         raise Exception("Deliberate error to test problem reporting")
