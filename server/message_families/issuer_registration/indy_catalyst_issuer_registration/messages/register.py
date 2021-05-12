@@ -4,11 +4,12 @@ from marshmallow import fields, Schema
 
 from aries_cloudagent.messaging.agent_message import AgentMessage, AgentMessageSchema
 
-from ..message_types import REGISTER, MESSAGE_TYPE
+from ..message_types import REGISTER, PROTOCOL_PACKAGE
+
 
 HANDLER_CLASS = (
-    "indy_catalyst_issuer_registration."
-    + "handlers.registration_handler.IssuerRegistrationHandler"
+    f"{PROTOCOL_PACKAGE}.handlers"
+    ".registration_handler.IssuerRegistrationHandler"
 )
 
 
@@ -19,8 +20,7 @@ class IssuerRegistration(AgentMessage):
         """Issuer Registration metadata class."""
 
         handler_class = HANDLER_CLASS
-        # message_type = REGISTER
-        message_type = MESSAGE_TYPE
+        message_type = REGISTER
         schema_class = "IssuerRegistrationSchema"
 
     def __init__(self, *, issuer_registration: dict, **kwargs):
