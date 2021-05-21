@@ -511,7 +511,9 @@ def handle_credentials_2_0(state, message):
         resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/issue-credential-2.0/records/{cred_ex_id}/problem-report",
             post_method=True,
-            payload={"explain_ltxt": str(e)},
+            payload={
+                "description": str(e)
+            },
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
@@ -521,66 +523,69 @@ def handle_credentials_2_0(state, message):
 
 
 def receive_credential(cred_ex_id, cred_data, v=None):
-    existing = False
-    if PROCESS_INBOUND_CREDENTIALS:
-        credential = Credential(cred_data)
+    try:
+        existing = False
+        if PROCESS_INBOUND_CREDENTIALS:
+            credential = Credential(cred_data)
 
-        # sanity check that we haven't received this credential yet
-        cred_id = credential.thread_id
-        existing_credential = CredentialModel.objects.filter(credential_id=cred_id)
-        if 0 < len(existing_credential):
-            # TODO - credential already exists in the database, what to do?
-            LOGGER.error(" >>> Received duplicate for credential_id: "
-                         + cred_id + ", exch id: " + cred_ex_id)
-            existing = True
-            ret_cred_id = cred_id
+            # sanity check that we haven't received this credential yet
+            cred_id = credential.thread_id
+            existing_credential = CredentialModel.objects.filter(credential_id=cred_id)
+            if 0 < len(existing_credential):
+                # TODO - credential already exists in the database, what to do?
+                LOGGER.error(" >>> Received duplicate for credential_id: "
+                            + cred_id + ", exch id: " + cred_ex_id)
+                existing = True
+                ret_cred_id = cred_id
+            else:
+                # new credential, populate database
+                credential = credential_manager.process(credential)
+                ret_cred_id = credential.credential_id
         else:
-            # new credential, populate database
-            credential = credential_manager.process(credential)
-            ret_cred_id = credential.credential_id
-    else:
-        ret_cred_id = cred_data["thread_id"]
+            ret_cred_id = cred_data["thread_id"]
 
-    # check if the credential is in the wallet already
-    if existing:
-        resp = call_agent_with_retry(
-            f"{settings.AGENT_ADMIN_URL}/credential/{ret_cred_id}",
-            post_method=False,
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
-        if resp.status_code == 404:
-            existing = False
-
-    # Instruct the agent to store the credential in wallet
-    if not existing:
-        # post with retry - if returned status is 503 unavailable retry a few times
-        resp = call_agent_with_retry(
-            f"{settings.AGENT_ADMIN_URL}/issue-credential{'-' + v if v else ''}/records/{cred_ex_id}/store",
-            post_method=True,
-            payload={"credential_id": ret_cred_id},
-            headers=settings.ADMIN_REQUEST_HEADERS,
-        )
-        if resp.status_code == 404:
-            # TODO assume the credential exchange has completed?
+        # check if the credential is in the wallet already
+        if existing:
             resp = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/credential/{ret_cred_id}",
                 post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             if resp.status_code == 404:
-                LOGGER.error(
-                    " >>> Error cred exchange id is missing but credential is not available for " + cred_ex_id + ", " + ret_cred_id)
-                return Response("Error cred exchange id is missing but credential is not available", status=status.HTTP_400_BAD_REQUEST)
-            pass
-        else:
-            resp.raise_for_status()
+                existing = False
 
-    response_data = {
-        "success": True,
-        "details": f"Received credential with id {ret_cred_id}",
-    }
+        # Instruct the agent to store the credential in wallet
+        if not existing:
+            # post with retry - if returned status is 503 unavailable retry a few times
+            resp = call_agent_with_retry(
+                f"{settings.AGENT_ADMIN_URL}/issue-credential{'-' + v if v else ''}/records/{cred_ex_id}/store",
+                post_method=True,
+                payload={"credential_id": ret_cred_id},
+                headers=settings.ADMIN_REQUEST_HEADERS,
+            )
+            if resp.status_code == 404:
+                # TODO assume the credential exchange has completed?
+                resp = call_agent_with_retry(
+                    f"{settings.AGENT_ADMIN_URL}/credential/{ret_cred_id}",
+                    post_method=False,
+                    headers=settings.ADMIN_REQUEST_HEADERS,
+                )
+                if resp.status_code == 404:
+                    LOGGER.error(
+                        " >>> Error cred exchange id is missing but credential is not available for " + cred_ex_id + ", " + ret_cred_id)
+                    return Response("Error cred exchange id is missing but credential is not available", status=status.HTTP_400_BAD_REQUEST)
+                pass
+            else:
+                resp.raise_for_status()
 
-    return Response(response_data)
+        response_data = {
+            "success": True,
+            "details": f"Received credential with id {ret_cred_id}",
+        }
+
+        return Response(response_data)
+    except Exception as e:
+        raise e
 
 
 def raise_random_exception(cred_ex_id, method=""):
