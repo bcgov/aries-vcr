@@ -25,7 +25,6 @@ from api.v2.views import misc
 #         result = misc.send_feedback(self.request)
 
 #         mock_email_feedback.assert_called_once_with(
-#             "vonx.io",
 #             "Mr. Login",
 #             "sign.in@login.me",
 #             "Letter of Resignation",
@@ -43,7 +42,6 @@ from api.v2.views import misc
 #     result = misc.send_feedback(request=self.request)
 
 #     mock_email_feedback.assert_called_once_with(
-#         "vonx.io",
 #         "Mr. Login",
 #         "sign.in@login.me",
 #         "Letter of Resignation",
