@@ -13,7 +13,9 @@ from vcr_server.haystack import config
 from api.v4.serializers.search.fuzzy import SearchSerializer
 
 # Create a solr client instance.
-solr_client = pysolr.Solr(config()['URL'], always_commit=True)
+solr_config = config()
+solr_url = solr_config['URL'] if solr_config else ''
+solr_client = pysolr.Solr(solr_url, always_commit=True)
 
 swagger_params = [
     # Put additional parameters here
