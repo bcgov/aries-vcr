@@ -25,7 +25,16 @@ swagger_params = [
     openapi.Parameter(
         "q",
         openapi.IN_QUERY,
-        description="Enter an Apache Leucene query that will return matching Solr indexes",
+        description="""
+        Enter an Apache Leucene query that will return matching Solr indexes.
+
+        For example you can apply the fuzzy operator (`~`) on a query term: `safe~`
+
+        Spelling errors can also be accommodated with the fuzzy operator: `sfae~` or `mcdonadls~`
+
+        Queries can be combined with Apache Leucene's boolean operators `AND/OR/NOT`
+        (Note: these must be enclosed in parentheses): `(telus~ AND (comms~ NOT mobility)`)
+        """,
         type=openapi.TYPE_STRING,
     )
 ]
