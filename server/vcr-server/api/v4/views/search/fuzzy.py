@@ -1,5 +1,4 @@
-import pysolr
-import json
+import json, logging, pysolr
 
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -12,6 +11,8 @@ from vcr_server.haystack import config
 from vcr_server.settings import HAYSTACK_CONNECTIONS
 
 from api.v4.serializers.search.fuzzy import SearchSerializer
+
+LOGGER = logging.getLogger(__name__)
 
 # Create a solr client instance.
 solr_url = ''
@@ -46,4 +47,5 @@ class SearchView(ViewSet):
             results = solr_client.search(f'topic_name_suggest:{q}')
             return Response(SearchSerializer(results, many=True).data)
         except Exception as e:
-            return Response(f'There was a problem with the request', status.HTTP_500_INTERNAL_SERVER_ERROR)
+            LOGGER.error(e)
+            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
