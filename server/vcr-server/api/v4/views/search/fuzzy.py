@@ -9,12 +9,14 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from vcr_server.haystack import config
+from vcr_server.settings import HAYSTACK_CONNECTIONS
 
 from api.v4.serializers.search.fuzzy import SearchSerializer
 
 # Create a solr client instance.
-solr_config = config()
-solr_url = solr_config['URL'] if solr_config else ''
+solr_url = ''
+if 'URL' in HAYSTACK_CONNECTIONS['default']:
+    solr_url = HAYSTACK_CONNECTIONS['default']['URL']
 solr_client = pysolr.Solr(solr_url, always_commit=True)
 
 swagger_params = [
