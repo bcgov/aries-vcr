@@ -1,9 +1,9 @@
 import base64
 import uuid
+import os
 from logging import getLogger
 from time import sleep
 
-import requests
 from django.conf import settings
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -14,13 +14,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from api.v2 import utils
+from api.v2.utils import apply_custom_methods, call_agent_with_retry
 from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
 from api.v2.models.Topic import Topic
 from api.v2.models.TopicRelationship import TopicRelationship
+
 from api.v2.serializers.rest import (
     CredentialSerializer,
     CredentialTypeSerializer,
@@ -34,6 +35,15 @@ from api.v2.serializers.rest import (
 from api.v2.serializers.search import CustomTopicSerializer
 
 logger = getLogger(__name__)
+
+TRACE_PROOF_EVENTS = os.getenv("TRACE_PROOF_EVENTS", "false").lower() == "true"
+
+# max attempts to wait for a proof response
+PROOF_RETRY_MAX_ATTEMPTS = int(os.getenv("PROOF_RETRY_MAX_ATTEMPTS", "7"))
+# initial delay in msec between checks for a proof response
+PROOF_RETRY_INITIAL_DELAY = float(os.getenv("PROOF_RETRY_INITIAL_DELAY", "500"))
+# backoff factor (2 = double the delay with each proof response check)
+PROOF_RETRY_DELAY_BACKOFF = float(os.getenv("PROOF_RETRY_DELAY_BACKOFF", "2"))
 
 
 class IssuerViewSet(ReadOnlyModelViewSet):
@@ -152,9 +162,145 @@ class TopicViewSet(ReadOnlyModelViewSet):
     @action(detail=True, url_path="credentialset", methods=["get"])
     def list_credential_sets(self, request, pk=None):
         item = self.get_object()
-        queryset = item.credential_sets.order_by("first_effective_date").all()
-        serializer = ExpandedCredentialSetSerializer(queryset, many=True)
-        return Response(serializer.data)
+
+        credential_sets = (
+            item.credential_sets
+            # .select_related("credential_type", "topic")
+            .prefetch_related(
+                # "credentials__addresses",
+                "credentials__related_topics",
+                "credentials__credential_type",
+                "credentials__topic",
+            )
+            .order_by("first_effective_date")
+            .all()
+        )
+
+        def get_credential_local_name(credential):
+            if not credential.get_local_name():
+                return get_topic_local_name(credential.topic)
+            else:
+                return {
+                    "id": credential.get_local_name().id,
+                    "text": credential.get_local_name().text or None,
+                    "language": credential.get_local_name().language or None,
+                    "credential_id": credential.get_local_name().credential_id or None,
+                    "type": credential.get_local_name().type or None,
+                }
+
+        def get_credential_remote_name(credential):
+            if not credential.get_remote_name():
+                return get_topic_remote_name(credential.topic)
+            else:
+                return {
+                    "id": credential.get_remote_name().id,
+                    "text": credential.get_remote_name().text or None,
+                    "language": credential.get_remote_name().language or None,
+                    "credential_id": credential.get_remote_name().credential_id or None,
+                    "type": credential.get_remote_name().type or None,
+                }
+
+        def get_topic_local_name(topic):
+            if not topic.get_local_name():
+                return {}
+            else:
+                return {
+                    "id": topic.get_local_name().id,
+                    "text": topic.get_local_name().text or None,
+                    "language": topic.get_local_name().language or None,
+                    "credential_id": topic.get_local_name().credential_id or None,
+                    "type": topic.get_local_name().type or None,
+                }
+
+        def get_topic_remote_name(topic):
+            if not topic.get_remote_name():
+                return {}
+            else:
+                return { 
+                    "id": topic.get_remote_name().id,
+                    "text": topic.get_remote_name().text or None,
+                    "language": topic.get_remote_name().language or None,
+                    "credential_id": topic.get_remote_name().credential_id or None,
+                    "type": topic.get_remote_name().type or None,
+                }
+
+        data = [
+            {
+                "id": credential_set.id,
+                "create_timestamp": credential_set.create_timestamp.isoformat()
+                if credential_set.create_timestamp is not None else None,
+                "update_timestamp": credential_set.update_timestamp.isoformat()
+                if credential_set.update_timestamp is not None else None,
+                "latest_credential_id": credential_set.latest_credential_id,
+                "topic_id": credential_set.topic_id,
+                "first_effective_date": credential_set.first_effective_date.isoformat()
+                if credential_set.first_effective_date is not None else None,
+                "last_effective_date": credential_set.last_effective_date.isoformat()
+                if credential_set.last_effective_date is not None else None,
+                "credentials": [
+                    {
+                        "id": credential.id,
+                        "create_timestamp": credential.create_timestamp.isoformat()
+                        if credential.create_timestamp else None,
+                        "effective_date": credential.effective_date.isoformat()
+                        if credential.effective_date else None,
+                        "inactive": credential.inactive,
+                        "latest": credential.latest,
+                        "revoked": credential.revoked,
+                        "revoked_date": credential.revoked_date.isoformat()
+                        if credential.revoked_date else None,
+                        "credential_id": credential.credential_id,
+                        "names": [
+                            {
+                                "id": name.id,
+                                "text": name.text or None,
+                                "language": name.language or None,
+                                "credential_id": name.credential_id,
+                                "type": name.type,
+                            } if name else {}
+                            for name in credential.all_names
+                        ],
+                        "local_name": get_credential_local_name(credential),
+                        "remote_name": get_credential_remote_name(credential),
+                        "topic": {
+                            "id": credential.topic.id,
+                            "source_id": credential.topic.source_id,
+                            "type": credential.topic.type,
+                            "local_name": get_topic_local_name(credential.topic),
+                            "remote_name": get_topic_remote_name(credential.topic)
+                        },
+                        "related_topics": [
+                            {
+                                "id": related_topic.id,
+                                "source_id": related_topic.source_id,
+                                "type": related_topic.type,
+                                "names": [
+                                    {
+                                        "id": name.id,
+                                        "text": name.text or None,
+                                        "language": name.language or None,
+                                        "credential_id": name.credential_id,
+                                        "type": name.type,
+                                    } if name else {}
+                                    for name in related_topic.get_active_names()
+                                ],
+                                "local_name": get_topic_local_name(related_topic),
+                                "remote_name": get_topic_remote_name(related_topic)
+                            } if related_topic else {}
+                            for related_topic in credential.related_topics.all()
+                        ],
+                        "credential_type": {
+                            "id": credential.credential_type.id,
+                            "description": credential.credential_type.description,
+                        },
+                    }
+                    for credential in credential_set.credentials.all()
+                ],
+            }
+            for credential_set in credential_sets
+        ]
+
+        return Response(data)
 
     def get_object(self):
         if self.kwargs.get("pk"):
@@ -164,6 +310,10 @@ class TopicViewSet(ReadOnlyModelViewSet):
         source_id = self.kwargs.get("source_id")
         if not type or not source_id:
             raise Http404()
+
+        # map type to a schema name, if an "old style" type is used
+        if settings.CRED_TYPE_SYNONYMS and type.lower() in settings.CRED_TYPE_SYNONYMS:
+            type = settings.CRED_TYPE_SYNONYMS[type.lower()]
 
         queryset = self.filter_queryset(self.get_queryset())
         obj = get_object_or_404(queryset, type=type, source_id=source_id)
@@ -185,7 +335,7 @@ class TopicRelationshipViewSet(ReadOnlyModelViewSet):
         # queryset = self.filter_queryset(self.get_queryset())
         # obj = get_object_or_404(queryset, type=type, source_id=source_id)
 
-        ## May raise a permission denied
+        # May raise a permission denied
         # self.check_object_permissions(self.request, obj)
         # return obj
 
@@ -205,8 +355,9 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         item: Credential = self.get_object()
         credential_type: CredentialType = item.credential_type
 
-        connection_response = requests.get(
+        connection_response = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/connections?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+            post_method=False,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         connection_response_dict = connection_response.json()
@@ -214,8 +365,9 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
         self_connection = connection_response_dict["results"][0]
 
-        response = requests.get(
+        response = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/credential/{item.credential_id}",
+            post_method=False,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         response.raise_for_status()
@@ -233,6 +385,8 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "connection_id": self_connection["connection_id"],
             "proof_request": proof_request,
         }
+        if TRACE_PROOF_EVENTS:
+            request_body["trace"] = TRACE_PROOF_EVENTS
         restrictions = [{}]
         restrictions[0]["cred_def_id"] = credential_type.credential_def_id
 
@@ -244,11 +398,12 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             "names": [attr for attr in credential["attrs"]],
             "restrictions": restrictions,
         }
-        proof_request["requested_attributes"]['self-verify-proof'] = requested_attribute
+        proof_request["requested_attributes"]["self-verify-proof"] = requested_attribute
 
-        proof_request_response = requests.post(
+        proof_request_response = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/present-proof/send-request",
-            json=request_body,
+            post_method=True,
+            payload=request_body,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         proof_request_response.raise_for_status()
@@ -256,15 +411,16 @@ class CredentialViewSet(ReadOnlyModelViewSet):
         presentation_exchange_id = proof_request_response["presentation_exchange_id"]
 
         # TODO: if the agent was not started with the --auto-verify-presentation flag, verification will need to be initiated
-        retries = 7
+        retries = PROOF_RETRY_MAX_ATTEMPTS
         result = None
-        delay = 0.5
+        delay = float(PROOF_RETRY_INITIAL_DELAY / 1000)
         while retries > 0:
             sleep(delay)
             retries -= 1
-            delay = delay * 2
-            presentation_state_response = requests.get(
+            delay = delay * PROOF_RETRY_DELAY_BACKOFF
+            presentation_state_response = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/present-proof/records/{presentation_exchange_id}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
             presentation_state = presentation_state_response.json()
@@ -317,8 +473,7 @@ class CredentialViewSet(ReadOnlyModelViewSet):
 
 # Add environment specific endpoints
 try:
-    # utils.apply_custom_methods(TopicViewSet, "views", "TopicViewSet", "includeMethods")
-    utils.apply_custom_methods(
+    apply_custom_methods(
         TopicRelationshipViewSet, "views", "TopicRelationshipViewSet", "includeMethods"
     )
 except:

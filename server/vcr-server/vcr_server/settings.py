@@ -47,7 +47,8 @@ SECRET_KEY = os.getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "True"))
+DEBUG = parse_bool(os.getenv("DEBUG", "True"))
+DJANGO_DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "False"))
 
 DEMO_SITE = parse_bool(os.getenv("DEMO_SITE", "False"))
 
@@ -70,6 +71,8 @@ INSTALLED_APPS = [
     "django_filters",
     "vcr_server",
     "api.v2",
+    "api.v3",
+    "api.v4",
     "corsheaders",
     "rest_hooks",  # only required when using webhook subscriptions
     "subscriptions",  # only required when using webhook subscriptions
@@ -134,7 +137,7 @@ DATABASES = {"default": database.config()}
 
 OPTIMIZE_TABLE_ROW_COUNTS = parse_bool(os.getenv("OPTIMIZE_TABLE_ROW_COUNTS", "True"))
 
-CONN_MAX_AGE = CREDS_BATCH_SIZE = int(os.getenv('CONN_MAX_AGE', '0'))
+CONN_MAX_AGE = CREDS_BATCH_SIZE = int(os.getenv("CONN_MAX_AGE", "0"))
 if CONN_MAX_AGE < 0:
     CONN_MAX_AGE = None
 
@@ -160,11 +163,22 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
+    # Used for drf-yasg to split api specs into multiple versions
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
 }
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {"basic": {"type": "basic"}},
     "USE_SESSION_AUTH": True,
+    "DEFAULT_PAGINATOR_INSPECTORS": [
+        'vcr_server.inspector.PageNumberPaginatorInspectorClass',
+    ],
+}
+
+CRED_TYPE_SYNONYMS = {
+    "registration": "registration.registries.ca",
+    "relationship": "relationship.registries.ca",
+    "business_number": "relationship.registries.ca",
 }
 
 LOGIN_URL = "rest_framework:login"
@@ -210,28 +224,33 @@ LOGGING = {
     "handlers": {
         "console_handler": {
             "class": "logging.StreamHandler",
-            "level": "DEBUG",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "formatter": "verbose",
         }
     },
     "loggers": {
-        "api": {"handlers": ["console_handler"], "level": "DEBUG", "propagate": False},
+        "api": {
+            "handlers": ["console_handler"],
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
+            "propagate": False
+        },
         "django": {
             "handlers": ["console_handler"],
-            "level": "INFO",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "propagate": False,
         },
         "django.request": {
             "handlers": ["console_handler"],
-            "level": "INFO",
+            "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
             "propagate": False,
         },
+        # "django.db.backends": {"level": "DEBUG", "handlers": ["console_handler"]},
     },
     "root": {
         "handlers": ["console_handler"],
-        "level": str(os.getenv("DJANGO_LOG_LEVEL", "INFO")).upper(),
+        "level": str(os.getenv("DJANGO_LOG_LEVEL", "WARN")).upper(),
         "propagate": False,
-    },
+    }
 }
 
 
@@ -365,9 +384,9 @@ AGENT_SELF_CONNECTION_ALIAS = "credential-registry-self"
 AGENT_ADMIN_URL = os.environ.get("AGENT_ADMIN_URL")
 AGENT_ADMIN_API_KEY = os.environ.get("AGENT_ADMIN_API_KEY")
 
-ADMIN_REQUEST_HEADERS = {}
-if AGENT_ADMIN_API_KEY is not None:
-    ADMIN_REQUEST_HEADERS = {"x-api-key": AGENT_ADMIN_API_KEY}
+ADMIN_REQUEST_HEADERS = {"Content-Type": "application/json"}
+if AGENT_ADMIN_API_KEY is not None and 0 < len(AGENT_ADMIN_API_KEY):
+    ADMIN_REQUEST_HEADERS["x-api-key"] = AGENT_ADMIN_API_KEY
 
 
 # API routing middleware settings
@@ -380,6 +399,8 @@ HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP = {
 HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP = {
     u"v2": u"v2",
     u"v3": u"v3",
+    u"v4": u"v4",
+    u"alpha": u"v4",
     u"latest": u"v3",
     u"default": u"v2",
 }

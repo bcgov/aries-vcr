@@ -44,6 +44,7 @@ class CredentialSetSerializer(ModelSerializer):
             "first_effective_date",
             "last_effective_date",
         )
+        read_only_fields = fields
 
 
 class CredentialTypeSerializer(ModelSerializer):
@@ -76,6 +77,7 @@ class TopicSerializer(ModelSerializer):
         fields = list(
             utils.fetch_custom_settings("serializers", "Topic", "includeFields")
         )
+        read_only_fields = fields
 
 
 class TopicRelationshipSerializer(ModelSerializer):
@@ -86,6 +88,7 @@ class TopicRelationshipSerializer(ModelSerializer):
                 "serializers", "TopicRelationship", "includeFields"
             )
         )
+        read_only_fields = fields
 
 
 class AddressSerializer(ModelSerializer):
@@ -94,6 +97,7 @@ class AddressSerializer(ModelSerializer):
         fields = list(
             utils.fetch_custom_settings("serializers", "Address", "includeFields")
         )
+        read_only_fields = fields
 
 
 class ClaimSerializer(ModelSerializer):
@@ -117,6 +121,7 @@ class AttributeSerializer(ModelSerializer):
 class CredentialAttributeSerializer(AttributeSerializer):
     class Meta(AttributeSerializer.Meta):
         fields = ("id", "type", "format", "value", "credential_id")
+        read_only_fields = fields
 
 
 class CredentialSerializer(ModelSerializer):
@@ -140,6 +145,7 @@ class CredentialSerializer(ModelSerializer):
             "related_topics",
             "attributes",
         )
+        read_only_fields = fields
 
 
 class CredentialAddressSerializer(AddressSerializer):
@@ -147,16 +153,19 @@ class CredentialAddressSerializer(AddressSerializer):
         fields = tuple(
             {*AddressSerializer.Meta.fields, "credential_id"} - {"credential"}
         )
+        read_only_fields = fields
 
 
 class CredentialNameSerializer(NameSerializer):
     class Meta(NameSerializer.Meta):
         fields = ("id", "text", "language", "credential_id", "type")
+        read_only_fields = fields
 
 
 class CredentialTopicSerializer(TopicSerializer):
     class Meta(TopicSerializer.Meta):
         fields = ("id", "create_timestamp", "update_timestamp", "source_id", "type")
+        read_only_fields = fields
 
 
 class CredentialNamedTopicSerializer(CredentialTopicSerializer):
@@ -170,6 +179,7 @@ class CredentialNamedTopicSerializer(CredentialTopicSerializer):
             "local_name",
             "remote_name",
         )
+        read_only_fields = fields
 
 
 class TopicAttributeSerializer(AttributeSerializer):
@@ -184,6 +194,7 @@ class TopicAttributeSerializer(AttributeSerializer):
             "credential_id",
             "credential_type_id",
         )
+        read_only_fields = fields
 
     def get_credential_type_id(self, obj):
         return obj.credential.credential_type_id
@@ -198,6 +209,7 @@ class CredentialTopicExtSerializer(CredentialNamedTopicSerializer):
             "addresses",
             "attributes",
         )
+        read_only_fields = fields
 
 
 class CredentialExtSerializer(CredentialSerializer):
@@ -230,13 +242,16 @@ class CredentialExtSerializer(CredentialSerializer):
             "topic",
             "related_topics",
         )
+        read_only_fields = fields
 
 
 class ExpandedCredentialSetSerializer(CredentialSetSerializer):
     credentials = CredentialExtSerializer(many=True)
 
     class Meta(CredentialSetSerializer.Meta):
+        # fields = CredentialSetSerializer.Meta.fields
         fields = CredentialSetSerializer.Meta.fields + ("credentials",)
+        read_only_fields = fields
 
 
 class ExpandedCredentialSerializer(CredentialExtSerializer):
@@ -244,3 +259,4 @@ class ExpandedCredentialSerializer(CredentialExtSerializer):
 
     class Meta(CredentialExtSerializer.Meta):
         fields = CredentialExtSerializer.Meta.fields + ("credential_set",)
+        read_only_fields = fields

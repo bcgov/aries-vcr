@@ -58,6 +58,7 @@ else:
     print(">>> NO not creating detail claims for credentials")
     CREATE_CREDENTIAL_CLAIMS = False
 
+
 def schema_key(s_id: str) -> SchemaKey:
     """
     Return schema key (namedtuple) convenience for schema identifier components.
@@ -880,6 +881,11 @@ class CredentialManager(object):
                 credential_json=hookable_cred_data,
             )
             hookable_cred.save()
+
+            # This hack reindexes the Topic to account for active
+            # Credentials that are created after Topic indexes are
+            # generated.
+            Topic.objects.update_or_create(source_id=topic.source_id, type=topic.type)
 
         # create any relationships in a separate transaction
         with transaction.atomic():

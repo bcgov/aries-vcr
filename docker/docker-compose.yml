@@ -1,69 +1,27 @@
 version: "3"
 services:
   #
-  # vcr-web
-  #
-  vcr-web:
-    image: angular-on-nginx
-    environment:
-      - DEBUG=${DEBUG}
-      - API_URL=${API_URL}
-      - APPLICATION_URL=${APPLICATION_URL}
-      - IpFilterRules=${IpFilterRules}
-      - RealIpFrom=${RealIpFrom}
-      - HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME}
-      - HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD}
-      - WEB_BASE_HREF=${WEB_BASE_HREF}
-      - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
-    networks:
-      - vcr
-    ports:
-      - "${WEB_HTTP_PORT}:8080"
-    depends_on:
-      - vcr-api
-
-  #
-  # vcr-web-dev
-  # Run vcr-web in development mode with auto-reload and inspector support
-  #
-  vcr-web-dev:
-    image: angular-dev
-    environment:
-      - API_URL=${API_URL}
-      - APPLICATION_URL=${APPLICATION_URL}
-      - DEV_MODE=false
-      - NODE_ENV=development
-      - NPM_CONFIG_LOGLEVEL=notice
-      - NPM_RUN=dev
-      - THEME=${THEME}
-      - THEME_PATH=${THEME_PATH_DEV}
-      - WEB_BASE_HREF=${WEB_BASE_HREF}
-      - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
-    networks:
-      - vcr
-    ports:
-      - "${WEB_HTTP_PORT}:8080"
-      - 5858:5858
-    volumes:
-      - "../client/src:/opt/app-root/src/src"
-      - "${THEME_PATH:-../client/themes}:/tmp/vcr-theme"
-    depends_on:
-      - vcr-api
-
-  #
   # vcr-api
   #-------------------------------------------------
   # The API performs the migrations on the database
-  # and updates the indexes in Solr.  Therefore
+  # and updates the indexes in Solr. Therefore
   # it needs to come up after the database and
   # and Solr services have had time to fully
   # initialize.
-  #
   #
   # We are using a simple sleep command to do this
   # for the moment; refer to the `command` section
   # of the configuration for details.  It would be
   # nice to implement a more deterministic solution.
+  #
+  # When `DEBUG` is set to `true` the override
+  # configurations defined in `./docker-compose.dev.yml`
+  # are applied and will take effect. See the override
+  # config file for more details.
+  # 
+  # Due to the way configurations are applied, it is
+  # recommended to rebuild containers to disable `DEBUG`
+  # mode if it was previously enabled.
   #
   vcr-api:
     image: vcr-api
@@ -117,21 +75,26 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
-      - AGENT_WEBHOOK_PORT=${AGENT_WEBHOOK_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
-      #- RECORD_TIMINGS=true
+      - RECORD_TIMINGS=${RECORD_TIMINGS}
+      - TRACE_EVENTS=${TRACE_EVENTS}
+      - TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS}
+      - TRACE_TARGET=${TRACE_TARGET}
+      - RTI_ABORT_ON_ERRORS=${RTI_ABORT_ON_ERRORS}
+      - RTI_RAISE_ERRORS=${RTI_RAISE_ERRORS}
+      - RANDOM_ERRORS=${RANDOM_ERRORS}
+      - STARTUP_DELAY=${STARTUP_DELAY}
     volumes:
-      - ../server/vcr-server/vcr_server:/home/indy/vcr_server
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
       - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
       - ../server/vcr-server/api:/home/indy/api
       - vcr-wallet:/home/indy/.indy_client/wallet
     networks:
       - vcr
+    # when running "./manage scale" comment out or remove these port mappings:
     ports:
-      - "${API_HTTP_PORT}:8080"
+      - "${EXPOSED_API_HTTP_PORT}:8080"
       - 3000:3000
-      - "${AGENT_WEBHOOK_PORT}:${AGENT_WEBHOOK_PORT}"
     depends_on:
       - vcr-db
       - wallet-db
@@ -140,11 +103,11 @@ services:
     command: >
       /bin/bash -c "
       echo waiting for solr ...;
-      sleep 10;
+      sleep 15;
       if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
         python manage.py migrate && \
         python manage.py update_index --max-retries=5 --batch-size=500;
-        python manage.py runserver --nothreading 0.0.0.0:8080;
+        python manage.py runserver 0.0.0.0:8080;
       else
         ${STI_SCRIPTS_PATH}/run;
       fi"
@@ -167,8 +130,12 @@ services:
       - WS_INTERFACE_PORT=${WS_INTERFACE_PORT}
       - AGENT_ADMIN_PORT=${AGENT_ADMIN_PORT}
       - AGENT_NAME=${AGENT_NAME}
+      - TRACE_TARGET=${TRACE_TARGET}
+      - AGENT_TIMING_MODE=${AGENT_TIMING_MODE}
+      - AGENT_TRACE_MODE=${AGENT_TRACE_MODE}
     networks:
       - vcr
+    # when running "./manage scale" comment out or remove these port mappings:
     ports:
       - ${HTTP_INTERFACE_PORT}:${HTTP_INTERFACE_PORT}
       - ${WS_INTERFACE_PORT}:${WS_INTERFACE_PORT}
@@ -180,7 +147,20 @@ services:
         "-c",
         "curl -d '{\"seed\":\"${INDY_WALLET_SEED}\", \"role\":\"TRUST_ANCHOR\", \"alias\":\"${AGENT_NAME}\"}' -X POST ${LEDGER_URL}/register; \
         sleep 5; \
+        aca-py provision \
+        --endpoint ${AGENT_ENDPOINT} \
+        --genesis-url '${LEDGER_URL}/genesis' \
+        --wallet-type 'indy' \
+        --wallet-name 'icat_agent_wallet' \
+        --wallet-key '${WALLET_ENCRYPTION_KEY}' \
+        --wallet-storage-type '${WALLET_TYPE}' \
+        --wallet-storage-config '{\"url\":\"${POSTGRESQL_WALLET_HOST}:${POSTGRESQL_WALLET_PORT}\",\"max_connections\":5}' \
+        --wallet-storage-creds '{\"account\":\"${POSTGRESQL_USER}\",\"password\":\"${POSTGRESQL_PASSWORD}\",\"admin_account\":\"postgres\",\"admin_password\":\"${POSTGRESQL_ADMIN_PASSWORD}\"}' \
+        --seed '${INDY_WALLET_SEED}' \
+        --log-level 'error'; \
+        sleep 5; \
         aca-py start \
+        --read-only-ledger \
         --inbound-transport http '0.0.0.0' ${HTTP_INTERFACE_PORT} \
         --inbound-transport ws '0.0.0.0' ${WS_INTERFACE_PORT} \
         --endpoint ${AGENT_ENDPOINT} \
@@ -195,6 +175,7 @@ services:
         --auto-respond-credential-offer \
         --auto-respond-credential-request \
         --auto-verify-presentation \
+        --exch-use-unencrypted-tags \
         --wallet-type 'indy' \
         --wallet-name 'icat_agent_wallet' \
         --wallet-key '${WALLET_ENCRYPTION_KEY}' \
@@ -205,11 +186,13 @@ services:
         --admin '0.0.0.0' ${AGENT_ADMIN_PORT} \
         --${AGENT_ADMIN_MODE} \
         --label ${AGENT_NAME} \
-        --log-level 'error' \
+        --log-level 'error' ${AGENT_TIMING_MODE} ${AGENT_TRACE_MODE} \
+        --trace-target '${TRACE_TARGET}' \
+        --trace-tag 'acapy.events' \
+        --trace-label ${AGENT_NAME} \
         --plugin indy_catalyst_issuer_registration",
       ]
 
-#        --timing \
 #        --log-config '/home/indy/debug-logger.cfg' \
 #        --log-level 'debug' \
 
@@ -261,7 +244,7 @@ services:
     command: >
       /bin/bash -c "
       echo waiting for solr ...;
-      sleep 10;
+      sleep 15;
       ${STI_SCRIPTS_PATH}/run;"
 
   #
@@ -292,7 +275,7 @@ services:
     command: >
       /bin/sh -c "
         echo sleeping ...;
-        sleep 20;
+        sleep 45;
         ./start.sh;"
 
   #
@@ -302,6 +285,7 @@ services:
     image: solr
     environment:
       - CORE_NAME=${CORE_NAME}
+      - SOLR_LOG_LEVEL=WARN
     networks:
       - vcr
     ports:
@@ -311,7 +295,7 @@ services:
   # vcr-db
   #
   vcr-db:
-    image: postgresql
+    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -328,7 +312,7 @@ services:
   # wallet-db
   #
   wallet-db:
-    image: postgresql
+    image: vcr-postgresql
     environment:
       - POSTGRESQL_USER=${POSTGRESQL_USER}
       - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -363,7 +347,7 @@ services:
     ports:
       - 8000:8000
     command:
-      bash ./start.sh
+      sh ./start.sh
 
 networks:
   vcr:
@@ -372,5 +356,4 @@ volumes:
   vcr-data:
   vcr-wallet:
   vcr-wallet-db:
-  vcr-web-empty:
   vcr-rabbit:

@@ -5,7 +5,8 @@ from aiohttp_apispec import docs, request_schema
 
 from marshmallow import fields, Schema
 
-from aries_cloudagent.connections.models.connection_record import ConnectionRecord
+from aries_cloudagent.admin.request_context import AdminRequestContext
+from aries_cloudagent.connections.models.conn_record import ConnRecord
 from aries_cloudagent.storage.error import StorageNotFoundError
 
 from .manager import IssuerRegistrationManager
@@ -37,6 +38,10 @@ class IssuerRegistrationRequestSchema(Schema):
             endpoint = fields.Str(required=False)
             logo_path = fields.Str(required=False, allow_none=True)
             logo_b64 = fields.Str(required=False, allow_none=True)
+
+            labels = fields.Dict(required=False)
+            abbreviations = fields.Dict(required=False)
+            urls = fields.Dict(required=False)
 
         class CredentialType(Schema):
             """Isuer credential type schema."""
@@ -92,6 +97,8 @@ class IssuerRegistrationRequestSchema(Schema):
             class Topic(Schema):
                 """Nested topic schema."""
 
+                labels = fields.Dict(required=False)
+
                 source_id = fields.Nested(CredentialMapping(), required=False)
                 _type = fields.Nested(
                     CredentialMapping(), data_key="type", required=False
@@ -126,6 +133,9 @@ class IssuerRegistrationRequestSchema(Schema):
             endpoint = fields.Str(required=False)
             visible_fields = fields.List(fields.Str(), required=False)
 
+            labels = fields.Dict(required=False)
+            endpoints = fields.Dict(required=False)
+
         issuer = fields.Nested(IssuerSchema(), required=True)
         credential_types = fields.List(fields.Nested(CredentialType()), required=False)
 
@@ -143,17 +153,18 @@ async def issuer_registration_send(request: web.BaseRequest):
         request: aiohttp request object
 
     """
-    context = request.app["request_context"]
-    outbound_handler = request.app["outbound_message_router"]
+    context: AdminRequestContext = request["context"]
+    outbound_handler = request["outbound_message_router"]
     body = await request.json()
+    session = await context.session()
 
     connection_id = body.get("connection_id")
     issuer_registration = body.get("issuer_registration")
 
-    issuer_registration_manager = IssuerRegistrationManager(context)
+    issuer_registration_manager = IssuerRegistrationManager(session)
 
     try:
-        connection = await ConnectionRecord.retrieve_by_id(context, connection_id)
+        connection = await ConnRecord.retrieve_by_id(session, connection_id)
     except StorageNotFoundError:
         return web.BaseResponse(text="Connection not found.", status=418)
 

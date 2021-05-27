@@ -4,7 +4,7 @@ from marshmallow import fields, Schema
 
 from aries_cloudagent.messaging.agent_message import AgentMessage, AgentMessageSchema
 
-from ..message_types import REGISTER
+from ..message_types import REGISTER, MESSAGE_TYPE
 
 HANDLER_CLASS = (
     "indy_catalyst_issuer_registration."
@@ -19,7 +19,8 @@ class IssuerRegistration(AgentMessage):
         """Issuer Registration metadata class."""
 
         handler_class = HANDLER_CLASS
-        message_type = REGISTER
+        # message_type = REGISTER
+        message_type = MESSAGE_TYPE
         schema_class = "IssuerRegistrationSchema"
 
     def __init__(self, *, issuer_registration: dict, **kwargs):
@@ -65,6 +66,10 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             endpoint = fields.Str(required=False)
             logo_path = fields.Str(required=False, allow_none=True)
             logo_b64 = fields.Str(required=False, allow_none=True)
+
+            labels = fields.Dict(required=False)
+            abbreviations = fields.Dict(required=False)
+            urls = fields.Dict(required=False)
 
         class CredentialType(Schema):
             """Issuer credential type schema."""
@@ -149,6 +154,8 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             class Topic(Schema):
                 """Nested topic schema."""
 
+                labels = fields.Dict(required=False)
+
                 source_id = fields.Nested(CredentialMapping(), required=False)
                 _type = fields.Nested(
                     CredentialMapping(),
@@ -180,6 +187,9 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
             visible_fields = fields.List(fields.Str(), required=False)
+
+            labels = fields.Dict(required=False)
+            endpoints = fields.Dict(required=False)
 
         issuer = fields.Nested(IssuerSchema(), required=True)
         credential_types = fields.List(fields.Nested(CredentialType()), required=False)

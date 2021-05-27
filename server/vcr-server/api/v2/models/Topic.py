@@ -7,9 +7,10 @@ from .Attribute import Attribute
 from .Auditable import Auditable
 from .Name import Name
 
+from api.v2.utils import local_name, remote_name
+
 
 class Topic(Auditable):
-    reindex_related = ["foundational_credential"]
 
     source_id = models.TextField()
     type = models.TextField()
@@ -35,7 +36,8 @@ class Topic(Auditable):
     @property
     def foundational_credential(self):
         if self.credential_sets:
-            foundational_set = self.credential_sets.filter(credential_type__description=self.type).all()
+            foundational_set = self.credential_sets.filter(
+                credential_type__description=self.type).all()
             if foundational_set and 0 < len(foundational_set):
                 return foundational_set[0].latest_credential
         return None
@@ -88,28 +90,14 @@ class Topic(Auditable):
         creds = self.get_active_credential_ids()
         if creds:
             names = Name.objects.filter(credential_id__in=creds)
-            remote_name = None
-            for name in names:
-                if name.type == "entity_name_assumed":
-                    return name
-                else:
-                    remote_name = name
-            return remote_name
+            return local_name(names)
         return None
 
     def get_remote_name(self):
         creds = self.get_active_credential_ids()
         if creds:
             names = Name.objects.filter(credential_id__in=creds)
-            has_assumed_name = False
-            remote_name = None
-            for name in names:
-                if name.type == "entity_name_assumed":
-                    has_assumed_name = True
-                else:
-                    remote_name = name
-            if has_assumed_name:
-                return remote_name
+            return remote_name(names)
         return None
 
     def get_active_related_to(self):

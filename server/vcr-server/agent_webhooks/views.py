@@ -2,8 +2,9 @@ import json
 import logging
 import time
 import os
+import random
+import base64
 
-import requests
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
@@ -11,7 +12,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.v2.models.Credential import Credential as CredentialModel
-from api.v2.utils import log_timing_method
+from api.v2.utils import log_timing_method, log_timing_event, call_agent_with_retry
 from agent_webhooks.utils.credential import Credential, CredentialManager
 from agent_webhooks.utils.issuer import IssuerManager
 
@@ -20,20 +21,25 @@ LOGGER = logging.getLogger(__name__)
 TOPIC_CONNECTIONS = "connections"
 TOPIC_CONNECTIONS_ACTIVITY = "connections_activity"
 TOPIC_CREDENTIALS = "issue_credential"
+TOPIC_CREDENTIALS_2_0 = "issue_credential_v2_0"
+TOPIC_CREDENTIALS_2_0_INDY = "issue_credential_v2_0_indy"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_GET_ACTIVE_MENU = "get-active-menu"
 TOPIC_PERFORM_MENU_ACTION = "perform-menu-action"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
 
-
 PROCESS_INBOUND_CREDENTIALS = os.environ.get('PROCESS_INBOUND_CREDENTIALS', 'true')
 if PROCESS_INBOUND_CREDENTIALS.upper() == "TRUE":
-    print(">>> YES processing inbound credentials")
+    LOGGER.debug(">>> YES processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = True
 else:
-    print(">>> NO not processing inbound credentials")
+    LOGGER.error(">>> NO not processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = False
+
+RANDOM_ERRORS = os.environ.get('RANDOM_ERRORS', 'false').upper() == "TRUE"
+if RANDOM_ERRORS:
+    LOGGER.error(">>> YES generating random credential processing errors")
 
 
 @swagger_auto_schema(method="post", auto_schema=None)
@@ -45,11 +51,12 @@ def agent_callback(request, topic):
     if "state" not in message:
         LOGGER.warn(f"Received aca-py webhook without state. message={message}")
 
-    state = message["state"]
+    state = message["state"] if "state" in message else None
     LOGGER.debug(f"Received aca-py webhook. state={state} message={message}")
 
     start_time = time.perf_counter()
-    method = "agent_callback." + topic
+    method = "agent_callback." + topic + ("." + state if state else "")
+    log_timing_event(method, message, start_time, None, False)
 
     # dispatch based on the topic type
     if topic == TOPIC_CONNECTIONS:
@@ -60,6 +67,12 @@ def agent_callback(request, topic):
 
     elif topic == TOPIC_CREDENTIALS:
         response = handle_credentials(state, message)
+
+    elif topic == TOPIC_CREDENTIALS_2_0:
+        response = handle_credentials_2_0(state, message)
+
+    elif topic == TOPIC_CREDENTIALS_2_0_INDY:
+        response = handle_credentials_2_0(state, message)
 
     elif topic == TOPIC_PRESENTATIONS or topic == TOPIC_PRESENT_PROOF:
         response = handle_presentations(state, message)
@@ -77,15 +90,19 @@ def agent_callback(request, topic):
         LOGGER.info("Callback: topic=" + topic + ", message=" + json.dumps(message))
         end_time = time.perf_counter()
         log_timing_method(method, start_time, end_time, False)
+        log_timing_event(method, message, start_time, end_time, False)
         return Response("Invalid topic: " + topic, status=status.HTTP_400_BAD_REQUEST)
 
     end_time = time.perf_counter()
     log_timing_method(method, start_time, end_time, True)
+    log_timing_event(method, message, start_time, end_time, True)
 
     return response
 
+
 # create one global manager instance
 credential_manager = CredentialManager()
+
 
 def handle_credentials(state, message):
     """
@@ -155,7 +172,8 @@ def handle_credentials(state, message):
             raw_credential = message["raw_credential"]
 
             # You can include this exception to test error reporting
-            # raise Exception("Depliberate error to test problem reporting")
+            if RANDOM_ERRORS:
+                raise_random_exception(credential_exchange_id, 'credential_recieved')
 
             credential_data = {
                 "thread_id": message["thread_id"],
@@ -168,40 +186,20 @@ def handle_credentials(state, message):
             for attr in raw_credential["values"]:
                 credential_data["attrs"][attr] = raw_credential["values"][attr]["raw"]
 
-            if PROCESS_INBOUND_CREDENTIALS:
-                credential = Credential(credential_data)
-                # create one global manager instance
-                #credential_manager = CredentialManager()
-                credential = credential_manager.process(credential)
-                ret_credential_id = credential.credential_id
-            else:
-                ret_credential_id = credential_data["thread_id"]
+            return receive_credential(credential_exchange_id, credential_data)
 
-            # Instruct the agent to store the credential in wallet
-            resp = requests.post(
-                f"{settings.AGENT_ADMIN_URL}/issue-credential/records"
-                + f"/{credential_exchange_id}/store",
-                json={"credential_id": ret_credential_id},
-                headers=settings.ADMIN_REQUEST_HEADERS,
-            )
-            resp.raise_for_status()
-
-            response_data = {
-                "success": True,
-                "details": f"Received credential with id {ret_credential_id}",
-            }
-
-        # TODO other scenarios
         elif state == "stored":
             LOGGER.debug("Credential Stored")
             response_data = {"success": True, "details": "Credential Stored"}
 
     except Exception as e:
-        LOGGER.error(str(e))
+        LOGGER.error(e)
+        LOGGER.error(f"Send problem report for {credential_exchange_id}")
         # Send a problem report for the error
-        resp = requests.post(
-            f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem_report",
-            json={"explain_ltxt": str(e)},
+        resp = call_agent_with_retry(
+            f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem-report",
+            post_method=True,
+            payload={"explain_ltxt": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
@@ -211,7 +209,7 @@ def handle_credentials(state, message):
 
 
 def handle_presentations(state, message):
-    print(" >>>> handle_presentations()", state)
+    LOGGER.debug(f" >>>> handle_presentations({state})")
 
     if state == "request_received":
         presentation_request = message["presentation_request"]
@@ -233,28 +231,34 @@ def handle_presentations(state, message):
 
         if presentation_request["name"].startswith("cred_id::"):
             cred_id = presentation_request["name"][9:]
-            resp = requests.get(
+            resp = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/credential/"
                 + f"{cred_id}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
+            resp.raise_for_status()
             wallet_credential = resp.json()
             wallet_credentials = {
                 "cred_info": wallet_credential,
                 "interval": None,
                 "presentation_referents": requested_attribute_referents + requested_predicates_referents
             }
-            credentials = [wallet_credentials,]
+            credentials = [wallet_credentials, ]
+            credential_query = presentation_request["name"]
 
         if 0 == len(credentials):
-            resp = requests.get(
+            resp = call_agent_with_retry(
                 f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
                 + f"{message['presentation_exchange_id']}/credentials/"
                 + f"{referents}",
+                post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
+            resp.raise_for_status()
             # All credentials from wallet that satisfy presentation request
             credentials = resp.json()
+            credential_query = f"/present-proof/records/{message['presentation_exchange_id']}/credentials/{referents}"
 
         # Prep the payload we need to send to the agent API
         credentials_for_presentation = {
@@ -268,67 +272,47 @@ def handle_presentations(state, message):
         for referent in requested_predicates_referents:
             credentials_for_presentation["requested_predicates"][referent] = {}
 
-        # Now we need to provide a credential id for each requested_*
-        for credential in credentials:
-            # This query plus limiting by claim values below
-            # *should* return exactly one result
-            credential_query = CredentialModel.objects.filter(
-                revoked=False, latest=True
+        # we should have a single credential at this point
+        results_length = len(credentials)
+        if results_length != 1:
+            raise Exception(
+                "Number of credentials returned by query "
+                + f"{credential_query} was not 1, it was {results_length}"
             )
-            for attr in credential["cred_info"]["attrs"]:
-                credential_query = credential_query.filter(
-                    claims__name=attr,
-                    claims__value=credential["cred_info"]["attrs"][attr],
-                )
 
-            # If we don't have exactly 1 result, we can't construct a presentation
-            # deterministically
-            results_length = len(credential_query)
-            if results_length != 1:
+        credential = credentials[0]
+
+        credential_id = credential["cred_info"]["referent"]
+
+        # For all "presentation_referents" on this `credential` returned
+        # from the wallet, we can apply this credential_id as the selected
+        # credential for the presentation
+        for related_referent in credential["presentation_referents"]:
+            if (
+                related_referent
+                in credentials_for_presentation["requested_attributes"]
+            ):
+                credentials_for_presentation["requested_attributes"][
+                    related_referent
+                ]["cred_id"] = credential_id
+                credentials_for_presentation["requested_attributes"][
+                    related_referent
+                ]["revealed"] = True
+            elif (
+                related_referent
+                in credentials_for_presentation["requested_predicates"]
+            ):
+                credentials_for_presentation["requested_predicates"][
+                    related_referent
+                ]["cred_id"] = credential_id
+                credentials_for_presentation["requested_predicates"][
+                    related_referent
+                ]["revealed"] = True
+            else:
                 raise Exception(
-                    "Number of credentials returned by query "
-                    + f"{credential_query.query} was not 1, it was {results_length}"
+                    f"Referent {related_referent} returned from wallet "
+                    + "was not expected in proof request."
                 )
-
-            credential_result = credential_query.first()
-            credential_id = credential_result.credential_id
-
-            # Ensure that the credential_id we retrieved from the agent is in fact
-            # in the set of credentials returned from the wallet in the first place.
-            # This should be true.
-            assert credential_id in [
-                credential["cred_info"]["referent"] for credential in credentials
-            ]
-
-            # For all "presentation_referents" on this `credential` returned
-            # from the wallet, we can apply this credential_id as the selected
-            # credential for the presentation
-            for related_referent in credential["presentation_referents"]:
-                if (
-                    related_referent
-                    in credentials_for_presentation["requested_attributes"]
-                ):
-                    credentials_for_presentation["requested_attributes"][
-                        related_referent
-                    ]["cred_id"] = credential_id
-                    credentials_for_presentation["requested_attributes"][
-                        related_referent
-                    ]["revealed"] = True
-                elif (
-                    related_referent
-                    in credentials_for_presentation["requested_predicates"]
-                ):
-                    credentials_for_presentation["requested_predicates"][
-                        related_referent
-                    ]["cred_id"] = credential_id
-                    credentials_for_presentation["requested_predicates"][
-                        related_referent
-                    ]["revealed"] = True
-                else:
-                    raise Exception(
-                        f"Referent {related_referent} returned from wallet "
-                        + "was not expected in proof request."
-                    )
 
         # We should have a fully constructed presentation now.
         # Let's check to make sure:
@@ -347,13 +331,13 @@ def handle_presentations(state, message):
         # Finally, we should be able to send this payload to the agent for it
         # to finish the process and send the presentation back to the verifier
         # (to be verified)
-        resp = requests.post(
+        resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/present-proof/records/"
             + f"{presentation_exchange_id}/send-presentation",
-            json=credentials_for_presentation,
+            post_method=True,
+            payload=credentials_for_presentation,
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
-
         resp.raise_for_status()
 
     return Response()
@@ -406,6 +390,10 @@ def handle_register_issuer(message):
     issuer_manager = IssuerManager()
     updated = issuer_manager.register_issuer(message)
 
+    # reset the global CredentialManager instance (to clear the CredentialType cache)
+    global credential_manager
+    credential_manager = CredentialManager()
+
     # update tagging policy
     tag_policy_updates = {}
     cred_types = updated.credential_types
@@ -417,3 +405,181 @@ def handle_register_issuer(message):
     return Response(
         content_type="application/json", data={"result": updated.serialize()}
     )
+
+
+def handle_credentials_2_0(state, message):
+    """
+    Receives notification of a credential 2.0 processing event.
+
+    For example, for a registration credential:
+
+    message = {
+        "cred_proposal": { ... },
+        "role": "issuer",
+        "initiator": "self",
+        "created_at": "2021-04-30 02:54:32.925351Z",
+        "conn_id": "ae5f0b97-746e-4062-bdf2-27b9d6809cc9",
+        "auto_issue": true,
+        "cred_preview": { ... },
+        "cred_ex_id": "e2f41814-d625-4218-9f53-879111398372",
+        "cred_request": { ... },
+        "auto_offer": false,
+        "state": "credential-issued",
+        "updated_at": "2021-04-30 02:54:33.138119Z",
+        "cred_issue": {
+            "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/2.0/issue-credential",
+            "@id": "0f0104e6-43ca-47e1-85e0-4fd41b10688f",
+            "formats": [
+                {
+                    "attach_id": "0",
+                    "format": "hlindy-zkp-v1.0"
+                }
+            ],
+            "credentials~attach": [
+                {
+                    "@id": "0",
+                    "mime-type": "application/json",
+                    "data": {
+                        "base64": "..."
+                    }
+                }
+            ]
+        },
+        "cred_offer": { ... },
+        "thread_id": "dd56313f-1787-47f7-8838-d6931284ae30"
+    }
+    """
+
+    cred_ex_id = message["cred_ex_id"]
+    LOGGER.debug(f'Credential: state="{state}" cred_ex_id="{cred_ex_id}"')
+    response_data = {}
+
+    try:
+        if state == "offer-received":
+            LOGGER.debug("After receiving credential offer, send credential request")
+            # no need to perform a task, we run the agent with the --auto-respond-credential-offer flag set
+            response_data = {
+                "success": True,
+                "details": f"Received offer on credential exchange {cred_ex_id}",
+            }
+
+        elif state == "credential-received":
+            cred_issue = message["cred_issue"]
+            if cred_issue is None:
+                LOGGER.error(" >>> Error cred_issue missing for " + cred_ex_id)
+                return Response("Error cred_issue missing for credential", status=status.HTTP_400_BAD_REQUEST)
+
+            # You can include this exception to test error reporting
+            if RANDOM_ERRORS:
+                raise_random_exception(cred_ex_id, 'credential-recieved')
+
+            cred_data = {}
+            for cred_fmt in cred_issue["formats"]:
+                attachment_id = int(cred_fmt["attach_id"])
+                fmt_type = cred_fmt["format"]
+                if fmt_type == 'hlindy-zkp-v1.0':
+                    cred_raw_base64 = cred_issue["credentials~attach"][attachment_id]["data"]["base64"]
+                    cred_raw = json.loads(base64.b64decode(cred_raw_base64))
+
+                    if cred_raw is None:
+                        LOGGER.error(
+                            " >>> Error data cred_issue could not be parsed for " + cred_ex_id)
+                        return Response("Error credential data could not be parsed from cred_issue", status=status.HTTP_400_BAD_REQUEST)
+
+                    cred_data = {
+                        "thread_id": cred_issue["~thread"]["thid"],
+                        "schema_id": cred_raw["schema_id"],
+                        "cred_def_id": cred_raw["cred_def_id"],
+                        "rev_reg_id": cred_raw["rev_reg_id"],
+                        "attrs": {k: v["raw"] for k, v in cred_raw["values"].items()},
+                    }
+
+            return receive_credential(cred_ex_id, cred_data, "2.0")
+
+        else:
+            LOGGER.warn(f"Handler for state: {state} not implemented")
+            response_data = {"success": True, "details": f"State received {state}"}
+
+    except Exception as e:
+        LOGGER.error(e)
+        LOGGER.error(f"Send problem report for {cred_ex_id}")
+        # Send a problem report for the error
+        resp = call_agent_with_retry(
+            f"{settings.AGENT_ADMIN_URL}/issue-credential-2.0/records/{cred_ex_id}/problem-report",
+            post_method=True,
+            payload={"explain_ltxt": str(e)},
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        resp.raise_for_status()
+        return Response({"success": False, "error": str(e)})
+
+    return Response(response_data)
+
+
+def receive_credential(cred_ex_id, cred_data, v=None):
+    existing = False
+    if PROCESS_INBOUND_CREDENTIALS:
+        credential = Credential(cred_data)
+
+        # sanity check that we haven't received this credential yet
+        cred_id = credential.thread_id
+        existing_credential = CredentialModel.objects.filter(credential_id=cred_id)
+        if 0 < len(existing_credential):
+            # TODO - credential already exists in the database, what to do?
+            LOGGER.error(" >>> Received duplicate for credential_id: "
+                         + cred_id + ", exch id: " + cred_ex_id)
+            existing = True
+            ret_cred_id = cred_id
+        else:
+            # new credential, populate database
+            credential = credential_manager.process(credential)
+            ret_cred_id = credential.credential_id
+    else:
+        ret_cred_id = cred_data["thread_id"]
+
+    # check if the credential is in the wallet already
+    if existing:
+        resp = call_agent_with_retry(
+            f"{settings.AGENT_ADMIN_URL}/credential/{ret_cred_id}",
+            post_method=False,
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        if resp.status_code == 404:
+            existing = False
+
+    # Instruct the agent to store the credential in wallet
+    if not existing:
+        # post with retry - if returned status is 503 unavailable retry a few times
+        resp = call_agent_with_retry(
+            f"{settings.AGENT_ADMIN_URL}/issue-credential{'-' + v if v else ''}/records/{cred_ex_id}/store",
+            post_method=True,
+            payload={"credential_id": ret_cred_id},
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        if resp.status_code == 404:
+            # TODO assume the credential exchange has completed?
+            resp = call_agent_with_retry(
+                f"{settings.AGENT_ADMIN_URL}/credential/{ret_cred_id}",
+                post_method=False,
+                headers=settings.ADMIN_REQUEST_HEADERS,
+            )
+            if resp.status_code == 404:
+                LOGGER.error(
+                    " >>> Error cred exchange id is missing but credential is not available for " + cred_ex_id + ", " + ret_cred_id)
+                return Response("Error cred exchange id is missing but credential is not available", status=status.HTTP_400_BAD_REQUEST)
+            pass
+        else:
+            resp.raise_for_status()
+
+    response_data = {
+        "success": True,
+        "details": f"Received credential with id {ret_cred_id}",
+    }
+
+    return Response(response_data)
+
+
+def raise_random_exception(cred_ex_id, method=""):
+    if 1 == random.randint(1, 50):
+        print(f"Raise exception for {cred_ex_id} from method: {method}")
+        raise Exception("Deliberate error to test problem reporting")

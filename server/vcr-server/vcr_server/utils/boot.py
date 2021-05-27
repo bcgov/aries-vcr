@@ -24,8 +24,11 @@ to be properly initialized before the webserver process has forked.
 import asyncio
 import logging
 import os
+import requests
+import threading
 
 import django.db
+from django.conf import settings
 
 from wsgi import application
 
@@ -64,23 +67,86 @@ async def add_server_headers(request, response):
         response.headers["X-Served-By"] = host
 
 
-async def init_app(on_startup=None, on_cleanup=None):
+app_solrqueue = None
+
+
+async def connect_agent():
+    # placeholder
+    LOGGER.info(">>>>> connect_agent() <<<<<")
+
+    # do the self-connection here
+    # Make agent connection to self to send self presentation requests later
+    response = requests.get(
+        f"{settings.AGENT_ADMIN_URL}/connections"
+        + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+        headers=settings.ADMIN_REQUEST_HEADERS,
+    )
+    connections = response.json()
+
+    # We only need to form a self connection once
+    if not connections["results"]:
+        response = requests.post(
+            f"{settings.AGENT_ADMIN_URL}/connections/create-invitation"
+            + f"?alias={settings.AGENT_SELF_CONNECTION_ALIAS}",
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+        response_body = response.json()
+        requests.post(
+            f"{settings.AGENT_ADMIN_URL}/connections/receive-invitation",
+            json=response_body["invitation"],
+            headers=settings.ADMIN_REQUEST_HEADERS,
+        )
+
+
+async def on_app_startup(app):
+    # placeholder
+    LOGGER.info(">>>>> on_startup() <<<<<")
+    asyncio.ensure_future(connect_agent())
+
+
+async def on_app_cleanup(app):
+    # placeholder
+    LOGGER.info(">>>>> on_cleanup() <<<<<")
+
+
+async def on_app_shutdown(app):
+    """
+    Wait for indexing queue to drain on shutdown.
+    """
+    global app_solrqueue
+
+    LOGGER.error(">>>>> on_shutdown() <<<<<")
+
+    if app_solrqueue:
+        while app_solrqueue.isactive():
+            LOGGER.error(">>>>> waiting ... %s <<<<<" % app_solrqueue.qsize())
+            await asyncio.sleep(1)
+        await app_solrqueue.app_stop()
+
+    LOGGER.error(">>>>> completed <<<<<")
+
+async def init_app(on_startup=None, on_cleanup=None, on_shutdown=None):
     from aiohttp.web import Application
     from aiohttp_wsgi import WSGIHandler
     from vcr_server.utils.solrqueue import SolrQueue
+
+    global app_solrqueue
 
     wsgi_handler = WSGIHandler(application)
     app = Application()
     # all requests forwarded to django
     app.router.add_route("*", "/{path_info:.*}", wsgi_handler)
 
-    solrqueue = SolrQueue()
-    solrqueue.setup(app=app)
+    app_solrqueue = SolrQueue()
+    app_solrqueue.setup(app=app)
 
     if on_startup:
         app.on_startup.append(on_startup)
     if on_cleanup:
         app.on_cleanup.append(on_cleanup)
+    if on_shutdown:
+        app.on_shutdown.append(on_shutdown)
+
     no_headers = os.environ.get("DISABLE_SERVER_HEADERS")
     if not no_headers or no_headers == "false":
         app.on_response_prepare.append(add_server_headers)

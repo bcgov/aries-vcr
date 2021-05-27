@@ -6,6 +6,12 @@ import logging
 import os
 import threading
 from datetime import datetime, timedelta
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+import time
+import json
+
 
 from subscriptions.models import CredentialHookStats
 
@@ -24,9 +30,15 @@ from rest_framework.decorators import (
 )
 
 LOGGER = logging.getLogger(__name__)
+DT_FMT = '%Y-%m-%d %H:%M:%S.%f%z'
 
 # need to specify an env variable RECORD_TIMINGS=True to get method timings
 RECORD_TIMINGS = os.getenv("RECORD_TIMINGS", "True").lower() == "true"
+TRACE_EVENTS = os.getenv("TRACE_EVENTS", "True").lower() == "true"
+TRACE_LABEL = os.getenv("TRACE_LABEL", "avcr.controller")
+TRACE_TAG = os.getenv("TRACE_TAG", "acapy.events")
+TRACE_LOG_TARGET = "log"
+TRACE_TARGET = os.getenv("TRACE_TARGET", TRACE_LOG_TARGET)
 
 timing_lock = threading.Lock()
 timings = {}
@@ -101,7 +113,7 @@ def solr_counts():
     last_month_q = total_q.filter(create_timestamp__gte=last_month)
     try:
         return {
-            "total": total_q.count(),
+            "total_indexed_items": total_q.count(),
             "active": latest_q.count(),
             "registrations": registrations_q.count(),
             "last_month": last_month_q.count(),
@@ -111,6 +123,7 @@ def solr_counts():
     except SolrError:
         LOGGER.exception("Error when retrieving quickload counts from Solr")
         return False
+
 
 @swagger_auto_schema(
     method="get", operation_id="api_v2_status_reset", operation_description="quick load"
@@ -193,3 +206,133 @@ def log_timing_method(method, start_time, end_time, success, data=None):
             timings[method]["data"][str(timings[method]["total_count"])] = data
     finally:
         timing_lock.release()
+
+
+def log_timing_event(method, message, start_time, end_time, success):
+    """Record a timing event in the system log or http endpoint."""
+
+    if (not TRACE_EVENTS) and (not message.get("trace")):
+        return
+    if not TRACE_TARGET:
+        return
+
+    msg_id = "N/A"
+    thread_id = message["thread_id"] if message.get("thread_id") else "N/A"
+    handler = TRACE_LABEL
+    ep_time = time.time()
+    str_time = datetime.utcfromtimestamp(ep_time).strftime(DT_FMT)
+    if end_time:
+        outcome = method + ".SUCCESS" if success else ".FAIL"
+    else:
+        outcome = method + ".START"
+    event = {
+        "msg_id": msg_id,
+        "thread_id": thread_id if thread_id else msg_id,
+        "traced_type": method,
+        "timestamp": ep_time,
+        "str_time": str_time,
+        "handler": str(handler),
+        "ellapsed_milli": int(1000 * (end_time - start_time)) if end_time else 0,
+        "outcome": outcome,
+    }
+    event_str = json.dumps(event)
+
+    try:
+        if TRACE_TARGET == TRACE_LOG_TARGET:
+            # write to standard log file
+            LOGGER.setLevel(logging.INFO)
+            LOGGER.info(" %s %s", TRACE_TAG, event_str)
+        else:
+            # should be an http endpoint
+            _ = requests.post(
+                TRACE_TARGET + TRACE_TAG,
+                data=event_str,
+                headers={"Content-Type": "application/json"}
+            )
+    except Exception as e:
+        LOGGER.error(
+            "Error logging trace target: %s tag: %s event: %s",
+            TRACE_TARGET,
+            TRACE_TAG,
+            event_str
+        )
+        LOGGER.exception(e)
+
+
+def call_agent_with_retry(agent_url, post_method=True, payload=None, headers=None, retry_count=5, retry_wait=1):
+    """
+    Post with retry - if returned status is 503 (or other select errors) unavailable retry a few times.
+    """
+    try:
+        session = requests.Session()
+        retry = Retry(
+            total=retry_count,
+            connect=retry_count,
+            status=retry_count,
+            status_forcelist=[
+                429,  # too many requests
+                500,  # Internal server error
+                502,  # Bad gateway
+                503,  # Service unavailable
+                504   # Gateway timeout
+            ],
+            method_whitelist=['HEAD', 'TRACE', 'GET',
+                              'POST', 'PUT', 'OPTIONS', 'DELETE'],
+            read=0,
+            redirect=0,
+            backoff_factor=retry_wait
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        if post_method:
+            resp = session.post(
+                agent_url,
+                json=payload,
+                headers=headers,
+            )
+        else:
+            resp = session.get(
+                agent_url,
+                headers=headers,
+            )
+        return resp
+    except Exception as e:
+        LOGGER.error("Agent connection raised exception, raise: " + str(e))
+        raise
+
+
+def local_name(names=[]):
+    if len(names) == 0:
+        return None
+    try:
+        types = [name.type for name in names]
+        local_name = None
+        # Order matters here
+        for type in ['display_name', 'entity_name_assumed', 'entity_name']:
+            if type in types:
+                local_name = names[types.index(type)]
+                break
+        if not local_name:
+            # Take the first one
+            local_name = names[0]
+        return local_name
+    except Exception as e:
+        LOGGER.error("Exception was raised: " + str(e))
+        return None
+
+
+
+def remote_name(names=[]):
+    if len(names) == 0:
+        return None
+    try:
+        types = [name.type for name in names]
+        remote_name = None
+        if 'entity_name_assumed' in types and 'entity_name' in types:
+            remote_name = names[types.index('entity_name')]
+        return remote_name
+    except Exception as e:
+        LOGGER.error("Exception was raised: " + str(e))
+        return None
+

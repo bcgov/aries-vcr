@@ -20,6 +20,7 @@ from api.v2.models.Credential import Credential as CredentialModel
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 from api.v2.models.Topic import Topic
+from api.v2.models.Name import Name
 from api.v2.utils import model_counts, record_count, solr_counts
 
 LOGGER = logging.getLogger(__name__)
@@ -38,6 +39,7 @@ def quickload(request, *args, **kwargs):
         "credentialtype": CredentialType,
         "issuer": Issuer,
         "topic": Topic,
+        "name": Name,
     }
     with connection.cursor() as cursor:
         counts = {
@@ -45,10 +47,17 @@ def quickload(request, *args, **kwargs):
             for (mname, model) in count_models.items()
         }
         actual_credential_count = record_count(CredentialModel, cursor)
+        actual_name_count = record_count(Name, cursor)
+        actual_topic_count = record_count(Topic, cursor)
 
     counts["actual_credential_count"] = actual_credential_count
+    counts["actual_name_count"] = actual_name_count
+    counts["actual_topic_count"] = actual_topic_count
+    counts["actual_item_count"] = actual_credential_count + actual_topic_count + actual_name_count
+    # the returned cred_counts["total"] is actually the total number of indexed items in solr,
+    # ... which includes credentials, topics and names
     cred_counts = solr_counts()
-    indexes_synced = (actual_credential_count - cred_counts["total"]) == 0
+    indexes_synced = (counts["actual_item_count"] - cred_counts["total_indexed_items"]) == 0
     return JsonResponse(
         {
             "counts": counts,
@@ -88,14 +97,9 @@ def quickload(request, *args, **kwargs):
 @permission_classes((permissions.AllowAny,))
 @parser_classes((FormParser,))
 def send_feedback(request, *args, **kwargs):
-    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-    if x_forwarded_for:
-        ip_addr = x_forwarded_for.split(",")[0]
-    else:
-        ip_addr = request.META.get("REMOTE_ADDR")
     from_name = request.POST.get("from_name")
     from_email = request.POST.get("from_email")
     reason = request.POST.get("reason")
     comments = request.POST.get("comments")
-    email_feedback(ip_addr, from_name, from_email, reason, comments)
+    email_feedback(from_name, from_email, reason, comments)
     return JsonResponse({"status": "ok"})

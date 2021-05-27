@@ -1,213 +1,81 @@
-# Hyperledger Aries VCR <!-- omit in toc -->
 
-![logo](/docs/assets/aries-vcr-logo-bw.png)
-
-# Table of Contents <!-- omit in toc -->
-
-- [Introduction](#introduction)
-- [Decentralized Identity / Self-Sovereign Identity](#decentralized-identity--self-sovereign-identity)
-  - [Open Standards](#open-standards)
-    - [Decentralized Identifiers (DID)](#decentralized-identifiers-did)
-    - [Verifiable Credentials](#verifiable-credentials)
-    - [Links to Emerging DID and Verifiable Credentials Standards](#links-to-emerging-did-and-verifiable-credentials-standards)
-      - [DID Standards](#did-standards)
-      - [Verifiable Credentials Standards](#verifiable-credentials-standards)
-  - [General Model](#general-model)
-  - [Technology](#technology)
-    - [Distributed Ledger Technology / Blockchain](#distributed-ledger-technology--blockchain)
-    - [Decentralized Key Management Systems](#decentralized-key-management-systems)
-    - [Zero Knowledge Proofs](#zero-knowledge-proofs)
-  - [Summary: Decentralized Identity / Self-Sovereign Identity Architecture](#summary-decentralized-identity--self-sovereign-identity-architecture)
-- [Hyperledger Indy](#hyperledger-indy)
-  - [Overview](#overview)
-  - [Technical information for Hyperledger Indy](#technical-information-for-hyperledger-indy)
-- [Hyperledger Aries VCR](#hyperledger-aries-vcr)
-  - [Motivation](#motivation)
-  - [Who is Aries VCR For](#who-is-aries-vcr-for)
-  - [Key Technical Elements](#key-technical-elements)
-    - [Credential Registry](#credential-registry)
-    - [Web Hooks](#web-hooks)
-    - [Agent](#agent)
-    - [Agent Driver](#agent-driver)
-    - [Starter Kits](#starter-kits)
-      - [Credential Registry Holder-Prover](#credential-registry-holder-prover)
-      - [Agent Issuer-Verifier](#agent-issuer-verifier)
-  - [OpenAPI](#openapi)
-- [Endnotes](#endnotes)
-
-# Introduction
-
-**Hyperledger Aries VCR** is a set of application level software components designed to accelerate the adoption of trustworthy entity to entity<sup id="a1">[1](#f1)</sup> communications based on Decentralized Identity / Self-Sovereign Identity technology and architecture. Aries VCR is builds upon globally available open standards and open source software. At present, Aries VCR builds upon [Hyperledger Indy](https://www.hyperledger.org/projects), common enterprise open source software, frameworks and patterns such as PostgreSQL, Python, Angular and RESTful APIs. Efforts will be taken to design the software to facilitate the incorporation of evolving open standards and technology. The impetus for Aries VCR came from the Verifiable Organizations Network (VON) project. More information about VON can be found at [vonx.io](https://vonx.io)
-
-In order to understand the goals and context of Hyperledger Aries VCR, it is advisable to become familiar with the model of decentralized identity or self-sovereign identity which enables trustworthy entity to entity communications. The open standards and technologies enabling this new this model are presented below and annotated with references.
-
-# Decentralized Identity / Self-Sovereign Identity
-
-Self-Sovereign Identity is a term coined by [Christoper Allen in 2016](http://www.lifewithalacrity.com/2016/04/the-path-to-self-soverereign-identity.html) to describe a new generation of digital identity systems. One which "requires that users be the rulers of their own identity." In order to truly understand the intent of this statement, which at first may sound rather radical, it is important to reflect upon the design of current identity systems and contrast that to the emerging design of decentralized identity systems.
-
-The excellent paper, ["Self-sovereign Identity: A position paper on blockchain enabled identity and the road ahead"](https://www.bundesblock.de/wp-content/uploads/2018/10/ssi-paper.pdf), published in October 2018 by the [German Blockchain Association](https://www.bundesblock.de) highlights the key differentiators between current digital identity systems and emerging self-sovereign identity systems.
-
-The key differentiator pertains to the means by which current centralized identity systems keep track of individual entities in their databases. Centralized identity systems create and assign an identifer for each individual entity and associate data about that individual entity to that identifier. This is a familiar idea to most of us. In the analog world these identifiers have names such as drivers licence number, credit card number, bank account number, social insurance number, etc. The identity system owner creates and is in control of the _identifiers_ and associated data for individual entities and not the individual entities themselves. Identity system operators have the ability to unilaterally make changes to these identifiers are associated data.
-
-In contrast, the design of a decentralized or "self-sovereign" identity system is to put individual entities in control of the _identifiers_ used to keep track of them as well as the holding and disclosure of the data associated to these new identifiers. These new identifiers, described below, are called ["Decentralized Identifiers" (DID)](#decentralized-identifiers-did). The data associated to these identifiers is encoded into a new format called a [Verifiable Credential](#verifiable-credentials). These Verifiable Credentials are issued to and held by individual entities.
-
-Using this new approach to identity systems design means a person would be in full control of data issued to them by third parties. People would be in control of disclosing of their personally identifiable data as issued by themselves (e.g. personal preferences, messages, etc) or issued to them by third parties. These third parties may include authoritative issuers such as governments (e.g. identity documents, licences) or they could be issuers such as a local sports club (e.g. membership). Critically, "self-sovereign" is not intended to suggest a "digital self-declaration" of ones identity in opposition to or as a substitute for authoritative and officially issued identity attributes from a government. Rather, that one is both "in control" of the relationship (the decentralized identifier) and the data (verifiable credential) issued to them. Therefore, once one is holding this officially issued data, one can choose when and what one would like to disclose to third parties. The details of how this can be technically achieved are described briefly in the following sections along with appropriate references for further study.
-
-It is important to note that while these emerging standards and technologies are being designed to tackle the very difficult challenges of secure and privacy respecting digital identity for people, they are not limited to the narrow context of personal identity. This new model can be applied to a broader set of use cases beyond those involving personally identifiable information. The model offers a generalized capability enabling highly secure entity to entity communications and it is this generalized capability that has led to the creation of Hyperledger Aries VCR. Aries VCR components enable enterprises to issue, hold and verify data about entities.
-
-## Open Standards
-
-There are two emerging open standards aimed at enabling interoperable secure and privacy respecting entity to entity data exchange.
-
-### Decentralized Identifiers (DID)
-
-A DID is a globally unique and resolvable identifier created by a entity. A entity could be any sort of real world actor such as an individual person, a legal entity, a government authority, a thing. DIDs are created and issued by software under the control of a entity. DIDs are bound with the necessary information to allow a entity to demonstrate cryptographic control over the DID and to enable secure communications with that entity. With these basic primitives, secure and privacy respecting entity to entity data exchange becomes possible. DIDs do not require any centralized issuing or resolution authority.
-
-### Verifiable Credentials
-
-A verifiable credential is data issued to, and held by an entity. Verifiable indicates the credential is rendered tamper-evident and in a manner whereby the issuer can be cryptographically verified.<sup id="a2">[2](#f2)</sup> Data contained in a verifiable credential is organized into individual claims. Claims within a credential can be about different subjects (e.g entities) and may be verifiable individually.
-
-### Links to Emerging DID and Verifiable Credentials Standards
-
-The DID and Verifiable Credential emerging open standards are being incubated within the [W3C Credentials Community Group](https://www.w3.org/community/credentials/)
-
-#### DID Standards
-
-- [W3C DID Primer](https://w3c-ccg.github.io/did-primer/)
-- [W3C DID Spec](https://w3c-ccg.github.io/did-spec/)
-
-#### Verifiable Credentials Standards
-
-- [W3C Verifiable Claims Working Group](https://www.w3.org/2017/vc/WG/)
-- [W3C Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/)
-
-## General Model
-
-Stemming from the work in the Verifiable Credentials is a general model for describing the roles of the main actors in a Decentralized Identity / Self-Sovereign Identity ecosystem.
-
-The roles and information flows are described in the [W3C Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/#dfn-verifiable-data-registries). The roles are:
-
-1. Issuer
-2. Holder (also known as the Prover at verification time)
-3. Verifier
-4. A [Verifiable Data Registry](https://w3c.github.io/vc-data-model/#dfn-verifiable-data-registries) - commonly a decentralized ledger which serves as a system "mediating the creation and verification of issuer identifiers, keys and other relevant data like verifiable credential schemas and revocation registries".
-
-![verifiable credential general model](/docs/assets/verifiable-credential-model-ForWhiteBK.png)
-
-These roles can be fulfilled by a number of "real world" actors including people, legal entities,or things.
-
-## Technology
-
-The technologies described in this document provide the core functionality required to implement and complement the emerging open standards described above. Together this suite of open standards and technologies create a fundamentally new approach for privacy respecting and secure entity to entity communication.
-
-### Distributed Ledger Technology / Blockchain
-
-The high integrity and global availability of a public blockchain combined with the concept of a DID creates a new decentralized root of trust capability. This new capability tackles a long standing problem with centralized identity systems, in particular those based on Public Key Infrastructure (PKI) models. The following sections provide links to in-depth explorations of these new approaches.
-
-### Decentralized Key Management Systems
-
-As stated in a the [Decentralized Key Management Systems](https://github.com/hyperledger/indy-sdk/blob/677a0439487a1b7ce64c2e62671ed3e0079cc11f/doc/design/005-dkms/DKMS%20Design%20and%20Architecture%20V3.md) research paper for the Department of Homeland Security.
-
-> `"DKMS inverts a core assumption of conventional PKI (public key infrastructure) architecture, namely that public key certificates will be issued by centralized or federated certificate authorities (CAs)."` (DKMS = Decentralized Key Management System)
-
-This paper provides an in-depth on the benefits of DMKS and its design.
-
-### Zero Knowledge Proofs
-
-A [Zero Knowledge Proof](https://medium.com/coinmonks/introduction-to-zero-knowledge-proof-the-protocol-of-next-generation-blockchain-305b2fc7f8e5) protocol is an optional but useful complimentary capability for decentralized identity systems.
-
-Hyperledger Indy does include an implementation of zero knowledge proofs. The implementation is described in this GitHub repository -> [indy-anoncreds](https://github.com/hyperledger/indy-anoncreds)
-
-Zero Knowledge Proofs allow the holder to prove that some or all of the data in a set of claims is true without revealing any additional information, including the identity of the holder. During these interactions the holder is referred to as a "Prover" as they are offering a proof of knowledge rather than transfering the claim directly to the verifier. This is a powerful capability enabling the holder to selectively disclose (e.g. prove "I am over 25" or "I am holding a valid drivers licence") without revealing to the verifier any other facts about themselves.
-
-## Summary: Decentralized Identity / Self-Sovereign Identity Architecture
-
-Decentralized Identity / Self-Sovereign Identity systems make use of DIDs, Verifiable Credentials, and a Verifiable Data Registry (Decentralized Key Management System). Such an architecture is one where the holder of verifiable credentials (a set of verifiable claims) is in complete control of their identifier, where their verifiable credentials are stored, and how they are used.
-
-# Hyperledger Indy
-
-{to be completed}
-Based on [indy-node](https://github.com/hyperledger/indy-node) providing the root of trust for [Decentralized Identifiers (DID)](https://w3c-ccg.github.io/did-spec/) and other artifacts to enable a decentralized (or self-sovereign) identity network.
+![Hyperledger Aries VCR](/docs/assets/aries-vcr-logo.jpg)
 
 ## Overview
 
-[Hyperledger Indy](https://www.hyperledger.org/projects) is open source software providing:
+Aries Verifiable Credentials Registry (VCR), part of the [Hyperledger Aries](https://www.hyperledger.org/use/aries) family of Digital Trust technologies, provides a searchable public directory based on Verifiable Credentials (VCs). It was historically known as both OrgBook (which is actually a deployment of Aries VCR) and Indy Catalyst.
 
-> `"tools, libraries, and reusable components for providing digital identities rooted on blockchains or other distributed ledgers so that they are interoperable across administrative domains, applications, and any other silo."`
+Aries VCR is actively developed by the British Columbia Government’s Digital Trust Team in Canada, and the most well-known live example is [OrgBook BC](https://www.orgbook.gov.bc.ca/en/home).
 
-More broadly, Hyperledger Indy based networks create the technical conditions for highly secure entity to entity data exchange without the involvement of a central authority. The techniques made available by Hyperledger Indy mitigate the security and privacy problems stemming from current approaches to data exchange over the Internet. These problems are particularily evident when it comes to the exchange of highly senstive forms of data such as personally identifiable information (e.g. identity attributes).
+In an instance of Aries VCR, credentials can be issued from a variety of authorities about subjects in the instance. A core set of credentials are issued by an authority responsible for “creating” the subject. Other credentials can then be issued against the subject of these core credentials. All credentials are stored in a secure digital wallet and accessed via its website or the public API. This means an instance of Aries VCR can be an authoritative public registry of any referenceable information.
 
-The technical means by which this is accomplished include a number of new open emerging standards and technologies.
+![A diagram showing the relationship between issuing organizations and Aries VCR, including ways to consume Aries VCR data via the website and API](/docs/assets/aries-vcr-architecture-diagram.png)
 
-## Technical information for Hyperledger Indy
 
-- [Technical information for Hyperledger Indy](https://indy.readthedocs.io/en/latest/)
+An instance of Aries VCR also differs from a traditional database in several additional ways, including:
+* Credentials stored in Aries VCR are tamperproof, so any attempt to change the data would be detected
+* Any user can prove exactly which issuer issued a credential, and the issuer doesn’t need to be contacted to make that proof
+* Credentials are cryptographically encrypted when being issued and stored.
 
-# Hyperledger Aries VCR
+Aries VCR is built using open source technologies, and is based on [Aries Cloud Agent Python (ACA-Py)](https://github.com/hyperledger/aries-cloudagent-python), a flexible, open-source Aries framework for Digital Trust that’s under continuous and active development. In the four-layer [Trust Over IP framework (PDF)](https://trustoverip.org/wp-content/uploads/sites/98/2020/05/toip_050520_primer.pdf) Aries VCR sits in the third layer, Trusted Exchanges.
 
-{to be completed}
+For practical usage, issuers issue their credentials to an instance of Aries VCR using a standard web controller with business logic, such as with the template [Aries VCR Issuer Controller](https://github.com/bcgov/aries-vcr-issuer-controller).
 
-## Motivation
+Users can access data in an instance of Aries VCR through:
+* A searchable website interface, instantly familiar to any web users and fully customizable for any branding or design
+* An API, allowing developers to use the data in any way they need.
 
-Aries VCR components are designed for several enterprise scenarios:
+## Example Applications and Live Services
 
-1. join an existing Hyperledger Indy based network as a entity that can engage in entity to entity communication
-2. establish a credential registry
+A well-known live Aries VCR instance is [OrgBook BC](https://www.orgbook.gov.bc.ca/en/home), a directory containing organizations registered in British Columbia, Canada, as well as licenses and permits issued to those organizations.
 
-Networks require a strategy to get them started. This is due to the challenge of creating network effects. There are several excellent resources describing what network effect are, why they are important, and techniques to go about creating them. Several excellent summaries describing techniques for creating network effects can be found in this [Andreessen Horowitz article](https://a16z.com/2016/03/07/all-about-network-effects/)and in this [NfX article](https://www.nfx.com/post/network-effects-manual). Sometimes this problem is referred to as the ["Chicken and Egg Bootstraping problem"](https://blog.creandum.com/the-chicken-and-the-egg-bootstrapping-a-network-b1165b3a5c47).
+### Example 1: Business registration
 
-## Who is Aries VCR For
+OrgBook BC is a business registration application of Aries VCR. Information about government-registered corporations (name, registration ID, address, directors, and so forth) is the root of trust in an instance of Aries VCR, and then business permits, liquor licenses, and so forth are issued against those corporations. Citizens, organizations and others could then look up a corporation and see up-to-date, proven information and any associated licenses and permits.
 
-Aries VCR components:
+### Example 2: Vaccination and testing locations
 
-- use standard enterprise and Internet technologies;
-- implement common integration patterns to minimize effort to adopt; and,
-- minimize the learning needed to get started.
+In this application, the root of trust would be government information on approved labs and health sites in a region or across the country. Then, a government regulatory agency would issue credentials against specific locations that are authorized to deliver particular vaccinations and tests.
 
-## Key Technical Elements
+### Example 3: Educational institutions
 
-### Credential Registry
+A national or international registry of educational institutions is a third example. The root of trust might be a regional government (or whoever has oversight of educational institutions) issuing credentials about all diploma-granting institutions. Those credentials could include details about the specific diplomas they’re authorized to grant and the identifier (DID) each institution uses in issuing diploma credentials to individuals.
 
-TODO
+The model could be extended with another layer or two. For example, it could extend to a national entity issuing credentials about the authority of the regional oversight bodies. And to make it international in scope, a global authority could issue credentials about the national authority.
 
-Credential Registry provides a set of RESTful web services you can use to query data from your third-party application, an introduction to use of these API's is available [here](docs/IndyCat-REST-Services.md).
+## How to get started
 
-### Web Hooks
+Aries VCR uses standard technologies and common integration patterns. If you’re a developer it should be a relatively minimal effort to get up and running.
 
-Aries VCR provides a web hook facility for interested parties to subscribe to notifications for credential updates.
+If you simply want to see an Aries VCR instance in action, you can try out the [OrgBook BC search interface](https://www.orgbook.gov.bc.ca/en/home).
 
-There are 3 subscription types supported:
+Alternatively, if you are just wanting to issue credentials to an existing Aries VCR installation then you need the [Aries VCR Issuer Controller](https://github.com/bcgov/aries-vcr-issuer-controller) repo.
 
-- New - notification for any new credential (i.e. newly registered organization) of a specific type
-- Stream - any updates for a specific stream - organization (by topic id) and type
-- Topic - any updates for a specific organization (Topic)
+If you wish to create your own instance of Aries VCR, read on.
 
-Interested parties must first register, which creates an ID and password they use to manage their subscriptions.  They can then add and remove subscriptions.
+You will need:
+1. A Hyperledger Indy-compatible ledger to store issuer DIDs and credential schemas. For development, you can use [VON Network](https://github.com/bcgov/von-network) to run a local Indy instance. For production, you might use a global Indy instance, such as the one run by the [Sovrin Foundation](https://sovrin.org).
+2. This repo, run in Docker on a local machine to start.
+3. (Optional) An issuer controller that issues credentials to your Aries VCR instance.
 
-They must also provide a REST endpoint for the notifications - they can provide an endpoint with their scubscription and/or an endpoint with each separate subscription.
+This repo has [setup instructions](https://github.com/bcgov/aries-vcr/blob/master/docs/README.md) for these three steps (using some old terminology in places).
 
-A test "echo" endpoint using the code at [echo-service](echo-service) will be started on `localhost:8000` when executing `./manage start`. The service can also be run separately in Play With Docker or Play With VON, and used as the endpoint for the web hooks.
+If you wish to explore the API, a great starting place is the [API web interface for OrgBook BC](https://orgbook.gov.bc.ca/api/), presented using Swagger. Also, this [API repo](https://github.com/bcgov/orgbook-api) has a demo of how you can use the REST API to access Aries VCR credentials.
 
-More details are available [here](docs/IndyCat-REST-Hooks.md).
+For the client (web) interface, the search is powered by [Solr](https://solr.apache.org). The user interface is fully customizable; this repo has instructions on [customizing the interface and theme](https://github.com/bcgov/aries-vcr/blob/master/client/ThemeDevelopment.md).
 
-### Agent
+Aries VCR also provides a [web hook facility](https://github.com/bcgov/aries-vcr/blob/master/docs/Subscription-Web-Hooks.md) so parties can subscribe to notifications for credential updates. It is possible to subscribe to all new credentials, any updates to existing credentials, or updates to specific credentials.
 
-### Agent Driver
+## Credit
 
-### Starter Kits
+Aries VCR was developed by the Government of British Columbia’s Digital Trust Team.
 
-#### Credential Registry Holder-Prover
+## Contributing
 
-#### Agent Issuer-Verifier
+Pull requests are welcome! Please read our [contributions guide](https://github.com/bcgov/aries-vcr/blob/master/CONTRIBUTING.md) and submit your PRs. We enforce [developer certificate of origin](https://developercertificate.org) (DCO) commit signing—[guidance](https://github.com/apps/dco) is available on how to achieve that.
 
-## OpenAPI
+We also welcome issues submitted about problems you encounter in using Aries VCR.
 
-drf-yasg is used to publish a OpenAPI 2.0 spec of the API. Until a 3.x spec generator is available, it is possible to download the up-to-date spec from [here](https://orgbook.gov.bc.ca/api/?format=openapi) and run it through a [2-to-3 converter](https://mermade.org.uk/openapi-converter).
+## License
 
-# Endnotes
-
-<b id="f1">1:</b> A thing with distinct and independent existence such as a person, organization, concept, or device. Source: [Verifiable Claims Data Model and Representations 1.0](https://www.w3.org/2017/05/vc-data-model/CGFR/2017-05-01/#dfn-entity). [↩](#a1)
-
-<b id="f2">2:</b> A verifiable credential is a tamper-evident credential that has authorship that can be cryptographically verified. Source: [W3C
-Verifiable Credentials Data Model 1.0](https://w3c.github.io/vc-data-model/#dfn-credential) [↩](#a2)
-
+[Apache License Version 2.0](https://github.com/bcgov/aries-vcr/blob/master/LICENSE)

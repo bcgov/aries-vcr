@@ -159,7 +159,11 @@ class CustomTopicSerializer(TopicSerializer):
     def get_names(self, obj):
         names = Name.objects.filter(
             credential__topic=obj, credential__latest=True, credential__revoked=False
-        ).order_by("credential__inactive")
+        ).filter(
+            type__in=("entity_name_assumed", "entity_name")
+        ).order_by(
+            "credential__inactive"
+        )
         serializer = CustomNameSerializer(instance=names, many=True)
         return serializer.data
 
@@ -305,24 +309,20 @@ class CredentialFacetSerializer(HaystackFacetSerializer):
         fields = [
             "category",
             "credential_type_id",
-            "issuer_id",
-            # "inactive",
-            # "topic_type",
+            "issuer_id"
         ]
         field_options = {
             "category": {},
             "credential_type_id": {},
             "issuer_id": {},
-            # "inactive": {},
-            # "topic_type": {},
-            # date faceting isn't working, needs to use Solr range faceting
-            # https://github.com/django-haystack/django-haystack/issues/1572
-            #             "effective_date": {
-            #                 "start_date": datetime.now() - timedelta(days=50000),
-            #                 "end_date": datetime.now(),
-            #                 "gap_by": "month",
-            #                 "gap_amount": 3
-            #             },
+            # Date faceting isn't working, needs to use Solr range faceting
+            # See: https://github.com/django-haystack/django-haystack/issues/1572
+            # "effective_date": {
+            #     "start_date": datetime.now() - timedelta(days=50000),
+            #     "end_date": datetime.now(),
+            #     "gap_by": "month",
+            #     "gap_amount": 3
+            # },
         }
 
     def get_fields(self):

@@ -8,9 +8,9 @@ from smtplib import SMTP, SMTPException
 LOGGER = logging.getLogger(__name__)
 
 
-def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
+def email_feedback(reply_name, reply_email, reason, comments):
     server_addr = os.getenv("SMTP_SERVER_ADDRESS")
-    recip_email = os.getenv("FEEDBACK_TARGET_EMAIL")
+    recip_email = os.getenv("FEEDBACK_TARGET_EMAIL").split(",")
     app_url = os.getenv("APPLICATION_URL")
     from_name = "OrgBook BC"
     from_email = "no-reply@orgbook.gov.bc.ca"
@@ -36,8 +36,6 @@ def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
         body = ""
         if app_url:
             body = "{}Application URL: {}\n".format(body, app_url)
-        if ip_addr:
-            body = "{}IP address: {}\n".format(body, ip_addr)
         if reply_name:
             body = "{}Name: {}\n".format(body, reply_name)
         if reply_email:
@@ -53,12 +51,12 @@ def email_feedback(ip_addr, reply_name, reply_email, reason, comments):
         msg["Subject"] = subject
         msg["From"] = from_line
         msg["Reply-To"] = reply_line
-        msg["To"] = recip_email
+        msg["To"] = recipients
         # LOGGER.info("encoded:\n%s", msg.as_string())
 
         with SMTP(server_addr) as smtp:
             try:
-                smtp.sendmail(from_line, (recip_email,), msg.as_string())
+                smtp.sendmail(from_line, recip_email, msg.as_string())
                 LOGGER.debug("Feedback email sent")
             except SMTPException:
                 LOGGER.exception("Exception when emailing feedback results")
