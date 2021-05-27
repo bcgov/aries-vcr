@@ -1,56 +1,6 @@
 version: "3"
 services:
   #
-  # vcr-web
-  #
-  vcr-web:
-    image: vcr-web
-    environment:
-      - DEBUG=${DEBUG}
-      - API_URL=${API_URL}
-      - APPLICATION_URL=${APPLICATION_URL}
-      - IpFilterRules=${IpFilterRules}
-      - RealIpFrom=${RealIpFrom}
-      - HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME}
-      - HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD}
-      - WEB_BASE_HREF=${WEB_BASE_HREF}
-      - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
-    networks:
-      - vcr
-    ports:
-      - "${WEB_HTTP_PORT}:8080"
-    depends_on:
-      - vcr-api
-
-  #
-  # vcr-web-dev
-  # Run vcr-web in development mode with auto-reload and inspector support
-  #
-  vcr-web-dev:
-    image: vcr-web-dev
-    environment:
-      - API_URL=${API_URL}
-      - APPLICATION_URL=${APPLICATION_URL}
-      - DEV_MODE=false
-      - NODE_ENV=development
-      - NPM_CONFIG_LOGLEVEL=notice
-      - NPM_RUN=dev
-      - THEME=${THEME}
-      - THEME_PATH=${THEME_PATH_DEV}
-      - WEB_BASE_HREF=${WEB_BASE_HREF}
-      - WEB_DEPLOY_URL=${WEB_DEPLOY_URL}
-    networks:
-      - vcr
-    ports:
-      - "${WEB_HTTP_PORT}:8080"
-      - 5858:5858
-    volumes:
-      - "../client/src:/opt/app-root/src/src"
-      - "${THEME_PATH:-../client/themes}:/opt/app-root/src/themes"
-    depends_on:
-      - vcr-api
-
-  #
   # vcr-api
   #-------------------------------------------------
   # The API performs the migrations on the database
@@ -406,5 +356,4 @@ volumes:
   vcr-data:
   vcr-wallet:
   vcr-wallet-db:
-  vcr-web-empty:
   vcr-rabbit:
