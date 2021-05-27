@@ -13,6 +13,9 @@ fi
 
 SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd)"
 
+export VCR_API_TIMEOUT="${VCR_API_TIMEOUT:-60}"
+export VCR_API_URL_CONFIG="${VCR_API_URL_CONFIG}"
+
 # =================================================================================================================
 # Usage:
 # -----------------------------------------------------------------------------------------------------------------
@@ -27,24 +30,19 @@ usage() {
               You need to do this first, since the builds require
               a combination of Docker and S2I builds.
     
-              You can build individual components as shown below, components that have dependencies
-              will have these dependencies built too.
+              You can build individual components as shown below, components that have
+              dependencies will have these dependencies built too.
     
               Examples:
-               - Build the web UI only.
+               - Build the API only.
     
-                $0 build web
-
-               - Build the web UI using a custom theme.
-    
-                $0 build web THEME=<theme-name> THEME_PATH=<absolute-path-to-themes-folder>
+                $0 build api
          
               By default all containers that components comprise of, will be rebuilt.
     
                 $0 build
 
               Containers:
-                - web
                 - solr
                 - db
                 - schema-spy
@@ -56,14 +54,15 @@ usage() {
 
             You can pass in a list of containers to start.  
             By default all containers will be started.
-            
-            The API_URL used by vcr-web can also be redirected.
+
+            You can include a '--wait' parameter which will wait until the ledger is active
+            When using the '--logs' option, use ctrl-c to exit logging. Use "down" or "stop" to stop the run.
 
             Examples:
             $0 start
+            $0 start --logs
+            $0 start --logs --wait
             $0 start vcr-solr
-            $0 start vcr-web
-            $0 start vcr-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
 
       start - Same as up 
@@ -81,23 +80,13 @@ usage() {
 
             You can pass in a list of containers to be restarted.  
             By default all containers will be restarted.
-            
-            The API_URL used by vcr-web can also be redirected.
 
             Examples:
             $0 start
             $0 start vcr-solr
-            $0 start vcr-web
-            $0 start vcr-web API_URL=http://docker.for.win.localhost:56325/api/v1
             $0 start vcr-api
 
       logs - Display the logs from the docker compose run (ctrl-c to exit).
-
-      web-dev - Builds and runs a live development version of vcr-web, along with
-                the required supporting components. Once started, the website is
-                automatically compiled and updated in response to file modifications.
-                To use a custom theme, use the THEME and THEME_PATH environment
-                variables described in the build step.
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
              are not deleted so they will be reused the next time you run start.
@@ -120,7 +109,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
-DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy vcr-web rabbitmq vcr-worker echo-app"
+DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy rabbitmq vcr-worker echo-app"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
@@ -136,140 +125,6 @@ function echoYellow (){
   _yellow='\e[33m'
   _nc='\e[0m' # No Color
   echo -e "${_yellow}${_msg}${_nc}" >&2
-}
-
-function copyCustomTheme(){
-  # Look for the theme within the context of the build ...
-  themeFolder=$(find '../client/themes' -type d -name ${THEME})    
-  if [ ! -z "${themeFolder}" ]; then
-    echoYellow "Found the '${THEME}' theme within the build context; '${themeFolder}'"
-  else
-    echoYellow "The '${THEME}' theme was not found within the required build context."
-    echoYellow "Copying the theme into the build context."
-    sourceTheme="${THEME_PATH%/}/${THEME}"
-    destinationTheme="../client/themes/${THEME}"
-    cp -r "${sourceTheme}" "${destinationTheme}"
-  fi
-
-  echo "${destinationTheme}"
-}
-
-function cleanupCustomTheme(){
-  customTheme=${1}
-  if [ ! -z "${customTheme}" ] && [ -d "${customTheme}" ]; then
-    echoYellow "Removing '${THEME}' from the build context."
-    rm -rf "${customTheme}"
-  fi  
-}
-
-build-web() {
-  #
-  # vcr-web
-  #
-  # The nginx-runtime image is used for the final runtime image.
-  # The nodejs-build image is used to build the artifacts for the angular distribution.
-  # The vcr-web image is copy of the nginx-runtime image complete with a copy of the build artifacts.
-  #
-  echo -e "\nBuilding nginx-runtime image ..."
-  docker build -q \
-    -t 'nginx-runtime' \
-    -f './nginx-runtime/Dockerfile' './nginx-runtime/'
-
-  # This image only exists to pre-create the npm cache directory
-  # so it can be properly used as a volume, it doesn't apply to openshift
-  echo -e "\nBuilding nodejs-build image ..."
-  docker build -q \
-    -t 'nodejs-build' \
-    -f './nodejs-build/Dockerfile' './nodejs-build/'
-
-  if [ -t 0 ]; then
-    # color npm output in interactive terminal
-	  NPM_COLOR="always"
-  else
-    NPM_COLOR="true"
-  fi
-  
-  echo -e "\nBuilding vcr-web image ..."
-  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
-    # No custom theme was specified
-    ${S2I_EXE} build \
-      --copy \
-      -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
-      -e "NPM_CONFIG_LOGLEVEL=timing" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      --runtime-image nginx-runtime \
-      -a /opt/app-root/src/dist:app \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web'
-  else
-    # Use the custom theme
-    customTheme=$(copyCustomTheme)
-    ${S2I_EXE} build \
-      --copy \
-      -e "NPM_CONFIG_COLOR=${NPM_COLOR}" \
-      -e "NPM_CONFIG_LOGLEVEL=timing" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "THEME=${THEME}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      --runtime-image nginx-runtime \
-      -a /opt/app-root/src/dist:app \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web'
-    cleanupCustomTheme "${customTheme}"
-  fi
-}
-
-build-web-dev() {
-  #
-  # vcr-web-dev
-  # Alternative version of vcr-web for live development
-  #
-  echo -e "\nBuilding nodejs-build image ..."
-  docker build -q \
-    -t 'nodejs-build' \
-    -f './nodejs-build/Dockerfile' './nodejs-build/'
-
-  # NB: We build with DEV_MODE=true but run with DEV_MODE=false
-  echo -e "\nBuilding vcr-web-dev image ..."
-  if [ -z "$THEME_PATH" ] && [ "$THEME" == "base" ]; then
-    # No custom theme path was specified
-    ${S2I_EXE} build \
-      --copy \
-      -e "DEV_MODE=true" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web-dev'
-  else
-    # Use the custom theme
-    customTheme=$(copyCustomTheme)
-    ${S2I_EXE} build \
-      --copy \
-      -e "DEV_MODE=true" \
-      -e "HTTP_PROXY=${HTTP_PROXY}" \
-      -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-      -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
-      -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
-      -e "THEME=${THEME}" \
-      -v "${COMPOSE_PROJECT_NAME}_vcr-npm-cache:/opt/app-root/src/.npm" \
-      '../client' \
-      'nodejs-build' \
-      'vcr-web-dev'
-    cleanupCustomTheme "${customTheme}"
-  fi
 }
 
 build-solr() {
@@ -371,7 +226,6 @@ build-echo-app() {
 }
 
 build-all() {
-  build-web
   build-solr
   build-db
   build-schema-spy
@@ -401,6 +255,12 @@ configureEnvironment() {
       *=*)
         # echo "Exporting ..."
         export "${arg}"
+        ;;
+      --logs)
+        TAIL_LOGS=1
+        ;;
+      --wait)
+        WAIT_FOR_VCR_API=1
         ;;
       *)
         # echo "Saving for later ..."
@@ -487,17 +347,7 @@ configureEnvironment() {
   export TRACE_PROOF_EVENTS=${TRACE_PROOF_EVENTS:-false}
   export TRACE_TARGET=${TRACE_TARGET:-log}
 
-  # vcr-web
   export THEME=${THEME:-base}
-  export THEME_PATH=${THEME_PATH-}
-  export WEB_HTTP_PORT=${WEB_HTTP_PORT:-8080}
-  export WEB_BASE_HREF=${WEB_BASE_HREF:-/}
-  export WEB_DEPLOY_URL=${WEB_DEPLOY_URL:-/}
-  export API_URL=${API_URL-http://vcr-api:8080/api/}
-  export IpFilterRules='#allow all; deny all;'
-  export RealIpFrom='127.0.0.0/16'
-  export HTTP_BASIC_USERNAME=${HTTP_BASIC_USERNAME:-}
-  export HTTP_BASIC_PASSWORD=${HTTP_BASIC_PASSWORD:-}
 
   # rabbitmq
   export RABBITMQ_USER="RABBITMQ_USER"
@@ -530,12 +380,82 @@ configureEnvironment() {
   fi
 }
 
+function logs() {
+  (
+    local OPTIND
+    local unset _force
+    local unset no_tail
+    while getopts ":f-:" FLAG; do
+      case $FLAG in
+        f ) local _force=1 ;;
+        - ) 
+            case ${OPTARG} in
+                "no-tail"*) no_tail=1
+              ;;
+            esac
+      esac
+    done
+    shift $((OPTIND-1))
+
+    log_args=()
+    (( no_tail != 1 )) && log_args+=( '-f' )
+    if [ ! -z "${TAIL_LOGS}" ] || [ ! -z "${_force}" ]; then
+      docker-compose \
+        --log-level ERROR logs \
+         "${log_args[@]}" "$@"
+    fi
+  )
+}
+
+pingVcrApi(){
+  vcr_api_url=${1}
+
+  # ping ledger web browser for genesis txns
+  local rtnCd=$(curl -s --write-out '%{http_code}' --output /dev/null ${vcr_api_url}/api/v2/status)
+  if (( ${rtnCd} == 200 )); then
+    return 0
+  else
+    return 1
+  fi
+}
+
+function wait_for_vcr_api() {
+  (
+    # if flag is set, wait for ledger to activate before continuing
+    local rtnCd=0
+    if [ ! -z "${WAIT_FOR_VCR_API}" ]; then
+      # Wait for ledger server to start ...
+      local startTime=${SECONDS}
+      # use global LEDGER_URL
+      local VCR_API_URL="${VCR_API_URL_CONFIG:-http://localhost:8081}"
+      printf "waiting for api to start"
+      while ! pingVcrApi "$VCR_API_URL"; do
+        printf "."
+        local duration=$(($SECONDS - $startTime))
+        if (( ${duration} >= ${VCR_API_TIMEOUT} )); then
+          echoRed "\nThe Indy Ledger failed to start within ${duration} seconds.\n"
+          rtnCd=1
+          break
+        fi
+        sleep 1
+      done
+    fi
+    return ${rtnCd}
+  )
+}
+
 getInputParams() {
   ARGS=""
 
   for arg in $@; do
     case "$arg" in
     *=*)
+      # Skip it
+      ;;
+    --logs)
+      # Skip it
+      ;;
+    --wait)
       # Skip it
       ;;
     *)
@@ -554,6 +474,12 @@ getStartupParams() {
   for arg in $@; do
     case "$arg" in
     *=*)
+      # Skip it
+      ;;
+    --logs)
+      # Skip it
+      ;;
+    --wait)
       # Skip it
       ;;
     -*)
@@ -675,7 +601,9 @@ case "${COMMAND}" in
     _startupParams=$(getStartupParams --force-recreate $@)
     configureEnvironment "$@"
     docker-compose ${composeOptions} up --scale vcr-worker=2 -d ${_startupParams}
-    docker-compose logs -f
+    wait_for_vcr_api
+    logs
+    echo 'Want to see the scrolling container logs? Run "./manage logs"'
     ;;
   scale|upscale)
     _startupParams=$(getStartupParams --force-recreate $@)
@@ -685,7 +613,8 @@ case "${COMMAND}" in
     echo "Press any key to continue or <CRTL-C> to abort"
     read anykey
     docker-compose ${composeOptions} up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams}
-    docker-compose logs -f
+    logs
+    echo 'Want to see the scrolling container logs? Run "./manage logs"'
     ;;
   restart)
     _startupParams=$(getStartupParams $@)
@@ -695,12 +624,7 @@ case "${COMMAND}" in
     ;;
   logs)
     configureEnvironment "$@"
-    docker-compose logs -f
-    ;;
-  web-dev)
-    configureEnvironment "$@"
-    [ -z "$SKIP_BUILD" ] && build-web-dev
-    docker-compose run --rm --service-ports vcr-web-dev
+    logs -f "$@"
     ;;
   stop)
     configureEnvironment

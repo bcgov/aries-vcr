@@ -185,3 +185,6 @@ $RECYCLE.BIN/
 
 # Docs build
 _build/
+
+# Aries VCR Client
+client/
