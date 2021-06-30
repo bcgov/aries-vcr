@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from api.v4.views.search import topic, credential
+from api.v4.views.search import topic, credential, fuzzy
 
 
 app_name = "api_v4"
@@ -30,6 +30,7 @@ router = SimpleRouter(trailing_slash=False)
 
 router.register(r"search/credential", credential.SearchView, "Credential Search")
 router.register(r"search/topic", topic.SearchView, "Topic Search")
+router.register(r"search/fuzzy", fuzzy.SearchView, "Fuzzy Search")
 
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
