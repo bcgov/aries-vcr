@@ -179,7 +179,7 @@ def handle_credentials(state, message):
                 "thread_id": message["thread_id"],
                 "schema_id": raw_credential["schema_id"],
                 "cred_def_id": raw_credential["cred_def_id"],
-                "rev_reg_id": raw_credential["rev_reg_id"],
+                "rev_reg_id": raw_credential["rev_reg_id"] if "rev_reg_id" in raw_credential else None,
                 "attrs": {},
             }
 
@@ -199,7 +199,7 @@ def handle_credentials(state, message):
         resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/issue-credential/records/{credential_exchange_id}/problem-report",
             post_method=True,
-            payload={"explain_ltxt": str(e)},
+            payload={"description": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
@@ -494,7 +494,7 @@ def handle_credentials_2_0(state, message):
                     "thread_id": cred_issue["~thread"]["thid"],
                     "schema_id": cred_raw["schema_id"],
                     "cred_def_id": cred_raw["cred_def_id"],
-                    "rev_reg_id": cred_raw["rev_reg_id"],
+                    "rev_reg_id": cred_raw["rev_reg_id"] if "rev_reg_id" in cred_raw else None,
                     "attrs": {k: v["raw"] for k, v in cred_raw["values"].items()},
                 }
 
