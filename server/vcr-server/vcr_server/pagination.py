@@ -4,14 +4,15 @@ from collections import OrderedDict
 from django.core.paginator import Paginator
 from rest_framework.pagination import BasePagination, PageNumberPagination
 from rest_framework.response import Response
+from django.conf import settings
 
 LOGGER = logging.getLogger(__name__)
 
 
 class EnhancedPageNumberPagination(PageNumberPagination):
-    page_size = 10
+    page_size = settings.REST_FRAMEWORK["PAGE_SIZE"]
     page_size_query_param = "page_size"
-    max_page_size = 20
+    max_page_size = settings.REST_FRAMEWORK["MAX_PAGE_SIZE"]
 
     def get_paginated_response(self, data):
         return Response(

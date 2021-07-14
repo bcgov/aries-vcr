@@ -361,7 +361,9 @@ class CredentialViewSet(ReadOnlyModelViewSet):
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         connection_response_dict = connection_response.json()
-        assert connection_response_dict["results"]
+        if not connection_response_dict.get("results"):
+            result = {"success": False, "results": "Error agent is not configured properly to verify credential data."}
+            return JsonResponse(result)
 
         self_connection = connection_response_dict["results"][0]
 
