@@ -7,7 +7,7 @@ from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from api.v4.views.search import topic, credential, fuzzy
-from api.v4.views.rest import credential_type
+from api.v4.views.rest import credential_type, issuer
 
 app_name = "api_v4"
 
@@ -29,6 +29,7 @@ schema_view = get_schema_view(
 router = SimpleRouter(trailing_slash=False)
 
 router.register(r"credential-type", credential_type.RestView, "Credential Type")
+router.register(r"issuer", issuer.RestView, "Issuer")
 router.register(r"search/credential", credential.SearchView, "Credential Search")
 router.register(r"search/topic", topic.SearchView, "Topic Search")
 router.register(r"search/fuzzy", fuzzy.SearchView, "Fuzzy Search")
