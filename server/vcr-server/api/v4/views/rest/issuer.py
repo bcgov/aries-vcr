@@ -8,6 +8,7 @@ from api.v2.models.CredentialType import Issuer
 
 from api.v2.serializers.rest import IssuerSerializer
 
+
 class RestView(ReadOnlyModelViewSet):
     serializer_class = IssuerSerializer
     queryset = Issuer.objects.all()
