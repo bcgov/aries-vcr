@@ -21,7 +21,7 @@ class RestView(ReadOnlyModelViewSet):
     queryset = Topic.objects.all()
 
     @swagger_auto_schema(responses={200: CredentialSetSerializer(many=True)})
-    @action(detail=True, url_path="credentialset", methods=["get"])
+    @action(detail=True, url_path="credential-set", methods=["get"])
     def list_credential_sets(self, request, pk=None):
         item = self.get_object()
 
