@@ -8,6 +8,8 @@ from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 
+from api.v2.serializers.rest import CredentialNameSerializer
+
 
 class IssuerSerializer(ModelSerializer):
     has_logo = BooleanField(source="get_has_logo", read_only=True)
@@ -55,7 +57,8 @@ class CredentialTypeSerializer(ModelSerializer):
 
 
 class CredentialSerializer(ModelSerializer):
-    attributes = CredentialAttributeSerializer(source="all_attributes", many=True)
+    attributes = CredentialAttributeSerializer(many=True)
+    names = CredentialNameSerializer(many=True)
 
     class Meta:
         model = Credential
@@ -71,6 +74,7 @@ class CredentialSerializer(ModelSerializer):
             "revoked_date",
             "revoked_by",
             "attributes",
+            "names",
         )
         read_only_fields = fields
 
