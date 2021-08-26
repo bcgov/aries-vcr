@@ -28,8 +28,9 @@ class RestView(ReadOnlyModelViewSet):
         credential_sets = (
             item.credential_sets
             .prefetch_related(
-                "credentials__credential_type",
                 "credentials__attributes",
+                "credentials__names",
+                "credentials__credential_type",
                 "credentials__credential_type__issuer"
             )
             .order_by("first_effective_date")
