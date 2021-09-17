@@ -46,6 +46,12 @@ class IssuerViewSet(ReadOnlyModelViewSet):
     serializer_class = IssuerSerializer
     queryset = Issuer.objects.all()
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
     @swagger_auto_schema(responses={200: CredentialTypeSerializer(many=True)})
     @action(detail=True, url_path="credentialtype", methods=["get"])
     def list_credential_types(self, request, pk=None):
@@ -73,23 +79,41 @@ class SchemaViewSet(ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ("id", "name", "version", "origin_did")
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
 
 class CredentialTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = CredentialTypeSerializer
     queryset = CredentialType.objects.all()
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
     @action(detail=True, url_path="logo", methods=["get"])
     def fetch_logo(self, request, pk=None):
         cred_type = get_object_or_404(self.queryset, pk=pk)
         logo = None
+        item_count = 0
         if cred_type.logo_b64:
             logo = base64.b64decode(cred_type.logo_b64)
+            item_count = 1
         elif cred_type.issuer and cred_type.issuer.logo_b64:
             logo = base64.b64decode(cred_type.issuer.logo_b64)
+            item_count = 1
         if not logo:
+            item_count = 0
             raise Http404()
         # FIXME - need to store the logo mime type
-        return HttpResponse(logo, content_type="image/jpg")
+        response = HttpResponse(logo, content_type="image/jpg")
+        response["item_count"] = item_count
+        return response
 
     @action(detail=True, url_path="language", methods=["get"])
     def fetch_language(self, request, pk=None):
@@ -137,6 +161,12 @@ class CredentialViewSet(RetriveOnlyModelViewSet):
     serializer_class = CredentialSerializer
     queryset = Credential.objects.all()
     lookup_field = "credential_id"
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, args, kwargs)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
 
     @action(detail=True, url_path="verify", methods=["get"])
     def verify(self, request, credential_id):

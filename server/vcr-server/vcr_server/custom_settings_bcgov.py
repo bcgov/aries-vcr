@@ -85,8 +85,10 @@ def list_related_to_relations(self, request, pk=None):
         }
         for topic_relationship in topic_relationships
     ]
-
-    return Response(data)
+    item_count = len(data)
+    response = Response(data)
+    response["item_count"] = item_count
+    return response
 
 
 @action(detail=True, url_path="related_from_relations")
@@ -100,7 +102,10 @@ def list_related_from_relations(self, request, pk=None):
     serializer = CustomTopicRelationshipSerializer(
         parent_queryset, many=True, relationship_type="from"
     )
-    return Response(serializer.data)
+    item_count = parent_queryset.count()
+    response = Response(serializer.data)
+    response["item_count"] = item_count
+    return response
 
 
 TIME_ZONE = "America/Vancouver"

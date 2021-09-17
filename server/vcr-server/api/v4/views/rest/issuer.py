@@ -17,4 +17,7 @@ class RestView(ReadOnlyModelViewSet):
         paging = request.query_params.get("paging", None)
         if (paging and paging == 'false'):
             self.pagination_class = None
-        return super(ReadOnlyModelViewSet, self).list(request)
+        response = super(ReadOnlyModelViewSet, self).list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response

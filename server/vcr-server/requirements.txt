@@ -49,3 +49,6 @@ vine~=1.3.0
 
 # transitive dependency management
 iniconfig<=1.0.1
+
+# api tracking
+snowplow-tracker~=0.9.0

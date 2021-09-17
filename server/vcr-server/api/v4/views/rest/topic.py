@@ -20,6 +20,12 @@ class RestView(ReadOnlyModelViewSet):
     serializer_class = TopicSerializer
     queryset = Topic.objects.all()
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
     @swagger_auto_schema(responses={200: CredentialSetSerializer(many=True)})
     @action(detail=True, url_path="credential-set", methods=["get"])
     def list_credential_sets(self, request, pk=None):
@@ -57,7 +63,9 @@ class RestView(ReadOnlyModelViewSet):
             for credential_set in credential_sets
         ]
 
-        return Response(data)
+        response = Response(data)
+        response["item_count"] = len(data)
+        return response
 
     def get_object(self):
         if self.kwargs.get("pk"):

@@ -50,25 +50,38 @@ class IssuerViewSet(ReadOnlyModelViewSet):
     serializer_class = IssuerSerializer
     queryset = Issuer.objects.all()
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
     @swagger_auto_schema(responses={200: CredentialTypeSerializer(many=True)})
     @action(detail=True, url_path="credentialtype", methods=["get"])
     def list_credential_types(self, request, pk=None):
         item = self.get_object()
         queryset = item.credential_types
         serializer = CredentialTypeSerializer(queryset, many=True)
-        return Response(serializer.data)
+        item_count = len(serializer.data)
+        response = Response(serializer.data)
+        response["item_count"] = item_count
+        return response
 
     @swagger_auto_schema(method="get")
     @action(detail=True, url_path="logo", methods=["get"])
     def fetch_logo(self, request, pk=None):
         issuer = get_object_or_404(self.queryset, pk=pk)
         logo = None
+        item_count = 0
         if issuer.logo_b64:
             logo = base64.b64decode(issuer.logo_b64)
+            item_count = 1
         if not logo:
             raise Http404()
         # FIXME - need to store the logo mime type
-        return HttpResponse(logo, content_type="image/jpg")
+        response = HttpResponse(logo, content_type="image/jpg")
+        response["item_count"] = item_count
+        return response
 
 
 class SchemaViewSet(ReadOnlyModelViewSet):
@@ -77,23 +90,40 @@ class SchemaViewSet(ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ("id", "name", "version", "origin_did")
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
 
 class CredentialTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = CredentialTypeSerializer
     queryset = CredentialType.objects.all()
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
     @action(detail=True, url_path="logo", methods=["get"])
     def fetch_logo(self, request, pk=None):
         cred_type = get_object_or_404(self.queryset, pk=pk)
         logo = None
+        item_count = 0
         if cred_type.logo_b64:
             logo = base64.b64decode(cred_type.logo_b64)
+            item_count = 1
         elif cred_type.issuer and cred_type.issuer.logo_b64:
             logo = base64.b64decode(cred_type.issuer.logo_b64)
+            item_count = 1
         if not logo:
             raise Http404()
         # FIXME - need to store the logo mime type
-        return HttpResponse(logo, content_type="image/jpg")
+        response = HttpResponse(logo, content_type="image/jpg")
+        response["item_count"] = item_count
+        return response
 
     @action(detail=True, url_path="language", methods=["get"])
     def fetch_language(self, request, pk=None):
@@ -110,6 +140,12 @@ class TopicViewSet(ReadOnlyModelViewSet):
     serializer_class = TopicSerializer
     queryset = Topic.objects.all()
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
     @action(detail=True, url_path="formatted", methods=["get"])
     def retrieve_formatted(self, request, pk=None):
         item = self.get_object()
@@ -121,24 +157,33 @@ class TopicViewSet(ReadOnlyModelViewSet):
     def list_credentials(self, request, pk=None):
         item = self.get_object()
         queryset = item.credentials
+        item_count = queryset.count()
         serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
+        response = Response(serializer.data)
+        response["item_count"] = item_count
+        return response
 
     @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
     @action(detail=True, url_path="credential/active", methods=["get"])
     def list_active_credentials(self, request, pk=None):
         item = self.get_object()
         queryset = item.credentials.filter(revoked=False, inactive=False)
+        item_count = queryset.count()
         serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
+        response = Response(serializer.data)
+        response["item_count"] = item_count
+        return response
 
     @swagger_auto_schema(responses={200: ExpandedCredentialSerializer(many=True)})
     @action(detail=True, url_path="credential/historical", methods=["get"])
     def list_historical_credentials(self, request, pk=None):
         item = self.get_object()
         queryset = item.credentials.filter(Q(revoked=True) | Q(inactive=True))
+        item_count = queryset.count()
         serializer = ExpandedCredentialSerializer(queryset, many=True)
-        return Response(serializer.data)
+        response = Response(serializer.data)
+        response["item_count"] = item_count
+        return response
 
     @swagger_auto_schema(responses={200: TopicSerializer(many=False)})
     @action(
@@ -327,6 +372,12 @@ class TopicRelationshipViewSet(ReadOnlyModelViewSet):
     serializer_class = TopicRelationshipSerializer
     queryset = TopicRelationship.objects.all()
 
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
+
     def get_object(self):
         if self.kwargs.get("pk"):
             return super(TopicRelationshipViewSet, self).get_object()
@@ -343,6 +394,12 @@ class TopicRelationshipViewSet(ReadOnlyModelViewSet):
 class CredentialViewSet(ReadOnlyModelViewSet):
     serializer_class = CredentialSerializer
     queryset = Credential.objects.all()
+
+    def list(self, request):
+        response = super().list(request)
+        item_count = self.queryset.count()
+        response["item_count"] = item_count
+        return response
 
     @action(detail=True, url_path="formatted", methods=["get"])
     def retrieve_formatted(self, request, pk=None):
