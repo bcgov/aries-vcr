@@ -84,9 +84,7 @@ class NameAutocompleteView(ListModelMixin, ViewSetMixin, HaystackGenericAPIView)
 
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
-        print(" >>> calling autocomplete")
         ret = super(NameAutocompleteView, self).list(*args, **kwargs)
-        print(" >>> autocomplete returns", ret)
         return ret
 
     retrieve = None
@@ -177,21 +175,17 @@ class CredentialSearchView(HaystackViewSet, FacetMixin):
 
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def list(self, *args, **kwargs):
-        print(" >>> calling credentialsearch")
         if self.object_class is TopicSearchQuerySet:
             query = self.request.GET.get("name")
             topic_id = self.request.GET.get("topic_id")
             if not self.valid_search_query(query, topic_id):
                 raise Http404()
         ret = super(CredentialSearchView, self).list(*args, **kwargs)
-        print(" >>> credentialsearch returns", ret)
         return ret
 
     @swagger_auto_schema(manual_parameters=_swagger_params)
     def retrieve(self, *args, **kwargs):
-        print(" >>> calling credentialsearch retrieve")
         ret = super(CredentialSearchView, self).retrieve(*args, **kwargs)
-        print(" >>> credentialsearch retrieve returns", ret)
         return ret
 
     def valid_search_query(self, query, topic_id):

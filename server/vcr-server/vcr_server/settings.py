@@ -15,6 +15,8 @@ import os
 import os.path
 from pathlib import Path
 
+from snowplow_tracker import Subject, Tracker, AsyncEmitter
+
 from . import authentication, permissions
 
 try:
@@ -181,6 +183,11 @@ CRED_TYPE_SYNONYMS = {
     "relationship": "relationship.registries.ca",
     "business_number": "relationship.registries.ca",
 }
+
+# Set up core Snowplow environment for api tracking
+SP_SUBJECT = Subject()
+SP_EMITTER = AsyncEmitter("spm.apps.gov.bc.ca", protocol="https")
+SP_TRACKER = Tracker(SP_EMITTER, encode_base64=False, app_id='orgbook_api')
 
 LOGIN_URL = "rest_framework:login"
 LOGOUT_URL = "rest_framework:logout"
@@ -392,6 +399,7 @@ if AGENT_ADMIN_API_KEY is not None and 0 < len(AGENT_ADMIN_API_KEY):
 
 # API routing middleware settings
 HTTP_HEADER_ROUTING_MIDDLEWARE_URL_FILTER = "/api"
+HTTP_AGENT_CALLBACK_MIDDLEWARE_URL_FILTER = "/agentcb"
 
 HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP = {
     u"application/orgbook.bc.api+json": u"application/json"
