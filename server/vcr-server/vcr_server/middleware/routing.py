@@ -39,7 +39,10 @@ class HTTPHeaderRoutingMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        self.process_request(request)
+        (request, _requested_version, _request_path_info) = self.process_request(request)
+
+        response = self.get_response(request)
+
         return self.process_response(request, response)
 
     def process_request(self, request):
