@@ -349,6 +349,11 @@ configureEnvironment() {
 
   export THEME=${THEME:-base}
 
+  export API_VERSION_ROUTING_MIDDLEWARE=${API_VERSION_ROUTING_MIDDLEWARE:-vcr_server.middleware.api_tracking.SnowplowTrackingMiddleware}
+  export SP_TRACKING_APP_ID=${SP_TRACKING_APP_ID:-orgbook_api_local_dev}
+  export SP_TRACKING_EMITTER=${SP_TRACKING_EMITTER:-spm.apps.gov.bc.ca}
+  export SP_TRACKING_EMITTER_PROTOCOL=${SP_TRACKING_EMITTER_PROTOCOL:-https}
+
   # rabbitmq
   export RABBITMQ_USER="RABBITMQ_USER"
   export RABBITMQ_PASSWORD="RABBITMQ_PASSWORD"
