@@ -95,6 +95,11 @@ else:
 HAYSTACK_DOCUMENT_FIELD = "document"
 HAYSTACK_MAX_RESULTS = 200
 
+API_VERSION_ROUTING_MIDDLEWARE = os.getenv(
+    "API_VERSION_ROUTING_MIDDLEWARE",
+    "vcr_server.middleware.routing.HTTPHeaderRoutingMiddleware"
+)
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -105,7 +110,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "vcr_server.middleware.routing.HTTPHeaderRoutingMiddleware",
+    API_VERSION_ROUTING_MIDDLEWARE,
 ]
 
 ROOT_URLCONF = "vcr_server.urls"
@@ -185,9 +190,12 @@ CRED_TYPE_SYNONYMS = {
 }
 
 # Set up core Snowplow environment for api tracking
-SP_SUBJECT = Subject()
-SP_EMITTER = AsyncEmitter("spm.apps.gov.bc.ca", protocol="https")
-SP_TRACKER = Tracker(SP_EMITTER, encode_base64=False, app_id='orgbook_api')
+SP_APP_ID = os.getenv("SP_TRACKING_APP_ID", "orgbook_api_local_dev")
+SP_EMITTER = AsyncEmitter(
+    os.getenv("SP_TRACKING_EMITTER", "spm.apps.gov.bc.ca"),
+    protocol=os.getenv("SP_TRACKING_EMITTER_PROTOCOL", "https")
+)
+SP_TRACKER = Tracker(SP_EMITTER, encode_base64=False, app_id=SP_APP_ID)
 
 LOGIN_URL = "rest_framework:login"
 LOGOUT_URL = "rest_framework:logout"
