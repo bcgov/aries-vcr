@@ -67,7 +67,7 @@ services:
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - AGENT_ADMIN_URL=http://vcr-agent:${AGENT_ADMIN_PORT}
       - AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
-      - API_VERSION_ROUTING_MIDDLEWARE=${API_VERSION_ROUTING_MIDDLEWARE}
+      - API_VERSION_ROUTING_MIDDLEWARE=${API_VERSION_ROUTING_MIDDLEWARE:-vcr_server.middleware.routing.HTTPHeaderRoutingMiddleware}
       - SP_TRACKING_APP_ID=${SP_TRACKING_APP_ID}
       - SP_TRACKING_EMITTER=${SP_TRACKING_EMITTER}
       - SP_TRACKING_EMITTER_PROTOCOL=${SP_TRACKING_EMITTER_PROTOCOL}
@@ -79,6 +79,8 @@ services:
       - RTI_RAISE_ERRORS=${RTI_RAISE_ERRORS}
       - RANDOM_ERRORS=${RANDOM_ERRORS}
       - STARTUP_DELAY=${STARTUP_DELAY}
+      - PAGE_SIZE=${PAGE_SIZE}
+      - MAX_PAGE_SIZE=${MAX_PAGE_SIZE}
     volumes:
       - ../server/vcr-server/subscriptions:/home/indy/subscriptions
       - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
