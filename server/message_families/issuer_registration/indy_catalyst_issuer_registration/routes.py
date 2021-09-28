@@ -156,7 +156,6 @@ async def issuer_registration_send(request: web.BaseRequest):
         request: aiohttp request object
 
     """
-    print("GOT HERE!!!!!!!!!!")
     context: AdminRequestContext = request["context"]
     outbound_handler = request["outbound_message_router"]
     body = await request.json()
