@@ -104,6 +104,8 @@ class IssuerManager:
         """
         schemas = []
         credential_types = []
+        print("GOT HERE")
+        print(f"cred types: {credential_type_defs}")
 
         for credential_type_def in credential_type_defs:
             # Get or create schema
@@ -143,6 +145,8 @@ class IssuerManager:
                 "credential_def_id"
             )
             credential_type.url = credential_type_def.get("endpoint")
+            credential_type.highlighted_attributes = credential_type_def.get("highlighted_attributes")
+            credential_type.credential_title = credential_type_def.get("credential_title")
             visible_fields = credential_type_def.get("visible_fields")
             if isinstance(visible_fields, list):
                 visible_fields = ",".join(
