@@ -173,8 +173,6 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             claim_labels = fields.Dict(keys=fields.Str(), values=fields.Dict(), required=False)
 
             credential = fields.Nested(Credential(), required=False)
-            print("GOT HERE")
-            credentail_title = fields.Str(required=False)
 
             name = fields.Str(required=True)
             schema = fields.Str(required=True)
@@ -189,6 +187,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             endpoint = fields.Str(required=False)
             visible_fields = fields.List(fields.Str(), required=False)
             highlighted_attributes = fields.List(fields.Str(), required=False)
+            credential_title = fields.Str(required=False)
 
             labels = fields.Dict(required=False)
             endpoints = fields.Dict(required=False)
