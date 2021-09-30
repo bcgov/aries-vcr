@@ -104,7 +104,6 @@ class IssuerManager:
         """
         schemas = []
         credential_types = []
-        print(f"cred types: {credential_type_defs}")
 
         for credential_type_def in credential_type_defs:
             # Get or create schema
