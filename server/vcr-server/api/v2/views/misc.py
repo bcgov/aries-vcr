@@ -1,4 +1,5 @@
 import logging
+import json
 
 from django.conf import settings
 from django.db import connection
@@ -12,9 +13,9 @@ from rest_framework.decorators import (
     parser_classes,
     permission_classes,
 )
-from rest_framework.parsers import FormParser
+from rest_framework.parsers import JSONParser, FormParser
 
-from api.v2.feedback import email_feedback
+from api.v2.feedback import email_feedback, email_contact
 from api.v2.models.Claim import Claim
 from api.v2.models.Credential import Credential as CredentialModel
 from api.v2.models.CredentialType import CredentialType
@@ -95,11 +96,26 @@ def quickload(request, *args, **kwargs):
 @api_view(["POST"])
 @authentication_classes(())
 @permission_classes((permissions.AllowAny,))
-@parser_classes((FormParser,))
+@parser_classes((JSONParser,))
+def send_contact(request, *args, **kwargs):
+    data = json.loads(request.body)
+    from_name = data.get("from_name")
+    from_email = data.get("from_email")
+    reason = data.get("reason")
+    comments = data.get("comments")
+    identifier = data.get("identifier")
+    error = data.get("error")
+    email_contact(from_name, from_email, reason, comments, identifier=identifier, error=error)
+    return JsonResponse({"status": "ok"})
+
+@api_view(["POST"])
+@authentication_classes(())
+@permission_classes((permissions.AllowAny,))
+@parser_classes((JSONParser,))
 def send_feedback(request, *args, **kwargs):
-    from_name = request.POST.get("from_name")
-    from_email = request.POST.get("from_email")
-    reason = request.POST.get("reason")
-    comments = request.POST.get("comments")
-    email_feedback(from_name, from_email, reason, comments)
+    data = json.loads(request.body)
+    reason = data.get("reason")
+    comments = data.get("comments")
+    improvements = data.get("improvements")
+    email_feedback(reason, comments, improvements)
     return JsonResponse({"status": "ok"})
