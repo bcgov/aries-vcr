@@ -128,6 +128,9 @@ class IssuerRegistrationRequestSchema(Schema):
             mapping = fields.List(fields.Nested(MappingEntry()), required=False)
             topic = fields.List(fields.Nested(Topic()), required=True)
 
+            highlighted_attributes = fields.List(fields.Str(), required=False)
+            credential_title = fields.Str(required=False)
+
             logo_b64 = fields.Str(required=False, allow_none=True)
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
