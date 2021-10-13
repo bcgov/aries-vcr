@@ -48,7 +48,6 @@ router.register(r"search/autocomplete",
 
 # Misc endpoints
 miscPatterns = [
-    path("contact", misc.send_contact),
     path("feedback", misc.send_feedback),
     path("quickload", misc.quickload),
     path("status/reset", clear_stats),
