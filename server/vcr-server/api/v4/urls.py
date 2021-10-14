@@ -12,6 +12,8 @@ from api.v4.views.search import (
     fuzzy as search_fuzzy
 )
 from api.v4.views.rest import credential_type, issuer, topic
+from api.v4.views.misc.contact import send_contact
+from api.v4.views.misc.feedback import send_feedback 
 
 app_name = "api_v4"
 
@@ -39,8 +41,14 @@ router.register(r"search/credential", search_credential.SearchView, "Credential 
 router.register(r"search/topic", search_topic.SearchView, "Topic Search")
 router.register(r"search/fuzzy", search_fuzzy.SearchView, "Fuzzy Search")
 
+# Misc endpoints
+miscPatterns = [
+    path("contact", send_contact),
+    path("feedback", send_feedback),
+]
+
 swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
 ]
 
-urlpatterns = format_suffix_patterns(router.urls) + swaggerPatterns
+urlpatterns = format_suffix_patterns(router.urls) + miscPatterns + swaggerPatterns
