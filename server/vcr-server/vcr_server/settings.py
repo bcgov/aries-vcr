@@ -166,7 +166,7 @@ REST_FRAMEWORK = {
     # "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_PAGINATION_CLASS": "vcr_server.pagination.EnhancedPageNumberPagination",
     "PAGE_SIZE": int(os.getenv("PAGE_SIZE", "10")),
-    "MAX_PAGE_SIZE": int(os.getenv("MAX_PAGE_SIZE", "100")),
+    "MAX_PAGE_SIZE": int(os.getenv("MAX_PAGE_SIZE", "200")),
     "DEFAULT_AUTHENTICATION_CLASSES": authentication.defaults(),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
