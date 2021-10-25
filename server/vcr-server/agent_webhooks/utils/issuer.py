@@ -146,6 +146,9 @@ class IssuerManager:
             credential_type.url = credential_type_def.get("endpoint")
             credential_type.highlighted_attributes = credential_type_def.get("highlighted_attributes")
             credential_type.credential_title = credential_type_def.get("credential_title")
+
+            credential_type.schema_label = credential_type_def.get("labels")
+            credential_type.schema_description = credential_type_def.get("schema_description")
             visible_fields = credential_type_def.get("visible_fields")
             if isinstance(visible_fields, list):
                 visible_fields = ",".join(
