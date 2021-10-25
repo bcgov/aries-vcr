@@ -354,6 +354,9 @@ configureEnvironment() {
   export SP_TRACKING_EMITTER=${SP_TRACKING_EMITTER:-spm.apps.gov.bc.ca}
   export SP_TRACKING_EMITTER_PROTOCOL=${SP_TRACKING_EMITTER_PROTOCOL:-https}
 
+  export PAGE_SIZE=${PAGE_SIZE:-10}
+  export MAX_PAGE_SIZE=${MAX_PAGE_SIZE:-200}
+
   # rabbitmq
   export RABBITMQ_USER="RABBITMQ_USER"
   export RABBITMQ_PASSWORD="RABBITMQ_PASSWORD"
