@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="credentialtype",
             name="credential_title",
-            field=models.TextField(null=True),
+            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name="credentialtype",

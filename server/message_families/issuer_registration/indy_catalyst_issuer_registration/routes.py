@@ -129,7 +129,7 @@ class IssuerRegistrationRequestSchema(Schema):
             topic = fields.List(fields.Nested(Topic()), required=True)
 
             highlighted_attributes = fields.List(fields.Str(), required=False)
-            credential_title = fields.Str(required=False)
+            credential_title = fields.List(fields.Str(), required=False)
 
             schema_label = fields.List(fields.Str(), required=False)
             schema_description = fields.List(fields.Str(), required=False)

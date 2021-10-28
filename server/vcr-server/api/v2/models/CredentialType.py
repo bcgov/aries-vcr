@@ -27,7 +27,7 @@ class CredentialType(Auditable):
     visible_fields = models.TextField(null=True)
     last_issue_date = models.DateTimeField(null=True)
     url = models.TextField(blank=True, null=True)
-    credential_title = models.TextField(null=True)
+    credential_title = contrib.JSONField(blank=True, null=True)
     highlighted_attributes = contrib.JSONField(blank=True, null=True)
     schema_label = contrib.JSONField(blank=True, null=True)
     schema_description = contrib.JSONField(blank=True, null=True)

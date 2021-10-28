@@ -187,7 +187,7 @@ class IssuerRegistrationSchema(AgentMessageSchema):
             endpoint = fields.Str(required=False)
             visible_fields = fields.List(fields.Str(), required=False)
             highlighted_attributes = fields.List(fields.Str(), required=False)
-            credential_title = fields.Str(required=False)
+            credential_title = fields.List(fields.Str(), required=False)
 
             schema_label = fields.List(fields.Str(), required=False)
             schema_description = fields.List(fields.Str(), required=False)
