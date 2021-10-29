@@ -6,11 +6,11 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.v2.models.CredentialType import CredentialType
 
-from api.v2.serializers.rest import CredentialTypeSerializer
+from api.v4.serializers.rest.credential import CredentialTypeClaimLabelsSerializer
 
 
 class RestView(ReadOnlyModelViewSet):
-    serializer_class = CredentialTypeSerializer
+    serializer_class = CredentialTypeClaimLabelsSerializer
     queryset = CredentialType.objects.all()
 
     def list(self, request):

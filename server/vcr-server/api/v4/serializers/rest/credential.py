@@ -55,6 +55,22 @@ class CredentialTypeSerializer(ModelSerializer):
             "schema",
         )
 
+class CredentialTypeClaimLabelsSerializer(ModelSerializer):
+    issuer = IssuerSerializer()
+    has_logo = BooleanField(source="get_has_logo", read_only=True)
+
+    class Meta:
+        model = CredentialType
+        depth = 1
+        exclude = (
+            "category_labels",
+            "claim_descriptions",
+            "logo_b64",
+            "processor_config",
+            "visible_fields",
+            "schema",
+        )
+
 
 class CredentialSerializer(ModelSerializer):
     attributes = CredentialAttributeSerializer(many=True)
