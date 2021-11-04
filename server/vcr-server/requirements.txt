@@ -51,4 +51,4 @@ vine~=1.3.0
 iniconfig<=1.0.1
 
 # api tracking
-snowplow-tracker~=0.9.0
+snowplow-tracker~=0.9.1
