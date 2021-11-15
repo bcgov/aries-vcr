@@ -20,6 +20,7 @@
   - [Initialize the Project](###initialize-the-project)
   - [Register the DID](###register-the-did)
   - [Build and Start the Project](###build-and-start-the-project)
+  - [Updates to Credential Schema](###updates-to-credential-schema)
   - [Issuing Credentials](###issuing-credentials)
 - [Aries VCR Client](###aries-vcr-client)
 - [Troubleshooting Guides](##troubleshooting-guides)
@@ -205,6 +206,9 @@ The DID is located in the `aries-vcr-issuer-controller/docker/manage` file on li
 ### Build and Start the Project
 
 Navigate to the docker folder in the project. Run: `./manage build` to build all the necessary containers. Finally run `./manage start` to initialize the project.
+
+### Updates to Credential Schema
+Aries-vcr has undergone updates to the issuer credential schema. See the latest updates and how to apply them [here](Schema-changes.md)
 
 ### Issuing Credentials
 
