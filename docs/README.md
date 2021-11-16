@@ -3,27 +3,27 @@
 
 # Table of Contents <!-- omit in toc -->
 
-- [Introduction](##introduction)
-- [Before You Start](##before-you-start)
-- [Repositories](##before-you-start)
-- [Prerequisites](##prerequisites)
-- [Running a VON - Verified Organizations Network](##running-a-von---verified-organizations-network)
-  - [Running on Docker Locally](###running-the-network-on-docker-locally)
-  - [Stopping the Network](###stopping-the-network)
-- [Aries VCR](##aries-vcr)
-  - [Building the Images](###building-the-images)
-  - [Starting the Project](###starting-the-project)
-  - [Stopping the Project](###stopping-the-project)
-  - [Using the Application](###using-the-application)
-  - [Start-up Orchestration](###start--up-orchestration)
-- [Aries VCR Issuer Controller](##aries-vcr-issuer-controller)
-  - [Initialize the Project](###initialize-the-project)
-  - [Register the DID](###register-the-did)
-  - [Build and Start the Project](###build-and-start-the-project)
-  - [Updates to Credential Schema](###updates-to-credential-schema)
-  - [Issuing Credentials](###issuing-credentials)
-- [Aries VCR Client](###aries-vcr-client)
-- [Troubleshooting Guides](##troubleshooting-guides)
+- [Introduction](#introduction)
+- [Before You Start](#before-you-start)
+- [Repositories](#before-you-start)
+- [Prerequisites](#prerequisites)
+- [Running a VON - Verified Organizations Network](#running-a-von---verified-organizations-network)
+  - [Running on Docker Locally](#running-the-network-on-docker-locally)
+  - [Stopping the Network](#stopping-the-network)
+- [Aries VCR](#aries-vcr)
+  - [Building the Images](#building-the-images)
+  - [Starting the Project](#starting-the-project)
+  - [Stopping the Project](#stopping-the-project)
+  - [Using the Application](#using-the-application)
+  - [Start-up Orchestration](#start--up-orchestration)
+- [Aries VCR Issuer Controller](#aries-vcr-issuer-controller)
+  - [Initialize the Project](#initialize-the-project)
+  - [Register the DID](#register-the-did)
+  - [Build and Start the Project](#build-and-start-the-project)
+  - [Updates to Credential Schema](#updates-to-credential-schema)
+  - [Issuing Credentials](#issuing-credentials)
+- [Aries VCR Client](#aries-vcr-client)
+- [Troubleshooting Guides](#troubleshooting-guides)
 
 ## Introduction
 
@@ -208,7 +208,7 @@ The DID is located in the `aries-vcr-issuer-controller/docker/manage` file on li
 Navigate to the docker folder in the project. Run: `./manage build` to build all the necessary containers. Finally run `./manage start` to initialize the project.
 
 ### Updates to Credential Schema
-Aries-vcr has undergone updates to the issuer credential schema. See the latest updates and how to apply them [here](Schema-changes.md)
+Aries VCR has undergone updates to the issuer credential schema. See the latest updates and how to apply them [here](Schema-changes.md).
 
 ### Issuing Credentials
 
