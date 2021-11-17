@@ -131,8 +131,7 @@ class IssuerRegistrationRequestSchema(Schema):
             highlighted_attributes = fields.List(fields.Str(), required=False)
             credential_title = fields.Str(required=False)
 
-            schema_label = fields.List(fields.Str(), required=False)
-            schema_description = fields.List(fields.Str(), required=False)
+            schema_label = fields.Dict(required=False)
 
             logo_b64 = fields.Str(required=False, allow_none=True)
             credential_def_id = fields.Str(required=True)
