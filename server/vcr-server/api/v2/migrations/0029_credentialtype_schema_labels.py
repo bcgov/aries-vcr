@@ -12,10 +12,5 @@ class Migration(migrations.Migration):
             model_name="credentialtype",
             name="schema_label",
             field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True),
-        ),
-        migrations.AddField(
-            model_name="credentialtype",
-            name="schema_description",
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True),
         )
     ]
