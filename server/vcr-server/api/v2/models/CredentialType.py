@@ -30,7 +30,6 @@ class CredentialType(Auditable):
     credential_title = models.TextField(null=True)
     highlighted_attributes = contrib.JSONField(blank=True, null=True)
     schema_label = contrib.JSONField(blank=True, null=True)
-    schema_description = contrib.JSONField(blank=True, null=True)
     claim_descriptions = contrib.JSONField(blank=True, null=True)
     claim_labels = contrib.JSONField(blank=True, null=True)
     category_labels = contrib.JSONField(blank=True, null=True)
