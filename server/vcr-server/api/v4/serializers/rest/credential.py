@@ -8,17 +8,8 @@ from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 
-from api.v2.serializers.rest import CredentialNameSerializer
+from api.v2.serializers.rest import CredentialNameSerializer, IssuerSerializer
 
-
-class IssuerSerializer(ModelSerializer):
-    has_logo = BooleanField(source="get_has_logo", read_only=True)
-
-    class Meta:
-        model = Issuer
-        exclude = (
-            "logo_b64",
-        )
 
 
 class AttributeSerializer(ModelSerializer):

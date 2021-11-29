@@ -19,45 +19,29 @@ LOGGER = logging.getLogger(__name__)
 
 @swagger_auto_schema(
     method="post",
-    manual_parameters=[
-        openapi.Parameter(
-            "from_name",
-            openapi.IN_FORM,
-            description="Sender name",
-            type=openapi.TYPE_STRING,
-        ),
-        openapi.Parameter(
-            "from_email",
-            openapi.IN_FORM,
-            description="Sender email address",
-            type=openapi.TYPE_STRING,
-            format=openapi.FORMAT_EMAIL,
-        ),
-        openapi.Parameter(
-            "reason",
-            openapi.IN_FORM,
-            description="Contact reason",
-            type=openapi.TYPE_STRING,
-        ),
-        openapi.Parameter(
-            "comments",
-            openapi.IN_FORM,
-            description="Comments",
-            type=openapi.TYPE_STRING,
-        ),
-        openapi.Parameter(
-            "identifier",
-            openapi.IN_FORM,
-            description="Identifier code",
-            type=openapi.TYPE_STRING,
-        ),
-        openapi.Parameter(
-            "error",
-            openapi.IN_FORM,
-            description="Credential type containing the error",
-            type=openapi.TYPE_STRING,
-        ),
-    ],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "from_name": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Sender name"
+            ),
+            "from_email": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Sender email address"
+            ),
+            "reason": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Contact Reason"
+            ),
+            "comments": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Comments"
+            ),
+            "identifier": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Identifier code"
+            ),
+            "error": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Credential type containing the error"
+            ),
+        },
+    ),
 )
 @api_view(["POST"])
 @authentication_classes(())

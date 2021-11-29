@@ -19,27 +19,20 @@ LOGGER = logging.getLogger(__name__)
 
 @swagger_auto_schema(
     method="post",
-    manual_parameters=[
-        openapi.Parameter(
-            "reason",
-            openapi.IN_FORM,
-            description="Either 'like' or 'dislike'",
-            type=openapi.TYPE_STRING,
-        ),
-        openapi.Parameter(
-            "comments",
-            openapi.IN_FORM,
-            description="Comments",
-            type=openapi.TYPE_STRING,
-            format=openapi.FORMAT_EMAIL,
-        ),
-        openapi.Parameter(
-            "improvements",
-            openapi.IN_FORM,
-            description="Improvements if reason is 'dislike'",
-            type=openapi.TYPE_STRING,
-        ),
-    ],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "reason": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Either 'like' or 'dislike'"
+            ),
+            "comments": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Comments"
+            ),
+            "improvements": openapi.Schema(
+                type=openapi.TYPE_STRING, description="Improvements if reason is 'dislike'"
+            )
+        },
+    ),
 )
 @api_view(["POST"])
 @authentication_classes(())
