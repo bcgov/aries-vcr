@@ -7,9 +7,9 @@ from api.v2.models.Attribute import Attribute
 from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
+from api.v2.models.Schema import Schema
 
 from api.v2.serializers.rest import CredentialNameSerializer, IssuerSerializer
-
 
 
 class AttributeSerializer(ModelSerializer):
@@ -29,8 +29,7 @@ class CredentialAttributeSerializer(AttributeSerializer):
         read_only_fields = fields
 
 
-class CredentialTypeSerializer(ModelSerializer):
-    issuer = IssuerSerializer()
+class CredentialTypeSchemaSerializer(ModelSerializer):
     has_logo = BooleanField(source="get_has_logo", read_only=True)
 
     class Meta:
@@ -43,8 +42,19 @@ class CredentialTypeSerializer(ModelSerializer):
             "logo_b64",
             "processor_config",
             "visible_fields",
-            "schema",
+            "highlighted_attributes",
+            "credential_title",
+            "issuer",
         )
+
+
+class SchemaSerializer(ModelSerializer):
+    credential_types = CredentialTypeSchemaSerializer(many=True)
+
+    class Meta:
+        model = Schema
+        fields = ("name", "origin_did", "credential_types")
+
 
 class CredentialTypeClaimLabelsSerializer(ModelSerializer):
     issuer = IssuerSerializer()
@@ -87,4 +97,4 @@ class CredentialSerializer(ModelSerializer):
 
 
 class RestSerializer(CredentialSerializer):
-    credential_type = CredentialTypeSerializer()
+    credential_type = CredentialTypeSchemaSerializer()
