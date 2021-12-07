@@ -29,7 +29,8 @@ class CredentialAttributeSerializer(AttributeSerializer):
         read_only_fields = fields
 
 
-class CredentialTypeSchemaSerializer(ModelSerializer):
+class CredentialTypeIssuerSerializer(ModelSerializer):
+    issuer = IssuerSerializer()
     has_logo = BooleanField(source="get_has_logo", read_only=True)
 
     class Meta:
@@ -44,12 +45,11 @@ class CredentialTypeSchemaSerializer(ModelSerializer):
             "visible_fields",
             "highlighted_attributes",
             "credential_title",
-            "issuer",
         )
 
 
 class SchemaSerializer(ModelSerializer):
-    credential_types = CredentialTypeSchemaSerializer(many=True)
+    credential_types = CredentialTypeIssuerSerializer(many=True)
 
     class Meta:
         model = Schema
@@ -97,4 +97,4 @@ class CredentialSerializer(ModelSerializer):
 
 
 class RestSerializer(CredentialSerializer):
-    credential_type = CredentialTypeSchemaSerializer()
+    credential_type = CredentialTypeIssuerSerializer()
