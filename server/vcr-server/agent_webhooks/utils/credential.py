@@ -6,7 +6,7 @@ import re
 import time
 import uuid
 from collections import namedtuple
-from datetime import datetime
+from datetime import datetime, timedelta
 from importlib import import_module
 import os
 
@@ -57,6 +57,8 @@ if CREATE_CREDENTIAL_CLAIMS.upper() == "TRUE":
 else:
     print(">>> NO not creating detail claims for credentials")
     CREATE_CREDENTIAL_CLAIMS = False
+
+CTYPE_CACHE_MAX_AGE_MINS = int(os.environ.get('CTYPE_CACHE_MAX_AGE_MINS', '10'))
 
 
 def schema_key(s_id: str) -> SchemaKey:
@@ -259,7 +261,17 @@ class CredentialManager(object):
     """
 
     def __init__(self) -> None:
+        self._init_ctype_cache()
+
+    def _init_ctype_cache(self):
         self._cred_type_cache = {}
+        self._cred_type_cache_created = datetime.now()
+        self._cred_type_cache_max_age = (self._cred_type_cache_created + 
+            timedelta(minutes=CTYPE_CACHE_MAX_AGE_MINS))
+
+    def _reinit_ctype_cache(self):
+        if self._cred_type_cache_max_age < datetime.now():
+            self._init_ctype_cache()
 
     @classmethod
     def get_claims(cls, credential):
@@ -356,6 +368,10 @@ class CredentialManager(object):
         Fetch the credential type for the incoming credential
         """
         LOGGER.debug(">>> get credential context")
+
+        # force re-init to get any issuer updates
+        self._reinit_ctype_cache()
+
         start_time = time.perf_counter()
         result = None
         type_id = getattr(credential, "credential_type_id", None)
