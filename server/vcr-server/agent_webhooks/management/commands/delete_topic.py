@@ -33,8 +33,8 @@ class Command(BaseCommand):
                     for credential in topic.credentials.all():
                         self.stdout.write(" ... " + credential.credential_id + " ...")
                         try:
-                            response = requests.post(
-                                f"{settings.AGENT_ADMIN_URL}/credential/{credential.credential_id}/remove",
+                            response = requests.delete(
+                                f"{settings.AGENT_ADMIN_URL}/credential/{credential.credential_id}",
                                 headers=settings.ADMIN_REQUEST_HEADERS,
                             )
                             response.raise_for_status()
