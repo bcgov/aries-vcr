@@ -69,34 +69,24 @@ def email_contact(reply_name, reply_email, reason, comments, error=None, identif
     return True
 
 
-def email_feedback(reason, comments, improvements=None):
+def email_feedback(email, comments):
     server_addr = os.getenv("SMTP_SERVER_ADDRESS")
     recip_email = os.getenv("FEEDBACK_TARGET_EMAIL").split(",")
     app_url = os.getenv("APPLICATION_URL")
 
     from_name = "OrgBook BC"
-    from_email = "no-reply@orgbook.gov.bc.ca"
+    from_email = email
 
-    reason_text = reason
-
-    subject = "OrgBook BC Feedback: {}".format(reason_text)
+    subject = "OrgBook BC Feedback"
 
     LOGGER.info("Feedback content: %s\n%s", subject, comments)
-
-    if not reason:
-        LOGGER.info("Skipped blank feedback")
-        return False
 
     if server_addr and recip_email:
         body = ""
         if app_url:
             body = "{}Application URL: {}\n".format(body, app_url)
-        if reason_text:
-            body = "{}Contact reason: {}\n".format(body, reason_text)
         if comments:
             body = "{}Comments:\n{}\n".format(body, comments)
-        if improvements:
-            body = "{}Improvements:\n{}\n".format(body, improvements)
         msg = MIMEText(body, "plain")
         recipients = ",".join(recip_email)
         from_line = formataddr((str(Header(from_name, "utf-8")), from_email))
@@ -104,7 +94,6 @@ def email_feedback(reason, comments, improvements=None):
         msg["From"] = from_line
         msg["To"] = recipients
         # LOGGER.info("encoded:\n%s", msg.as_string())
-
         with SMTP(server_addr) as smtp:
             try:
                 smtp.sendmail(from_line, recip_email, msg.as_string())

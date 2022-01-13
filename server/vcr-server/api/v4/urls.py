@@ -13,7 +13,7 @@ from api.v4.views.search import (
 )
 from api.v4.views.rest import credential_type, issuer, topic, schemas
 from api.v4.views.misc.contact import send_contact
-from api.v4.views.misc.feedback import send_feedback 
+from api.v4.views.misc.feedback import send_feedback, send_like
 
 app_name = "api_v4"
 
@@ -46,6 +46,7 @@ router.register(r"search/fuzzy", search_fuzzy.SearchView, "Fuzzy Search")
 miscPatterns = [
     path("contact", send_contact),
     path("feedback", send_feedback),
+    path("feedback/like", send_like),
 ]
 
 swaggerPatterns = [
