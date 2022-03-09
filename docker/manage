@@ -74,8 +74,8 @@ usage() {
             Note that to run "scale" you need to update the docker-compose.yml file to REMOVE exposed ports
             from the vcr-api and vcr-agent containers.
 
-            You also need to FIRST run `./manage start` to initialize the agent and wallet, then run
-            `./manage stop` and then `./manage scale`.
+            You also need to FIRST run './manage start' to initialize the agent and wallet, then run
+            './manage stop' and then './manage scale'.
 
       restart - Re-starts the application containers, 
                 useful when updating one of the container images during development.
