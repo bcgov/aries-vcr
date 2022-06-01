@@ -36,16 +36,16 @@ drf-generators>=0.3.0
 debugpy
 
 # aiohttp
-aiohttp~=3.4.0
+aiohttp~=3.7.4
 aiohttp-wsgi~=0.8.1
 
 asgiref~=3.1.2
 
 # rest hooks and related
-django-rest-hooks==1.5.0
+git+https://github.com/wadeking98/django-rest-hooks@v1.7.0
 drf-nested-routers
-celery~=4.3.0
-vine~=1.3.0
+celery~=5.2.2
+vine>=5.0.0,<6.0
 
 # transitive dependency management
 iniconfig<=1.0.1

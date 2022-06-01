@@ -176,7 +176,7 @@ build-api() {
   #
   # vcr-api
   #
-  BASE_IMAGE="bcgovimages/von-image:py36-1.7-ew-0-s2i"
+  BASE_IMAGE="registry.access.redhat.com/ubi9/python-39:latest"
   
   echo -e "\nBuilding vcr-api image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
