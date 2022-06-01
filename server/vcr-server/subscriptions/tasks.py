@@ -8,7 +8,7 @@ import requests
 from celery.exceptions import Retry
 # from celery.result import AsyncResult
 from celery.signals import celeryd_after_setup
-from celery.task import Task
+from celery import shared_task
 from django.conf import settings
 
 from subscriptions.models.Subscription import Subscription
@@ -30,8 +30,8 @@ LOGGER = logging.getLogger(__name__)
 #         #     )
 #         # )
 
-
-class DeliverHook(Task):
+@shared_task
+def deliver_hook(Task):
     max_retries = 5
 
     def run(self, target, payload, instance_id=None, hook_id=None, **kwargs):
@@ -137,7 +137,7 @@ def deliver_hook_wrapper(target, payload, instance, hook):
     )
     # deliver_hook_error = DeliverHookError()
     # result = DeliverHook.apply_async(kwargs=kwargs, link_error=deliver_hook_error.s())
-    result = DeliverHook.apply_async(kwargs=kwargs)
+    result = deliver_hook.apply_async(kwargs=kwargs)
     result.forget()
 
 
