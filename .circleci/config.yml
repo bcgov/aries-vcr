@@ -2,11 +2,11 @@ version: 2
 jobs:
   django-build:
     docker:
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.9
     steps:
       - checkout
       - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.9/site-packages
       - restore_cache:
           keys:
             - app-pip-dependencies-{{ .Branch }}-{{ checksum "server/vcr-server/requirements.txt" }}
