@@ -13,7 +13,8 @@ from api.v4.views.search import (
 )
 from api.v4.views.rest import credential_type, issuer, topic, schemas
 from api.v4.views.misc.contact import send_contact
-from api.v4.views.misc.feedback import send_feedback 
+from api.v4.views.misc.feedback import send_feedback
+from api.v2.swagger import HttpsSchemaGenerator
 
 app_name = "api_v4"
 
@@ -29,6 +30,7 @@ schema_view = get_schema_view(
     ),
     validators=["flex", "ssv"],
     public=True,
+    generator_class=HttpsSchemaGenerator,
     permission_classes=(AllowAny,),
 )
 

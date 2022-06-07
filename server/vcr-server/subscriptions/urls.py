@@ -13,6 +13,8 @@ from rest_framework.permissions import AllowAny
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from api.v2.swagger import HttpsSchemaGenerator
+
 # see https://github.com/alanjds/drf-nested-routers
 from rest_framework_nested import routers
 
@@ -31,6 +33,7 @@ schema_view = get_schema_view(
     # url="{}/api".format(settings.APPLICATION_URL),
     validators=["flex", "ssv"],
     public=True,
+    generator_class=HttpsSchemaGenerator,
     permission_classes=(AllowAny,),
 )
 

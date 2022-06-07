@@ -7,6 +7,7 @@ from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from api.v3.views import rest, search
+from api.v2.swagger import HttpsSchemaGenerator
 
 app_name = "api_v3"
 
@@ -22,6 +23,7 @@ schema_view = get_schema_view(
     ),
     # url="{}/api".format(settings.APPLICATION_URL),
     validators=["flex", "ssv"],
+    generator_class=HttpsSchemaGenerator,
     public=True,
     permission_classes=(AllowAny,),
 )

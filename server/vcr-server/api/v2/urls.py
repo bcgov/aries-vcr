@@ -10,6 +10,7 @@ from drf_yasg import openapi
 
 from api.v2.views import misc, rest, search
 from api.v2.utils import get_stats, clear_stats
+from api.v2.swagger import HttpsSchemaGenerator
 
 app_name = "api_v2"
 
@@ -26,6 +27,7 @@ schema_view = get_schema_view(
     # url="{}/api".format(settings.APPLICATION_URL),
     validators=["flex", "ssv"],
     public=True,
+    generator_class=HttpsSchemaGenerator,
     permission_classes=(AllowAny,),
 )
 

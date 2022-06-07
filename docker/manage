@@ -319,6 +319,7 @@ configureEnvironment() {
   export STARTUP_DELAY=${STARTUP_DELAY:-15}
   export APP_FILE=app-vonx.py
   export APP_CONFIG=${APP_CONFIG:-}
+  export LOCAL=${LOCAL:-local}
   # export APP_MODULE=api_indy.vcr_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8080}
   export EXPOSED_API_HTTP_PORT=${EXPOSED_API_HTTP_PORT:-8081}

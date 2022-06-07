@@ -1,12 +1,21 @@
 import logging
+import os
 
 from drf_yasg import renderers
+from drf_yasg.generators import OpenAPISchemaGenerator
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.schemas import SchemaGenerator
 from rest_framework.views import APIView
 
 LOGGER = logging.getLogger(__name__)
+
+class HttpsSchemaGenerator(OpenAPISchemaGenerator):
+    def get_schema(self, request=None, public=False):
+        schema = super().get_schema(request, public)
+        if os.getenv("LOCAL") != "local":
+            schema.schemes = ["https"]
+        return schema
 
 
 class SwaggerSchemaView(APIView):
