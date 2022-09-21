@@ -9,11 +9,7 @@ from ..indexes.Address import AddressIndex
 from ..indexes.Name import NameIndex
 from ..indexes.Topic import TopicIndex
 
-from api.v2.serializers.rest import (
-    AddressSerializer,
-    NameSerializer,
-    TopicSerializer
-)
+from api.v2.serializers.rest import AddressSerializer, NameSerializer, TopicSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -75,7 +71,6 @@ class AriesAutocompleteSerializer(AriesSearchSerializer):
 
 
 class NameAutocompleteSerializer(AriesAutocompleteSerializer):
-
     @staticmethod
     def get_type(obj):
         return "name"
@@ -90,12 +85,19 @@ class NameAutocompleteSerializer(AriesAutocompleteSerializer):
 
     class Meta(NameSerializer.Meta):
         index_classes = [NameIndex]
-        fields = ("type", "sub_type", "value", "score", "topic_source_id",
-                  "topic_type", "credential_id", "credential_type")
+        fields = (
+            "type",
+            "sub_type",
+            "value",
+            "score",
+            "topic_source_id",
+            "topic_type",
+            "credential_id",
+            "credential_type",
+        )
 
 
 class AddressAutocompleteSerializer(AriesAutocompleteSerializer):
-
     @staticmethod
     def get_type(obj):
         return "address"
@@ -110,12 +112,18 @@ class AddressAutocompleteSerializer(AriesAutocompleteSerializer):
 
     class Meta(AddressSerializer.Meta):
         index_classes = [AddressIndex]
-        fields = ("type", "sub_type", "value", "score", "topic_source_id",
-                  "topic_type" "credential_id", "credential_type")
+        fields = (
+            "type",
+            "sub_type",
+            "value",
+            "score",
+            "topic_source_id",
+            "topic_type" "credential_id",
+            "credential_type",
+        )
 
 
 class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
-
     @staticmethod
     def get_type(obj):
         return "topic"
@@ -147,12 +155,19 @@ class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
 
     class Meta(TopicSerializer.Meta):
         index_classes = [TopicIndex]
-        fields = ("type", "sub_type", "value", "score", "topic_source_id",
-                  "topic_type", "credential_id", "credential_type")
+        fields = (
+            "type",
+            "sub_type",
+            "value",
+            "score",
+            "topic_source_id",
+            "topic_type",
+            "credential_id",
+            "credential_type",
+        )
 
 
 class AggregateAutocompleteSerializer(HaystackSerializer):
-
     class Meta:
         serializers = {
             AddressIndex: AddressAutocompleteSerializer,

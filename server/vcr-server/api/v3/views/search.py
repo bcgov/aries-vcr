@@ -1,7 +1,6 @@
 import logging
 
 from django.conf import settings
-from django.http import Http404
 
 from rest_framework import permissions
 from rest_framework.decorators import action
@@ -13,9 +12,8 @@ from rest_framework.viewsets import ViewSetMixin
 from haystack.query import RelatedSearchQuerySet
 
 from drf_haystack.generics import HaystackGenericAPIView
-from drf_haystack.filters import HaystackOrderingFilter, HaystackAutocompleteFilter
+from drf_haystack.filters import HaystackOrderingFilter
 from drf_haystack.mixins import FacetMixin
-from drf_haystack.viewsets import HaystackViewSet
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -59,6 +57,7 @@ class AriesHaystackViewSet(ListModelMixin, ViewSetMixin, HaystackGenericAPIView)
     The HaystackViewSet class provides the default ``list()`` and
     ``retrieve()`` actions with a haystack index as it's data source.
     """
+
     pass
 
 
@@ -110,7 +109,9 @@ class AggregateAutocompleteView(AriesHaystackViewSet):
 
 class MissingTopicParametersException(APIException):
     status_code = 400
-    default_detail = "Please provide at least a 'name' (2 characters or more) or 'topic_id'."
+    default_detail = (
+        "Please provide at least a 'name' (2 characters or more) or 'topic_id'."
+    )
     default_code = "bad_request"
 
 
@@ -283,7 +284,6 @@ LIMIT = getattr(settings, "HAYSTACK_MAX_RESULTS", 200)
 
 # DEPRECATED:
 class CredentialTopicSearchView(CredentialSearchView):
-
     @swagger_auto_schema(manual_parameters=credential_search_swagger_params)
     def list(self, *args, **kwargs):
         """

@@ -67,13 +67,16 @@ class Credential(Auditable):
     def all_names(self):
         return self._cached("names", self.names.all())
 
+    # DEPRECATED
     @property
     def all_categories(self):
         return self._cached("categories", self.attributes.filter(format="category"))
 
     @property
     def all_credential_type_ids(self):
-        return self._cached("cred_type_ids", self.topic.get_active_credential_type_ids())
+        return self._cached(
+            "cred_type_ids", self.topic.get_active_credential_type_ids()
+        )
 
     @property
     def all_attributes(self):

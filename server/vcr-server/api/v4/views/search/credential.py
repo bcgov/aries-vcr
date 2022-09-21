@@ -17,7 +17,7 @@ from api.v3.views.search import (
 
 from api.v4.search.filters.credential import CredQueryFilter
 
-_deprecated_params = ('name',)
+_deprecated_params = ("name",)
 _swagger_params = [
     # Put additional parameters here
     openapi.Parameter(

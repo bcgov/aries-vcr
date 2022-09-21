@@ -54,23 +54,20 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
     def prepare_topic_category(obj):
         if obj.foundational_credential:
             return [
-                f"{cat.type}::{cat.value}" for cat in obj.foundational_credential.all_categories
+                f"{cat.type}::{cat.value}"
+                for cat in obj.foundational_credential.all_attributes
             ]
         return []
 
     @staticmethod
     def prepare_topic_name(obj):
         # May need to expand this to inactive credentials
-        return [
-            name.text for name in obj.get_active_names()
-        ]
+        return [name.text for name in obj.get_active_names()]
 
     @staticmethod
     def prepare_topic_address(obj):
         # May need to expand this to inactive credentials
-        return [
-            address.civic_address for address in obj.get_active_addresses()
-        ]
+        return [address.civic_address for address in obj.get_active_addresses()]
 
     @staticmethod
     def prepare_topic_credential_type_id(obj):
