@@ -57,7 +57,6 @@ class AriesHaystackViewSet(ListModelMixin, ViewSetMixin, HaystackGenericAPIView)
     The HaystackViewSet class provides the default ``list()`` and
     ``retrieve()`` actions with a haystack index as it's data source.
     """
-
     pass
 
 
@@ -109,9 +108,7 @@ class AggregateAutocompleteView(AriesHaystackViewSet):
 
 class MissingTopicParametersException(APIException):
     status_code = 400
-    default_detail = (
-        "Please provide at least a 'name' (2 characters or more) or 'topic_id'."
-    )
+    default_detail = "Please provide at least a 'name' (2 characters or more) or 'topic_id'."
     default_code = "bad_request"
 
 
@@ -284,6 +281,7 @@ LIMIT = getattr(settings, "HAYSTACK_MAX_RESULTS", 200)
 
 # DEPRECATED:
 class CredentialTopicSearchView(CredentialSearchView):
+
     @swagger_auto_schema(manual_parameters=credential_search_swagger_params)
     def list(self, *args, **kwargs):
         """
