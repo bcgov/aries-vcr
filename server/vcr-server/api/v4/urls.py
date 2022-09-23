@@ -42,9 +42,8 @@ router.register(r"topic", topic.RestView)
 router.register(r"search/credential", search_credential.SearchView, "Credential Search")
 router.register(r"search/topic", search_topic.SearchView, "Topic Search")
 router.register(r"search/fuzzy", search_fuzzy.SearchView, "Fuzzy Search")
-router.register(
-    r"search/autocomplete", search_autocomplete.SearchView, "Aggregate Autocomplete"
-)
+router.register(r"search/autocomplete", search_autocomplete.SearchView,
+                "Aggregate Autocomplete")
 
 # Misc endpoints
 miscPatterns = [

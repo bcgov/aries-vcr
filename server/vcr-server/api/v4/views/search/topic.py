@@ -24,50 +24,44 @@ from api.v4.search.filters.topic import (
     TopicExactFilter,
     TopicQueryFilter,
     TopicStatusFilter,
-    filter_display_names,
+    filter_display_names
 )
 
 from api.v4.serializers.search.topic import SearchSerializer, FacetSerializer
 
-_deprecated_params = (
-    "name",
-    "topic_id",
-    "credential_type_id",
-    "topic_credential_type_id",
-)
-_swagger_params = (
-    [
-        # Put additional parameters here
-        openapi.Parameter(
-            "q",
-            openapi.IN_QUERY,
-            description="Filter topics by related name, address or Topic Source ID",
-            type=openapi.TYPE_STRING,
-        ),
-        openapi.Parameter(
-            "ordering",
-            openapi.IN_QUERY,
-            description="Which field to use when ordering the results ('effective_date', 'revoked_date', 'score').",
-            type=openapi.TYPE_STRING,
-            default="-score",
-        ),
-    ]
-    + list(filter(lambda param: param.name not in _deprecated_params, swagger_params))
-    + [
-        openapi.Parameter(
-            "type_id",
-            openapi.IN_QUERY,
-            description="Filter by Credential Type ID of the Topic",
-            type=openapi.TYPE_STRING,
-        ),
-        openapi.Parameter(
-            "credential_type_id",
-            openapi.IN_QUERY,
-            description="Filter by Credential Type ID of any credentials owned by the Topic",
-            type=openapi.TYPE_STRING,
-        ),
-    ]
-)
+_deprecated_params = ("name", "topic_id", "credential_type_id",
+                      "topic_credential_type_id")
+_swagger_params = [
+    # Put additional parameters here
+    openapi.Parameter(
+        "q",
+        openapi.IN_QUERY,
+        description="Filter topics by related name, address or Topic Source ID",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        "ordering",
+        openapi.IN_QUERY,
+        description="Which field to use when ordering the results ('effective_date', 'revoked_date', 'score').",
+        type=openapi.TYPE_STRING,
+        default="-score",
+    ),
+]
++ list(filter(lambda param: param.name not in _deprecated_params, swagger_params))
++ [
+    openapi.Parameter(
+        "type_id",
+        openapi.IN_QUERY,
+        description="Filter by Credential Type ID of the Topic",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        "credential_type_id",
+        openapi.IN_QUERY,
+        description="Filter by Credential Type ID of any credentials owned by the Topic",
+        type=openapi.TYPE_STRING,
+    ),
+]
 
 
 class SearchView(AriesHaystackViewSet, FacetMixin):
@@ -115,7 +109,7 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
         narrow_dict = {}
         for key in filter_display_names:
             # We dont want to restrict the facets by status
-            if key in ("inactive", "revoked"):
+            if key in ('inactive', 'revoked'):
                 continue
             for value in request.query_params.getlist(key):
                 if value:
@@ -123,19 +117,18 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
 
         for query_param in request.query_params:
             # For category query parameters of the form category:<category_name>=<category_value>
-            if ":" not in query_param:
+            if ':' not in query_param:
                 continue
             key, category = query_param.split(":", 1)
             if not key or not category or (key not in filter_display_names):
                 continue
             for value in request.query_params.getlist(query_param):
                 if value:
-                    narrow_dict["topic_" + key] = queryset.query.clean(
-                        "{}::{}".format(category, value)
-                    )
+                    narrow_dict['topic_'
+                                + key] = queryset.query.clean("{}::{}".format(category, value))
 
         for key, value in narrow_dict.items():
-            facet_queryset = facet_queryset.narrow("{}:{}".format(key, value))
+            facet_queryset = facet_queryset.narrow('{}:{}'.format(key, value))
 
         serializer = self.get_facet_serializer(
             facet_queryset.facet_counts(), objects=result_queryset, many=False

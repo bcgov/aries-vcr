@@ -24,8 +24,7 @@ from api.v2.serializers.rest import (AddressSerializer, AttributeSerializer,
                                      CredentialSetSerializer,
                                      CredentialTopicExtSerializer,
                                      CredentialTypeSerializer,
-                                     IssuerSerializer,
-                                     NameSerializer,
+                                     IssuerSerializer, NameSerializer,
                                      TopicRelationshipSerializer,
                                      TopicSerializer)
 
