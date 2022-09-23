@@ -8,9 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_haystack.mixins import FacetMixin
 from drf_haystack.filters import HaystackOrderingFilter
 
-from api.v2.search.filters import (
-    CustomFacetFilter,
-)
+from api.v2.search.filters import CustomFacetFilter
 
 from api.v2.models.Topic import Topic
 
@@ -29,8 +27,8 @@ from api.v4.search.filters.topic import (
 
 from api.v4.serializers.search.topic import SearchSerializer, FacetSerializer
 
-_deprecated_params = ("name", "topic_id", "credential_type_id",
-                      "topic_credential_type_id")
+_deprecated_params = ('name', 'topic_id', 'credential_type_id',
+                      'topic_credential_type_id')
 _swagger_params = [
     # Put additional parameters here
     openapi.Parameter(
@@ -46,9 +44,7 @@ _swagger_params = [
         type=openapi.TYPE_STRING,
         default="-score",
     ),
-]
-+ list(filter(lambda param: param.name not in _deprecated_params, swagger_params))
-+ [
+] + list(filter(lambda param: param.name not in _deprecated_params, swagger_params)) + [
     openapi.Parameter(
         "type_id",
         openapi.IN_QUERY,
@@ -113,7 +109,8 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
                 continue
             for value in request.query_params.getlist(key):
                 if value:
-                    narrow_dict["topic_" + key] = queryset.query.clean(value)
+                    narrow_dict['topic_'
+                                + key] = queryset.query.clean(value)
 
         for query_param in request.query_params:
             # For category query parameters of the form category:<category_name>=<category_value>
@@ -125,7 +122,7 @@ class SearchView(AriesHaystackViewSet, FacetMixin):
             for value in request.query_params.getlist(query_param):
                 if value:
                     narrow_dict['topic_'
-                                + key] = queryset.query.clean("{}::{}".format(category, value))
+                                + key] = queryset.query.clean('{}::{}'.format(category, value))
 
         for key, value in narrow_dict.items():
             facet_queryset = facet_queryset.narrow('{}:{}'.format(key, value))

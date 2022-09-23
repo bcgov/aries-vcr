@@ -53,8 +53,8 @@ class SearchView(ViewSet):
         try:
             query_params = request.query_params
             q = query_params.get('q', None)
-            if not q:
-                return Response("Query parameter 'q' is required", status.HTTP_400_BAD_REQUEST)
+            if (not q):
+                return Response("Query parameter \'q\' is required", status.HTTP_400_BAD_REQUEST)
             results = solr_client.search(f'topic_name_suggest:{q}')
             return Response(SearchSerializer(results, many=True).data)
         except Exception as e:
