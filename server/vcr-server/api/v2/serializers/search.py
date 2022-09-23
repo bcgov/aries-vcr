@@ -4,7 +4,8 @@ import logging
 from collections import OrderedDict
 
 from django.db.models.manager import Manager
-from drf_haystack.serializers import HaystackFacetSerializer, HaystackSerializerMixin
+from drf_haystack.serializers import (HaystackFacetSerializer,
+                                      HaystackSerializerMixin)
 from rest_framework.serializers import ListSerializer, SerializerMethodField
 from rest_framework.utils.serializer_helpers import ReturnDict
 
@@ -14,22 +15,19 @@ from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 from api.v2.models.Name import Name
 from api.v2.search_indexes import CredentialIndex
-from api.v2.serializers.rest import (
-    AddressSerializer,
-    AttributeSerializer,
-    CredentialAddressSerializer,
-    CredentialAttributeSerializer,
-    CredentialNamedTopicSerializer,
-    CredentialNameSerializer,
-    CredentialSerializer,
-    CredentialSetSerializer,
-    CredentialTopicExtSerializer,
-    CredentialTypeSerializer,
-    IssuerSerializer,
-    NameSerializer,
-    TopicRelationshipSerializer,
-    TopicSerializer,
-)
+from api.v2.serializers.rest import (AddressSerializer, AttributeSerializer,
+                                     CredentialAddressSerializer,
+                                     CredentialAttributeSerializer,
+                                     CredentialNamedTopicSerializer,
+                                     CredentialNameSerializer,
+                                     CredentialSerializer,
+                                     CredentialSetSerializer,
+                                     CredentialTopicExtSerializer,
+                                     CredentialTypeSerializer,
+                                     IssuerSerializer,
+                                     NameSerializer,
+                                     TopicRelationshipSerializer,
+                                     TopicSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -160,14 +158,12 @@ class CustomTopicSerializer(TopicSerializer):
         )
 
     def get_names(self, obj):
-        names = (
-            Name.objects.filter(
-                credential__topic=obj,
-                credential__latest=True,
-                credential__revoked=False,
-            )
-            .filter(type__in=("entity_name_assumed", "entity_name"))
-            .order_by("credential__inactive")
+        names = Name.objects.filter(
+            credential__topic=obj, credential__latest=True, credential__revoked=False
+        ).filter(
+            type__in=("entity_name_assumed", "entity_name")
+        ).order_by(
+            "credential__inactive"
         )
         serializer = CustomNameSerializer(instance=names, many=True)
         return serializer.data
@@ -311,7 +307,11 @@ class CredentialFacetSerializer(HaystackFacetSerializer):
 
     class Meta:
         index_classes = [CredentialIndex]
-        fields = ["category", "credential_type_id", "issuer_id"]
+        fields = [
+            "category",
+            "credential_type_id",
+            "issuer_id"
+        ]
         field_options = {
             "category": {},
             "credential_type_id": {},
