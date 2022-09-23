@@ -67,7 +67,6 @@ class Credential(Auditable):
     def all_names(self):
         return self._cached("names", self.names.all())
 
-    # DEPRECATED
     @property
     def all_categories(self):
         return self._cached("categories", self.attributes.filter(format="category"))
