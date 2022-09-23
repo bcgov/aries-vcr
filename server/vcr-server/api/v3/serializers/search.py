@@ -9,7 +9,11 @@ from ..indexes.Address import AddressIndex
 from ..indexes.Name import NameIndex
 from ..indexes.Topic import TopicIndex
 
-from api.v2.serializers.rest import AddressSerializer, NameSerializer, TopicSerializer
+from api.v2.serializers.rest import (
+    AddressSerializer,
+    NameSerializer,
+    TopicSerializer
+)
 
 
 logger = logging.getLogger(__name__)
@@ -26,35 +30,35 @@ class AriesSearchSerializer(HaystackSerializer):
     credential_type = SerializerMethodField()
     credential_id = SerializerMethodField()
 
-    @staticmethod
-    @abstractmethod
+    @ staticmethod
+    @ abstractmethod
     def get_type(obj):
         pass
 
-    @staticmethod
-    @abstractmethod
+    @ staticmethod
+    @ abstractmethod
     def get_sub_type(obj):
         pass
 
-    @staticmethod
-    @abstractmethod
+    @ staticmethod
+    @ abstractmethod
     def get_value(obj):
         pass
 
-    @staticmethod
+    @ staticmethod
     def get_topic_source_id(obj):
         return obj.object.credential.topic.source_id
 
     # DEPRECATED
-    @staticmethod
+    @ staticmethod
     def get_topic_type(obj):
         return obj.object.credential.topic.type
 
-    @staticmethod
+    @ staticmethod
     def get_credential_id(obj):
         return obj.object.credential.credential_id
 
-    @staticmethod
+    @ staticmethod
     def get_credential_type(obj):
         return obj.object.credential.credential_type.description
 
@@ -65,91 +69,79 @@ class AriesSearchSerializer(HaystackSerializer):
 class AriesAutocompleteSerializer(AriesSearchSerializer):
     score = SerializerMethodField()
 
-    @staticmethod
+    @ staticmethod
     def get_score(obj):
         return obj.score
 
 
 class NameAutocompleteSerializer(AriesAutocompleteSerializer):
-    @staticmethod
+
+    @ staticmethod
     def get_type(obj):
         return "name"
 
-    @staticmethod
+    @ staticmethod
     def get_sub_type(obj):
         return obj.name_type
 
-    @staticmethod
+    @ staticmethod
     def get_value(obj):
         return obj.name_text
 
     class Meta(NameSerializer.Meta):
         index_classes = [NameIndex]
-        fields = (
-            "type",
-            "sub_type",
-            "value",
-            "score",
-            "topic_source_id",
-            "topic_type",
-            "credential_id",
-            "credential_type",
-        )
+        fields = ("type", "sub_type", "value", "score", "topic_source_id",
+                  "topic_type", "credential_id", "credential_type")
 
 
 class AddressAutocompleteSerializer(AriesAutocompleteSerializer):
-    @staticmethod
+
+    @ staticmethod
     def get_type(obj):
         return "address"
 
-    @staticmethod
+    @ staticmethod
     def get_sub_type(obj):
         return "civic_address"
 
-    @staticmethod
+    @ staticmethod
     def get_value(obj):
         return obj.address_civic_address
 
     class Meta(AddressSerializer.Meta):
         index_classes = [AddressIndex]
-        fields = (
-            "type",
-            "sub_type",
-            "value",
-            "score",
-            "topic_source_id",
-            "topic_type" "credential_id",
-            "credential_type",
-        )
+        fields = ("type", "sub_type", "value", "score", "topic_source_id",
+                  "topic_type" "credential_id", "credential_type")
 
 
 class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
-    @staticmethod
+
+    @ staticmethod
     def get_type(obj):
         return "topic"
 
-    @staticmethod
+    @ staticmethod
     def get_sub_type(obj):
         return "source_id"
 
-    @staticmethod
+    @ staticmethod
     def get_value(obj):
         return obj.topic_source_id
 
-    @staticmethod
+    @ staticmethod
     def get_topic_source_id(obj):
         return obj.object.source_id
 
     # DEPRECATED
-    @staticmethod
+    @ staticmethod
     def get_topic_type(obj):
         return obj.object.type
 
-    @staticmethod
+    @ staticmethod
     def get_credential_id(obj):
         return obj.object.foundational_credential.credential_id
 
-    @staticmethod
+    @ staticmethod
     def get_credential_type(obj):
         return obj.object.foundational_credential.credential_type.description
 
@@ -168,6 +160,7 @@ class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
 
 
 class AggregateAutocompleteSerializer(HaystackSerializer):
+
     class Meta:
         serializers = {
             AddressIndex: AddressAutocompleteSerializer,
