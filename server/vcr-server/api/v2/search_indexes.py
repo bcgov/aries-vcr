@@ -40,7 +40,7 @@ class CredentialIndex(TxnAwareSearchIndex, indexes.Indexable):
 
     @staticmethod
     def prepare_category(obj):
-        return ["{}::{}".format(cat.type, cat.value) for cat in obj.all_attributes]
+        return ["{}::{}".format(cat.type, cat.value) for cat in obj.all_categories]
 
     @staticmethod
     def prepare_topic_credential_type_id(obj):

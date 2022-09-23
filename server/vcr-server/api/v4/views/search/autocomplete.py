@@ -19,6 +19,7 @@ from api.v3.search_filters import (
 )
 from api.v4.search.filters.topic import (
     TopicCategoryFilter as AutocompleteCategoryFilter,
+    TopicExactFilter as AutocompleteExactFilter,
 )
 from api.v3.indexes import (
     Address as AddressIndex,
@@ -39,6 +40,9 @@ class AggregateAutocompleteSerializer(HaystackSerializer):
 
         filter_fields_map = {
             "category": ("topic_category",),
+            "issuer_id": ("topic_issuer_id"),
+            "type_id": ("topic_type_id"),
+            "credential_type_id": ("topic_credential_type_id"),
             "inactive": (
                 "address_credential_inactive",
                 "name_credential_inactive",
@@ -57,6 +61,24 @@ _swagger_params = [
         "category",
         openapi.IN_QUERY,
         description="Filter by Credential Category. The category name and value should be joined by '::'",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        "type_id",
+        openapi.IN_QUERY,
+        description="Filter by Credential Type ID of the Topic",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        "issuer_id",
+        openapi.IN_QUERY,
+        description="Filter by Issuer ID of the Topic",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        "credential_type_id",
+        openapi.IN_QUERY,
+        description="Filter by Credential Type ID of any credentials owned by the Topic",
         type=openapi.TYPE_STRING,
     ),
     # Put additional parameters here
@@ -79,4 +101,5 @@ class SearchView(AggregateAutocompleteView):
         AutocompleteFilter,
         AutocompleteStatusFilter,
         AutocompleteCategoryFilter,
+        AutocompleteExactFilter,
     )

@@ -55,7 +55,7 @@ class TopicIndex(TxnAwareSearchIndex, indexes.Indexable):
         if obj.foundational_credential:
             return [
                 f"{cat.type}::{cat.value}"
-                for cat in obj.foundational_credential.all_attributes
+                for cat in obj.foundational_credential.all_categories
             ]
         return []
 

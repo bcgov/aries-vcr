@@ -148,20 +148,6 @@ build-solr() {
     'solr'
 }
 
-# build-db() {
-#   #
-#   # db
-#   #
-#   echo -e "\nBuilding vcr-postgresql image ..."
-#   ${S2I_EXE} build \
-#     --copy \
-#     -e "HTTP_PROXY=${HTTP_PROXY}" \
-#     -e "HTTPS_PROXY=${HTTPS_PROXY}" \
-#     '../server/db/config' \
-#     'registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest' \
-#     'vcr-postgresql'
-# }
-
 build-schema-spy() {
   #
   # schema-spy
@@ -229,7 +215,6 @@ build-echo-app() {
 
 build-all() {
   build-solr
-  # build-db
   build-schema-spy
   build-api
   build-agent

@@ -292,11 +292,12 @@ services:
   # vcr-db
   #
   vcr-db:
-    image: postgres:14
+    build: ./db
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRES_DB=${POSTGRESQL_DATABASE}
+      - POSTGRES_ADMIN_USER=${POSTGRESQL_ADMIN_USER}
       - POSTGRES_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
     networks:
       - vcr
@@ -309,11 +310,12 @@ services:
   # wallet-db
   #
   wallet-db:
-    image: postgres:14
+    build: ./db
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRES_DB=${POSTGRESQL_DATABASE}
+      - POSTGRES_ADMIN_USER=${POSTGRESQL_ADMIN_USER}
       - POSTGRES_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
     networks:
       - vcr
