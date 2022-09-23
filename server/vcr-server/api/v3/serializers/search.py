@@ -147,16 +147,8 @@ class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
 
     class Meta(TopicSerializer.Meta):
         index_classes = [TopicIndex]
-        fields = (
-            "type",
-            "sub_type",
-            "value",
-            "score",
-            "topic_source_id",
-            "topic_type",
-            "credential_id",
-            "credential_type",
-        )
+        fields = ("type", "sub_type", "value", "score", "topic_source_id",
+                  "topic_type", "credential_id", "credential_type")
 
 
 class AggregateAutocompleteSerializer(HaystackSerializer):
