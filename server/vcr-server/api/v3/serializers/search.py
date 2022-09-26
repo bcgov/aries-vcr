@@ -115,6 +115,12 @@ class AddressAutocompleteSerializer(AriesAutocompleteSerializer):
 
 
 class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
+    id = SerializerMethodField()
+    names = SerializerMethodField()
+
+    @staticmethod
+    def get_id(obj):
+        return obj.object.id
 
     @staticmethod
     def get_type(obj):
@@ -145,10 +151,16 @@ class TopicAutocompleteSerializer(AriesAutocompleteSerializer):
     def get_credential_type(obj):
         return obj.object.foundational_credential.credential_type.description
 
+    @staticmethod
+    def get_names(obj):
+        return [
+            name.text for name in obj.object.get_active_names() if name.type == 'entity_name'
+        ]
+
     class Meta(TopicSerializer.Meta):
         index_classes = [TopicIndex]
-        fields = ("type", "sub_type", "value", "score", "topic_source_id",
-                  "topic_type", "credential_id", "credential_type")
+        fields = ("id", "type", "sub_type", "value", "score", "topic_source_id",
+                  "topic_type", "credential_id", "credential_type", "names")
 
 
 class AggregateAutocompleteSerializer(HaystackSerializer):

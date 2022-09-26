@@ -8,12 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_haystack.mixins import FacetMixin
 from drf_haystack.filters import HaystackOrderingFilter
 
-from api.v2.search.filters import (
-    CategoryFilter,
-    CustomFacetFilter,
-    ExactFilter,
-    StatusFilter,
-)
+from api.v2.search.filters import CustomFacetFilter
 
 from api.v2.models.Topic import Topic
 

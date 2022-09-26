@@ -97,7 +97,7 @@ class AutocompleteFilter(CustomFilter):
     """
 
     query_builder_class = get_autocomplete_builder(
-        ("name_text", "address_civic_address", "topic_source_id")
+        ("name_text", "address_civic_address", "topic_source_id", "topic_name")
     )
 
 

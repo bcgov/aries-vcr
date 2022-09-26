@@ -292,12 +292,13 @@ services:
   # vcr-db
   #
   vcr-db:
-    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
+    build: ./db
     environment:
-      - POSTGRESQL_USER=${POSTGRESQL_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
-      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
-      - POSTGRESQL_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_DB=${POSTGRESQL_DATABASE}
+      - POSTGRES_ADMIN_USER=${POSTGRESQL_ADMIN_USER}
+      - POSTGRES_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
     networks:
       - vcr
     ports:
@@ -309,12 +310,13 @@ services:
   # wallet-db
   #
   wallet-db:
-    image: vcr-postgresql
+    build: ./db
     environment:
-      - POSTGRESQL_USER=${POSTGRESQL_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
-      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
-      - POSTGRESQL_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_DB=${POSTGRESQL_DATABASE}
+      - POSTGRES_ADMIN_USER=${POSTGRESQL_ADMIN_USER}
+      - POSTGRES_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD}
     networks:
       - vcr
     ports:

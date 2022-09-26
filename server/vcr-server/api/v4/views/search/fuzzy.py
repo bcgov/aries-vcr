@@ -1,4 +1,6 @@
-import json, logging, pysolr
+import json
+import logging
+import pysolr
 
 from rest_framework import permissions, status
 from rest_framework.response import Response
