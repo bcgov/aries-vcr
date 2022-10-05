@@ -33,7 +33,7 @@ class Proximate(Clean):
     def prepare(self, query_obj):
         # clean input
         query_string = super(Proximate, self).prepare(query_obj)
-        if query_string is not "":
+        if query_string != "":
             # match phrase with minimal word movements
             proximity = self.kwargs.get("proximity", 5)
             parts = query_string.split(" ")
