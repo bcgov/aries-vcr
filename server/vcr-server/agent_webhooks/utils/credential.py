@@ -677,10 +677,10 @@ class CredentialManager(object):
                 model.format = "category"
 
             # skip blank in names and attributes
-            if model_name == "name" and (model.text is None or model.text is ""):
+            if model_name == "name" and (model.text is None or model.text == ""):
                 continue
             if (model_name == "category" or model_name == "attribute") and (
-                not model.type or model.value is None or model.value is ""
+                not model.type or model.value is None or model.value == ""
             ):
                 continue
 
