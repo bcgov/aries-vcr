@@ -285,6 +285,7 @@ configureEnvironment() {
 
   # wallet-db
   export WALLET_TYPE="postgres_storage"
+  export ACAPY_WALLET_TYPE=${ACAPY_WALLET_TYPE:-indy}
   export WALLET_ENCRYPTION_KEY="key"
   export POSTGRESQL_WALLET_HOST="wallet-db"
   export POSTGRESQL_WALLET_PORT="5432"
@@ -593,7 +594,7 @@ shift || COMMAND=usage
 
 case "${COMMAND}" in
   start|up)
-    _startupParams=$(getStartupParams --force-recreate $@)
+    _startupParams=$(getStartupParams $@)
     configureEnvironment "$@"
     docker-compose ${composeOptions} up --scale vcr-worker=2 -d ${_startupParams}
     wait_for_vcr_api
@@ -601,7 +602,7 @@ case "${COMMAND}" in
     echo 'Want to see the scrolling container logs? Run "./manage logs"'
     ;;
   scale|upscale)
-    _startupParams=$(getStartupParams --force-recreate $@)
+    _startupParams=$(getStartupParams $@)
     configureEnvironment "$@"
     echo "NOTE make sure you have previously run $@ start to initialize the agent and wallet!!!"
     echo "NOTE make sure you have removed the port mapping in docker-compose.yml for vcr-api and vcr-agent!!!"
