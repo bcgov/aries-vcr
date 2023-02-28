@@ -64,7 +64,7 @@ This repo has [setup instructions](https://github.com/bcgov/aries-vcr/blob/main/
 
 If you wish to explore the API, a great starting place is the [API web interface for OrgBook BC](https://orgbook.gov.bc.ca/api/), presented using Swagger. Also, this [API repo](https://github.com/bcgov/orgbook-bc-api-docs) has a demo of how you can use the REST API to access Aries VCR credentials.
 
-For the client (web) interface, the search is powered by [Solr](https://solr.apache.org). The user interface is fully customizable; this repo has instructions on [customizing the interface and theme](https://github.com/bcgov/aries-vcr/blob/main/client/ThemeDevelopment.md).
+For the client (web) interface, the search is powered by [Solr](https://solr.apache.org). The user interface is fully customizable; this repo has instructions on [building and customizing the interface and theme](https://github.com/bcgov/aries-vcr-client).
 
 Aries VCR also provides a [web hook facility](https://github.com/bcgov/aries-vcr/blob/main/docs/Subscription-Web-Hooks.md) so parties can subscribe to notifications for credential updates. It is possible to subscribe to all new credentials, any updates to existing credentials, or updates to specific credentials.
 
