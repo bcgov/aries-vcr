@@ -29,7 +29,7 @@
 
 This guide is intended for use by teams and entities who are planning to or are currently working with the Aries VCR software components.
 
-If you are unfamiliar with the underpinning technologies and concepts that are utilized in this project, please review the getting started documentation in the vonx.io homepage: [Get Started with VON - Verifiable Organizations Network](https:\\vonx.io\getting_started\get-started\#technical-components-of-a-von-ecosystem)
+If you are unfamiliar with the underpinning technologies and concepts that are utilized in this project, you can review the [BC Government initiatives](https://digital.gov.bc.ca/digital-trust/) and [tools](https://digital.gov.bc.ca/digital-trust/tools/tools-overview/), and you can also ask questions in the [Hyperledger community discord channel](https://discord.com/servers/hyperledger-foundation-905194001349627914).
 
 ## Before you Start
 
@@ -84,7 +84,7 @@ The `./manage` script has a number of commands. Run it without arguments to see 
 
 Once the build process completes, you can test the build to make sure everything works properly:
 ```bash
-./manage start
+./manage start --logs
 ```
 Monitor the logs for error messages as the nodes start up.
 
@@ -108,9 +108,9 @@ Fork the project, navigate to the folder where you keep your projects and reposi
 git clone https://github.com/<username>/aries-vcr
 ```
 
-Finally, change directory to the new created starter-kit located in the aries-vcr project folder:
+Finally, change directory to the docker directory located in the aries-vcr project folder:
 ```bash
-cd aries-vcr/starter-kits/credential-registry/docker
+cd aries-vcr/docker
 ```
 
 ### Building the Images
@@ -124,9 +124,9 @@ To build the images run:
 
 ### Starting the Project
 
-The Aries VCR starter kit requires a unique seed for development. This is a 32 character value that uniquely identifies your wallet/ledger seed to the VON ledger running locally or on another network.
+Aries VCR requires a unique seed for development. This is a 32 character value that uniquely identifies your wallet/ledger seed to the VON ledger running locally or on another network.
 
-You will need to choose a unique seed value for development. Use a value that is not used by another agent within the environment. It must be 32 characters long exactly. If you're using an externally hosted VON ledger you will need to be careful to select a unique seed in this step.
+You can choose a unique seed value for development. Use a value that is not used by another agent within the environment. It must be 32 characters long exactly. If you're using an externally hosted VON ledger you will need to be careful to select a unique seed in this step.
 
 Register the unique seed by running the following script command: 
 ```bash
@@ -134,8 +134,15 @@ Register the unique seed by running the following script command:
 ```
 
 Finally run the manage script to start the project: 
+
 ```bash
-./manage start seed=my_unique_seed_00000000000000000
+./manage start seed=my_unique_seed_00000000000000000 --logs
+```
+
+Note that you can let the script choose a seed for you as follows:
+
+```bash
+./manage start --logs
 ```
 
 This will start the project interactively; with all of the logs being written to the command line.
@@ -162,6 +169,22 @@ To remove the volumes and network elements run:
 ./manage down
 ```
 
+### Building the "BC Gov" Version of the Images
+
+You can build the BC Government specific version of the application as follows:
+
+To build the images run: 
+
+```bash
+THEME=bcgov DEBUG=false ./manage build
+```
+
+... and then to run the application:
+
+```bash
+THEME=bcgov DEBUG=false ./manage start --logs
+```
+
 ### Using the Application
 
 - The API is exposed at: http://localhost:8081/
@@ -177,83 +200,11 @@ To accomplish this, the docker compose file defines simple sleep commands to pau
 
 ## Aries VCR Issuer Controller
 
-There are two issuer-verifier agents that are available for use with your project. The simplified issuer controller recommended for quick-start is the [Aries VCR Issuer Controller](https://github.com/bcgov/aries-vcr-issuer-controller/blob/master/GettingStartedTutorial.md#von-agent-getting-started-tutorial).
+There is an issuer-verifier agent that is available for use with your project. This is the [Aries VCR Issuer Controller](https://github.com/bcgov/aries-vcr-issuer-controller).
 
-### Initialize the project
+The tutorial for running this issuer is located [here](https://github.com/bcgov/aries-vcr-issuer-controller/blob/main/GettingStartedTutorial.md).
 
-Clone the project into your projects folder, or if you are creating an issuer controller for use as a custom issuer-verifier as part of your project rather than just for testing purposes start a new github project, download the code, and copy it into a local clone of the github project.
-
-Run the initialization script after cloning the project.
-
-```bash
-# Start in the folder with repos (Local Machine) or home directory (In Browser)
-$ cd aries-vcr-issuer-controller
-$ . init.sh  # And follow the prompts
-```
-
-The init.sh script does a number of things:
-
-- Prompts for some names to use for your basic agent.
-- Prompts for whether you are running with Play With Docker or locally and sets some variables accordingly.
-- Shows you the lines that were changed in the agent configuration files (in issuer_controller/config).
-
-### Register the DID
-
-This project does not currently automatically register the DID located in the settings.yml file.
-
-The DID is located in the `aries-vcr-issuer-controller/docker/manage` file on line 105 (it will default to myorg_issuer_0000000000000000001)
-
-### Build and Start the Project
-
-Navigate to the docker folder in the project. Run: `./manage build` to build all the necessary containers. Finally run `./manage start` to initialize the project.
-
-### Updates to Credential Schema
-Aries VCR has undergone updates to the issuer credential schema. See the latest updates and how to apply them [here](Schema-changes.md).
-
-### Issuing Credentials
-
-There are a couple of different ways to issue credentials in the agent issuer. Review the full documentation located here to learn more about the agent issuer located [here](https://github.com/bcgov/aries-vcr-issuer-controller).
-
-To submit credentials, use Postman (or similar, based on your local configuration) to submit the following to http://localhost:5000/issue-credential
-```
-[
-    {
-        "schema": "ian-registration.ian-ville",
-        "version": "1.0.0",
-        "attributes": {
-            "corp_num": "ABC12345",
-            "registration_date": "2018-01-01", 
-            "entity_name": "Ima Permit",
-            "entity_name_effective": "2018-01-01", 
-            "entity_status": "ACT", 
-            "entity_status_effective": "2019-01-01",
-            "entity_type": "ABC", 
-            "registered_jurisdiction": "BC", 
-            "addressee": "A Person",
-            "address_line_1": "123 Some Street",
-            "city": "Victoria",
-            "country": "Canada",
-            "postal_code": "V1V1V1",
-            "province": "BC",
-            "effective_date": "2019-01-01",
-            "expiry_date": ""
-        }
-    },
-    {
-        "schema": "ian-permit.ian-ville",
-        "version": "1.0.0",
-        "attributes": {
-            "permit_id": "MYPERMIT12345",
-            "entity_name": "Ima Permit",
-            "corp_num": "ABC12345",
-            "permit_issued_date": "2018-01-01", 
-            "permit_type": "ABC", 
-            "permit_status": "OK", 
-            "effective_date": "2019-01-01"
-        }
-    }
-]
-```
+Note that if you are running the demo issuer with the "base" version of the Aries VCR API (as opposed to the BC Government version) you may see some errors when posting the credentials.  This is a known issue.  The posted credentials should still be visible through the Aries VCR Client and API.
 
 ## Aries VCR Client
 
@@ -263,7 +214,7 @@ See details in the [bcgov/aries-vcr-client](https://github.com/bcgov/aries-vcr-c
 
 ```bash
 ./manage build
-./manage start
+./manage start --logs
 ```
 
 Here are some examples of applications that have extended the base Client for their own purposes:
