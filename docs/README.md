@@ -108,9 +108,9 @@ Fork the project, navigate to the folder where you keep your projects and reposi
 git clone https://github.com/<username>/aries-vcr
 ```
 
-Finally, change directory to the new created starter-kit located in the aries-vcr project folder:
+Finally, change directory to the docker directory located in the aries-vcr project folder:
 ```bash
-cd aries-vcr/starter-kits/credential-registry/docker
+cd aries-vcr/docker
 ```
 
 ### Building the Images
@@ -124,7 +124,7 @@ To build the images run:
 
 ### Starting the Project
 
-The Aries VCR starter kit requires a unique seed for development. This is a 32 character value that uniquely identifies your wallet/ledger seed to the VON ledger running locally or on another network.
+Aries VCR requires a unique seed for development. This is a 32 character value that uniquely identifies your wallet/ledger seed to the VON ledger running locally or on another network.
 
 You can choose a unique seed value for development. Use a value that is not used by another agent within the environment. It must be 32 characters long exactly. If you're using an externally hosted VON ledger you will need to be careful to select a unique seed in this step.
 
