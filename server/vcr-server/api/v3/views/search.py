@@ -39,7 +39,6 @@ from api.v2.search.filters import (
     StatusFilter,
 )
 from api.v2.serializers.search import (
-    CredentialAutocompleteSerializer,
     CredentialFacetSerializer,
     CredentialSearchSerializer,
     CredentialTopicSearchSerializer,

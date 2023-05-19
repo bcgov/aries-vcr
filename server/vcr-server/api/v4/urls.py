@@ -9,8 +9,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from api.v4.views.search import (
     topic as search_topic,
     credential as search_credential,
-    fuzzy as search_fuzzy,
-    autocomplete as search_autocomplete,
+    fuzzy as search_fuzzy
 )
 from api.v4.views.rest import credential_type, issuer, topic, schemas
 from api.v4.views.misc.contact import send_contact
@@ -42,8 +41,6 @@ router.register(r"topic", topic.RestView)
 router.register(r"search/credential", search_credential.SearchView, "Credential Search")
 router.register(r"search/topic", search_topic.SearchView, "Topic Search")
 router.register(r"search/fuzzy", search_fuzzy.SearchView, "Fuzzy Search")
-router.register(r"search/autocomplete", search_autocomplete.SearchView,
-                "Aggregate Autocomplete")
 
 # Misc endpoints
 miscPatterns = [
