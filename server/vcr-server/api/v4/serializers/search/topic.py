@@ -1,23 +1,16 @@
-import logging
 from collections import OrderedDict
 
 from rest_framework.serializers import BooleanField, CharField, DateTimeField, IntegerField, SerializerMethodField
-from drf_haystack.serializers import HaystackSerializer, HaystackFacetSerializer
+from drf_haystack.serializers import HaystackSerializer
 
-from api.v2.models.Address import Address
-from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
-from api.v2.models.Name import Name
-from api.v2.models.Topic import Topic
 
 from api.v2.serializers.rest import (
     AddressSerializer,
-    CredentialSerializer,
     CredentialSetSerializer,
     CredentialTypeSerializer,
     NameSerializer,
-    TopicSerializer,
     TopicAttributeSerializer,
 )
 from api.v2.serializers.search import (
@@ -28,10 +21,10 @@ from api.v3.indexes.Topic import TopicIndex
 
 
 facet_filter_display_map = {
-    'topic_category': 'category',
-    'topic_issuer_id': 'issuer_id',
-    'topic_type_id': 'type_id',
-    'topic_credential_type_id': 'credential_type_id',
+    "topic_category": "category",
+    "topic_issuer_id": "issuer_id",
+    "topic_type_id": "type_id",
+    "topic_credential_type_id": "credential_type_id",
 }
 
 
@@ -88,7 +81,8 @@ class SearchSerializer(HaystackSerializer):
         fields = ("id", "source_id", "type", "names", "addresses", "attributes", "credential_set",
                   "credential_type", "inactive", "revoked", "effective_date", "revoked_date")
         # ExactFilter fields
-        exact_fields = ("topic_issuer_id", "topic_type_id", "topic_credential_type_id")
+        exact_fields = ("topic_issuer_id", "topic_type_id",
+                        "topic_credential_type_id")
         # StatusFilter fields
         status_fields = {"topic_inactive": "false", "topic_revoked": "false"}
         # HaystackFilter fields
@@ -125,7 +119,7 @@ class FacetSerializer(CredentialFacetSerializer):
             if len(rows):
                 text = {
                     field_name: {
-                        str(row['id']): row[field_selector] for row in rows.values()
+                        str(row["id"]): row[field_selector] for row in rows.values()
                     }
                 }
 
