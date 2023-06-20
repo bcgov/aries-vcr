@@ -276,7 +276,7 @@ def call_agent_with_retry(agent_url, post_method=True, payload=None, headers=Non
                 503,  # Service unavailable
                 504   # Gateway timeout
             ],
-            method_whitelist=['HEAD', 'TRACE', 'GET',
+            allowed_methods=['HEAD', 'TRACE', 'GET',
                               'POST', 'PUT', 'OPTIONS', 'DELETE'],
             read=0,
             redirect=0,
