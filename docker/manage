@@ -1,7 +1,7 @@
 #!/bin/bash
 export MSYS_NO_PATHCONV=1
 # getDockerHost; for details refer to https://github.com/bcgov/DITP-DevOps/tree/main/code/snippets#getdockerhost
-. /dev/stdin <<<"$(cat <(curl -s --raw https://raw.githubusercontent.com/bcgov/DITP-DevOps/main/code/snippets/getDockerHost))" 
+. /dev/stdin <<<"$(cat <(curl -s --raw https://raw.githubusercontent.com/bcgov/DITP-DevOps/main/code/snippets/getDockerHost))"
 export DOCKERHOST=$(getDockerHost)
 set -e
 
@@ -23,25 +23,25 @@ export VCR_API_URL_CONFIG="${VCR_API_URL_CONFIG}"
 # -----------------------------------------------------------------------------------------------------------------
 usage() {
   cat <<-EOF
-    
+
       Usage: $0 [command] [options]
-    
+
       Commands:
-    
+
       build - Build the docker images for the project.
               You need to do this first, since the builds require
               a combination of Docker and S2I builds.
-    
+
               You can build individual components as shown below, components that have
               dependencies will have these dependencies built too.
-    
+
               Examples:
                - Build the API only.
-    
+
                 $0 build api
-         
+
               By default all containers that components comprise of, will be rebuilt.
-    
+
                 $0 build
 
               Containers:
@@ -50,11 +50,11 @@ usage() {
                 - schema-spy
                 - api
                 - agent
-    
+
       up -  Creates the application containers from the built images
             and starts the services based on the docker-compose.yml file.
 
-            You can pass in a list of containers to start.  
+            You can pass in a list of containers to start.
             By default all containers will be started.
 
             You can include a '--wait' parameter which will wait until the ledger is active
@@ -67,8 +67,8 @@ usage() {
             $0 start vcr-solr
             $0 start vcr-api
 
-      start - Same as up 
-    
+      start - Same as up
+
       scale/upscale - Same as start/up however starts multiple instances of the aca-py and api containers.
 
             Note that to run "scale" you need to update the docker-compose.yml file to REMOVE exposed ports
@@ -77,10 +77,10 @@ usage() {
             You also need to FIRST run './manage start' to initialize the agent and wallet, then run
             './manage stop' and then './manage scale'.
 
-      restart - Re-starts the application containers, 
+      restart - Re-starts the application containers,
                 useful when updating one of the container images during development.
 
-            You can pass in a list of containers to be restarted.  
+            You can pass in a list of containers to be restarted.
             By default all containers will be restarted.
 
             Examples:
@@ -92,13 +92,13 @@ usage() {
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
              are not deleted so they will be reused the next time you run start.
-    
+
       down - Brings down the services and removes the volumes (storage) and containers.
       rm - Same as down
-    
+
       registerDids - Register the DIDs for the issuer services.
                      This is intended for development use.
-    
+
                      Examples:
                      $0 registerDids seed=the_org_book_0000000000000000000
                      - This will register the DID using the provided seed with the locally running von-network instance.
@@ -135,7 +135,7 @@ build-solr() {
   #
   echo -e "\nBuilding solr-base image ..."
   docker build \
-    'https://github.com/bcgov/openshift-solr.git#solr-8.8.1' \
+    'https://github.com/bcgov/openshift-solr.git#8.11.2' \
     -t 'solr-base'
 
   echo -e "\nBuilding solr image ..."
@@ -163,7 +163,7 @@ build-api() {
   # vcr-api
   #
   BASE_IMAGE="registry.access.redhat.com/ubi9/python-39:latest"
-  
+
   echo -e "\nBuilding vcr-api image from ${BASE_IMAGE}..."
   ${S2I_EXE} build \
     --copy \
@@ -384,7 +384,7 @@ function logs() {
     while getopts ":f-:" FLAG; do
       case $FLAG in
         f ) local _force=1 ;;
-        - ) 
+        - )
             case ${OPTARG} in
                 "no-tail"*) no_tail=1
               ;;
@@ -624,7 +624,7 @@ case "${COMMAND}" in
     ;;
   stop)
     configureEnvironment
-    docker-compose stop 
+    docker-compose stop
     ;;
   startdb)
     configureEnvironment "$@"
