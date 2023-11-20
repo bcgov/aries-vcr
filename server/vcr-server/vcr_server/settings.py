@@ -295,7 +295,7 @@ API_METADATA = {
     "organizations and businesses will also begin to issue digital records through "
     "OrgBook BC. For example, permits and licenses issued by various government services.",
     "terms": {"url": "https://www2.gov.bc.ca/gov/content/data/open-data"},
-    "contact": {"email": "bcdevexchange@gov.bc.ca"},
+    "contact": {"email": "DItrust@gov.bc.ca"},
     "license": {
         "name": "Access Only License - British Columbia",
         "url": "https://bcgov.github.io/data-publication/pages/faq.html#data-publication-licensing-options---open-dataaccess-only",
