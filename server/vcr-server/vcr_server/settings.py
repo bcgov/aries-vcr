@@ -297,8 +297,8 @@ API_METADATA = {
     "terms": {"url": "https://www2.gov.bc.ca/gov/content/data/open-data"},
     "contact": {"email": "bcdevexchange@gov.bc.ca"},
     "license": {
-        "name": "Open Government License - British Columbia",
-        "url": "https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information",
+        "name": "Access Only License - British Columbia",
+        "url": "https://bcgov.github.io/data-publication/pages/faq.html#data-publication-licensing-options---open-dataaccess-only",
     },
 }
 
