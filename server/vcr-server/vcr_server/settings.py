@@ -294,7 +294,6 @@ API_METADATA = {
     "businesses in the Province of British Columbia. Over time, other government "
     "organizations and businesses will also begin to issue digital records through "
     "OrgBook BC. For example, permits and licenses issued by various government services.",
-    "terms": {"url": "https://www2.gov.bc.ca/gov/content/data/open-data"},
     "contact": {"email": "DItrust@gov.bc.ca"},
     "license": {
         "name": "Access Only License - British Columbia",
