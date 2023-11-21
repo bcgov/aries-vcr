@@ -19,7 +19,6 @@ schema_view = get_schema_view(
         title=API_METADATA["title"],
         description=API_METADATA["description"],
         default_version="v2",
-        terms_of_service=API_METADATA["terms"]["url"],
         contact=openapi.Contact(**API_METADATA["contact"]),
         license=openapi.License(**API_METADATA["license"]),
     ),
