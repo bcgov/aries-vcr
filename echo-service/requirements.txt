@@ -3,7 +3,7 @@ chardet==3.0.4
 Django<3
 djangorestframework<4
 drf-haystack<1.9
-idna==2.8
+idna==2.10
 pytz==2018.9
 requests<3
 urllib3<2
