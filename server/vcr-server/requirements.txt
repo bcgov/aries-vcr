@@ -47,7 +47,7 @@ asgiref~=3.1.2
 # rest hooks and related
 git+https://github.com/wadeking98/django-rest-hooks@v1.7.0
 drf-nested-routers
-celery~=5.2.2
+celery~=5.4.0
 vine>=5.0.0,<6.0
 
 # transitive dependency management
