@@ -6,4 +6,4 @@ drf-haystack<1.9
 idna==2.8
 pytz==2018.9
 requests<3
-urllib3<2
+urllib3<3
