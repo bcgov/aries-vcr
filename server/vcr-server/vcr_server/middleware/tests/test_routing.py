@@ -58,12 +58,12 @@ class Routing_Middleware_TestCase(TestCase):
     def test_get_coalesced_request_version_noheader_path(self):
         result = self.routing_middleware.get_coalesced_request_version(None, "latest")
 
-        self.assertEqual(result, "v3")
+        self.assertEqual(result, "v4")
 
     def test_get_coalesced_request_version_header_path_matching(self):
         result = self.routing_middleware.get_coalesced_request_version("latest", "latest")
 
-        self.assertEqual(result, "v3")
+        self.assertEqual(result, "v4")
 
     def test_get_coalesced_request_version_header_path_conflicting(self):
         with self.assertRaises(ApiVersionException) as cm:
