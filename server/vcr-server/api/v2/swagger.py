@@ -21,10 +21,6 @@ class SwaggerSchemaView(APIView):
     def get(self, request):
         params = {"urlconf": "api.v2.urls"}
         if "HTTP_X_FORWARDED_HOST" in request.META:
-            # forwarding via vcr-web
-            # params["url"] = "{}://{}/api".format(
-            #    request.META.get("HTTP_X_FORWARDED_PROTO", "http"),
-            #    request.META["HTTP_X_FORWARDED_HOST"])
             params["url"] = "/api"
         else:
             params["url"] = "/api/v2"
