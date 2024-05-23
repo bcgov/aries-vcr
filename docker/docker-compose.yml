@@ -188,6 +188,7 @@ services:
         --trace-target '${TRACE_TARGET}' \
         --trace-tag 'acapy.events' \
         --trace-label ${AGENT_NAME} \
+        --debug-webhooks \
         --plugin indy_catalyst_issuer_registration",
       ]
 
