@@ -29,7 +29,7 @@ django-nose>=1.4.2
 
 # Search
 drf-haystack>=1.6.1,<2
-django-haystack>=2.7.dev0,<3
+django-haystack>=2.7.dev0,<4
 pysolr>=3.6.0,<4
 
 # Generator
