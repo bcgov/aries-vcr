@@ -1,4 +1,4 @@
-certifi==2023.7.22
+certifi==2023.11.17
 chardet==3.0.4
 Django<6
 djangorestframework<4
