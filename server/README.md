@@ -14,24 +14,6 @@ The API is developed in Django/Python.
 
 `aries-vcr` is configured for debugging while running in its Docker environment using [Visual Studio Code](http://code.visualstudio.com).
 
-To run in debug mode, append DJANGO_DEBUG=True to your run command. For example, `./manage start DJANGO_DEBUG=True`. This will start the debugger software and wait for a remote debugger to be attached before proceeding further.
-
-To add a new debugger session, create a `launch.json` file and add the following configuration:
-```
-{
-    "name": "vcr-server",
-    "type": "python",
-    "request": "attach",
-    "pathMappings": [
-        {
-            "localRoot": "${workspaceFolder}/server/vcr-server",
-            "remoteRoot": "/home/indy"
-        }
-    ],
-    "port": 3000,
-    "host": "localhost"
-}
-```
 
 ## Database Migrations
 

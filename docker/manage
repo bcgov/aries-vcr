@@ -307,7 +307,7 @@ configureEnvironment() {
   export APP_CONFIG=${APP_CONFIG:-}
   # export APP_MODULE=api_indy.vcr_anchor.boot:init_app
   export API_HTTP_PORT=${API_HTTP_PORT:-8080}
-  export EXPOSED_API_HTTP_PORT=${EXPOSED_API_HTTP_PORT:-8081}
+  export EXPOSED_API_HTTP_PORT=${EXPOSED_API_HTTP_PORT:-8080}
   export DATABASE_SERVICE_NAME="vcr-db"
   export DATABASE_ENGINE=${DATABASE_ENGINE-postgresql}
   export DATABASE_NAME=${POSTGRESQL_DATABASE}
@@ -315,7 +315,6 @@ configureEnvironment() {
   export DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
   export DEMO_SITE=${DEMO_SITE-True}
   export DJANGO_SECRET_KEY=wpn1GZrouOryH2FshRrpVHcEhMfMLtmTWMC2K5Vhx8MAi74H5y
-  export DJANGO_DEBUG=${DJANGO_DEBUG:-"False"}
   export DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL-ERROR}
   export OPTIMIZE_TABLE_ROW_COUNTS=${OPTIMIZE_TABLE_ROW_COUNTS-}
   export INDY_DISABLED=${INDY_DISABLED-}
@@ -372,7 +371,7 @@ configureEnvironment() {
   unset composeOptions
   if [ $DEBUG = true  ]; then
     # Override the vcr-api volume settings; add volume mount to enable hot reloading.
-    export composeOptions="-f docker-compose.yml -f docker-compose.dev.yml"
+    export composeOptions="-f docker-compose.yml -f docker-compose-debug.yml"
   fi
 }
 
