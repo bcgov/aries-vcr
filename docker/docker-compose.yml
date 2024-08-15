@@ -81,10 +81,10 @@ services:
       - PAGE_SIZE=${PAGE_SIZE}
       - MAX_PAGE_SIZE=${MAX_PAGE_SIZE}
     volumes:
-      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
-      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
-      - ../server/vcr-server/api:/home/indy/api
-      - vcr-wallet:/home/indy/.indy_client/wallet
+      - ../server/vcr-server/vcr_server:/opt/app-root/src/vcr_server
+      - ../server/vcr-server/subscriptions:/opt/app-root/src/subscriptions
+      - ../server/vcr-server/agent_webhooks:/opt/app-root/src/agent_webhooks
+      - ../server/vcr-server/api:/opt/app-root/src/api
     networks:
       - vcr
     # when running "./manage scale" comment out or remove these port mappings:
