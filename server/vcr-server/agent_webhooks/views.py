@@ -25,8 +25,6 @@ TOPIC_CREDENTIALS_2_0 = "issue_credential_v2_0"
 TOPIC_CREDENTIALS_2_0_INDY = "issue_credential_v2_0_indy"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
-TOPIC_GET_ACTIVE_MENU = "get-active-menu"
-TOPIC_PERFORM_MENU_ACTION = "perform-menu-action"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
 
 PROCESS_INBOUND_CREDENTIALS = os.environ.get('PROCESS_INBOUND_CREDENTIALS', 'true')
@@ -76,12 +74,6 @@ def agent_callback(request, topic):
 
     elif topic == TOPIC_PRESENTATIONS or topic == TOPIC_PRESENT_PROOF:
         response = handle_presentations(state, message)
-
-    elif topic == TOPIC_GET_ACTIVE_MENU:
-        response = Response("")
-
-    elif topic == TOPIC_PERFORM_MENU_ACTION:
-        response = Response("")
 
     elif topic == TOPIC_ISSUER_REGISTRATION:
         response = handle_register_issuer(message)
@@ -393,14 +385,6 @@ def handle_register_issuer(message):
     # reset the global CredentialManager instance (to clear the CredentialType cache)
     global credential_manager
     credential_manager = CredentialManager()
-
-    # update tagging policy
-    tag_policy_updates = {}
-    cred_types = updated.credential_types
-    for ctype in cred_types:
-        tag_attrs = ctype.get_tagged_attributes()
-        if tag_attrs:
-            tag_policy_updates[ctype.credential_def_id] = tag_attrs
 
     return Response(
         content_type="application/json", data={"result": updated.serialize()}
