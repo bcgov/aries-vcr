@@ -55,3 +55,6 @@ iniconfig<=1.0.1
 
 # api tracking
 snowplow-tracker~=0.9.1
+
+# validation
+marshmallow>=3.0.0
