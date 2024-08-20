@@ -5,11 +5,9 @@ from agent_webhooks.utils import issuer
 
 
 class IssuerManager_TestCase(TestCase):
-
-    # Note: saving to JSONField is not supported when we use
-    # sqlite as the back-end (in testing)
+    # Note: saving to JSONField is not supported when we use sqlite as the back-end (in testing)
     @patch("api.v2.models.CredentialType.save", autospec=True)
-    def test_issuer_registration(self, mock_cred_type_save):
+    def test_issuer_registration(self, mock_credential_type_save):
         test_spec = {
             "issuer_registration": {
                 "credential_types": [
@@ -29,7 +27,7 @@ class IssuerManager_TestCase(TestCase):
                         ],
                         "endpoint": "endpoint",
                         "cardinality_fields": ["field"],
-                        "mapping": {},
+                        "mappings": {},
                         "visible_fields": "visible,fields",
                         "logo_b64": "logo base64",
                     }
@@ -56,12 +54,16 @@ class IssuerManager_TestCase(TestCase):
         assert result.issuer.endpoint == "issuer endpoint"
         assert result.issuer.logo_b64 == "issuer logo base64"
 
+        mock_credential_type_save.assert_called()
+
         assert len(result.credential_types) == 1
-        ctype = result.credential_types[0]
-        assert ctype.description == "cred type name"
-        assert ctype.processor_config == {
+
+        credential_type = result.credential_types[0]
+
+        assert credential_type.description == "cred type name"
+        assert credential_type.processor_config == {
             "cardinality_fields": ["field"],
             "credential": {"effective_date": {"input": "eff_date", "from": "claim"}},
-            "mapping": {},
+            "mappings": {},
             "topic": [{"source_id": {"input": "topic_id", "from": "claim"}}],
         }

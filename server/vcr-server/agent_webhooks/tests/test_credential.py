@@ -64,7 +64,7 @@ class CredentialManager_TestCase(TestCase):
             },
             None,
         )
-        pconfig = {
+        processor_config = {
             "topic": [
                 {
                     "source_id": {"input": "topic_id", "from": "claim"},
@@ -84,7 +84,7 @@ class CredentialManager_TestCase(TestCase):
             related_topic,
             topic_created,
             related_topic_created,
-        ) = mgr.resolve_credential_topics(test_cred, pconfig)
+        ) = mgr.resolve_credential_topics(test_cred, processor_config)
         assert topic.source_id == "topic-source-id"
         assert topic.type == "topic-type"
         assert topic_created
@@ -107,10 +107,10 @@ class CredentialManager_TestCase(TestCase):
             },
             None,
         )
-        pconfig = {"cardinality_fields": ["topic_id", "effective_date"]}
+        processor_config = {"cardinality_fields": ["topic_id", "effective_date"]}
 
         mgr = credential.CredentialManager()
-        cardinal = mgr.credential_cardinality(test_cred, pconfig)
+        cardinal = mgr.credential_cardinality(test_cred, processor_config)
         assert cardinal == {
             "values": {"topic_id": "topic-source-id", "effective_date": "eff-date"},
             "hash": b"Vexy8NBqP5g1W3JLBbVLhErCXNjtLnS4gZGekur/ojI=",
@@ -148,7 +148,7 @@ class CredentialManager_TestCase(TestCase):
             },
             None,
         )
-        pconfig = {
+        processor_config = {
             "credential": {
                 "effective_date": {"input": "eff_date", "from": "claim"},
                 "revoked_date": {"input": "rev_date", "from": "claim"},
@@ -157,7 +157,7 @@ class CredentialManager_TestCase(TestCase):
         }
 
         mgr = credential.CredentialManager()
-        props = mgr.process_credential_properties(test_cred, pconfig)
+        props = mgr.process_credential_properties(test_cred, processor_config)
         print(props)
         assert props == {
             "effective_date": datetime(2000, 1, 1, 12, 0, 0, 0, timezone.utc),
