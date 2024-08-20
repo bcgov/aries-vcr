@@ -1,5 +1,5 @@
 import logging
-from typing import Sequence, Tuple
+from typing import Sequence
 
 from api.v2.auth import create_issuer_user
 from api.v2.models.CredentialType import CredentialType
@@ -10,12 +10,10 @@ from api.v2.serializers.rest import (
     IssuerSerializer,
     SchemaSerializer,
 )
+from agent_webhooks.utils.credential_type import CredentialTypeManager
+from agent_webhooks.utils.schema import SchemaManager
 
 LOGGER = logging.getLogger(__name__)
-
-
-class IssuerManagerException(Exception):
-    """Base exception for issuer manager issues."""
 
 
 class IssuerRegistrationResult:
@@ -50,32 +48,48 @@ class IssuerManager:
     of the issuer and updating the related tables.
     """
 
-    def register_issuer(self, spec) -> IssuerRegistrationResult:
+    def register_issuer(self, registration_def) -> IssuerRegistrationResult:
         """
         Perform issuer registration, updating the related database models.
         """
-        issuer_registration = spec["issuer_registration"]
-        issuer = issuer_registration["issuer"]
-        self.update_user(issuer)
-        issuer = self.update_issuer(issuer_registration["issuer"])
-        schemas, credential_types = self.update_schemas_and_ctypes(
-            issuer, issuer_registration.get("credential_types", [])
+
+        credential_type_manager = CredentialTypeManager()
+
+        issuer_registration_def = registration_def.get("issuer_registration")
+        issuer_def = issuer_registration_def.get("issuer")
+        credential_type_defs = issuer_registration_def.get("credential_types", [])
+
+        # Update user and issuer
+        self.update_user(issuer_def)
+        issuer = self.update_issuer(issuer_def)
+
+        # Update schemas
+        schema_manager = SchemaManager()
+        schemas = schema_manager.update_schemas(issuer, credential_type_defs)
+
+        # Update credential types
+        credential_types = credential_type_manager.update_credential_types(
+            issuer, schemas, credential_type_defs
         )
+
         return IssuerRegistrationResult(issuer, schemas, credential_types)
 
     def update_user(self, issuer_def):
         """
         Update Django user with incoming issuer data.
         """
-        issuer_did = issuer_def["did"]
-        display_name = issuer_def["name"]
-        user_email = issuer_def["email"]
+
+        issuer_did = issuer_def.get("did")
+        display_name = issuer_def.get("name")
+        user_email = issuer_def.get("email")
+
         return create_issuer_user(user_email, issuer_did, display_name=display_name)
 
     def update_issuer(self, issuer_def) -> Issuer:
         """
         Update issuer record if exists, otherwise create.
         """
+
         issuer_did = issuer_def.get("did")
         issuer_name = issuer_def.get("name")
         issuer_abbreviation = issuer_def.get("abbreviation")
@@ -84,79 +98,14 @@ class IssuerManager:
         issuer_logo = issuer_def.get("logo_b64")
         issuer_endpoint = issuer_def.get("endpoint")
 
-        issuer, created = Issuer.objects.get_or_create(did=issuer_did)
+        issuer, _ = Issuer.objects.get_or_create(did=issuer_did)
         issuer.name = issuer_name
         issuer.abbreviation = issuer_abbreviation
         issuer.email = issuer_email
         issuer.url = issuer_url
         issuer.logo_b64 = issuer_logo
         issuer.endpoint = issuer_endpoint
+
         issuer.save()
 
         return issuer
-
-    def update_schemas_and_ctypes(
-        self, issuer, credential_type_defs
-    ) -> Tuple[Sequence[Schema], Sequence[CredentialType]]:
-        """
-        Update schema records if they exist, otherwise create.
-        Create related CredentialType records.
-        """
-        schemas = []
-        credential_types = []
-
-        for credential_type_def in credential_type_defs:
-            # Get or create schema
-            schema_name = credential_type_def.get("schema")
-            schema_version = credential_type_def.get("version")
-            schema_publisher_did = issuer.did
-
-            schema, _ = Schema.objects.get_or_create(
-                name=schema_name,
-                version=schema_version,
-                origin_did=schema_publisher_did,
-            )
-            schema.save()
-            schemas.append(schema)
-
-            # Get or create credential type
-            credential_type_processor_config = {
-                "cardinality_fields": credential_type_def.get("cardinality_fields"),
-                "credential": credential_type_def.get("credential"),
-                "mapping": credential_type_def.get("mapping"),
-                "topic": credential_type_def.get("topic"),
-            }
-
-            credential_type, _ = CredentialType.objects.get_or_create(
-                schema=schema, issuer=issuer
-            )
-
-            credential_type.description = credential_type_def.get("name")
-            credential_type.processor_config = credential_type_processor_config
-            credential_type.category_labels = credential_type_def.get("category_labels")
-            credential_type.claim_descriptions = credential_type_def.get(
-                "claim_descriptions"
-            )
-            credential_type.claim_labels = credential_type_def.get("claim_labels")
-            credential_type.logo_b64 = credential_type_def.get("logo_b64")
-            credential_type.credential_def_id = credential_type_def.get(
-                "credential_def_id"
-            )
-            credential_type.url = credential_type_def.get("endpoint")
-            credential_type.highlighted_attributes = credential_type_def.get("highlighted_attributes")
-            credential_type.credential_title = credential_type_def.get("credential_title")
-
-            credential_type.schema_label = credential_type_def.get("labels")
-            visible_fields = credential_type_def.get("visible_fields")
-            if isinstance(visible_fields, list):
-                visible_fields = ",".join(
-                    x.strip() for x in filter(None, visible_fields)
-                )
-            credential_type.visible_fields = (
-                visible_fields if isinstance(visible_fields, str) else None
-            )
-
-            credential_type.save()
-            credential_types.append(credential_type)
-
-        return schemas, credential_types
