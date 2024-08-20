@@ -8,7 +8,11 @@ from agent_webhooks.tests.data import credential_type_def_spec
 from agent_webhooks.utils import credential_type
 
 
-class TestCredentialType(TestCase):
+class TestCredentialTypeManager(TestCase):
+    """
+    Test the CredentialTypeManager class
+    """
+
     @patch("api.v2.models.CredentialType.save", autospec=True)
     def test_credential_type_registration(self, mock_credential_type_save):
 

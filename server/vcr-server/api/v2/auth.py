@@ -10,7 +10,7 @@ from api.v2.models.User import User
 ISSUERS_GROUP_NAME = "issuers"
 
 
-def create_issuer_user(
+def create_or_update_issuer_user(
     email,
     issuer_did,
     username=None,

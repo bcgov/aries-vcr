@@ -1,7 +1,7 @@
 import logging
 from typing import Sequence
 
-from api.v2.auth import create_issuer_user
+from api.v2.auth import create_or_update_issuer_user
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
@@ -48,9 +48,9 @@ class IssuerManager:
     of the issuer and updating the related tables.
     """
 
-    def register_issuer(self, registration_def) -> IssuerRegistrationResult:
+    def register_issuer(self, registration_def, issuer_only=False) -> IssuerRegistrationResult:
         """
-        Perform issuer registration, updating the related database models.
+        DEPRECATED: Perform issuer registration, updating the related database models.
         """
 
         credential_type_manager = CredentialTypeManager()
@@ -63,27 +63,31 @@ class IssuerManager:
         self.update_user(issuer_def)
         issuer = self.update_issuer(issuer_def)
 
-        # Update schemas
-        schema_manager = SchemaManager()
-        schemas = schema_manager.update_schemas(issuer, credential_type_defs)
+        if not issuer_only:
+            # Update schemas
+            schema_manager = SchemaManager()
+            schemas = schema_manager.update_schemas(issuer, credential_type_defs)
 
-        # Update credential types
-        credential_types = credential_type_manager.update_credential_types(
-            issuer, schemas, credential_type_defs
-        )
-
-        return IssuerRegistrationResult(issuer, schemas, credential_types)
+            # Update credential types
+            credential_types = credential_type_manager.update_credential_types(
+                issuer, schemas, credential_type_defs
+            )
+            return IssuerRegistrationResult(issuer, schemas, credential_types)
+        
+        return IssuerRegistrationResult(issuer, None, None)
 
     def update_user(self, issuer_def):
         """
         Update Django user with incoming issuer data.
         """
 
+        email = issuer_def.get("email")
         issuer_did = issuer_def.get("did")
         display_name = issuer_def.get("name")
-        user_email = issuer_def.get("email")
 
-        return create_issuer_user(user_email, issuer_did, display_name=display_name)
+        return create_or_update_issuer_user(
+            email, issuer_did, display_name=display_name
+        )
 
     def update_issuer(self, issuer_def) -> Issuer:
         """
@@ -95,15 +99,16 @@ class IssuerManager:
         issuer_abbreviation = issuer_def.get("abbreviation")
         issuer_email = issuer_def.get("email")
         issuer_url = issuer_def.get("url")
-        issuer_logo = issuer_def.get("logo_b64")
+        issuer_logo_b64 = issuer_def.get("logo_b64")
         issuer_endpoint = issuer_def.get("endpoint")
 
         issuer, _ = Issuer.objects.get_or_create(did=issuer_did)
+
         issuer.name = issuer_name
         issuer.abbreviation = issuer_abbreviation
         issuer.email = issuer_email
         issuer.url = issuer_url
-        issuer.logo_b64 = issuer_logo
+        issuer.logo_b64 = issuer_logo_b64
         issuer.endpoint = issuer_endpoint
 
         issuer.save()

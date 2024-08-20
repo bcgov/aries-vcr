@@ -6,7 +6,11 @@ from api.v2.models.Issuer import Issuer
 from agent_webhooks.tests.data import credential_type_def_spec
 from agent_webhooks.utils import schema
 
-class TestSchema(TestCase):
+class TestSchemaManager(TestCase):
+    """
+    Test the SchemaManager class
+    """
+
     @patch("api.v2.models.Schema.save", autospec=True)
     def test_schema_registration(self, mock_schema_save):
 
