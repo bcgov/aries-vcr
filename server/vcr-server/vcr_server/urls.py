@@ -2,11 +2,6 @@
 Definition of urls for app.
 """
 
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-
-from rest_framework.permissions import AllowAny
-
 from django.conf import settings
 from django.urls import include, path
 from django.views.generic import RedirectView
@@ -41,5 +36,9 @@ api_patterns = [
     path("api/v4/", include("api.v4.urls", namespace="v4"), name="api-v4"),
 ]
 
-urlpatterns = base_patterns + hook_patterns + api_patterns + \
-    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns = (
+    base_patterns
+    + hook_patterns
+    + api_patterns
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+)

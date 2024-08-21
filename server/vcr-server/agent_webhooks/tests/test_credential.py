@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 import json
 
 from django.test import TestCase
-from unittest.mock import patch
 
 from agent_webhooks.utils import credential
 
