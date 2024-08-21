@@ -38,3 +38,13 @@ credential_type_def_spec = {
         revoked_date_mapping_def_spec,
     ],
 }
+
+issuer_def_spec = {
+    "name": "issuer name",
+    "did": credential_type_def_spec.get("origin_did"),
+    "abbreviation": "issuer abbrev",
+    "email": "issuer email",
+    "url": "issuer url",
+    "endpoint": "issuer endpoint",
+    "logo_b64": "issuer logo base64",
+}

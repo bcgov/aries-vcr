@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 
 from agent_webhooks.schemas import (
     CredentialMappingDefSchema,
+    IssuerDefSchema,
     MappingDefSchema,
     TopicDefSchema,
     CredentialTypeDefSchema,
@@ -11,6 +12,7 @@ from agent_webhooks.tests.data import (
     credential_type_def_spec,
     effective_date_credential_mapping_def_spec,
     effective_date_mapping_def_spec,
+    issuer_def_spec,
     revoked_date_credential_mapping_def_spec,
     topic_def_spec,
 )
@@ -291,3 +293,53 @@ class TestCredentialTypeDef(TestCase):
         assert "format" in exc_info.exception.messages
         message = exc_info.exception.messages.get("format")
         assert "Must be one of: vc_di, anoncreds." in message
+
+
+class TestIssuerDef(TestCase):
+    def test_valid_issuer_def(self):
+        """Test the IssuerDefSchema with valid data"""
+
+        test_data = issuer_def_spec.copy()
+
+        schema = IssuerDefSchema()
+        result = schema.load(test_data)
+
+        assert "name" in result
+        assert result.get("name") == test_data.get("name")
+        assert "did" in result
+        assert result.get("did") == test_data.get("did")
+        assert "abbreviation" in result
+        assert result.get("abbreviation") == test_data.get("abbreviation")
+        assert "email" in result
+        assert result.get("email") == test_data.get("email")
+        assert "url" in result
+        assert result.get("url") == test_data.get("url")
+
+    def test_invalid_issuer_def_missing_name(self):
+        """Test the IssuerDefSchema with invalid data - missing name"""
+
+        test_data = issuer_def_spec.copy()
+        del test_data["name"]
+
+        schema = IssuerDefSchema()
+
+        with self.assertRaises(ValidationError) as exc_info:
+            schema.load(test_data)
+
+        assert "name" in exc_info.exception.messages
+        message = exc_info.exception.messages.get("name")
+        assert "Missing data for required field." in message
+
+    def test_invalid_issuer_def_invalid_name(self):
+        """Test the IssuerDefSchema with invalid data - invalid name"""
+
+        test_data = {**issuer_def_spec.copy(), "name": 123}
+
+        schema = IssuerDefSchema()
+
+        with self.assertRaises(ValidationError) as exc_info:
+            schema.load(test_data)
+
+        assert "name" in exc_info.exception.messages
+        message = exc_info.exception.messages.get("name")
+        assert "Not a valid string." in message

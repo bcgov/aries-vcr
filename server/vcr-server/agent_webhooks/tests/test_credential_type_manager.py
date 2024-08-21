@@ -4,7 +4,7 @@ from unittest.mock import patch
 from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
 
-from agent_webhooks.tests.data import credential_type_def_spec
+from agent_webhooks.tests.data import credential_type_def_spec, issuer_def_spec
 from agent_webhooks.utils import credential_type
 
 
@@ -16,21 +16,13 @@ class TestCredentialTypeManager(TestCase):
     @patch("api.v2.models.CredentialType.save", autospec=True)
     def test_credential_type_registration(self, mock_credential_type_save):
 
-        test_issuer_data = {
-            "name": "issuer name",
-            "did": credential_type_def_spec.get("origin_did"),
-            "abbreviation": "issuer abbrev",
-            "email": "issuer email",
-            "url": "issuer url",
-            "endpoint": "issuer endpoint",
-            "logo_b64": "issuer logo base64",
-        }
+        test_issuer_data = issuer_def_spec.copy()
         test_schema_data = {
             "name": credential_type_def_spec.get("schema"),
             "version": credential_type_def_spec.get("version"),
             "origin_did": credential_type_def_spec.get("origin_did"),
         }
-        test_data = [credential_type_def_spec]
+        test_data = [credential_type_def_spec.copy()]
 
         mgr = credential_type.CredentialTypeManager()
         test_issuer = Issuer(**test_issuer_data)

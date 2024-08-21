@@ -3,8 +3,9 @@ from unittest.mock import patch
 
 from api.v2.models.Issuer import Issuer
 
-from agent_webhooks.tests.data import credential_type_def_spec
+from agent_webhooks.tests.data import credential_type_def_spec, issuer_def_spec
 from agent_webhooks.utils import schema
+
 
 class TestSchemaManager(TestCase):
     """
@@ -14,16 +15,8 @@ class TestSchemaManager(TestCase):
     @patch("api.v2.models.Schema.save", autospec=True)
     def test_schema_registration(self, mock_schema_save):
 
-        test_issuer_data = {
-            "name": "issuer name",
-            "did": credential_type_def_spec.get("origin_did"),
-            "abbreviation": "issuer abbrev",
-            "email": "issuer email",
-            "url": "issuer url",
-            "endpoint": "issuer endpoint",
-            "logo_b64": "issuer logo base64",
-        }
-        test_data = [credential_type_def_spec]
+        test_issuer_data = issuer_def_spec.copy()
+        test_data = [credential_type_def_spec.copy()]
 
         mgr = schema.SchemaManager()
         test_issuer = Issuer(**test_issuer_data)
