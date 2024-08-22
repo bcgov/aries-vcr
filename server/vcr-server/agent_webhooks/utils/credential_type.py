@@ -61,14 +61,6 @@ class CredentialTypeManager:
             credential_type.highlighted_attributes = credential_type_def.get(
                 "highlighted_attributes"
             )
-            visible_fields = credential_type_def.get("visible_fields")
-            if isinstance(visible_fields, list):
-                visible_fields = ",".join(
-                    x.strip() for x in filter(None, visible_fields)
-                )
-            credential_type.visible_fields = (
-                visible_fields if isinstance(visible_fields, str) else None
-            )
 
             credential_type.save()
             credential_types.append(credential_type)

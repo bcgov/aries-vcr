@@ -60,7 +60,6 @@ class CredentialTypeSerializer(ModelSerializer):
             "claim_labels",
             "logo_b64",
             "processor_config",
-            "visible_fields",
         )
 
 

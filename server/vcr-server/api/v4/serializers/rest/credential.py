@@ -41,7 +41,6 @@ class CredentialTypeSchemaSerializer(ModelSerializer):
             "claim_labels",
             "logo_b64",
             "processor_config",
-            "visible_fields",
             "highlighted_attributes",
             "credential_title",
             "issuer"
@@ -60,7 +59,6 @@ class CredentialTypeExtendedSerializer(ModelSerializer):
             "claim_labels",
             "logo_b64",
             "processor_config",
-            "visible_fields",
         )
 
 
@@ -84,7 +82,6 @@ class CredentialTypeClaimLabelsSerializer(ModelSerializer):
             "claim_descriptions",
             "logo_b64",
             "processor_config",
-            "visible_fields",
             "schema",
         )
 

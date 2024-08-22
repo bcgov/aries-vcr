@@ -34,7 +34,6 @@ class TestIssuerManager(TestCase):
                     "endpoint": "endpoint",
                     "cardinality_fields": ["field"],
                     "mappings": {},
-                    "visible_fields": "visible,fields",
                     "logo_b64": "logo base64",
                 }
             ],
@@ -63,7 +62,6 @@ class TestIssuerManager(TestCase):
                     "claim_descriptions": {"claim": "description"},
                     "endpoint": "endpoint",
                     "logo_b64": "logo base64",
-                    "visible_fields": "visible fields",
                 }
             ],
             "issuer": issuer_def_spec.copy(),
