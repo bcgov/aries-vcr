@@ -1,7 +1,10 @@
 import logging
-from typing import Sequence, Tuple
+from typing import Sequence
 
+from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
+
+from agent_webhooks.schemas import CredentialTypeDefSchema
 
 LOGGER = logging.getLogger(__name__)
 
@@ -11,7 +14,9 @@ class SchemaManager:
     Manage the creation and updating of Schema records.
     """
 
-    def update_schemas(self, issuer, credential_type_defs) -> Sequence[Schema]:
+    def update_schemas(
+        self, issuer: Issuer, credential_type_defs: CredentialTypeDefSchema
+    ) -> Sequence[Schema]:
         """
         Update schema records if they exist, otherwise create.
         """

@@ -5,11 +5,15 @@ from api.v2.auth import create_or_update_issuer_user
 from api.v2.models.CredentialType import CredentialType
 from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
+from api.v2.models.User import User
+
 from api.v2.serializers.rest import (
     CredentialTypeExtSerializer,
     IssuerSerializer,
     SchemaSerializer,
 )
+
+from agent_webhooks.schemas import IssuerDefSchema
 from agent_webhooks.utils.credential_type import CredentialTypeManager
 from agent_webhooks.utils.schema import SchemaManager
 
@@ -48,12 +52,12 @@ class IssuerManager:
     of the issuer and updating the related tables.
     """
 
-    def register_issuer(self, registration_def, issuer_only=False) -> IssuerRegistrationResult:
+    def register_issuer(
+        self, registration_def: dict, issuer_only=False
+    ) -> IssuerRegistrationResult:
         """
-        DEPRECATED: Perform issuer registration, updating the related database models.
+        Perform issuer registration, updating the related database models.
         """
-
-        credential_type_manager = CredentialTypeManager()
 
         issuer_registration_def = registration_def.get("issuer_registration")
         issuer_def = issuer_registration_def.get("issuer")
@@ -69,14 +73,15 @@ class IssuerManager:
             schemas = schema_manager.update_schemas(issuer, credential_type_defs)
 
             # Update credential types
+            credential_type_manager = CredentialTypeManager()
             credential_types = credential_type_manager.update_credential_types(
                 issuer, schemas, credential_type_defs
             )
             return IssuerRegistrationResult(issuer, schemas, credential_types)
-        
-        return IssuerRegistrationResult(issuer, None, None)
 
-    def update_user(self, issuer_def):
+        return IssuerRegistrationResult(issuer, [], [])
+
+    def update_user(self, issuer_def: IssuerDefSchema) -> User:
         """
         Update Django user with incoming issuer data.
         """
@@ -89,7 +94,7 @@ class IssuerManager:
             email, issuer_did, display_name=display_name
         )
 
-    def update_issuer(self, issuer_def) -> Issuer:
+    def update_issuer(self, issuer_def: IssuerDefSchema) -> Issuer:
         """
         Update issuer record if exists, otherwise create.
         """

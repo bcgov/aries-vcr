@@ -63,7 +63,7 @@ class TestIssuerManager(TestCase):
                     "claim_descriptions": {"claim": "description"},
                     "endpoint": "endpoint",
                     "logo_b64": "logo base64",
-                    "visible_fields": "visible,fields",
+                    "visible_fields": "visible fields",
                 }
             ],
             "issuer": issuer_def_spec.copy(),
@@ -155,8 +155,10 @@ class TestIssuerManager(TestCase):
 
         mock_schema_save.assert_not_called()
         mock_credential_type_save.assert_not_called()
-        assert result.schemas == None
-        assert result.credential_types == None
+        assert result.schemas is not None
+        assert len(result.schemas) == 0
+        assert result.credential_types is not None
+        assert len(result.credential_types) == 0
 
     @patch("api.v2.models.CredentialType.save", autospec=True)
     @patch("api.v2.models.Schema.save", autospec=True)
@@ -175,5 +177,7 @@ class TestIssuerManager(TestCase):
 
         mock_schema_save.assert_not_called()
         mock_credential_type_save.assert_not_called()
-        assert result.schemas == None
-        assert result.credential_types == None
+        assert result.schemas is not None
+        assert len(result.schemas) == 0
+        assert result.credential_types is not None
+        assert len(result.credential_types) == 0

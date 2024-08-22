@@ -19,7 +19,7 @@ def handle_issuer(message: IssuerDefSchema) -> IssuerRegistrationResult:
         IssuerDefSchema().load(message)
         issuer_manager = IssuerManager()
 
-        # TODO: This should be a marshmallow schema
+        # Note: Dangerous without proper validation
         issuer_def = {"issuer_registration": {"issuer": message}}
         return issuer_manager.register_issuer(issuer_def, issuer_only=True)
     except ValidationError as err:

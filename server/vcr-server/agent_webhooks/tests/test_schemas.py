@@ -7,6 +7,7 @@ from agent_webhooks.schemas import (
     MappingDefSchema,
     TopicDefSchema,
     CredentialTypeDefSchema,
+    CredentialTypeRegistrationDefSchema,
 )
 from agent_webhooks.tests.data import (
     credential_type_def_spec,
@@ -343,3 +344,32 @@ class TestIssuerDef(TestCase):
         assert "name" in exc_info.exception.messages
         message = exc_info.exception.messages.get("name")
         assert "Not a valid string." in message
+
+
+class TestCredentialTypeRegistrationDef(TestCase):
+    def test_valid_credential_type_registration_def(self):
+        """Test the CredentialTypeRegistrationDefSchema with valid data"""
+
+        test_data = {
+            "issuer": issuer_def_spec.copy(),
+            "credential_type": credential_type_def_spec.copy(),
+        }
+
+        schema = CredentialTypeRegistrationDefSchema()
+        result = schema.load(test_data)
+
+        assert "issuer" in result
+        assert "credential_type" in result
+
+        issuer = result.get("issuer")
+        credential_type = result.get("credential_type")
+
+        assert issuer == issuer_def_spec
+        assert credential_type == credential_type_def_spec
+
+        result = schema.dump(result)
+
+        assert "issuer" in result
+        assert "credential_type" not in result
+        assert "credential_types" in result
+        assert len(result.get("credential_types")) == 1

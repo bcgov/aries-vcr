@@ -2,7 +2,10 @@ import logging
 from typing import Sequence, Union
 
 from api.v2.models.CredentialType import CredentialType
+from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
+
+from agent_webhooks.schemas import CredentialTypeDefSchema
 
 LOGGER = logging.getLogger(__name__)
 
@@ -13,7 +16,10 @@ class CredentialTypeManager:
     """
 
     def update_credential_types(
-        self, issuer, schemas, credential_type_defs
+        self,
+        issuer: Issuer,
+        schemas: Sequence[Schema],
+        credential_type_defs: Sequence[CredentialTypeDefSchema],
     ) -> Sequence[CredentialType]:
         """
         Create related CredentialType records.
@@ -70,7 +76,10 @@ class CredentialTypeManager:
         return credential_types
 
     def _find_matching_schema(
-        self, issuer, schemas, credential_type_def
+        self,
+        issuer: Issuer,
+        schemas: Sequence[Schema],
+        credential_type_def: CredentialTypeDefSchema,
     ) -> Union[Schema, None]:
         """
         Find the schema that matches the credential type definition.
@@ -85,7 +94,9 @@ class CredentialTypeManager:
                 return schema
         return None
 
-    def _build_processor_config(self, credential_type_def):
+    def _build_processor_config(
+        self, credential_type_def: CredentialTypeDefSchema
+    ) -> dict:
         processor_config = {
             "cardinality_fields": credential_type_def.get("cardinality_fields"),
             "credential": credential_type_def.get("credential"),

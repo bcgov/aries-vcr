@@ -6,6 +6,7 @@ from .mapping_def import MappingDefSchema
 from .topic_def import TopicDefSchema
 
 from .credential_type_def import CredentialTypeDefSchema
+from .credential_type_registration_def import CredentialTypeRegistrationDefSchema
 
 __all__ = [
     "PathBaseSchema",
@@ -14,4 +15,5 @@ __all__ = [
     "MappingDefSchema",
     "TopicDefSchema",
     "CredentialTypeDefSchema",
+    "CredentialTypeRegistrationDefSchema",
 ]
