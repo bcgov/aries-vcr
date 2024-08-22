@@ -1,3 +1,4 @@
+from django.contrib.postgres import fields as contrib
 from django.db import models
 from django.utils import timezone
 
@@ -30,6 +31,9 @@ class Credential(Auditable):
     revoked_by = models.ForeignKey(
         "Credential", related_name="+", null=True, on_delete=models.SET_NULL
     )
+
+    # Raw JSON data for this credential
+    raw_data = contrib.JSONField(blank=True, null=True)
 
     # Topics related by this credential
     related_topics = models.ManyToManyField(
