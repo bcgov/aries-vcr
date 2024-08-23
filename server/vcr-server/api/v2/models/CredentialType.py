@@ -7,6 +7,8 @@ from .Auditable import Auditable
 from .Issuer import Issuer
 from .Schema import Schema
 
+from agent_webhooks.enums import FormatEnum
+
 
 def _resolve_field_mapping(mapping: dict, name: str):
     field_map = mapping.get(name, {})
@@ -14,6 +16,7 @@ def _resolve_field_mapping(mapping: dict, name: str):
 
 
 class CredentialType(Auditable):
+
     schema = models.ForeignKey(
         Schema, related_name="credential_types", on_delete=models.CASCADE
     )
@@ -32,6 +35,12 @@ class CredentialType(Auditable):
     claim_descriptions = contrib.JSONField(blank=True, null=True)
     claim_labels = contrib.JSONField(blank=True, null=True)
     category_labels = contrib.JSONField(blank=True, null=True)
+    format = models.CharField(
+        blank=True,
+        null=True,
+        choices=[(f.name, f.value) for f in FormatEnum],
+        max_length=255,
+    )
 
     class Meta:
         db_table = "credential_type"
