@@ -35,12 +35,14 @@ class CredentialType(Auditable):
     claim_descriptions = contrib.JSONField(blank=True, null=True)
     claim_labels = contrib.JSONField(blank=True, null=True)
     category_labels = contrib.JSONField(blank=True, null=True)
+    # New fields
     format = models.CharField(
         blank=True,
         null=True,
         choices=[(f.name, f.value) for f in FormatEnum],
         max_length=255,
     )
+    raw_data = contrib.JSONField(blank=True, null=True)
 
     class Meta:
         db_table = "credential_type"

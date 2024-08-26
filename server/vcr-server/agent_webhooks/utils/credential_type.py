@@ -61,6 +61,9 @@ class CredentialTypeManager:
             credential_type.highlighted_attributes = credential_type_def.get(
                 "highlighted_attributes"
             )
+            # New fields
+            credential_type.format = credential_type_def.get("format")
+            credential_type.raw_data = credential_type_def.get("raw_data")
 
             credential_type.save()
             credential_types.append(credential_type)

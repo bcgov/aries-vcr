@@ -19,3 +19,4 @@ class CredentialTypeDefSchema(Schema):
         keys=fields.Enum(MappingTypeEnum, by_value=True),
         values=fields.Nested(CredentialMappingDefSchema),
     )
+    raw_data = fields.Dict()
