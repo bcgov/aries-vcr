@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from agent_webhooks.schemas import (
     CredentialMappingDefSchema,
     IssuerDefSchema,
+    IssuerRegistrationDefSchema,
     MappingDefSchema,
     TopicDefSchema,
     CredentialTypeDefSchema,
@@ -346,6 +347,31 @@ class TestIssuerDef(TestCase):
         assert "Not a valid string." in message
 
 
+class TestIssuerRegistrationDef(TestCase):
+    def test_valid_issuer_registration_def(self):
+        """Test the IssuerRegistrationDefSchema with valid data"""
+
+        test_data = {
+            "issuer": issuer_def_spec.copy(),
+        }
+
+        schema = IssuerRegistrationDefSchema()
+        result = schema.load(test_data)
+
+        assert "issuer" in result
+
+        issuer = result.get("issuer")
+
+        assert issuer == issuer_def_spec
+
+        result = schema.dump(result)
+
+        assert "issuer_registration" in result
+
+        issuer_registration = result.get("issuer_registration")
+        assert "issuer" in issuer_registration
+
+
 class TestCredentialTypeRegistrationDef(TestCase):
     def test_valid_credential_type_registration_def(self):
         """Test the CredentialTypeRegistrationDefSchema with valid data"""
@@ -369,7 +395,10 @@ class TestCredentialTypeRegistrationDef(TestCase):
 
         result = schema.dump(result)
 
-        assert "issuer" in result
-        assert "credential_type" not in result
-        assert "credential_types" in result
-        assert len(result.get("credential_types")) == 1
+        assert "issuer_registration" in result
+
+        issuer_registration = result.get("issuer_registration")
+        assert "credential_type" not in issuer_registration
+        assert "issuer" in issuer_registration
+        assert "credential_types" in issuer_registration
+        assert len(issuer_registration.get("credential_types")) == 1

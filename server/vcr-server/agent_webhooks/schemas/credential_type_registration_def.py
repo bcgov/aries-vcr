@@ -1,14 +1,15 @@
-from marshmallow import Schema, fields
+from marshmallow import fields
 
-from agent_webhooks.schemas import CredentialTypeDefSchema, IssuerDefSchema
+from agent_webhooks.schemas import CredentialTypeDefSchema, IssuerRegistrationDefSchema
 
 
-class CredentialTypeRegistrationDefSchema(Schema):
-    issuer = fields.Nested(IssuerDefSchema, required=True)
+class CredentialTypeRegistrationDefSchema(IssuerRegistrationDefSchema):
     credential_type = fields.Nested(
         CredentialTypeDefSchema, required=True, load_only=True
     )
-    credential_types = fields.Method("get_credential_types")
 
-    def get_credential_types(self, obj):
-        return [obj.get("credential_type")]
+    def get_issuer_registration(self, obj):
+        return {
+            "issuer": obj.get("issuer"),
+            "credential_types": [obj.get("credential_type")],
+        }

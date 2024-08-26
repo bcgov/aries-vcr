@@ -1,4 +1,3 @@
-
 import logging
 
 from marshmallow import ValidationError
@@ -12,18 +11,19 @@ LOGGER = logging.getLogger(__name__)
 
 format = FormatEnum.VC_DI.value
 
-def handle_credential_type(message: any) -> IssuerRegistrationResult:
+
+def handle_credential_type(
+    message: CredentialTypeRegistrationDefSchema,
+) -> IssuerRegistrationResult:
     f"""Webhook message handler for a {format} credential type."""
 
     try:
-        schema = CredentialTypeRegistrationDefSchema()
-        schema.load(message)
-        processed_message = schema.dump(message)
+        credential_type_registration_schema = CredentialTypeRegistrationDefSchema()
+        credential_type_registration_schema.load(message)
+        issuer_registration_def = credential_type_registration_schema.dump(message)
         issuer_manager = IssuerManager()
 
-        # Note: Dangerous without proper validation
-        issuer_def = {"issuer_registration": processed_message}
-        return issuer_manager.register_issuer(issuer_def)
+        return issuer_manager.register_issuer(issuer_registration_def)
     except ValidationError as err:
         LOGGER.error(f"Invalid {format} credential type definition: {err.messages}")
         raise err
