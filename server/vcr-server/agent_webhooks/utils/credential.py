@@ -4,7 +4,6 @@ import json as _json
 import logging
 import re
 import time
-import uuid
 from collections import namedtuple
 from datetime import datetime, timedelta
 from importlib import import_module
@@ -363,7 +362,7 @@ class CredentialManager(object):
 
         return mapped_value
 
-    def get_credential_type(self, credential: (Credential, CredentialModel)):
+    def get_credential_type(self, credential: tuple[Credential, CredentialModel]):
         """
         Fetch the credential type for the incoming credential
         """
@@ -440,6 +439,8 @@ class CredentialManager(object):
     def reprocess(self, credential: CredentialModel):
         """
         Reprocesses an existing credential in order to update the related search models
+
+        This is currently only used by the CLI
         """
         credential_type = self.get_credential_type(credential)
         processor_config = credential_type.processor_config
@@ -474,7 +475,7 @@ class CredentialManager(object):
     @classmethod
     def resolve_credential_topics(
         cls, credential, processor_config
-    ) -> (Topic, Topic, bool, bool):
+    ) -> tuple[Topic, Topic, bool, bool]:
         """
         Resolve the related topic(s) for a credential based on the processor config
         """
@@ -874,7 +875,7 @@ class CredentialManager(object):
                 credential_type.last_issue_date = datetime.now(timezone.utc)
                 credential_type.save()
 
-            # add to the set of "hookable credentials"
+            # Add to the set of "hookable credentials"
             # TODO make this a configurable step of the process
             new_hook_exists = HookableCredential.objects.filter(
                 corp_num=topic.source_id,

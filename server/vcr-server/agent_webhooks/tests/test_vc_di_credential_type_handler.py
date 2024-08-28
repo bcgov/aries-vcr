@@ -8,7 +8,7 @@ from agent_webhooks.handlers.vc_di_credential_type import handle_credential_type
 from agent_webhooks.tests.data import issuer_def_spec, credential_type_def_spec
 
 
-class TestIssuerHandler(TestCase):
+class TestCredentialTypeHandler(TestCase):
     """
     Tests for the credential type webhook message handler.
 

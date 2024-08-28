@@ -20,9 +20,10 @@ def handle_credential_type(
     try:
         credential_type_registration_schema = CredentialTypeRegistrationDefSchema()
         credential_type_registration_schema.load(message)
-        issuer_registration_def = credential_type_registration_schema.dump(message)
         issuer_manager = IssuerManager()
 
+        # Convert the credential type definition to an issuer registration definition
+        issuer_registration_def = credential_type_registration_schema.dump(message)
         return issuer_manager.register_issuer(issuer_registration_def)
     except ValidationError as err:
         LOGGER.error(f"Invalid {format} credential type definition: {err.messages}")

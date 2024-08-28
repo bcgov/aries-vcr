@@ -40,11 +40,11 @@ class CredentialTypeManager:
             credential_type.processor_config = self._build_processor_config(
                 credential_type_def
             )
+
             credential_type.credential_title = credential_type_def.get(
                 "credential_title"
             )
             credential_type.description = credential_type_def.get("name")
-            # TODO: Change this to schema_labels
             credential_type.schema_label = credential_type_def.get("labels")
             credential_type.category_labels = credential_type_def.get("category_labels")
             credential_type.claim_labels = credential_type_def.get("claim_labels")
@@ -53,14 +53,13 @@ class CredentialTypeManager:
             )
             credential_type.logo_b64 = credential_type_def.get("logo_b64")
             credential_type.url = credential_type_def.get("endpoint")
-
-            # TODO: Change this to verification_methods
             credential_type.credential_def_id = credential_type_def.get(
                 "credential_def_id"
             )
             credential_type.highlighted_attributes = credential_type_def.get(
                 "highlighted_attributes"
             )
+
             # New fields
             credential_type.format = credential_type_def.get("format")
             credential_type.raw_data = credential_type_def.get("raw_data")
