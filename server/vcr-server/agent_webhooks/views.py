@@ -1,18 +1,27 @@
+import base64
 import json
 import logging
-import time
 import os
 import random
-import base64
+import time
 
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
+from marshmallow import ValidationError
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.v2.models.Credential import Credential as CredentialModel
 from api.v2.utils import log_timing_method, log_timing_event, call_agent_with_retry
+
+from agent_webhooks.handlers.vc_di_issuer import handle_issuer as handle_vc_di_issuer
+from agent_webhooks.handlers.vc_di_credential_type import (
+    handle_credential_type as handle_vc_di_credential_type,
+)
+from agent_webhooks.handlers.vc_di_credential import (
+    handle_credential as handle_vc_di_credential,
+)
 from agent_webhooks.utils.credential import Credential, CredentialManager
 from agent_webhooks.utils.issuer import IssuerManager
 
@@ -26,8 +35,11 @@ TOPIC_CREDENTIALS_2_0_INDY = "issue_credential_v2_0_indy"
 TOPIC_PRESENTATIONS = "presentations"
 TOPIC_PRESENT_PROOF = "present_proof"
 TOPIC_ISSUER_REGISTRATION = "issuer_registration"
+TOPIC_VC_DI_ISSUER = "vc_di_issuer"
+TOPIC_VC_DI_CREDENTIAL_TYPE = "vc_di_credential_type"
+TOPIC_VC_DI_CREDENTIAL = "vc_di_credential"
 
-PROCESS_INBOUND_CREDENTIALS = os.environ.get('PROCESS_INBOUND_CREDENTIALS', 'true')
+PROCESS_INBOUND_CREDENTIALS = os.environ.get("PROCESS_INBOUND_CREDENTIALS", "true")
 if PROCESS_INBOUND_CREDENTIALS.upper() == "TRUE":
     LOGGER.debug(">>> YES processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = True
@@ -35,7 +47,7 @@ else:
     LOGGER.error(">>> NO not processing inbound credentials")
     PROCESS_INBOUND_CREDENTIALS = False
 
-RANDOM_ERRORS = os.environ.get('RANDOM_ERRORS', 'false').upper() == "TRUE"
+RANDOM_ERRORS = os.environ.get("RANDOM_ERRORS", "false").upper() == "TRUE"
 if RANDOM_ERRORS:
     LOGGER.error(">>> YES generating random credential processing errors")
 
@@ -57,19 +69,13 @@ def agent_callback(request, topic):
     log_timing_event(method, message, start_time, None, False)
 
     # dispatch based on the topic type
-    if topic == TOPIC_CONNECTIONS:
-        response = Response("")
-
-    elif topic == TOPIC_CONNECTIONS_ACTIVITY:
+    if topic == TOPIC_CONNECTIONS or topic == TOPIC_CONNECTIONS_ACTIVITY:
         response = Response("")
 
     elif topic == TOPIC_CREDENTIALS:
         response = handle_credentials(state, message)
 
-    elif topic == TOPIC_CREDENTIALS_2_0:
-        response = handle_credentials_2_0(state, message)
-
-    elif topic == TOPIC_CREDENTIALS_2_0_INDY:
+    elif topic == TOPIC_CREDENTIALS_2_0 or topic == TOPIC_CREDENTIALS_2_0_INDY:
         response = handle_credentials_2_0(state, message)
 
     elif topic == TOPIC_PRESENTATIONS or topic == TOPIC_PRESENT_PROOF:
@@ -77,6 +83,33 @@ def agent_callback(request, topic):
 
     elif topic == TOPIC_ISSUER_REGISTRATION:
         response = handle_register_issuer(message)
+
+    elif topic == TOPIC_VC_DI_ISSUER:
+        try:
+            result = handle_vc_di_issuer(message)
+            response = Response(result.serialize())
+        except ValidationError as err:
+            response = Response(str(err), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        except Exception as err:
+            response = Response(str(err), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    elif topic == TOPIC_VC_DI_CREDENTIAL_TYPE:
+        try:
+            result = handle_vc_di_credential_type(message)
+            response = Response(result.serialize())
+        except ValidationError as err:
+            response = Response(str(err), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        except Exception as err:
+            response = Response(str(err), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    elif topic == TOPIC_VC_DI_CREDENTIAL:
+        try:
+            result = handle_vc_di_credential(message)
+            response = Response(result)
+        except ValidationError as err:
+            response = Response(str(err), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        except Exception as err:
+            response = Response(str(err), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     else:
         LOGGER.info("Callback: topic=" + topic + ", message=" + json.dumps(message))
@@ -165,13 +198,17 @@ def handle_credentials(state, message):
 
             # You can include this exception to test error reporting
             if RANDOM_ERRORS:
-                raise_random_exception(credential_exchange_id, 'credential_recieved')
+                raise_random_exception(credential_exchange_id, "credential_recieved")
 
             credential_data = {
                 "thread_id": message["thread_id"],
                 "schema_id": raw_credential["schema_id"],
                 "cred_def_id": raw_credential["cred_def_id"],
-                "rev_reg_id": raw_credential["rev_reg_id"] if "rev_reg_id" in raw_credential else None,
+                "rev_reg_id": (
+                    raw_credential["rev_reg_id"]
+                    if "rev_reg_id" in raw_credential
+                    else None
+                ),
                 "attrs": {},
             }
 
@@ -224,8 +261,7 @@ def handle_presentations(state, message):
         if presentation_request["name"].startswith("cred_id::"):
             cred_id = presentation_request["name"][9:]
             resp = call_agent_with_retry(
-                f"{settings.AGENT_ADMIN_URL}/credential/"
-                + f"{cred_id}",
+                f"{settings.AGENT_ADMIN_URL}/credential/" + f"{cred_id}",
                 post_method=False,
                 headers=settings.ADMIN_REQUEST_HEADERS,
             )
@@ -234,9 +270,12 @@ def handle_presentations(state, message):
             wallet_credentials = {
                 "cred_info": wallet_credential,
                 "interval": None,
-                "presentation_referents": requested_attribute_referents + requested_predicates_referents
+                "presentation_referents": requested_attribute_referents
+                + requested_predicates_referents,
             }
-            credentials = [wallet_credentials, ]
+            credentials = [
+                wallet_credentials,
+            ]
             credential_query = presentation_request["name"]
 
         if 0 == len(credentials):
@@ -280,26 +319,22 @@ def handle_presentations(state, message):
         # from the wallet, we can apply this credential_id as the selected
         # credential for the presentation
         for related_referent in credential["presentation_referents"]:
-            if (
-                related_referent
-                in credentials_for_presentation["requested_attributes"]
-            ):
-                credentials_for_presentation["requested_attributes"][
-                    related_referent
-                ]["cred_id"] = credential_id
-                credentials_for_presentation["requested_attributes"][
-                    related_referent
-                ]["revealed"] = True
+            if related_referent in credentials_for_presentation["requested_attributes"]:
+                credentials_for_presentation["requested_attributes"][related_referent][
+                    "cred_id"
+                ] = credential_id
+                credentials_for_presentation["requested_attributes"][related_referent][
+                    "revealed"
+                ] = True
             elif (
-                related_referent
-                in credentials_for_presentation["requested_predicates"]
+                related_referent in credentials_for_presentation["requested_predicates"]
             ):
-                credentials_for_presentation["requested_predicates"][
-                    related_referent
-                ]["cred_id"] = credential_id
-                credentials_for_presentation["requested_predicates"][
-                    related_referent
-                ]["revealed"] = True
+                credentials_for_presentation["requested_predicates"][related_referent][
+                    "cred_id"
+                ] = credential_id
+                credentials_for_presentation["requested_predicates"][related_referent][
+                    "revealed"
+                ] = True
             else:
                 raise Exception(
                     f"Referent {related_referent} returned from wallet "
@@ -338,46 +373,42 @@ def handle_presentations(state, message):
 def handle_register_issuer(message):
     """Handles the registration of a new issuing agent in the credential registry.
 
-       The agent registration credential will be in the following format:
-       {
-            "issuer_registration_id": "string",
-            "connection_id": "string",
-            "issuer_registration": {
-                "credential_types": [
-                    {
-                        "category_labels": {"category": "label"},
-                        "claim_descriptions": {"claim": "description"},
-                        "claim_labels": {"claim": "label"},
-                        "credential_def_id": "string",
-                        "schema": "string",
-                        "version": "string",
-                        "name": "string",
-                        "credential": {
-                            "effective_date": {"input": "topic_id", "from": "claim"}
-                        },
-                        "topic": [
-                            {
-                                "source_id": {"input": "topic_id", "from": "claim"}
-                            }
-                        ],
-                        "endpoint": "string",
-                        "cardinality_fields": ["string"],
-                        "mapping": {},
-                        "visible_fields": ["string"],
-                        "logo_b64": "string",
-                    }
-                ],
-                "issuer": {
-                    "name": "string",
-                    "did": "string",
-                    "abbreviation": "string",
-                    "email": "string",
-                    "url": "string",
-                    "endpoint": "string",
-                    "logo_b64": "string"
-                }
-            }
-        }
+    The agent registration credential will be in the following format:
+    {
+         "issuer_registration_id": "string",
+         "connection_id": "string",
+         "issuer_registration": {
+             "credential_types": [
+                 {
+                     "claim_descriptions": {"claim": "description"},
+                     "claim_labels": {"claim": "label"},
+                     "credential_def_id": "string",
+                     "schema": "string",
+                     "version": "string",
+                     "name": "string",
+                     "credential": {
+                         "effective_date": {"input": "topic_id", "from": "claim"}
+                     },
+                     "topic": [
+                         {
+                             "source_id": {"input": "topic_id", "from": "claim"}
+                         }
+                     ],
+                     "endpoint": "string",
+                     "cardinality_fields": ["string"],
+                     "mapping": {},
+                 }
+             ],
+             "issuer": {
+                 "name": "string",
+                 "did": "string",
+                 "abbreviation": "string",
+                 "email": "string",
+                 "url": "string",
+                 "endpoint": "string",
+             }
+         }
+     }
     """
     issuer_manager = IssuerManager()
     updated = issuer_manager.register_issuer(message)
@@ -451,34 +482,52 @@ def handle_credentials_2_0(state, message):
             cred_issue = message["cred_issue"]
             if cred_issue is None:
                 LOGGER.error(" >>> Error cred_issue missing for " + cred_ex_id)
-                return Response("Error cred_issue missing for credential", status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    "Error cred_issue missing for credential",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             # You can include this exception to test error reporting
             if RANDOM_ERRORS:
-                raise_random_exception(cred_ex_id, 'credential-recieved')
+                raise_random_exception(cred_ex_id, "credential-recieved")
 
             cred_data = {}
             for cred_fmt in cred_issue["formats"]:
                 att_id = cred_fmt["attach_id"]
-                cred_att = [att for att in cred_issue["credentials~attach"] if att["@id"] == att_id][0]
+                cred_att = [
+                    att
+                    for att in cred_issue["credentials~attach"]
+                    if att["@id"] == att_id
+                ][0]
                 if cred_att is None:
                     LOGGER.error(
-                        " >>> Error data cred_att could not be parsed for " + cred_ex_id)
-                    return Response("Error credential attachment could not be parsed from cred_issue", status=status.HTTP_400_BAD_REQUEST)
+                        " >>> Error data cred_att could not be parsed for " + cred_ex_id
+                    )
+                    return Response(
+                        "Error credential attachment could not be parsed from cred_issue",
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
                 cred_raw_base64 = cred_att["data"]["base64"]
                 cred_raw = json.loads(base64.b64decode(cred_raw_base64))
 
                 if cred_raw is None:
                     LOGGER.error(
-                        " >>> Error data cred_issue could not be parsed for " + cred_ex_id)
-                    return Response("Error credential data could not be parsed from cred_issue", status=status.HTTP_400_BAD_REQUEST)
+                        " >>> Error data cred_issue could not be parsed for "
+                        + cred_ex_id
+                    )
+                    return Response(
+                        "Error credential data could not be parsed from cred_issue",
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
                 cred_data = {
                     "thread_id": cred_issue["~thread"]["thid"],
                     "schema_id": cred_raw["schema_id"],
                     "cred_def_id": cred_raw["cred_def_id"],
-                    "rev_reg_id": cred_raw["rev_reg_id"] if "rev_reg_id" in cred_raw else None,
+                    "rev_reg_id": (
+                        cred_raw["rev_reg_id"] if "rev_reg_id" in cred_raw else None
+                    ),
                     "attrs": {k: v["raw"] for k, v in cred_raw["values"].items()},
                 }
 
@@ -495,9 +544,7 @@ def handle_credentials_2_0(state, message):
         resp = call_agent_with_retry(
             f"{settings.AGENT_ADMIN_URL}/issue-credential-2.0/records/{cred_ex_id}/problem-report",
             post_method=True,
-            payload={
-                "description": str(e)
-            },
+            payload={"description": str(e)},
             headers=settings.ADMIN_REQUEST_HEADERS,
         )
         resp.raise_for_status()
@@ -517,8 +564,12 @@ def receive_credential(cred_ex_id, cred_data, v=None):
             existing_credential = CredentialModel.objects.filter(credential_id=cred_id)
             if 0 < len(existing_credential):
                 # TODO - credential already exists in the database, what to do?
-                LOGGER.error(" >>> Received duplicate for credential_id: "
-                            + cred_id + ", exch id: " + cred_ex_id)
+                LOGGER.error(
+                    " >>> Received duplicate for credential_id: "
+                    + cred_id
+                    + ", exch id: "
+                    + cred_ex_id
+                )
                 existing = True
                 ret_cred_id = cred_id
             else:
@@ -556,8 +607,15 @@ def receive_credential(cred_ex_id, cred_data, v=None):
                 )
                 if resp.status_code == 404:
                     LOGGER.error(
-                        " >>> Error cred exchange id is missing but credential is not available for " + cred_ex_id + ", " + ret_cred_id)
-                    return Response("Error cred exchange id is missing but credential is not available", status=status.HTTP_400_BAD_REQUEST)
+                        " >>> Error cred exchange id is missing but credential is not available for "
+                        + cred_ex_id
+                        + ", "
+                        + ret_cred_id
+                    )
+                    return Response(
+                        "Error cred exchange id is missing but credential is not available",
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 pass
             else:
                 resp.raise_for_status()
