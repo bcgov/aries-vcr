@@ -6,6 +6,8 @@ from .Auditable import Auditable
 
 from api.v2.utils import local_name, remote_name
 
+from agent_webhooks.enums import FormatEnum
+
 
 class Credential(Auditable):
     reindex_related = ["topic"]
@@ -31,8 +33,13 @@ class Credential(Auditable):
     revoked_by = models.ForeignKey(
         "Credential", related_name="+", null=True, on_delete=models.SET_NULL
     )
-
-    # Raw JSON data for this credential
+    # New fields
+    format = models.CharField(
+        blank=True,
+        null=True,
+        choices=[(f.name, f.value) for f in FormatEnum],
+        max_length=255,
+    )
     raw_data = contrib.JSONField(blank=True, null=True)
 
     # Topics related by this credential
@@ -77,7 +84,9 @@ class Credential(Auditable):
 
     @property
     def all_credential_type_ids(self):
-        return self._cached("cred_type_ids", self.topic.get_active_credential_type_ids())
+        return self._cached(
+            "cred_type_ids", self.topic.get_active_credential_type_ids()
+        )
 
     @property
     def all_attributes(self):
