@@ -13,9 +13,9 @@ from agent_webhooks.schemas import (
 from agent_webhooks.tests.data import (
     credential_type_def_spec,
     effective_date_credential_mapping_def_spec,
+    expiry_date_credential_mapping_def_spec,
     effective_date_mapping_def_spec,
     issuer_def_spec,
-    revoked_date_credential_mapping_def_spec,
     topic_def_spec,
 )
 
@@ -194,7 +194,7 @@ class TestMappingDefSchema(TestCase):
 
         assert "type" in exc_info.exception.messages
         message = exc_info.exception.messages.get("type")
-        assert "Must be one of: effective_date, revoked_date." in message
+        assert "Must be one of: effective_date, expiry_date, revoked_date." in message
 
 
 class TestCredentialMappingDefSchema(TestCase):
@@ -245,7 +245,7 @@ class TestCredentialTypeDef(TestCase):
         revoked_date = credential.get("revoked_date")
 
         assert effective_date == effective_date_credential_mapping_def_spec
-        assert revoked_date == revoked_date_credential_mapping_def_spec
+        assert revoked_date == expiry_date_credential_mapping_def_spec
 
     def test_valid_credential_type_no_mappings(self):
         """Test the CredentialTypeSchema with valid data - no mappings"""
