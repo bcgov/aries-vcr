@@ -136,7 +136,6 @@ class IssuerRegistrationRequestSchema(Schema):
             logo_b64 = fields.Str(required=False, allow_none=True)
             credential_def_id = fields.Str(required=True)
             endpoint = fields.Str(required=False)
-            visible_fields = fields.List(fields.Str(), required=False)
 
             labels = fields.Dict(required=False)
             endpoints = fields.Dict(required=False)

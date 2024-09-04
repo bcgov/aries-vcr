@@ -95,7 +95,7 @@ class HookUtils_FindAndFireHook_TestCase(TestCase):
         )
 
         # creating Issuer
-        issuer = Issuer.Issuer.objects.create(
+        issuer = Issuer.objects.create(
             did="not:a:did:456",
             name="Test Issuer",
             abbreviation="TI",

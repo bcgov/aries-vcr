@@ -1,7 +1,6 @@
 import logging
 
 from django.conf import settings
-from django.urls import resolve
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,11 +15,11 @@ class HTTPHeaderRoutingMiddleware(object):
     Accept request header.  Allowable header and version values are in settings.HTTP_HEADER_ROUTING_MIDDLEWARE_ACCEPT_MAP
     and settings.HTTP_HEADER_ROUTING_MIDDLEWARE_VERSION_MAP respectively.
 
-    If there is a version requested in the Accept header it will be used, 
+    If there is a version requested in the Accept header it will be used,
     else if there is a version requested in the URL it will be used,
     else it will use the version identified as "default".
 
-    The Accept header (if supplied) will be rewritten as a regular content header (as mapped in settings) and the 
+    The Accept header (if supplied) will be rewritten as a regular content header (as mapped in settings) and the
     version written into the URL will be as mapped in the settings.
 
     The actual API URL's must be mapped under "/api/v2/...", "/api/v3/..." etc. in the Django urlconf files.
@@ -39,7 +38,9 @@ class HTTPHeaderRoutingMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        (request, _requested_version, _request_path_info) = self.process_request(request)
+        (request, _requested_version, _request_path_info) = self.process_request(
+            request
+        )
 
         response = self.get_response(request)
 

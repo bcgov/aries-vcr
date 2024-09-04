@@ -1,9 +1,12 @@
+from django.contrib.postgres import fields as contrib
 from django.db import models
 from django.utils import timezone
 
 from .Auditable import Auditable
 
 from api.v2.utils import local_name, remote_name
+
+from agent_webhooks.enums import FormatEnum
 
 
 class Credential(Auditable):
@@ -30,6 +33,14 @@ class Credential(Auditable):
     revoked_by = models.ForeignKey(
         "Credential", related_name="+", null=True, on_delete=models.SET_NULL
     )
+    # New fields
+    format = models.CharField(
+        blank=True,
+        null=True,
+        choices=[(f.name, f.value) for f in FormatEnum],
+        max_length=255,
+    )
+    raw_data = contrib.JSONField(blank=True, null=True)
 
     # Topics related by this credential
     related_topics = models.ManyToManyField(
@@ -73,7 +84,9 @@ class Credential(Auditable):
 
     @property
     def all_credential_type_ids(self):
-        return self._cached("cred_type_ids", self.topic.get_active_credential_type_ids())
+        return self._cached(
+            "cred_type_ids", self.topic.get_active_credential_type_ids()
+        )
 
     @property
     def all_attributes(self):

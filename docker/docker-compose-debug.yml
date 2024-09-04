@@ -1,0 +1,11 @@
+version: '3'
+services:
+  vcr-api:
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python ./manage.py migrate && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 ./manage.py runserver 0.0.0.0:8080"]
+    volumes:
+      - ../server/vcr-server/vcr_server:/opt/app-root/src/vcr_server
+      - ../server/vcr-server/subscriptions:/opt/app-root/src/subscriptions
+      - ../server/vcr-server/agent_webhooks:/opt/app-root/src/agent_webhooks
+      - ../server/vcr-server/api:/opt/app-root/src/api
+    ports:
+      - 5678:5678

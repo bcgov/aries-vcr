@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -37,7 +36,8 @@ class Topic(Auditable):
     def foundational_credential(self):
         if self.credential_sets:
             foundational_set = self.credential_sets.filter(
-                credential_type__description=self.type).all()
+                credential_type__description=self.type
+            ).all()
             if foundational_set and 0 < len(foundational_set):
                 return foundational_set[0].latest_credential
         return None
@@ -45,7 +45,7 @@ class Topic(Auditable):
     def save(self, *args, **kwargs):
         """
         Call full_clean to apply form validation on save.
-        We use this to prevent insertingtext fields with empty strings.
+        We use this to prevent inserting text fields with empty strings.
         """
         self.full_clean()
         super(Topic, self).save(*args, **kwargs)
@@ -77,7 +77,10 @@ class Topic(Auditable):
     def get_active_attributes(self):
         creds = self.get_active_credential_ids()
         if creds:
-            return Attribute.objects.filter(credential_id__in=creds, credential__credential_type__description=self.type)
+            return Attribute.objects.filter(
+                credential_id__in=creds,
+                credential__credential_type__description=self.type,
+            )
         return []
 
     def get_active_names(self):

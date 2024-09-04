@@ -4,7 +4,6 @@ import json as _json
 import logging
 import re
 import time
-import uuid
 from collections import namedtuple
 from datetime import datetime, timedelta
 from importlib import import_module
@@ -42,7 +41,7 @@ SUPPORTED_MODELS_MAPPING = {
 
 SchemaKey = namedtuple("SchemaKey", "origin_did name version")
 
-UPDATE_CRED_TYPE_TIMESTAMP = os.environ.get('UPDATE_CRED_TYPE_TIMESTAMP', 'true')
+UPDATE_CRED_TYPE_TIMESTAMP = os.environ.get("UPDATE_CRED_TYPE_TIMESTAMP", "true")
 if UPDATE_CRED_TYPE_TIMESTAMP.upper() == "TRUE":
     print(">>> YES updating cred type timestamp")
     UPDATE_CRED_TYPE_TIMESTAMP = True
@@ -50,7 +49,7 @@ else:
     print(">>> NO not updating cred type timestamp")
     UPDATE_CRED_TYPE_TIMESTAMP = False
 
-CREATE_CREDENTIAL_CLAIMS = os.environ.get('CREATE_CREDENTIAL_CLAIMS', 'true')
+CREATE_CREDENTIAL_CLAIMS = os.environ.get("CREATE_CREDENTIAL_CLAIMS", "true")
 if CREATE_CREDENTIAL_CLAIMS.upper() == "TRUE":
     print(">>> YES create detail claims for credentials")
     CREATE_CREDENTIAL_CLAIMS = True
@@ -58,7 +57,7 @@ else:
     print(">>> NO not creating detail claims for credentials")
     CREATE_CREDENTIAL_CLAIMS = False
 
-CTYPE_CACHE_MAX_AGE_MINS = int(os.environ.get('CTYPE_CACHE_MAX_AGE_MINS', '10'))
+CTYPE_CACHE_MAX_AGE_MINS = int(os.environ.get("CTYPE_CACHE_MAX_AGE_MINS", "10"))
 
 
 def schema_key(s_id: str) -> SchemaKey:
@@ -105,7 +104,11 @@ class Credential(object):
         credential_data {object} -- Valid credential data as sent by an issuer
     """
 
-    def __init__(self, credential_data: dict, request_metadata: dict = None,) -> None:
+    def __init__(
+        self,
+        credential_data: dict,
+        request_metadata: dict = None,
+    ) -> None:
         self._raw = credential_data
         self._thread_id = credential_data["thread_id"]
         self._schema_id = credential_data["schema_id"]
@@ -266,8 +269,9 @@ class CredentialManager(object):
     def _init_ctype_cache(self):
         self._cred_type_cache = {}
         self._cred_type_cache_created = datetime.now()
-        self._cred_type_cache_max_age = (self._cred_type_cache_created + 
-            timedelta(minutes=CTYPE_CACHE_MAX_AGE_MINS))
+        self._cred_type_cache_max_age = self._cred_type_cache_created + timedelta(
+            minutes=CTYPE_CACHE_MAX_AGE_MINS
+        )
 
     def _reinit_ctype_cache(self):
         if self._cred_type_cache_max_age < datetime.now():
@@ -363,7 +367,7 @@ class CredentialManager(object):
 
         return mapped_value
 
-    def get_credential_type(self, credential: (Credential, CredentialModel)):
+    def get_credential_type(self, credential: tuple[Credential, CredentialModel]):
         """
         Fetch the credential type for the incoming credential
         """
@@ -440,6 +444,8 @@ class CredentialManager(object):
     def reprocess(self, credential: CredentialModel):
         """
         Reprocesses an existing credential in order to update the related search models
+
+        This is currently only used by the CLI
         """
         credential_type = self.get_credential_type(credential)
         processor_config = credential_type.processor_config
@@ -474,7 +480,7 @@ class CredentialManager(object):
     @classmethod
     def resolve_credential_topics(
         cls, credential, processor_config
-    ) -> (Topic, Topic, bool, bool):
+    ) -> tuple[Topic, Topic, bool, bool]:
         """
         Resolve the related topic(s) for a credential based on the processor config
         """
@@ -810,12 +816,12 @@ class CredentialManager(object):
             Topic.objects.select_for_update().get(pk=topic.id)
             # Acquire a lock on the topic to block competing credentials
             # This lock is released when the transaction ends
-            #topic_ids = []
-            #topic_ids.append(topic.id)
-            #if related_topic is not None:
+            # topic_ids = []
+            # topic_ids.append(topic.id)
+            # if related_topic is not None:
             #    topic_ids.append(related_topic.id)
-            #topic_ids.sort()
-            #for topic_id in topic_ids:
+            # topic_ids.sort()
+            # for topic_id in topic_ids:
             #    Topic.objects.select_for_update().get(pk=topic_id)
 
             cardinality = cls.credential_cardinality(credential, processor_config)
@@ -844,11 +850,13 @@ class CredentialManager(object):
                     claim_value = getattr(credential, claim_attribute)
                     cred_claims[claim_attribute] = claim_value
                     Claim.objects.create(
-                        credential=db_credential, name=claim_attribute, value=claim_value
+                        credential=db_credential,
+                        name=claim_attribute,
+                        value=claim_value,
                     )
 
             # Create topic relationship if needed
-            #if related_topic is not None:
+            # if related_topic is not None:
             #    try:
             #        TopicRelationship.objects.create(
             #            credential=db_credential,
@@ -874,7 +882,7 @@ class CredentialManager(object):
                 credential_type.last_issue_date = datetime.now(timezone.utc)
                 credential_type.save()
 
-            # add to the set of "hookable credentials"
+            # Add to the set of "hookable credentials"
             # TODO make this a configurable step of the process
             new_hook_exists = HookableCredential.objects.filter(
                 corp_num=topic.source_id,
@@ -907,12 +915,12 @@ class CredentialManager(object):
         with transaction.atomic():
             # Acquire a lock on the topic to block competing credentials
             # This lock is released when the transaction ends
-            #topic_ids = []
-            #topic_ids.append(topic.id)
-            #if related_topic is not None:
+            # topic_ids = []
+            # topic_ids.append(topic.id)
+            # if related_topic is not None:
             #    topic_ids.append(related_topic.id)
-            #topic_ids.sort()
-            #for topic_id in topic_ids:
+            # topic_ids.sort()
+            # for topic_id in topic_ids:
             #    Topic.objects.select_for_update().get(pk=topic_id)
 
             # Create topic relationship if needed

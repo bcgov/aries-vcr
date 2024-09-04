@@ -38,7 +38,6 @@ services:
       - DEMO_SITE=${DEMO_SITE}
       - SQL_DEBUG=${SQL_DEBUG}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
-      - DJANGO_DEBUG=${DJANGO_DEBUG}
       - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL}
       - OPTIMIZE_TABLE_ROW_COUNTS=${OPTIMIZE_TABLE_ROW_COUNTS}
       - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
@@ -82,10 +81,10 @@ services:
       - PAGE_SIZE=${PAGE_SIZE}
       - MAX_PAGE_SIZE=${MAX_PAGE_SIZE}
     volumes:
-      - ../server/vcr-server/subscriptions:/home/indy/subscriptions
-      - ../server/vcr-server/agent_webhooks:/home/indy/agent_webhooks
-      - ../server/vcr-server/api:/home/indy/api
-      - vcr-wallet:/home/indy/.indy_client/wallet
+      - ../server/vcr-server/vcr_server:/opt/app-root/src/vcr_server
+      - ../server/vcr-server/subscriptions:/opt/app-root/src/subscriptions
+      - ../server/vcr-server/agent_webhooks:/opt/app-root/src/agent_webhooks
+      - ../server/vcr-server/api:/opt/app-root/src/api
     networks:
       - vcr
     # when running "./manage scale" comment out or remove these port mappings:
@@ -97,17 +96,7 @@ services:
       - wallet-db
       - vcr-solr
       - vcr-agent
-    command: >
-      /bin/bash -c "
-      echo waiting for solr ...;
-      sleep 15;
-      if [ $DEBUG ] && [ "$DEBUG" == "true" ]; then
-        python manage.py migrate && \
-        python manage.py update_index --max-retries=5 --batch-size=500;
-        python manage.py runserver 0.0.0.0:8080;
-      else
-        ${STI_SCRIPTS_PATH}/run;
-      fi"
+    command: ["/bin/bash -c", "echo waiting for solr ...", "sleep 15", "${STI_SCRIPTS_PATH}/run"]
 
   vcr-agent:
     image: vcr-agent
@@ -209,7 +198,6 @@ services:
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - SQL_DEBUG=${SQL_DEBUG}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
-      - DJANGO_DEBUG=${DJANGO_DEBUG}
       - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL}
       - SOLR_SERVICE_NAME=${SOLR_SERVICE_NAME}
       - SOLR_CORE_NAME=${SOLR_CORE_NAME}
