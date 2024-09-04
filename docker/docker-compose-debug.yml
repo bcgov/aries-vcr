@@ -1,7 +1,10 @@
-version: '3'
+version: "3"
 services:
   vcr-api:
-    command: ["sh", "-c", "pip install debugpy -t /tmp && python ./manage.py migrate && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 ./manage.py runserver 0.0.0.0:8080"]
+    environment:
+      - DEBUGPY=${DEBUGPY}
+    command: >
+      sh -c "python ./manage.py migrate && if [ ! -z $DEBUGPY ]; then pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 ./manage.py runserver 0.0.0.0:8080; else python ./manage.py runserver 0.0.0.0:8080; fi"
     volumes:
       - ../server/vcr-server/vcr_server:/opt/app-root/src/vcr_server
       - ../server/vcr-server/subscriptions:/opt/app-root/src/subscriptions
