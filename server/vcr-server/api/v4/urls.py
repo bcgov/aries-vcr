@@ -13,7 +13,7 @@ from api.v4.views.search import (
     # DEPRECATED: this should not be used in new code and will be removed imminently
     autocomplete as search_autocomplete,
 )
-from api.v4.views.rest import credential_type, issuer, topic, schemas
+from api.v4.views.rest import credential_type, issuer, topic, schema
 from api.v4.views.misc.contact import send_contact
 from api.v4.views.misc.feedback import send_feedback
 
@@ -38,8 +38,8 @@ router = SimpleRouter(trailing_slash=False)
 router.register(r"credential-type",
                 credential_type.RestView, "Credential Type")
 router.register(r"issuer", issuer.RestView, "Issuer")
-router.register(r"schemas", schemas.RestView)
-router.register(r"topic", topic.RestView)
+router.register(r"schema", schema.RestView, "Schema")
+router.register(r"topic", topic.RestView, "Topic")
 router.register(r"search/credential",
                 search_credential.SearchView, "Credential Search")
 router.register(r"search/topic", search_topic.SearchView, "Topic Search")

@@ -82,7 +82,6 @@ class CredentialTypeClaimLabelsSerializer(ModelSerializer):
             "claim_descriptions",
             "logo_b64",
             "processor_config",
-            "schema",
         )
 
 

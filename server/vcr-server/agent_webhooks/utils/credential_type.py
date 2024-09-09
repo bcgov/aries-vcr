@@ -94,6 +94,7 @@ class CredentialTypeManager:
         processor_config = {
             "cardinality_fields": credential_type_def.get("cardinality_fields"),
             "credential": credential_type_def.get("credential"),
+            "mapping": credential_type_def.get('mapping'),
             "mappings": credential_type_def.get("mappings"),
             "topic": credential_type_def.get("topic"),
         }
