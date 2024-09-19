@@ -77,41 +77,12 @@ class RestView(ReadOnlyModelViewSet):
         response["item_count"] = len(data)
         return response
 
-    @swagger_auto_schema(operation_id="topic_type_read")
-    @action(
-        detail=False,
-        url_path="(?P<source_id>[^/.]+)/type/(?P<type>[^/]+)",
-        methods=["get"],
-    )
-    def read(self, request, *args, **kwargs):
-        item = self.get_object()
-        return Response(self.get_serializer(item).data)
-
-    @action(
-        detail=False,
-        methods=["get"],
-        url_path="(?P<source_id>[^/.]+)/type/(?P<type>[^/]+)/credential/(?P<credential_id>[^/.]+)",
-    )
-    def raw_credential_read(self, request, *args, **kwargs):
-        item = self.get_object()
-
-        credential_id = self.kwargs.get("credential_id")
-
-        credential = item.credentials.filter(
-            format="vc_di", credential_id=credential_id, revoked=False
-        ).first()
-
-        if not (credential and credential.raw_data):
-            raise Http404()
-
-        return Response(credential.raw_data, content_type="application/ld+json")
-
     def get_object(self):
         if self.kwargs.get("pk"):
             return super(RestView, self).get_object()
 
-        source_id = self.kwargs.get("source_id")
         type = self.kwargs.get("type")
+        source_id = self.kwargs.get("source_id")
         if not type or not source_id:
             raise Http404()
 
@@ -120,7 +91,7 @@ class RestView(ReadOnlyModelViewSet):
             type = settings.CRED_TYPE_SYNONYMS[type.lower()]
 
         queryset = self.filter_queryset(self.get_queryset())
-        obj = get_object_or_404(queryset, source_id=source_id, type=type)
+        obj = get_object_or_404(queryset, type=type, source_id=source_id)
 
         # May raise a permission denied
         self.check_object_permissions(self.request, obj)
