@@ -1,5 +1,4 @@
 # DEPRECATED: this should not be used in new code and will be removed imminently
-
 from api.v3.search_filters import AutocompleteFilter as V3AutocompleteFilter
 from api.v3.search_filters import get_autocomplete_builder
 

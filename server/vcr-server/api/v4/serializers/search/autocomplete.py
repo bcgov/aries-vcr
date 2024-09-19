@@ -1,5 +1,4 @@
 # DEPRECATED: this should not be used in new code and will be removed imminently
-
 from rest_framework.serializers import SerializerMethodField
 
 from api.v3.indexes.Topic import TopicIndex

@@ -1,5 +1,3 @@
-from haystack.inputs import Clean, Exact, Raw
-
 from api.v2.search.filters import CredNameFilter, CredNameFilterBuilder
 
 
