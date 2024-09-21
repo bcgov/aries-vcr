@@ -6,7 +6,6 @@ from rest_framework.serializers import (
 from api.v2.models.Attribute import Attribute
 from api.v2.models.Credential import Credential
 from api.v2.models.CredentialType import CredentialType
-from api.v2.models.Issuer import Issuer
 from api.v2.models.Schema import Schema
 
 from api.v2.serializers.rest import CredentialNameSerializer, IssuerSerializer
@@ -20,6 +19,8 @@ class AttributeSerializer(ModelSerializer):
 
 class CredentialAttributeSerializer(AttributeSerializer):
     class Meta(AttributeSerializer.Meta):
+        ref_name = "V4CredentialAttributeSerializer"
+
         fields = (
             "id",
             "type",
@@ -43,8 +44,9 @@ class CredentialTypeSchemaSerializer(ModelSerializer):
             "processor_config",
             "highlighted_attributes",
             "credential_title",
-            "issuer"
+            "issuer",
         )
+
 
 class CredentialTypeExtendedSerializer(ModelSerializer):
     issuer = IssuerSerializer()
@@ -110,3 +112,13 @@ class CredentialSerializer(ModelSerializer):
 
 class RestSerializer(CredentialSerializer):
     credential_type = CredentialTypeExtendedSerializer()
+
+
+class RawCredentialSerializer(ModelSerializer):
+    class Meta:
+        model = Credential
+        fields = ("raw_data",)
+        read_only_fields = fields
+
+    def to_representation(self, instance):
+        return instance.raw_data or {}
