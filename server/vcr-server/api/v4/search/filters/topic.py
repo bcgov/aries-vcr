@@ -1,4 +1,3 @@
-from haystack.inputs import Clean, Exact, Raw
 from drf_haystack.query import BaseQueryBuilder
 
 from api.v2.search.filters import (

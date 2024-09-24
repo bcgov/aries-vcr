@@ -13,7 +13,7 @@ from api.v4.views.search import (
     # DEPRECATED: this should not be used in new code and will be removed imminently
     autocomplete as search_autocomplete,
 )
-from api.v4.views.rest import credential_type, issuer, topic, schema
+from api.v4.views.rest import credential, credential_type, issuer, topic, schema
 from api.v4.views.misc.contact import send_contact
 from api.v4.views.misc.feedback import send_feedback
 
@@ -35,18 +35,18 @@ schema_view = get_schema_view(
 
 router = SimpleRouter(trailing_slash=False)
 
-router.register(r"credential-type",
-                credential_type.RestView, "Credential Type")
+router.register(r"credential", credential.RestView, "Credential")
+router.register(r"credential-type", credential_type.RestView, "Credential Type")
 router.register(r"issuer", issuer.RestView, "Issuer")
 router.register(r"schema", schema.RestView, "Schema")
 router.register(r"topic", topic.RestView, "Topic")
-router.register(r"search/credential",
-                search_credential.SearchView, "Credential Search")
+router.register(r"search/credential", search_credential.SearchView, "Credential Search")
 router.register(r"search/topic", search_topic.SearchView, "Topic Search")
 router.register(r"search/fuzzy", search_fuzzy.SearchView, "Fuzzy Search")
 # DEPRECATED: this should not be used in new code and will be removed imminently
-router.register(r"search/autocomplete",
-                search_autocomplete.SearchView, "Aggregate Autocomplete")
+router.register(
+    r"search/autocomplete", search_autocomplete.SearchView, "Aggregate Autocomplete"
+)
 
 # Misc endpoints
 miscPatterns = [
@@ -58,5 +58,4 @@ swaggerPatterns = [
     path("", schema_view.with_ui("swagger", cache_timeout=None), name="api-docs")
 ]
 
-urlpatterns = format_suffix_patterns(
-    router.urls) + miscPatterns + swaggerPatterns
+urlpatterns = format_suffix_patterns(router.urls) + miscPatterns + swaggerPatterns
