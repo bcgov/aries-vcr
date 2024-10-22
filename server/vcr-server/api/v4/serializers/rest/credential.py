@@ -106,6 +106,7 @@ class CredentialSerializer(ModelSerializer):
             "revoked_by",
             "attributes",
             "names",
+            "raw_data",
         )
         read_only_fields = fields
 
