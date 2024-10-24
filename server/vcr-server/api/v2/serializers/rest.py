@@ -143,6 +143,7 @@ class CredentialSerializer(ModelSerializer):
             "revoked_by",
             "related_topics",
             "attributes",
+            "raw_data",
         )
         read_only_fields = fields
 
@@ -240,6 +241,7 @@ class CredentialExtSerializer(CredentialSerializer):
             "remote_name",
             "topic",
             "related_topics",
+            "raw_data",
         )
         read_only_fields = fields
 
