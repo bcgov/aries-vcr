@@ -47,6 +47,9 @@ credential_type_def_spec = {
         effective_date_mapping_def_spec,
         expiry_date_mapping_def_spec,
     ],
+    "cardinality": [
+        {"path": "$.credentialSubject.issuedTo.id"},
+    ],
 }
 
 credential_def_spec = {

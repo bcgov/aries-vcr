@@ -39,10 +39,12 @@ class TestCredentialTypeManager(TestCase):
         saved_schema = test_schemas[0]
 
         assert saved_credential_type.processor_config == {
-            "cardinality_fields": credential_type_def_spec.get("cardinality_fields"),
+            "cardinality": credential_type_def_spec.get("cardinality"),
             "credential": credential_type_def_spec.get("credential"),
             "mappings": credential_type_def_spec.get("mappings"),
             "topic": credential_type_def_spec.get("topic"),
         }
+        assert "cardinality_fields" not in saved_credential_type.processor_config
+        assert "mapping" not in saved_credential_type.processor_config
         assert saved_credential_type.issuer_id == test_issuer.id
         assert saved_credential_type.schema_id == saved_schema.id

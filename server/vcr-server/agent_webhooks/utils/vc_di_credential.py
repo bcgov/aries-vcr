@@ -1,4 +1,6 @@
+import base64
 from datetime import datetime
+import hashlib
 import logging
 import re
 
@@ -45,20 +47,31 @@ class CredentialManager:
 
         # Resolve the topic for the credential
         topic = self._resolve_credential_topic(credential_def, processor_config)
+
+        # Resolve the cardinality for the credential
+        cardinality = self._process_credential_cardinality(
+            credential_def, processor_config
+        )
+
         # Resolve the credential properties
         credential_properties = self._process_credential_properties(
             credential_def, processor_config
         )
-        credential_properties["credential_type"] = credential_type
 
         # Need this in a separate method for testing
         self._set_additional_properties(credential_def, credential_properties)
+
+        # Set our own credential properties
+        credential_properties["credential_type"] = credential_type
+        credential_properties["cardinality_hash"] = (
+            cardinality["hash"] if cardinality else None
+        )
 
         # Update the database with the credential data
         credential = topic.credentials.create(**credential_properties)
 
         # Update the credential set
-        self._resolve_credential_set(credential)
+        self._resolve_credential_set(credential, cardinality)
 
         credential_attributes = self._process_credential_attributes(
             credential_def, processor_config
@@ -69,8 +82,8 @@ class CredentialManager:
         return credential
 
     def _set_additional_properties(self, credential_def, credential_properties):
-        credential_properties['format'] = credential_def.get('format')
-        credential_properties['raw_data'] = credential_def.get('raw_data')
+        credential_properties["format"] = credential_def.get("format")
+        credential_properties["raw_data"] = credential_def.get("raw_data")
 
     def _resolve_credential_type(
         self, credential_def: CredentialDefSchema
@@ -223,7 +236,7 @@ class CredentialManager:
         return credential_set
 
     def _process_credential_properties(
-        self, credential_def: CredentialDefSchema, processor_config: dict
+        self, credential_def: CredentialDefSchema, processor_config: any
     ) -> dict:
         """
         Generate a dictionary of additional credential properties from the processor config
@@ -258,6 +271,32 @@ class CredentialManager:
 
         return {}
 
+    def _process_credential_cardinality(
+        self, credential_def: CredentialDefSchema, processor_config: any
+    ) -> any:
+        """Extract the credential cardinality values and hash"""
+
+        cardinality = processor_config.get("cardinality") or []
+        values = {}
+        if cardinality and len(cardinality):
+            for attribute in cardinality:
+                path = attribute.get("path")
+                try:
+                    values[path] = self._process_mapping(attribute, credential_def)
+                except AttributeError:
+                    raise CredentialException(
+                        "Processor config specifies field '{}' in cardinality, "
+                        + "but value does not exist in credential.".format(path)
+                    )
+        if values:
+            hash_paths = ["{}::{}".format(k, values[k]) for k in values]
+            hash = base64.b64encode(
+                hashlib.sha256(",".join(hash_paths).encode("utf-8")).digest()
+            )
+            return {"values": values, "hash": hash}
+
+        return None
+
     def _process_credential_attributes(
         self, credential_def: CredentialDefSchema, processor_config: dict
     ) -> list[dict]:
@@ -276,6 +315,19 @@ class CredentialManager:
                 )
 
         return attributes
+
+    def _process_mapping(self, rule: dict, credential_def: CredentialDefSchema) -> any:
+        """Takes our mapping rules and returns a value from the credential data."""
+
+        if not (raw_data := credential_def and credential_def.get("raw_data")):
+            return None
+
+        if path := rule and rule.get("path"):
+            json_path = parse(path)
+            matches = [match.value for match in json_path.find(raw_data)]
+            return matches[0] if matches and len(matches) else None
+
+        return None
 
     def _process_config_date(
         self, config: dict, credential_def: CredentialDefSchema, field: str
@@ -313,16 +365,3 @@ class CredentialManager:
                 parsed_date = parsed_date.astimezone(timezone.utc)
 
         return parsed_date
-
-    def _process_mapping(self, rule: dict, credential_def: CredentialDefSchema) -> any:
-        """Takes our mapping rules and returns a value from the credential data."""
-
-        if not (raw_data := credential_def and credential_def.get("raw_data")):
-            return None
-
-        if path := rule and rule.get("path"):
-            json_path = parse(path)
-            matches = [match.value for match in json_path.find(raw_data)]
-            return matches[0] if matches and len(matches) else None
-
-        return None
