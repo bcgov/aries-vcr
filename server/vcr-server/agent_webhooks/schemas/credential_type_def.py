@@ -4,6 +4,7 @@ from agent_webhooks.enums import FormatEnum, MappingTypeEnum
 from agent_webhooks.schemas import (
     CredentialMappingDefSchema,
     MappingDefSchema,
+    PathBaseSchema,
     TopicDefSchema,
 )
 
@@ -15,6 +16,7 @@ class CredentialTypeDefSchema(Schema):
     origin_did = fields.String(required=True)
     topic = fields.Nested(TopicDefSchema, required=True)
     mappings = fields.List(fields.Nested(MappingDefSchema))
+    cardinality = fields.List(fields.Nested(PathBaseSchema))
     credential = fields.Dict(
         keys=fields.Enum(MappingTypeEnum, by_value=True),
         values=fields.Nested(CredentialMappingDefSchema),

@@ -33,7 +33,7 @@ class TestIssuerManager(TestCase):
                     "topic": [{"source_id": {"input": "topic_id", "from": "claim"}}],
                     "endpoint": "endpoint",
                     "cardinality_fields": ["field"],
-                    "mappings": {},
+                    "mapping": {},
                     "logo_b64": "logo base64",
                 }
             ],
@@ -94,9 +94,11 @@ class TestIssuerManager(TestCase):
 
         assert credential_type.description == "cred type name"
         assert credential_type.processor_config == {
+            "cardinality": None,
             "cardinality_fields": ["field"],
             "credential": {"effective_date": {"input": "eff_date", "from": "claim"}},
-            "mappings": {},
+            "mapping": {},
+            "mappings": None,
             "topic": [{"source_id": {"input": "topic_id", "from": "claim"}}],
         }
         assert schema.name == "schema"
@@ -127,11 +129,13 @@ class TestIssuerManager(TestCase):
 
         assert credential_type.description == "cred type name"
         assert credential_type.processor_config == {
+            "cardinality": credential_type_def_spec.get("cardinality"),
             "cardinality_fields": ["field"],
             "credential": credential_type_def_spec.get("credential"),
             "mappings": credential_type_def_spec.get("mappings"),
             "topic": topic_def_spec,
         }
+        assert "mapping" not in credential_type.processor_config
         assert schema.name == credential_type_def_spec.get("schema")
         assert schema.version == credential_type_def_spec.get("version")
         assert schema.origin_did == issuer_def_spec.get("did")

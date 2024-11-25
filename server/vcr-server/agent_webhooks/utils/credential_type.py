@@ -92,11 +92,21 @@ class CredentialTypeManager:
         self, credential_type_def: CredentialTypeDefSchema
     ) -> dict:
         processor_config = {
-            "cardinality_fields": credential_type_def.get("cardinality_fields"),
+            "cardinality_fields": credential_type_def.get("cardinality_fields"), # DEPRECATED
+            "cardinality": credential_type_def.get("cardinality"),
             "credential": credential_type_def.get("credential"),
-            "mapping": credential_type_def.get('mapping'),
+            "mapping": credential_type_def.get('mapping'), # DEPRECATED
             "mappings": credential_type_def.get("mappings"),
             "topic": credential_type_def.get("topic"),
         }
+
+        # Remove deprecated fields for vc_di format
+        # Eventually older formats will be catch up and this can be removed
+        if credential_type_def.get("format") == "vc_di":
+            if not processor_config.get("cardinality_fields"):
+                processor_config.pop("cardinality_fields", None)
+            if not processor_config.get("mapping"):
+                processor_config.pop("mapping", None)
+
 
         return processor_config
