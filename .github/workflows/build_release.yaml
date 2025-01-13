@@ -136,7 +136,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
   build_vcr_echo_service:
-    name: 'Build VCR Agent'
+    name: 'Build Echo Service'
     runs-on: ubuntu-latest
     if: github.repository_owner == 'bcgov'
     steps:
