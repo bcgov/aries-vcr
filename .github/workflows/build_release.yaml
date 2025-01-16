@@ -98,9 +98,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4    
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -119,15 +116,23 @@ jobs:
             type=ref
             type=sha
 
-      - name: Build and push image
-        id: builder
-        uses: docker/build-push-action@v6
+      - name: Setup and build
+        id: build_image
+        uses: redhat-actions/s2i-build@v2
         with:
-          context: ./docker/db
-          file: ./docker/db/Dockerfile
-          push: true
+          path_context: ./server/db/config
+          builder_image: 'quay.io/fedora/postgresql-12:12'
+          image: ghcr.io/${{ github.repository }}/aries-vcr-db  
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Push image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          tags: ${{ steps.build_image.outputs.tags }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
   build_vcr_solr:
     name: 'Build VCR Solr'
