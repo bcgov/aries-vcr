@@ -111,10 +111,28 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Default Settings:
 # -----------------------------------------------------------------------------------------------------------------
+
 DEFAULT_CONTAINERS="wallet-db vcr-db vcr-solr vcr-api vcr-agent schema-spy rabbitmq vcr-worker echo-app"
+
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
+
+# Global variable to hold Docker Compose command
+compose_cmd=""
+
+# Function to determine the correct Docker Compose command
+get_docker_compose_command() {
+  if command -v "docker" > /dev/null && docker compose version > /dev/null 2>&1; then
+    compose_cmd="docker compose "
+  elif command -v docker-compose > /dev/null 2>&1; then
+    compose_cmd="docker-compose "
+  else
+    echo "Error: Neither 'docker compose' nor 'docker-compose' is installed." >&2
+    exit 1
+  fi
+}
+
 function echoRed (){
   _msg=${1}
   _red='\e[31m'
@@ -349,10 +367,10 @@ configureEnvironment() {
   export RABBITMQ_PASSWORD="RABBITMQ_PASSWORD"
 
   # agent
-  export AGENT_ADMIN_PORT=8024
+  export AGENT_ADMIN_PORT=${AGENT_ADMIN_PORT:-8024}
   export WEBHOOK_URL=${WEBHOOK_URL:-http://vcr-api:$API_HTTP_PORT}
-  export HTTP_INTERFACE_PORT=8021
-  export WS_INTERFACE_PORT=8023
+  export HTTP_INTERFACE_PORT=${HTTP_INTERFACE_PORT:-8021}
+  export WS_INTERFACE_PORT=${WS_INTERFACE_PORT:-8023}
   export AGENT_NAME="avcr.agent"
   export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://vcr-agent:$HTTP_INTERFACE_PORT}
   export AGENT_ADMIN_MODE="admin-insecure-mode"
@@ -395,8 +413,8 @@ function logs() {
     log_args=()
     (( no_tail != 1 )) && log_args+=( '-f' )
     if [ ! -z "${TAIL_LOGS}" ] || [ ! -z "${_force}" ]; then
-      docker-compose \
-        --log-level ERROR logs \
+      $compose_cmd \
+        logs \
          "${log_args[@]}" "$@"
     fi
   )
@@ -497,7 +515,7 @@ deleteVolumes() {
   _projectName=${COMPOSE_PROJECT_NAME:-docker}
 
   echo "Stopping and removing any running containers ..."
-  docker-compose down -v
+  $compose_cmd down -v
 
   _pattern="^${_projectName}_\|^docker_"
   _volumes=$(docker volume ls -q | grep ${_pattern})
@@ -587,6 +605,8 @@ functionExists() {
 }
 # =================================================================================================================
 
+get_docker_compose_command
+
 pushd ${SCRIPT_HOME} >/dev/null
 COMMAND=$(toLower ${1})
 shift || COMMAND=usage
@@ -595,7 +615,7 @@ case "${COMMAND}" in
   start|up)
     _startupParams=$(getStartupParams $@)
     configureEnvironment "$@"
-    docker-compose ${composeOptions} up --scale vcr-worker=2 -d ${_startupParams}
+    $compose_cmd ${composeOptions} up --scale vcr-worker=2 -d ${_startupParams}
     wait_for_vcr_api
     logs
     echo 'Want to see the scrolling container logs? Run "./manage logs"'
@@ -607,15 +627,15 @@ case "${COMMAND}" in
     echo "NOTE make sure you have removed the port mapping in docker-compose.yml for vcr-api and vcr-agent!!!"
     echo "Press any key to continue or <CRTL-C> to abort"
     read anykey
-    docker-compose ${composeOptions} up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams}
+    $compose_cmd ${composeOptions} up --scale vcr-worker=2 --scale vcr-api=6 --scale vcr-agent=5 -d ${_startupParams}
     logs
     echo 'Want to see the scrolling container logs? Run "./manage logs"'
     ;;
   restart)
     _startupParams=$(getStartupParams $@)
     configureEnvironment "$@"
-    docker-compose stop ${_startupParams}
-    docker-compose ${composeOptions} up -d ${_startupParams}
+    $compose_cmd stop ${_startupParams}
+    $compose_cmd ${composeOptions} up -d ${_startupParams}
     ;;
   logs)
     configureEnvironment "$@"
@@ -623,16 +643,16 @@ case "${COMMAND}" in
     ;;
   stop)
     configureEnvironment
-    docker-compose stop
+    $compose_cmd stop
     ;;
   startdb)
     configureEnvironment "$@"
-    docker-compose up -d wallet-db
-    docker-compose logs -f
+    $compose_cmd up -d wallet-db
+    $compose_cmd logs -f
   ;;
   stopdb)
     configureEnvironment
-    docker-compose stop wallet-db
+    $compose_cmd stop wallet-db
   ;;
   rm|down)
     configureEnvironment
@@ -664,12 +684,12 @@ case "${COMMAND}" in
   shell)
     _inputParams=$(getInputParams $@)
     configureEnvironment "$@"
-    docker-compose run --force-recreate vcr-api bash ${_inputParams}
+    $compose_cmd run --force-recreate vcr-api bash ${_inputParams}
     ;;
   api)
     _inputParams=$(getInputParams $@)
     configureEnvironment "$@"
-    docker-compose run vcr-api python manage.py ${_inputParams}
+    $compose_cmd run vcr-api python manage.py ${_inputParams}
     ;;
   test-api)
     DATABASE_ENGINE=${DATABASE_ENGINE-sqlite}
@@ -678,7 +698,7 @@ case "${COMMAND}" in
     _inputParams=$(getInputParams $@)
     configureEnvironment "$@"
 	  build-api
-    docker-compose run --no-deps vcr-api bash -c "coverage run manage.py test ${_inputParams} && coverage report -m"
+    $compose_cmd run --no-deps vcr-api bash -c "coverage run manage.py test ${_inputParams} && coverage report -m"
     ;;
   *)
     usage
