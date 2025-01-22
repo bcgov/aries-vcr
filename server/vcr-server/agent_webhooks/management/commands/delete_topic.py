@@ -1,5 +1,6 @@
 
 import requests
+import time
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -20,6 +21,8 @@ class Command(BaseCommand):
 
     @async_to_sync
     async def delete_topic(self, *args, **options):
+        start_time = time.perf_counter()
+
         # get Topic ID from input parameters
         topic_id = options['topic_id']
         self.stdout.write("Deleting topic_id: " + topic_id)
@@ -57,4 +60,5 @@ class Command(BaseCommand):
                 topic.delete()
             self.stdout.write("Done.")
 
-
+        processing_time = time.perf_counter() - start_time
+        self.stdout.write(f"Processing time: {processing_time} msec")
