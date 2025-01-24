@@ -55,7 +55,7 @@ aiohttp~=3.7.4
 aiohttp-wsgi~=0.8.1
 
 # transitive dependency management
-iniconfig<=1.0.1
+iniconfig<=2.0.0
 
 # api tracking
 snowplow-tracker~=0.9.1
