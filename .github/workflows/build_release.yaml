@@ -91,7 +91,7 @@ jobs:
           path_context: ./server/vcr-server
           builder_image: 'registry.access.redhat.com/ubi9/python-39'
           image: ghcr.io/${{ github.repository }}/aries-vcr-api
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: v1.1.1
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
