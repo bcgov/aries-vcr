@@ -89,7 +89,7 @@ jobs:
         uses: redhat-actions/s2i-build@v2
         with:
           path_context: ./server/vcr-server
-          builder_image: 'registry.access.redhat.com/ubi9/python-39:latest'
+          builder_image: 'registry.access.redhat.com/ubi9/python-39'
           image: ghcr.io/${{ github.repository }}/aries-vcr-api
           tags: ${{ steps.meta.outputs.tags }}
 
