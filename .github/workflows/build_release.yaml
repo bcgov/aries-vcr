@@ -130,12 +130,16 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=ref,event=tag
 
+      - name: Pull postgresql
+        run: |
+          docker pull quay.io/fedora/postgresql-12:12
+
       - name: Setup and build
         id: build_image
         uses: redhat-actions/s2i-build@v2
         with:
           path_context: ./server/db/config
-          builder_image: 'quay.io/fedora/postgresql-12'
+          builder_image: 'quay.io/fedora/postgresql-12:12'
           image: ghcr.io/${{ github.repository }}/aries-vcr-db  
           tags: ${{ steps.meta.outputs.version }}
 
