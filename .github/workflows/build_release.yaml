@@ -91,13 +91,13 @@ jobs:
           path_context: ./server/vcr-server
           builder_image: 'registry.access.redhat.com/ubi9/python-39'
           image: ghcr.io/${{ github.repository }}/aries-vcr-api
-          tags: 1.11.1
+          tags: ${{ steps.meta.outputs.tags }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build_image.outputs.image }}
-          tags: ${{ steps.build_image.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -143,7 +143,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build_image.outputs.image }}
-          tags: ${{ steps.build_image.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -189,7 +189,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build_image.outputs.image }}
-          tags: ${{ steps.build_image.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
