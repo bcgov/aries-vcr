@@ -91,7 +91,7 @@ jobs:
           path_context: ./server/vcr-server
           builder_image: 'registry.access.redhat.com/ubi9/python-39'
           image: ghcr.io/${{ github.repository }}/aries-vcr-api
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
@@ -137,7 +137,7 @@ jobs:
           path_context: ./server/db/config
           builder_image: 'quay.io/fedora/postgresql-12:12'
           image: ghcr.io/${{ github.repository }}/aries-vcr-db  
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
@@ -183,7 +183,7 @@ jobs:
           path_context: ./server/solr/cores
           builder_image: 'https://github.com/bcgov/openshift-solr.git#8.11.2'
           image: ghcr.io/${{ github.repository }}/aries-vcr-solr
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
