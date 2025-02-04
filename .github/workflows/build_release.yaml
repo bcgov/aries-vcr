@@ -181,7 +181,7 @@ jobs:
         uses: redhat-actions/s2i-build@v2
         with:
           path_context: ./server/solr/cores
-          builder_image: 'https://github.com/bcgov/openshift-solr.git#8.11.2'
+          builder_image: 'ghcr.io/bcgov/openshift-solr/openshift-solr:8.11.2'
           image: ghcr.io/${{ github.repository }}/aries-vcr-solr
           tags: ${{ steps.meta.outputs.version }}
 
