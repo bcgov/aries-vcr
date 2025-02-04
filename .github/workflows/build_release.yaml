@@ -135,7 +135,7 @@ jobs:
         uses: redhat-actions/s2i-build@v2
         with:
           path_context: ./server/db/config
-          builder_image: 'quay.io/fedora/postgresql-12:12'
+          builder_image: 'quay.io/fedora/postgresql-12'
           image: ghcr.io/${{ github.repository }}/aries-vcr-db  
           tags: ${{ steps.meta.outputs.version }}
 
