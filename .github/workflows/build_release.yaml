@@ -89,15 +89,15 @@ jobs:
         uses: redhat-actions/s2i-build@v2
         with:
           path_context: ./server/vcr-server
-          builder_image: 'registry.access.redhat.com/ubi9/python-39:latest'
+          builder_image: 'registry.access.redhat.com/ubi9/python-39'
           image: ghcr.io/${{ github.repository }}/aries-vcr-api
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build_image.outputs.image }}
-          tags: ${{ steps.build_image.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -130,6 +130,10 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=ref,event=tag
 
+      - name: Pull postgresql
+        run: |
+          docker pull quay.io/fedora/postgresql-12:12
+
       - name: Setup and build
         id: build_image
         uses: redhat-actions/s2i-build@v2
@@ -137,13 +141,13 @@ jobs:
           path_context: ./server/db/config
           builder_image: 'quay.io/fedora/postgresql-12:12'
           image: ghcr.io/${{ github.repository }}/aries-vcr-db  
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build_image.outputs.image }}
-          tags: ${{ steps.build_image.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -181,15 +185,15 @@ jobs:
         uses: redhat-actions/s2i-build@v2
         with:
           path_context: ./server/solr/cores
-          builder_image: 'https://github.com/bcgov/openshift-solr.git#8.11.2'
+          builder_image: 'ghcr.io/bcgov/openshift-solr/openshift-solr:8.11.2'
           image: ghcr.io/${{ github.repository }}/aries-vcr-solr
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build_image.outputs.image }}
-          tags: ${{ steps.build_image.outputs.tags }}
+          tags: ${{ steps.meta.outputs.version }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
