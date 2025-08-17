@@ -189,3 +189,4 @@ _build/
 # Aries VCR Client
 client/node_modules
 node_modules/
+**/node_modules/
