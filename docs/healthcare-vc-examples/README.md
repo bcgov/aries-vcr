@@ -1,7 +1,4 @@
 # Healthcare Verifiable Credential Examples (Non-PHI)
-
-All rights reserved, unlicensed.
-
 Purpose: Provide minimal, privacy-preserving VC examples suitable for health-related use cases without handling Protected Health Information (PHI).
 
 Included:
