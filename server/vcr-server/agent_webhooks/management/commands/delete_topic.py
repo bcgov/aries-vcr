@@ -1,13 +1,11 @@
 
-import requests
 import time
 
+import requests
+from api.v2.models.Topic import Topic
+from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.core.management.base import BaseCommand
-
-from api.v2.models.Topic import Topic
-
-from asgiref.sync import async_to_sync
 
 
 class Command(BaseCommand):
@@ -61,4 +59,4 @@ class Command(BaseCommand):
             self.stdout.write("Done.")
 
         processing_time = time.perf_counter() - start_time
-        self.stdout.write(f"Processing time: {processing_time} msec")
+        self.stdout.write(f"Processing time: {processing_time} sec")

@@ -87,4 +87,4 @@ class Command(BaseCommand):
         self.stdout.write("Done.")
 
         processing_time = time.perf_counter() - start_time
-        self.stdout.write(f"Processing time: {processing_time} msec")
+        self.stdout.write(f"Processing time: {processing_time} sec")
