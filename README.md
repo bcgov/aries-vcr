@@ -82,10 +82,4 @@ We also welcome issues submitted about problems you encounter in using Aries VCR
 
 [Apache License Version 2.0](https://github.com/bcgov/aries-vcr/blob/main/LICENSE)
 
-### Testing
-
-```bash
-npm install
-npm run test
-```
 
