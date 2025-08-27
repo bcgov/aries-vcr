@@ -5,6 +5,7 @@ import requests
 from api.v2.models.Topic import Topic
 from asgiref.sync import async_to_sync
 from django.conf import settings
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 
@@ -56,6 +57,25 @@ class Command(BaseCommand):
                         related.delete()
                 self.stdout.write(" ... deleting topic ...")
                 topic.delete()
+            
+            # Update search indexes to refresh facets
+            self.stdout.write("Updating search indexes to refresh facets ...")
+            try:
+                # Call the update_index management command to refresh facets
+                # This ensures facets no longer reference the deleted topic
+                call_command(
+                    'update_index',
+                    age=1,  # Update recent changes to catch references
+                    verbosity=0  # Reduce verbosity to avoid excessive output
+                )
+                self.stdout.write(" ... search index update completed.")
+            except Exception as e:
+                self.stdout.write(
+                    f"Warning: Search index update failed: {str(e)}. "
+                    "You may need to manually run 'update_index' to refresh "
+                    "facets."
+                )
+            
             self.stdout.write("Done.")
 
         processing_time = time.perf_counter() - start_time

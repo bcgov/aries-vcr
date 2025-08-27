@@ -5,6 +5,7 @@ from api.v2.models.Credential import Credential
 from api.v2.models.CredentialSet import CredentialSet
 from api.v2.models.CredentialType import CredentialType
 from django.conf import settings
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 
@@ -84,7 +85,26 @@ class Command(BaseCommand):
         # Finally, delete the credential type itself
         self.stdout.write(" ... deleting credential type ...")
         credential_type.delete()
+        
+        # Update search indexes to refresh facets
+        self.stdout.write("Updating search indexes to refresh facets ...")
+        try:
+            # Call the update_index management command to refresh search facets
+            # This ensures facets no longer reference the deleted credential
+            call_command(
+                'update_index',
+                age=1,  # Update recent changes to catch remaining references
+                verbosity=0  # Reduce verbosity to avoid excessive output
+            )
+            self.stdout.write(" ... search index update completed.")
+        except Exception as e:
+            self.stdout.write(
+                f"Warning: Search index update failed: {str(e)}. "
+                "You may need to manually run 'update_index' to refresh "
+                "facets."
+            )
+        
         self.stdout.write("Done.")
 
         processing_time = time.perf_counter() - start_time
-        self.stdout.write(f"Processing time: {processing_time} sec")
+        self.stdout.write(f"Processing time: {processing_time} msec")
