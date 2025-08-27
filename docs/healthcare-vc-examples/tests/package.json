@@ -1,0 +1,11 @@
+{
+  "name": "hc-vc-schema-tests",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node validate.js"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  }
+}

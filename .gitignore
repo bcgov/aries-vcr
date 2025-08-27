@@ -187,4 +187,6 @@ $RECYCLE.BIN/
 _build/
 
 # Aries VCR Client
+
 client/
+**/node_modules/
