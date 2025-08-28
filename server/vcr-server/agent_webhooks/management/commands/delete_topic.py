@@ -56,7 +56,36 @@ class Command(BaseCommand):
                         related.delete()
                 self.stdout.write(" ... deleting topic ...")
                 topic.delete()
+            
+            # Clean up search index to remove stale references
+            self.stdout.write("Cleaning up search index ...")
+            self._cleanup_search_index(topic_id)
+            
             self.stdout.write("Done.")
 
         processing_time = time.perf_counter() - start_time
         self.stdout.write(f"Processing time: {processing_time} sec")
+
+    def _cleanup_search_index(self, topic_id):
+        """Remove stale Solr documents referencing the deleted topic"""
+        try:
+            from haystack import connections
+            from haystack.backends.solr_backend import SolrSearchBackend
+
+            backend = connections['default'].get_backend()
+            if isinstance(backend, SolrSearchBackend):
+                # Remove documents that reference the deleted source_id
+                query = f'source_id:"{topic_id}"'
+                backend.conn.delete(q=query)
+                self.stdout.write(f" ... removed Solr docs: {query}")
+                
+                # Commit changes and optimize to refresh facet caches
+                backend.conn.commit()
+                backend.conn.optimize()
+                
+                self.stdout.write(" ... search index cleanup completed")
+            else:
+                self.stdout.write(" ... non-Solr backend, skipping cleanup")
+                
+        except Exception as e:
+            self.stdout.write(f" ... warning: search cleanup failed: {str(e)}")
