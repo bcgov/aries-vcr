@@ -5,7 +5,6 @@ import requests
 from api.v2.models.Topic import Topic
 from asgiref.sync import async_to_sync
 from django.conf import settings
-from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 
@@ -58,25 +57,35 @@ class Command(BaseCommand):
                 self.stdout.write(" ... deleting topic ...")
                 topic.delete()
             
-            # Update search indexes to refresh facets
-            self.stdout.write("Updating search indexes to refresh facets ...")
-            try:
-                # Call the update_index management command to refresh facets
-                # This ensures facets no longer reference the deleted topic
-                call_command(
-                    'update_index',
-                    age=1,  # Update recent changes to catch references
-                    verbosity=0  # Reduce verbosity to avoid excessive output
-                )
-                self.stdout.write(" ... search index update completed.")
-            except Exception as e:
-                self.stdout.write(
-                    f"Warning: Search index update failed: {str(e)}. "
-                    "You may need to manually run 'update_index' to refresh "
-                    "facets."
-                )
+            # Clean up search index to remove stale references
+            self.stdout.write("Cleaning up search index ...")
+            self._cleanup_search_index(topic_id)
             
             self.stdout.write("Done.")
 
         processing_time = time.perf_counter() - start_time
         self.stdout.write(f"Processing time: {processing_time} sec")
+
+    def _cleanup_search_index(self, topic_id):
+        """Remove stale Solr documents referencing the deleted topic"""
+        try:
+            from haystack import connections
+            from haystack.backends.solr_backend import SolrSearchBackend
+
+            backend = connections['default'].get_backend()
+            if isinstance(backend, SolrSearchBackend):
+                # Remove documents that reference the deleted source_id
+                query = f'source_id:"{topic_id}"'
+                backend.conn.delete(q=query)
+                self.stdout.write(f" ... removed Solr docs: {query}")
+                
+                # Commit changes and optimize to refresh facet caches
+                backend.conn.commit()
+                backend.conn.optimize()
+                
+                self.stdout.write(" ... search index cleanup completed")
+            else:
+                self.stdout.write(" ... non-Solr backend, skipping cleanup")
+                
+        except Exception as e:
+            self.stdout.write(f" ... warning: search cleanup failed: {str(e)}")
