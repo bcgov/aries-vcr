@@ -136,8 +136,12 @@ class FacetSerializer(CredentialFacetSerializer):
         fields = ("topic_category", "topic_issuer_id",
                   "topic_type_id", "topic_credential_type_id")
         field_options = {
-            "topic_category": {},
+            "topic_category": {
+                "mincount": 1
+            },
             "topic_issuer_id": {},
             "topic_type_id": {},
-            "topic_credential_type_id": {}
+            "topic_credential_type_id": {
+                "mincount": 1
+            }
         }
