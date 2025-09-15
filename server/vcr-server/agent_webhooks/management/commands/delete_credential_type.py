@@ -210,9 +210,7 @@ class Command(BaseCommand):
                 from api.v2.models.Credential import Credential
                 credential_index = CredentialIndex()
                 affected_credentials = Credential.objects.filter(
-                    topic_id__in=affected_topics,
-                    latest=True,
-                    revoked=False
+                    topic_id__in=affected_topics
                 ).select_related('credential_type', 'topic')
                 
                 if affected_credentials.exists():
