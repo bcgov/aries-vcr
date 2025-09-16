@@ -1,11 +1,10 @@
 import logging
-import threading
 import os
+import threading
 from queue import Empty, Full, Queue
 
-from haystack.utils import get_identifier
-
 from api.v2.search.index import TxnAwareSearchIndex
+from haystack.utils import get_identifier
 
 LOGGER = logging.getLogger(__name__)
 
@@ -219,7 +218,10 @@ class SolrQueue:
             # Turn off silently_fail; throw an exception if there is an error so we can requeue the items being indexed.
             backend.silently_fail = False
             # backend.remove has no support for a list of IDs
-            backend.conn.delete(id=ids)
+            if len(ids) > 0:
+                backend.conn.delete(id=ids)
+            else:
+                LOGGER.warning("No IDs provided for deletion from Solr queue, skipping.")
         else:
             LOGGER.error("Failed to get backend.  Unable to remove the indexes for %d row(s) from the solr queue: %s", len(ids), ids)
             raise Exception("Failed to get backend.  Unable to remove the index for Solr queue")

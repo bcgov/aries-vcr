@@ -312,8 +312,12 @@ class CredentialFacetSerializer(HaystackFacetSerializer):
             "issuer_id"
         ]
         field_options = {
-            "category": {},
-            "credential_type_id": {},
+            "category": {
+                "mincount": 1
+            },
+            "credential_type_id": {
+                "mincount": 1
+            },
             "issuer_id": {},
             # Date faceting isn't working, needs to use Solr range faceting
             # See: https://github.com/django-haystack/django-haystack/issues/1572
