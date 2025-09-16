@@ -14,6 +14,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('credential_type_id', type=str)
+        parser.add_argument(
+            '--force',
+            action='store_true',
+            help='Skip confirmation prompt and proceed with deletion'
+        )
 
     def handle(self, *args, **options):
         credential_type_id = options['credential_type_id']
@@ -71,10 +76,57 @@ class Command(BaseCommand):
         if credentials.exists():
             topic_ids = set(credentials.values_list('topic_id', flat=True))
             affected_topics.update(topic_ids)
+        
+        # Display information about the operation
+        self.stdout.write("\n" + "="*60)
+        self.stdout.write("CREDENTIAL TYPE DELETION CONFIRMATION")
+        self.stdout.write("="*60)
+        self.stdout.write(f"Credential Type: {credential_type.description}")
+        self.stdout.write(f"ID: {credential_type_id}")
+        self.stdout.write(
+            f"Found {credentials.count()} credentials to delete"
+        )
+        self.stdout.write(f"Topics affected: {len(affected_topics)}")
+        self.stdout.write("="*60)
+        
+        if affected_topics:
             self.stdout.write(
-                f" ... found {len(topic_ids)} topics affected by "
-                f"credential deletion"
+                f"WARNING: This operation will affect "
+                f"{len(affected_topics)} topics and trigger search index "
+                f"refresh."
             )
+        else:
+            self.stdout.write(
+                "No topics will be affected by this operation."
+            )
+            
+        self.stdout.write(
+            "\nThis action cannot be undone. All credentials of this type "
+            "will be permanently deleted."
+        )
+        
+        # Ask for user confirmation unless --force flag is used
+        if not options.get('force', False):
+            try:
+                confirmation = input(
+                    "\nDo you want to continue? (y/N): "
+                ).strip()
+            except (EOFError, KeyboardInterrupt):
+                self.stdout.write("\n\nOperation cancelled by user.")
+                return list(affected_topics)
+            
+            if confirmation.lower() not in ['y', 'yes']:
+                self.stdout.write(
+                    "Operation cancelled. No changes were made."
+                )
+                return list(affected_topics)
+        else:
+            self.stdout.write(
+                "\n--force flag provided, skipping confirmation."
+            )
+        
+        self.stdout.write("\nProceeding with credential type deletion...")
+        self.stdout.write("="*60 + "\n")
 
         # delete credentials from wallet first
         if credentials.exists():
