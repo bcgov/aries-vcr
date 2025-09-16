@@ -23,12 +23,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         credential_type_id = options['credential_type_id']
         
-        # Track affected topics for targeted reindexing
-        affected_topics = []
+        # Pre-flight check and confirmation before opening Solr queue
+        affected_topics = self._check_and_confirm_deletion(*args, **options)
         
+        # If we get here, user confirmed deletion - proceed with operations
         queue = SolrQueue()
         with queue:
-            affected_topics = self.delete_credential_type(*args, **options)
+            self._perform_deletion(affected_topics, *args, **options)
             
             # Wait for queue to drain while still in context
             eject = 20
@@ -50,10 +51,8 @@ class Command(BaseCommand):
         self.stdout.write("Performing targeted search index refresh ...")
         self._refresh_affected_indexes(credential_type_id, affected_topics)
 
-    def delete_credential_type(self, *args, **options):
-        start_time = time.perf_counter()
-
-        # get Credential Type ID from input parameters
+    def _check_and_confirm_deletion(self, *args, **options):
+        """Check credential type exists and get user confirmation"""
         credential_type_id = options['credential_type_id']
         self.stdout.write("Deleting credential_type_id: " + credential_type_id)
 
@@ -65,7 +64,7 @@ class Command(BaseCommand):
             credential_type = CredentialType.objects.get(id=credential_type_id)
         except CredentialType.DoesNotExist:
             self.stdout.write(" ... credential_type_id not found in OrgBook.")
-            return list(affected_topics)
+            raise SystemExit(1)
 
         # Find all credentials for this credential type
         credentials = Credential.objects.filter(
@@ -113,13 +112,13 @@ class Command(BaseCommand):
                 ).strip()
             except (EOFError, KeyboardInterrupt):
                 self.stdout.write("\n\nOperation cancelled by user.")
-                return list(affected_topics)
+                raise SystemExit(0)
             
             if confirmation.lower() not in ['y', 'yes']:
                 self.stdout.write(
                     "Operation cancelled. No changes were made."
                 )
-                return list(affected_topics)
+                raise SystemExit(0)
         else:
             self.stdout.write(
                 "\n--force flag provided, skipping confirmation."
@@ -127,6 +126,23 @@ class Command(BaseCommand):
         
         self.stdout.write("\nProceeding with credential type deletion...")
         self.stdout.write("="*60 + "\n")
+        
+        return list(affected_topics)
+
+    def _perform_deletion(self, affected_topics, *args, **options):
+        """Perform the actual credential type deletion"""
+        start_time = time.perf_counter()
+        credential_type_id = options['credential_type_id']
+
+        # Re-fetch the credential type and related data (since confirmation
+        # happened earlier)
+        credential_type = CredentialType.objects.get(id=credential_type_id)
+        credentials = Credential.objects.filter(
+            credential_type=credential_type
+        )
+        
+        # Convert to set for efficient updates (we received it as a list)
+        affected_topics = set(affected_topics)
 
         # delete credentials from wallet first
         if credentials.exists():
