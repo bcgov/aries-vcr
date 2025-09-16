@@ -80,7 +80,25 @@ class Command(BaseCommand):
         self.stdout.write("\n" + "="*60)
         self.stdout.write("CREDENTIAL TYPE DELETION CONFIRMATION")
         self.stdout.write("="*60)
-        self.stdout.write(f"Credential Type: {credential_type.description}")
+        
+        # Use description if available, otherwise fall back to raw_data.type
+        display_name = credential_type.description
+        if (not display_name and hasattr(credential_type, 'raw_data') and
+                credential_type.raw_data):
+            try:
+                import json
+
+                # Parse JSON string to get the type attribute
+                raw_data_obj = json.loads(credential_type.raw_data)
+                display_name = raw_data_obj.get('type')
+            except (json.JSONDecodeError, AttributeError, TypeError, KeyError):
+                display_name = None
+        
+        # Final fallback to ID if no display name found
+        if not display_name:
+            display_name = f"Credential Type ID {credential_type_id}"
+            
+        self.stdout.write(f"Credential Type: {display_name}")
         self.stdout.write(f"ID: {credential_type_id}")
         self.stdout.write(
             f"Found {credentials.count()} credentials to delete"
